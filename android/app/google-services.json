@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "874818729754",
+    "project_id": "project-tecmuu-app",
+    "storage_bucket": "project-tecmuu-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874818729754:android:ebbfd2ab727ea55aafdea3",
+        "android_client_info": {
+          "package_name": "br.app.tecmuu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "874818729754-epbon5i10e7rtpov87m6ooi3veb3gph6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.app.tecmuu",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "874818729754-tdoapr4sl32uov4k8o6fplvb51o1r318.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoyOWrLwrbBqxtdjcHmeQ533JzgrEiYt8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "874818729754-tdoapr4sl32uov4k8o6fplvb51o1r318.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "874818729754-hdgb369cdbsvo4nv2rfs8gf8gdl912l6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.app.tecmuu"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874818729754:android:efbe4a886f0d576fafdea3",
+        "android_client_info": {
+          "package_name": "br.com.tecmuu"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "874818729754-k3erp524d3821ku89p9d8nph2f0rhs91.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.tecmuu",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "874818729754-tdoapr4sl32uov4k8o6fplvb51o1r318.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoyOWrLwrbBqxtdjcHmeQ533JzgrEiYt8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "874818729754-tdoapr4sl32uov4k8o6fplvb51o1r318.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "874818729754-hdgb369cdbsvo4nv2rfs8gf8gdl912l6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.app.tecmuu"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

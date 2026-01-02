@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleDisplayName</key>
+	<string>Tecmuu</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>tecmuu</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+
+	<key>CFBundleShortVersionString</key>
+	<string>$(FLUTTER_BUILD_NAME)</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>com.googleusercontent.apps.874818729754-hdgb369cdbsvo4nv2rfs8gf8gdl912l6</string>
+                
+            </array>
+        </dict>
+
+        <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLName</key>
+        <string>tecmuu.com</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+        <string>tecmuu</string>
+        </array>
+        </dict>
+    </array>
+    <key>FlutterDeepLinkingEnabled</key>
+    <true/>
+
+
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+
+	<key>NSCameraUsageDescription</key>
+    <string>Permitirá capturar fotos e vídeos diretamente do aplicativo, facilitando o compartilhamento de momentos especiais com amigos e familiares.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Será usado para conectar-se a dispositivos externos, como fones de ouvido ou alto-falantes, proporcionando uma experiência de áudio perfeita.</string>
+	<key>NSFaceIDUsageDescription</key>
+    <string>Para proteger seus dados pessoais e garantir sua segurança, usaremos a biometria (impressão digital, reconhecimento facial, etc.) como uma forma conveniente de autenticação.</string>
+	<key>NSCalendarsUsageDescription</key>
+    <string>Acesso ao seu calendário ajudará a integrar eventos importantes diretamente no aplicativo, mantendo-o atualizado e organizado.</string>
+	<key>NSContactsUsageDescription</key>
+    <string>Permite a sincronização de contatos para facilitar a interação social dentro do aplicativo, como compartilhamento de informações de contato ou convites para eventos.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>O acesso à sua localização é essencial para fornecer serviços baseados em localização, como encontrar estabelecimentos próximos, rotas personalizadas e previsões meteorológicas locais.</string>
+	<key>NSMicrophoneUsageDescription</key>
+    <string>Utilizaremos o microfone para recursos de gravação de áudio ou interações por voz, tornando a experiência do usuário mais dinâmica e interativa.</string>
+	<key>PermissionGroupNotification</key>
+    <string>Para mantê-lo informado sobre atualizações importantes, eventos próximos ou interações dentro do aplicativo, precisaremos enviar notificações.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+    <string>Permitirá o acesso às suas fotos armazenadas no dispositivo, facilitando o compartilhamento de imagens e o upload de mídia dentro do aplicativo. Esta permissão nos ajudará a oferecer uma experiência mais personalizada e envolvente.</string>
+
+
+
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+</dict>
+</plist>

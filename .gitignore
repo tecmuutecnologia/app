@@ -1,0 +1,21 @@
+# Ignore keystore and signing properties
+/key.properties
+/tecmuu-xingpe-keystore.jks
+android/key.properties
+android/app/tecmuu-xingpe-keystore.jks
+# Or ignore all .jks and key.properties recursively
+*.jks
+**/key.properties
+
+# Flutter/Dart standard ignores
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-deps
+/build/
+**/GeneratedPluginRegistrant.java
+
+# macOS
+.DS_Store
+
+**/functions/.env

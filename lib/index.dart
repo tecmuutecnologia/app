@@ -1,0 +1,129 @@
+// Export pages
+export '/pages/welcome/welcome/welcome_widget.dart' show WelcomeWidget;
+export '/pages/tecnico/initial/login_technician/login_technician_widget.dart'
+    show LoginTechnicianWidget;
+export '/pages/tecnico/initial/create_account_technician/create_account_technician_widget.dart'
+    show CreateAccountTechnicianWidget;
+export '/pages/tecnico/dashboard/dashboard_tecnico/dashboard_tecnico_widget.dart'
+    show DashboardTecnicoWidget;
+export '/pages/tecnico/propriedade/propriedades/lista_propriedade/lista_propriedade_widget.dart'
+    show ListaPropriedadeWidget;
+export '/pages/tecnico/propriedade/propriedades/nova_propriedade/nova_propriedade_widget.dart'
+    show NovaPropriedadeWidget;
+export '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart'
+    show InicioPropriedadeWidget;
+export '/pages/tecnico/propriedade/propriedades/editar_propriedade/editar_propriedade_widget.dart'
+    show EditarPropriedadeWidget;
+export '/pages/tecnico/propriedade/animals/cadastrar_novo_animal/cadastrar_novo_animal_widget.dart'
+    show CadastrarNovoAnimalWidget;
+export '/pages/tecnico/propriedade/animals/lista_animais/lista_animais_widget.dart'
+    show ListaAnimaisWidget;
+export '/pages/tecnico/propriedade/inseminacoes/lista_inseminacoes/lista_inseminacoes_widget.dart'
+    show ListaInseminacoesWidget;
+export '/pages/tecnico/propriedade/exame_ginecologico/exame_ginecologico/exame_ginecologico_widget.dart'
+    show ExameGinecologicoWidget;
+export '/pages/tecnico/propriedade/prenhas/animais_prenhas/animais_prenhas_widget.dart'
+    show AnimaisPrenhasWidget;
+export '/pages/tecnico/propriedade/secas/secas/secas_widget.dart'
+    show SecasWidget;
+export '/pages/tecnico/initial/sync_technician/sync_technician_widget.dart'
+    show SyncTechnicianWidget;
+export '/pages/tecnico/propriedade/receituario/receituarios_lista/receituarios_lista_widget.dart'
+    show ReceituariosListaWidget;
+export '/pages/tecnico/propriedade/receituario/resumo_visita_atual/resumo_visita_atual_widget.dart'
+    show ResumoVisitaAtualWidget;
+export '/pages/tecnico/propriedade/resumo_rebanho/resumo_rebanho/resumo_rebanho_widget.dart'
+    show ResumoRebanhoWidget;
+export '/pages/tecnico/propriedade/indices_zootecnicos/indices_zootecnicos/indices_zootecnicos_widget.dart'
+    show IndicesZootecnicosWidget;
+export '/pages/tecnico/perfil/completar_perfil_tecnico/completar_perfil_tecnico_widget.dart'
+    show CompletarPerfilTecnicoWidget;
+export '/pages/produtor/initial/login_produtor/login_produtor_widget.dart'
+    show LoginProdutorWidget;
+export '/pages/welcome/tutorial/tutorial_widget.dart' show TutorialWidget;
+export '/pages/tecnico/perfil/profile_tecnico/profile_tecnico_widget.dart'
+    show ProfileTecnicoWidget;
+export '/pages/tecnico/plano/subscription_plan_tecnico/subscription_plan_tecnico_widget.dart'
+    show SubscriptionPlanTecnicoWidget;
+export '/pages/tecnico/propriedade/prontuario/prontuario_animal/prontuario_animal_widget.dart'
+    show ProntuarioAnimalWidget;
+export '/pages/tecnico/propriedade/animals/editar_animal/editar_animal_widget.dart'
+    show EditarAnimalWidget;
+export '/pages/tecnico/propriedade/prontuario/pron_inseminacoes/pron_inseminacoes_widget.dart'
+    show PronInseminacoesWidget;
+export '/pages/tecnico/propriedade/prontuario/pron_acoes/pron_acoes_widget.dart'
+    show PronAcoesWidget;
+export '/pages/tecnico/propriedade/prontuario/pron_abortos/pron_abortos_widget.dart'
+    show PronAbortosWidget;
+export '/pages/tecnico/propriedade/prontuario/pron_diag_gestacao/pron_diag_gestacao_widget.dart'
+    show PronDiagGestacaoWidget;
+export '/pages/tecnico/propriedade/prontuario/pron_cios/pron_cios_widget.dart'
+    show PronCiosWidget;
+export '/pages/tecnico/propriedade/dignostico_gestacao/diagnosticogestacao/diagnosticogestacao_widget.dart'
+    show DiagnosticogestacaoWidget;
+export '/pages/tecnico/propriedade/calendario_sanitario/calendario_sanitario/calendario_sanitario_widget.dart'
+    show CalendarioSanitarioWidget;
+export '/pages/tecnico/propriedade/financeiro/relatorio_financeiro/relatorio_financeiro_widget.dart'
+    show RelatorioFinanceiroWidget;
+export '/pages/tecnico/propriedade/financeiro/novo_relatorio_financeiro/novo_relatorio_financeiro_widget.dart'
+    show NovoRelatorioFinanceiroWidget;
+export '/pages/tecnico/propriedade/lista_completa/listacompleta/listacompleta_widget.dart'
+    show ListacompletaWidget;
+export '/pages/tecnico/perfil/apagar_conta/apagar_conta_widget.dart'
+    show ApagarContaWidget;
+export '/pages/tecnico/propriedade/financeiro/editar_relatorio_financeiro/editar_relatorio_financeiro_widget.dart'
+    show EditarRelatorioFinanceiroWidget;
+export '/pages/tecnico/propriedade/recria/recriacao/recriacao_widget.dart'
+    show RecriacaoWidget;
+export '/pages/tecnico/propriedade/recria/recriacao_copy/recriacao_copy_widget.dart'
+    show RecriacaoCopyWidget;
+export '/pages/tecnico/propriedade/secas/secas_copy/secas_copy_widget.dart'
+    show SecasCopyWidget;
+export '/pages/tecnico/propriedade/recria/recriacao_copy2/recriacao_copy2_widget.dart'
+    show RecriacaoCopy2Widget;
+export '/pages/tecnico/propriedade/calendario_sanitario/calendario_sanitario_copy/calendario_sanitario_copy_widget.dart'
+    show CalendarioSanitarioCopyWidget;
+export '/pages/tecnico/propriedade/calendario_sanitario/calendario_sanitario_copy2/calendario_sanitario_copy2_widget.dart'
+    show CalendarioSanitarioCopy2Widget;
+export '/pages/tecnico/propriedade/lista_completa/listacompleta_copy/listacompleta_copy_widget.dart'
+    show ListacompletaCopyWidget;
+export '/pages/tecnico/propriedade/animals/cadastrar_novo_animal_copy/cadastrar_novo_animal_copy_widget.dart'
+    show CadastrarNovoAnimalCopyWidget;
+export '/pages/tecnico/propriedade/animals/lista_animais_copy/lista_animais_copy_widget.dart'
+    show ListaAnimaisCopyWidget;
+export '/pages/tecnico/propriedade/inseminacoes/lista_inseminacoes_antes_offline/lista_inseminacoes_antes_offline_widget.dart'
+    show ListaInseminacoesAntesOfflineWidget;
+export '/pages/tecnico/propriedade/exame_ginecologico/exame_ginecologico_bkp_offline/exame_ginecologico_bkp_offline_widget.dart'
+    show ExameGinecologicoBkpOfflineWidget;
+export '/pages/tecnico/propriedade/dignostico_gestacao/diagnosticogestacao_bkp_offline/diagnosticogestacao_bkp_offline_widget.dart'
+    show DiagnosticogestacaoBkpOfflineWidget;
+export '/pages/tecnico/propriedade/prenhas/animais_prenhas_bkp_offline/animais_prenhas_bkp_offline_widget.dart'
+    show AnimaisPrenhasBkpOfflineWidget;
+export '/pages/tecnico/propriedade/recria/recriacao_copy3/recriacao_copy3_widget.dart'
+    show RecriacaoCopy3Widget;
+export '/pages/tecnico/propriedade/prontuario/prontuario_animal_offline/prontuario_animal_offline_widget.dart'
+    show ProntuarioAnimalOfflineWidget;
+export '/pages/tecnico/propriedade/animals/lista_animais_copy2/lista_animais_copy2_widget.dart'
+    show ListaAnimaisCopy2Widget;
+export '/pages/tecnico/propriedade/dignostico_gestacao/diagnosticogestacao_modo1_off/diagnosticogestacao_modo1_off_widget.dart'
+    show DiagnosticogestacaoModo1OffWidget;
+export '/pages/tecnico/propriedade/sincronizacao/acoes_falhadasbkp/acoes_falhadasbkp_widget.dart'
+    show AcoesFalhadasbkpWidget;
+export '/pages/tecnico/propriedade/sincronizacao/acoes_falhadas/acoes_falhadas_widget.dart'
+    show AcoesFalhadasWidget;
+export '/pages/tecnico/propriedade/sincronizacao/importacao_animais/importacao_animais_widget.dart'
+    show ImportacaoAnimaisWidget;
+export '/pages/tecnico/propriedade/lista_completa/listacompleta_new_bkp/listacompleta_new_bkp_widget.dart'
+    show ListacompletaNewBkpWidget;
+export '/pages/tecnico/propriedade/lista_completa/listacompleta_bkp_ultimo/listacompleta_bkp_ultimo_widget.dart'
+    show ListacompletaBkpUltimoWidget;
+export '/pages/tecnico/propriedade/inseminacoes/lista_inseminacoes_bkp_dez/lista_inseminacoes_bkp_dez_widget.dart'
+    show ListaInseminacoesBkpDezWidget;
+export '/pages/tecnico/propriedade/prenhas/animais_prenhas_bkp_recente/animais_prenhas_bkp_recente_widget.dart'
+    show AnimaisPrenhasBkpRecenteWidget;
+export '/pages/produtor/initial/inicio_propriedade_produtor/inicio_propriedade_produtor_widget.dart'
+    show InicioPropriedadeProdutorWidget;
+export '/pages/welcome/verifica_tipo_login/verifica_tipo_login_widget.dart'
+    show VerificaTipoLoginWidget;
+export '/pages/tecnico/propriedade/animals/lista_animais_copy3/lista_animais_copy3_widget.dart'
+    show ListaAnimaisCopy3Widget;

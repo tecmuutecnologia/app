@@ -1,0 +1,506 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nomeAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "brincoAnimalOrder",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "grupoAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nomeAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "brincoAnimalOrder",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "grupoAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nomeBrincoConcat",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nomeAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "brincoAnimalOrder",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nomeAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "brincoAnimalOrder",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "grupoAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "compararDtUltimaInseminacao",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "compararDtUltimaInseminacao",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "compararDtUltimaInseminacao",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "resumo_da_visita",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "uidTecnico",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dtVisita",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "recomendacoes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidResumoDaVisita",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "tituloRecomendacao",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "grupoAnimal",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "grupoAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "financeiro",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dtRelatorio",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "acoes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidAnimalAnimaisProdutores",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "dataVisita",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nomeAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "brincoAnimal",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "grupoAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nomeAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "brincoAnimalOrder",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "tratamentos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "tipoAcao",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "uidResumoDaVisita",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "compararDtUltimaInseminacao",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "brincoAnimalOrder",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nomeAnimal",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "tratamentos",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "tipoAcao",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "uidResumoDaVisita",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "brincoAnimalOrder",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nomeAnimal",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "grupoAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "compararDtUltimaInseminacao",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "grupoAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "compararDtUltimaInseminacao",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "compararDtUltimaInseminacao",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "compararDtUltimaInseminacao",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "grupoAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nomeAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "brincoAnimal",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "grupoAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nomeBrincoConcat",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nomeBrincoConcat",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "nomeBrincoConcat",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "nomeAnimal",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "brincoAnimalOrder",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "propriedades",
+      "fieldPath": "uidPersonProdutor",
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "tratamentos",
+      "fieldPath": "uidAcaoLancada",
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    }
+  ]
+}

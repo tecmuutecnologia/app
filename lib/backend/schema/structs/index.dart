@@ -1,0 +1,19 @@
+export '/backend/schema/util/schema_util.dart';
+
+export 'acoes_struct.dart';
+export 'acoes_sanitario_struct.dart';
+export 'acoes_da_visita_struct.dart';
+export 'animais_apagados_existentes_offline_struct.dart';
+export 'animais_produtores_struct.dart';
+export 'cidades_struct.dart';
+export 'empresas_struct.dart';
+export 'grupo_struct.dart';
+export 'person_struct.dart';
+export 'planos_produtor_struct.dart';
+export 'planos_tecnicos_struct.dart';
+export 'racas_struct.dart';
+export 'recomendacoes_struct.dart';
+export 'resumo_da_visita_struct.dart';
+export 'status_animais_struct.dart';
+export 'tipo_acoes_struct.dart';
+export 'tratamentos_struct.dart';
