@@ -18,4 +18,5 @@ android/app/tecmuu-xingpe-keystore.jks
 # macOS
 .DS_Store
 
+#credencias stripe
 **/functions/.env

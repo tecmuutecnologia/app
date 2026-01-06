@@ -3015,7 +3015,19 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
                                 Builder(
                                   builder: (context) {
                                     final acoesInseminacoes =
-                                        FFAppState().acoesOffline.toList();
+                                        FFAppState().acoesOffline.toList()
+                                        ..sort((a, b) {
+                                          // Ordena por dataDaAcao descendente (mais recentes primeiro)
+                                          if (a.dataDaAcao != null && b.dataDaAcao != null) {
+                                            return b.dataDaAcao!.compareTo(a.dataDaAcao!);
+                                          } else if (a.dataDaAcao != null) {
+                                            return -1;
+                                          } else if (b.dataDaAcao != null) {
+                                            return 1;
+                                          } else {
+                                            return 0;
+                                          }
+                                        });
 
                                     return ListView.builder(
                                       padding: EdgeInsets.zero,
@@ -3514,7 +3526,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
                                           isEqualTo:
                                               widget.uidAnimaisProdutores,
                                         )
-                                        .orderBy('dataVisita',
+                                        .orderBy('dataDaAcao',
                                             descending: true),
                                     limit: 3,
                                   ),
@@ -4371,7 +4383,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
                                           isEqualTo:
                                               widget.uidAnimaisProdutores,
                                         )
-                                        .orderBy('dataVisita',
+                                        .orderBy('dataDaAcao',
                                             descending: true),
                                     limit: 3,
                                   ),
@@ -5069,7 +5081,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
                                           isEqualTo:
                                               widget.uidAnimaisProdutores,
                                         )
-                                        .orderBy('dataVisita',
+                                        .orderBy('dataDaAcao',
                                             descending: true),
                                     limit: 3,
                                   ),

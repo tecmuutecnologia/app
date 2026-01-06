@@ -260,7 +260,8 @@ class _PronCiosWidgetState extends State<PronCiosWidget> {
                                     .where(
                                       'acao',
                                       isEqualTo: 'Cio',
-                                    ),
+                                    )
+                                    .orderBy('dataDaAcao', descending: true),
                                 limit: 3,
                               ),
                               builder: (context, snapshot) {

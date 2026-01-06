@@ -130,7 +130,7 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
           preferredSize: Size.fromHeight(100.0),
           child: AppBar(
             backgroundColor:
-                _model.respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
+                (_model.respostaNet ?? true) ? Color(0xFFF75E38) : Color(0xFFF2886E),
             automaticallyImplyLeading: false,
             actions: [],
             flexibleSpace: FlexibleSpaceBar(
@@ -227,7 +227,7 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              if (_model.respostaNet ?? true)
+              if (_model.respostaNet == true)
                 StreamBuilder<List<AnimaisProdutoresRecord>>(
                   stream: queryAnimaisProdutoresRecord(
                     parent: widget.uidTecnico,
@@ -1068,7 +1068,7 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                     );
                   },
                 ),
-              if (!_model.respostaNet!)
+              if (_model.respostaNet == false)
                 Builder(
                   builder: (context) {
                     final animaisExistentes =
@@ -1883,7 +1883,7 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                     );
                   },
                 ),
-              if (!_model.respostaNet!)
+              if (_model.respostaNet == false)
                 Builder(
                   builder: (context) {
                     final listAnimaisOffline =

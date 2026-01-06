@@ -6,6 +6,7 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/pages/tecnico/propriedade/receituario/assinatura_produtor/assinatura_produtor_widget.dart';
 import '/pages/tecnico/propriedade/receituario/assinatura_tecnico/assinatura_tecnico_widget.dart';
 import '/pages/tecnico/propriedade/receituario/lista_animais_tratamentos/lista_animais_tratamentos_widget.dart';
+import '/pages/tecnico/propriedade/receituario/lista_diagnostico_gestacao/lista_diagnostico_gestacao_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
 import 'package:collection/collection.dart';
@@ -257,6 +258,22 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                             },
                           );
                         },
+                      ),
+                    ),
+                  ),
+                  // Lista de Diagnóstico de Gestação
+                  Container(
+                    decoration: BoxDecoration(
+                      color: FlutterFlowTheme.of(context).secondaryBackground,
+                    ),
+                    child: Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 0.0),
+                      child: ListaDiagnosticoGestacaoWidget(
+                        uidResumoVisita: widget.uidResumoVisita!,
+                        uidTecnico: widget.uidTecnico!,
+                        uidPropriedade: widget.uidPropriedade!,
+                        dtVisita: resumoVisitaAtualResumoDaVisitaRecord.dtVisita!,
                       ),
                     ),
                   ),

@@ -82,6 +82,7 @@ Future<void> createReceituario(
 
     // Constrói a lista de recomendações e tratamentos
     final List<pw.Widget> recomendacoesWidgets = [];
+    final List<pw.Widget> diagnosticoWidgets = [];
 
     for (final recomendacaoDoc in sortedRecomendacoes) {
       final recomendacaoData = recomendacaoDoc.data() as Map<String, dynamic>?;
@@ -98,6 +99,85 @@ Future<void> createReceituario(
 
       print(
           'Tratamentos encontrados para ${recomendacaoData['tituloRecomendacao']}: ${tratamentosSnapshot.docs.length}');
+
+      // Ordena os tratamentos
+      List<QueryDocumentSnapshot> sortedTratamentos =
+          tratamentosSnapshot.docs.toList();
+
+      String tipoAcaoAtual = recomendacaoData['tituloRecomendacao'] ?? '';
+
+      if (tipoAcaoAtual == 'Secagem' || tipoAcaoAtual == 'Pré Parto') {
+        // Ordena por data (observacaoAcao contém a data no formato dd/MM/yyyy), se não conseguir, ordena por nomeAnimal
+        sortedTratamentos.sort((a, b) {
+          String dataA =
+              (a.data() as Map<String, dynamic>)['observacaoAcao'] ?? '';
+          String dataB =
+              (b.data() as Map<String, dynamic>)['observacaoAcao'] ?? '';
+          DateTime? dateA;
+          DateTime? dateB;
+          try {
+            List<String> partesA = dataA.split('/');
+            if (partesA.length == 3) {
+              dateA = DateTime(int.parse(partesA[2]), int.parse(partesA[1]),
+                  int.parse(partesA[0]));
+            }
+          } catch (_) {}
+          try {
+            List<String> partesB = dataB.split('/');
+            if (partesB.length == 3) {
+              dateB = DateTime(int.parse(partesB[2]), int.parse(partesB[1]),
+                  int.parse(partesB[0]));
+            }
+          } catch (_) {}
+          if (dateA != null && dateB != null) {
+            return dateA.compareTo(dateB);
+          } else if (dateA != null) {
+            return -1;
+          } else if (dateB != null) {
+            return 1;
+          } else {
+            // Se não conseguir converter para data, ordena por nomeAnimal
+            String nomeA =
+                ((a.data() as Map<String, dynamic>)['nomeAnimal'] ?? '')
+                    .toString()
+                    .toLowerCase();
+            String nomeB =
+                ((b.data() as Map<String, dynamic>)['nomeAnimal'] ?? '')
+                    .toString()
+                    .toLowerCase();
+            return nomeA.compareTo(nomeB);
+          }
+        });
+      } else {
+        // Ordena por brincoAnimalOrder (ordem crescente) e depois por nomeAnimal
+        sortedTratamentos.sort((a, b) {
+          var dataA = a.data() as Map<String, dynamic>;
+          var dataB = b.data() as Map<String, dynamic>;
+
+          // Primeiro tenta ordenar por brincoAnimalOrder
+          int? orderA = dataA['brincoAnimalOrder'] as int?;
+          int? orderB = dataB['brincoAnimalOrder'] as int?;
+
+          // Se ambos têm brincoAnimalOrder válido, ordena por ele
+          if (orderA != null &&
+              orderA != 0 &&
+              orderA != -1 &&
+              orderB != null &&
+              orderB != 0 &&
+              orderB != -1) {
+            return orderA.compareTo(orderB);
+          }
+
+          // Se apenas um tem brincoAnimalOrder válido, ele vem primeiro
+          if (orderA != null && orderA != 0 && orderA != -1) return -1;
+          if (orderB != null && orderB != 0 && orderB != -1) return 1;
+
+          // Se nenhum tem brincoAnimalOrder válido, ordena por nome
+          String nomeA = (dataA['nomeAnimal'] ?? '').toString().toLowerCase();
+          String nomeB = (dataB['nomeAnimal'] ?? '').toString().toLowerCase();
+          return nomeA.compareTo(nomeB);
+        });
+      }
 
       // Constrói a lista de tratamentos para a recomendação atual
       final List<pw.TableRow> tratamentosRows = [];
@@ -153,7 +233,7 @@ Future<void> createReceituario(
         ),
       );
 
-      for (final tratamentoDoc in tratamentosSnapshot.docs) {
+      for (final tratamentoDoc in sortedTratamentos) {
         final tratamentoData = tratamentoDoc.data() as Map<String, dynamic>?;
         if (tratamentoData == null) continue;
         print('Tratamento: ${tratamentoData['observacaoAcao']}');
@@ -289,6 +369,375 @@ Future<void> createReceituario(
       );
     }
 
+    // ============================================================
+    // SEÇÃO DE DIAGNÓSTICO DE GESTAÇÃO
+    // ============================================================
+
+    // Buscar a propriedade e técnico do resumo da visita
+    final uidPropriedade =
+        resumoVisitaData['uidPropriedade'] as DocumentReference?;
+    final uidTecnico = resumoVisitaData['uidTecnico'] as DocumentReference?;
+    final dtVisita = resumoVisitaData['dtVisita'] as Timestamp?;
+
+    // Buscar todas as ações de diagnóstico de gestação do mesmo dia da visita
+
+    if (uidPropriedade != null && uidTecnico != null && dtVisita != null) {
+      // Calcular início e fim do dia da visita
+      final dtVisitaDate = dtVisita.toDate();
+      final dtInicioDia = DateTime(
+          dtVisitaDate.year, dtVisitaDate.month, dtVisitaDate.day, 0, 0, 0);
+      final dtFimDia = DateTime(
+          dtVisitaDate.year, dtVisitaDate.month, dtVisitaDate.day, 23, 59, 59);
+
+      // Buscar todas as ações do técnico no dia da visita usando dataDaAcao
+      final acoesSnapshot = await FirebaseFirestore.instance
+          .collection('tecnico')
+          .doc(uidTecnico.id)
+          .collection('acoes')
+          .where('dataDaAcao', isGreaterThanOrEqualTo: dtInicioDia)
+          .where('dataDaAcao', isLessThanOrEqualTo: dtFimDia)
+          .get();
+
+      // Filtrar apenas PP, DG+ e DG- que tenham animal vinculado
+      final acoesDiagnosticoTemp = acoesSnapshot.docs.where((doc) {
+        final data = doc.data();
+        final acao = data['acao'] as String? ?? '';
+        final uidAnimal = data['uidAnimalAnimaisProdutores'];
+        return (acao == 'PP' || acao == 'DG+' || acao == 'DG-') &&
+            uidAnimal != null;
+      }).toList();
+
+      // Filtrar apenas animais que pertencem à propriedade atual
+      final List<QueryDocumentSnapshot> acoesDiagnostico = [];
+      for (final acaoDoc in acoesDiagnosticoTemp) {
+        final acaoData = acaoDoc.data() as Map<String, dynamic>;
+        final uidAnimal =
+            acaoData['uidAnimalAnimaisProdutores'] as DocumentReference?;
+        if (uidAnimal != null) {
+          try {
+            final animalSnapshot = await uidAnimal.get();
+            if (animalSnapshot.exists) {
+              final animalData = animalSnapshot.data() as Map<String, dynamic>?;
+              if (animalData != null) {
+                final uidTecnicoPropriedade =
+                    animalData['uidTecnicoPropriedade'] as DocumentReference?;
+                if (uidTecnicoPropriedade != null &&
+                    uidTecnicoPropriedade.path == uidPropriedade.path) {
+                  acoesDiagnostico.add(acaoDoc);
+                }
+              }
+            }
+          } catch (e) {
+            print('Erro ao verificar propriedade do animal: $e');
+          }
+        }
+      }
+
+      if (acoesDiagnostico.isNotEmpty) {
+        // Separar em duas listas
+        final acoesPPDGMais = acoesDiagnostico.where((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          final acao = data['acao'] as String? ?? '';
+          return acao == 'PP' || acao == 'DG+';
+        }).toList();
+
+        final acoesDGMenos = acoesDiagnostico.where((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          final acao = data['acao'] as String? ?? '';
+          return acao == 'DG-';
+        }).toList();
+
+        // Função auxiliar para buscar dados do animal
+        Future<Map<String, dynamic>?> getAnimalData(
+            DocumentReference? animalRef) async {
+          if (animalRef == null) return null;
+          try {
+            final animalSnapshot = await animalRef.get();
+            if (animalSnapshot.exists) {
+              return animalSnapshot.data() as Map<String, dynamic>?;
+            }
+          } catch (e) {
+            print('Erro ao buscar animal: $e');
+          }
+          return null;
+        }
+
+        // Função para buscar a última data de inseminação do animal (do próprio documento do animal)
+        String getUltimaInseminacaoFromAnimal(
+            Map<String, dynamic>? animalData) {
+          if (animalData == null) return '';
+          return animalData['dtUltimaInseminacao'] as String? ?? '';
+        }
+
+        // Função para construir linhas da tabela de diagnóstico
+        Future<List<pw.TableRow>> buildDiagnosticoRows(
+            List<QueryDocumentSnapshot> acoes) async {
+          final List<Map<String, dynamic>> animaisData = [];
+
+          for (final acaoDoc in acoes) {
+            final acaoData = acaoDoc.data() as Map<String, dynamic>;
+            final uidAnimal =
+                acaoData['uidAnimalAnimaisProdutores'] as DocumentReference?;
+            final animalData = await getAnimalData(uidAnimal);
+            final ultimaInseminacao =
+                getUltimaInseminacaoFromAnimal(animalData);
+
+            if (animalData != null) {
+              animaisData.add({
+                'nomeAnimal': animalData['nomeAnimal'] ?? '',
+                'brincoAnimal': animalData['brincoAnimal'],
+                'grupoAnimal': animalData['grupoAnimal'] ?? '',
+                'dtUltimaInseminacao': ultimaInseminacao,
+                'acao': acaoData['acao'] ?? '',
+              });
+            }
+          }
+
+          // Ordenar por brinco numérico e depois por nome
+          animaisData.sort((a, b) {
+            final brincoA = a['brincoAnimal'];
+            final brincoB = b['brincoAnimal'];
+
+            int? numA = (brincoA is int && brincoA != -1) ? brincoA : null;
+            int? numB = (brincoB is int && brincoB != -1) ? brincoB : null;
+
+            if (numA != null && numB != null) {
+              return numA.compareTo(numB);
+            }
+            if (numA != null) return -1;
+            if (numB != null) return 1;
+
+            String nomeA = (a['nomeAnimal'] ?? '').toString().toLowerCase();
+            String nomeB = (b['nomeAnimal'] ?? '').toString().toLowerCase();
+            return nomeA.compareTo(nomeB);
+          });
+
+          final List<pw.TableRow> rows = [];
+
+          for (final animal in animaisData) {
+            String displayName;
+            final nomeAnimal = animal['nomeAnimal'] as String;
+            final brincoAnimal = animal['brincoAnimal'];
+
+            if (nomeAnimal.isNotEmpty &&
+                brincoAnimal != null &&
+                brincoAnimal != -1) {
+              displayName = '$brincoAnimal - $nomeAnimal';
+            } else if (brincoAnimal != null && brincoAnimal != -1) {
+              displayName = brincoAnimal.toString();
+            } else {
+              displayName = nomeAnimal;
+            }
+
+            // Obter cor do grupo animal
+            PdfColor circleColor;
+            String grupoAnimal = animal['grupoAnimal'] as String;
+            if (grupoAnimal == 'Vacas') {
+              circleColor = PdfColor.fromHex('#048508');
+            } else if (grupoAnimal == 'Novilhas') {
+              circleColor = PdfColor.fromHex('#ff0076');
+            } else {
+              circleColor = PdfColor.fromHex('#ee8b60');
+            }
+
+            rows.add(
+              pw.TableRow(
+                children: [
+                  pw.Expanded(
+                    flex: 1,
+                    child: pw.Container(
+                      alignment: pw.Alignment.center,
+                      child: pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.center,
+                        children: [
+                          pw.Container(
+                            width: 10,
+                            height: 10,
+                            decoration: pw.BoxDecoration(
+                              color: circleColor,
+                              shape: pw.BoxShape.circle,
+                            ),
+                          ),
+                          pw.SizedBox(width: 5),
+                          pw.Text(grupoAnimal.toUpperCase()),
+                        ],
+                      ),
+                    ),
+                  ),
+                  pw.Expanded(
+                    flex: 2,
+                    child: pw.Container(
+                      alignment: pw.Alignment.center,
+                      child: pw.Text(displayName),
+                    ),
+                  ),
+                  pw.Expanded(
+                    flex: 1,
+                    child: pw.Container(
+                      alignment: pw.Alignment.center,
+                      child: pw.Text(
+                        animal['acao'] as String,
+                        style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold,
+                          color: (animal['acao'] as String) == 'DG-'
+                              ? PdfColor.fromHex('#ff0076')
+                              : PdfColor.fromHex('#048508'),
+                        ),
+                      ),
+                    ),
+                  ),
+                  pw.Expanded(
+                    flex: 1,
+                    child: pw.Container(
+                      alignment: pw.Alignment.center,
+                      child: pw.Text(animal['dtUltimaInseminacao'] as String),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return rows;
+        }
+
+        // Construir widget de diagnóstico de gestação
+
+        // Cabeçalho da seção
+        diagnosticoWidgets.add(
+          pw.Container(
+            alignment: pw.Alignment.centerLeft,
+            child: pw.Text(
+              'Diagnóstico de Gestação',
+              style: pw.TextStyle(
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 16,
+                color: PdfColor.fromHex('#f75e38'),
+              ),
+            ),
+          ),
+        );
+        diagnosticoWidgets.add(pw.SizedBox(height: 10));
+
+        // Cabeçalho da tabela
+        pw.TableRow buildDiagnosticoHeader() {
+          return pw.TableRow(
+            children: [
+              pw.Expanded(
+                flex: 1,
+                child: pw.Container(
+                  alignment: pw.Alignment.center,
+                  color: PdfColor.fromHex('#f2f2f2'),
+                  child: pw.Text(
+                    'Categoria',
+                    textAlign: pw.TextAlign.center,
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
+                ),
+              ),
+              pw.Expanded(
+                flex: 2,
+                child: pw.Container(
+                  alignment: pw.Alignment.center,
+                  color: PdfColor.fromHex('#f2f2f2'),
+                  child: pw.Text(
+                    'Animal',
+                    textAlign: pw.TextAlign.center,
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
+                ),
+              ),
+              pw.Expanded(
+                flex: 1,
+                child: pw.Container(
+                  alignment: pw.Alignment.center,
+                  color: PdfColor.fromHex('#f2f2f2'),
+                  child: pw.Text(
+                    'Resultado',
+                    textAlign: pw.TextAlign.center,
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
+                ),
+              ),
+              pw.Expanded(
+                flex: 1,
+                child: pw.Container(
+                  alignment: pw.Alignment.center,
+                  color: PdfColor.fromHex('#f2f2f2'),
+                  child: pw.Text(
+                    'Últ. Insem.',
+                    textAlign: pw.TextAlign.center,
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+
+        // Seção de Prenhes (PP/DG+)
+        if (acoesPPDGMais.isNotEmpty) {
+          diagnosticoWidgets.add(
+            pw.Text(
+              'Prenhes (PP/DG+)',
+              style: pw.TextStyle(
+                fontWeight: pw.FontWeight.bold,
+                color: PdfColor.fromHex('#048508'),
+              ),
+            ),
+          );
+          diagnosticoWidgets.add(pw.SizedBox(height: 5));
+
+          final rowsPPDGMais = await buildDiagnosticoRows(acoesPPDGMais);
+          diagnosticoWidgets.add(
+            pw.Table(
+              border: pw.TableBorder(
+                top: pw.BorderSide(style: pw.BorderStyle.dashed),
+                bottom: pw.BorderSide(style: pw.BorderStyle.dashed),
+                left: pw.BorderSide(style: pw.BorderStyle.dashed),
+                right: pw.BorderSide(style: pw.BorderStyle.dashed),
+                horizontalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
+                verticalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
+              ),
+              children: [buildDiagnosticoHeader(), ...rowsPPDGMais],
+            ),
+          );
+          diagnosticoWidgets.add(pw.SizedBox(height: 10));
+        }
+
+        // Seção de Vazias (DG-)
+        if (acoesDGMenos.isNotEmpty) {
+          diagnosticoWidgets.add(
+            pw.Text(
+              'Vazias (DG-)',
+              style: pw.TextStyle(
+                fontWeight: pw.FontWeight.bold,
+                color: PdfColor.fromHex('#ff0076'),
+              ),
+            ),
+          );
+          diagnosticoWidgets.add(pw.SizedBox(height: 5));
+
+          final rowsDGMenos = await buildDiagnosticoRows(acoesDGMenos);
+          diagnosticoWidgets.add(
+            pw.Table(
+              border: pw.TableBorder(
+                top: pw.BorderSide(style: pw.BorderStyle.dashed),
+                bottom: pw.BorderSide(style: pw.BorderStyle.dashed),
+                left: pw.BorderSide(style: pw.BorderStyle.dashed),
+                right: pw.BorderSide(style: pw.BorderStyle.dashed),
+                horizontalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
+                verticalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
+              ),
+              children: [buildDiagnosticoHeader(), ...rowsDGMenos],
+            ),
+          );
+        }
+
+        diagnosticoWidgets.add(pw.SizedBox(height: 20));
+      }
+    }
+
     // Função para baixar a imagem da assinatura do técnico
     Future<Uint8List?> downloadSignature(String url) async {
       final http.Response response = await http.get(Uri.parse(url));
@@ -332,7 +781,8 @@ Future<void> createReceituario(
                     child: pw.Container(
                       alignment: pw.Alignment.center,
                       child: pw.Transform.rotate(
-                        angle: 0, // Virar a logomarca
+                        angle:
+                            3.14159, // Rotação de 180° para corrigir logo invertida
                         child: pw.Image(
                           pw.MemoryImage(logoImage),
                           fit: pw.BoxFit.cover,
@@ -407,6 +857,7 @@ Future<void> createReceituario(
             ),
             pw.Divider(color: PdfColor.fromHex('#D3D3D3')),
             ...recomendacoesWidgets,
+            ...diagnosticoWidgets,
             pw.SizedBox(height: 50),
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,

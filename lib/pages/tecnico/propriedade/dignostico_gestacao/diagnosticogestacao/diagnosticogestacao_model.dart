@@ -10,7 +10,7 @@ class DiagnosticogestacaoModel
 
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in diagnosticogestacao widget.
-  bool? respostaNet;
+  bool? respostaNet = true;
 
   @override
   void initState(BuildContext context) {}

@@ -1092,6 +1092,70 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
                   ),
                   Padding(
                     padding:
+                        EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          'Última Ação',
+                          style:
+                              FlutterFlowTheme.of(context).bodyLarge.override(
+                                    font: GoogleFonts.readexPro(
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .bodyLarge
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .bodyLarge
+                                          .fontStyle,
+                                    ),
+                                    fontSize: 18.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .bodyLarge
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyLarge
+                                        .fontStyle,
+                                  ),
+                        ),
+                        Theme(
+                          data: ThemeData(
+                            checkboxTheme: CheckboxThemeData(
+                              visualDensity: VisualDensity.compact,
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4.0),
+                              ),
+                            ),
+                            unselectedWidgetColor:
+                                FlutterFlowTheme.of(context).secondaryText,
+                          ),
+                          child: Checkbox(
+                            value: _model.checkUltimaAcaoValue ??= false,
+                            onChanged: (newValue) async {
+                              safeSetState(
+                                  () => _model.checkUltimaAcaoValue = newValue!);
+                            },
+                            side: (FlutterFlowTheme.of(context).secondaryText !=
+                                    null)
+                                ? BorderSide(
+                                    width: 2,
+                                    color: FlutterFlowTheme.of(context)
+                                        .secondaryText,
+                                  )
+                                : null,
+                            activeColor: FlutterFlowTheme.of(context).tertiary,
+                            checkColor: FlutterFlowTheme.of(context).info,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding:
                         EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 30.0),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
@@ -1141,6 +1205,8 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
                                 _model.outUidPersonTecnico!.email,
                                 _model.outUidPersonTecnico!.empresa,
                                 'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/tecmuu-xingpe/assets/mjfv0ghrztrz/logo-2.png',
+                                _model.checkUltimaAcaoValue ?? false,
+                                widget.uidTecnico!,
                               );
                               if (_shouldSetState) safeSetState(() {});
                               return;

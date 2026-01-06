@@ -237,7 +237,7 @@ class _PronDiagGestacaoWidgetState extends State<PronDiagGestacaoWidget> {
                                     'uidAnimalAnimaisProdutores',
                                     isEqualTo: widget.uidAnimaisProdutores,
                                   )
-                                  .orderBy('dataVisita', descending: true),
+                                  .orderBy('dataDaAcao', descending: true),
                               limit: 3,
                             ),
                             builder: (context, snapshot) {

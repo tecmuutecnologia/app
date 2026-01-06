@@ -259,7 +259,7 @@ class _PronAcoesWidgetState extends State<PronAcoesWidget> {
                                       'uidAnimalAnimaisProdutores',
                                       isEqualTo: widget.uidAnimaisProdutores,
                                     )
-                                    .orderBy('dataVisita', descending: true),
+                                    .orderBy('dataDaAcao', descending: true),
                               ),
                               builder: (context, snapshot) {
                                 // Customize what your widget looks like when it's loading.

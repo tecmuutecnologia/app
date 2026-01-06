@@ -263,7 +263,8 @@ class _PronInseminacoesWidgetState extends State<PronInseminacoesWidget> {
                                     .where(
                                       'acao',
                                       isEqualTo: 'Inseminada',
-                                    ),
+                                    )
+                                    .orderBy('dataDaAcao', descending: true),
                               ),
                               builder: (context, snapshot) {
                                 // Customize what your widget looks like when it's loading.
@@ -632,7 +633,19 @@ class _PronInseminacoesWidgetState extends State<PronInseminacoesWidget> {
                             Builder(
                               builder: (context) {
                                 final acoesInseminacoes =
-                                    FFAppState().acoesOffline.toList();
+                                    FFAppState().acoesOffline.toList()
+                                    ..sort((a, b) {
+                                      // Ordena por dataDaAcao descendente (mais recentes primeiro)
+                                      if (a.dataDaAcao != null && b.dataDaAcao != null) {
+                                        return b.dataDaAcao!.compareTo(a.dataDaAcao!);
+                                      } else if (a.dataDaAcao != null) {
+                                        return -1;
+                                      } else if (b.dataDaAcao != null) {
+                                        return 1;
+                                      } else {
+                                        return 0;
+                                      }
+                                    });
 
                                 return ListView.builder(
                                   padding: EdgeInsets.zero,

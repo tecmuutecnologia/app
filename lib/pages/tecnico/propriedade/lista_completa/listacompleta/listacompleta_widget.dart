@@ -509,12 +509,14 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                 listViewAnimaisProdutoresRecordList[
                                     listViewIndex];
                             return Visibility(
-                              visible: (listViewAnimaisProdutoresRecord
+                              visible: ((listViewAnimaisProdutoresRecord
                                           .grupoAnimal ==
                                       'Novilhas') ||
                                   (listViewAnimaisProdutoresRecord
                                           .grupoAnimal ==
-                                      'Vacas'),
+                                      'Vacas')) &&
+                                  (listViewAnimaisProdutoresRecord.status !=
+                                      'Descarte'),
                               child: FlipCard(
                                 fill: Fill.fillBack,
                                 direction: FlipDirection.VERTICAL,
@@ -11408,7 +11410,9 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                           'Novilhas') ||
                                       (listViewAnimaisProdutoresRecord
                                               .grupoAnimal ==
-                                          'Vacas')),
+                                          'Vacas')) &&
+                                  (listViewAnimaisProdutoresRecord.status !=
+                                      'Descarte'),
                               child: FlipCard(
                                 fill: Fill.fillBack,
                                 direction: FlipDirection.VERTICAL,

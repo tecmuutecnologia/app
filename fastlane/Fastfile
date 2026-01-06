@@ -1,0 +1,71 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Upload to TestFlight (external) using App Store Connect API Key"
+  lane :upload_testflight_external do
+    api_key = app_store_connect_api_key(
+      key_id: "ZA9C2S6HF2",
+      issuer_id: "a55da086-9dab-4ba4-a008-af34b00f7cb8",
+      key_filepath: "AuthKey_ZA9C2S6HF2.p8",
+      in_house: false
+    )
+
+    changelog = <<-CHANGELOG
+- Refinamentos na experiência de sincronização de técnicos.
+- Correções de estabilidade e ajuste na desmontagem de widgets assíncronos.
+- Otimizações de carregamento de imagens.
+    CHANGELOG
+
+    pilot(
+      api_key: api_key,
+      ipa: "build/ios/ipa/tecmuu.ipa",
+      distribute_external: true,
+      changelog: changelog,
+      skip_waiting_for_build_processing: false
+    )
+  end
+
+  desc "Upload to TestFlight (internal) using App Store Connect API Key"
+  lane :upload_testflight_internal do
+    api_key = app_store_connect_api_key(
+      key_id: "ZA9C2S6HF2",
+      issuer_id: "a55da086-9dab-4ba4-a008-af34b00f7cb8",
+      key_filepath: "AuthKey_ZA9C2S6HF2.p8",
+      in_house: false
+    )
+
+    changelog = <<-CHANGELOG
+- Refinamentos na experiência de sincronização de técnicos.
+- Correções de estabilidade e ajuste na desmontagem de widgets assíncronos.
+- Otimizações de carregamento de imagens.
+    CHANGELOG
+
+    pilot(
+      api_key: api_key,
+      ipa: "build/ios/ipa/tecmuu.ipa",
+      distribute_external: false,
+      notify_external_testers: false,
+      changelog: changelog,
+      skip_waiting_for_build_processing: false
+    )
+  end
+
+  desc "Distribute existing build (86) to Internal TestFlight testers"
+  lane :distribute_existing_build_internal do
+    api_key = app_store_connect_api_key(
+      key_id: "ZA9C2S6HF2",
+      issuer_id: "a55da086-9dab-4ba4-a008-af34b00f7cb8",
+      key_filepath: "AuthKey_ZA9C2S6HF2.p8",
+      in_house: false
+    )
+
+    pilot(
+      api_key: api_key,
+      app_identifier: "br.app.tecmuu",
+      build_number: "86",
+      distribute_only: true,
+      distribute_external: false,
+      notify_external_testers: false
+    )
+  end
+end

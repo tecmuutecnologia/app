@@ -882,280 +882,280 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                       .fontStyle,
                                                                 ),
                                                       ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsetsDirectional
-                                                              .fromSTEB(
-                                                                  0.0,
-                                                                  4.0,
-                                                                  0.0,
-                                                                  4.0),
-                                                      child: FFButtonWidget(
-                                                        onPressed: () async {
-                                                          await showModalBottomSheet(
-                                                            isScrollControlled:
-                                                                true,
-                                                            backgroundColor:
-                                                                Colors
-                                                                    .transparent,
-                                                            enableDrag: false,
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return GestureDetector(
-                                                                onTap: () {
-                                                                  FocusScope.of(
-                                                                          context)
-                                                                      .unfocus();
-                                                                  FocusManager
-                                                                      .instance
-                                                                      .primaryFocus
-                                                                      ?.unfocus();
-                                                                },
-                                                                child: Padding(
-                                                                  padding: MediaQuery
-                                                                      .viewInsetsOf(
-                                                                          context),
-                                                                  child:
-                                                                      RegistrarCioWidget(
-                                                                    uidPropriedade:
-                                                                        widget
-                                                                            .uidPropriedade!,
-                                                                    nomePropriedade:
-                                                                        widget
-                                                                            .nomePropriedade!,
-                                                                    uidTecnico:
-                                                                        widget
-                                                                            .uidTecnico!,
-                                                                    emailPropriedade:
-                                                                        widget
-                                                                            .emailPropriedade!,
-                                                                    uidAnimaisProdutores:
-                                                                        listViewOnlineAnimaisProdutoresRecord
-                                                                            .reference,
-                                                                    grupoPredominante:
-                                                                        listViewOnlineAnimaisProdutoresRecord
-                                                                            .grupoAnimal,
-                                                                    nomeAnimal:
-                                                                        listViewOnlineAnimaisProdutoresRecord
-                                                                            .nomeAnimal,
-                                                                    visitaPresencial:
-                                                                        widget
-                                                                            .visitaPresencial!,
-                                                                    brincoAnimal:
-                                                                        listViewOnlineAnimaisProdutoresRecord
-                                                                            .brincoAnimal
-                                                                            .toString(),
-                                                                    diasDg: widget
-                                                                        .diasDg!,
-                                                                  ),
-                                                                ),
-                                                              );
-                                                            },
-                                                          ).then((value) =>
-                                                              safeSetState(
-                                                                  () {}));
-                                                        },
-                                                        text: 'Fez Cio',
-                                                        icon: Icon(
-                                                          Icons.repeat,
-                                                          size: 15.0,
-                                                        ),
-                                                        options:
-                                                            FFButtonOptions(
-                                                          height: 30.0,
-                                                          padding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      24.0,
-                                                                      0.0,
-                                                                      24.0,
-                                                                      0.0),
-                                                          iconPadding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      0.0,
-                                                                      0.0,
-                                                                      0.0,
-                                                                      0.0),
-                                                          color:
-                                                              Color(0xFF1A03E9),
-                                                          textStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .titleSmall
-                                                                  .override(
-                                                                    font: GoogleFonts
-                                                                        .readexPro(
-                                                                      fontWeight: FlutterFlowTheme.of(
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: FFButtonWidget(
+                                                            onPressed: () async {
+                                                              await showModalBottomSheet(
+                                                                isScrollControlled:
+                                                                    true,
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .transparent,
+                                                                enableDrag: false,
+                                                                context: context,
+                                                                builder: (context) {
+                                                                  return GestureDetector(
+                                                                    onTap: () {
+                                                                      FocusScope.of(
                                                                               context)
-                                                                          .titleSmall
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .fontStyle,
+                                                                          .unfocus();
+                                                                      FocusManager
+                                                                          .instance
+                                                                          .primaryFocus
+                                                                          ?.unfocus();
+                                                                    },
+                                                                    child: Padding(
+                                                                      padding: MediaQuery
+                                                                          .viewInsetsOf(
+                                                                              context),
+                                                                      child:
+                                                                          RegistrarCioWidget(
+                                                                        uidPropriedade:
+                                                                            widget
+                                                                                .uidPropriedade!,
+                                                                        nomePropriedade:
+                                                                            widget
+                                                                                .nomePropriedade!,
+                                                                        uidTecnico:
+                                                                            widget
+                                                                                .uidTecnico!,
+                                                                        emailPropriedade:
+                                                                            widget
+                                                                                .emailPropriedade!,
+                                                                        uidAnimaisProdutores:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .reference,
+                                                                        grupoPredominante:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .grupoAnimal,
+                                                                        nomeAnimal:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .nomeAnimal,
+                                                                        visitaPresencial:
+                                                                            widget
+                                                                                .visitaPresencial!,
+                                                                        brincoAnimal:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .brincoAnimal
+                                                                                .toString(),
+                                                                        diasDg: widget
+                                                                            .diasDg!,
+                                                                      ),
                                                                     ),
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        12.0,
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                    fontWeight: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .titleSmall
-                                                                        .fontWeight,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .titleSmall
-                                                                        .fontStyle,
-                                                                  ),
-                                                          elevation: 3.0,
-                                                          borderSide:
-                                                              BorderSide(
-                                                            color: Colors
-                                                                .transparent,
-                                                            width: 1.0,
-                                                          ),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      8.0),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    FFButtonWidget(
-                                                      onPressed: () async {
-                                                        await showModalBottomSheet(
-                                                          isScrollControlled:
-                                                              true,
-                                                          backgroundColor:
-                                                              Colors
-                                                                  .transparent,
-                                                          enableDrag: false,
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return GestureDetector(
-                                                              onTap: () {
-                                                                FocusScope.of(
-                                                                        context)
-                                                                    .unfocus();
-                                                                FocusManager
-                                                                    .instance
-                                                                    .primaryFocus
-                                                                    ?.unfocus();
-                                                              },
-                                                              child: Padding(
-                                                                padding: MediaQuery
-                                                                    .viewInsetsOf(
-                                                                        context),
-                                                                child:
-                                                                    NovaInseminacaoWidget(
-                                                                  uidPropriedade:
-                                                                      widget
-                                                                          .uidPropriedade!,
-                                                                  nomePropriedade:
-                                                                      widget
-                                                                          .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
-                                                                  emailPropriedade:
-                                                                      widget
-                                                                          .emailPropriedade!,
-                                                                  uidAnimaisProdutores:
-                                                                      listViewOnlineAnimaisProdutoresRecord
-                                                                          .reference,
-                                                                  grupoPredominante:
-                                                                      listViewOnlineAnimaisProdutoresRecord
-                                                                          .grupoAnimal,
-                                                                  nomeAnimal:
-                                                                      listViewOnlineAnimaisProdutoresRecord
-                                                                          .nomeAnimal,
-                                                                  visitaPresencial:
-                                                                      widget
-                                                                          .visitaPresencial!,
-                                                                  dtUltimaInseminacao:
-                                                                      listViewOnlineAnimaisProdutoresRecord
-                                                                          .dtUltimaInseminacao,
-                                                                  brincoAnimal:
-                                                                      listViewOnlineAnimaisProdutoresRecord
-                                                                          .brincoAnimal
-                                                                          .toString(),
-                                                                  diasDg: widget
-                                                                      .diasDg!,
-                                                                ),
+                                                                  );
+                                                                },
+                                                              ).then((value) =>
+                                                                  safeSetState(
+                                                                      () {}));
+                                                            },
+                                                            text: 'Fez Cio',
+                                                            icon: Icon(
+                                                              Icons.repeat,
+                                                              size: 15.0,
+                                                            ),
+                                                            options:
+                                                                FFButtonOptions(
+                                                              height: 30.0,
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10.0,
+                                                                          0.0,
+                                                                          10.0,
+                                                                          0.0),
+                                                              iconPadding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              color:
+                                                                  Color(0xFF1A03E9),
+                                                              textStyle:
+                                                                  FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleSmall
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
+                                                                          fontWeight: FlutterFlowTheme.of(
+                                                                                  context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(
+                                                                                  context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(
+                                                                                context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(
+                                                                                context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                              elevation: 3.0,
+                                                              borderSide:
+                                                                  BorderSide(
+                                                                color: Colors
+                                                                    .transparent,
+                                                                width: 1.0,
                                                               ),
-                                                            );
-                                                          },
-                                                        ).then((value) =>
-                                                            safeSetState(
-                                                                () {}));
-                                                      },
-                                                      text: 'Inseminar',
-                                                      icon: Icon(
-                                                        Icons.playlist_add,
-                                                        size: 15.0,
-                                                      ),
-                                                      options: FFButtonOptions(
-                                                        height: 30.0,
-                                                        padding:
-                                                            EdgeInsetsDirectional
-                                                                .fromSTEB(
-                                                                    24.0,
-                                                                    0.0,
-                                                                    24.0,
-                                                                    0.0),
-                                                        iconPadding:
-                                                            EdgeInsetsDirectional
-                                                                .fromSTEB(
-                                                                    0.0,
-                                                                    0.0,
-                                                                    0.0,
-                                                                    0.0),
-                                                        color:
-                                                            Color(0xFF7E39EF),
-                                                        textStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .titleSmall
-                                                                .override(
-                                                                  font: GoogleFonts
-                                                                      .readexPro(
-                                                                    fontWeight: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .titleSmall
-                                                                        .fontWeight,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .titleSmall
-                                                                        .fontStyle,
-                                                                  ),
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                      12.0,
-                                                                  letterSpacing:
-                                                                      0.0,
-                                                                  fontWeight: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleSmall
-                                                                      .fontWeight,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleSmall
-                                                                      .fontStyle,
-                                                                ),
-                                                        elevation: 3.0,
-                                                        borderSide: BorderSide(
-                                                          color: Colors
-                                                              .transparent,
-                                                          width: 1.0,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          8.0),
+                                                            ),
+                                                          ),
                                                         ),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8.0),
-                                                      ),
+                                                        SizedBox(width: 8.0),
+                                                        Expanded(
+                                                          child: FFButtonWidget(
+                                                            onPressed: () async {
+                                                              await showModalBottomSheet(
+                                                                isScrollControlled:
+                                                                    true,
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .transparent,
+                                                                enableDrag: false,
+                                                                context: context,
+                                                                builder: (context) {
+                                                                  return GestureDetector(
+                                                                    onTap: () {
+                                                                      FocusScope.of(
+                                                                              context)
+                                                                          .unfocus();
+                                                                      FocusManager
+                                                                          .instance
+                                                                          .primaryFocus
+                                                                          ?.unfocus();
+                                                                    },
+                                                                    child: Padding(
+                                                                      padding: MediaQuery
+                                                                          .viewInsetsOf(
+                                                                              context),
+                                                                      child:
+                                                                          NovaInseminacaoWidget(
+                                                                        uidPropriedade:
+                                                                            widget
+                                                                                .uidPropriedade!,
+                                                                        nomePropriedade:
+                                                                            widget
+                                                                                .nomePropriedade!,
+                                                                        uidTecnico:
+                                                                            widget
+                                                                                .uidTecnico!,
+                                                                        emailPropriedade:
+                                                                            widget
+                                                                                .emailPropriedade!,
+                                                                        uidAnimaisProdutores:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .reference,
+                                                                        grupoPredominante:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .grupoAnimal,
+                                                                        nomeAnimal:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .nomeAnimal,
+                                                                        visitaPresencial:
+                                                                            widget
+                                                                                .visitaPresencial!,
+                                                                        dtUltimaInseminacao:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .dtUltimaInseminacao,
+                                                                        brincoAnimal:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .brincoAnimal
+                                                                                .toString(),
+                                                                        diasDg: widget
+                                                                            .diasDg!,
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              ).then((value) =>
+                                                                  safeSetState(
+                                                                      () {}));
+                                                            },
+                                                            text: 'Inseminar',
+                                                            icon: Icon(
+                                                              Icons.playlist_add,
+                                                              size: 15.0,
+                                                            ),
+                                                            options: FFButtonOptions(
+                                                              height: 30.0,
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10.0,
+                                                                          0.0,
+                                                                          10.0,
+                                                                          0.0),
+                                                              iconPadding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              color:
+                                                                  Color(0xFF7E39EF),
+                                                              textStyle:
+                                                                  FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleSmall
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
+                                                                          fontWeight: FlutterFlowTheme.of(
+                                                                                  context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(
+                                                                                  context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(
+                                                                                context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(
+                                                                                context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                              elevation: 3.0,
+                                                              borderSide: BorderSide(
+                                                                color: Colors
+                                                                    .transparent,
+                                                                width: 1.0,
+                                                              ),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(8.0),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
@@ -1535,278 +1535,278 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                       .fontStyle,
                                                                 ),
                                                           ),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      0.0,
-                                                                      4.0,
-                                                                      0.0,
-                                                                      4.0),
-                                                          child: FFButtonWidget(
-                                                            onPressed:
-                                                                () async {
-                                                              await showModalBottomSheet(
-                                                                isScrollControlled:
-                                                                    true,
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .transparent,
-                                                                enableDrag:
-                                                                    false,
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (context) {
-                                                                  return GestureDetector(
-                                                                    onTap: () {
-                                                                      FocusScope.of(
-                                                                              context)
-                                                                          .unfocus();
-                                                                      FocusManager
-                                                                          .instance
-                                                                          .primaryFocus
-                                                                          ?.unfocus();
-                                                                    },
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: MediaQuery
-                                                                          .viewInsetsOf(
-                                                                              context),
-                                                                      child:
-                                                                          RegistrarCioExistenteOfflineWidget(
-                                                                        uidPropriedade:
-                                                                            widget.uidPropriedade!,
-                                                                        nomePropriedade:
-                                                                            widget.nomePropriedade!,
-                                                                        uidTecnico:
-                                                                            widget.uidTecnico!,
-                                                                        emailPropriedade:
-                                                                            widget.emailPropriedade!,
-                                                                        uidAnimaisProdutores:
-                                                                            listaAnimaisOfflineExistenteItem.uidAnimal!,
-                                                                        grupoPredominante:
-                                                                            listaAnimaisOfflineExistenteItem.grupoAnimal,
-                                                                        nomeAnimal:
-                                                                            listaAnimaisOfflineExistenteItem.nomeAnimal,
-                                                                        visitaPresencial:
-                                                                            widget.visitaPresencial!,
-                                                                        brincoAnimal: listaAnimaisOfflineExistenteItem
-                                                                            .brincoAnimal
-                                                                            .toString(),
-                                                                        diasDg:
-                                                                            widget.diasDg!,
-                                                                        itemUidIndex:
-                                                                            listaAnimaisOfflineExistenteIndex,
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ).then((value) =>
-                                                                  safeSetState(
-                                                                      () {}));
-                                                            },
-                                                            text: 'Fez Cio',
-                                                            icon: Icon(
-                                                              Icons.repeat,
-                                                              size: 15.0,
-                                                            ),
-                                                            options:
-                                                                FFButtonOptions(
-                                                              height: 30.0,
-                                                              padding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          24.0,
-                                                                          0.0,
-                                                                          24.0,
-                                                                          0.0),
-                                                              iconPadding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                              color: Color(
-                                                                  0xFF1A03E9),
-                                                              textStyle:
-                                                                  FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleSmall
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .titleSmall
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .titleSmall
-                                                                              .fontStyle,
+                                                        Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: FFButtonWidget(
+                                                                onPressed:
+                                                                    () async {
+                                                                  await showModalBottomSheet(
+                                                                    isScrollControlled:
+                                                                        true,
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    enableDrag:
+                                                                        false,
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (context) {
+                                                                      return GestureDetector(
+                                                                        onTap: () {
+                                                                          FocusScope.of(
+                                                                                  context)
+                                                                              .unfocus();
+                                                                          FocusManager
+                                                                              .instance
+                                                                              .primaryFocus
+                                                                              ?.unfocus();
+                                                                        },
+                                                                        child:
+                                                                            Padding(
+                                                                          padding: MediaQuery
+                                                                              .viewInsetsOf(
+                                                                                  context),
+                                                                          child:
+                                                                              RegistrarCioExistenteOfflineWidget(
+                                                                            uidPropriedade:
+                                                                                widget.uidPropriedade!,
+                                                                            nomePropriedade:
+                                                                                widget.nomePropriedade!,
+                                                                            uidTecnico:
+                                                                                widget.uidTecnico!,
+                                                                            emailPropriedade:
+                                                                                widget.emailPropriedade!,
+                                                                            uidAnimaisProdutores:
+                                                                                listaAnimaisOfflineExistenteItem.uidAnimal!,
+                                                                            grupoPredominante:
+                                                                                listaAnimaisOfflineExistenteItem.grupoAnimal,
+                                                                            nomeAnimal:
+                                                                                listaAnimaisOfflineExistenteItem.nomeAnimal,
+                                                                            visitaPresencial:
+                                                                                widget.visitaPresencial!,
+                                                                            brincoAnimal: listaAnimaisOfflineExistenteItem
+                                                                                .brincoAnimal
+                                                                                .toString(),
+                                                                            diasDg:
+                                                                                widget.diasDg!,
+                                                                            itemUidIndex:
+                                                                                listaAnimaisOfflineExistenteIndex,
+                                                                          ),
                                                                         ),
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            12.0,
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontStyle,
-                                                                      ),
-                                                              elevation: 3.0,
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                color: Colors
-                                                                    .transparent,
-                                                                width: 1.0,
-                                                              ),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          8.0),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        FFButtonWidget(
-                                                          onPressed: () async {
-                                                            await showModalBottomSheet(
-                                                              isScrollControlled:
-                                                                  true,
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              enableDrag: false,
-                                                              context: context,
-                                                              builder:
-                                                                  (context) {
-                                                                return GestureDetector(
-                                                                  onTap: () {
-                                                                    FocusScope.of(
-                                                                            context)
-                                                                        .unfocus();
-                                                                    FocusManager
-                                                                        .instance
-                                                                        .primaryFocus
-                                                                        ?.unfocus();
-                                                                  },
-                                                                  child:
-                                                                      Padding(
-                                                                    padding: MediaQuery
-                                                                        .viewInsetsOf(
-                                                                            context),
-                                                                    child:
-                                                                        NovaInseminacaoExistenteOfflineWidget(
-                                                                      uidPropriedade:
-                                                                          widget
-                                                                              .uidPropriedade!,
-                                                                      nomePropriedade:
-                                                                          widget
-                                                                              .nomePropriedade!,
-                                                                      uidTecnico:
-                                                                          widget
-                                                                              .uidTecnico!,
-                                                                      emailPropriedade:
-                                                                          widget
-                                                                              .emailPropriedade!,
-                                                                      grupoPredominante:
-                                                                          listaAnimaisOfflineExistenteItem
-                                                                              .grupoAnimal,
-                                                                      nomeAnimal:
-                                                                          listaAnimaisOfflineExistenteItem
-                                                                              .nomeAnimal,
-                                                                      visitaPresencial:
-                                                                          widget
-                                                                              .visitaPresencial!,
-                                                                      dtUltimaInseminacao:
-                                                                          listaAnimaisOfflineExistenteItem
-                                                                              .dtUltimaInseminacao,
-                                                                      brincoAnimal: listaAnimaisOfflineExistenteItem
-                                                                          .brincoAnimal
-                                                                          .toString(),
-                                                                      diasDg: widget
-                                                                          .diasDg!,
-                                                                      itemUidIndex:
-                                                                          listaAnimaisOfflineExistenteIndex,
-                                                                      uidAnimaisProdutores:
-                                                                          listaAnimaisOfflineExistenteItem
-                                                                              .uidAnimal!,
-                                                                    ),
+                                                                      );
+                                                                    },
+                                                                  ).then((value) =>
+                                                                      safeSetState(
+                                                                          () {}));
+                                                                },
+                                                                text: 'Fez Cio',
+                                                                icon: Icon(
+                                                                  Icons.repeat,
+                                                                  size: 15.0,
+                                                                ),
+                                                                options:
+                                                                    FFButtonOptions(
+                                                                  height: 30.0,
+                                                                  padding:
+                                                                      EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              10.0,
+                                                                              0.0,
+                                                                              10.0,
+                                                                              0.0),
+                                                                  iconPadding:
+                                                                      EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              0.0,
+                                                                              0.0,
+                                                                              0.0,
+                                                                              0.0),
+                                                                  color: Color(
+                                                                      0xFF1A03E9),
+                                                                  textStyle:
+                                                                      FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleSmall
+                                                                          .override(
+                                                                            font: GoogleFonts
+                                                                                .readexPro(
+                                                                              fontWeight: FlutterFlowTheme.of(context)
+                                                                                  .titleSmall
+                                                                                  .fontWeight,
+                                                                              fontStyle: FlutterFlowTheme.of(context)
+                                                                                  .titleSmall
+                                                                                  .fontStyle,
+                                                                            ),
+                                                                            color: Colors
+                                                                                .white,
+                                                                            fontSize:
+                                                                                12.0,
+                                                                            letterSpacing:
+                                                                                0.0,
+                                                                            fontWeight: FlutterFlowTheme.of(context)
+                                                                                .titleSmall
+                                                                                .fontWeight,
+                                                                            fontStyle: FlutterFlowTheme.of(context)
+                                                                                .titleSmall
+                                                                                .fontStyle,
+                                                                          ),
+                                                                  elevation: 3.0,
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.0,
                                                                   ),
-                                                                );
-                                                              },
-                                                            ).then((value) =>
-                                                                safeSetState(
-                                                                    () {}));
-                                                          },
-                                                          text: 'Inseminar',
-                                                          icon: Icon(
-                                                            Icons.playlist_add,
-                                                            size: 15.0,
-                                                          ),
-                                                          options:
-                                                              FFButtonOptions(
-                                                            height: 30.0,
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        24.0,
-                                                                        0.0,
-                                                                        24.0,
-                                                                        0.0),
-                                                            iconPadding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        0.0,
-                                                                        0.0,
-                                                                        0.0,
-                                                                        0.0),
-                                                            color: Color(
-                                                                0xFF7E39EF),
-                                                            textStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .titleSmall
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .readexPro(
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          12.0,
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .fontStyle,
-                                                                    ),
-                                                            elevation: 3.0,
-                                                            borderSide:
-                                                                BorderSide(
-                                                              color: Colors
-                                                                  .transparent,
-                                                              width: 1.0,
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8.0),
+                                                                ),
+                                                              ),
                                                             ),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        8.0),
-                                                          ),
+                                                            SizedBox(width: 8.0),
+                                                            Expanded(
+                                                              child: FFButtonWidget(
+                                                                onPressed: () async {
+                                                                  await showModalBottomSheet(
+                                                                    isScrollControlled:
+                                                                        true,
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    enableDrag: false,
+                                                                    context: context,
+                                                                    builder:
+                                                                        (context) {
+                                                                      return GestureDetector(
+                                                                        onTap: () {
+                                                                          FocusScope.of(
+                                                                                  context)
+                                                                              .unfocus();
+                                                                          FocusManager
+                                                                              .instance
+                                                                              .primaryFocus
+                                                                              ?.unfocus();
+                                                                        },
+                                                                        child:
+                                                                            Padding(
+                                                                          padding: MediaQuery
+                                                                              .viewInsetsOf(
+                                                                                  context),
+                                                                          child:
+                                                                              NovaInseminacaoExistenteOfflineWidget(
+                                                                            uidPropriedade:
+                                                                                widget
+                                                                                    .uidPropriedade!,
+                                                                            nomePropriedade:
+                                                                                widget
+                                                                                    .nomePropriedade!,
+                                                                            uidTecnico:
+                                                                                widget
+                                                                                    .uidTecnico!,
+                                                                            emailPropriedade:
+                                                                                widget
+                                                                                    .emailPropriedade!,
+                                                                            grupoPredominante:
+                                                                                listaAnimaisOfflineExistenteItem
+                                                                                    .grupoAnimal,
+                                                                            nomeAnimal:
+                                                                                listaAnimaisOfflineExistenteItem
+                                                                                    .nomeAnimal,
+                                                                            visitaPresencial:
+                                                                                widget
+                                                                                    .visitaPresencial!,
+                                                                            dtUltimaInseminacao:
+                                                                                listaAnimaisOfflineExistenteItem
+                                                                                    .dtUltimaInseminacao,
+                                                                            brincoAnimal: listaAnimaisOfflineExistenteItem
+                                                                                .brincoAnimal
+                                                                                .toString(),
+                                                                            diasDg: widget
+                                                                                .diasDg!,
+                                                                            itemUidIndex:
+                                                                                listaAnimaisOfflineExistenteIndex,
+                                                                            uidAnimaisProdutores:
+                                                                                listaAnimaisOfflineExistenteItem
+                                                                                    .uidAnimal!,
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  ).then((value) =>
+                                                                      safeSetState(
+                                                                          () {}));
+                                                                },
+                                                                text: 'Inseminar',
+                                                                icon: Icon(
+                                                                  Icons.playlist_add,
+                                                                  size: 15.0,
+                                                                ),
+                                                                options:
+                                                                    FFButtonOptions(
+                                                                  height: 30.0,
+                                                                  padding:
+                                                                      EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              10.0,
+                                                                              0.0,
+                                                                              10.0,
+                                                                              0.0),
+                                                                  iconPadding:
+                                                                      EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              0.0,
+                                                                              0.0,
+                                                                              0.0,
+                                                                              0.0),
+                                                                  color: Color(
+                                                                      0xFF7E39EF),
+                                                                  textStyle:
+                                                                      FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleSmall
+                                                                          .override(
+                                                                            font: GoogleFonts
+                                                                                .readexPro(
+                                                                              fontWeight: FlutterFlowTheme.of(context)
+                                                                                  .titleSmall
+                                                                                  .fontWeight,
+                                                                              fontStyle: FlutterFlowTheme.of(context)
+                                                                                  .titleSmall
+                                                                                  .fontStyle,
+                                                                            ),
+                                                                            color: Colors
+                                                                                .white,
+                                                                            fontSize:
+                                                                                12.0,
+                                                                            letterSpacing:
+                                                                                0.0,
+                                                                            fontWeight: FlutterFlowTheme.of(
+                                                                                    context)
+                                                                                .titleSmall
+                                                                                .fontWeight,
+                                                                            fontStyle: FlutterFlowTheme.of(
+                                                                                    context)
+                                                                                .titleSmall
+                                                                                .fontStyle,
+                                                                          ),
+                                                                  elevation: 3.0,
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.0,
+                                                                  ),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8.0),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ],
                                                     ),
@@ -2167,278 +2167,278 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                       .fontStyle,
                                                                 ),
                                                           ),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      0.0,
-                                                                      4.0,
-                                                                      0.0,
-                                                                      4.0),
-                                                          child: FFButtonWidget(
-                                                            onPressed:
-                                                                () async {
-                                                              await showModalBottomSheet(
-                                                                isScrollControlled:
-                                                                    true,
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .transparent,
-                                                                enableDrag:
-                                                                    false,
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (context) {
-                                                                  return GestureDetector(
-                                                                    onTap: () {
-                                                                      FocusScope.of(
-                                                                              context)
-                                                                          .unfocus();
-                                                                      FocusManager
-                                                                          .instance
-                                                                          .primaryFocus
-                                                                          ?.unfocus();
-                                                                    },
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: MediaQuery
-                                                                          .viewInsetsOf(
-                                                                              context),
-                                                                      child:
-                                                                          RegistrarCioOfflineWidget(
-                                                                        uidPropriedade:
-                                                                            widget.uidPropriedade!,
-                                                                        nomePropriedade:
-                                                                            widget.nomePropriedade!,
-                                                                        uidTecnico:
-                                                                            widget.uidTecnico!,
-                                                                        emailPropriedade:
-                                                                            widget.emailPropriedade!,
-                                                                        grupoPredominante:
-                                                                            listaAnimaisOfflineItem.grupoAnimal,
-                                                                        nomeAnimal:
-                                                                            listaAnimaisOfflineItem.nomeAnimal,
-                                                                        visitaPresencial:
-                                                                            widget.visitaPresencial!,
-                                                                        brincoAnimal: listaAnimaisOfflineItem
-                                                                            .brincoAnimal
-                                                                            .toString(),
-                                                                        diasDg:
-                                                                            widget.diasDg!,
-                                                                        uidAnimalOffline:
-                                                                            listaAnimaisOfflineItem.uidAnimalOffline,
-                                                                        itemUidIndex:
-                                                                            listaAnimaisOfflineIndex,
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ).then((value) =>
-                                                                  safeSetState(
-                                                                      () {}));
-                                                            },
-                                                            text: 'Fez Cio',
-                                                            icon: Icon(
-                                                              Icons.repeat,
-                                                              size: 15.0,
-                                                            ),
-                                                            options:
-                                                                FFButtonOptions(
-                                                              height: 30.0,
-                                                              padding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          24.0,
-                                                                          0.0,
-                                                                          24.0,
-                                                                          0.0),
-                                                              iconPadding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                              color: Color(
-                                                                  0xFF1A03E9),
-                                                              textStyle:
-                                                                  FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleSmall
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .titleSmall
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .titleSmall
-                                                                              .fontStyle,
+                                                        Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: FFButtonWidget(
+                                                                onPressed:
+                                                                    () async {
+                                                                  await showModalBottomSheet(
+                                                                    isScrollControlled:
+                                                                        true,
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    enableDrag:
+                                                                        false,
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (context) {
+                                                                      return GestureDetector(
+                                                                        onTap: () {
+                                                                          FocusScope.of(
+                                                                                  context)
+                                                                              .unfocus();
+                                                                          FocusManager
+                                                                              .instance
+                                                                              .primaryFocus
+                                                                              ?.unfocus();
+                                                                        },
+                                                                        child:
+                                                                            Padding(
+                                                                          padding: MediaQuery
+                                                                              .viewInsetsOf(
+                                                                                  context),
+                                                                          child:
+                                                                              RegistrarCioOfflineWidget(
+                                                                            uidPropriedade:
+                                                                                widget.uidPropriedade!,
+                                                                            nomePropriedade:
+                                                                                widget.nomePropriedade!,
+                                                                            uidTecnico:
+                                                                                widget.uidTecnico!,
+                                                                            emailPropriedade:
+                                                                                widget.emailPropriedade!,
+                                                                            grupoPredominante:
+                                                                                listaAnimaisOfflineItem.grupoAnimal,
+                                                                            nomeAnimal:
+                                                                                listaAnimaisOfflineItem.nomeAnimal,
+                                                                            visitaPresencial:
+                                                                                widget.visitaPresencial!,
+                                                                            brincoAnimal: listaAnimaisOfflineItem
+                                                                                .brincoAnimal
+                                                                                .toString(),
+                                                                            diasDg:
+                                                                                widget.diasDg!,
+                                                                            uidAnimalOffline:
+                                                                                listaAnimaisOfflineItem.uidAnimalOffline,
+                                                                            itemUidIndex:
+                                                                                listaAnimaisOfflineIndex,
+                                                                          ),
                                                                         ),
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            12.0,
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontStyle,
-                                                                      ),
-                                                              elevation: 3.0,
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                color: Colors
-                                                                    .transparent,
-                                                                width: 1.0,
-                                                              ),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          8.0),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        FFButtonWidget(
-                                                          onPressed: () async {
-                                                            await showModalBottomSheet(
-                                                              isScrollControlled:
-                                                                  true,
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              enableDrag: false,
-                                                              context: context,
-                                                              builder:
-                                                                  (context) {
-                                                                return GestureDetector(
-                                                                  onTap: () {
-                                                                    FocusScope.of(
-                                                                            context)
-                                                                        .unfocus();
-                                                                    FocusManager
-                                                                        .instance
-                                                                        .primaryFocus
-                                                                        ?.unfocus();
-                                                                  },
-                                                                  child:
-                                                                      Padding(
-                                                                    padding: MediaQuery
-                                                                        .viewInsetsOf(
-                                                                            context),
-                                                                    child:
-                                                                        NovaInseminacaoOfflineWidget(
-                                                                      uidPropriedade:
-                                                                          widget
-                                                                              .uidPropriedade!,
-                                                                      nomePropriedade:
-                                                                          widget
-                                                                              .nomePropriedade!,
-                                                                      uidTecnico:
-                                                                          widget
-                                                                              .uidTecnico!,
-                                                                      emailPropriedade:
-                                                                          widget
-                                                                              .emailPropriedade!,
-                                                                      grupoPredominante:
-                                                                          listaAnimaisOfflineItem
-                                                                              .grupoAnimal,
-                                                                      nomeAnimal:
-                                                                          listaAnimaisOfflineItem
-                                                                              .nomeAnimal,
-                                                                      visitaPresencial:
-                                                                          widget
-                                                                              .visitaPresencial!,
-                                                                      dtUltimaInseminacao:
-                                                                          listaAnimaisOfflineItem
-                                                                              .dtUltimaInseminacao,
-                                                                      brincoAnimal: listaAnimaisOfflineItem
-                                                                          .brincoAnimal
-                                                                          .toString(),
-                                                                      diasDg: widget
-                                                                          .diasDg!,
-                                                                      uidAnimalOffline:
-                                                                          listaAnimaisOfflineItem
-                                                                              .uidAnimalOffline,
-                                                                      itemUidIndex:
-                                                                          listaAnimaisOfflineIndex,
-                                                                    ),
+                                                                      );
+                                                                    },
+                                                                  ).then((value) =>
+                                                                      safeSetState(
+                                                                          () {}));
+                                                                },
+                                                                text: 'Fez Cio',
+                                                                icon: Icon(
+                                                                  Icons.repeat,
+                                                                  size: 15.0,
+                                                                ),
+                                                                options:
+                                                                    FFButtonOptions(
+                                                                  height: 30.0,
+                                                                  padding:
+                                                                      EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              10.0,
+                                                                              0.0,
+                                                                              10.0,
+                                                                              0.0),
+                                                                  iconPadding:
+                                                                      EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              0.0,
+                                                                              0.0,
+                                                                              0.0,
+                                                                              0.0),
+                                                                  color: Color(
+                                                                      0xFF1A03E9),
+                                                                  textStyle:
+                                                                      FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleSmall
+                                                                          .override(
+                                                                            font: GoogleFonts
+                                                                                .readexPro(
+                                                                              fontWeight: FlutterFlowTheme.of(context)
+                                                                                  .titleSmall
+                                                                                  .fontWeight,
+                                                                              fontStyle: FlutterFlowTheme.of(context)
+                                                                                  .titleSmall
+                                                                                  .fontStyle,
+                                                                            ),
+                                                                            color: Colors
+                                                                                .white,
+                                                                            fontSize:
+                                                                                12.0,
+                                                                            letterSpacing:
+                                                                                0.0,
+                                                                            fontWeight: FlutterFlowTheme.of(context)
+                                                                                .titleSmall
+                                                                                .fontWeight,
+                                                                            fontStyle: FlutterFlowTheme.of(context)
+                                                                                .titleSmall
+                                                                                .fontStyle,
+                                                                          ),
+                                                                  elevation: 3.0,
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.0,
                                                                   ),
-                                                                );
-                                                              },
-                                                            ).then((value) =>
-                                                                safeSetState(
-                                                                    () {}));
-                                                          },
-                                                          text: 'Inseminar',
-                                                          icon: Icon(
-                                                            Icons.playlist_add,
-                                                            size: 15.0,
-                                                          ),
-                                                          options:
-                                                              FFButtonOptions(
-                                                            height: 30.0,
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        24.0,
-                                                                        0.0,
-                                                                        24.0,
-                                                                        0.0),
-                                                            iconPadding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        0.0,
-                                                                        0.0,
-                                                                        0.0,
-                                                                        0.0),
-                                                            color: Color(
-                                                                0xFF7E39EF),
-                                                            textStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .titleSmall
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .readexPro(
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          12.0,
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .fontStyle,
-                                                                    ),
-                                                            elevation: 3.0,
-                                                            borderSide:
-                                                                BorderSide(
-                                                              color: Colors
-                                                                  .transparent,
-                                                              width: 1.0,
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8.0),
+                                                                ),
+                                                              ),
                                                             ),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        8.0),
-                                                          ),
+                                                            SizedBox(width: 8.0),
+                                                            Expanded(
+                                                              child: FFButtonWidget(
+                                                                onPressed: () async {
+                                                                  await showModalBottomSheet(
+                                                                    isScrollControlled:
+                                                                        true,
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    enableDrag: false,
+                                                                    context: context,
+                                                                    builder:
+                                                                        (context) {
+                                                                      return GestureDetector(
+                                                                        onTap: () {
+                                                                          FocusScope.of(
+                                                                                  context)
+                                                                              .unfocus();
+                                                                          FocusManager
+                                                                              .instance
+                                                                              .primaryFocus
+                                                                              ?.unfocus();
+                                                                        },
+                                                                        child:
+                                                                            Padding(
+                                                                          padding: MediaQuery
+                                                                              .viewInsetsOf(
+                                                                                  context),
+                                                                          child:
+                                                                              NovaInseminacaoOfflineWidget(
+                                                                            uidPropriedade:
+                                                                                widget
+                                                                                    .uidPropriedade!,
+                                                                            nomePropriedade:
+                                                                                widget
+                                                                                    .nomePropriedade!,
+                                                                            uidTecnico:
+                                                                                widget
+                                                                                    .uidTecnico!,
+                                                                            emailPropriedade:
+                                                                                widget
+                                                                                    .emailPropriedade!,
+                                                                            grupoPredominante:
+                                                                                listaAnimaisOfflineItem
+                                                                                    .grupoAnimal,
+                                                                            nomeAnimal:
+                                                                                listaAnimaisOfflineItem
+                                                                                    .nomeAnimal,
+                                                                            visitaPresencial:
+                                                                                widget
+                                                                                    .visitaPresencial!,
+                                                                            dtUltimaInseminacao:
+                                                                                listaAnimaisOfflineItem
+                                                                                    .dtUltimaInseminacao,
+                                                                            brincoAnimal: listaAnimaisOfflineItem
+                                                                                .brincoAnimal
+                                                                                .toString(),
+                                                                            diasDg: widget
+                                                                                .diasDg!,
+                                                                            uidAnimalOffline:
+                                                                                listaAnimaisOfflineItem
+                                                                                    .uidAnimalOffline,
+                                                                            itemUidIndex:
+                                                                                listaAnimaisOfflineIndex,
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  ).then((value) =>
+                                                                      safeSetState(
+                                                                          () {}));
+                                                                },
+                                                                text: 'Inseminar',
+                                                                icon: Icon(
+                                                                  Icons.playlist_add,
+                                                                  size: 15.0,
+                                                                ),
+                                                                options:
+                                                                    FFButtonOptions(
+                                                                  height: 30.0,
+                                                                  padding:
+                                                                      EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              10.0,
+                                                                              0.0,
+                                                                              10.0,
+                                                                              0.0),
+                                                                  iconPadding:
+                                                                      EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              0.0,
+                                                                              0.0,
+                                                                              0.0,
+                                                                              0.0),
+                                                                  color: Color(
+                                                                      0xFF7E39EF),
+                                                                  textStyle:
+                                                                      FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleSmall
+                                                                          .override(
+                                                                            font: GoogleFonts
+                                                                                .readexPro(
+                                                                              fontWeight: FlutterFlowTheme.of(context)
+                                                                                  .titleSmall
+                                                                                  .fontWeight,
+                                                                              fontStyle: FlutterFlowTheme.of(context)
+                                                                                  .titleSmall
+                                                                                  .fontStyle,
+                                                                            ),
+                                                                            color: Colors
+                                                                                .white,
+                                                                            fontSize:
+                                                                                12.0,
+                                                                            letterSpacing:
+                                                                                0.0,
+                                                                            fontWeight: FlutterFlowTheme.of(
+                                                                                    context)
+                                                                                .titleSmall
+                                                                                .fontWeight,
+                                                                            fontStyle: FlutterFlowTheme.of(
+                                                                                    context)
+                                                                                .titleSmall
+                                                                                .fontStyle,
+                                                                          ),
+                                                                  elevation: 3.0,
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.0,
+                                                                  ),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8.0),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ],
                                                     ),
@@ -2521,14 +2521,17 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                               .grupoAnimal ==
                                           'Novilhas')) &&
                                   ((listViewOnlineAnimaisProdutoresRecord
-                                              .nomeAnimal ==
-                                          _model
-                                              .searchListTextController.text) ||
+                                              .nomeAnimal
+                                              .toLowerCase()
+                                              .contains(_model
+                                                  .searchListTextController.text
+                                                  .toLowerCase())) ||
                                       (listViewOnlineAnimaisProdutoresRecord
-                                              .brincoAnimal ==
-                                          functions.converterStringToInt(_model
-                                              .searchListTextController
-                                              .text))) &&
+                                              .brincoAnimal
+                                              .toString()
+                                              .contains(_model
+                                                  .searchListTextController
+                                                  .text))) &&
                                   ((listViewOnlineAnimaisProdutoresRecord
                                               .status ==
                                           'Vazia') ||
@@ -2882,280 +2885,280 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                       .fontStyle,
                                                                 ),
                                                       ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsetsDirectional
-                                                              .fromSTEB(
-                                                                  0.0,
-                                                                  4.0,
-                                                                  0.0,
-                                                                  4.0),
-                                                      child: FFButtonWidget(
-                                                        onPressed: () async {
-                                                          await showModalBottomSheet(
-                                                            isScrollControlled:
-                                                                true,
-                                                            backgroundColor:
-                                                                Colors
-                                                                    .transparent,
-                                                            enableDrag: false,
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return GestureDetector(
-                                                                onTap: () {
-                                                                  FocusScope.of(
-                                                                          context)
-                                                                      .unfocus();
-                                                                  FocusManager
-                                                                      .instance
-                                                                      .primaryFocus
-                                                                      ?.unfocus();
-                                                                },
-                                                                child: Padding(
-                                                                  padding: MediaQuery
-                                                                      .viewInsetsOf(
-                                                                          context),
-                                                                  child:
-                                                                      RegistrarCioWidget(
-                                                                    uidPropriedade:
-                                                                        widget
-                                                                            .uidPropriedade!,
-                                                                    nomePropriedade:
-                                                                        widget
-                                                                            .nomePropriedade!,
-                                                                    uidTecnico:
-                                                                        widget
-                                                                            .uidTecnico!,
-                                                                    emailPropriedade:
-                                                                        widget
-                                                                            .emailPropriedade!,
-                                                                    uidAnimaisProdutores:
-                                                                        listViewOnlineAnimaisProdutoresRecord
-                                                                            .reference,
-                                                                    grupoPredominante:
-                                                                        listViewOnlineAnimaisProdutoresRecord
-                                                                            .grupoAnimal,
-                                                                    nomeAnimal:
-                                                                        listViewOnlineAnimaisProdutoresRecord
-                                                                            .nomeAnimal,
-                                                                    visitaPresencial:
-                                                                        widget
-                                                                            .visitaPresencial!,
-                                                                    brincoAnimal:
-                                                                        listViewOnlineAnimaisProdutoresRecord
-                                                                            .brincoAnimal
-                                                                            .toString(),
-                                                                    diasDg: widget
-                                                                        .diasDg!,
-                                                                  ),
-                                                                ),
-                                                              );
-                                                            },
-                                                          ).then((value) =>
-                                                              safeSetState(
-                                                                  () {}));
-                                                        },
-                                                        text: 'Fez Cio',
-                                                        icon: Icon(
-                                                          Icons.repeat,
-                                                          size: 15.0,
-                                                        ),
-                                                        options:
-                                                            FFButtonOptions(
-                                                          height: 30.0,
-                                                          padding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      24.0,
-                                                                      0.0,
-                                                                      24.0,
-                                                                      0.0),
-                                                          iconPadding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      0.0,
-                                                                      0.0,
-                                                                      0.0,
-                                                                      0.0),
-                                                          color:
-                                                              Color(0xFF1A03E9),
-                                                          textStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .titleSmall
-                                                                  .override(
-                                                                    font: GoogleFonts
-                                                                        .readexPro(
-                                                                      fontWeight: FlutterFlowTheme.of(
+                                                    Row(
+                                                      children: [
+                                                        Expanded(
+                                                          child: FFButtonWidget(
+                                                            onPressed: () async {
+                                                              await showModalBottomSheet(
+                                                                isScrollControlled:
+                                                                    true,
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .transparent,
+                                                                enableDrag: false,
+                                                                context: context,
+                                                                builder: (context) {
+                                                                  return GestureDetector(
+                                                                    onTap: () {
+                                                                      FocusScope.of(
                                                                               context)
-                                                                          .titleSmall
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .fontStyle,
+                                                                          .unfocus();
+                                                                      FocusManager
+                                                                          .instance
+                                                                          .primaryFocus
+                                                                          ?.unfocus();
+                                                                    },
+                                                                    child: Padding(
+                                                                      padding: MediaQuery
+                                                                          .viewInsetsOf(
+                                                                              context),
+                                                                      child:
+                                                                          RegistrarCioWidget(
+                                                                        uidPropriedade:
+                                                                            widget
+                                                                                .uidPropriedade!,
+                                                                        nomePropriedade:
+                                                                            widget
+                                                                                .nomePropriedade!,
+                                                                        uidTecnico:
+                                                                            widget
+                                                                                .uidTecnico!,
+                                                                        emailPropriedade:
+                                                                            widget
+                                                                                .emailPropriedade!,
+                                                                        uidAnimaisProdutores:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .reference,
+                                                                        grupoPredominante:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .grupoAnimal,
+                                                                        nomeAnimal:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .nomeAnimal,
+                                                                        visitaPresencial:
+                                                                            widget
+                                                                                .visitaPresencial!,
+                                                                        brincoAnimal:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .brincoAnimal
+                                                                                .toString(),
+                                                                        diasDg: widget
+                                                                            .diasDg!,
+                                                                      ),
                                                                     ),
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontSize:
-                                                                        12.0,
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                    fontWeight: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .titleSmall
-                                                                        .fontWeight,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .titleSmall
-                                                                        .fontStyle,
-                                                                  ),
-                                                          elevation: 3.0,
-                                                          borderSide:
-                                                              BorderSide(
-                                                            color: Colors
-                                                                .transparent,
-                                                            width: 1.0,
-                                                          ),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      8.0),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    FFButtonWidget(
-                                                      onPressed: () async {
-                                                        await showModalBottomSheet(
-                                                          isScrollControlled:
-                                                              true,
-                                                          backgroundColor:
-                                                              Colors
-                                                                  .transparent,
-                                                          enableDrag: false,
-                                                          context: context,
-                                                          builder: (context) {
-                                                            return GestureDetector(
-                                                              onTap: () {
-                                                                FocusScope.of(
-                                                                        context)
-                                                                    .unfocus();
-                                                                FocusManager
-                                                                    .instance
-                                                                    .primaryFocus
-                                                                    ?.unfocus();
-                                                              },
-                                                              child: Padding(
-                                                                padding: MediaQuery
-                                                                    .viewInsetsOf(
-                                                                        context),
-                                                                child:
-                                                                    NovaInseminacaoWidget(
-                                                                  uidPropriedade:
-                                                                      widget
-                                                                          .uidPropriedade!,
-                                                                  nomePropriedade:
-                                                                      widget
-                                                                          .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
-                                                                  emailPropriedade:
-                                                                      widget
-                                                                          .emailPropriedade!,
-                                                                  uidAnimaisProdutores:
-                                                                      listViewOnlineAnimaisProdutoresRecord
-                                                                          .reference,
-                                                                  grupoPredominante:
-                                                                      listViewOnlineAnimaisProdutoresRecord
-                                                                          .grupoAnimal,
-                                                                  nomeAnimal:
-                                                                      listViewOnlineAnimaisProdutoresRecord
-                                                                          .nomeAnimal,
-                                                                  visitaPresencial:
-                                                                      widget
-                                                                          .visitaPresencial!,
-                                                                  dtUltimaInseminacao:
-                                                                      listViewOnlineAnimaisProdutoresRecord
-                                                                          .dtUltimaInseminacao,
-                                                                  brincoAnimal:
-                                                                      listViewOnlineAnimaisProdutoresRecord
-                                                                          .brincoAnimal
-                                                                          .toString(),
-                                                                  diasDg: widget
-                                                                      .diasDg!,
-                                                                ),
+                                                                  );
+                                                                },
+                                                              ).then((value) =>
+                                                                  safeSetState(
+                                                                      () {}));
+                                                            },
+                                                            text: 'Fez Cio',
+                                                            icon: Icon(
+                                                              Icons.repeat,
+                                                              size: 15.0,
+                                                            ),
+                                                            options:
+                                                                FFButtonOptions(
+                                                              height: 30.0,
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10.0,
+                                                                          0.0,
+                                                                          10.0,
+                                                                          0.0),
+                                                              iconPadding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              color:
+                                                                  Color(0xFF1A03E9),
+                                                              textStyle:
+                                                                  FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleSmall
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
+                                                                          fontWeight: FlutterFlowTheme.of(
+                                                                                  context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(
+                                                                                  context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(
+                                                                                context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(
+                                                                                context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                              elevation: 3.0,
+                                                              borderSide:
+                                                                  BorderSide(
+                                                                color: Colors
+                                                                    .transparent,
+                                                                width: 1.0,
                                                               ),
-                                                            );
-                                                          },
-                                                        ).then((value) =>
-                                                            safeSetState(
-                                                                () {}));
-                                                      },
-                                                      text: 'Inseminar',
-                                                      icon: Icon(
-                                                        Icons.playlist_add,
-                                                        size: 15.0,
-                                                      ),
-                                                      options: FFButtonOptions(
-                                                        height: 30.0,
-                                                        padding:
-                                                            EdgeInsetsDirectional
-                                                                .fromSTEB(
-                                                                    24.0,
-                                                                    0.0,
-                                                                    24.0,
-                                                                    0.0),
-                                                        iconPadding:
-                                                            EdgeInsetsDirectional
-                                                                .fromSTEB(
-                                                                    0.0,
-                                                                    0.0,
-                                                                    0.0,
-                                                                    0.0),
-                                                        color:
-                                                            Color(0xFF7E39EF),
-                                                        textStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .titleSmall
-                                                                .override(
-                                                                  font: GoogleFonts
-                                                                      .readexPro(
-                                                                    fontWeight: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .titleSmall
-                                                                        .fontWeight,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .titleSmall
-                                                                        .fontStyle,
-                                                                  ),
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                      12.0,
-                                                                  letterSpacing:
-                                                                      0.0,
-                                                                  fontWeight: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleSmall
-                                                                      .fontWeight,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleSmall
-                                                                      .fontStyle,
-                                                                ),
-                                                        elevation: 3.0,
-                                                        borderSide: BorderSide(
-                                                          color: Colors
-                                                              .transparent,
-                                                          width: 1.0,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          8.0),
+                                                            ),
+                                                          ),
                                                         ),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8.0),
-                                                      ),
+                                                        SizedBox(width: 8.0),
+                                                        Expanded(
+                                                          child: FFButtonWidget(
+                                                            onPressed: () async {
+                                                              await showModalBottomSheet(
+                                                                isScrollControlled:
+                                                                    true,
+                                                                backgroundColor:
+                                                                    Colors
+                                                                        .transparent,
+                                                                enableDrag: false,
+                                                                context: context,
+                                                                builder: (context) {
+                                                                  return GestureDetector(
+                                                                    onTap: () {
+                                                                      FocusScope.of(
+                                                                              context)
+                                                                          .unfocus();
+                                                                      FocusManager
+                                                                          .instance
+                                                                          .primaryFocus
+                                                                          ?.unfocus();
+                                                                    },
+                                                                    child: Padding(
+                                                                      padding: MediaQuery
+                                                                          .viewInsetsOf(
+                                                                              context),
+                                                                      child:
+                                                                          NovaInseminacaoWidget(
+                                                                        uidPropriedade:
+                                                                            widget
+                                                                                .uidPropriedade!,
+                                                                        nomePropriedade:
+                                                                            widget
+                                                                                .nomePropriedade!,
+                                                                        uidTecnico:
+                                                                            widget
+                                                                                .uidTecnico!,
+                                                                        emailPropriedade:
+                                                                            widget
+                                                                                .emailPropriedade!,
+                                                                        uidAnimaisProdutores:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .reference,
+                                                                        grupoPredominante:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .grupoAnimal,
+                                                                        nomeAnimal:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .nomeAnimal,
+                                                                        visitaPresencial:
+                                                                            widget
+                                                                                .visitaPresencial!,
+                                                                        dtUltimaInseminacao:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .dtUltimaInseminacao,
+                                                                        brincoAnimal:
+                                                                            listViewOnlineAnimaisProdutoresRecord
+                                                                                .brincoAnimal
+                                                                                .toString(),
+                                                                        diasDg: widget
+                                                                            .diasDg!,
+                                                                      ),
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              ).then((value) =>
+                                                                  safeSetState(
+                                                                      () {}));
+                                                            },
+                                                            text: 'Inseminar',
+                                                            icon: Icon(
+                                                              Icons.playlist_add,
+                                                              size: 15.0,
+                                                            ),
+                                                            options: FFButtonOptions(
+                                                              height: 30.0,
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10.0,
+                                                                          0.0,
+                                                                          10.0,
+                                                                          0.0),
+                                                              iconPadding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              color:
+                                                                  Color(0xFF7E39EF),
+                                                              textStyle:
+                                                                  FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleSmall
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
+                                                                          fontWeight: FlutterFlowTheme.of(
+                                                                                  context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(
+                                                                                  context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(
+                                                                                context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(
+                                                                                context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                              elevation: 3.0,
+                                                              borderSide: BorderSide(
+                                                                color: Colors
+                                                                    .transparent,
+                                                                width: 1.0,
+                                                              ),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(8.0),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
@@ -3211,14 +3214,15 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                   visible: (listaAnimaisOfflineExistenteItem
                                               .uidTecnicoPropriedade ==
                                           widget.uidPropriedade) &&
-                                      ((listaAnimaisOfflineExistenteItem.nomeAnimal ==
-                                              _model.searchListTextController
-                                                  .text) ||
-                                          (listaAnimaisOfflineExistenteItem.brincoAnimal ==
-                                              functions.converterStringToInt(
-                                                  _model
-                                                      .searchListTextController
-                                                      .text))) &&
+                                      ((listaAnimaisOfflineExistenteItem.nomeAnimal
+                                              .toLowerCase()
+                                              .contains(_model.searchListTextController
+                                                  .text.toLowerCase())) ||
+                                          (listaAnimaisOfflineExistenteItem.brincoAnimal
+                                              .toString()
+                                              .contains(_model
+                                                  .searchListTextController
+                                                  .text))) &&
                                       (((listaAnimaisOfflineExistenteItem.grupoAnimal == 'Vacas') ||
                                               (listaAnimaisOfflineExistenteItem.grupoAnimal ==
                                                   'Novilhas')) &&
@@ -3537,278 +3541,278 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                       .fontStyle,
                                                                 ),
                                                           ),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      0.0,
-                                                                      4.0,
-                                                                      0.0,
-                                                                      4.0),
-                                                          child: FFButtonWidget(
-                                                            onPressed:
-                                                                () async {
-                                                              await showModalBottomSheet(
-                                                                isScrollControlled:
-                                                                    true,
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .transparent,
-                                                                enableDrag:
-                                                                    false,
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (context) {
-                                                                  return GestureDetector(
-                                                                    onTap: () {
-                                                                      FocusScope.of(
-                                                                              context)
-                                                                          .unfocus();
-                                                                      FocusManager
-                                                                          .instance
-                                                                          .primaryFocus
-                                                                          ?.unfocus();
-                                                                    },
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: MediaQuery
-                                                                          .viewInsetsOf(
-                                                                              context),
-                                                                      child:
-                                                                          RegistrarCioExistenteOfflineWidget(
-                                                                        uidPropriedade:
-                                                                            widget.uidPropriedade!,
-                                                                        nomePropriedade:
-                                                                            widget.nomePropriedade!,
-                                                                        uidTecnico:
-                                                                            widget.uidTecnico!,
-                                                                        emailPropriedade:
-                                                                            widget.emailPropriedade!,
-                                                                        uidAnimaisProdutores:
-                                                                            listaAnimaisOfflineExistenteItem.uidAnimal!,
-                                                                        grupoPredominante:
-                                                                            listaAnimaisOfflineExistenteItem.grupoAnimal,
-                                                                        nomeAnimal:
-                                                                            listaAnimaisOfflineExistenteItem.nomeAnimal,
-                                                                        visitaPresencial:
-                                                                            widget.visitaPresencial!,
-                                                                        brincoAnimal: listaAnimaisOfflineExistenteItem
-                                                                            .brincoAnimal
-                                                                            .toString(),
-                                                                        diasDg:
-                                                                            widget.diasDg!,
-                                                                        itemUidIndex:
-                                                                            listaAnimaisOfflineExistenteIndex,
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ).then((value) =>
-                                                                  safeSetState(
-                                                                      () {}));
-                                                            },
-                                                            text: 'Fez Cio',
-                                                            icon: Icon(
-                                                              Icons.repeat,
-                                                              size: 15.0,
-                                                            ),
-                                                            options:
-                                                                FFButtonOptions(
-                                                              height: 30.0,
-                                                              padding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          24.0,
-                                                                          0.0,
-                                                                          24.0,
-                                                                          0.0),
-                                                              iconPadding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                              color: Color(
-                                                                  0xFF1A03E9),
-                                                              textStyle:
-                                                                  FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleSmall
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .titleSmall
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .titleSmall
-                                                                              .fontStyle,
+                                                        Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: FFButtonWidget(
+                                                                onPressed:
+                                                                    () async {
+                                                                  await showModalBottomSheet(
+                                                                    isScrollControlled:
+                                                                        true,
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    enableDrag:
+                                                                        false,
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (context) {
+                                                                      return GestureDetector(
+                                                                        onTap: () {
+                                                                          FocusScope.of(
+                                                                                  context)
+                                                                              .unfocus();
+                                                                          FocusManager
+                                                                              .instance
+                                                                              .primaryFocus
+                                                                              ?.unfocus();
+                                                                        },
+                                                                        child:
+                                                                            Padding(
+                                                                          padding: MediaQuery
+                                                                              .viewInsetsOf(
+                                                                                  context),
+                                                                          child:
+                                                                              RegistrarCioExistenteOfflineWidget(
+                                                                            uidPropriedade:
+                                                                                widget.uidPropriedade!,
+                                                                            nomePropriedade:
+                                                                                widget.nomePropriedade!,
+                                                                            uidTecnico:
+                                                                                widget.uidTecnico!,
+                                                                            emailPropriedade:
+                                                                                widget.emailPropriedade!,
+                                                                            uidAnimaisProdutores:
+                                                                                listaAnimaisOfflineExistenteItem.uidAnimal!,
+                                                                            grupoPredominante:
+                                                                                listaAnimaisOfflineExistenteItem.grupoAnimal,
+                                                                            nomeAnimal:
+                                                                                listaAnimaisOfflineExistenteItem.nomeAnimal,
+                                                                            visitaPresencial:
+                                                                                widget.visitaPresencial!,
+                                                                            brincoAnimal: listaAnimaisOfflineExistenteItem
+                                                                                .brincoAnimal
+                                                                                .toString(),
+                                                                            diasDg:
+                                                                                widget.diasDg!,
+                                                                            itemUidIndex:
+                                                                                listaAnimaisOfflineExistenteIndex,
+                                                                          ),
                                                                         ),
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            12.0,
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontStyle,
-                                                                      ),
-                                                              elevation: 3.0,
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                color: Colors
-                                                                    .transparent,
-                                                                width: 1.0,
-                                                              ),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          8.0),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        FFButtonWidget(
-                                                          onPressed: () async {
-                                                            await showModalBottomSheet(
-                                                              isScrollControlled:
-                                                                  true,
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              enableDrag: false,
-                                                              context: context,
-                                                              builder:
-                                                                  (context) {
-                                                                return GestureDetector(
-                                                                  onTap: () {
-                                                                    FocusScope.of(
-                                                                            context)
-                                                                        .unfocus();
-                                                                    FocusManager
-                                                                        .instance
-                                                                        .primaryFocus
-                                                                        ?.unfocus();
-                                                                  },
-                                                                  child:
-                                                                      Padding(
-                                                                    padding: MediaQuery
-                                                                        .viewInsetsOf(
-                                                                            context),
-                                                                    child:
-                                                                        NovaInseminacaoExistenteOfflineWidget(
-                                                                      uidPropriedade:
-                                                                          widget
-                                                                              .uidPropriedade!,
-                                                                      nomePropriedade:
-                                                                          widget
-                                                                              .nomePropriedade!,
-                                                                      uidTecnico:
-                                                                          widget
-                                                                              .uidTecnico!,
-                                                                      emailPropriedade:
-                                                                          widget
-                                                                              .emailPropriedade!,
-                                                                      grupoPredominante:
-                                                                          listaAnimaisOfflineExistenteItem
-                                                                              .grupoAnimal,
-                                                                      nomeAnimal:
-                                                                          listaAnimaisOfflineExistenteItem
-                                                                              .nomeAnimal,
-                                                                      visitaPresencial:
-                                                                          widget
-                                                                              .visitaPresencial!,
-                                                                      dtUltimaInseminacao:
-                                                                          listaAnimaisOfflineExistenteItem
-                                                                              .dtUltimaInseminacao,
-                                                                      brincoAnimal: listaAnimaisOfflineExistenteItem
-                                                                          .brincoAnimal
-                                                                          .toString(),
-                                                                      diasDg: widget
-                                                                          .diasDg!,
-                                                                      itemUidIndex:
-                                                                          listaAnimaisOfflineExistenteIndex,
-                                                                      uidAnimaisProdutores:
-                                                                          listaAnimaisOfflineExistenteItem
-                                                                              .uidAnimal!,
-                                                                    ),
+                                                                      );
+                                                                    },
+                                                                  ).then((value) =>
+                                                                      safeSetState(
+                                                                          () {}));
+                                                                },
+                                                                text: 'Fez Cio',
+                                                                icon: Icon(
+                                                                  Icons.repeat,
+                                                                  size: 15.0,
+                                                                ),
+                                                                options:
+                                                                    FFButtonOptions(
+                                                                  height: 30.0,
+                                                                  padding:
+                                                                      EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              10.0,
+                                                                              0.0,
+                                                                              10.0,
+                                                                              0.0),
+                                                                  iconPadding:
+                                                                      EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              0.0,
+                                                                              0.0,
+                                                                              0.0,
+                                                                              0.0),
+                                                                  color: Color(
+                                                                      0xFF1A03E9),
+                                                                  textStyle:
+                                                                      FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleSmall
+                                                                          .override(
+                                                                            font: GoogleFonts
+                                                                                .readexPro(
+                                                                              fontWeight: FlutterFlowTheme.of(context)
+                                                                                  .titleSmall
+                                                                                  .fontWeight,
+                                                                              fontStyle: FlutterFlowTheme.of(context)
+                                                                                  .titleSmall
+                                                                                  .fontStyle,
+                                                                            ),
+                                                                            color: Colors
+                                                                                .white,
+                                                                            fontSize:
+                                                                                12.0,
+                                                                            letterSpacing:
+                                                                                0.0,
+                                                                            fontWeight: FlutterFlowTheme.of(context)
+                                                                                .titleSmall
+                                                                                .fontWeight,
+                                                                            fontStyle: FlutterFlowTheme.of(context)
+                                                                                .titleSmall
+                                                                                .fontStyle,
+                                                                          ),
+                                                                  elevation: 3.0,
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.0,
                                                                   ),
-                                                                );
-                                                              },
-                                                            ).then((value) =>
-                                                                safeSetState(
-                                                                    () {}));
-                                                          },
-                                                          text: 'Inseminar',
-                                                          icon: Icon(
-                                                            Icons.playlist_add,
-                                                            size: 15.0,
-                                                          ),
-                                                          options:
-                                                              FFButtonOptions(
-                                                            height: 30.0,
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        24.0,
-                                                                        0.0,
-                                                                        24.0,
-                                                                        0.0),
-                                                            iconPadding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        0.0,
-                                                                        0.0,
-                                                                        0.0,
-                                                                        0.0),
-                                                            color: Color(
-                                                                0xFF7E39EF),
-                                                            textStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .titleSmall
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .readexPro(
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          12.0,
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .fontStyle,
-                                                                    ),
-                                                            elevation: 3.0,
-                                                            borderSide:
-                                                                BorderSide(
-                                                              color: Colors
-                                                                  .transparent,
-                                                              width: 1.0,
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8.0),
+                                                                ),
+                                                              ),
                                                             ),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        8.0),
-                                                          ),
+                                                            SizedBox(width: 8.0),
+                                                            Expanded(
+                                                              child: FFButtonWidget(
+                                                                onPressed: () async {
+                                                                  await showModalBottomSheet(
+                                                                    isScrollControlled:
+                                                                        true,
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    enableDrag: false,
+                                                                    context: context,
+                                                                    builder:
+                                                                        (context) {
+                                                                      return GestureDetector(
+                                                                        onTap: () {
+                                                                          FocusScope.of(
+                                                                                  context)
+                                                                              .unfocus();
+                                                                          FocusManager
+                                                                              .instance
+                                                                              .primaryFocus
+                                                                              ?.unfocus();
+                                                                        },
+                                                                        child:
+                                                                            Padding(
+                                                                          padding: MediaQuery
+                                                                              .viewInsetsOf(
+                                                                                  context),
+                                                                          child:
+                                                                              NovaInseminacaoExistenteOfflineWidget(
+                                                                            uidPropriedade:
+                                                                                widget
+                                                                                    .uidPropriedade!,
+                                                                            nomePropriedade:
+                                                                                widget
+                                                                                    .nomePropriedade!,
+                                                                            uidTecnico:
+                                                                                widget
+                                                                                    .uidTecnico!,
+                                                                            emailPropriedade:
+                                                                                widget
+                                                                                    .emailPropriedade!,
+                                                                            grupoPredominante:
+                                                                                listaAnimaisOfflineExistenteItem
+                                                                                    .grupoAnimal,
+                                                                            nomeAnimal:
+                                                                                listaAnimaisOfflineExistenteItem
+                                                                                    .nomeAnimal,
+                                                                            visitaPresencial:
+                                                                                widget
+                                                                                    .visitaPresencial!,
+                                                                            dtUltimaInseminacao:
+                                                                                listaAnimaisOfflineExistenteItem
+                                                                                    .dtUltimaInseminacao,
+                                                                            brincoAnimal: listaAnimaisOfflineExistenteItem
+                                                                                .brincoAnimal
+                                                                                .toString(),
+                                                                            diasDg: widget
+                                                                                .diasDg!,
+                                                                            itemUidIndex:
+                                                                                listaAnimaisOfflineExistenteIndex,
+                                                                            uidAnimaisProdutores:
+                                                                                listaAnimaisOfflineExistenteItem
+                                                                                    .uidAnimal!,
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  ).then((value) =>
+                                                                      safeSetState(
+                                                                          () {}));
+                                                                },
+                                                                text: 'Inseminar',
+                                                                icon: Icon(
+                                                                  Icons.playlist_add,
+                                                                  size: 15.0,
+                                                                ),
+                                                                options:
+                                                                    FFButtonOptions(
+                                                                  height: 30.0,
+                                                                  padding:
+                                                                      EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              10.0,
+                                                                              0.0,
+                                                                              10.0,
+                                                                              0.0),
+                                                                  iconPadding:
+                                                                      EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              0.0,
+                                                                              0.0,
+                                                                              0.0,
+                                                                              0.0),
+                                                                  color: Color(
+                                                                      0xFF7E39EF),
+                                                                  textStyle:
+                                                                      FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleSmall
+                                                                          .override(
+                                                                            font: GoogleFonts
+                                                                                .readexPro(
+                                                                              fontWeight: FlutterFlowTheme.of(context)
+                                                                                  .titleSmall
+                                                                                  .fontWeight,
+                                                                              fontStyle: FlutterFlowTheme.of(context)
+                                                                                  .titleSmall
+                                                                                  .fontStyle,
+                                                                            ),
+                                                                            color: Colors
+                                                                                .white,
+                                                                            fontSize:
+                                                                                12.0,
+                                                                            letterSpacing:
+                                                                                0.0,
+                                                                            fontWeight: FlutterFlowTheme.of(
+                                                                                    context)
+                                                                                .titleSmall
+                                                                                .fontWeight,
+                                                                            fontStyle: FlutterFlowTheme.of(
+                                                                                    context)
+                                                                                .titleSmall
+                                                                                .fontStyle,
+                                                                          ),
+                                                                  elevation: 3.0,
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.0,
+                                                                  ),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8.0),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ],
                                                     ),
@@ -3846,14 +3850,15 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                 return Visibility(
                                   visible: (listaAnimaisOfflineItem.uidTecnicoPropriedade ==
                                           widget.uidPropriedade) &&
-                                      ((listaAnimaisOfflineItem.nomeAnimal ==
-                                              _model.searchListTextController
-                                                  .text) ||
-                                          (listaAnimaisOfflineItem.brincoAnimal ==
-                                              functions.converterStringToInt(
-                                                  _model
-                                                      .searchListTextController
-                                                      .text))) &&
+                                      ((listaAnimaisOfflineItem.nomeAnimal
+                                              .toLowerCase()
+                                              .contains(_model.searchListTextController
+                                                  .text.toLowerCase())) ||
+                                          (listaAnimaisOfflineItem.brincoAnimal
+                                              .toString()
+                                              .contains(_model
+                                                  .searchListTextController
+                                                  .text))) &&
                                       (((listaAnimaisOfflineItem.grupoAnimal ==
                                                   'Vacas') ||
                                               (listaAnimaisOfflineItem.grupoAnimal ==
@@ -4170,278 +4175,278 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                       .fontStyle,
                                                                 ),
                                                           ),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      0.0,
-                                                                      4.0,
-                                                                      0.0,
-                                                                      4.0),
-                                                          child: FFButtonWidget(
-                                                            onPressed:
-                                                                () async {
-                                                              await showModalBottomSheet(
-                                                                isScrollControlled:
-                                                                    true,
-                                                                backgroundColor:
-                                                                    Colors
-                                                                        .transparent,
-                                                                enableDrag:
-                                                                    false,
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (context) {
-                                                                  return GestureDetector(
-                                                                    onTap: () {
-                                                                      FocusScope.of(
-                                                                              context)
-                                                                          .unfocus();
-                                                                      FocusManager
-                                                                          .instance
-                                                                          .primaryFocus
-                                                                          ?.unfocus();
-                                                                    },
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: MediaQuery
-                                                                          .viewInsetsOf(
-                                                                              context),
-                                                                      child:
-                                                                          RegistrarCioOfflineWidget(
-                                                                        uidPropriedade:
-                                                                            widget.uidPropriedade!,
-                                                                        nomePropriedade:
-                                                                            widget.nomePropriedade!,
-                                                                        uidTecnico:
-                                                                            widget.uidTecnico!,
-                                                                        emailPropriedade:
-                                                                            widget.emailPropriedade!,
-                                                                        grupoPredominante:
-                                                                            listaAnimaisOfflineItem.grupoAnimal,
-                                                                        nomeAnimal:
-                                                                            listaAnimaisOfflineItem.nomeAnimal,
-                                                                        visitaPresencial:
-                                                                            widget.visitaPresencial!,
-                                                                        brincoAnimal: listaAnimaisOfflineItem
-                                                                            .brincoAnimal
-                                                                            .toString(),
-                                                                        diasDg:
-                                                                            widget.diasDg!,
-                                                                        uidAnimalOffline:
-                                                                            listaAnimaisOfflineItem.uidAnimalOffline,
-                                                                        itemUidIndex:
-                                                                            listaAnimaisOfflineIndex,
-                                                                      ),
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              ).then((value) =>
-                                                                  safeSetState(
-                                                                      () {}));
-                                                            },
-                                                            text: 'Fez Cio',
-                                                            icon: Icon(
-                                                              Icons.repeat,
-                                                              size: 15.0,
-                                                            ),
-                                                            options:
-                                                                FFButtonOptions(
-                                                              height: 30.0,
-                                                              padding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          24.0,
-                                                                          0.0,
-                                                                          24.0,
-                                                                          0.0),
-                                                              iconPadding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                              color: Color(
-                                                                  0xFF1A03E9),
-                                                              textStyle:
-                                                                  FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleSmall
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .titleSmall
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .titleSmall
-                                                                              .fontStyle,
+                                                        Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: FFButtonWidget(
+                                                                onPressed:
+                                                                    () async {
+                                                                  await showModalBottomSheet(
+                                                                    isScrollControlled:
+                                                                        true,
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    enableDrag:
+                                                                        false,
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (context) {
+                                                                      return GestureDetector(
+                                                                        onTap: () {
+                                                                          FocusScope.of(
+                                                                                  context)
+                                                                              .unfocus();
+                                                                          FocusManager
+                                                                              .instance
+                                                                              .primaryFocus
+                                                                              ?.unfocus();
+                                                                        },
+                                                                        child:
+                                                                            Padding(
+                                                                          padding: MediaQuery
+                                                                              .viewInsetsOf(
+                                                                                  context),
+                                                                          child:
+                                                                              RegistrarCioOfflineWidget(
+                                                                            uidPropriedade:
+                                                                                widget.uidPropriedade!,
+                                                                            nomePropriedade:
+                                                                                widget.nomePropriedade!,
+                                                                            uidTecnico:
+                                                                                widget.uidTecnico!,
+                                                                            emailPropriedade:
+                                                                                widget.emailPropriedade!,
+                                                                            grupoPredominante:
+                                                                                listaAnimaisOfflineItem.grupoAnimal,
+                                                                            nomeAnimal:
+                                                                                listaAnimaisOfflineItem.nomeAnimal,
+                                                                            visitaPresencial:
+                                                                                widget.visitaPresencial!,
+                                                                            brincoAnimal: listaAnimaisOfflineItem
+                                                                                .brincoAnimal
+                                                                                .toString(),
+                                                                            diasDg:
+                                                                                widget.diasDg!,
+                                                                            uidAnimalOffline:
+                                                                                listaAnimaisOfflineItem.uidAnimalOffline,
+                                                                            itemUidIndex:
+                                                                                listaAnimaisOfflineIndex,
+                                                                          ),
                                                                         ),
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            12.0,
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontStyle,
-                                                                      ),
-                                                              elevation: 3.0,
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                color: Colors
-                                                                    .transparent,
-                                                                width: 1.0,
-                                                              ),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          8.0),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        FFButtonWidget(
-                                                          onPressed: () async {
-                                                            await showModalBottomSheet(
-                                                              isScrollControlled:
-                                                                  true,
-                                                              backgroundColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              enableDrag: false,
-                                                              context: context,
-                                                              builder:
-                                                                  (context) {
-                                                                return GestureDetector(
-                                                                  onTap: () {
-                                                                    FocusScope.of(
-                                                                            context)
-                                                                        .unfocus();
-                                                                    FocusManager
-                                                                        .instance
-                                                                        .primaryFocus
-                                                                        ?.unfocus();
-                                                                  },
-                                                                  child:
-                                                                      Padding(
-                                                                    padding: MediaQuery
-                                                                        .viewInsetsOf(
-                                                                            context),
-                                                                    child:
-                                                                        NovaInseminacaoOfflineWidget(
-                                                                      uidPropriedade:
-                                                                          widget
-                                                                              .uidPropriedade!,
-                                                                      nomePropriedade:
-                                                                          widget
-                                                                              .nomePropriedade!,
-                                                                      uidTecnico:
-                                                                          widget
-                                                                              .uidTecnico!,
-                                                                      emailPropriedade:
-                                                                          widget
-                                                                              .emailPropriedade!,
-                                                                      grupoPredominante:
-                                                                          listaAnimaisOfflineItem
-                                                                              .grupoAnimal,
-                                                                      nomeAnimal:
-                                                                          listaAnimaisOfflineItem
-                                                                              .nomeAnimal,
-                                                                      visitaPresencial:
-                                                                          widget
-                                                                              .visitaPresencial!,
-                                                                      dtUltimaInseminacao:
-                                                                          listaAnimaisOfflineItem
-                                                                              .dtUltimaInseminacao,
-                                                                      brincoAnimal: listaAnimaisOfflineItem
-                                                                          .brincoAnimal
-                                                                          .toString(),
-                                                                      diasDg: widget
-                                                                          .diasDg!,
-                                                                      uidAnimalOffline:
-                                                                          listaAnimaisOfflineItem
-                                                                              .uidAnimalOffline,
-                                                                      itemUidIndex:
-                                                                          listaAnimaisOfflineIndex,
-                                                                    ),
+                                                                      );
+                                                                    },
+                                                                  ).then((value) =>
+                                                                      safeSetState(
+                                                                          () {}));
+                                                                },
+                                                                text: 'Fez Cio',
+                                                                icon: Icon(
+                                                                  Icons.repeat,
+                                                                  size: 15.0,
+                                                                ),
+                                                                options:
+                                                                    FFButtonOptions(
+                                                                  height: 30.0,
+                                                                  padding:
+                                                                      EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              10.0,
+                                                                              0.0,
+                                                                              10.0,
+                                                                              0.0),
+                                                                  iconPadding:
+                                                                      EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              0.0,
+                                                                              0.0,
+                                                                              0.0,
+                                                                              0.0),
+                                                                  color: Color(
+                                                                      0xFF1A03E9),
+                                                                  textStyle:
+                                                                      FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleSmall
+                                                                          .override(
+                                                                            font: GoogleFonts
+                                                                                .readexPro(
+                                                                              fontWeight: FlutterFlowTheme.of(context)
+                                                                                  .titleSmall
+                                                                                  .fontWeight,
+                                                                              fontStyle: FlutterFlowTheme.of(context)
+                                                                                  .titleSmall
+                                                                                  .fontStyle,
+                                                                            ),
+                                                                            color: Colors
+                                                                                .white,
+                                                                            fontSize:
+                                                                                12.0,
+                                                                            letterSpacing:
+                                                                                0.0,
+                                                                            fontWeight: FlutterFlowTheme.of(context)
+                                                                                .titleSmall
+                                                                                .fontWeight,
+                                                                            fontStyle: FlutterFlowTheme.of(context)
+                                                                                .titleSmall
+                                                                                .fontStyle,
+                                                                          ),
+                                                                  elevation: 3.0,
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.0,
                                                                   ),
-                                                                );
-                                                              },
-                                                            ).then((value) =>
-                                                                safeSetState(
-                                                                    () {}));
-                                                          },
-                                                          text: 'Inseminar',
-                                                          icon: Icon(
-                                                            Icons.playlist_add,
-                                                            size: 15.0,
-                                                          ),
-                                                          options:
-                                                              FFButtonOptions(
-                                                            height: 30.0,
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        24.0,
-                                                                        0.0,
-                                                                        24.0,
-                                                                        0.0),
-                                                            iconPadding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        0.0,
-                                                                        0.0,
-                                                                        0.0,
-                                                                        0.0),
-                                                            color: Color(
-                                                                0xFF7E39EF),
-                                                            textStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .titleSmall
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .readexPro(
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          12.0,
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .fontStyle,
-                                                                    ),
-                                                            elevation: 3.0,
-                                                            borderSide:
-                                                                BorderSide(
-                                                              color: Colors
-                                                                  .transparent,
-                                                              width: 1.0,
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8.0),
+                                                                ),
+                                                              ),
                                                             ),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        8.0),
-                                                          ),
+                                                            SizedBox(width: 8.0),
+                                                            Expanded(
+                                                              child: FFButtonWidget(
+                                                                onPressed: () async {
+                                                                  await showModalBottomSheet(
+                                                                    isScrollControlled:
+                                                                        true,
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    enableDrag: false,
+                                                                    context: context,
+                                                                    builder:
+                                                                        (context) {
+                                                                      return GestureDetector(
+                                                                        onTap: () {
+                                                                          FocusScope.of(
+                                                                                  context)
+                                                                              .unfocus();
+                                                                          FocusManager
+                                                                              .instance
+                                                                              .primaryFocus
+                                                                              ?.unfocus();
+                                                                        },
+                                                                        child:
+                                                                            Padding(
+                                                                          padding: MediaQuery
+                                                                              .viewInsetsOf(
+                                                                                  context),
+                                                                          child:
+                                                                              NovaInseminacaoOfflineWidget(
+                                                                            uidPropriedade:
+                                                                                widget
+                                                                                    .uidPropriedade!,
+                                                                            nomePropriedade:
+                                                                                widget
+                                                                                    .nomePropriedade!,
+                                                                            uidTecnico:
+                                                                                widget
+                                                                                    .uidTecnico!,
+                                                                            emailPropriedade:
+                                                                                widget
+                                                                                    .emailPropriedade!,
+                                                                            grupoPredominante:
+                                                                                listaAnimaisOfflineItem
+                                                                                    .grupoAnimal,
+                                                                            nomeAnimal:
+                                                                                listaAnimaisOfflineItem
+                                                                                    .nomeAnimal,
+                                                                            visitaPresencial:
+                                                                                widget
+                                                                                    .visitaPresencial!,
+                                                                            dtUltimaInseminacao:
+                                                                                listaAnimaisOfflineItem
+                                                                                    .dtUltimaInseminacao,
+                                                                            brincoAnimal: listaAnimaisOfflineItem
+                                                                                .brincoAnimal
+                                                                                .toString(),
+                                                                            diasDg: widget
+                                                                                .diasDg!,
+                                                                            uidAnimalOffline:
+                                                                                listaAnimaisOfflineItem
+                                                                                    .uidAnimalOffline,
+                                                                            itemUidIndex:
+                                                                                listaAnimaisOfflineIndex,
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  ).then((value) =>
+                                                                      safeSetState(
+                                                                          () {}));
+                                                                },
+                                                                text: 'Inseminar',
+                                                                icon: Icon(
+                                                                  Icons.playlist_add,
+                                                                  size: 15.0,
+                                                                ),
+                                                                options:
+                                                                    FFButtonOptions(
+                                                                  height: 30.0,
+                                                                  padding:
+                                                                      EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              10.0,
+                                                                              0.0,
+                                                                              10.0,
+                                                                              0.0),
+                                                                  iconPadding:
+                                                                      EdgeInsetsDirectional
+                                                                          .fromSTEB(
+                                                                              0.0,
+                                                                              0.0,
+                                                                              0.0,
+                                                                              0.0),
+                                                                  color: Color(
+                                                                      0xFF7E39EF),
+                                                                  textStyle:
+                                                                      FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleSmall
+                                                                          .override(
+                                                                            font: GoogleFonts
+                                                                                .readexPro(
+                                                                              fontWeight: FlutterFlowTheme.of(context)
+                                                                                  .titleSmall
+                                                                                  .fontWeight,
+                                                                              fontStyle: FlutterFlowTheme.of(context)
+                                                                                  .titleSmall
+                                                                                  .fontStyle,
+                                                                            ),
+                                                                            color: Colors
+                                                                                .white,
+                                                                            fontSize:
+                                                                                12.0,
+                                                                            letterSpacing:
+                                                                                0.0,
+                                                                            fontWeight: FlutterFlowTheme.of(
+                                                                                    context)
+                                                                                .titleSmall
+                                                                                .fontWeight,
+                                                                            fontStyle: FlutterFlowTheme.of(
+                                                                                    context)
+                                                                                .titleSmall
+                                                                                .fontStyle,
+                                                                          ),
+                                                                  elevation: 3.0,
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.0,
+                                                                  ),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8.0),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ],
                                                     ),

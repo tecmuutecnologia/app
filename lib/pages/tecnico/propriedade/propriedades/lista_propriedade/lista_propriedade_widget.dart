@@ -168,8 +168,8 @@ class _ListaPropriedadeWidgetState extends State<ListaPropriedadeWidget> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(
-                          16.0, 12.0, 16.0, 12.0),
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
                       child: TextFormField(
                         controller: _model.searchController,
                         onChanged: (_) => safeSetState(() {}),
@@ -247,19 +247,20 @@ class _ListaPropriedadeWidgetState extends State<ListaPropriedadeWidget> {
                             Icons.search,
                             color: FlutterFlowTheme.of(context).secondaryText,
                           ),
-                          suffixIcon: _model.searchController.text.isNotEmpty
-                              ? InkWell(
-                                  onTap: () => safeSetState(() {
-                                    _model.searchController.clear();
-                                  }),
-                                  child: Icon(
-                                    Icons.clear,
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryText,
-                                    size: 18.0,
-                                  ),
-                                )
-                              : null,
+                          suffixIcon:
+                              _model.searchController!.text.isNotEmpty
+                                  ? InkWell(
+                                      onTap: () => safeSetState(() {
+                                        _model.searchController?.clear();
+                                      }),
+                                      child: Icon(
+                                        Icons.clear,
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        size: 18.0,
+                                      ),
+                                    )
+                                  : null,
                         ),
                         style: FlutterFlowTheme.of(context).bodyMedium.override(
                               font: GoogleFonts.readexPro(
@@ -325,10 +326,10 @@ class _ListaPropriedadeWidgetState extends State<ListaPropriedadeWidget> {
                                 if (searchQuery.isNotEmpty) {
                                   listViewPropriedadesRecordList =
                                       listViewPropriedadesRecordList
-                                          .where((property) => property
-                                              .displayName
-                                              .toLowerCase()
-                                              .contains(searchQuery))
+                                          .where((property) =>
+                                              property.displayName
+                                                  .toLowerCase()
+                                                  .contains(searchQuery))
                                           .toList();
                                 }
 
@@ -343,8 +344,7 @@ class _ListaPropriedadeWidgetState extends State<ListaPropriedadeWidget> {
                                       ? 1
                                       : listViewPropriedadesRecordList.length,
                                   itemBuilder: (context, listViewIndex) {
-                                    if (listViewPropriedadesRecordList
-                                            .isEmpty &&
+                                    if (listViewPropriedadesRecordList.isEmpty &&
                                         searchQuery.isNotEmpty) {
                                       return Padding(
                                         padding: EdgeInsetsDirectional.fromSTEB(
@@ -368,9 +368,9 @@ class _ListaPropriedadeWidgetState extends State<ListaPropriedadeWidget> {
                                                             .bodyMedium
                                                             .fontStyle,
                                                   ),
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .secondaryText,
+                                                  color:
+                                                      FlutterFlowTheme.of(context)
+                                                          .secondaryText,
                                                   letterSpacing: 0.0,
                                                   fontWeight:
                                                       FlutterFlowTheme.of(
@@ -682,7 +682,8 @@ class _ListaPropriedadeWidgetState extends State<ListaPropriedadeWidget> {
                                         ParamType.bool,
                                       ),
                                       'uidTecnico': serializeParam(
-                                        listaPropriedadeTecnicoRecord.reference,
+                                        listaPropriedadeTecnicoRecord
+                                            .reference,
                                         ParamType.DocumentReference,
                                       ),
                                       'email': serializeParam(

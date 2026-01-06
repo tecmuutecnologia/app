@@ -39,6 +39,8 @@ Future<void> createResumoRebanho(
   String emailTecnico,
   String nomeEmpresaTecnico, // Campo opcional
   String logoUrl,
+  bool ultimaAcao, // Novo parâmetro para coluna Última Ação
+  DocumentReference uidTecnico, // Referência do técnico para buscar ações
 ) async {
   try {
     // Baixar a imagem da URL
@@ -107,6 +109,68 @@ Future<void> createResumoRebanho(
           statusReprodutivo = data['status'];
         }
 
+        // Buscar última ação para animais com status "Vazia" se a opção estiver habilitada
+        String ultimaAcaoAnimal = '';
+        if (ultimaAcao &&
+            statusReprodutivo == 'Vazia' &&
+            (data['grupoAnimal'] == 'Vacas' ||
+                data['grupoAnimal'] == 'Novilhas')) {
+          try {
+            // Buscar todas as ações do animal (sem orderBy para evitar necessidade de índice composto)
+            final acoesSnapshot = await FirebaseFirestore.instance
+                .collection('tecnico')
+                .doc(uidTecnico.id)
+                .collection('acoes')
+                .where('uidAnimalAnimaisProdutores', isEqualTo: animalRef)
+                .get();
+
+            if (acoesSnapshot.docs.isNotEmpty) {
+              // Filtrar ações que têm dataDaAcao e ordenar manualmente
+              final acoesComData = acoesSnapshot.docs.where((doc) {
+                final docData = doc.data();
+                return docData['dataDaAcao'] != null;
+              }).toList();
+
+              // Ordenar por dataDaAcao (mais recente primeiro)
+              acoesComData.sort((a, b) {
+                final dataA = (a.data()['dataDaAcao'] as Timestamp).toDate();
+                final dataB = (b.data()['dataDaAcao'] as Timestamp).toDate();
+                return dataB.compareTo(dataA); // Ordem decrescente
+              });
+
+              // Filtrar ações válidas do exame ginecológico (IATF, CGI, CGII, Liberada, etc.)
+              // Excluir: Inseminada, Cio, PP, DG+, DG-, Inseminada PP
+              final acoesValidas = acoesComData.where((doc) {
+                final acaoNome = (doc.data())['acao'] as String? ?? '';
+                return acaoNome != 'Inseminada' &&
+                    acaoNome != 'Cio' &&
+                    acaoNome != 'PP' &&
+                    acaoNome != 'DG+' &&
+                    acaoNome != 'DG-' &&
+                    acaoNome != 'Inseminada PP';
+              }).toList();
+
+              if (acoesValidas.isNotEmpty) {
+                final acaoData = acoesValidas.first.data();
+                ultimaAcaoAnimal = acaoData['acao'] ?? '';
+
+                // Adicionar a data da ação para melhor contexto
+                final dataAcao = acaoData['dataDaAcao'] as Timestamp?;
+                if (dataAcao != null) {
+                  final dataFormatada =
+                      DateFormat('dd/MM').format(dataAcao.toDate());
+                  ultimaAcaoAnimal = '$ultimaAcaoAnimal ($dataFormatada)';
+                }
+
+                print(
+                    'Última ação encontrada para ${data['nomeAnimal']}: $ultimaAcaoAnimal');
+              }
+            }
+          } catch (e) {
+            print('Erro ao buscar última ação para ${data['nomeAnimal']}: $e');
+          }
+        }
+
         // Adicionar os dados do animal à lista
         animaisData.add({
           'nomeAnimal': data['nomeAnimal'] ?? null,
@@ -129,6 +193,8 @@ Future<void> createResumoRebanho(
           'dtUltimoParto':
               data['dtUltimoParto'] ?? null, // Adiciona a data do último parto
           'dtPartoPrevisto': data['dtPartoPrevisto'] ?? null,
+          'ultimaAcao':
+              ultimaAcaoAnimal, // Última ação do animal (apenas para Vazias)
         });
       }
     }
@@ -151,7 +217,8 @@ Future<void> createResumoRebanho(
       preParto,
       paricao,
       diasEmAberto,
-      intervaloPartos
+      intervaloPartos,
+      ultimaAcao
     ].where((c) => c).toList().length;
 
     // Ajustar o tamanho da fonte se houver mais de quatro colunas booleanas ativas
@@ -341,6 +408,21 @@ Future<void> createResumoRebanho(
                 ),
               ),
             ),
+          if (ultimaAcao)
+            pw.Expanded(
+              flex: 1,
+              child: pw.Container(
+                alignment: pw.Alignment.center,
+                child: pw.Text(
+                  'Últ. Ação',
+                  textAlign: pw.TextAlign.center,
+                  style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: fontSize,
+                  ),
+                ),
+              ),
+            ),
         ],
       );
     }
@@ -376,11 +458,15 @@ Future<void> createResumoRebanho(
                       flex: 1,
                       child: pw.Container(
                         alignment: pw.Alignment.center,
-                        child: pw.Image(
-                          pw.MemoryImage(logoImage),
-                          fit: pw.BoxFit.cover,
-                          width: 80,
-                          height: 80,
+                        child: pw.Transform.rotate(
+                          angle:
+                              3.14159, // Rotação de 180° para corrigir logo invertida
+                          child: pw.Image(
+                            pw.MemoryImage(logoImage),
+                            fit: pw.BoxFit.cover,
+                            width: 80,
+                            height: 80,
+                          ),
                         ),
                       ),
                     ),
@@ -591,6 +677,20 @@ Future<void> createResumoRebanho(
                             alignment: pw.Alignment.center,
                             child: pw.Text(
                               animalData['dtPartoPrevisto'] ?? '',
+                              style: pw.TextStyle(fontSize: fontSize),
+                            ),
+                          ),
+                        ),
+                      if (ultimaAcao)
+                        pw.Expanded(
+                          flex: 1,
+                          child: pw.Container(
+                            alignment: pw.Alignment.center,
+                            child: pw.Text(
+                              // Só mostra última ação para animais com status "Vazia"
+                              animalData['statusReprodutivo'] == 'Vazia'
+                                  ? (animalData['ultimaAcao'] ?? '')
+                                  : '',
                               style: pw.TextStyle(fontSize: fontSize),
                             ),
                           ),
