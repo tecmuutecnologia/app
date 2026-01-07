@@ -5,7 +5,7 @@ import 'package:collection/collection.dart';
 import '/backend/schema/util/firestore_util.dart';
 
 import 'index.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/components/ui/flutter_flow_util.dart';
 
 class ResumoDaVisitaRecord extends FirestoreRecord {
   ResumoDaVisitaRecord._(

@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '/backend/schema/util/firestore_util.dart';
 
-import '/flutter_flow/flutter_flow_util.dart';
+import '/components/ui/flutter_flow_util.dart';
 
 class GrupoStruct extends FFFirebaseStruct {
   GrupoStruct({

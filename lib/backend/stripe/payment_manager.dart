@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/number_symbols_data.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '../../flutter_flow/flutter_flow_util.dart';
+import 'package:tecmuu/utils/flutter_flow_theme.dart';
+import '/components/ui/flutter_flow_util.dart';
 
-import '../../flutter_flow/flutter_flow_widgets.dart';
+import '/components/ui/flutter_flow_widgets.dart';
 import '../cloud_functions/cloud_functions.dart';
 
 final _isProd = true;
