@@ -458,11 +458,14 @@ Future<void> createResumoRebanho(
                       flex: 1,
                       child: pw.Container(
                         alignment: pw.Alignment.center,
-                        child: pw.Image(
-                          pw.MemoryImage(logoImage),
-                          fit: pw.BoxFit.cover,
-                          width: 80,
-                          height: 80,
+                        child: pw.Transform.rotate(
+                          angle: 0,
+                          child: pw.Image(
+                            pw.MemoryImage(logoImage),
+                            fit: pw.BoxFit.cover,
+                            width: 80,
+                            height: 80,
+                          ),
                         ),
                       ),
                     ),

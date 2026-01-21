@@ -261,6 +261,9 @@ class FFAppState extends ChangeNotifier {
               .toList() ??
           _tipoAcoes;
     });
+    _safeInit(() {
+      _acoesPreferidas = prefs.getStringList('ff_acoesPreferidas') ?? _acoesPreferidas;
+    });
   }
 
   void update(VoidCallback callback) {
@@ -1120,6 +1123,27 @@ class FFAppState extends ChangeNotifier {
     tipoAcoes.insert(index, value);
     prefs.setStringList(
         'ff_tipoAcoes', _tipoAcoes.map((x) => x.serialize()).toList());
+  }
+
+  List<String> _acoesPreferidas = [];
+  List<String> get acoesPreferidas => _acoesPreferidas;
+  set acoesPreferidas(List<String> value) {
+    _acoesPreferidas = value;
+    prefs.setStringList('ff_acoesPreferidas', value);
+  }
+
+  void addToAcoesPreferidas(String value) {
+    acoesPreferidas.add(value);
+    prefs.setStringList('ff_acoesPreferidas', _acoesPreferidas);
+  }
+
+  void removeFromAcoesPreferidas(String value) {
+    acoesPreferidas.remove(value);
+    prefs.setStringList('ff_acoesPreferidas', _acoesPreferidas);
+  }
+
+  bool isAcaoPreferida(String acao) {
+    return _acoesPreferidas.contains(acao);
   }
 
   bool _ordenacaoQuery = false;
