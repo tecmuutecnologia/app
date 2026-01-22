@@ -96,7 +96,7 @@ class _ListaAnimaisCopy2WidgetState extends State<ListaAnimaisCopy2Widget>
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

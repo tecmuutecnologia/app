@@ -98,7 +98,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

@@ -99,7 +99,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

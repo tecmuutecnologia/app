@@ -72,7 +72,7 @@ class _RecriacaoCopy3WidgetState extends State<RecriacaoCopy3Widget> {
 
           safeSetState(() {});
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

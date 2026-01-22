@@ -102,7 +102,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

@@ -100,7 +100,7 @@ class _InicioPropriedadeProdutorWidgetState
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

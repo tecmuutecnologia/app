@@ -124,7 +124,7 @@ class _ListacompletaBkpUltimoWidgetState
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

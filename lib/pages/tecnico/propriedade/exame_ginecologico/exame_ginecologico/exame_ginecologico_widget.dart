@@ -95,7 +95,7 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

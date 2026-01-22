@@ -250,7 +250,7 @@ class _AlertaSemInternetWidgetState extends State<AlertaSemInternetWidget> {
                     safeSetState(() {});
                     Navigator.pop(context);
                   },
-                  startImmediately: true,
+                  startImmediately: false,
                 );
 
                 safeSetState(() {});

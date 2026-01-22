@@ -100,7 +100,7 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

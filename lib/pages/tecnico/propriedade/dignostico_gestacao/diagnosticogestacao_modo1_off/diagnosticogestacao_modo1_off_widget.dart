@@ -69,7 +69,7 @@ class _DiagnosticogestacaoModo1OffWidgetState
 
           safeSetState(() {});
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

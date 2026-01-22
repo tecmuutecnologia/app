@@ -97,7 +97,7 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

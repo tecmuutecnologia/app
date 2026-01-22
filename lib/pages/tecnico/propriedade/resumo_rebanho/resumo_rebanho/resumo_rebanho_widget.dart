@@ -63,7 +63,7 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
 
           safeSetState(() {});
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

@@ -123,7 +123,7 @@ class _ListacompletaNewBkpWidgetState extends State<ListacompletaNewBkpWidget> {
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

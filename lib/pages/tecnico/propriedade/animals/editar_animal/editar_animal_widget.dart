@@ -102,7 +102,7 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

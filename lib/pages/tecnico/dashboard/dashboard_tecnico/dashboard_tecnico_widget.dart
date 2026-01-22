@@ -76,7 +76,7 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

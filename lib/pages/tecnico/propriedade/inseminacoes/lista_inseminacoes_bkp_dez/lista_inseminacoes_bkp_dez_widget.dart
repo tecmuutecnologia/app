@@ -98,7 +98,7 @@ class _ListaInseminacoesBkpDezWidgetState
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

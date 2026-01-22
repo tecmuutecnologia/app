@@ -62,7 +62,7 @@ class _ProntuarioAnimalOfflineWidgetState
 
           safeSetState(() {});
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

@@ -99,7 +99,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

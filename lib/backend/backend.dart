@@ -70,7 +70,7 @@ export 'schema/status_produtivo_record.dart';
 /// Functions to query CidadesRecords (as a Stream and as a Future).
 Future<int> queryCidadesRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       CidadesRecord.collection,
@@ -80,7 +80,7 @@ Future<int> queryCidadesRecordCount({
 
 Stream<List<CidadesRecord>> queryCidadesRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -93,7 +93,7 @@ Stream<List<CidadesRecord>> queryCidadesRecord({
 
 Future<List<CidadesRecord>> queryCidadesRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -148,7 +148,7 @@ Future<FFFirestorePage<CidadesRecord>> queryCidadesRecordPage({
 /// Functions to query GrupoRecords (as a Stream and as a Future).
 Future<int> queryGrupoRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       GrupoRecord.collection,
@@ -158,7 +158,7 @@ Future<int> queryGrupoRecordCount({
 
 Stream<List<GrupoRecord>> queryGrupoRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -171,7 +171,7 @@ Stream<List<GrupoRecord>> queryGrupoRecord({
 
 Future<List<GrupoRecord>> queryGrupoRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -226,7 +226,7 @@ Future<FFFirestorePage<GrupoRecord>> queryGrupoRecordPage({
 /// Functions to query StatusAnimaisRecords (as a Stream and as a Future).
 Future<int> queryStatusAnimaisRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       StatusAnimaisRecord.collection,
@@ -236,7 +236,7 @@ Future<int> queryStatusAnimaisRecordCount({
 
 Stream<List<StatusAnimaisRecord>> queryStatusAnimaisRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -249,7 +249,7 @@ Stream<List<StatusAnimaisRecord>> queryStatusAnimaisRecord({
 
 Future<List<StatusAnimaisRecord>> queryStatusAnimaisRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -304,7 +304,7 @@ Future<FFFirestorePage<StatusAnimaisRecord>> queryStatusAnimaisRecordPage({
 /// Functions to query PlanosProdutorRecords (as a Stream and as a Future).
 Future<int> queryPlanosProdutorRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       PlanosProdutorRecord.collection,
@@ -314,7 +314,7 @@ Future<int> queryPlanosProdutorRecordCount({
 
 Stream<List<PlanosProdutorRecord>> queryPlanosProdutorRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -327,7 +327,7 @@ Stream<List<PlanosProdutorRecord>> queryPlanosProdutorRecord({
 
 Future<List<PlanosProdutorRecord>> queryPlanosProdutorRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -382,7 +382,7 @@ Future<FFFirestorePage<PlanosProdutorRecord>> queryPlanosProdutorRecordPage({
 /// Functions to query PlanosTecnicosRecords (as a Stream and as a Future).
 Future<int> queryPlanosTecnicosRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       PlanosTecnicosRecord.collection,
@@ -392,7 +392,7 @@ Future<int> queryPlanosTecnicosRecordCount({
 
 Stream<List<PlanosTecnicosRecord>> queryPlanosTecnicosRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -405,7 +405,7 @@ Stream<List<PlanosTecnicosRecord>> queryPlanosTecnicosRecord({
 
 Future<List<PlanosTecnicosRecord>> queryPlanosTecnicosRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -460,7 +460,7 @@ Future<FFFirestorePage<PlanosTecnicosRecord>> queryPlanosTecnicosRecordPage({
 /// Functions to query EmpresasRecords (as a Stream and as a Future).
 Future<int> queryEmpresasRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       EmpresasRecord.collection,
@@ -470,7 +470,7 @@ Future<int> queryEmpresasRecordCount({
 
 Stream<List<EmpresasRecord>> queryEmpresasRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -483,7 +483,7 @@ Stream<List<EmpresasRecord>> queryEmpresasRecord({
 
 Future<List<EmpresasRecord>> queryEmpresasRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -538,7 +538,7 @@ Future<FFFirestorePage<EmpresasRecord>> queryEmpresasRecordPage({
 /// Functions to query PersonRecords (as a Stream and as a Future).
 Future<int> queryPersonRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       PersonRecord.collection,
@@ -548,7 +548,7 @@ Future<int> queryPersonRecordCount({
 
 Stream<List<PersonRecord>> queryPersonRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -561,7 +561,7 @@ Stream<List<PersonRecord>> queryPersonRecord({
 
 Future<List<PersonRecord>> queryPersonRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -616,7 +616,7 @@ Future<FFFirestorePage<PersonRecord>> queryPersonRecordPage({
 /// Functions to query TecnicoRecords (as a Stream and as a Future).
 Future<int> queryTecnicoRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       TecnicoRecord.collection,
@@ -626,7 +626,7 @@ Future<int> queryTecnicoRecordCount({
 
 Stream<List<TecnicoRecord>> queryTecnicoRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -639,7 +639,7 @@ Stream<List<TecnicoRecord>> queryTecnicoRecord({
 
 Future<List<TecnicoRecord>> queryTecnicoRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -694,7 +694,7 @@ Future<FFFirestorePage<TecnicoRecord>> queryTecnicoRecordPage({
 /// Functions to query ProdutorRecords (as a Stream and as a Future).
 Future<int> queryProdutorRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       ProdutorRecord.collection,
@@ -704,7 +704,7 @@ Future<int> queryProdutorRecordCount({
 
 Stream<List<ProdutorRecord>> queryProdutorRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -717,7 +717,7 @@ Stream<List<ProdutorRecord>> queryProdutorRecord({
 
 Future<List<ProdutorRecord>> queryProdutorRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -772,7 +772,7 @@ Future<FFFirestorePage<ProdutorRecord>> queryProdutorRecordPage({
 /// Functions to query AssinaturaProdutorRecords (as a Stream and as a Future).
 Future<int> queryAssinaturaProdutorRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       AssinaturaProdutorRecord.collection,
@@ -782,7 +782,7 @@ Future<int> queryAssinaturaProdutorRecordCount({
 
 Stream<List<AssinaturaProdutorRecord>> queryAssinaturaProdutorRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -795,7 +795,7 @@ Stream<List<AssinaturaProdutorRecord>> queryAssinaturaProdutorRecord({
 
 Future<List<AssinaturaProdutorRecord>> queryAssinaturaProdutorRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -852,7 +852,7 @@ Future<FFFirestorePage<AssinaturaProdutorRecord>>
 /// Functions to query AssinaturaAtivaProdutorRecords (as a Stream and as a Future).
 Future<int> queryAssinaturaAtivaProdutorRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       AssinaturaAtivaProdutorRecord.collection,
@@ -862,7 +862,7 @@ Future<int> queryAssinaturaAtivaProdutorRecordCount({
 
 Stream<List<AssinaturaAtivaProdutorRecord>> queryAssinaturaAtivaProdutorRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -876,7 +876,7 @@ Stream<List<AssinaturaAtivaProdutorRecord>> queryAssinaturaAtivaProdutorRecord({
 Future<List<AssinaturaAtivaProdutorRecord>>
     queryAssinaturaAtivaProdutorRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
         queryCollectionOnce(
@@ -933,7 +933,7 @@ Future<FFFirestorePage<AssinaturaAtivaProdutorRecord>>
 /// Functions to query AssinaturaTecnicoRecords (as a Stream and as a Future).
 Future<int> queryAssinaturaTecnicoRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       AssinaturaTecnicoRecord.collection,
@@ -943,7 +943,7 @@ Future<int> queryAssinaturaTecnicoRecordCount({
 
 Stream<List<AssinaturaTecnicoRecord>> queryAssinaturaTecnicoRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -956,7 +956,7 @@ Stream<List<AssinaturaTecnicoRecord>> queryAssinaturaTecnicoRecord({
 
 Future<List<AssinaturaTecnicoRecord>> queryAssinaturaTecnicoRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -1013,7 +1013,7 @@ Future<FFFirestorePage<AssinaturaTecnicoRecord>>
 /// Functions to query AssinaturaAtivaTecnicoRecords (as a Stream and as a Future).
 Future<int> queryAssinaturaAtivaTecnicoRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       AssinaturaAtivaTecnicoRecord.collection,
@@ -1023,7 +1023,7 @@ Future<int> queryAssinaturaAtivaTecnicoRecordCount({
 
 Stream<List<AssinaturaAtivaTecnicoRecord>> queryAssinaturaAtivaTecnicoRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -1037,7 +1037,7 @@ Stream<List<AssinaturaAtivaTecnicoRecord>> queryAssinaturaAtivaTecnicoRecord({
 Future<List<AssinaturaAtivaTecnicoRecord>>
     queryAssinaturaAtivaTecnicoRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
         queryCollectionOnce(
@@ -1095,7 +1095,7 @@ Future<FFFirestorePage<AssinaturaAtivaTecnicoRecord>>
 Future<int> queryPropriedadesRecordCount({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       PropriedadesRecord.collection(parent),
@@ -1106,7 +1106,7 @@ Future<int> queryPropriedadesRecordCount({
 Stream<List<PropriedadesRecord>> queryPropriedadesRecord({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -1120,7 +1120,7 @@ Stream<List<PropriedadesRecord>> queryPropriedadesRecord({
 Future<List<PropriedadesRecord>> queryPropriedadesRecordOnce({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -1177,7 +1177,7 @@ Future<FFFirestorePage<PropriedadesRecord>> queryPropriedadesRecordPage({
 Future<int> queryAnimaisProdutoresRecordCount({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       AnimaisProdutoresRecord.collection(parent),
@@ -1188,7 +1188,7 @@ Future<int> queryAnimaisProdutoresRecordCount({
 Stream<List<AnimaisProdutoresRecord>> queryAnimaisProdutoresRecord({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -1202,7 +1202,7 @@ Stream<List<AnimaisProdutoresRecord>> queryAnimaisProdutoresRecord({
 Future<List<AnimaisProdutoresRecord>> queryAnimaisProdutoresRecordOnce({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -1261,7 +1261,7 @@ Future<FFFirestorePage<AnimaisProdutoresRecord>>
 Future<int> queryAcoesRecordCount({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       AcoesRecord.collection(parent),
@@ -1272,7 +1272,7 @@ Future<int> queryAcoesRecordCount({
 Stream<List<AcoesRecord>> queryAcoesRecord({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -1286,7 +1286,7 @@ Stream<List<AcoesRecord>> queryAcoesRecord({
 Future<List<AcoesRecord>> queryAcoesRecordOnce({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -1342,7 +1342,7 @@ Future<FFFirestorePage<AcoesRecord>> queryAcoesRecordPage({
 /// Functions to query TipoAcoesRecords (as a Stream and as a Future).
 Future<int> queryTipoAcoesRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       TipoAcoesRecord.collection,
@@ -1352,7 +1352,7 @@ Future<int> queryTipoAcoesRecordCount({
 
 Stream<List<TipoAcoesRecord>> queryTipoAcoesRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -1365,7 +1365,7 @@ Stream<List<TipoAcoesRecord>> queryTipoAcoesRecord({
 
 Future<List<TipoAcoesRecord>> queryTipoAcoesRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -1420,7 +1420,7 @@ Future<FFFirestorePage<TipoAcoesRecord>> queryTipoAcoesRecordPage({
 /// Functions to query RacasRecords (as a Stream and as a Future).
 Future<int> queryRacasRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       RacasRecord.collection,
@@ -1430,7 +1430,7 @@ Future<int> queryRacasRecordCount({
 
 Stream<List<RacasRecord>> queryRacasRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -1443,7 +1443,7 @@ Stream<List<RacasRecord>> queryRacasRecord({
 
 Future<List<RacasRecord>> queryRacasRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -1499,7 +1499,7 @@ Future<FFFirestorePage<RacasRecord>> queryRacasRecordPage({
 Future<int> queryAcoesSanitarioRecordCount({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       AcoesSanitarioRecord.collection(parent),
@@ -1510,7 +1510,7 @@ Future<int> queryAcoesSanitarioRecordCount({
 Stream<List<AcoesSanitarioRecord>> queryAcoesSanitarioRecord({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -1524,7 +1524,7 @@ Stream<List<AcoesSanitarioRecord>> queryAcoesSanitarioRecord({
 Future<List<AcoesSanitarioRecord>> queryAcoesSanitarioRecordOnce({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -1580,7 +1580,7 @@ Future<FFFirestorePage<AcoesSanitarioRecord>> queryAcoesSanitarioRecordPage({
 /// Functions to query ColunasRelatorioRebanhoRecords (as a Stream and as a Future).
 Future<int> queryColunasRelatorioRebanhoRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       ColunasRelatorioRebanhoRecord.collection,
@@ -1590,7 +1590,7 @@ Future<int> queryColunasRelatorioRebanhoRecordCount({
 
 Stream<List<ColunasRelatorioRebanhoRecord>> queryColunasRelatorioRebanhoRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -1604,7 +1604,7 @@ Stream<List<ColunasRelatorioRebanhoRecord>> queryColunasRelatorioRebanhoRecord({
 Future<List<ColunasRelatorioRebanhoRecord>>
     queryColunasRelatorioRebanhoRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
         queryCollectionOnce(
@@ -1662,7 +1662,7 @@ Future<FFFirestorePage<ColunasRelatorioRebanhoRecord>>
 Future<int> queryFinanceiroRecordCount({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       FinanceiroRecord.collection(parent),
@@ -1673,7 +1673,7 @@ Future<int> queryFinanceiroRecordCount({
 Stream<List<FinanceiroRecord>> queryFinanceiroRecord({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -1687,7 +1687,7 @@ Stream<List<FinanceiroRecord>> queryFinanceiroRecord({
 Future<List<FinanceiroRecord>> queryFinanceiroRecordOnce({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -1743,7 +1743,7 @@ Future<FFFirestorePage<FinanceiroRecord>> queryFinanceiroRecordPage({
 /// Functions to query ResumoDaVisitaRecords (as a Stream and as a Future).
 Future<int> queryResumoDaVisitaRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       ResumoDaVisitaRecord.collection,
@@ -1753,7 +1753,7 @@ Future<int> queryResumoDaVisitaRecordCount({
 
 Stream<List<ResumoDaVisitaRecord>> queryResumoDaVisitaRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -1766,7 +1766,7 @@ Stream<List<ResumoDaVisitaRecord>> queryResumoDaVisitaRecord({
 
 Future<List<ResumoDaVisitaRecord>> queryResumoDaVisitaRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -1822,7 +1822,7 @@ Future<FFFirestorePage<ResumoDaVisitaRecord>> queryResumoDaVisitaRecordPage({
 Future<int> queryAcoesDaVisitaRecordCount({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       AcoesDaVisitaRecord.collection(parent),
@@ -1833,7 +1833,7 @@ Future<int> queryAcoesDaVisitaRecordCount({
 Stream<List<AcoesDaVisitaRecord>> queryAcoesDaVisitaRecord({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -1847,7 +1847,7 @@ Stream<List<AcoesDaVisitaRecord>> queryAcoesDaVisitaRecord({
 Future<List<AcoesDaVisitaRecord>> queryAcoesDaVisitaRecordOnce({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -1903,7 +1903,7 @@ Future<FFFirestorePage<AcoesDaVisitaRecord>> queryAcoesDaVisitaRecordPage({
 /// Functions to query CalendarioSanitarioRecords (as a Stream and as a Future).
 Future<int> queryCalendarioSanitarioRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       CalendarioSanitarioRecord.collection,
@@ -1913,7 +1913,7 @@ Future<int> queryCalendarioSanitarioRecordCount({
 
 Stream<List<CalendarioSanitarioRecord>> queryCalendarioSanitarioRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -1926,7 +1926,7 @@ Stream<List<CalendarioSanitarioRecord>> queryCalendarioSanitarioRecord({
 
 Future<List<CalendarioSanitarioRecord>> queryCalendarioSanitarioRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -1984,7 +1984,7 @@ Future<FFFirestorePage<CalendarioSanitarioRecord>>
 Future<int> queryTratamentosRecordCount({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       TratamentosRecord.collection(parent),
@@ -1995,7 +1995,7 @@ Future<int> queryTratamentosRecordCount({
 Stream<List<TratamentosRecord>> queryTratamentosRecord({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -2009,7 +2009,7 @@ Stream<List<TratamentosRecord>> queryTratamentosRecord({
 Future<List<TratamentosRecord>> queryTratamentosRecordOnce({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -2066,7 +2066,7 @@ Future<FFFirestorePage<TratamentosRecord>> queryTratamentosRecordPage({
 Future<int> queryRecomendacoesRecordCount({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       RecomendacoesRecord.collection(parent),
@@ -2077,7 +2077,7 @@ Future<int> queryRecomendacoesRecordCount({
 Stream<List<RecomendacoesRecord>> queryRecomendacoesRecord({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -2091,7 +2091,7 @@ Stream<List<RecomendacoesRecord>> queryRecomendacoesRecord({
 Future<List<RecomendacoesRecord>> queryRecomendacoesRecordOnce({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -2147,7 +2147,7 @@ Future<FFFirestorePage<RecomendacoesRecord>> queryRecomendacoesRecordPage({
 /// Functions to query StatusProdutivoRecords (as a Stream and as a Future).
 Future<int> queryStatusProdutivoRecordCount({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) =>
     queryCollectionCount(
       StatusProdutivoRecord.collection,
@@ -2157,7 +2157,7 @@ Future<int> queryStatusProdutivoRecordCount({
 
 Stream<List<StatusProdutivoRecord>> queryStatusProdutivoRecord({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -2170,7 +2170,7 @@ Stream<List<StatusProdutivoRecord>> queryStatusProdutivoRecord({
 
 Future<List<StatusProdutivoRecord>> queryStatusProdutivoRecordOnce({
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
@@ -2226,7 +2226,7 @@ Future<FFFirestorePage<StatusProdutivoRecord>> queryStatusProdutivoRecordPage({
 Future<int> queryCollectionCount(
   Query collection, {
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
 }) {
   final builder = queryBuilder ?? (q) => q;
   var query = builder(collection);
@@ -2243,7 +2243,7 @@ Stream<List<T>> queryCollection<T>(
   Query collection,
   RecordBuilder<T> recordBuilder, {
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) {
   final builder = queryBuilder ?? (q) => q;
@@ -2269,7 +2269,7 @@ Future<List<T>> queryCollectionOnce<T>(
   Query collection,
   RecordBuilder<T> recordBuilder, {
   Query Function(Query)? queryBuilder,
-  int limit = -1,
+  int limit = 500,
   bool singleRecord = false,
 }) {
   final builder = queryBuilder ?? (q) => q;

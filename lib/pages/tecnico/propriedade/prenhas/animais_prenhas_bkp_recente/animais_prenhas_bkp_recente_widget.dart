@@ -99,7 +99,7 @@ class _AnimaisPrenhasBkpRecenteWidgetState
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

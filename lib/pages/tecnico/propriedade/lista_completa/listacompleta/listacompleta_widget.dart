@@ -123,7 +123,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

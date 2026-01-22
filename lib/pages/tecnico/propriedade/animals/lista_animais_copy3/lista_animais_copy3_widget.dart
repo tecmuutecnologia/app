@@ -99,7 +99,7 @@ class _ListaAnimaisCopy3WidgetState extends State<ListaAnimaisCopy3Widget>
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

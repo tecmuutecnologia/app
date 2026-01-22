@@ -104,7 +104,7 @@ class _SecasWidgetState extends State<SecasWidget>
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

@@ -80,7 +80,7 @@ class _AcoesFalhadasWidgetState extends State<AcoesFalhadasWidget> {
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

@@ -63,7 +63,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
 
           safeSetState(() {});
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

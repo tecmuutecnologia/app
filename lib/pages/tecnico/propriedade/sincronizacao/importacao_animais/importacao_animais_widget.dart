@@ -89,7 +89,7 @@ class _ImportacaoAnimaisWidgetState extends State<ImportacaoAnimaisWidget> {
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 

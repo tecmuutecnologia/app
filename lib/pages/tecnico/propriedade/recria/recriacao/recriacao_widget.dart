@@ -124,7 +124,7 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
             }
           }
         },
-        startImmediately: true,
+        startImmediately: false,
       );
     });
 
