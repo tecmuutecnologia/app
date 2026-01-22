@@ -62,7 +62,7 @@ class _AnimaisPrenhasBkpRecenteWidgetState
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       _model.instantTimer = InstantTimer.periodic(
-        duration: Duration(milliseconds: 300),
+        duration: Duration(seconds: 5),
         callback: (timer) async {
           _model.respostaNet = await actions.checkInternetConnection();
 
