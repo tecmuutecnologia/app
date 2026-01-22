@@ -153,7 +153,7 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
+    // context.watch<FFAppState>();
 
     return StreamBuilder<List<TecnicoRecord>>(
       stream: queryTecnicoRecord(

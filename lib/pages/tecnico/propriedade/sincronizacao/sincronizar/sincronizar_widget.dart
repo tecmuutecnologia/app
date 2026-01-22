@@ -969,7 +969,7 @@ class _SincronizarWidgetState extends State<SincronizarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
+    // context.watch<FFAppState>();
 
     return Align(
       alignment: AlignmentDirectional(0.0, 0.0),

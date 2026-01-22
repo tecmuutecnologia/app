@@ -79,7 +79,7 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
+    // context.watch<FFAppState>();
 
     return StreamBuilder<List<AnimaisProdutoresRecord>>(
       stream: queryAnimaisProdutoresRecord(

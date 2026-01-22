@@ -118,7 +118,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
+    // context.watch<FFAppState>();
 
     return GestureDetector(
       onTap: () {

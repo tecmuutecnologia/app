@@ -113,7 +113,7 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
+    // context.watch<FFAppState>();
 
     return GestureDetector(
       onTap: () {

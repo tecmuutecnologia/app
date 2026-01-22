@@ -428,7 +428,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
+    // context.watch<FFAppState>();
 
     return StreamBuilder<List<AnimaisProdutoresRecord>>(
       stream: _model.cacheAnimaisListaCompleta(

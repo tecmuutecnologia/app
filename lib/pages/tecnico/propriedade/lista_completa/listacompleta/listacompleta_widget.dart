@@ -142,7 +142,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
+    // context.watch<FFAppState>();
 
     return GestureDetector(
       onTap: () {
