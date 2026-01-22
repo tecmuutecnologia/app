@@ -157,7 +157,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
           preferredSize: Size.fromHeight(100.0),
           child: AppBar(
             backgroundColor:
-                _model.respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
+                _model.respostaNet ? Color(0xFFF75E38) : Color(0xFFF2886E),
             automaticallyImplyLeading: false,
             actions: [],
             flexibleSpace: FlexibleSpaceBar(

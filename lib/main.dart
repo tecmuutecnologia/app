@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
+import 'package:objectbox_admin/objectbox_admin.dart';
 import 'auth/firebase_auth/firebase_user_provider.dart';
 import 'auth/firebase_auth/auth_util.dart';
 
@@ -15,6 +16,7 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import 'backend/stripe/payment_manager.dart';
+import 'data/index.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +24,21 @@ void main() async {
   usePathUrlStrategy();
 
   await initFirebase();
+
+  // Inicializa ObjectBox Store para banco de dados local
+  await ObjectBoxStore.init();
+  print('✅ ObjectBox inicializado');
+
+  // Inicializa ObjectBox Admin UI (para debug/inspeção de dados)
+  // Acesse em: http://localhost:8081 (padrão)
+  if (kDebugMode) {
+    await ObjectBoxAdmin(ObjectBoxStore.instance.store).serve();
+    print('✅ ObjectBox Admin UI disponível em: http://localhost:8081');
+  }
+
+  // Inicializa serviço de sincronização com Firestore
+  await SyncService.instance.init();
+  print('✅ SyncService inicializado');
 
   await FlutterFlowTheme.initialize();
 

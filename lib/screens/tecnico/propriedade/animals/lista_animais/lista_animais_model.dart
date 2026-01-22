@@ -12,7 +12,7 @@ class ListaAnimaisModel extends FlutterFlowModel<ListaAnimaisWidget> {
 
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in listaAnimais widget.
-  bool? respostaNet;
+  bool respostaNet = false;
   // State field(s) for TabBar widget.
   TabController? tabBarController;
   int get tabBarCurrentIndex =>
