@@ -13,7 +13,7 @@ class ListacompletaBkpUltimoModel
 
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in listacompletaBkpUltimo widget.
-  bool? respostaNet;
+  bool? respostaNet = true;
   // State field(s) for searchList widget.
   FocusNode? searchListFocusNode;
   TextEditingController? searchListTextController;

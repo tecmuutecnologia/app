@@ -9,7 +9,7 @@ class AcoesFalhadasModel extends FlutterFlowModel<AcoesFalhadasWidget> {
 
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in acoesFalhadas widget.
-  bool? respostaNet;
+  bool? respostaNet = true;
 
   @override
   void initState(BuildContext context) {}

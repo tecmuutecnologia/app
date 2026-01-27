@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:provider/provider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +65,9 @@ class _MyAppState extends State<MyApp> {
 
   late AppStateNotifier _appStateNotifier;
   late GoRouter _router;
+  late StreamSubscription<BaseAuthUser> _userStreamSubscription;
+  late StreamSubscription _jwtTokenStreamSubscription;
+
   String getRoute([RouteMatch? routeMatch]) {
     final RouteMatch lastMatch =
         routeMatch ?? _router.routerDelegate.currentConfiguration.last;
@@ -81,14 +86,16 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
     _appStateNotifier = AppStateNotifier.instance;
     _router = createRouter(_appStateNotifier);
-    userStream = tecmuuFirebaseUserStream()
-      ..listen((user) {
-        _appStateNotifier.update(user);
-      });
-    jwtTokenStream.listen((_) {});
+
+    userStream = tecmuuFirebaseUserStream();
+    _userStreamSubscription = userStream.listen((user) {
+      _appStateNotifier.update(user);
+    });
+
+    _jwtTokenStreamSubscription = jwtTokenStream.listen((_) {});
+
     Future.delayed(
       Duration(milliseconds: 1000),
       () => _appStateNotifier.stopShowingSplashImage(),
@@ -103,6 +110,13 @@ class _MyAppState extends State<MyApp> {
         _themeMode = mode;
         FlutterFlowTheme.saveThemeMode(mode);
       });
+
+  @override
+  void dispose() {
+    _userStreamSubscription.cancel(); // ✅ AGORA CANCELA
+    _jwtTokenStreamSubscription.cancel(); // ✅ AGORA CANCELA
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

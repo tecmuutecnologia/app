@@ -12,7 +12,8 @@ class InicioPropriedadeModel extends FlutterFlowModel<InicioPropriedadeWidget> {
 
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in inicioPropriedade widget.
-  bool? respostaNet;
+  bool? respostaNet =
+      true; // Inicializa como true (assume online até verificar)
 
   /// Query cache managers for this widget.
 

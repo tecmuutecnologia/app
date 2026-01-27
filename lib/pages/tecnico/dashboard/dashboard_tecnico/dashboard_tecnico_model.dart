@@ -9,7 +9,8 @@ class DashboardTecnicoModel extends FlutterFlowModel<DashboardTecnicoWidget> {
 
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in dashboardTecnico widget.
-  bool? respostaNet;
+  bool? respostaNet =
+      true; // Inicializa como true (assume online até verificar)
 
   @override
   void initState(BuildContext context) {}

@@ -13,7 +13,7 @@ class EditarAnimalModel extends FlutterFlowModel<EditarAnimalWidget> {
   final formKey = GlobalKey<FormState>();
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in editarAnimal widget.
-  bool? respostaNet;
+  bool? respostaNet = true;
   // State field(s) for nome widget.
   FocusNode? nomeFocusNode;
   TextEditingController? nomeTextController;

@@ -9,7 +9,7 @@ class ExameGinecologicoModel extends FlutterFlowModel<ExameGinecologicoWidget> {
 
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in exameGinecologico widget.
-  bool? respostaNet;
+  bool? respostaNet = true;
 
   @override
   void initState(BuildContext context) {}

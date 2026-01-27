@@ -14,7 +14,7 @@ class InicioPropriedadeProdutorModel
 
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in inicioPropriedadeProdutor widget.
-  bool? respostaNet;
+  bool? respostaNet = true;
 
   /// Query cache managers for this widget.
 

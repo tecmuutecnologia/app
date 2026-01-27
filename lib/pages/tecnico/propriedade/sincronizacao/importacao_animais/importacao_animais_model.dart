@@ -9,7 +9,7 @@ class ImportacaoAnimaisModel extends FlutterFlowModel<ImportacaoAnimaisWidget> {
 
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in importacaoAnimais widget.
-  bool? respostaNet;
+  bool? respostaNet = true;
 
   @override
   void initState(BuildContext context) {}

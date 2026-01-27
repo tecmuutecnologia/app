@@ -9,7 +9,7 @@ class SecasModel extends FlutterFlowModel<SecasWidget> {
 
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in secas widget.
-  bool? respostaNet;
+  bool? respostaNet = true;
   // State field(s) for TabBar widget.
   TabController? tabBarController;
   int get tabBarCurrentIndex =>

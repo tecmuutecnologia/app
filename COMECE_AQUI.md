@@ -134,7 +134,7 @@ E **COMENTE** ou **DELETE** (apenas se não precisa):
 
 ---
 
-## 4️⃣ CANCELAR LISTENERS (30 min)
+## 4️⃣ CANCELAR LISTENERS (30 min) # TODO FALTOU ESSE FAZER AMANHÃ
 
 ### Arquivo: `main.dart` (linhas ~85-90)
 

@@ -10,7 +10,7 @@ class ProntuarioAnimalOfflineModel
 
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in prontuarioAnimalOffline widget.
-  bool? respostaNet;
+  bool? respostaNet = true;
 
   @override
   void initState(BuildContext context) {}

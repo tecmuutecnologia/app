@@ -11,7 +11,7 @@ class ResumoRebanhoModel extends FlutterFlowModel<ResumoRebanhoWidget> {
 
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in resumoRebanho widget.
-  bool? respostaNet;
+  bool? respostaNet = true;
   // State field(s) for categoriaAnimal widget.
   List<String>? categoriaAnimalValue;
   FormFieldController<List<String>>? categoriaAnimalValueController;

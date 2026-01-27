@@ -10,7 +10,7 @@ class ProntuarioAnimalModel extends FlutterFlowModel<ProntuarioAnimalWidget> {
 
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in prontuarioAnimal widget.
-  bool? respostaNet;
+  bool? respostaNet = true;
   // Stores action output result for [Firestore Query - Query a collection] action in Card widget.
   TratamentosRecord? deleteAcaoUidTratamentos;
 

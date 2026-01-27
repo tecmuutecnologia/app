@@ -12,7 +12,7 @@ class ListaAnimaisCopy3Model extends FlutterFlowModel<ListaAnimaisCopy3Widget> {
 
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in listaAnimaisCopy3 widget.
-  bool? respostaNet;
+  bool? respostaNet = true;
   // State field(s) for TabBar widget.
   TabController? tabBarController;
   int get tabBarCurrentIndex =>

@@ -10,7 +10,7 @@ class RecriacaoCopy3Model extends FlutterFlowModel<RecriacaoCopy3Widget> {
 
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in recriacaoCopy3 widget.
-  bool? respostaNet;
+  bool? respostaNet = true;
   // State field(s) for ChoiceChips widget.
   FormFieldController<List<String>>? choiceChipsValueController;
   String? get choiceChipsValue =>

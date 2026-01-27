@@ -12,7 +12,7 @@ class ListacompletaModel extends FlutterFlowModel<ListacompletaWidget> {
 
   InstantTimer? instantTimer;
   // Stores action output result for [Custom Action - checkInternetConnection] action in listacompleta widget.
-  bool? respostaNet;
+  bool? respostaNet = true;
   // State field(s) for searchList widget.
   FocusNode? searchListFocusNode;
   TextEditingController? searchListTextController;
