@@ -20,6 +20,7 @@ platform :ios do
       api_key: api_key,
       ipa: "build/ios/ipa/tecmuu.ipa",
       distribute_external: true,
+      groups: ["External Testers"],
       changelog: changelog,
       skip_waiting_for_build_processing: false
     )
