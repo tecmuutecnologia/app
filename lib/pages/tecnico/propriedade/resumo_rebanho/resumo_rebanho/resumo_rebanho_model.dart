@@ -38,6 +38,9 @@ class ResumoRebanhoModel extends FlutterFlowModel<ResumoRebanhoWidget> {
   bool? checkParicaoValue;
   // State field(s) for check_ultima_acao widget.
   bool? checkUltimaAcaoValue;
+  // State field(s) for formatoExportacao widget.
+  String? formatoExportacaoValue;
+  FormFieldController<String>? formatoExportacaoValueController;
   // Stores action output result for [Backend Call - Read Document] action in btnGerarRelatorio widget.
   PropriedadesRecord? outUidPropriedade;
   // Stores action output result for [Backend Call - Read Document] action in btnGerarRelatorio widget.

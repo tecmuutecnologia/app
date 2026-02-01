@@ -338,42 +338,72 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                valueOrDefault<String>(
-                                                  dashboardTecnicoTecnicoRecord
-                                                      ?.quantidadeProdutoresCadastrados
-                                                      .toString(),
-                                                  '0',
+                                              StreamBuilder<
+                                                  List<
+                                                      PropriedadesRecord>>(
+                                                stream:
+                                                    queryPropriedadesRecord(
+                                                  parent:
+                                                      dashboardTecnicoTecnicoRecord
+                                                          ?.reference,
                                                 ),
-                                                style: FlutterFlowTheme.of(
-                                                        context)
-                                                    .displaySmall
-                                                    .override(
-                                                      font: GoogleFonts.outfit(
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .displaySmall
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .displaySmall
-                                                                .fontStyle,
+                                                builder: (context, snapshot) {
+                                                  if (!snapshot.hasData) {
+                                                    return Center(
+                                                      child: SizedBox(
+                                                        width: 50.0,
+                                                        height: 50.0,
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                          valueColor:
+                                                              AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                            Color(0xFFF75E38),
+                                                          ),
+                                                        ),
                                                       ),
-                                                      color: Color(0xFFEC3B5B),
-                                                      letterSpacing: 0.0,
-                                                      fontWeight:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .displaySmall
-                                                              .fontWeight,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .displaySmall
-                                                              .fontStyle,
-                                                    ),
+                                                    );
+                                                  }
+                                                  List<PropriedadesRecord>
+                                                      propriedadesCount =
+                                                      snapshot.data!;
+
+                                                  return Text(
+                                                    propriedadesCount.length
+                                                        .toString(),
+                                                    style: FlutterFlowTheme.of(
+                                                            context)
+                                                        .displaySmall
+                                                        .override(
+                                                          font: GoogleFonts
+                                                              .outfit(
+                                                            fontWeight:
+                                                                FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .displaySmall
+                                                                    .fontWeight,
+                                                            fontStyle:
+                                                                FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .displaySmall
+                                                                    .fontStyle,
+                                                          ),
+                                                          color:
+                                                              Color(0xFFEC3B5B),
+                                                          letterSpacing: 0.0,
+                                                          fontWeight:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .displaySmall
+                                                                  .fontWeight,
+                                                          fontStyle:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .displaySmall
+                                                                  .fontStyle,
+                                                        ),
+                                                  );
+                                                },
                                               ),
                                               Padding(
                                                 padding: EdgeInsetsDirectional
@@ -702,28 +732,58 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
                                     child: Padding(
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           16.0, 12.0, 0.0, 12.0),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          CircularPercentIndicator(
-                                            percent: dashboardTecnicoTecnicoRecord!
-                                                    .quantidadeProdutoresCadastrados /
-                                                dashboardTecnicoTecnicoRecord
-                                                    .limiteProdutoresContratado,
-                                            radius: 50.0,
-                                            lineWidth: 12.0,
-                                            animation: true,
-                                            animateFromLastPercent: true,
-                                            progressColor: Color(0xFFEC3B5B),
-                                            backgroundColor: Color(0xFFE9E9E9),
-                                            center: Text(
+                                      child: StreamBuilder<
+                                          List<PropriedadesRecord>>(
+                                        stream: queryPropriedadesRecord(
+                                          parent:
                                               dashboardTecnicoTecnicoRecord
-                                                  .quantidadeProdutoresCadastrados
-                                                  .toString(),
-                                              style:
-                                                  FlutterFlowTheme.of(context)
+                                                  ?.reference,
+                                        ),
+                                        builder: (context, snapshot) {
+                                          if (!snapshot.hasData) {
+                                            return Center(
+                                              child: SizedBox(
+                                                width: 50.0,
+                                                height: 50.0,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                          Color>(
+                                                        Color(0xFFF75E38),
+                                                      ),
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                          List<PropriedadesRecord>
+                                              propriedadesList =
+                                              snapshot.data!;
+                                          final propriedadesCount =
+                                              propriedadesList.length;
+
+                                          return Column(
+                                            mainAxisSize: MainAxisSize.max,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              CircularPercentIndicator(
+                                                percent: propriedadesCount /
+                                                    dashboardTecnicoTecnicoRecord!
+                                                        .limiteProdutoresContratado,
+                                                radius: 50.0,
+                                                lineWidth: 12.0,
+                                                animation: true,
+                                                animateFromLastPercent: true,
+                                                progressColor:
+                                                    Color(0xFFEC3B5B),
+                                                backgroundColor:
+                                                    Color(0xFFE9E9E9),
+                                                center: Text(
+                                                  propriedadesCount
+                                                      .toString(),
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
                                                       .headlineSmall
                                                       .override(
                                                         font:
@@ -751,9 +811,11 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
                                                                 .headlineSmall
                                                                 .fontStyle,
                                                       ),
-                                            ),
-                                          ),
-                                        ],
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
                                       ),
                                     ),
                                   ),
@@ -761,83 +823,116 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
                                     child: Padding(
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           0.0, 0.0, 16.0, 0.0),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            valueOrDefault<String>(
+                                      child: StreamBuilder<
+                                          List<PropriedadesRecord>>(
+                                        stream: queryPropriedadesRecord(
+                                          parent:
                                               dashboardTecnicoTecnicoRecord
-                                                  .restanteLimiteProdutores
-                                                  .toString(),
-                                              '0',
-                                            ),
-                                            style: FlutterFlowTheme.of(context)
-                                                .displaySmall
-                                                .override(
-                                                  font: GoogleFonts.outfit(
-                                                    fontWeight:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .displaySmall
-                                                            .fontWeight,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .displaySmall
-                                                            .fontStyle,
-                                                  ),
-                                                  letterSpacing: 0.0,
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .displaySmall
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .displaySmall
-                                                          .fontStyle,
+                                                  ?.reference,
+                                        ),
+                                        builder: (context, snapshot) {
+                                          if (!snapshot.hasData) {
+                                            return Center(
+                                              child: SizedBox(
+                                                width: 50.0,
+                                                height: 50.0,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                          Color>(
+                                                        Color(0xFFF75E38),
+                                                      ),
                                                 ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    0.0, 4.0, 0.0, 0.0),
-                                            child: Text(
-                                              'Propriedades disponíveis no seu Plano',
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .labelMedium
-                                                  .override(
-                                                    font: GoogleFonts.readexPro(
+                                              ),
+                                            );
+                                          }
+                                          List<PropriedadesRecord>
+                                              propriedadesListRight =
+                                              snapshot.data!;
+                                          final restantePropriedad =
+                                              dashboardTecnicoTecnicoRecord!
+                                                      .limiteProdutoresContratado -
+                                                  propriedadesListRight.length;
+
+                                          return Column(
+                                            mainAxisSize: MainAxisSize.max,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                restantePropriedad
+                                                    .toString(),
+                                                style: FlutterFlowTheme.of(
+                                                        context)
+                                                    .displaySmall
+                                                    .override(
+                                                      font: GoogleFonts.outfit(
+                                                        fontWeight:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .displaySmall
+                                                                .fontWeight,
+                                                        fontStyle:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .displaySmall
+                                                                .fontStyle,
+                                                      ),
+                                                      letterSpacing: 0.0,
                                                       fontWeight:
                                                           FlutterFlowTheme.of(
                                                                   context)
-                                                              .labelMedium
+                                                              .displaySmall
                                                               .fontWeight,
                                                       fontStyle:
                                                           FlutterFlowTheme.of(
                                                                   context)
-                                                              .labelMedium
+                                                              .displaySmall
                                                               .fontStyle,
                                                     ),
-                                                    letterSpacing: 0.0,
-                                                    fontWeight:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .labelMedium
-                                                            .fontWeight,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .labelMedium
-                                                            .fontStyle,
-                                                  ),
-                                            ),
-                                          ),
-                                        ],
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    EdgeInsetsDirectional
+                                                        .fromSTEB(
+                                                            0.0, 4.0, 0.0, 0.0),
+                                                child: Text(
+                                                  'Propriedades disponíveis no seu Plano',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .labelMedium
+                                                      .override(
+                                                        font: GoogleFonts
+                                                            .readexPro(
+                                                          fontWeight:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .labelMedium
+                                                                  .fontWeight,
+                                                          fontStyle:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .labelMedium
+                                                                  .fontStyle,
+                                                        ),
+                                                        letterSpacing: 0.0,
+                                                        fontWeight:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .labelMedium
+                                                                .fontWeight,
+                                                        fontStyle:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .labelMedium
+                                                                .fontStyle,
+                                                      ),
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
                                       ),
                                     ),
                                   ),

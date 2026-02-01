@@ -1156,6 +1156,90 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
                   ),
                   Padding(
                     padding:
+                        EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Formato de Exportação',
+                          style:
+                              FlutterFlowTheme.of(context).bodyLarge.override(
+                                    font: GoogleFonts.readexPro(
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .bodyLarge
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .bodyLarge
+                                          .fontStyle,
+                                    ),
+                                    fontSize: 18.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .bodyLarge
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyLarge
+                                        .fontStyle,
+                                  ),
+                        ),
+                        SizedBox(height: 10.0),
+                        FlutterFlowDropDown<String>(
+                          controller: _model.formatoExportacaoValueController ??=
+                              FormFieldController<String>(
+                            _model.formatoExportacaoValue ??= 'PDF',
+                          ),
+                          options: ['PDF', 'Excel'],
+                          onChanged: (val) {
+                            safeSetState(() {
+                              _model.formatoExportacaoValue = val;
+                            });
+                          },
+                          width: MediaQuery.sizeOf(context).width * 0.8,
+                          height: 50.0,
+                          textStyle:
+                              FlutterFlowTheme.of(context).bodyMedium.override(
+                                    font: GoogleFonts.readexPro(
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontStyle,
+                                    ),
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
+                                  ),
+                          hintText: 'Selecione o formato',
+                          icon: Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color:
+                                FlutterFlowTheme.of(context).secondaryText,
+                            size: 24.0,
+                          ),
+                          fillColor:
+                              FlutterFlowTheme.of(context).secondaryBackground,
+                          elevation: 2.0,
+                          borderColor:
+                              FlutterFlowTheme.of(context).alternate,
+                          borderWidth: 2.0,
+                          borderRadius: 8.0,
+                          margin: EdgeInsetsDirectional.fromSTEB(
+                              16.0, 4.0, 16.0, 4.0),
+                          hidesUnderline: true,
+                          isSearchable: false,
+                          isMultiSelect: false,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding:
                         EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 30.0),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
@@ -1183,31 +1267,63 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
                                 singleRecord: true,
                               ).then((s) => s.firstOrNull);
                               _shouldSetState = true;
-                              await actions.createResumoRebanho(
-                                resumoRebanhoAnimaisProdutoresRecordList
-                                    .map((e) => e.reference)
-                                    .toList(),
-                                _model.checkUltimopartoValue == true,
-                                _model.checkUltimaiaValue == true,
-                                _model.checkDelValue == true,
-                                _model.checkTouroValue == true,
-                                _model.checkSecagemValue == true,
-                                _model.checkPrepartoValue == true,
-                                _model.checkParicaoValue == true,
-                                _model.checkDiasAbertoValue!,
-                                _model.checkIntervaloEntrePartosValue!,
-                                _model.categoriaAnimalValue!.toList(),
-                                _model.statusAnimalValue?.toList(),
-                                _model.outUidPropriedade!.displayName,
-                                '${_model.outUidPropriedade?.endereco} - ${_model.outUidPropriedade?.cidade}',
-                                _model.outUidPersonTecnico!.displayName,
-                                _model.outUidPersonTecnico!.phoneNumber,
-                                _model.outUidPersonTecnico!.email,
-                                _model.outUidPersonTecnico!.empresa,
-                                'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/tecmuu-xingpe/assets/mjfv0ghrztrz/logo-2.png',
-                                _model.checkUltimaAcaoValue ?? false,
-                                widget.uidTecnico!,
-                              );
+                              
+                              // Verificar qual formato foi selecionado
+                              if (_model.formatoExportacaoValue == 'Excel') {
+                                // Gerar Excel
+                                await actions.createResumoRebanhoExcel(
+                                  resumoRebanhoAnimaisProdutoresRecordList
+                                      .map((e) => e.reference)
+                                      .toList(),
+                                  _model.checkUltimopartoValue == true,
+                                  _model.checkUltimaiaValue == true,
+                                  _model.checkDelValue == true,
+                                  _model.checkTouroValue == true,
+                                  _model.checkSecagemValue == true,
+                                  _model.checkPrepartoValue == true,
+                                  _model.checkParicaoValue == true,
+                                  _model.checkDiasAbertoValue!,
+                                  _model.checkIntervaloEntrePartosValue!,
+                                  _model.categoriaAnimalValue!.toList(),
+                                  _model.statusAnimalValue?.toList(),
+                                  _model.outUidPropriedade!.displayName,
+                                  '${_model.outUidPropriedade?.endereco} - ${_model.outUidPropriedade?.cidade}',
+                                  _model.outUidPersonTecnico!.displayName,
+                                  _model.outUidPersonTecnico!.phoneNumber,
+                                  _model.outUidPersonTecnico!.email,
+                                  _model.outUidPersonTecnico!.empresa,
+                                  'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/tecmuu-xingpe/assets/mjfv0ghrztrz/logo-2.png',
+                                  _model.checkUltimaAcaoValue ?? false,
+                                  widget.uidTecnico!,
+                                );
+                              } else {
+                                // Gerar PDF (padrão)
+                                await actions.createResumoRebanho(
+                                  resumoRebanhoAnimaisProdutoresRecordList
+                                      .map((e) => e.reference)
+                                      .toList(),
+                                  _model.checkUltimopartoValue == true,
+                                  _model.checkUltimaiaValue == true,
+                                  _model.checkDelValue == true,
+                                  _model.checkTouroValue == true,
+                                  _model.checkSecagemValue == true,
+                                  _model.checkPrepartoValue == true,
+                                  _model.checkParicaoValue == true,
+                                  _model.checkDiasAbertoValue!,
+                                  _model.checkIntervaloEntrePartosValue!,
+                                  _model.categoriaAnimalValue!.toList(),
+                                  _model.statusAnimalValue?.toList(),
+                                  _model.outUidPropriedade!.displayName,
+                                  '${_model.outUidPropriedade?.endereco} - ${_model.outUidPropriedade?.cidade}',
+                                  _model.outUidPersonTecnico!.displayName,
+                                  _model.outUidPersonTecnico!.phoneNumber,
+                                  _model.outUidPersonTecnico!.email,
+                                  _model.outUidPersonTecnico!.empresa,
+                                  'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/tecmuu-xingpe/assets/mjfv0ghrztrz/logo-2.png',
+                                  _model.checkUltimaAcaoValue ?? false,
+                                  widget.uidTecnico!,
+                                );
+                              }
                               if (_shouldSetState) safeSetState(() {});
                               return;
                             } else {
@@ -1235,7 +1351,9 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
                           },
                           text: 'Gerar relatório',
                           icon: Icon(
-                            Icons.picture_as_pdf,
+                            _model.formatoExportacaoValue == 'Excel'
+                                ? Icons.table_chart
+                                : Icons.picture_as_pdf,
                             size: 15.0,
                           ),
                           options: FFButtonOptions(

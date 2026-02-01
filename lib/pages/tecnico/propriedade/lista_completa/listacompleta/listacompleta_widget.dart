@@ -324,11 +324,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                               child: TextFormField(
                                 controller: _model.searchListTextController,
                                 focusNode: _model.searchListFocusNode,
-                                onChanged: (_) => EasyDebounce.debounce(
-                                  '_model.searchListTextController',
-                                  Duration(milliseconds: 2000),
-                                  () async {},
-                                ),
+                                onChanged: (_) => safeSetState(() {}),
                                 autofocus: false,
                                 obscureText: false,
                                 decoration: InputDecoration(
