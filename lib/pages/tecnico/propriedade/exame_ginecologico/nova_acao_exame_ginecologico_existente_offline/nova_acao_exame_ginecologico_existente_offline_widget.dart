@@ -124,8 +124,6 @@ class _NovaAcaoExameGinecologicoExistenteOfflineWidgetState
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
-
     return Container(
       width: double.infinity,
       height: double.infinity,
