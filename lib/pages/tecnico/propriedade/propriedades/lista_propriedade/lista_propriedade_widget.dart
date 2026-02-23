@@ -320,6 +320,13 @@ class _ListaPropriedadeWidgetState extends State<ListaPropriedadeWidget> {
                                     listViewPropriedadesRecordList =
                                     snapshot.data!;
 
+                                // Filter out deleted properties
+                                listViewPropriedadesRecordList =
+                                    listViewPropriedadesRecordList
+                                        .where((property) =>
+                                            !property.isDeleted)
+                                        .toList();
+
                                 // Filter properties based on search query
                                 final searchQuery =
                                     _model.searchController.text.toLowerCase();
@@ -665,8 +672,68 @@ class _ListaPropriedadeWidgetState extends State<ListaPropriedadeWidget> {
                           EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          Align(
+                            alignment: AlignmentDirectional(0.0, 1.0),
+                            child: FFButtonWidget(
+                              onPressed: () async {
+                                context.pushNamed(
+                                  PropriedadesExcluiasWidget.routeName,
+                                  queryParameters: {
+                                    'visitaPresencial': serializeParam(
+                                      widget.visitaPresencial,
+                                      ParamType.bool,
+                                    ),
+                                    'uidTecnico': serializeParam(
+                                      listaPropriedadeTecnicoRecord?.reference,
+                                      ParamType.DocumentReference,
+                                    ),
+                                  }.withoutNulls,
+                                );
+                              },
+                              text: '',
+                              icon: Icon(
+                                Icons.delete_outline,
+                                size: 32.0,
+                              ),
+                              options: FFButtonOptions(
+                                width: 65.0,
+                                height: 65.0,
+                                padding: EdgeInsets.all(0.0),
+                                iconPadding: EdgeInsetsDirectional.fromSTEB(
+                                    10.0, 0.0, 0.0, 0.0),
+                                color: Color(0xFFA8A8A8),
+                                textStyle: FlutterFlowTheme.of(context)
+                                    .titleSmall
+                                    .override(
+                                      font: GoogleFonts.readexPro(
+                                        fontWeight: FlutterFlowTheme.of(context)
+                                            .titleSmall
+                                            .fontWeight,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .titleSmall
+                                            .fontStyle,
+                                      ),
+                                      color: Colors.white,
+                                      fontSize: 45.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .fontStyle,
+                                    ),
+                                elevation: 3.0,
+                                borderSide: BorderSide(
+                                  color: Colors.transparent,
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
+                            ),
+                          ),
                           Align(
                             alignment: AlignmentDirectional(1.0, 1.0),
                             child: FFButtonWidget(

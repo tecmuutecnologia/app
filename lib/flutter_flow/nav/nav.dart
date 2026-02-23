@@ -207,6 +207,22 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
+          name: PropriedadesExcluiasWidget.routeName,
+          path: PropriedadesExcluiasWidget.routePath,
+          builder: (context, params) => PropriedadesExcluiasWidget(
+            visitaPresencial: params.getParam(
+              'visitaPresencial',
+              ParamType.bool,
+            ),
+            uidTecnico: params.getParam(
+              'uidTecnico',
+              ParamType.DocumentReference,
+              isList: false,
+              collectionNamePath: ['tecnico'],
+            ),
+          ),
+        ),
+        FFRoute(
           name: CadastrarNovoAnimalWidget.routeName,
           path: CadastrarNovoAnimalWidget.routePath,
           builder: (context, params) => CadastrarNovoAnimalWidget(

@@ -1066,6 +1066,122 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                       alignment: AlignmentDirectional(0.0, 0.05),
                       child: Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(
+                            20.0, 12.0, 20.0, 12.0),
+                        child: FFButtonWidget(
+                          onPressed: () async {
+                            var confirmDialogResponse =
+                                await showDialog<bool>(
+                                      context: context,
+                                      builder: (alertDialogContext) {
+                                        return AlertDialog(
+                                          title: Text('Excluir Propriedade'),
+                                          content: Text(
+                                              'Tem certeza que deseja excluir essa propriedade? Ela será movida para a lixeira e poderá ser restaurada posteriormente.'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(
+                                                      alertDialogContext,
+                                                      false),
+                                              child: Text('Cancelar'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(
+                                                      alertDialogContext,
+                                                      true),
+                                              child: Text('Excluir'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ) ??
+                                    false;
+                            if (!confirmDialogResponse) {
+                              return;
+                            }
+
+                            await editarPropriedadePropriedadesRecord.reference
+                                .update(createPropriedadesRecordData(
+                              isDeleted: true,
+                              deletedAt: DateTime.now(),
+                            ));
+
+                            await showDialog(
+                              context: context,
+                              builder: (alertDialogContext) {
+                                return AlertDialog(
+                                  title: Text('Sucesso!'),
+                                  content: Text(
+                                      'Propriedade movida para a lixeira.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(alertDialogContext),
+                                      child: Text('Ok'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+
+                            context.goNamed(
+                              ListaPropriedadeWidget.routeName,
+                              queryParameters: {
+                                'visitaPresencial': serializeParam(
+                                  widget.visitaPresencial,
+                                  ParamType.bool,
+                                ),
+                              }.withoutNulls,
+                            );
+                          },
+                          text: 'Excluir Propriedade',
+                          icon: Icon(
+                            Icons.delete_outline,
+                            size: 15.0,
+                          ),
+                          options: FFButtonOptions(
+                            width: double.infinity,
+                            height: 50.0,
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                                0.0, 0.0, 0.0, 0.0),
+                            iconPadding: EdgeInsetsDirectional.fromSTEB(
+                                0.0, 0.0, 0.0, 0.0),
+                            color: Color(0xFFEF4444),
+                            textStyle: FlutterFlowTheme.of(context)
+                                .titleMedium
+                                .override(
+                                  font: GoogleFonts.readexPro(
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .titleMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .titleMedium
+                                        .fontStyle,
+                                  ),
+                                  color: Colors.white,
+                                  letterSpacing: 0.0,
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                      .titleMedium
+                                      .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .titleMedium
+                                      .fontStyle,
+                                ),
+                            elevation: 2.0,
+                            borderSide: BorderSide(
+                              color: Colors.transparent,
+                              width: 1.0,
+                            ),
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: AlignmentDirectional(0.0, 0.05),
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(
                             20.0, 0.0, 20.0, 15.0),
                         child: FFButtonWidget(
                           onPressed: () async {
