@@ -55,6 +55,16 @@ class PropriedadesRecord extends FirestoreRecord {
   String get diasParaDg => _diasParaDg ?? '';
   bool hasDiasParaDg() => _diasParaDg != null;
 
+  // "isDeleted" field.
+  bool? _isDeleted;
+  bool get isDeleted => _isDeleted ?? false;
+  bool hasIsDeleted() => _isDeleted != null;
+
+  // "deletedAt" field.
+  DateTime? _deletedAt;
+  DateTime? get deletedAt => _deletedAt;
+  bool hasDeletedAt() => _deletedAt != null;
+
   DocumentReference get parentReference => reference.parent.parent!;
 
   void _initializeFields() {
@@ -67,6 +77,8 @@ class PropriedadesRecord extends FirestoreRecord {
     _cidade = snapshotData['cidade'] as String?;
     _phoneNumber = snapshotData['phone_number'] as String?;
     _diasParaDg = snapshotData['diasParaDg'] as String?;
+    _isDeleted = snapshotData['isDeleted'] as bool?;
+    _deletedAt = snapshotData['deletedAt'] as DateTime?;
   }
 
   static Query<Map<String, dynamic>> collection([DocumentReference? parent]) =>
@@ -117,6 +129,8 @@ Map<String, dynamic> createPropriedadesRecordData({
   String? cidade,
   String? phoneNumber,
   String? diasParaDg,
+  bool? isDeleted,
+  DateTime? deletedAt,
 }) {
   final firestoreData = mapToFirestore(
     <String, dynamic>{
@@ -128,6 +142,8 @@ Map<String, dynamic> createPropriedadesRecordData({
       'cidade': cidade,
       'phone_number': phoneNumber,
       'diasParaDg': diasParaDg,
+      'isDeleted': isDeleted,
+      'deletedAt': deletedAt,
     }.withoutNulls,
   );
 
@@ -147,7 +163,9 @@ class PropriedadesRecordDocumentEquality
         e1?.endereco == e2?.endereco &&
         e1?.cidade == e2?.cidade &&
         e1?.phoneNumber == e2?.phoneNumber &&
-        e1?.diasParaDg == e2?.diasParaDg;
+        e1?.diasParaDg == e2?.diasParaDg &&
+        e1?.isDeleted == e2?.isDeleted &&
+        e1?.deletedAt == e2?.deletedAt;
   }
 
   @override
@@ -159,7 +177,9 @@ class PropriedadesRecordDocumentEquality
         e?.endereco,
         e?.cidade,
         e?.phoneNumber,
-        e?.diasParaDg
+        e?.diasParaDg,
+        e?.isDeleted,
+        e?.deletedAt
       ]);
 
   @override

@@ -14,6 +14,8 @@ export '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.
     show InicioPropriedadeWidget;
 export '/pages/tecnico/propriedade/propriedades/editar_propriedade/editar_propriedade_widget.dart'
     show EditarPropriedadeWidget;
+export '/pages/tecnico/propriedade/propriedades/propriedades_excluidas/propriedades_excluidas_widget.dart'
+    show PropriedadesExcluiasWidget;
 export '/pages/tecnico/propriedade/animals/cadastrar_novo_animal/cadastrar_novo_animal_widget.dart'
     show CadastrarNovoAnimalWidget;
 export '/pages/tecnico/propriedade/animals/lista_animais/lista_animais_widget.dart'
