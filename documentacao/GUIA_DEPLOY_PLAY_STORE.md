@@ -69,7 +69,6 @@ flutter build appbundle --release
 
 Após o build, os arquivos estarão em:
 
-- **APK**: `build/app/outputs/flutter-apk/app-release.apk`
 - **App Bundle**: `build/app/outputs/bundle/release/app-release.aab`
 
 ---
