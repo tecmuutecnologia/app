@@ -51,39 +51,9 @@ flutter pub get
 
 ---
 
-## 🔍 Passo 3: Verificar Configurações Android
+## 🏗️ Passo 3: Gerar o Build de Produção
 
-### Verificar `android/app/build.gradle`
-Confirme que as configurações de release estão corretas:
-```gradle
-signingConfigs {
-    release {
-        keyAlias keystoreProperties['keyAlias']
-        keyPassword keystoreProperties['keyPassword']
-        storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-        storePassword keystoreProperties['storePassword']
-    }
-}
-
-buildTypes {
-    release {
-        signingConfig signingConfigs.release
-        minifyEnabled true
-        shrinkResources true
-    }
-}
-```
-
----
-
-## 🏗️ Passo 4: Gerar o Build de Produção
-
-### Opção A: APK (para testes ou distribuição direta)
-```bash
-flutter build apk --release
-```
-
-### Opção B: App Bundle (RECOMENDADO para Play Store)
+### App Bundle (RECOMENDADO para Play Store)
 ```bash
 flutter build appbundle --release
 ```
