@@ -475,7 +475,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                             snapshot.data!;
 
                         return ListView.builder(
-                          padding: EdgeInsets.zero,
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              0.0, 0.0, 0.0, 120.0),
                           primary: false,
                           scrollDirection: Axis.vertical,
                           itemCount:
@@ -1194,7 +1195,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                 .toList();
 
                             return ListView.builder(
-                              padding: EdgeInsets.zero,
+                              padding: EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 120.0),
                               primary: false,
                               shrinkWrap: true,
                               scrollDirection: Axis.vertical,
@@ -1829,7 +1831,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                 FFAppState().animaisProdutoresOffline.toList();
 
                             return ListView.builder(
-                              padding: EdgeInsets.zero,
+                              padding: EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 120.0),
                               primary: false,
                               shrinkWrap: true,
                               scrollDirection: Axis.vertical,
@@ -2502,7 +2505,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                             snapshot.data!;
 
                         return ListView.builder(
-                          padding: EdgeInsets.zero,
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              0.0, 0.0, 0.0, 120.0),
                           primary: false,
                           scrollDirection: Axis.vertical,
                           itemCount:
@@ -3198,7 +3202,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                 .toList();
 
                             return ListView.builder(
-                              padding: EdgeInsets.zero,
+                              padding: EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 120.0),
                               primary: false,
                               shrinkWrap: true,
                               scrollDirection: Axis.vertical,
@@ -3836,7 +3841,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                 FFAppState().animaisProdutoresOffline.toList();
 
                             return ListView.builder(
-                              padding: EdgeInsets.zero,
+                              padding: EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 120.0),
                               primary: false,
                               shrinkWrap: true,
                               scrollDirection: Axis.vertical,

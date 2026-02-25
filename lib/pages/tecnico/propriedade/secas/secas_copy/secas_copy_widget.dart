@@ -692,6 +692,20 @@ class _SecasCopyWidgetState extends State<SecasCopyWidget>
                                                                     0.0),
                                                         child: FFButtonWidget(
                                                           onPressed: () async {
+                                                            if ((listViewAnimaisProdutoresRecord.grupoAnimal ==
+                                                                    'Novilha') ||
+                                                                (listViewAnimaisProdutoresRecord.grupoAnimal ==
+                                                                    'Novilhas')) {
+                                                              await listViewAnimaisProdutoresRecord
+                                                                  .reference
+                                                                  .update(
+                                                                createAnimaisProdutoresRecordData(
+                                                                  grupoAnimal:
+                                                                      'Vacas',
+                                                                ),
+                                                              );
+                                                            }
+
                                                             await showModalBottomSheet(
                                                               isScrollControlled:
                                                                   true,

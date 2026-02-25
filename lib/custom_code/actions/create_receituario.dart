@@ -53,6 +53,25 @@ Future<void> createReceituario(
     }
     print('Resumo da visita encontrado: $resumoVisitaData');
 
+    bool hasValidBrinco(dynamic brinco) {
+      if (brinco == null) return false;
+
+      final brincoStr = brinco.toString().trim();
+      if (brincoStr.isEmpty) return false;
+
+      if (brincoStr == '-1' ||
+          brincoStr == '0' ||
+          brincoStr == '99999' ||
+          brincoStr == '999999') {
+        return false;
+      }
+
+      final brincoInt = int.tryParse(brincoStr);
+      if (brincoInt == null) return false;
+
+      return brincoInt > 0 && brincoInt != 99999 && brincoInt != 999999;
+    }
+
     // Busca recomendações relacionadas ao resumo da visita
     final recomendacoesSnapshot = await FirebaseFirestore.instance
         .collection('resumo_da_visita')
@@ -239,10 +258,7 @@ Future<void> createReceituario(
         print('Tratamento: ${tratamentoData['observacaoAcao']}');
 
         String brincoNomeAnimal;
-        if (tratamentoData['brincoAnimal'] != null &&
-            tratamentoData['brincoAnimal'] != -1 &&
-            tratamentoData['brincoAnimal'] != '-1' &&
-            tratamentoData['brincoAnimal'].toString().isNotEmpty &&
+        if (hasValidBrinco(tratamentoData['brincoAnimal']) &&
             tratamentoData['nomeAnimal'] != null &&
             tratamentoData['nomeAnimal'].isNotEmpty) {
           brincoNomeAnimal =
@@ -250,10 +266,7 @@ Future<void> createReceituario(
         } else if (tratamentoData['nomeAnimal'] != null &&
             tratamentoData['nomeAnimal'].isNotEmpty) {
           brincoNomeAnimal = tratamentoData['nomeAnimal'];
-        } else if (tratamentoData['brincoAnimal'] != null &&
-            tratamentoData['brincoAnimal'] != -1 &&
-            tratamentoData['brincoAnimal'] != '-1' &&
-            tratamentoData['brincoAnimal'].toString().isNotEmpty) {
+        } else if (hasValidBrinco(tratamentoData['brincoAnimal'])) {
           brincoNomeAnimal = tratamentoData['brincoAnimal'].toString();
         } else {
           brincoNomeAnimal = 'Sem informação';
@@ -398,12 +411,15 @@ Future<void> createReceituario(
           .where('dataDaAcao', isLessThanOrEqualTo: dtFimDia)
           .get();
 
-      // Filtrar apenas PP, DG+ e DG- que tenham animal vinculado
+      // Filtrar apenas PP, DG+, DG- e Aborto que tenham animal vinculado
       final acoesDiagnosticoTemp = acoesSnapshot.docs.where((doc) {
         final data = doc.data();
         final acao = data['acao'] as String? ?? '';
         final uidAnimal = data['uidAnimalAnimaisProdutores'];
-        return (acao == 'PP' || acao == 'DG+' || acao == 'DG-') &&
+        return (acao == 'PP' ||
+                acao == 'DG+' ||
+                acao == 'DG-' ||
+                acao == 'Aborto') &&
             uidAnimal != null;
       }).toList();
 
@@ -445,6 +461,12 @@ Future<void> createReceituario(
           final data = doc.data() as Map<String, dynamic>;
           final acao = data['acao'] as String? ?? '';
           return acao == 'DG-';
+        }).toList();
+
+        final acoesAbortos = acoesDiagnostico.where((doc) {
+          final data = doc.data() as Map<String, dynamic>;
+          final acao = data['acao'] as String? ?? '';
+          return acao == 'Aborto';
         }).toList();
 
         // Função auxiliar para buscar dados do animal
@@ -498,8 +520,12 @@ Future<void> createReceituario(
             final brincoA = a['brincoAnimal'];
             final brincoB = b['brincoAnimal'];
 
-            int? numA = (brincoA is int && brincoA != -1) ? brincoA : null;
-            int? numB = (brincoB is int && brincoB != -1) ? brincoB : null;
+            int? numA = hasValidBrinco(brincoA)
+              ? int.tryParse(brincoA.toString())
+              : null;
+            int? numB = hasValidBrinco(brincoB)
+              ? int.tryParse(brincoB.toString())
+              : null;
 
             if (numA != null && numB != null) {
               return numA.compareTo(numB);
@@ -519,11 +545,9 @@ Future<void> createReceituario(
             final nomeAnimal = animal['nomeAnimal'] as String;
             final brincoAnimal = animal['brincoAnimal'];
 
-            if (nomeAnimal.isNotEmpty &&
-                brincoAnimal != null &&
-                brincoAnimal != -1) {
+            if (nomeAnimal.isNotEmpty && hasValidBrinco(brincoAnimal)) {
               displayName = '$brincoAnimal - $nomeAnimal';
-            } else if (brincoAnimal != null && brincoAnimal != -1) {
+            } else if (hasValidBrinco(brincoAnimal)) {
               displayName = brincoAnimal.toString();
             } else {
               displayName = nomeAnimal;
@@ -732,6 +756,51 @@ Future<void> createReceituario(
               children: [buildDiagnosticoHeader(), ...rowsDGMenos],
             ),
           );
+          diagnosticoWidgets.add(pw.SizedBox(height: 10));
+        }
+
+        // Seção de Abortos
+        if (acoesAbortos.isNotEmpty) {
+          final List<QueryDocumentSnapshot> acoesAbortosVacas = [];
+
+          for (final acaoDoc in acoesAbortos) {
+            final acaoData = acaoDoc.data() as Map<String, dynamic>;
+            final uidAnimal =
+                acaoData['uidAnimalAnimaisProdutores'] as DocumentReference?;
+            final animalData = await getAnimalData(uidAnimal);
+
+            if (animalData != null && animalData['grupoAnimal'] == 'Vacas') {
+              acoesAbortosVacas.add(acaoDoc);
+            }
+          }
+
+          if (acoesAbortosVacas.isNotEmpty) {
+            diagnosticoWidgets.add(
+              pw.Text(
+                'Abortos',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColor.fromHex('#ee0000'),
+                ),
+              ),
+            );
+            diagnosticoWidgets.add(pw.SizedBox(height: 5));
+
+            final rowsAbortos = await buildDiagnosticoRows(acoesAbortosVacas);
+            diagnosticoWidgets.add(
+              pw.Table(
+                border: pw.TableBorder(
+                  top: pw.BorderSide(style: pw.BorderStyle.dashed),
+                  bottom: pw.BorderSide(style: pw.BorderStyle.dashed),
+                  left: pw.BorderSide(style: pw.BorderStyle.dashed),
+                  right: pw.BorderSide(style: pw.BorderStyle.dashed),
+                  horizontalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
+                  verticalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
+                ),
+                children: [buildDiagnosticoHeader(), ...rowsAbortos],
+              ),
+            );
+          }
         }
 
         diagnosticoWidgets.add(pw.SizedBox(height: 20));

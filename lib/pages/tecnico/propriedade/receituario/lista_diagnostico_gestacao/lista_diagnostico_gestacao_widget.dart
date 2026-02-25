@@ -105,7 +105,8 @@ class _ListaDiagnosticoGestacaoWidgetState
               .where((acao) =>
                   (acao.acao == 'PP' ||
                       acao.acao == 'DG+' ||
-                      acao.acao == 'DG-') &&
+                  acao.acao == 'DG-' ||
+                  acao.acao == 'Aborto') &&
                   acao.uidAnimalAnimaisProdutores != null)
               .toList();
 
@@ -144,10 +145,15 @@ class _ListaDiagnosticoGestacaoWidgetState
                   .toList();
               final animaisDGMenos =
                   todosAnimais.where((a) => a.acao == 'DG-').toList();
+                final animaisAbortos = todosAnimais
+                  .where(
+                    (a) => a.acao == 'Aborto' && a.grupoAnimal == 'Vacas')
+                  .toList();
 
               // Ordenar por brinco numérico e depois por nome
               animaisPPDGMais.sort(_compararAnimais);
               animaisDGMenos.sort(_compararAnimais);
+              animaisAbortos.sort(_compararAnimais);
 
               return Column(
                 mainAxisSize: MainAxisSize.min,
@@ -234,6 +240,32 @@ class _ListaDiagnosticoGestacaoWidgetState
                       child: _buildAnimalListFromData(animaisDGMenos),
                     ),
                   ],
+                  // Lista de Abortos
+                  if (animaisAbortos.isNotEmpty) ...[
+                    Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(15.0, 10.0, 15.0, 0.0),
+                      child: Text(
+                        'Abortos',
+                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontStyle,
+                              ),
+                              color: Color(0xFFEE0000),
+                              letterSpacing: 0.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
+                      child: _buildAnimalListFromData(animaisAbortos),
+                    ),
+                  ],
                   SizedBox(height: 10.0),
                 ],
               );
@@ -316,6 +348,8 @@ class _ListaDiagnosticoGestacaoWidgetState
                         ),
                         color: animal.acao == 'DG-'
                             ? Color(0xFFFF0076)
+                          : animal.acao == 'Aborto'
+                            ? Color(0xFFEE0000)
                             : Color(0xFF048508),
                         letterSpacing: 0.0,
                         fontWeight: FontWeight.w600,

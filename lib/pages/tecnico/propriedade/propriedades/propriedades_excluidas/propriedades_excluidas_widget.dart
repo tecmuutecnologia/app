@@ -30,6 +30,7 @@ class PropriedadesExcluiasWidget extends StatefulWidget {
 
 class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget> {
   late PropriedadesExcluiasModel _model;
+  final Set<String> _restoredPropertyIds = <String>{};
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -268,9 +269,11 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                                     .where('isDeleted', isEqualTo: true)
                                     .orderBy('deletedAt', descending: true),
                           ),
+                          initialData: const <PropriedadesRecord>[],
                           builder: (context, snapshot) {
-                            // Customize what your widget looks like when it's loading.
-                            if (!snapshot.hasData) {
+                            if (snapshot.connectionState ==
+                                    ConnectionState.waiting &&
+                                !snapshot.hasData) {
                               return Center(
                                 child: SizedBox(
                                   width: 50.0,
@@ -284,8 +287,52 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                                 ),
                               );
                             }
+
+                            if (snapshot.hasError) {
+                              return Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    16.0, 24.0, 16.0, 24.0),
+                                child: Center(
+                                  child: Text(
+                                    'Não foi possível carregar a lixeira. Tente novamente.',
+                                    textAlign: TextAlign.center,
+                                    style: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .override(
+                                          font: GoogleFonts.readexPro(
+                                            fontWeight: FlutterFlowTheme.of(
+                                                    context)
+                                                .bodyMedium
+                                                .fontWeight,
+                                            fontStyle: FlutterFlowTheme.of(
+                                                    context)
+                                                .bodyMedium
+                                                .fontStyle,
+                                          ),
+                                          color:
+                                              FlutterFlowTheme.of(context)
+                                                  .secondaryText,
+                                          letterSpacing: 0.0,
+                                          fontWeight:
+                                              FlutterFlowTheme.of(context)
+                                                  .bodyMedium
+                                                  .fontWeight,
+                                          fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .bodyMedium
+                                                  .fontStyle,
+                                        ),
+                                  ),
+                                ),
+                              );
+                            }
+
                             List<PropriedadesRecord>
-                                listViewPropriedadesRecordList = snapshot.data!;
+                                listViewPropriedadesRecordList =
+                                (snapshot.data ?? [])
+                                    .where((property) => !_restoredPropertyIds
+                                        .contains(property.reference.id))
+                                    .toList();
 
                             // Filter properties based on search query
                             final searchQuery =
@@ -308,7 +355,7 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                                   child: Text(
                                     searchQuery.isNotEmpty
                                         ? 'Nenhuma propriedade encontrada com "$searchQuery"'
-                                        : 'Nenhuma propriedade excluída.',
+                                        : 'Pasta vazia: não há nenhuma propriedade na lixeira.',
                                     textAlign: TextAlign.center,
                                     style: FlutterFlowTheme.of(context)
                                         .bodyMedium
@@ -520,38 +567,92 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                                                                 0.0, 8.0, 0.0),
                                                     child: FFButtonWidget(
                                                       onPressed: () async {
-                                                        await listViewPropriedadesRecord
-                                                            .reference
-                                                            .update(
-                                                          createPropriedadesRecordData(
-                                                            isDeleted: false,
-                                                            deletedAt: null,
-                                                          ),
-                                                        );
-
-                                                        await showDialog(
+                                                        final confirmRestore =
+                                                            await showDialog<
+                                                                bool>(
                                                           context: context,
                                                           builder:
                                                               (alertDialogContext) {
                                                             return AlertDialog(
                                                               title: Text(
-                                                                  'Restaurada!'),
+                                                                  'Restaurar propriedade'),
                                                               content: Text(
-                                                                  'Propriedade restaurada com sucesso.'),
+                                                                  'Deseja restaurar esta propriedade?'),
                                                               actions: [
                                                                 TextButton(
                                                                   onPressed: () =>
                                                                       Navigator.pop(
-                                                                          alertDialogContext),
+                                                                          alertDialogContext,
+                                                                          false),
                                                                   child: Text(
-                                                                      'Ok'),
+                                                                      'Cancelar'),
+                                                                ),
+                                                                TextButton(
+                                                                  onPressed: () =>
+                                                                      Navigator.pop(
+                                                                          alertDialogContext,
+                                                                          true),
+                                                                  child: Text(
+                                                                      'Confirmar'),
                                                                 ),
                                                               ],
                                                             );
                                                           },
                                                         );
 
-                                                        safeSetState(() {});
+                                                        if (confirmRestore !=
+                                                            true) {
+                                                          return;
+                                                        }
+
+                                                        safeSetState(() {
+                                                          _restoredPropertyIds
+                                                              .add(
+                                                                  listViewPropriedadesRecord
+                                                                      .reference
+                                                                      .id);
+                                                        });
+
+                                                        try {
+                                                          await listViewPropriedadesRecord
+                                                              .reference
+                                                              .update(
+                                                            createPropriedadesRecordData(
+                                                              isDeleted: false,
+                                                              deletedAt: null,
+                                                            ),
+                                                          );
+
+                                                          if (context.mounted) {
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                              SnackBar(
+                                                                content: Text(
+                                                                    'Propriedade restaurada com sucesso.'),
+                                                              ),
+                                                            );
+                                                          }
+                                                        } catch (e) {
+                                                          safeSetState(() {
+                                                            _restoredPropertyIds
+                                                                .remove(
+                                                                    listViewPropriedadesRecord
+                                                                        .reference
+                                                                        .id);
+                                                          });
+
+                                                          if (context.mounted) {
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                              SnackBar(
+                                                                content: Text(
+                                                                    'Não foi possível restaurar a propriedade.'),
+                                                              ),
+                                                            );
+                                                          }
+                                                        }
                                                       },
                                                       text: 'Restaurar',
                                                       icon: Icon(

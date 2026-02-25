@@ -138,6 +138,61 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
     super.dispose();
   }
 
+  DateTime? _parseInseminacaoDate(String? rawDate) {
+    if (rawDate == null) {
+      return null;
+    }
+
+    final normalized = rawDate.trim();
+    if (normalized.isEmpty || normalized == '0') {
+      return null;
+    }
+
+    final parts = normalized.split('/');
+    if (parts.length != 3) {
+      return null;
+    }
+
+    final day = int.tryParse(parts[0]);
+    final month = int.tryParse(parts[1]);
+    final year = int.tryParse(parts[2]);
+    if (day == null || month == null || year == null) {
+      return null;
+    }
+
+    try {
+      return DateTime(year, month, day);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  int _compareNovilhasByInseminacao(
+    AnimaisProdutoresRecord a,
+    AnimaisProdutoresRecord b, {
+    required bool ascending,
+  }) {
+    final dateA = _parseInseminacaoDate(a.dtUltimaInseminacao);
+    final dateB = _parseInseminacaoDate(b.dtUltimaInseminacao);
+
+    if (dateA == null && dateB == null) {
+      return a.nomeBrincoConcat.toLowerCase().compareTo(
+            b.nomeBrincoConcat.toLowerCase(),
+          );
+    }
+
+    if (dateA == null) {
+      return 1;
+    }
+
+    if (dateB == null) {
+      return -1;
+    }
+
+    final dateComparison = dateA.compareTo(dateB);
+    return ascending ? dateComparison : -dateComparison;
+  }
+
   @override
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
@@ -423,10 +478,6 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
                                   .where(
                                     'grupoAnimal',
                                     isEqualTo: _model.choiceChipsValue,
-                                  )
-                                  .orderBy(
-                                    'compararDtUltimaInseminacao',
-                                    descending: true,
                                   ),
                         ),
                         builder: (context, snapshot) {
@@ -446,7 +497,12 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
                           }
                           List<AnimaisProdutoresRecord>
                               lVCategoriaOnlineDESCAnimaisProdutoresRecordList =
-                              snapshot.data!;
+                              snapshot.data!.toList()
+                                ..sort((a, b) => _compareNovilhasByInseminacao(
+                                      a,
+                                      b,
+                                      ascending: false,
+                                    ));
 
                           return ListView.builder(
                             padding: EdgeInsets.zero,
@@ -4316,10 +4372,6 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
                                   .where(
                                     'grupoAnimal',
                                     isEqualTo: _model.choiceChipsValue,
-                                  )
-                                  .orderBy(
-                                    'compararDtUltimaInseminacao',
-                                    descending: false,
                                   ),
                         ),
                         builder: (context, snapshot) {
@@ -4339,7 +4391,12 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
                           }
                           List<AnimaisProdutoresRecord>
                               lVCategoriaOnlineASCAnimaisProdutoresRecordList =
-                              snapshot.data!;
+                              snapshot.data!.toList()
+                                ..sort((a, b) => _compareNovilhasByInseminacao(
+                                      a,
+                                      b,
+                                      ascending: true,
+                                    ));
 
                           return ListView.builder(
                             padding: EdgeInsets.zero,
