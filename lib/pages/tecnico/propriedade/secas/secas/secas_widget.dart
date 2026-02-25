@@ -4919,6 +4919,20 @@ class _SecasWidgetState extends State<SecasWidget>
                                                               FFButtonWidget(
                                                                 onPressed:
                                                                     () async {
+                                                                  if ((listViewOnlineAnimaisProdutoresRecord.grupoAnimal ==
+                                                                          'Novilha') ||
+                                                                      (listViewOnlineAnimaisProdutoresRecord.grupoAnimal ==
+                                                                          'Novilhas')) {
+                                                                    await listViewOnlineAnimaisProdutoresRecord
+                                                                        .reference
+                                                                        .update(
+                                                                      createAnimaisProdutoresRecordData(
+                                                                        grupoAnimal:
+                                                                            'Vacas',
+                                                                      ),
+                                                                    );
+                                                                  }
+
                                                                   await showModalBottomSheet(
                                                                     isScrollControlled:
                                                                         true,
@@ -5351,6 +5365,21 @@ class _SecasWidgetState extends State<SecasWidget>
                                                               FFButtonWidget(
                                                                 onPressed:
                                                                     () async {
+                                                                  if ((animaisExistenteOfflineItem.grupoAnimal ==
+                                                                          'Novilha') ||
+                                                                      (animaisExistenteOfflineItem.grupoAnimal ==
+                                                                          'Novilhas')) {
+                                                                    FFAppState()
+                                                                        .updateAnimaisProdutoresExistentesAtIndex(
+                                                                      animaisExistenteOfflineIndex,
+                                                                      (e) => e
+                                                                        ..grupoAnimal =
+                                                                            'Vacas',
+                                                                    );
+                                                                    safeSetState(
+                                                                        () {});
+                                                                  }
+
                                                                   await showModalBottomSheet(
                                                                     isScrollControlled:
                                                                         true,
@@ -5728,6 +5757,21 @@ class _SecasWidgetState extends State<SecasWidget>
                                                               FFButtonWidget(
                                                                 onPressed:
                                                                     () async {
+                                                                  if ((animaisProdutoresOfflineInducaoItem.grupoAnimal ==
+                                                                          'Novilha') ||
+                                                                      (animaisProdutoresOfflineInducaoItem.grupoAnimal ==
+                                                                          'Novilhas')) {
+                                                                    FFAppState()
+                                                                        .updateAnimaisProdutoresOfflineAtIndex(
+                                                                      animaisProdutoresOfflineInducaoIndex,
+                                                                      (e) => e
+                                                                        ..grupoAnimal =
+                                                                            'Vacas',
+                                                                    );
+                                                                    safeSetState(
+                                                                        () {});
+                                                                  }
+
                                                                   await showModalBottomSheet(
                                                                     isScrollControlled:
                                                                         true,
