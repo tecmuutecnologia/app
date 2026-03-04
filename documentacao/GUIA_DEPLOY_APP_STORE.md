@@ -104,12 +104,6 @@ build/ios/ipa/tecmuu.ipa
 
 O projeto já tem Fastlane configurado! Use um dos comandos:
 
-#### Para TestFlight (Testes Internos)
-```bash
-cd /Users/tecmuu/Desktop/tecmuu
-fastlane ios upload_testflight_internal
-```
-
 #### Para TestFlight (Testes Externos)
 ```bash
 cd /Users/tecmuu/Desktop/tecmuu
