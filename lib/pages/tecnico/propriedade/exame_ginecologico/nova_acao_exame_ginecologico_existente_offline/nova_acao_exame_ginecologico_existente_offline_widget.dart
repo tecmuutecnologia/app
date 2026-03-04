@@ -6,6 +6,7 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/pages/tecnico/propriedade/exame_ginecologico/induzir_lactacao_existente_offline/induzir_lactacao_existente_offline_widget.dart';
 import '/pages/tecnico/propriedade/exame_ginecologico/nova_acao_exame_ginecologico/acoes_dropdown_custom.dart';
 import 'dart:ui';
+import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:collection/collection.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/cupertino.dart';
@@ -833,6 +834,9 @@ class _NovaAcaoExameGinecologicoExistenteOfflineWidgetState
                                           .outUidResumoDaVisita!.reference)
                                       .set(createRecomendacoesRecordData(
                                     tituloRecomendacao: _model.acoesDispoValue,
+                                    descricaoRecomendacao:
+                                        functions.gerarDescricaoProtocolo(
+                                            _model.acoesDispoValue),
                                     uidResumoDaVisita:
                                         _model.outUidResumoDaVisita?.reference,
                                   ));
@@ -920,6 +924,9 @@ class _NovaAcaoExameGinecologicoExistenteOfflineWidgetState
                                           .outNewUidResumoDaVisita!.reference)
                                       .set(createRecomendacoesRecordData(
                                     tituloRecomendacao: _model.acoesDispoValue,
+                                    descricaoRecomendacao:
+                                        functions.gerarDescricaoProtocolo(
+                                            _model.acoesDispoValue),
                                     uidResumoDaVisita: _model
                                         .outNewUidResumoDaVisita?.reference,
                                   ));
@@ -1142,7 +1149,9 @@ class _NovaAcaoExameGinecologicoExistenteOfflineWidgetState
                                       tituloRecomendacao:
                                           _model.acoesDispoValue,
                                       descricaoRecomendacao:
-                                          _model.obsInfoTextController.text,
+                                          functions.gerarDescricaoProtocolo(
+                                                  _model.acoesDispoValue) ??
+                                              _model.obsInfoTextController.text,
                                       uidAnimalProdutores:
                                           widget.uidAnimaisProdutores,
                                     ));
@@ -1168,7 +1177,9 @@ class _NovaAcaoExameGinecologicoExistenteOfflineWidgetState
                                       tituloRecomendacao:
                                           _model.acoesDispoValue,
                                       descricaoRecomendacao:
-                                          _model.obsInfoTextController.text,
+                                          functions.gerarDescricaoProtocolo(
+                                                  _model.acoesDispoValue) ??
+                                              _model.obsInfoTextController.text,
                                       uidAnimalProdutores:
                                           widget.uidAnimaisProdutores,
                                     ));

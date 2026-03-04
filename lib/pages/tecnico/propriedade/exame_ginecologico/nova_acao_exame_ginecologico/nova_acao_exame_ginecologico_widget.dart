@@ -865,6 +865,9 @@ class _NovaAcaoExameGinecologicoWidgetState
                                         .set(createRecomendacoesRecordData(
                                       tituloRecomendacao:
                                           _model.acoesDispoValue,
+                                      descricaoRecomendacao:
+                                          functions.gerarDescricaoProtocolo(
+                                              _model.acoesDispoValue),
                                       uidResumoDaVisita: _model
                                           .outUidResumoDaVisita?.reference,
                                     ));
@@ -960,6 +963,9 @@ class _NovaAcaoExameGinecologicoWidgetState
                                         .set(createRecomendacoesRecordData(
                                       tituloRecomendacao:
                                           _model.acoesDispoValue,
+                                      descricaoRecomendacao:
+                                          functions.gerarDescricaoProtocolo(
+                                              _model.acoesDispoValue),
                                       uidResumoDaVisita: _model
                                           .outNewUidResumoDaVisita?.reference,
                                     ));

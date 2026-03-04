@@ -1059,6 +1059,8 @@ class FFAppState extends ChangeNotifier {
         jsonDecode('{\"descricao\":\"Hemorragia de Metaestro\"}')),
     TipoAcoesStruct.fromSerializableMap(jsonDecode('{\"descricao\":\"IATF\"}')),
     TipoAcoesStruct.fromSerializableMap(
+        jsonDecode('{\"descricao\":\"IATF com Implante\"}')),
+    TipoAcoesStruct.fromSerializableMap(
         jsonDecode('{\"descricao\":\"Indução de Lactação\"}')),
     TipoAcoesStruct.fromSerializableMap(
         jsonDecode('{\"descricao\":\"Inseminação\"}')),
@@ -1074,6 +1076,8 @@ class FFAppState extends ChangeNotifier {
         jsonDecode('{\"descricao\":\"Mucometra\"}')),
     TipoAcoesStruct.fromSerializableMap(
         jsonDecode('{\"descricao\":\"Outros\"}')),
+    TipoAcoesStruct.fromSerializableMap(
+        jsonDecode('{\"descricao\":\"Ovsynch\"}')),
     TipoAcoesStruct.fromSerializableMap(
         jsonDecode('{\"descricao\":\"Piometra\"}')),
     TipoAcoesStruct.fromSerializableMap(
