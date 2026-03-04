@@ -928,3 +928,33 @@ DocumentReference getAnimalProdutorUid(
 ) {
   return uidTecnico.collection('animaisProdutores').doc(uid);
 }
+
+/// Gera a descrição do protocolo com as datas calculadas
+/// a partir da data de criação da ação.
+String? gerarDescricaoProtocolo(String? acao) {
+  if (acao == null) return null;
+  final hoje = DateTime.now();
+  final fmt = DateFormat('dd/MM');
+
+  if (acao == 'IATF com Implante') {
+    final dia8 = fmt.format(hoje.add(const Duration(days: 8)));
+    final dia9 = fmt.format(hoje.add(const Duration(days: 9)));
+    final dia10 = fmt.format(hoje.add(const Duration(days: 10)));
+    final dia11 = fmt.format(hoje.add(const Duration(days: 11)));
+    return '- Dia $dia8 - 2ml de Sincrocio\n'
+        '- Dia $dia9 - Retira Implante\n'
+        '- Dia $dia10 - 2ml de Sincrodiol\n'
+        '- Dia $dia11 - Inseminar';
+  }
+
+  if (acao == 'Ovsynch') {
+    final dia7 = fmt.format(hoje.add(const Duration(days: 7)));
+    final dia9 = fmt.format(hoje.add(const Duration(days: 9)));
+    final dia10 = fmt.format(hoje.add(const Duration(days: 10)));
+    return '- Dia $dia7 - 2ml de Sincrocio\n'
+        '- Dia $dia9 - 1,5ml de Tec-Relin\n'
+        '- Dia $dia10 - Inseminar';
+  }
+
+  return null;
+}
