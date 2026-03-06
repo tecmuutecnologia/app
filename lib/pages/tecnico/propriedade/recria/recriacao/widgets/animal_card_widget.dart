@@ -25,7 +25,6 @@ import '/pages/tecnico/propriedade/dignostico_gestacao/dg_menos_existente_offlin
 import '/pages/tecnico/propriedade/exame_ginecologico/nova_acao_exame_ginecologico_existente_offline/nova_acao_exame_ginecologico_existente_offline_widget.dart';
 import '/pages/tecnico/propriedade/inseminacoes/nova_inseminacao_existente_offline/nova_inseminacao_existente_offline_widget.dart';
 import '/pages/tecnico/propriedade/prenhas/registro_aborto_existente_offline/registro_aborto_existente_offline_widget.dart';
-import '/pages/tecnico/propriedade/recria/desmame_existente_offline/desmame_existente_offline_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_parto_existente_offline/registrar_parto_existente_offline_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_pre_parto_existente_offline/registrar_pre_parto_existente_offline_widget.dart';
 
@@ -35,7 +34,6 @@ import '/pages/tecnico/propriedade/dignostico_gestacao/dg_menos_offline/dg_menos
 import '/pages/tecnico/propriedade/exame_ginecologico/nova_acao_exame_ginecologico_offline/nova_acao_exame_ginecologico_offline_widget.dart';
 import '/pages/tecnico/propriedade/inseminacoes/nova_inseminacao_offline/nova_inseminacao_offline_widget.dart';
 import '/pages/tecnico/propriedade/prenhas/registro_aborto_offline/registro_aborto_offline_widget.dart';
-import '/pages/tecnico/propriedade/recria/desmame_offline/desmame_offline_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_parto_offline/registrar_parto_offline_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_pre_parto_offline/registrar_pre_parto_offline_widget.dart';
 
@@ -756,48 +754,35 @@ class AnimalCardWidget extends StatelessWidget {
   }
 
   Widget _getDesmameWidget() {
+    // Determina o modo baseado no estado online/offline e tipo de animal
+    final DesmameMode mode;
     if (isOnline) {
-      return DesmameWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg!,
-        uidAnimaisProdutores: animal.reference!,
-        nomeAnimal: animal.nomeAnimal,
-        brincoAnimal: animal.brincoAnimal?.toString() ?? '',
-        grupoAnimal: animal.grupoAnimal,
-      );
+      mode = DesmameMode.online;
     } else if (animal.isExistingOffline) {
-      return DesmameExistenteOfflineWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg!,
-        uidAnimaisProdutores: animal.reference,
-        nomeAnimal: animal.nomeAnimal,
-        brincoAnimal: animal.brincoAnimal?.toString() ?? '',
-        grupoAnimal: animal.grupoAnimal,
-        itemUidIndex: animal.itemIndex ?? 0,
-      );
+      mode = DesmameMode.offlineExisting;
     } else {
-      return DesmameOfflineWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg!,
-        uidAnimalOffline: animal.uidAnimalOffline ?? '',
-        nomeAnimal: animal.nomeAnimal,
-        brincoAnimal: animal.brincoAnimal?.toString() ?? '',
-        grupoAnimal: animal.grupoAnimal,
-        itemUidIndex: animal.itemIndex ?? 0,
-      );
+      mode = DesmameMode.offlineNew;
     }
+
+    return DesmameWidget(
+      mode: mode,
+      uidPropriedade: uidPropriedade!,
+      nomePropriedade: nomePropriedade!,
+      uidTecnico: uidTecnico!,
+      emailPropriedade: emailPropriedade!,
+      visitaPresencial: visitaPresencial!,
+      diasDg: diasDg!,
+      nomeAnimal: animal.nomeAnimal,
+      brincoAnimal: animal.brincoAnimal?.toString() ?? '',
+      grupoAnimal: animal.grupoAnimal,
+      // Parâmetros condicionais
+      uidAnimaisProdutores:
+          isOnline || animal.isExistingOffline ? animal.reference : null,
+      uidAnimalOffline: !isOnline && !animal.isExistingOffline
+          ? animal.uidAnimalOffline
+          : null,
+      itemUidIndex: !isOnline ? animal.itemIndex : null,
+    );
   }
 
   Widget _getInseminacaoWidget() {
