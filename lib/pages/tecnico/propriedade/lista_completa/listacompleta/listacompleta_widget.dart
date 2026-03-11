@@ -26,8 +26,8 @@ import '/pages/tecnico/propriedade/prenhas/registro_aborto/registro_aborto_widge
 import '/pages/tecnico/propriedade/prenhas/registro_aborto_existente_offline/registro_aborto_existente_offline_widget.dart';
 import '/pages/tecnico/propriedade/prenhas/registro_aborto_offline/registro_aborto_offline_widget.dart';
 import '/pages/tecnico/propriedade/recria/desmame/desmame_widget.dart';
-import '/pages/tecnico/propriedade/recria/desmame_existente_offline/desmame_existente_offline_widget.dart';
 import '/pages/tecnico/propriedade/recria/desmame_offline/desmame_offline_widget.dart';
+import '/pages/tecnico/propriedade/recria/desmame_existente_offline/desmame_existente_offline_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_parto/registrar_parto_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_parto_existente_offline/registrar_parto_existente_offline_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_parto_offline/registrar_parto_offline_widget.dart';
@@ -496,8 +496,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                             snapshot.data!;
 
                         return ListView.builder(
-                                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                                            0.0, 0.0, 0.0, 120.0),
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              0.0, 0.0, 0.0, 120.0),
                           primary: false,
                           scrollDirection: Axis.vertical,
                           itemCount: listViewAnimaisProdutoresRecordList.length,
@@ -507,11 +507,11 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                     listViewIndex];
                             return Visibility(
                               visible: ((listViewAnimaisProdutoresRecord
-                                          .grupoAnimal ==
-                                      'Novilhas') ||
-                                  (listViewAnimaisProdutoresRecord
-                                          .grupoAnimal ==
-                                      'Vacas')) &&
+                                              .grupoAnimal ==
+                                          'Novilhas') ||
+                                      (listViewAnimaisProdutoresRecord
+                                              .grupoAnimal ==
+                                          'Vacas')) &&
                                   (listViewAnimaisProdutoresRecord.status !=
                                       'Descarte'),
                               child: FlipCard(
@@ -639,8 +639,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                   Text(
                                                     '${() {
                                                       if ((listViewAnimaisProdutoresRecord
-                                                                      .nomeAnimal !=
-                                                                  '') &&
+                                                                  .nomeAnimal !=
+                                                              '') &&
                                                           (listViewAnimaisProdutoresRecord
                                                                   .brincoAnimal !=
                                                               null) &&
@@ -649,8 +649,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                               -1)) {
                                                         return '${listViewAnimaisProdutoresRecord.nomeAnimal} - ${listViewAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                       } else if (listViewAnimaisProdutoresRecord
-                                                                  .nomeAnimal !=
-                                                              '') {
+                                                              .nomeAnimal !=
+                                                          '') {
                                                         return listViewAnimaisProdutoresRecord
                                                             .nomeAnimal;
                                                       } else {
@@ -830,8 +830,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                         ),
                                                       ),
                                                       if ((listViewAnimaisProdutoresRecord
-                                                                      .dtUltimaAcao !=
-                                                                  '') &&
+                                                                  .dtUltimaAcao !=
+                                                              '') &&
                                                           (functions.verificaDataAcaoDataAtual(
                                                                   listViewAnimaisProdutoresRecord
                                                                       .dtUltimaAcao) ==
@@ -976,6 +976,9 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       context),
                                                               child:
                                                                   DesmameWidget(
+                                                                mode:
+                                                                    DesmameMode
+                                                                        .online,
                                                                 uidPropriedade:
                                                                     widget
                                                                         .uidPropriedade!,
@@ -1113,9 +1116,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -1389,9 +1391,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -1802,9 +1803,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     context),
                                                             child:
                                                                 RegistrarPartoWidget(
-                                                              uidPropriedade:
-                                                                  widget
-                                                                      .uidPropriedade!,
+                                                              uidPropriedade: widget
+                                                                  .uidPropriedade!,
                                                               nomePropriedade:
                                                                   widget
                                                                       .nomePropriedade!,
@@ -2313,9 +2313,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -2445,9 +2444,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -2851,9 +2849,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -3250,9 +3247,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -3376,9 +3372,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -3597,8 +3592,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     .status !=
                                                                 'Inseminada PP') &&
                                                             (listViewAnimaisProdutoresRecord
-                                                                        .dtPP ==
-                                                                    ''))
+                                                                    .dtPP ==
+                                                                ''))
                                                         ? null
                                                         : () async {
                                                             await showModalBottomSheet(
@@ -3763,9 +3758,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -3891,9 +3885,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -4015,8 +4008,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                 FFAppState().animaisProdutoresOffline.toList();
 
                             return ListView.builder(
-                                                            padding: EdgeInsetsDirectional.fromSTEB(
-                                                                    0.0, 0.0, 0.0, 120.0),
+                              padding: EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 120.0),
                               primary: false,
                               shrinkWrap: true,
                               scrollDirection: Axis.vertical,
@@ -4167,8 +4160,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                       Text(
                                                         '${() {
                                                           if ((animaisProdutoresOfflineItem
-                                                                          .nomeAnimal !=
-                                                                      '') &&
+                                                                      .nomeAnimal !=
+                                                                  '') &&
                                                               (animaisProdutoresOfflineItem
                                                                       .brincoAnimal !=
                                                                   null) &&
@@ -4177,8 +4170,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   -1)) {
                                                             return '${animaisProdutoresOfflineItem.nomeAnimal} - ${animaisProdutoresOfflineItem.brincoAnimal.toString()}';
                                                           } else if (animaisProdutoresOfflineItem
-                                                                      .nomeAnimal !=
-                                                                  '') {
+                                                                  .nomeAnimal !=
+                                                              '') {
                                                             return animaisProdutoresOfflineItem
                                                                 .nomeAnimal;
                                                           } else {
@@ -4351,8 +4344,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                             ),
                                                           ),
                                                           if ((animaisProdutoresOfflineItem
-                                                                          .dtUltimaAcao !=
-                                                                      '') &&
+                                                                      .dtUltimaAcao !=
+                                                                  '') &&
                                                               (functions.verificaDataAcaoDataAtual(
                                                                       animaisProdutoresOfflineItem
                                                                           .dtUltimaAcao) ==
@@ -5380,9 +5373,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -7248,8 +7240,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                         .status !=
                                                                     'Inseminada PP') &&
                                                                 (animaisProdutoresOfflineItem
-                                                                            .dtPP ==
-                                                                        ''))
+                                                                        .dtPP ==
+                                                                    ''))
                                                             ? null
                                                             : () async {
                                                                 await showModalBottomSheet(
@@ -7673,8 +7665,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                     .toList();
 
                             return ListView.builder(
-                                                            padding: EdgeInsetsDirectional.fromSTEB(
-                                                                    0.0, 0.0, 0.0, 120.0),
+                              padding: EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 120.0),
                               primary: false,
                               shrinkWrap: true,
                               scrollDirection: Axis.vertical,
@@ -7826,8 +7818,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                       Text(
                                                         '${() {
                                                           if ((animaisProdutoresExistentesOfflineItem
-                                                                          .nomeAnimal !=
-                                                                      '') &&
+                                                                      .nomeAnimal !=
+                                                                  '') &&
                                                               (animaisProdutoresExistentesOfflineItem
                                                                       .brincoAnimal !=
                                                                   null) &&
@@ -7836,8 +7828,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   -1)) {
                                                             return '${animaisProdutoresExistentesOfflineItem.nomeAnimal} - ${animaisProdutoresExistentesOfflineItem.brincoAnimal.toString()}';
                                                           } else if (animaisProdutoresExistentesOfflineItem
-                                                                      .nomeAnimal !=
-                                                                  '') {
+                                                                  .nomeAnimal !=
+                                                              '') {
                                                             return animaisProdutoresExistentesOfflineItem
                                                                 .nomeAnimal;
                                                           } else {
@@ -8021,8 +8013,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                             ),
                                                           ),
                                                           if ((animaisProdutoresExistentesOfflineItem
-                                                                          .dtUltimaAcao !=
-                                                                      '') &&
+                                                                      .dtUltimaAcao !=
+                                                                  '') &&
                                                               (functions.verificaDataAcaoDataAtual(
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .dtUltimaAcao) ==
@@ -9050,9 +9042,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -10918,8 +10909,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                         .status !=
                                                                     'Inseminada PP') &&
                                                                 (animaisProdutoresExistentesOfflineItem
-                                                                            .dtPP ==
-                                                                        ''))
+                                                                        .dtPP ==
+                                                                    ''))
                                                             ? null
                                                             : () async {
                                                                 await showModalBottomSheet(
@@ -11382,8 +11373,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                             snapshot.data!;
 
                         return ListView.builder(
-                                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                                            0.0, 0.0, 0.0, 120.0),
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              0.0, 0.0, 0.0, 120.0),
                           primary: false,
                           scrollDirection: Axis.vertical,
                           itemCount: listViewAnimaisProdutoresRecordList.length,
@@ -11394,8 +11385,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                             final searchText = _model
                                 .searchListTextController.text
                                 .toLowerCase();
-                            final searchNum = functions
-                                .converterStringToInt(searchText);
+                            final searchNum =
+                                functions.converterStringToInt(searchText);
                             final matchesSearch = searchText.isEmpty ||
                                 listViewAnimaisProdutoresRecord.nomeAnimal
                                     .toLowerCase()
@@ -11538,8 +11529,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                   Text(
                                                     '${() {
                                                       if ((listViewAnimaisProdutoresRecord
-                                                                      .nomeAnimal !=
-                                                                  '') &&
+                                                                  .nomeAnimal !=
+                                                              '') &&
                                                           (listViewAnimaisProdutoresRecord
                                                                   .brincoAnimal !=
                                                               null) &&
@@ -11548,8 +11539,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                               -1)) {
                                                         return '${listViewAnimaisProdutoresRecord.nomeAnimal} - ${listViewAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                       } else if (listViewAnimaisProdutoresRecord
-                                                                  .nomeAnimal !=
-                                                              '') {
+                                                              .nomeAnimal !=
+                                                          '') {
                                                         return listViewAnimaisProdutoresRecord
                                                             .nomeAnimal;
                                                       } else {
@@ -11729,8 +11720,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                         ),
                                                       ),
                                                       if ((listViewAnimaisProdutoresRecord
-                                                                      .dtUltimaAcao !=
-                                                                  '') &&
+                                                                  .dtUltimaAcao !=
+                                                              '') &&
                                                           (functions.verificaDataAcaoDataAtual(
                                                                   listViewAnimaisProdutoresRecord
                                                                       .dtUltimaAcao) ==
@@ -11875,6 +11866,9 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       context),
                                                               child:
                                                                   DesmameWidget(
+                                                                mode:
+                                                                    DesmameMode
+                                                                        .online,
                                                                 uidPropriedade:
                                                                     widget
                                                                         .uidPropriedade!,
@@ -12012,9 +12006,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -12288,9 +12281,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -12701,9 +12693,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     context),
                                                             child:
                                                                 RegistrarPartoWidget(
-                                                              uidPropriedade:
-                                                                  widget
-                                                                      .uidPropriedade!,
+                                                              uidPropriedade: widget
+                                                                  .uidPropriedade!,
                                                               nomePropriedade:
                                                                   widget
                                                                       .nomePropriedade!,
@@ -13212,9 +13203,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -13344,9 +13334,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -13750,9 +13739,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -14149,9 +14137,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -14275,9 +14262,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -14496,8 +14482,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     .status !=
                                                                 'Inseminada PP') &&
                                                             (listViewAnimaisProdutoresRecord
-                                                                        .dtPP ==
-                                                                    ''))
+                                                                    .dtPP ==
+                                                                ''))
                                                         ? null
                                                         : () async {
                                                             await showModalBottomSheet(
@@ -14662,9 +14648,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -14790,9 +14775,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -14914,8 +14898,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                 FFAppState().animaisProdutoresOffline.toList();
 
                             return ListView.builder(
-                                                            padding: EdgeInsetsDirectional.fromSTEB(
-                                                                    0.0, 0.0, 0.0, 120.0),
+                              padding: EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 120.0),
                               primary: false,
                               shrinkWrap: true,
                               scrollDirection: Axis.vertical,
@@ -15077,8 +15061,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                       Text(
                                                         '${() {
                                                           if ((animaisProdutoresOfflineItem
-                                                                          .nomeAnimal !=
-                                                                      '') &&
+                                                                      .nomeAnimal !=
+                                                                  '') &&
                                                               (animaisProdutoresOfflineItem
                                                                       .brincoAnimal !=
                                                                   null) &&
@@ -15087,8 +15071,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   -1)) {
                                                             return '${animaisProdutoresOfflineItem.nomeAnimal} - ${animaisProdutoresOfflineItem.brincoAnimal.toString()}';
                                                           } else if (animaisProdutoresOfflineItem
-                                                                      .nomeAnimal !=
-                                                                  '') {
+                                                                  .nomeAnimal !=
+                                                              '') {
                                                             return animaisProdutoresOfflineItem
                                                                 .nomeAnimal;
                                                           } else {
@@ -15261,8 +15245,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                             ),
                                                           ),
                                                           if ((animaisProdutoresOfflineItem
-                                                                          .dtUltimaAcao !=
-                                                                      '') &&
+                                                                      .dtUltimaAcao !=
+                                                                  '') &&
                                                               (functions.verificaDataAcaoDataAtual(
                                                                       animaisProdutoresOfflineItem
                                                                           .dtUltimaAcao) ==
@@ -16290,9 +16274,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -18158,8 +18141,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                         .status !=
                                                                     'Inseminada PP') &&
                                                                 (animaisProdutoresOfflineItem
-                                                                            .dtPP ==
-                                                                        ''))
+                                                                        .dtPP ==
+                                                                    ''))
                                                             ? null
                                                             : () async {
                                                                 await showModalBottomSheet(
@@ -18583,8 +18566,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                     .toList();
 
                             return ListView.builder(
-                                                            padding: EdgeInsetsDirectional.fromSTEB(
-                                                                    0.0, 0.0, 0.0, 120.0),
+                              padding: EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 120.0),
                               primary: false,
                               shrinkWrap: true,
                               scrollDirection: Axis.vertical,
@@ -18749,8 +18732,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                       Text(
                                                         '${() {
                                                           if ((animaisProdutoresExistentesOfflineItem
-                                                                          .nomeAnimal !=
-                                                                      '') &&
+                                                                      .nomeAnimal !=
+                                                                  '') &&
                                                               (animaisProdutoresExistentesOfflineItem
                                                                       .brincoAnimal !=
                                                                   null) &&
@@ -18759,8 +18742,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   -1)) {
                                                             return '${animaisProdutoresExistentesOfflineItem.nomeAnimal} - ${animaisProdutoresExistentesOfflineItem.brincoAnimal.toString()}';
                                                           } else if (animaisProdutoresExistentesOfflineItem
-                                                                      .nomeAnimal !=
-                                                                  '') {
+                                                                  .nomeAnimal !=
+                                                              '') {
                                                             return animaisProdutoresExistentesOfflineItem
                                                                 .nomeAnimal;
                                                           } else {
@@ -18944,8 +18927,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                             ),
                                                           ),
                                                           if ((animaisProdutoresExistentesOfflineItem
-                                                                          .dtUltimaAcao !=
-                                                                      '') &&
+                                                                      .dtUltimaAcao !=
+                                                                  '') &&
                                                               (functions.verificaDataAcaoDataAtual(
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .dtUltimaAcao) ==
@@ -19973,9 +19956,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -21841,8 +21823,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                         .status !=
                                                                     'Inseminada PP') &&
                                                                 (animaisProdutoresExistentesOfflineItem
-                                                                            .dtPP ==
-                                                                        ''))
+                                                                        .dtPP ==
+                                                                    ''))
                                                             ? null
                                                             : () async {
                                                                 await showModalBottomSheet(

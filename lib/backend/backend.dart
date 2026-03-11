@@ -2236,7 +2236,8 @@ Future<int> queryCollectionCount(
 
   return query.count().get().catchError((err) {
     print('Error querying $collection: $err');
-  }).then((value) => value.count!);
+    throw err;
+  }).then((value) => value.count ?? 0);
 }
 
 Stream<List<T>> queryCollection<T>(

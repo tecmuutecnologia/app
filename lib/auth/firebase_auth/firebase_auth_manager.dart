@@ -101,7 +101,6 @@ class FirebaseAuthManager extends AuthManager
     }
   }
 
-  @override
   Future updatePassword({
     required String newPassword,
     required BuildContext context,

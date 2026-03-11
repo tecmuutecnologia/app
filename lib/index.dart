@@ -77,55 +77,15 @@ export '/pages/tecnico/propriedade/financeiro/editar_relatorio_financeiro/editar
     show EditarRelatorioFinanceiroWidget;
 export '/pages/tecnico/propriedade/recria/recriacao/recriacao_widget.dart'
     show RecriacaoWidget;
-export '/pages/tecnico/propriedade/recria/recriacao_copy/recriacao_copy_widget.dart'
-    show RecriacaoCopyWidget;
-export '/pages/tecnico/propriedade/secas/secas_copy/secas_copy_widget.dart'
-    show SecasCopyWidget;
-export '/pages/tecnico/propriedade/recria/recriacao_copy2/recriacao_copy2_widget.dart'
-    show RecriacaoCopy2Widget;
-export '/pages/tecnico/propriedade/calendario_sanitario/calendario_sanitario_copy/calendario_sanitario_copy_widget.dart'
-    show CalendarioSanitarioCopyWidget;
-export '/pages/tecnico/propriedade/calendario_sanitario/calendario_sanitario_copy2/calendario_sanitario_copy2_widget.dart'
-    show CalendarioSanitarioCopy2Widget;
-export '/pages/tecnico/propriedade/lista_completa/listacompleta_copy/listacompleta_copy_widget.dart'
-    show ListacompletaCopyWidget;
-export '/pages/tecnico/propriedade/animals/cadastrar_novo_animal_copy/cadastrar_novo_animal_copy_widget.dart'
-    show CadastrarNovoAnimalCopyWidget;
-export '/pages/tecnico/propriedade/animals/lista_animais_copy/lista_animais_copy_widget.dart'
-    show ListaAnimaisCopyWidget;
-export '/pages/tecnico/propriedade/inseminacoes/lista_inseminacoes_antes_offline/lista_inseminacoes_antes_offline_widget.dart'
-    show ListaInseminacoesAntesOfflineWidget;
-export '/pages/tecnico/propriedade/exame_ginecologico/exame_ginecologico_bkp_offline/exame_ginecologico_bkp_offline_widget.dart'
-    show ExameGinecologicoBkpOfflineWidget;
-export '/pages/tecnico/propriedade/dignostico_gestacao/diagnosticogestacao_bkp_offline/diagnosticogestacao_bkp_offline_widget.dart'
-    show DiagnosticogestacaoBkpOfflineWidget;
-export '/pages/tecnico/propriedade/prenhas/animais_prenhas_bkp_offline/animais_prenhas_bkp_offline_widget.dart'
-    show AnimaisPrenhasBkpOfflineWidget;
-export '/pages/tecnico/propriedade/recria/recriacao_copy3/recriacao_copy3_widget.dart'
-    show RecriacaoCopy3Widget;
 export '/pages/tecnico/propriedade/prontuario/prontuario_animal_offline/prontuario_animal_offline_widget.dart'
     show ProntuarioAnimalOfflineWidget;
-export '/pages/tecnico/propriedade/animals/lista_animais_copy2/lista_animais_copy2_widget.dart'
-    show ListaAnimaisCopy2Widget;
 export '/pages/tecnico/propriedade/dignostico_gestacao/diagnosticogestacao_modo1_off/diagnosticogestacao_modo1_off_widget.dart'
     show DiagnosticogestacaoModo1OffWidget;
-export '/pages/tecnico/propriedade/sincronizacao/acoes_falhadasbkp/acoes_falhadasbkp_widget.dart'
-    show AcoesFalhadasbkpWidget;
 export '/pages/tecnico/propriedade/sincronizacao/acoes_falhadas/acoes_falhadas_widget.dart'
     show AcoesFalhadasWidget;
 export '/pages/tecnico/propriedade/sincronizacao/importacao_animais/importacao_animais_widget.dart'
     show ImportacaoAnimaisWidget;
-export '/pages/tecnico/propriedade/lista_completa/listacompleta_new_bkp/listacompleta_new_bkp_widget.dart'
-    show ListacompletaNewBkpWidget;
-export '/pages/tecnico/propriedade/lista_completa/listacompleta_bkp_ultimo/listacompleta_bkp_ultimo_widget.dart'
-    show ListacompletaBkpUltimoWidget;
-export '/pages/tecnico/propriedade/inseminacoes/lista_inseminacoes_bkp_dez/lista_inseminacoes_bkp_dez_widget.dart'
-    show ListaInseminacoesBkpDezWidget;
-export '/pages/tecnico/propriedade/prenhas/animais_prenhas_bkp_recente/animais_prenhas_bkp_recente_widget.dart'
-    show AnimaisPrenhasBkpRecenteWidget;
 export '/pages/produtor/initial/inicio_propriedade_produtor/inicio_propriedade_produtor_widget.dart'
     show InicioPropriedadeProdutorWidget;
 export '/pages/welcome/verifica_tipo_login/verifica_tipo_login_widget.dart'
     show VerificaTipoLoginWidget;
-export '/pages/tecnico/propriedade/animals/lista_animais_copy3/lista_animais_copy3_widget.dart'
-    show ListaAnimaisCopy3Widget;
