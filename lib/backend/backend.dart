@@ -1177,7 +1177,7 @@ Future<FFFirestorePage<PropriedadesRecord>> queryPropriedadesRecordPage({
 Future<int> queryAnimaisProdutoresRecordCount({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = 500,
+  int limit = 2000,
 }) =>
     queryCollectionCount(
       AnimaisProdutoresRecord.collection(parent),
@@ -1188,7 +1188,7 @@ Future<int> queryAnimaisProdutoresRecordCount({
 Stream<List<AnimaisProdutoresRecord>> queryAnimaisProdutoresRecord({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = 500,
+  int limit = 2000,
   bool singleRecord = false,
 }) =>
     queryCollection(
@@ -1202,7 +1202,7 @@ Stream<List<AnimaisProdutoresRecord>> queryAnimaisProdutoresRecord({
 Future<List<AnimaisProdutoresRecord>> queryAnimaisProdutoresRecordOnce({
   DocumentReference? parent,
   Query Function(Query)? queryBuilder,
-  int limit = 500,
+  int limit = 2000,
   bool singleRecord = false,
 }) =>
     queryCollectionOnce(
