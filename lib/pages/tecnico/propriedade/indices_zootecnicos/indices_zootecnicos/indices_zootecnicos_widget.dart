@@ -1418,7 +1418,7 @@ class _IndicesZootecnicosWidgetState extends State<IndicesZootecnicosWidget> {
                                                 AlignmentDirectional(1.0, 1.0),
                                             child: FlutterFlowChartLegendWidget(
                                               entries: functions
-                                                  .retornaGruposUnicos(
+                                                  .retornaGruposComContagem(
                                                       chartAnimaisProdutoresRecordList
                                                           .map((e) =>
                                                               e.grupoAnimal)
@@ -1634,7 +1634,7 @@ class _IndicesZootecnicosWidgetState extends State<IndicesZootecnicosWidget> {
                                                 AlignmentDirectional(1.0, 1.0),
                                             child: FlutterFlowChartLegendWidget(
                                               entries: functions
-                                                  .retornaReproducaoStringHold(
+                                                  .retornaReproducaoComContagem(
                                                       chartAnimaisProdutoresRecordList
                                                           .where((e) =>
                                                               ((e.status ==
@@ -1875,7 +1875,7 @@ class _IndicesZootecnicosWidgetState extends State<IndicesZootecnicosWidget> {
                                               child:
                                                   FlutterFlowChartLegendWidget(
                                                 entries: functions
-                                                    .retornaReproducaoString(chartAnimaisProdutoresRecordList
+                                                    .retornaRebanhoProdutivoComContagem(chartAnimaisProdutoresRecordList
                                                         .where((e) =>
                                                             ((e.status ==
                                                                     'Inseminada') ||

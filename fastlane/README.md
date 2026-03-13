@@ -15,6 +15,14 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## iOS
 
+### ios build_and_upload_external
+
+```sh
+[bundle exec] fastlane ios build_and_upload_external
+```
+
+Build and Upload to TestFlight (external) - Builds IPA and uploads
+
 ### ios upload_testflight_external
 
 ```sh
