@@ -10,6 +10,7 @@ import 'auth/firebase_auth/firebase_user_provider.dart';
 import 'auth/firebase_auth/auth_util.dart';
 
 import 'backend/firebase/firebase_config.dart';
+import 'backend/objectbox/index.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 import 'flutter_flow/internationalization.dart';
@@ -24,6 +25,12 @@ void main() async {
   usePathUrlStrategy();
 
   await initFirebase();
+
+  // Inicializa ObjectBox para cache local (apenas em plataformas nativas)
+  if (!kIsWeb) {
+    await ObjectBoxService.initialize();
+    await SyncService.initialize();
+  }
 
   await FlutterFlowTheme.initialize();
 

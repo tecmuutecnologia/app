@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../auth_manager.dart';
+import '../../backend/objectbox/objectbox_auth_helper.dart';
 
 import 'anonymous_auth.dart';
 import 'apple_auth.dart';
@@ -54,7 +55,13 @@ class FirebaseAuthManager extends AuthManager
   FirebasePhoneAuthManager phoneAuthManager = FirebasePhoneAuthManager();
 
   @override
-  Future signOut() {
+  Future signOut() async {
+    // Salva o userId antes de deslogar
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+
+    // Sincroniza dados pendentes e limpa cache local
+    await ObjectBoxAuthHelper.onUserLogout(userId);
+
     return FirebaseAuth.instance.signOut();
   }
 
@@ -310,9 +317,14 @@ class FirebaseAuthManager extends AuthManager
   ) async {
     try {
       final userCredential = await signInFunc();
-      return userCredential == null
-          ? null
-          : TecmuuFirebaseUser.fromUserCredential(userCredential);
+      if (userCredential == null) return null;
+
+      // Sincroniza dados do Firestore para ObjectBox após login
+      if (userCredential.user != null) {
+        await ObjectBoxAuthHelper.onUserLogin(userCredential.user!);
+      }
+
+      return TecmuuFirebaseUser.fromUserCredential(userCredential);
     } on FirebaseAuthException catch (e) {
       final errorMsg = switch (e.code) {
         'email-already-in-use' =>

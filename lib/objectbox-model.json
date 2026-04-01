@@ -1,0 +1,688 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:8986228835005611182",
+      "lastPropertyId": "44:7363795320818029985",
+      "name": "AnimalEntity",
+      "properties": [
+        {
+          "id": "1:8422760424833753736",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8982918733280263257",
+          "name": "firestoreId",
+          "indexId": "1:163687397126876558",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:8897024734085040376",
+          "name": "parentPath",
+          "type": 9
+        },
+        {
+          "id": "4:2211421079852214897",
+          "name": "uidTecnicoPropriedadePath",
+          "type": 9
+        },
+        {
+          "id": "5:4588699983721054447",
+          "name": "nomeAnimal",
+          "type": 9
+        },
+        {
+          "id": "6:1283237248981818827",
+          "name": "racaAnimal",
+          "type": 9
+        },
+        {
+          "id": "7:963111509488542126",
+          "name": "pesoAnimal",
+          "type": 9
+        },
+        {
+          "id": "8:5286547481113485143",
+          "name": "dtNascimento",
+          "type": 9
+        },
+        {
+          "id": "9:6165444154019826004",
+          "name": "touro",
+          "type": 9
+        },
+        {
+          "id": "10:6567022361569961797",
+          "name": "vaca",
+          "type": 9
+        },
+        {
+          "id": "11:4017560638493064998",
+          "name": "status",
+          "type": 9
+        },
+        {
+          "id": "12:8085499026171474853",
+          "name": "grupoAnimal",
+          "type": 9
+        },
+        {
+          "id": "13:2833422523807156668",
+          "name": "dtUltimaInseminacao",
+          "type": 9
+        },
+        {
+          "id": "14:5673187711448273229",
+          "name": "dtUltimoParto",
+          "type": 9
+        },
+        {
+          "id": "15:2704416727895229513",
+          "name": "dtPartoPrevisto",
+          "type": 9
+        },
+        {
+          "id": "16:4315146956090850976",
+          "name": "dtSecPrevista",
+          "type": 9
+        },
+        {
+          "id": "17:3885935357623816286",
+          "name": "dtPrePartoPrevista",
+          "type": 9
+        },
+        {
+          "id": "18:2492397400037686806",
+          "name": "dtPP",
+          "type": 9
+        },
+        {
+          "id": "19:8887570061563599426",
+          "name": "dtDgMais",
+          "type": 9
+        },
+        {
+          "id": "20:4320879650004770759",
+          "name": "dtDgMenos",
+          "type": 9
+        },
+        {
+          "id": "21:1863712283759063039",
+          "name": "dtAborto",
+          "type": 9
+        },
+        {
+          "id": "22:6791046750705834349",
+          "name": "dtSecagem",
+          "type": 9
+        },
+        {
+          "id": "23:1257978066216243368",
+          "name": "dtUltimoPP",
+          "type": 9
+        },
+        {
+          "id": "24:4741161288619832759",
+          "name": "dtPreParto",
+          "type": 9
+        },
+        {
+          "id": "25:2134144698228557",
+          "name": "dtDescarteAnimal",
+          "type": 9
+        },
+        {
+          "id": "26:4844891994543856782",
+          "name": "dtUltimaAcao",
+          "type": 9
+        },
+        {
+          "id": "27:4546311318238891039",
+          "name": "dtUltimoPartoContingencia",
+          "type": 9
+        },
+        {
+          "id": "28:7593582241290840797",
+          "name": "liberaInseminacao",
+          "type": 1
+        },
+        {
+          "id": "29:7598900256175867623",
+          "name": "nomeTouroUltimaInseminacao",
+          "type": 9
+        },
+        {
+          "id": "30:2072080928381607061",
+          "name": "totalInseminacoes",
+          "type": 6
+        },
+        {
+          "id": "31:2885171771698626463",
+          "name": "totalPartos",
+          "type": 6
+        },
+        {
+          "id": "32:6742455141038620290",
+          "name": "motivoDescarteAnimal",
+          "type": 9
+        },
+        {
+          "id": "33:5901490601844779129",
+          "name": "nomeBrincoConcat",
+          "type": 9
+        },
+        {
+          "id": "34:4577014007816712352",
+          "name": "idGrupoAnimal",
+          "type": 6
+        },
+        {
+          "id": "35:7055099798182102196",
+          "name": "idStatusAnimal",
+          "type": 6
+        },
+        {
+          "id": "36:2355529459518998446",
+          "name": "brincoAnimal",
+          "type": 6
+        },
+        {
+          "id": "37:2045653485172204371",
+          "name": "brincoAnimalOrder",
+          "type": 6
+        },
+        {
+          "id": "38:8110989046513889196",
+          "name": "compararDtUltimaInseminacao",
+          "type": 10
+        },
+        {
+          "id": "39:3275362714721461566",
+          "name": "dtInducaoLactacao",
+          "type": 10
+        },
+        {
+          "id": "40:1693754653417492588",
+          "name": "dtDesmame",
+          "type": 10
+        },
+        {
+          "id": "41:3124050973327984315",
+          "name": "lastModified",
+          "type": 10
+        },
+        {
+          "id": "42:2905846968320575639",
+          "name": "lastSynced",
+          "type": 10
+        },
+        {
+          "id": "43:7962411060243664126",
+          "name": "needsSync",
+          "type": 1
+        },
+        {
+          "id": "44:7363795320818029985",
+          "name": "isDeleted",
+          "type": 1
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:4689127300938650488",
+      "lastPropertyId": "10:2333849240104684978",
+      "name": "PendingOperationEntity",
+      "properties": [
+        {
+          "id": "1:7175872399464994013",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:7716094434037669351",
+          "name": "operationType",
+          "type": 9
+        },
+        {
+          "id": "3:2163139422072763312",
+          "name": "collectionName",
+          "type": 9
+        },
+        {
+          "id": "4:2327879044025891632",
+          "name": "firestoreId",
+          "type": 9
+        },
+        {
+          "id": "5:5908392529602840403",
+          "name": "documentPath",
+          "type": 9
+        },
+        {
+          "id": "6:4491331295807670492",
+          "name": "dataJson",
+          "type": 9
+        },
+        {
+          "id": "7:8825337601313109508",
+          "name": "createdAt",
+          "type": 10
+        },
+        {
+          "id": "8:4693558825231033440",
+          "name": "retryCount",
+          "type": 6
+        },
+        {
+          "id": "9:39208967785409633",
+          "name": "lastError",
+          "type": 9
+        },
+        {
+          "id": "10:2333849240104684978",
+          "name": "priority",
+          "type": 6
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "3:4837537819797596855",
+      "lastPropertyId": "19:5377478473887412073",
+      "name": "PersonEntity",
+      "properties": [
+        {
+          "id": "1:4117632285891741346",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3809021107756887479",
+          "name": "firestoreId",
+          "indexId": "2:6492724243196477648",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:9003636381117425191",
+          "name": "dtNascimento",
+          "type": 9
+        },
+        {
+          "id": "4:4401239134578850971",
+          "name": "cpf",
+          "type": 9
+        },
+        {
+          "id": "5:1772986642025654553",
+          "name": "uid",
+          "type": 9
+        },
+        {
+          "id": "6:2125018675279425350",
+          "name": "endereco",
+          "type": 9
+        },
+        {
+          "id": "7:3379921533786098284",
+          "name": "cidade",
+          "type": 9
+        },
+        {
+          "id": "8:3227904793260433181",
+          "name": "bairro",
+          "type": 9
+        },
+        {
+          "id": "9:2510605295371965698",
+          "name": "email",
+          "type": 9
+        },
+        {
+          "id": "10:2438447566083825442",
+          "name": "createdTime",
+          "type": 10
+        },
+        {
+          "id": "11:1182640425796722373",
+          "name": "displayName",
+          "type": 9
+        },
+        {
+          "id": "12:7655810411144645643",
+          "name": "photoUrl",
+          "type": 9
+        },
+        {
+          "id": "13:3714772321765650800",
+          "name": "phoneNumber",
+          "type": 9
+        },
+        {
+          "id": "14:7166229847740549901",
+          "name": "empresa",
+          "type": 9
+        },
+        {
+          "id": "15:5248982746973643861",
+          "name": "tipo",
+          "type": 9
+        },
+        {
+          "id": "16:399403457913504161",
+          "name": "lastModified",
+          "type": 10
+        },
+        {
+          "id": "17:2220485181209229185",
+          "name": "lastSynced",
+          "type": 10
+        },
+        {
+          "id": "18:8480956359218143190",
+          "name": "needsSync",
+          "type": 1
+        },
+        {
+          "id": "19:5377478473887412073",
+          "name": "isDeleted",
+          "type": 1
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "4:2075314046405181166",
+      "lastPropertyId": "9:8949770742090908264",
+      "name": "ProdutorEntity",
+      "properties": [
+        {
+          "id": "1:3430924345622213945",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:2201064883885220335",
+          "name": "firestoreId",
+          "indexId": "3:7232938258253810686",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:5366445235375108433",
+          "name": "liberado",
+          "type": 1
+        },
+        {
+          "id": "4:9214515854633547903",
+          "name": "uidTecnicoPath",
+          "type": 9
+        },
+        {
+          "id": "5:2995056671913094989",
+          "name": "uidPersonPath",
+          "type": 9
+        },
+        {
+          "id": "6:6703296515637381264",
+          "name": "lastModified",
+          "type": 10
+        },
+        {
+          "id": "7:7590426524941041005",
+          "name": "lastSynced",
+          "type": 10
+        },
+        {
+          "id": "8:4350697707124613404",
+          "name": "needsSync",
+          "type": 1
+        },
+        {
+          "id": "9:8949770742090908264",
+          "name": "isDeleted",
+          "type": 1
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "5:6656913100126291315",
+      "lastPropertyId": "16:2240110343104043146",
+      "name": "PropriedadeEntity",
+      "properties": [
+        {
+          "id": "1:6878920466618423595",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:4201401286878682424",
+          "name": "firestoreId",
+          "indexId": "4:5591589692874087129",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:8043197972113219612",
+          "name": "parentPath",
+          "type": 9
+        },
+        {
+          "id": "4:6970263119304391774",
+          "name": "uidPersonProdutorPath",
+          "type": 9
+        },
+        {
+          "id": "5:4158649530719975810",
+          "name": "email",
+          "type": 9
+        },
+        {
+          "id": "6:6076916291501506325",
+          "name": "displayName",
+          "type": 9
+        },
+        {
+          "id": "7:3959345899071644297",
+          "name": "cpf",
+          "type": 9
+        },
+        {
+          "id": "8:2876390497437155450",
+          "name": "endereco",
+          "type": 9
+        },
+        {
+          "id": "9:5708248824540258571",
+          "name": "cidade",
+          "type": 9
+        },
+        {
+          "id": "10:5285104315498180670",
+          "name": "phoneNumber",
+          "type": 9
+        },
+        {
+          "id": "11:2132563448235012808",
+          "name": "diasParaDg",
+          "type": 9
+        },
+        {
+          "id": "12:323463361263209612",
+          "name": "isDeleted",
+          "type": 1
+        },
+        {
+          "id": "13:2330295810317223651",
+          "name": "deletedAt",
+          "type": 10
+        },
+        {
+          "id": "14:7283117912191522039",
+          "name": "lastModified",
+          "type": 10
+        },
+        {
+          "id": "15:608983418463563235",
+          "name": "lastSynced",
+          "type": 10
+        },
+        {
+          "id": "16:2240110343104043146",
+          "name": "needsSync",
+          "type": 1
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "6:7928747235823571726",
+      "lastPropertyId": "7:5965183406567634824",
+      "name": "SyncMetadataEntity",
+      "properties": [
+        {
+          "id": "1:8746570931669227613",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:6890120061848461896",
+          "name": "collectionName",
+          "indexId": "5:4250504014473932116",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:7532681411351054360",
+          "name": "lastFullSync",
+          "type": 10
+        },
+        {
+          "id": "4:2519933706153202263",
+          "name": "lastIncrementalSync",
+          "type": 10
+        },
+        {
+          "id": "5:3133922395017792864",
+          "name": "initialSyncComplete",
+          "type": 1
+        },
+        {
+          "id": "6:7034471275758907053",
+          "name": "recordCount",
+          "type": 6
+        },
+        {
+          "id": "7:5965183406567634824",
+          "name": "schemaVersion",
+          "type": 6
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "7:6395357591972958726",
+      "lastPropertyId": "14:4496123936708850230",
+      "name": "TecnicoEntity",
+      "properties": [
+        {
+          "id": "1:407062826673902243",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:5070470238017540978",
+          "name": "firestoreId",
+          "indexId": "6:4426326080799698287",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:3738148155484790974",
+          "name": "uidPerson",
+          "type": 9
+        },
+        {
+          "id": "4:3874397845540082237",
+          "name": "liberado",
+          "type": 1
+        },
+        {
+          "id": "5:4253792479288763163",
+          "name": "limiteProdutoresContratado",
+          "type": 6
+        },
+        {
+          "id": "6:8685468375955467595",
+          "name": "quantidadeProdutoresCadastrados",
+          "type": 6
+        },
+        {
+          "id": "7:1207080779830634251",
+          "name": "restanteLimiteProdutores",
+          "type": 6
+        },
+        {
+          "id": "8:8328879397672918696",
+          "name": "limiteAnimaisContratado",
+          "type": 6
+        },
+        {
+          "id": "9:315269411827543340",
+          "name": "quantidadeAnimaisCadastrados",
+          "type": 6
+        },
+        {
+          "id": "10:8385152445757883691",
+          "name": "restanteLimiteAnimais",
+          "type": 6
+        },
+        {
+          "id": "11:4259352478334575560",
+          "name": "lastModified",
+          "type": 10
+        },
+        {
+          "id": "12:3171383054780161833",
+          "name": "lastSynced",
+          "type": 10
+        },
+        {
+          "id": "13:1815321003954609101",
+          "name": "needsSync",
+          "type": 1
+        },
+        {
+          "id": "14:4496123936708850230",
+          "name": "isDeleted",
+          "type": 1
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "7:6395357591972958726",
+  "lastIndexId": "6:4426326080799698287",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}
