@@ -1,3 +1,4 @@
+// ignore_for_file: unused_import
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -28,7 +29,8 @@ class PropriedadesExcluiasWidget extends StatefulWidget {
       _PropriedadesExcluiasWidgetState();
 }
 
-class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget> {
+class _PropriedadesExcluiasWidgetState
+    extends State<PropriedadesExcluiasWidget> {
   late PropriedadesExcluiasModel _model;
   final Set<String> _restoredPropertyIds = <String>{};
 
@@ -78,8 +80,8 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            12.0, 0.0, 0.0, 0.0),
+                        padding:
+                            EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
                         child: FlutterFlowIconButton(
                           borderColor: Colors.transparent,
                           borderRadius: 30.0,
@@ -138,7 +140,8 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+                  padding:
+                      EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
                   child: TextFormField(
                     controller: _model.searchController,
                     onChanged: (_) => safeSetState(() {}),
@@ -223,8 +226,8 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                               }),
                               child: Icon(
                                 Icons.clear,
-                                color: FlutterFlowTheme.of(context)
-                                    .secondaryText,
+                                color:
+                                    FlutterFlowTheme.of(context).secondaryText,
                                 size: 18.0,
                               ),
                             )
@@ -243,9 +246,8 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                           fontWeight: FlutterFlowTheme.of(context)
                               .bodyMedium
                               .fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .fontStyle,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
                         ),
                     maxLines: 1,
                     validator: _model.searchController == null
@@ -259,8 +261,8 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                   children: [
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            0.0, 1.0, 0.0, 0.0),
+                        padding:
+                            EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
                         child: StreamBuilder<List<PropriedadesRecord>>(
                           stream: queryPropriedadesRecord(
                             parent: widget.uidTecnico,
@@ -279,8 +281,7 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                                   width: 50.0,
                                   height: 50.0,
                                   child: CircularProgressIndicator(
-                                    valueColor:
-                                        AlwaysStoppedAnimation<Color>(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
                                       Color(0xFFF75E38),
                                     ),
                                   ),
@@ -300,18 +301,17 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                                         .bodyMedium
                                         .override(
                                           font: GoogleFonts.readexPro(
-                                            fontWeight: FlutterFlowTheme.of(
-                                                    context)
-                                                .bodyMedium
-                                                .fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(
-                                                    context)
-                                                .bodyMedium
-                                                .fontStyle,
+                                            fontWeight:
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyMedium
+                                                    .fontWeight,
+                                            fontStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyMedium
+                                                    .fontStyle,
                                           ),
-                                          color:
-                                              FlutterFlowTheme.of(context)
-                                                  .secondaryText,
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
                                           letterSpacing: 0.0,
                                           fontWeight:
                                               FlutterFlowTheme.of(context)
@@ -340,10 +340,9 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                             if (searchQuery.isNotEmpty) {
                               listViewPropriedadesRecordList =
                                   listViewPropriedadesRecordList
-                                      .where((property) =>
-                                          property.displayName
-                                              .toLowerCase()
-                                              .contains(searchQuery))
+                                      .where((property) => property.displayName
+                                          .toLowerCase()
+                                          .contains(searchQuery))
                                       .toList();
                             }
 
@@ -361,18 +360,17 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                                         .bodyMedium
                                         .override(
                                           font: GoogleFonts.readexPro(
-                                            fontWeight: FlutterFlowTheme.of(
-                                                    context)
-                                                .bodyMedium
-                                                .fontWeight,
-                                            fontStyle: FlutterFlowTheme.of(
-                                                    context)
-                                                .bodyMedium
-                                                .fontStyle,
+                                            fontWeight:
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyMedium
+                                                    .fontWeight,
+                                            fontStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .bodyMedium
+                                                    .fontStyle,
                                           ),
-                                          color:
-                                              FlutterFlowTheme.of(context)
-                                                  .secondaryText,
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
                                           letterSpacing: 0.0,
                                           fontWeight:
                                               FlutterFlowTheme.of(context)
@@ -393,8 +391,7 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                               primary: false,
                               shrinkWrap: true,
                               scrollDirection: Axis.vertical,
-                              itemCount:
-                                  listViewPropriedadesRecordList.length,
+                              itemCount: listViewPropriedadesRecordList.length,
                               itemBuilder: (context, listViewIndex) {
                                 final listViewPropriedadesRecord =
                                     listViewPropriedadesRecordList[
@@ -410,9 +407,8 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                                       boxShadow: [
                                         BoxShadow(
                                           blurRadius: 0.0,
-                                          color:
-                                              FlutterFlowTheme.of(context)
-                                                  .alternate,
+                                          color: FlutterFlowTheme.of(context)
+                                              .alternate,
                                           offset: Offset(
                                             0.0,
                                             1.0,
@@ -422,9 +418,8 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                                       shape: BoxShape.rectangle,
                                     ),
                                     child: Padding(
-                                      padding:
-                                          EdgeInsetsDirectional.fromSTEB(
-                                              16.0, 12.0, 16.0, 12.0),
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          16.0, 12.0, 16.0, 12.0),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.max,
                                         crossAxisAlignment:
@@ -476,75 +471,83 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                                                     Padding(
                                                       padding:
                                                           EdgeInsetsDirectional
-                                                              .fromSTEB(0.0,
-                                                                  4.0, 0.0, 0.0),
+                                                              .fromSTEB(
+                                                                  0.0,
+                                                                  4.0,
+                                                                  0.0,
+                                                                  0.0),
                                                       child: Text(
                                                         'Excluída em: ${dateTimeFormat('d/M/y', listViewPropriedadesRecord.deletedAt)}',
-                                                        style: FlutterFlowTheme
-                                                                .of(context)
-                                                            .labelMedium
-                                                            .override(
-                                                              font: GoogleFonts
-                                                                  .readexPro(
-                                                                fontWeight: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .labelMedium
-                                                                    .fontWeight,
-                                                                fontStyle: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .labelMedium
-                                                                    .fontStyle,
-                                                              ),
-                                                              color: FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .secondaryText,
-                                                              letterSpacing:
-                                                                  0.0,
-                                                              fontWeight: FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .labelMedium
-                                                                  .fontWeight,
-                                                              fontStyle: FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .labelMedium
-                                                                  .fontStyle,
-                                                            ),
+                                                        style:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .labelMedium
+                                                                .override(
+                                                                  font: GoogleFonts
+                                                                      .readexPro(
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelMedium
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelMedium
+                                                                        .fontStyle,
+                                                                  ),
+                                                                  color: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .secondaryText,
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                  fontWeight: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .labelMedium
+                                                                      .fontWeight,
+                                                                  fontStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .labelMedium
+                                                                      .fontStyle,
+                                                                ),
                                                       ),
                                                     ),
                                                     Padding(
                                                       padding:
                                                           EdgeInsetsDirectional
-                                                              .fromSTEB(0.0,
-                                                                  4.0, 0.0, 0.0),
+                                                              .fromSTEB(
+                                                                  0.0,
+                                                                  4.0,
+                                                                  0.0,
+                                                                  0.0),
                                                       child: Text(
                                                         listViewPropriedadesRecord
                                                             .cidade,
-                                                        style: FlutterFlowTheme
-                                                                .of(context)
-                                                            .labelMedium
-                                                            .override(
-                                                              font: GoogleFonts
-                                                                  .readexPro(
-                                                                fontWeight: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .labelMedium
-                                                                    .fontWeight,
-                                                                fontStyle: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .labelMedium
-                                                                    .fontStyle,
-                                                              ),
-                                                              letterSpacing:
-                                                                  0.0,
-                                                              fontWeight: FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .labelMedium
-                                                                  .fontWeight,
-                                                              fontStyle: FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .labelMedium
-                                                                  .fontStyle,
-                                                            ),
+                                                        style:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .labelMedium
+                                                                .override(
+                                                                  font: GoogleFonts
+                                                                      .readexPro(
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelMedium
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelMedium
+                                                                        .fontStyle,
+                                                                  ),
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                  fontWeight: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .labelMedium
+                                                                      .fontWeight,
+                                                                  fontStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .labelMedium
+                                                                      .fontStyle,
+                                                                ),
                                                       ),
                                                     ),
                                                   ],
@@ -563,8 +566,8 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                                                   child: Padding(
                                                     padding:
                                                         EdgeInsetsDirectional
-                                                            .fromSTEB(0.0,
-                                                                0.0, 8.0, 0.0),
+                                                            .fromSTEB(0.0, 0.0,
+                                                                8.0, 0.0),
                                                     child: FFButtonWidget(
                                                       onPressed: () async {
                                                         final confirmRestore =
@@ -606,11 +609,10 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                                                         }
 
                                                         safeSetState(() {
-                                                          _restoredPropertyIds
-                                                              .add(
-                                                                  listViewPropriedadesRecord
-                                                                      .reference
-                                                                      .id);
+                                                          _restoredPropertyIds.add(
+                                                              listViewPropriedadesRecord
+                                                                  .reference
+                                                                  .id);
                                                         });
 
                                                         try {
@@ -676,36 +678,37 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                                                                     0.0,
                                                                     0.0,
                                                                     0.0),
-                                                        color: Color(
-                                                            0xFF3B82F6),
-                                                        textStyle: FlutterFlowTheme
-                                                                .of(context)
-                                                            .labelSmall
-                                                            .override(
-                                                              font: GoogleFonts
-                                                                  .readexPro(
-                                                                fontWeight: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .labelSmall
-                                                                    .fontWeight,
-                                                                fontStyle: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .labelSmall
-                                                                    .fontStyle,
-                                                              ),
-                                                              color:
-                                                                  Colors.white,
-                                                              letterSpacing:
-                                                                  0.0,
-                                                              fontWeight: FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .labelSmall
-                                                                  .fontWeight,
-                                                              fontStyle: FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .labelSmall
-                                                                  .fontStyle,
-                                                            ),
+                                                        color:
+                                                            Color(0xFF3B82F6),
+                                                        textStyle:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .labelSmall
+                                                                .override(
+                                                                  font: GoogleFonts
+                                                                      .readexPro(
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelSmall
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelSmall
+                                                                        .fontStyle,
+                                                                  ),
+                                                                  color: Colors
+                                                                      .white,
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                  fontWeight: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .labelSmall
+                                                                      .fontWeight,
+                                                                  fontStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .labelSmall
+                                                                      .fontStyle,
+                                                                ),
                                                         elevation: 2.0,
                                                         borderSide: BorderSide(
                                                           color: Colors
@@ -723,8 +726,8 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                                                   child: Padding(
                                                     padding:
                                                         EdgeInsetsDirectional
-                                                            .fromSTEB(8.0,
-                                                                0.0, 0.0, 0.0),
+                                                            .fromSTEB(8.0, 0.0,
+                                                                0.0, 0.0),
                                                     child: FFButtonWidget(
                                                       onPressed: () async {
                                                         var confirmDialogResponse =
@@ -741,20 +744,18 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                                                                           'Tem certeza que deseja excluir permanentemente essa propriedade? Esta ação não poderá ser desfeita.'),
                                                                       actions: [
                                                                         TextButton(
-                                                                          onPressed: () =>
-                                                                              Navigator.pop(
-                                                                                  alertDialogContext,
-                                                                                  false),
-                                                                          child: Text(
-                                                                              'Cancelar'),
+                                                                          onPressed: () => Navigator.pop(
+                                                                              alertDialogContext,
+                                                                              false),
+                                                                          child:
+                                                                              Text('Cancelar'),
                                                                         ),
                                                                         TextButton(
-                                                                          onPressed: () =>
-                                                                              Navigator.pop(
-                                                                                  alertDialogContext,
-                                                                                  true),
-                                                                          child: Text(
-                                                                              'Excluir'),
+                                                                          onPressed: () => Navigator.pop(
+                                                                              alertDialogContext,
+                                                                              true),
+                                                                          child:
+                                                                              Text('Excluir'),
                                                                         ),
                                                                       ],
                                                                     );
@@ -815,36 +816,37 @@ class _PropriedadesExcluiasWidgetState extends State<PropriedadesExcluiasWidget>
                                                                     0.0,
                                                                     0.0,
                                                                     0.0),
-                                                        color: Color(
-                                                            0xFFEF4444),
-                                                        textStyle: FlutterFlowTheme
-                                                                .of(context)
-                                                            .labelSmall
-                                                            .override(
-                                                              font: GoogleFonts
-                                                                  .readexPro(
-                                                                fontWeight: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .labelSmall
-                                                                    .fontWeight,
-                                                                fontStyle: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .labelSmall
-                                                                    .fontStyle,
-                                                              ),
-                                                              color:
-                                                                  Colors.white,
-                                                              letterSpacing:
-                                                                  0.0,
-                                                              fontWeight: FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .labelSmall
-                                                                  .fontWeight,
-                                                              fontStyle: FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .labelSmall
-                                                                  .fontStyle,
-                                                            ),
+                                                        color:
+                                                            Color(0xFFEF4444),
+                                                        textStyle:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .labelSmall
+                                                                .override(
+                                                                  font: GoogleFonts
+                                                                      .readexPro(
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelSmall
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelSmall
+                                                                        .fontStyle,
+                                                                  ),
+                                                                  color: Colors
+                                                                      .white,
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                  fontWeight: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .labelSmall
+                                                                      .fontWeight,
+                                                                  fontStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .labelSmall
+                                                                      .fontStyle,
+                                                                ),
                                                         elevation: 2.0,
                                                         borderSide: BorderSide(
                                                           color: Colors

@@ -1,3 +1,4 @@
+// ignore_for_file: dead_code
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
@@ -455,17 +456,16 @@ class _ConfirmarSenhaWidgetState extends State<ConfirmarSenhaWidget>
                                                   await propriedadesRecordReference
                                                       .set(
                                                           createPropriedadesRecordData(
-                                                    email:
-                                                        widget.emailProdutor,
+                                                    email: widget.emailProdutor,
                                                     displayName:
                                                         widget.nomeProdutor,
                                                     cpf: widget.cpfProdutor,
-                                                    endereco: widget
-                                                        .enderecoProdutor,
+                                                    endereco:
+                                                        widget.enderecoProdutor,
                                                     cidade:
                                                         widget.cidadeProdutor,
-                                                    phoneNumber: widget
-                                                        .telefoneProdutor,
+                                                    phoneNumber:
+                                                        widget.telefoneProdutor,
                                                     diasParaDg:
                                                         widget.diasparaDg,
                                                     uidPersonProdutor: widget
@@ -517,8 +517,7 @@ class _ConfirmarSenhaWidgetState extends State<ConfirmarSenhaWidget>
                                                 });
                                                 await launchUrl(Uri(
                                                     scheme: 'mailto',
-                                                    path:
-                                                        widget.emailProdutor!,
+                                                    path: widget.emailProdutor!,
                                                     query: {
                                                       'subject':
                                                           'Bem-vindo(a) Tecmuu!',
@@ -573,9 +572,6 @@ class _ConfirmarSenhaWidgetState extends State<ConfirmarSenhaWidget>
                                                   safeSetState(() {});
                                                 return;
                                               }
-
-                                              if (_shouldSetState)
-                                                safeSetState(() {});
                                             },
                                             text: 'Confirmar',
                                             icon: Icon(

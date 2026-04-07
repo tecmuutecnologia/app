@@ -1,3 +1,5 @@
+// ignore_for_file: dead_code, dead_null_aware_expression
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -1828,8 +1830,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                   ),
                                 if (((_model.grupoValue == 'Vacas') ||
                                         (_model.grupoValue == 'Novilhas')) ||
-                                    ((widget.grupoPredominante ==
-                                            'Novilhas') ||
+                                    ((widget.grupoPredominante == 'Novilhas') ||
                                         (widget.grupoPredominante == 'Vacas')))
                                   Row(
                                     mainAxisSize: MainAxisSize.max,
@@ -2149,11 +2150,11 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                             );
                                           });
                                           if ((_model.dataUltimaInseminacaoTextController
-                                                          .text !=
-                                                      '') &&
+                                                      .text !=
+                                                  '') &&
                                               (_model.dataUltimoPartoTextController
-                                                          .text !=
-                                                      '')) {
+                                                      .text !=
+                                                  '')) {
                                             if (_model.datePicked2! >
                                                 _model.datePicked3!) {
                                               safeSetState(() {
@@ -2196,8 +2197,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                 if (((_model.grupoValue == 'Vacas') ||
                                         (_model.grupoValue == 'Novilhas')) &&
                                     (_model.dataUltimaInseminacaoTextController
-                                                .text !=
-                                            ''))
+                                            .text !=
+                                        ''))
                                   StreamBuilder<List<AnimaisProdutoresRecord>>(
                                     stream: _model.animaisLiberaoParaInseminar(
                                       requestFn: () =>
@@ -2208,8 +2209,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                 animaisProdutoresRecord
                                                     .where(
                                                       'uidTecnicoPropriedade',
-                                                      isEqualTo: widget
-                                                          .uidPropriedade,
+                                                      isEqualTo:
+                                                          widget.uidPropriedade,
                                                     )
                                                     .where(
                                                       'liberaInseminacao',
@@ -2356,8 +2357,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                       );
                                     },
                                   ),
-                                if (((widget.grupoPredominante ==
-                                            'Novilhas') ||
+                                if (((widget.grupoPredominante == 'Novilhas') ||
                                         (widget.grupoPredominante ==
                                             'Vacas')) ||
                                     ((_model.grupoValue == 'Vacas') ||
@@ -2369,9 +2369,11 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                       _model.statusAnimalValue ??= 'Vazia',
                                     ),
                                     options: () {
-                                      if ((_model.dataUltimaInseminacaoTextController.text != '') &&
+                                      if ((_model.dataUltimaInseminacaoTextController
+                                                  .text !=
+                                              '') &&
                                           (_model.dataUltimoPartoTextController.text !=
-                                                  '') &&
+                                              '') &&
                                           (_model.datePicked2! >
                                               _model.datePicked3!)) {
                                         return cadastrarNovoAnimalStatusAnimaisRecordList
@@ -2379,9 +2381,13 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                             .toList()
                                             .where((e) => e == 'Vazia')
                                             .toList();
-                                      } else if ((_model.dataUltimaInseminacaoTextController.text != '') &&
-                                          (_model.dataUltimoPartoTextController.text !=
-                                                  '') &&
+                                      } else if ((_model
+                                                  .dataUltimaInseminacaoTextController
+                                                  .text !=
+                                              '') &&
+                                          (_model.dataUltimoPartoTextController
+                                                  .text !=
+                                              '') &&
                                           (_model.datePicked2! <
                                               _model.datePicked3!)) {
                                         return cadastrarNovoAnimalStatusAnimaisRecordList
@@ -2394,18 +2400,25 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                 (e == 'Inseminada PP') ||
                                                 (e == 'Pré Parto'))
                                             .toList();
-                                      } else if ((_model.dataUltimaInseminacaoTextController.text !=
-                                                  '') &&
-                                          (_model.dataUltimoPartoTextController.text ==
-                                                  '')) {
+                                      } else if ((_model
+                                                  .dataUltimaInseminacaoTextController
+                                                  .text !=
+                                              '') &&
+                                          (_model.dataUltimoPartoTextController
+                                                  .text ==
+                                              '')) {
                                         return functions.retornaStringEmLista(_model
                                                     .grupoValue ==
                                                 'Novilhas'
                                             ? 'Inseminada, Inseminada PP, Prenha, Pré Parto'
                                             : 'Inseminada, Inseminada PP, Prenha, Seca, Pré Parto');
-                                      } else if ((_model.dataUltimaInseminacaoTextController.text ==
-                                                  '') &&
-                                          (_model.dataUltimoPartoTextController.text != '')) {
+                                      } else if ((_model
+                                                  .dataUltimaInseminacaoTextController
+                                                  .text ==
+                                              '') &&
+                                          (_model.dataUltimoPartoTextController
+                                                  .text !=
+                                              '')) {
                                         return cadastrarNovoAnimalStatusAnimaisRecordList
                                             .map((e) => e.descricao)
                                             .toList()
@@ -2554,15 +2567,15 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                               safeSetState(() {});
                                             return;
                                           }
-                                          if ((_model.nomeTextController
-                                                          .text !=
-                                                      '') ||
+                                          if ((_model.nomeTextController.text !=
+                                                  '') ||
                                               (_model.brincoTextController
-                                                          .text !=
-                                                      '')) {
-                                            if (_model.dataUltimaInseminacaoTextController
-                                                        .text !=
-                                                    '') {
+                                                      .text !=
+                                                  '')) {
+                                            if (_model
+                                                    .dataUltimaInseminacaoTextController
+                                                    .text !=
+                                                '') {
                                               if (!(_model.touroInseminacaoValue !=
                                                       null &&
                                                   _model.touroInseminacaoValue !=
@@ -2628,8 +2641,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                   'Inseminada') {
                                                 if ((_model.dataUltimaInseminacaoTextController.text != '') &&
                                                     (_model.dataUltimoPartoTextController
-                                                                .text ==
-                                                            '') &&
+                                                            .text ==
+                                                        '') &&
                                                     (_model.touroInseminacaoValue !=
                                                             null &&
                                                         _model.touroInseminacaoValue !=
@@ -2644,9 +2657,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                     nomeAnimal: _model
                                                         .nomeTextController
                                                         .text,
-                                                    brincoAnimal: _model.brincoTextController
-                                                                    .text !=
-                                                                ''
+                                                    brincoAnimal: _model
+                                                                .brincoTextController
+                                                                .text !=
+                                                            ''
                                                         ? int.tryParse(_model
                                                             .brincoTextController
                                                             .text)
@@ -2697,15 +2711,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                     nomeBrincoConcat: () {
                                                       if ((_model.nomeTextController.text != '') &&
                                                           (_model.brincoTextController
-                                                                      .text !=
-                                                                  '') &&
+                                                                  .text !=
+                                                              '') &&
                                                           (_model.brincoTextController
                                                                   .text !=
                                                               '-1')) {
                                                         return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                      } else if (_model.nomeTextController
-                                                                  .text !=
-                                                              '') {
+                                                      } else if (_model
+                                                              .nomeTextController
+                                                              .text !=
+                                                          '') {
                                                         return _model
                                                             .nomeTextController
                                                             .text;
@@ -2716,9 +2731,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                       }
                                                     }(),
                                                     idStatusAnimal: 3,
-                                                    brincoAnimalOrder: _model.brincoTextController
-                                                                    .text !=
-                                                                ''
+                                                    brincoAnimalOrder: _model
+                                                                .brincoTextController
+                                                                .text !=
+                                                            ''
                                                         ? int.tryParse(_model
                                                             .brincoTextController
                                                             .text)
@@ -2785,20 +2801,17 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                       ),
                                                       'emailPropriedade':
                                                           serializeParam(
-                                                        widget
-                                                            .emailPropriedade,
+                                                        widget.emailPropriedade,
                                                         ParamType.String,
                                                       ),
                                                       'visitaPresencial':
                                                           serializeParam(
-                                                        widget
-                                                            .visitaPresencial,
+                                                        widget.visitaPresencial,
                                                         ParamType.bool,
                                                       ),
                                                       'initialTabSelect':
                                                           serializeParam(
-                                                        widget
-                                                            .initialTabSelect,
+                                                        widget.initialTabSelect,
                                                         ParamType.int,
                                                       ),
                                                       'diasDg': serializeParam(
@@ -2819,8 +2832,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                 } else {
                                                   if ((_model.dataUltimoPartoTextController.text != '') &&
                                                       (_model.dataUltimaInseminacaoTextController
-                                                                  .text !=
-                                                              '') &&
+                                                              .text !=
+                                                          '') &&
                                                       (_model.touroInseminacaoValue !=
                                                               null &&
                                                           _model.touroInseminacaoValue !=
@@ -2831,14 +2844,14 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                         .set(
                                                             createAnimaisProdutoresRecordData(
                                                       uidTecnicoPropriedade:
-                                                          widget
-                                                              .uidPropriedade,
+                                                          widget.uidPropriedade,
                                                       nomeAnimal: _model
                                                           .nomeTextController
                                                           .text,
-                                                      brincoAnimal: _model.brincoTextController
-                                                                      .text !=
-                                                                  ''
+                                                      brincoAnimal: _model
+                                                                  .brincoTextController
+                                                                  .text !=
+                                                              ''
                                                           ? int.tryParse(_model
                                                               .brincoTextController
                                                               .text)
@@ -2893,15 +2906,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                       nomeBrincoConcat: () {
                                                         if ((_model.nomeTextController.text != '') &&
                                                             (_model.brincoTextController
-                                                                        .text !=
-                                                                    '') &&
+                                                                    .text !=
+                                                                '') &&
                                                             (_model.brincoTextController
                                                                     .text !=
                                                                 '-1')) {
                                                           return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                        } else if (_model.nomeTextController
-                                                                    .text !=
-                                                                '') {
+                                                        } else if (_model
+                                                                .nomeTextController
+                                                                .text !=
+                                                            '') {
                                                           return _model
                                                               .nomeTextController
                                                               .text;
@@ -2916,9 +2930,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                           _model
                                                               .dataUltimoPartoTextController
                                                               .text,
-                                                      brincoAnimalOrder: _model.brincoTextController
-                                                                      .text !=
-                                                                  ''
+                                                      brincoAnimalOrder: _model
+                                                                  .brincoTextController
+                                                                  .text !=
+                                                              ''
                                                           ? int.tryParse(_model
                                                               .brincoTextController
                                                               .text)
@@ -2969,8 +2984,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                       queryParameters: {
                                                         'uidPropriedade':
                                                             serializeParam(
-                                                          widget
-                                                              .uidPropriedade,
+                                                          widget.uidPropriedade,
                                                           ParamType
                                                               .DocumentReference,
                                                         ),
@@ -3037,14 +3051,14 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                         .set(
                                                             createAnimaisProdutoresRecordData(
                                                       uidTecnicoPropriedade:
-                                                          widget
-                                                              .uidPropriedade,
+                                                          widget.uidPropriedade,
                                                       nomeAnimal: _model
                                                           .nomeTextController
                                                           .text,
-                                                      brincoAnimal: _model.brincoTextController
-                                                                      .text !=
-                                                                  ''
+                                                      brincoAnimal: _model
+                                                                  .brincoTextController
+                                                                  .text !=
+                                                              ''
                                                           ? int.tryParse(_model
                                                               .brincoTextController
                                                               .text)
@@ -3094,15 +3108,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                       nomeBrincoConcat: () {
                                                         if ((_model.nomeTextController.text != '') &&
                                                             (_model.brincoTextController
-                                                                        .text !=
-                                                                    '') &&
+                                                                    .text !=
+                                                                '') &&
                                                             (_model.brincoTextController
                                                                     .text !=
                                                                 '-1')) {
                                                           return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                        } else if (_model.nomeTextController
-                                                                    .text !=
-                                                                '') {
+                                                        } else if (_model
+                                                                .nomeTextController
+                                                                .text !=
+                                                            '') {
                                                           return _model
                                                               .nomeTextController
                                                               .text;
@@ -3113,9 +3128,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                         }
                                                       }(),
                                                       idStatusAnimal: 4,
-                                                      brincoAnimalOrder: _model.brincoTextController
-                                                                      .text !=
-                                                                  ''
+                                                      brincoAnimalOrder: _model
+                                                                  .brincoTextController
+                                                                  .text !=
+                                                              ''
                                                           ? int.tryParse(_model
                                                               .brincoTextController
                                                               .text)
@@ -3166,8 +3182,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                       queryParameters: {
                                                         'uidPropriedade':
                                                             serializeParam(
-                                                          widget
-                                                              .uidPropriedade,
+                                                          widget.uidPropriedade,
                                                           ParamType
                                                               .DocumentReference,
                                                         ),
@@ -3252,14 +3267,14 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                         .set(
                                                             createAnimaisProdutoresRecordData(
                                                       uidTecnicoPropriedade:
-                                                          widget
-                                                              .uidPropriedade,
+                                                          widget.uidPropriedade,
                                                       nomeAnimal: _model
                                                           .nomeTextController
                                                           .text,
-                                                      brincoAnimal: _model.brincoTextController
-                                                                      .text !=
-                                                                  ''
+                                                      brincoAnimal: _model
+                                                                  .brincoTextController
+                                                                  .text !=
+                                                              ''
                                                           ? int.tryParse(_model
                                                               .brincoTextController
                                                               .text)
@@ -3285,23 +3300,25 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                       dtUltimoParto: _model
                                                           .dataUltimoPartoTextController
                                                           .text,
-                                                      totalPartos: _model.dataUltimoPartoTextController
+                                                      totalPartos:
+                                                          _model.dataUltimoPartoTextController
                                                                       .text !=
                                                                   ''
-                                                          ? 1
-                                                          : 0,
+                                                              ? 1
+                                                              : 0,
                                                       nomeBrincoConcat: () {
                                                         if ((_model.nomeTextController.text != '') &&
                                                             (_model.brincoTextController
-                                                                        .text !=
-                                                                    '') &&
+                                                                    .text !=
+                                                                '') &&
                                                             (_model.brincoTextController
                                                                     .text !=
                                                                 '-1')) {
                                                           return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                        } else if (_model.nomeTextController
-                                                                    .text !=
-                                                                '') {
+                                                        } else if (_model
+                                                                .nomeTextController
+                                                                .text !=
+                                                            '') {
                                                           return _model
                                                               .nomeTextController
                                                               .text;
@@ -3316,9 +3333,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                           _model
                                                               .dataUltimoPartoTextController
                                                               .text,
-                                                      brincoAnimalOrder: _model.brincoTextController
-                                                                      .text !=
-                                                                  ''
+                                                      brincoAnimalOrder: _model
+                                                                  .brincoTextController
+                                                                  .text !=
+                                                              ''
                                                           ? int.tryParse(_model
                                                               .brincoTextController
                                                               .text)
@@ -3369,8 +3387,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                       queryParameters: {
                                                         'uidPropriedade':
                                                             serializeParam(
-                                                          widget
-                                                              .uidPropriedade,
+                                                          widget.uidPropriedade,
                                                           ParamType
                                                               .DocumentReference,
                                                         ),
@@ -3425,8 +3442,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                             .statusAnimalValue ==
                                                         'Prenha') {
                                                       if ((_model.dataUltimaInseminacaoTextController
-                                                                      .text !=
-                                                                  '') &&
+                                                                  .text !=
+                                                              '') &&
                                                           (_model.touroInseminacaoValue !=
                                                                   null &&
                                                               _model.touroInseminacaoValue !=
@@ -3442,9 +3459,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                           nomeAnimal: _model
                                                               .nomeTextController
                                                               .text,
-                                                          brincoAnimal: _model.brincoTextController
-                                                                          .text !=
-                                                                      ''
+                                                          brincoAnimal: _model
+                                                                      .brincoTextController
+                                                                      .text !=
+                                                                  ''
                                                               ? int.tryParse(_model
                                                                   .brincoTextController
                                                                   .text)
@@ -3508,15 +3526,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                           nomeBrincoConcat: () {
                                                             if ((_model.nomeTextController.text != '') &&
                                                                 (_model.brincoTextController
-                                                                            .text !=
-                                                                        '') &&
+                                                                        .text !=
+                                                                    '') &&
                                                                 (_model.brincoTextController
                                                                         .text !=
                                                                     '-1')) {
                                                               return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                            } else if (_model.nomeTextController
-                                                                        .text !=
-                                                                    '') {
+                                                            } else if (_model
+                                                                    .nomeTextController
+                                                                    .text !=
+                                                                '') {
                                                               return _model
                                                                   .nomeTextController
                                                                   .text;
@@ -3531,17 +3550,17 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                               _model
                                                                   .dataUltimoPartoTextController
                                                                   .text,
-                                                          brincoAnimalOrder: _model.brincoTextController
-                                                                          .text !=
-                                                                      ''
+                                                          brincoAnimalOrder: _model
+                                                                      .brincoTextController
+                                                                      .text !=
+                                                                  ''
                                                               ? int.tryParse(_model
                                                                   .brincoTextController
                                                                   .text)
                                                               : 999999,
                                                         ));
 
-                                                        await widget
-                                                            .uidTecnico!
+                                                        await widget.uidTecnico!
                                                             .update({
                                                           ...mapToFirestore(
                                                             {
@@ -3601,8 +3620,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                             ),
                                                             'uidTecnico':
                                                                 serializeParam(
-                                                              widget
-                                                                  .uidTecnico,
+                                                              widget.uidTecnico,
                                                               ParamType
                                                                   .DocumentReference,
                                                             ),
@@ -3671,8 +3689,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                               .statusAnimalValue ==
                                                           'Inseminada PP') {
                                                         if ((_model.dataUltimaInseminacaoTextController
-                                                                        .text !=
-                                                                    '') &&
+                                                                    .text !=
+                                                                '') &&
                                                             (_model.touroInseminacaoValue !=
                                                                     null &&
                                                                 _model.touroInseminacaoValue !=
@@ -3688,9 +3706,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                             nomeAnimal: _model
                                                                 .nomeTextController
                                                                 .text,
-                                                            brincoAnimal: _model.brincoTextController
-                                                                            .text !=
-                                                                        ''
+                                                            brincoAnimal: _model
+                                                                        .brincoTextController
+                                                                        .text !=
+                                                                    ''
                                                                 ? int.tryParse(
                                                                     _model
                                                                         .brincoTextController
@@ -3766,15 +3785,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                                 () {
                                                               if ((_model.nomeTextController.text != '') &&
                                                                   (_model.brincoTextController
-                                                                              .text !=
-                                                                          '') &&
+                                                                          .text !=
+                                                                      '') &&
                                                                   (_model.brincoTextController
                                                                           .text !=
                                                                       '-1')) {
                                                                 return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                              } else if (_model.nomeTextController
-                                                                          .text !=
-                                                                      '') {
+                                                              } else if (_model
+                                                                      .nomeTextController
+                                                                      .text !=
+                                                                  '') {
                                                                 return _model
                                                                     .nomeTextController
                                                                     .text;
@@ -3789,9 +3809,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                                 _model
                                                                     .dataUltimoPartoTextController
                                                                     .text,
-                                                            brincoAnimalOrder: _model.brincoTextController
-                                                                            .text !=
-                                                                        ''
+                                                            brincoAnimalOrder: _model
+                                                                        .brincoTextController
+                                                                        .text !=
+                                                                    ''
                                                                 ? int.tryParse(
                                                                     _model
                                                                         .brincoTextController
@@ -3934,8 +3955,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                                 .statusAnimalValue ==
                                                             'Pré Parto') {
                                                           if ((_model.dataUltimaInseminacaoTextController
-                                                                          .text !=
-                                                                      '') &&
+                                                                      .text !=
+                                                                  '') &&
                                                               (_model.touroInseminacaoValue !=
                                                                       null &&
                                                                   _model.touroInseminacaoValue !=
@@ -3952,9 +3973,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                               nomeAnimal: _model
                                                                   .nomeTextController
                                                                   .text,
-                                                              brincoAnimal: _model.brincoTextController
-                                                                              .text !=
-                                                                          ''
+                                                              brincoAnimal: _model
+                                                                          .brincoTextController
+                                                                          .text !=
+                                                                      ''
                                                                   ? int.tryParse(
                                                                       _model
                                                                           .brincoTextController
@@ -4029,15 +4051,17 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                               nomeBrincoConcat:
                                                                   () {
                                                                 if ((_model.nomeTextController.text != '') &&
-                                                                    (_model.brincoTextController.text !=
-                                                                            '') &&
+                                                                    (_model.brincoTextController
+                                                                            .text !=
+                                                                        '') &&
                                                                     (_model.brincoTextController
                                                                             .text !=
                                                                         '-1')) {
                                                                   return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                                } else if (_model.nomeTextController
-                                                                            .text !=
-                                                                        '') {
+                                                                } else if (_model
+                                                                        .nomeTextController
+                                                                        .text !=
+                                                                    '') {
                                                                   return _model
                                                                       .nomeTextController
                                                                       .text;
@@ -4052,9 +4076,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                                   _model
                                                                       .dataUltimoPartoTextController
                                                                       .text,
-                                                              brincoAnimalOrder: _model.brincoTextController
-                                                                              .text !=
-                                                                          ''
+                                                              brincoAnimalOrder: _model
+                                                                          .brincoTextController
+                                                                          .text !=
+                                                                      ''
                                                                   ? int.tryParse(
                                                                       _model
                                                                           .brincoTextController
@@ -4152,8 +4177,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                                 ),
                                                                 'diasDg':
                                                                     serializeParam(
-                                                                  widget
-                                                                      .diasDg,
+                                                                  widget.diasDg,
                                                                   ParamType
                                                                       .String,
                                                                 ),
@@ -4246,9 +4270,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                       widget.uidPropriedade,
                                                   nomeAnimal: _model
                                                       .nomeTextController.text,
-                                                  brincoAnimal: _model.brincoTextController
-                                                                  .text !=
-                                                              ''
+                                                  brincoAnimal: _model
+                                                              .brincoTextController
+                                                              .text !=
+                                                          ''
                                                       ? int.tryParse(_model
                                                           .brincoTextController
                                                           .text)
@@ -4283,15 +4308,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                   nomeBrincoConcat: () {
                                                     if ((_model.nomeTextController.text != '') &&
                                                         (_model.brincoTextController
-                                                                    .text !=
-                                                                '') &&
+                                                                .text !=
+                                                            '') &&
                                                         (_model.brincoTextController
                                                                 .text !=
                                                             '-1')) {
                                                       return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                    } else if (_model.nomeTextController
-                                                                .text !=
-                                                            '') {
+                                                    } else if (_model
+                                                            .nomeTextController
+                                                            .text !=
+                                                        '') {
                                                       return _model
                                                           .nomeTextController
                                                           .text;
@@ -4301,9 +4327,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                           .text;
                                                     }
                                                   }(),
-                                                  brincoAnimalOrder: _model.brincoTextController
-                                                                  .text !=
-                                                              ''
+                                                  brincoAnimalOrder: _model
+                                                              .brincoTextController
+                                                              .text !=
+                                                          ''
                                                       ? int.tryParse(_model
                                                           .brincoTextController
                                                           .text)
@@ -4405,9 +4432,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                     nomeAnimal: _model
                                                         .nomeTextController
                                                         .text,
-                                                    brincoAnimal: _model.brincoTextController
-                                                                    .text !=
-                                                                ''
+                                                    brincoAnimal: _model
+                                                                .brincoTextController
+                                                                .text !=
+                                                            ''
                                                         ? int.tryParse(_model
                                                             .brincoTextController
                                                             .text)
@@ -4440,15 +4468,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                     nomeBrincoConcat: () {
                                                       if ((_model.nomeTextController.text != '') &&
                                                           (_model.brincoTextController
-                                                                      .text !=
-                                                                  '') &&
+                                                                  .text !=
+                                                              '') &&
                                                           (_model.brincoTextController
                                                                   .text !=
                                                               '-1')) {
                                                         return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                      } else if (_model.nomeTextController
-                                                                  .text !=
-                                                              '') {
+                                                      } else if (_model
+                                                              .nomeTextController
+                                                              .text !=
+                                                          '') {
                                                         return _model
                                                             .nomeTextController
                                                             .text;
@@ -4458,9 +4487,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                             .text;
                                                       }
                                                     }(),
-                                                    brincoAnimalOrder: _model.brincoTextController
-                                                                    .text !=
-                                                                ''
+                                                    brincoAnimalOrder: _model
+                                                                .brincoTextController
+                                                                .text !=
+                                                            ''
                                                         ? int.tryParse(_model
                                                             .brincoTextController
                                                             .text)
@@ -4527,20 +4557,17 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                       ),
                                                       'emailPropriedade':
                                                           serializeParam(
-                                                        widget
-                                                            .emailPropriedade,
+                                                        widget.emailPropriedade,
                                                         ParamType.String,
                                                       ),
                                                       'visitaPresencial':
                                                           serializeParam(
-                                                        widget
-                                                            .visitaPresencial,
+                                                        widget.visitaPresencial,
                                                         ParamType.bool,
                                                       ),
                                                       'initialTabSelect':
                                                           serializeParam(
-                                                        widget
-                                                            .initialTabSelect,
+                                                        widget.initialTabSelect,
                                                         ParamType.int,
                                                       ),
                                                       'diasDg': serializeParam(
@@ -4569,9 +4596,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                     widget.uidPropriedade,
                                                 nomeAnimal: _model
                                                     .nomeTextController.text,
-                                                brincoAnimal: _model.brincoTextController
-                                                                .text !=
-                                                            ''
+                                                brincoAnimal: _model
+                                                            .brincoTextController
+                                                            .text !=
+                                                        ''
                                                     ? int.tryParse(_model
                                                         .brincoTextController
                                                         .text)
@@ -4592,15 +4620,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                 nomeBrincoConcat: () {
                                                   if ((_model.nomeTextController.text != '') &&
                                                       (_model.brincoTextController
-                                                                  .text !=
-                                                              '') &&
+                                                              .text !=
+                                                          '') &&
                                                       (_model.brincoTextController
                                                               .text !=
                                                           '-1')) {
                                                     return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                  } else if (_model.nomeTextController
-                                                              .text !=
-                                                          '') {
+                                                  } else if (_model
+                                                          .nomeTextController
+                                                          .text !=
+                                                      '') {
                                                     return _model
                                                         .nomeTextController
                                                         .text;
@@ -4610,9 +4639,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                         .text;
                                                   }
                                                 }(),
-                                                brincoAnimalOrder: _model.brincoTextController
-                                                                .text !=
-                                                            ''
+                                                brincoAnimalOrder: _model
+                                                            .brincoTextController
+                                                            .text !=
+                                                        ''
                                                     ? int.tryParse(_model
                                                         .brincoTextController
                                                         .text)
@@ -4801,15 +4831,14 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                             safeSetState(() {});
                                           return;
                                         }
-                                        if ((_model.nomeTextController
-                                                        .text !=
-                                                    '') ||
-                                            (_model.brincoTextController
-                                                        .text !=
-                                                    '')) {
-                                          if (_model.dataUltimaInseminacaoTextController
-                                                      .text !=
-                                                  '') {
+                                        if ((_model.nomeTextController.text !=
+                                                '') ||
+                                            (_model.brincoTextController.text !=
+                                                '')) {
+                                          if (_model
+                                                  .dataUltimaInseminacaoTextController
+                                                  .text !=
+                                              '') {
                                             if (!(_model.touroInseminacaoValue !=
                                                     null &&
                                                 _model.touroInseminacaoValue !=
@@ -4872,8 +4901,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                 'Inseminada') {
                                               if ((_model.dataUltimaInseminacaoTextController.text != '') &&
                                                   (_model.dataUltimoPartoTextController
-                                                              .text ==
-                                                          '') &&
+                                                          .text ==
+                                                      '') &&
                                                   (_model.touroInseminacaoValue !=
                                                           null &&
                                                       _model.touroInseminacaoValue !=
@@ -4904,16 +4933,18 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                   dtUltimaInseminacao: _model
                                                       .dataUltimaInseminacaoTextController
                                                       .text,
-                                                  brincoAnimalOrder: _model.brincoTextController
-                                                                  .text !=
-                                                              ''
+                                                  brincoAnimalOrder: _model
+                                                              .brincoTextController
+                                                              .text !=
+                                                          ''
                                                       ? int.tryParse(_model
                                                           .brincoTextController
                                                           .text)
                                                       : 999999,
-                                                  brincoAnimal: _model.brincoTextController
-                                                                  .text !=
-                                                              ''
+                                                  brincoAnimal: _model
+                                                              .brincoTextController
+                                                              .text !=
+                                                          ''
                                                       ? int.tryParse(_model
                                                           .brincoTextController
                                                           .text)
@@ -4942,15 +4973,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                   nomeBrincoConcat: () {
                                                     if ((_model.nomeTextController.text != '') &&
                                                         (_model.brincoTextController
-                                                                    .text !=
-                                                                '') &&
+                                                                .text !=
+                                                            '') &&
                                                         (_model.brincoTextController
                                                                 .text !=
                                                             '-1')) {
                                                       return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                    } else if (_model.nomeTextController
-                                                                .text !=
-                                                            '') {
+                                                    } else if (_model
+                                                            .nomeTextController
+                                                            .text !=
+                                                        '') {
                                                       return _model
                                                           .nomeTextController
                                                           .text;
@@ -5042,8 +5074,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                               } else {
                                                 if ((_model.dataUltimoPartoTextController.text != '') &&
                                                     (_model.dataUltimaInseminacaoTextController
-                                                                .text !=
-                                                            '') &&
+                                                            .text !=
+                                                        '') &&
                                                     (_model.touroInseminacaoValue !=
                                                             null &&
                                                         _model.touroInseminacaoValue !=
@@ -5072,16 +5104,18 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                         .text,
                                                     grupoAnimal:
                                                         _model.grupoValue,
-                                                    brincoAnimalOrder: _model.brincoTextController
-                                                                    .text !=
-                                                                ''
+                                                    brincoAnimalOrder: _model
+                                                                .brincoTextController
+                                                                .text !=
+                                                            ''
                                                         ? int.tryParse(_model
                                                             .brincoTextController
                                                             .text)
                                                         : 999999,
-                                                    brincoAnimal: _model.brincoTextController
-                                                                    .text !=
-                                                                ''
+                                                    brincoAnimal: _model
+                                                                .brincoTextController
+                                                                .text !=
+                                                            ''
                                                         ? int.tryParse(_model
                                                             .brincoTextController
                                                             .text)
@@ -5089,15 +5123,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                     nomeBrincoConcat: () {
                                                       if ((_model.nomeTextController.text != '') &&
                                                           (_model.brincoTextController
-                                                                      .text !=
-                                                                  '') &&
+                                                                  .text !=
+                                                              '') &&
                                                           (_model.brincoTextController
                                                                   .text !=
                                                               '-1')) {
                                                         return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                      } else if (_model.nomeTextController
-                                                                  .text !=
-                                                              '') {
+                                                      } else if (_model
+                                                              .nomeTextController
+                                                              .text !=
+                                                          '') {
                                                         return _model
                                                             .nomeTextController
                                                             .text;
@@ -5193,20 +5228,17 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                       ),
                                                       'emailPropriedade':
                                                           serializeParam(
-                                                        widget
-                                                            .emailPropriedade,
+                                                        widget.emailPropriedade,
                                                         ParamType.String,
                                                       ),
                                                       'visitaPresencial':
                                                           serializeParam(
-                                                        widget
-                                                            .visitaPresencial,
+                                                        widget.visitaPresencial,
                                                         ParamType.bool,
                                                       ),
                                                       'initialTabSelect':
                                                           serializeParam(
-                                                        widget
-                                                            .initialTabSelect,
+                                                        widget.initialTabSelect,
                                                         ParamType.int,
                                                       ),
                                                       'diasDg': serializeParam(
@@ -5259,16 +5291,18 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                         .text,
                                                     grupoAnimal:
                                                         _model.grupoValue,
-                                                    brincoAnimalOrder: _model.brincoTextController
-                                                                    .text !=
-                                                                ''
+                                                    brincoAnimalOrder: _model
+                                                                .brincoTextController
+                                                                .text !=
+                                                            ''
                                                         ? int.tryParse(_model
                                                             .brincoTextController
                                                             .text)
                                                         : 999999,
-                                                    brincoAnimal: _model.brincoTextController
-                                                                    .text !=
-                                                                ''
+                                                    brincoAnimal: _model
+                                                                .brincoTextController
+                                                                .text !=
+                                                            ''
                                                         ? int.tryParse(_model
                                                             .brincoTextController
                                                             .text)
@@ -5276,15 +5310,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                     nomeBrincoConcat: () {
                                                       if ((_model.nomeTextController.text != '') &&
                                                           (_model.brincoTextController
-                                                                      .text !=
-                                                                  '') &&
+                                                                  .text !=
+                                                              '') &&
                                                           (_model.brincoTextController
                                                                   .text !=
                                                               '-1')) {
                                                         return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                      } else if (_model.nomeTextController
-                                                                  .text !=
-                                                              '') {
+                                                      } else if (_model
+                                                              .nomeTextController
+                                                              .text !=
+                                                          '') {
                                                         return _model
                                                             .nomeTextController
                                                             .text;
@@ -5371,20 +5406,17 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                       ),
                                                       'emailPropriedade':
                                                           serializeParam(
-                                                        widget
-                                                            .emailPropriedade,
+                                                        widget.emailPropriedade,
                                                         ParamType.String,
                                                       ),
                                                       'visitaPresencial':
                                                           serializeParam(
-                                                        widget
-                                                            .visitaPresencial,
+                                                        widget.visitaPresencial,
                                                         ParamType.bool,
                                                       ),
                                                       'initialTabSelect':
                                                           serializeParam(
-                                                        widget
-                                                            .initialTabSelect,
+                                                        widget.initialTabSelect,
                                                         ParamType.int,
                                                       ),
                                                       'diasDg': serializeParam(
@@ -5454,16 +5486,18 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                         .text,
                                                     grupoAnimal:
                                                         _model.grupoValue,
-                                                    brincoAnimalOrder: _model.brincoTextController
-                                                                    .text !=
-                                                                ''
+                                                    brincoAnimalOrder: _model
+                                                                .brincoTextController
+                                                                .text !=
+                                                            ''
                                                         ? int.tryParse(_model
                                                             .brincoTextController
                                                             .text)
                                                         : 999999,
-                                                    brincoAnimal: _model.brincoTextController
-                                                                    .text !=
-                                                                ''
+                                                    brincoAnimal: _model
+                                                                .brincoTextController
+                                                                .text !=
+                                                            ''
                                                         ? int.tryParse(_model
                                                             .brincoTextController
                                                             .text)
@@ -5471,15 +5505,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                     nomeBrincoConcat: () {
                                                       if ((_model.nomeTextController.text != '') &&
                                                           (_model.brincoTextController
-                                                                      .text !=
-                                                                  '') &&
+                                                                  .text !=
+                                                              '') &&
                                                           (_model.brincoTextController
                                                                   .text !=
                                                               '-1')) {
                                                         return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                      } else if (_model.nomeTextController
-                                                                  .text !=
-                                                              '') {
+                                                      } else if (_model
+                                                              .nomeTextController
+                                                              .text !=
+                                                          '') {
                                                         return _model
                                                             .nomeTextController
                                                             .text;
@@ -5496,8 +5531,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                         .statusAnimalValue,
                                                     totalPartos:
                                                         _model.dataUltimoPartoTextController
-                                                                        .text !=
-                                                                    ''
+                                                                    .text !=
+                                                                ''
                                                             ? 1
                                                             : 0,
                                                     idStatusAnimal: 2,
@@ -5555,20 +5590,17 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                       ),
                                                       'emailPropriedade':
                                                           serializeParam(
-                                                        widget
-                                                            .emailPropriedade,
+                                                        widget.emailPropriedade,
                                                         ParamType.String,
                                                       ),
                                                       'visitaPresencial':
                                                           serializeParam(
-                                                        widget
-                                                            .visitaPresencial,
+                                                        widget.visitaPresencial,
                                                         ParamType.bool,
                                                       ),
                                                       'initialTabSelect':
                                                           serializeParam(
-                                                        widget
-                                                            .initialTabSelect,
+                                                        widget.initialTabSelect,
                                                         ParamType.int,
                                                       ),
                                                       'diasDg': serializeParam(
@@ -5591,8 +5623,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                           .statusAnimalValue ==
                                                       'Prenha') {
                                                     if ((_model.dataUltimaInseminacaoTextController
-                                                                    .text !=
-                                                                '') &&
+                                                                .text !=
+                                                            '') &&
                                                         (_model.touroInseminacaoValue !=
                                                                 null &&
                                                             _model.touroInseminacaoValue !=
@@ -5622,16 +5654,18 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                             .text,
                                                         grupoAnimal:
                                                             _model.grupoValue,
-                                                        brincoAnimalOrder: _model.brincoTextController
-                                                                        .text !=
-                                                                    ''
+                                                        brincoAnimalOrder: _model
+                                                                    .brincoTextController
+                                                                    .text !=
+                                                                ''
                                                             ? int.tryParse(_model
                                                                 .brincoTextController
                                                                 .text)
                                                             : 999999,
-                                                        brincoAnimal: _model.brincoTextController
-                                                                        .text !=
-                                                                    ''
+                                                        brincoAnimal: _model
+                                                                    .brincoTextController
+                                                                    .text !=
+                                                                ''
                                                             ? int.tryParse(_model
                                                                 .brincoTextController
                                                                 .text)
@@ -5639,15 +5673,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                         nomeBrincoConcat: () {
                                                           if ((_model.nomeTextController.text != '') &&
                                                               (_model.brincoTextController
-                                                                          .text !=
-                                                                      '') &&
+                                                                      .text !=
+                                                                  '') &&
                                                               (_model.brincoTextController
                                                                       .text !=
                                                                   '-1')) {
                                                             return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                          } else if (_model.nomeTextController
-                                                                      .text !=
-                                                                  '') {
+                                                          } else if (_model
+                                                                  .nomeTextController
+                                                                  .text !=
+                                                              '') {
                                                             return _model
                                                                 .nomeTextController
                                                                 .text;
@@ -5820,8 +5855,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                             .statusAnimalValue ==
                                                         'Inseminada PP') {
                                                       if ((_model.dataUltimaInseminacaoTextController
-                                                                      .text !=
-                                                                  '') &&
+                                                                  .text !=
+                                                              '') &&
                                                           (_model.touroInseminacaoValue !=
                                                                   null &&
                                                               _model.touroInseminacaoValue !=
@@ -5851,16 +5886,18 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                               .text,
                                                           grupoAnimal:
                                                               _model.grupoValue,
-                                                          brincoAnimalOrder: _model.brincoTextController
-                                                                          .text !=
-                                                                      ''
+                                                          brincoAnimalOrder: _model
+                                                                      .brincoTextController
+                                                                      .text !=
+                                                                  ''
                                                               ? int.tryParse(_model
                                                                   .brincoTextController
                                                                   .text)
                                                               : 999999,
-                                                          brincoAnimal: _model.brincoTextController
-                                                                          .text !=
-                                                                      ''
+                                                          brincoAnimal: _model
+                                                                      .brincoTextController
+                                                                      .text !=
+                                                                  ''
                                                               ? int.tryParse(_model
                                                                   .brincoTextController
                                                                   .text)
@@ -5868,15 +5905,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                           nomeBrincoConcat: () {
                                                             if ((_model.nomeTextController.text != '') &&
                                                                 (_model.brincoTextController
-                                                                            .text !=
-                                                                        '') &&
+                                                                        .text !=
+                                                                    '') &&
                                                                 (_model.brincoTextController
                                                                         .text !=
                                                                     '-1')) {
                                                               return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                            } else if (_model.nomeTextController
-                                                                        .text !=
-                                                                    '') {
+                                                            } else if (_model
+                                                                    .nomeTextController
+                                                                    .text !=
+                                                                '') {
                                                               return _model
                                                                   .nomeTextController
                                                                   .text;
@@ -5988,8 +6026,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                             ),
                                                             'uidTecnico':
                                                                 serializeParam(
-                                                              widget
-                                                                  .uidTecnico,
+                                                              widget.uidTecnico,
                                                               ParamType
                                                                   .DocumentReference,
                                                             ),
@@ -6058,8 +6095,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                               .statusAnimalValue ==
                                                           'Pré Parto') {
                                                         if ((_model.dataUltimaInseminacaoTextController
-                                                                        .text !=
-                                                                    '') &&
+                                                                    .text !=
+                                                                '') &&
                                                             (_model.touroInseminacaoValue !=
                                                                     null &&
                                                                 _model.touroInseminacaoValue !=
@@ -6089,17 +6126,19 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                                 .text,
                                                             grupoAnimal: _model
                                                                 .grupoValue,
-                                                            brincoAnimalOrder: _model.brincoTextController
-                                                                            .text !=
-                                                                        ''
+                                                            brincoAnimalOrder: _model
+                                                                        .brincoTextController
+                                                                        .text !=
+                                                                    ''
                                                                 ? int.tryParse(
                                                                     _model
                                                                         .brincoTextController
                                                                         .text)
                                                                 : 999999,
-                                                            brincoAnimal: _model.brincoTextController
-                                                                            .text !=
-                                                                        ''
+                                                            brincoAnimal: _model
+                                                                        .brincoTextController
+                                                                        .text !=
+                                                                    ''
                                                                 ? int.tryParse(
                                                                     _model
                                                                         .brincoTextController
@@ -6109,15 +6148,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                                 () {
                                                               if ((_model.nomeTextController.text != '') &&
                                                                   (_model.brincoTextController
-                                                                              .text !=
-                                                                          '') &&
+                                                                          .text !=
+                                                                      '') &&
                                                                   (_model.brincoTextController
                                                                           .text !=
                                                                       '-1')) {
                                                                 return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                              } else if (_model.nomeTextController
-                                                                          .text !=
-                                                                      '') {
+                                                              } else if (_model
+                                                                      .nomeTextController
+                                                                      .text !=
+                                                                  '') {
                                                                 return _model
                                                                     .nomeTextController
                                                                     .text;
@@ -6358,16 +6398,18 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                 vaca: _model
                                                     .vacaMaeTextController.text,
                                                 grupoAnimal: _model.grupoValue,
-                                                brincoAnimalOrder: _model.brincoTextController
-                                                                .text !=
-                                                            ''
+                                                brincoAnimalOrder: _model
+                                                            .brincoTextController
+                                                            .text !=
+                                                        ''
                                                     ? int.tryParse(_model
                                                         .brincoTextController
                                                         .text)
                                                     : 999999,
-                                                brincoAnimal: _model.brincoTextController
-                                                                .text !=
-                                                            ''
+                                                brincoAnimal: _model
+                                                            .brincoTextController
+                                                            .text !=
+                                                        ''
                                                     ? int.tryParse(_model
                                                         .brincoTextController
                                                         .text)
@@ -6375,15 +6417,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                 nomeBrincoConcat: () {
                                                   if ((_model.nomeTextController.text != '') &&
                                                       (_model.brincoTextController
-                                                                  .text !=
-                                                              '') &&
+                                                              .text !=
+                                                          '') &&
                                                       (_model.brincoTextController
                                                               .text !=
                                                           '-1')) {
                                                     return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                  } else if (_model.nomeTextController
-                                                              .text !=
-                                                          '') {
+                                                  } else if (_model
+                                                          .nomeTextController
+                                                          .text !=
+                                                      '') {
                                                     return _model
                                                         .nomeTextController
                                                         .text;
@@ -6496,16 +6539,18 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                       .text,
                                                   grupoAnimal:
                                                       _model.grupoValue,
-                                                  brincoAnimalOrder: _model.brincoTextController
-                                                                  .text !=
-                                                              ''
+                                                  brincoAnimalOrder: _model
+                                                              .brincoTextController
+                                                              .text !=
+                                                          ''
                                                       ? int.tryParse(_model
                                                           .brincoTextController
                                                           .text)
                                                       : 999999,
-                                                  brincoAnimal: _model.brincoTextController
-                                                                  .text !=
-                                                              ''
+                                                  brincoAnimal: _model
+                                                              .brincoTextController
+                                                              .text !=
+                                                          ''
                                                       ? int.tryParse(_model
                                                           .brincoTextController
                                                           .text)
@@ -6513,15 +6558,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                   nomeBrincoConcat: () {
                                                     if ((_model.nomeTextController.text != '') &&
                                                         (_model.brincoTextController
-                                                                    .text !=
-                                                                '') &&
+                                                                .text !=
+                                                            '') &&
                                                         (_model.brincoTextController
                                                                 .text !=
                                                             '-1')) {
                                                       return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                    } else if (_model.nomeTextController
-                                                                .text !=
-                                                            '') {
+                                                    } else if (_model
+                                                            .nomeTextController
+                                                            .text !=
+                                                        '') {
                                                       return _model
                                                           .nomeTextController
                                                           .text;
@@ -6641,35 +6687,37 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                               vaca: _model
                                                   .vacaMaeTextController.text,
                                               grupoAnimal: _model.grupoValue,
-                                              brincoAnimalOrder: _model.brincoTextController
-                                                              .text !=
-                                                          ''
+                                              brincoAnimalOrder: _model
+                                                          .brincoTextController
+                                                          .text !=
+                                                      ''
                                                   ? int.tryParse(_model
                                                       .brincoTextController
                                                       .text)
                                                   : 999999,
-                                              brincoAnimal: _model.brincoTextController
-                                                              .text !=
-                                                          ''
+                                              brincoAnimal: _model
+                                                          .brincoTextController
+                                                          .text !=
+                                                      ''
                                                   ? int.tryParse(_model
                                                       .brincoTextController
                                                       .text)
                                                   : -1,
                                               nomeBrincoConcat: () {
-                                                if ((_model
-                                                                .nomeTextController
-                                                                .text !=
-                                                            '') &&
+                                                if ((_model.nomeTextController
+                                                            .text !=
+                                                        '') &&
                                                     (_model.brincoTextController
-                                                                .text !=
-                                                            '') &&
+                                                            .text !=
+                                                        '') &&
                                                     (_model.brincoTextController
                                                             .text !=
                                                         '-1')) {
                                                   return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                } else if (_model.nomeTextController
-                                                            .text !=
-                                                        '') {
+                                                } else if (_model
+                                                        .nomeTextController
+                                                        .text !=
+                                                    '') {
                                                   return _model
                                                       .nomeTextController.text;
                                                 } else {

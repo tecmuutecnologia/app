@@ -1,3 +1,4 @@
+// ignore_for_file: unused_import, dead_code, unnecessary_null_in_if_null_operators, dead_null_aware_expression
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -780,8 +781,7 @@ class _NovaAcaoExameGinecologicoWidgetState
                                           dataVisita:
                                               _model.dtAcaoTextController.text,
                                           dataDaAcao: getCurrentTimestamp,
-                                          uidPropriedade:
-                                              widget.uidPropriedade,
+                                          uidPropriedade: widget.uidPropriedade,
                                         ),
                                         acoesRecordReference);
                                 _shouldSetState = true;
@@ -1000,8 +1000,6 @@ class _NovaAcaoExameGinecologicoWidgetState
                                 if (_shouldSetState) safeSetState(() {});
                                 return;
                               }
-
-                              if (_shouldSetState) safeSetState(() {});
                             },
                             text: 'Salvar',
                             icon: Icon(

@@ -1,3 +1,4 @@
+// ignore_for_file: unnecessary_null_comparison
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -129,8 +130,9 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(100.0),
           child: AppBar(
-            backgroundColor:
-                (_model.respostaNet ?? true) ? Color(0xFFF75E38) : Color(0xFFF2886E),
+            backgroundColor: (_model.respostaNet ?? true)
+                ? Color(0xFFF75E38)
+                : Color(0xFFF2886E),
             automaticallyImplyLeading: false,
             actions: [],
             flexibleSpace: FlexibleSpaceBar(
@@ -273,15 +275,16 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                         return Visibility(
                           visible: valueOrDefault<bool>(
                             (listViewOnlineAnimaisProdutoresRecord
-                                            .dtUltimaInseminacao !=
-                                        '') &&
+                                        .dtUltimaInseminacao !=
+                                    '') &&
                                 ((listViewOnlineAnimaisProdutoresRecord
                                             .grupoAnimal ==
                                         'Vacas') ||
                                     (listViewOnlineAnimaisProdutoresRecord
                                             .grupoAnimal ==
                                         'Novilhas')) &&
-                                ((listViewOnlineAnimaisProdutoresRecord.status ==
+                                ((listViewOnlineAnimaisProdutoresRecord
+                                            .status ==
                                         'Inseminada') ||
                                     (listViewOnlineAnimaisProdutoresRecord
                                             .status ==
@@ -462,8 +465,8 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                   Text(
                                                     () {
                                                       if ((listViewOnlineAnimaisProdutoresRecord
-                                                                      .nomeAnimal !=
-                                                                  '') &&
+                                                                  .nomeAnimal !=
+                                                              '') &&
                                                           (listViewOnlineAnimaisProdutoresRecord
                                                                   .brincoAnimal !=
                                                               null) &&
@@ -472,8 +475,8 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                               -1)) {
                                                         return '${listViewOnlineAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                       } else if (listViewOnlineAnimaisProdutoresRecord
-                                                                  .nomeAnimal !=
-                                                              '') {
+                                                              .nomeAnimal !=
+                                                          '') {
                                                         return listViewOnlineAnimaisProdutoresRecord
                                                             .nomeAnimal;
                                                       } else {
@@ -610,8 +613,8 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                                           .status !=
                                                                       'Inseminada PP') &&
                                                                   (listViewOnlineAnimaisProdutoresRecord
-                                                                              .dtPP ==
-                                                                          ''))
+                                                                          .dtPP ==
+                                                                      ''))
                                                               ? null
                                                               : () async {
                                                                   await showModalBottomSheet(
@@ -1027,8 +1030,8 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                             .center,
                                                     children: [
                                                       if ((listViewOnlineAnimaisProdutoresRecord
-                                                                      .dtUltimoPP !=
-                                                                  '') &&
+                                                                  .dtUltimoPP !=
+                                                              '') &&
                                                           functions.verificaDataIgualAtualString(
                                                               listViewOnlineAnimaisProdutoresRecord
                                                                   .dtUltimoPP))
@@ -1088,7 +1091,7 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                             (animaisExistentesItem.uidTecnicoPropriedade ==
                                     widget.uidPropriedade) &&
                                 (animaisExistentesItem.dtUltimaInseminacao !=
-                                        '') &&
+                                    '') &&
                                 ((animaisExistentesItem.grupoAnimal ==
                                         'Vacas') ||
                                     (animaisExistentesItem.grupoAnimal ==
@@ -1271,8 +1274,8 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                   Text(
                                                     () {
                                                       if ((animaisExistentesItem
-                                                                      .nomeAnimal !=
-                                                                  '') &&
+                                                                  .nomeAnimal !=
+                                                              '') &&
                                                           (animaisExistentesItem
                                                                   .brincoAnimal !=
                                                               null) &&
@@ -1281,8 +1284,8 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                               -1)) {
                                                         return '${animaisExistentesItem.nomeAnimal} - ${animaisExistentesItem.brincoAnimal.toString()}';
                                                       } else if (animaisExistentesItem
-                                                                  .nomeAnimal !=
-                                                              '') {
+                                                              .nomeAnimal !=
+                                                          '') {
                                                         return animaisExistentesItem
                                                             .nomeAnimal;
                                                       } else {
@@ -1419,8 +1422,8 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                                           .status !=
                                                                       'Inseminada PP') &&
                                                                   (animaisExistentesItem
-                                                                              .dtPP ==
-                                                                          ''))
+                                                                          .dtPP ==
+                                                                      ''))
                                                               ? null
                                                               : () async {
                                                                   await showModalBottomSheet(
@@ -1842,8 +1845,8 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                             .center,
                                                     children: [
                                                       if ((animaisExistentesItem
-                                                                      .dtUltimoPP !=
-                                                                  '') &&
+                                                                  .dtUltimoPP !=
+                                                              '') &&
                                                           functions.verificaDataIgualAtualString(
                                                               animaisExistentesItem
                                                                   .dtUltimoPP))
@@ -1902,9 +1905,8 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                           visible: valueOrDefault<bool>(
                             (listAnimaisOfflineItem.uidTecnicoPropriedade ==
                                     widget.uidPropriedade) &&
-                                (listAnimaisOfflineItem
-                                            .dtUltimaInseminacao !=
-                                        '') &&
+                                (listAnimaisOfflineItem.dtUltimaInseminacao !=
+                                    '') &&
                                 ((listAnimaisOfflineItem.grupoAnimal ==
                                         'Vacas') ||
                                     (listAnimaisOfflineItem.grupoAnimal ==
@@ -2047,8 +2049,8 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                   Text(
                                                     () {
                                                       if ((listAnimaisOfflineItem
-                                                                      .nomeAnimal !=
-                                                                  '') &&
+                                                                  .nomeAnimal !=
+                                                              '') &&
                                                           (listAnimaisOfflineItem
                                                                   .brincoAnimal !=
                                                               null) &&
@@ -2057,8 +2059,8 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                               -1)) {
                                                         return '${listAnimaisOfflineItem.nomeAnimal} - ${listAnimaisOfflineItem.brincoAnimal.toString()}';
                                                       } else if (listAnimaisOfflineItem
-                                                                  .nomeAnimal !=
-                                                              '') {
+                                                              .nomeAnimal !=
+                                                          '') {
                                                         return listAnimaisOfflineItem
                                                             .nomeAnimal;
                                                       } else {
@@ -2195,8 +2197,8 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                                           .status !=
                                                                       'Inseminada PP') &&
                                                                   (listAnimaisOfflineItem
-                                                                              .dtPP ==
-                                                                          ''))
+                                                                          .dtPP ==
+                                                                      ''))
                                                               ? null
                                                               : () async {
                                                                   await showModalBottomSheet(
@@ -2618,8 +2620,8 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                             .center,
                                                     children: [
                                                       if ((listAnimaisOfflineItem
-                                                                      .dtUltimoPP !=
-                                                                  '') &&
+                                                                  .dtUltimoPP !=
+                                                              '') &&
                                                           functions.verificaDataIgualAtualString(
                                                               listAnimaisOfflineItem
                                                                   .dtUltimoPP))

@@ -1,3 +1,5 @@
+// ignore_for_file: dead_null_aware_expression
+
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -529,9 +531,9 @@ class _RegistrarPartoInduzidoOfflineWidgetState
                               alignment: AlignmentDirectional(0.0, 0.05),
                               child: FFButtonWidget(
                                 onPressed: () async {
-                                  if (_model.dtPartoInduzidoTextController
-                                              .text !=
-                                          '') {
+                                  if (_model
+                                          .dtPartoInduzidoTextController.text !=
+                                      '') {
                                     FFAppState()
                                         .updateAnimaisProdutoresOfflineAtIndex(
                                       widget.itemUidIndex!,

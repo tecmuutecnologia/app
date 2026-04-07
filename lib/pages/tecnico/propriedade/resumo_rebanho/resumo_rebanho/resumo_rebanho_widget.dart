@@ -1,3 +1,5 @@
+// ignore_for_file: dead_code, unnecessary_null_comparison, dead_null_aware_expression, unused_import
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -1136,8 +1138,8 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
                           child: Checkbox(
                             value: _model.checkUltimaAcaoValue ??= false,
                             onChanged: (newValue) async {
-                              safeSetState(
-                                  () => _model.checkUltimaAcaoValue = newValue!);
+                              safeSetState(() =>
+                                  _model.checkUltimaAcaoValue = newValue!);
                             },
                             side: (FlutterFlowTheme.of(context).secondaryText !=
                                     null)
@@ -1185,8 +1187,9 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
                         ),
                         SizedBox(height: 10.0),
                         FlutterFlowDropDown<String>(
-                          controller: _model.formatoExportacaoValueController ??=
-                              FormFieldController<String>(
+                          controller:
+                              _model.formatoExportacaoValueController ??=
+                                  FormFieldController<String>(
                             _model.formatoExportacaoValue ??= 'PDF',
                           ),
                           options: ['PDF', 'Excel'],
@@ -1218,15 +1221,13 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
                           hintText: 'Selecione o formato',
                           icon: Icon(
                             Icons.keyboard_arrow_down_rounded,
-                            color:
-                                FlutterFlowTheme.of(context).secondaryText,
+                            color: FlutterFlowTheme.of(context).secondaryText,
                             size: 24.0,
                           ),
                           fillColor:
                               FlutterFlowTheme.of(context).secondaryBackground,
                           elevation: 2.0,
-                          borderColor:
-                              FlutterFlowTheme.of(context).alternate,
+                          borderColor: FlutterFlowTheme.of(context).alternate,
                           borderWidth: 2.0,
                           borderRadius: 8.0,
                           margin: EdgeInsetsDirectional.fromSTEB(
@@ -1267,7 +1268,7 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
                                 singleRecord: true,
                               ).then((s) => s.firstOrNull);
                               _shouldSetState = true;
-                              
+
                               // Verificar qual formato foi selecionado
                               if (_model.formatoExportacaoValue == 'Excel') {
                                 // Gerar Excel

@@ -1,29 +1,54 @@
 /// ObjectBox - Banco de dados offline local
 ///
 /// Este módulo fornece funcionalidades de cache local e sincronização
-/// com o Firestore para funcionamento offline do aplicativo.
+/// com o Firestore para funcionamento offline-first do aplicativo.
 ///
-/// ## Arquitetura
+/// ## Arquitetura Offline-First
+///
+/// 1. Ao fazer login, todos os dados são baixados do Firestore para ObjectBox
+/// 2. O app trabalha localmente com ObjectBox (rápido e offline)
+/// 3. Alterações são marcadas com needsSync = true
+/// 4. Quando online, alterações são enviadas ao Firestore
+/// 5. Ao trocar de dispositivo, dados são baixados novamente
+///
+/// ## Componentes
 ///
 /// - **ObjectBoxService**: Gerencia a conexão com o banco ObjectBox
-/// - **SyncService**: Sincroniza dados entre ObjectBox e Firestore
+/// - **OfflineFirstSyncService**: Sincroniza dados (novo serviço recomendado)
+/// - **SyncService**: Serviço de sincronização legado
+/// - **ObjectBoxAuthHelper**: Helper para integração com autenticação
 /// - **Repositories**: Camada de abstração para acesso aos dados
 /// - **Entities**: Modelos de dados para o ObjectBox
 ///
 /// ## Uso
 ///
 /// ```dart
-/// // Inicialização (no main.dart)
-/// await ObjectBoxService.initialize();
-/// await SyncService.initialize();
+/// // Inicialização no main.dart
+/// await ObjectBoxAuthHelper.initializeOfflineFirst();
 ///
-/// // Uso dos repositórios
-/// final animalRepo = AnimalRepository();
-/// final animais = animalRepo.getAnimaisByPropriedade('path/to/propriedade');
+/// // Após login do usuário
+/// await ObjectBoxAuthHelper.onUserLogin(user);
+///
+/// // Uso dos dados locais
+/// final animais = ObjectBoxService.instance.animalBox.getAll();
+///
+/// // Sincronização manual
+/// await ObjectBoxAuthHelper.syncPendingChanges();
 /// ```
 
-export 'objectbox_service.dart';
-export 'sync_service.dart';
+// Entidades
 export 'entities/index.dart';
+
+// Serviços
+export 'objectbox_service.dart';
+export 'sync_service.dart' hide SyncStatus;
+export 'offline_first_sync_service.dart';
+
+// Helpers
+export 'objectbox_auth_helper.dart';
+
+// Repositórios
 export 'repositories/index.dart';
+
+// Widgets
 export 'widgets/index.dart';

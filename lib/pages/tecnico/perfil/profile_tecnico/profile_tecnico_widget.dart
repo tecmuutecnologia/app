@@ -1153,7 +1153,8 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
                                                         .data!.isEmpty) {
                                                       return Container();
                                                     }
-                                                    final buttonProdutorRecord =
+                                                    // ignore: unused_local_variable
+                                                    final _buttonProdutorRecord =
                                                         buttonProdutorRecordList
                                                                 .isNotEmpty
                                                             ? buttonProdutorRecordList

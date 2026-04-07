@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import, unused_local_variable
+
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
@@ -1144,7 +1146,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                                                   .where((e) =>
                                                       valueOrDefault<bool>(
                                                         (e.dtUltimaInseminacao !=
-                                                                    '') &&
+                                                                '') &&
                                                             ((e.grupoAnimal ==
                                                                     'Vacas') ||
                                                                 (e.grupoAnimal ==

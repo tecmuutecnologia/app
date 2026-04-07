@@ -1,3 +1,4 @@
+// ignore_for_file: dead_code, unnecessary_null_in_if_null_operators, unused_import, dead_null_aware_expression
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -866,8 +867,7 @@ class _NovaAcaoExameGinecologicoExistenteOfflineWidgetState
                                 _model.outNewUidResumoDaVisita =
                                     ResumoDaVisitaRecord.getDocumentFromData(
                                         createResumoDaVisitaRecordData(
-                                          uidPropriedade:
-                                              widget.uidPropriedade,
+                                          uidPropriedade: widget.uidPropriedade,
                                           uidTecnico: widget.uidTecnico,
                                           dtVisita: getCurrentTimestamp,
                                           dtVisitaFormatado: dateTimeFormat(
@@ -939,15 +939,12 @@ class _NovaAcaoExameGinecologicoExistenteOfflineWidgetState
                                   return;
                                 }
                               }
-
-                              if (_shouldSetState) safeSetState(() {});
                             },
                             child: FFButtonWidget(
                               onPressed: () async {
                                 if ((_model.acoesDispoValue != null &&
                                         _model.acoesDispoValue != '') &&
-                                    (_model.dtAcaoTextController.text !=
-                                            '')) {
+                                    (_model.dtAcaoTextController.text != '')) {
                                   FFAppState().addToAcoesOffline(AcoesStruct(
                                     uidAnimalAnimaisProdutores:
                                         widget.uidAnimaisProdutores,

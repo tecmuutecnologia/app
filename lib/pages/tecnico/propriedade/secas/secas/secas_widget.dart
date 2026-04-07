@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_button_tabbar.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -600,8 +602,8 @@ class _SecasWidgetState extends State<SecasWidget>
                                                           children: [
                                                             Text(
                                                               listViewOnlineAnimaisProdutoresRecord
-                                                                              .nomeAnimal !=
-                                                                          ''
+                                                                          .nomeAnimal !=
+                                                                      ''
                                                                   ? listViewOnlineAnimaisProdutoresRecord
                                                                       .nomeAnimal
                                                                   : listViewOnlineAnimaisProdutoresRecord
@@ -1353,8 +1355,7 @@ class _SecasWidgetState extends State<SecasWidget>
                                                             children: [
                                                               Text(
                                                                 () {
-                                                                  if ((vacasExistenteOfflineItem.nomeAnimal !=
-                                                                              '') &&
+                                                                  if ((vacasExistenteOfflineItem.nomeAnimal != '') &&
                                                                       (vacasExistenteOfflineItem
                                                                               .brincoAnimal !=
                                                                           null) &&
@@ -1363,8 +1364,8 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                           -1)) {
                                                                     return '${vacasExistenteOfflineItem.nomeAnimal} - ${vacasExistenteOfflineItem.brincoAnimal.toString()}';
                                                                   } else if (vacasExistenteOfflineItem
-                                                                              .nomeAnimal !=
-                                                                          '') {
+                                                                          .nomeAnimal !=
+                                                                      '') {
                                                                     return vacasExistenteOfflineItem
                                                                         .nomeAnimal;
                                                                   } else {
@@ -2087,8 +2088,7 @@ class _SecasWidgetState extends State<SecasWidget>
                                                             children: [
                                                               Text(
                                                                 () {
-                                                                  if ((vacasSecasOfflineItem.nomeAnimal !=
-                                                                              '') &&
+                                                                  if ((vacasSecasOfflineItem.nomeAnimal != '') &&
                                                                       (vacasSecasOfflineItem
                                                                               .brincoAnimal !=
                                                                           null) &&
@@ -2097,8 +2097,8 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                           -1)) {
                                                                     return '${vacasSecasOfflineItem.nomeAnimal} - ${vacasSecasOfflineItem.brincoAnimal.toString()}';
                                                                   } else if (vacasSecasOfflineItem
-                                                                              .nomeAnimal !=
-                                                                          '') {
+                                                                          .nomeAnimal !=
+                                                                      '') {
                                                                     return vacasSecasOfflineItem
                                                                         .nomeAnimal;
                                                                   } else {
@@ -2875,8 +2875,8 @@ class _SecasWidgetState extends State<SecasWidget>
                                                           children: [
                                                             Text(
                                                               listViewOnlineAnimaisProdutoresRecord
-                                                                              .nomeAnimal !=
-                                                                          ''
+                                                                          .nomeAnimal !=
+                                                                      ''
                                                                   ? listViewOnlineAnimaisProdutoresRecord
                                                                       .nomeAnimal
                                                                   : listViewOnlineAnimaisProdutoresRecord
@@ -3533,8 +3533,7 @@ class _SecasWidgetState extends State<SecasWidget>
                                                             children: [
                                                               Text(
                                                                 () {
-                                                                  if ((animaisExistentesOfflineItem.nomeAnimal !=
-                                                                              '') &&
+                                                                  if ((animaisExistentesOfflineItem.nomeAnimal != '') &&
                                                                       (animaisExistentesOfflineItem
                                                                               .brincoAnimal !=
                                                                           null) &&
@@ -3543,8 +3542,8 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                           -1)) {
                                                                     return '${animaisExistentesOfflineItem.nomeAnimal} - ${animaisExistentesOfflineItem.brincoAnimal.toString()}';
                                                                   } else if (animaisExistentesOfflineItem
-                                                                              .nomeAnimal !=
-                                                                          '') {
+                                                                          .nomeAnimal !=
+                                                                      '') {
                                                                     return animaisExistentesOfflineItem
                                                                         .nomeAnimal;
                                                                   } else {
@@ -4181,8 +4180,7 @@ class _SecasWidgetState extends State<SecasWidget>
                                                             children: [
                                                               Text(
                                                                 () {
-                                                                  if ((animaisProdutoresOfflineItem.nomeAnimal !=
-                                                                              '') &&
+                                                                  if ((animaisProdutoresOfflineItem.nomeAnimal != '') &&
                                                                       (animaisProdutoresOfflineItem
                                                                               .brincoAnimal !=
                                                                           null) &&
@@ -4191,8 +4189,8 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                           -1)) {
                                                                     return '${animaisProdutoresOfflineItem.nomeAnimal} - ${animaisProdutoresOfflineItem.brincoAnimal.toString()}';
                                                                   } else if (animaisProdutoresOfflineItem
-                                                                              .nomeAnimal !=
-                                                                          '') {
+                                                                          .nomeAnimal !=
+                                                                      '') {
                                                                     return animaisProdutoresOfflineItem
                                                                         .nomeAnimal;
                                                                   } else {
@@ -4853,8 +4851,9 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                     .start,
                                                             children: [
                                                               Text(
-                                                                listViewOnlineAnimaisProdutoresRecord.nomeAnimal !=
-                                                                            ''
+                                                                listViewOnlineAnimaisProdutoresRecord
+                                                                            .nomeAnimal !=
+                                                                        ''
                                                                     ? listViewOnlineAnimaisProdutoresRecord
                                                                         .nomeAnimal
                                                                     : listViewOnlineAnimaisProdutoresRecord
@@ -4919,9 +4918,11 @@ class _SecasWidgetState extends State<SecasWidget>
                                                               FFButtonWidget(
                                                                 onPressed:
                                                                     () async {
-                                                                  if ((listViewOnlineAnimaisProdutoresRecord.grupoAnimal ==
+                                                                  if ((listViewOnlineAnimaisProdutoresRecord
+                                                                              .grupoAnimal ==
                                                                           'Novilha') ||
-                                                                      (listViewOnlineAnimaisProdutoresRecord.grupoAnimal ==
+                                                                      (listViewOnlineAnimaisProdutoresRecord
+                                                                              .grupoAnimal ==
                                                                           'Novilhas')) {
                                                                     await listViewOnlineAnimaisProdutoresRecord
                                                                         .reference
@@ -5279,8 +5280,7 @@ class _SecasWidgetState extends State<SecasWidget>
                                                             children: [
                                                               Text(
                                                                 () {
-                                                                  if ((animaisExistenteOfflineItem.nomeAnimal !=
-                                                                              '') &&
+                                                                  if ((animaisExistenteOfflineItem.nomeAnimal != '') &&
                                                                       (animaisExistenteOfflineItem
                                                                               .brincoAnimal !=
                                                                           null) &&
@@ -5289,8 +5289,8 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                           -1)) {
                                                                     return '${animaisExistenteOfflineItem.nomeAnimal} - ${animaisExistenteOfflineItem.brincoAnimal.toString()}';
                                                                   } else if (animaisExistenteOfflineItem
-                                                                              .nomeAnimal !=
-                                                                          '') {
+                                                                          .nomeAnimal !=
+                                                                      '') {
                                                                     return animaisExistenteOfflineItem
                                                                         .nomeAnimal;
                                                                   } else {
@@ -5365,9 +5365,11 @@ class _SecasWidgetState extends State<SecasWidget>
                                                               FFButtonWidget(
                                                                 onPressed:
                                                                     () async {
-                                                                  if ((animaisExistenteOfflineItem.grupoAnimal ==
+                                                                  if ((animaisExistenteOfflineItem
+                                                                              .grupoAnimal ==
                                                                           'Novilha') ||
-                                                                      (animaisExistenteOfflineItem.grupoAnimal ==
+                                                                      (animaisExistenteOfflineItem
+                                                                              .grupoAnimal ==
                                                                           'Novilhas')) {
                                                                     FFAppState()
                                                                         .updateAnimaisProdutoresExistentesAtIndex(
@@ -5678,8 +5680,7 @@ class _SecasWidgetState extends State<SecasWidget>
                                                             children: [
                                                               Text(
                                                                 () {
-                                                                  if ((animaisProdutoresOfflineInducaoItem.nomeAnimal !=
-                                                                              '') &&
+                                                                  if ((animaisProdutoresOfflineInducaoItem.nomeAnimal != '') &&
                                                                       (animaisProdutoresOfflineInducaoItem
                                                                               .brincoAnimal !=
                                                                           null) &&
@@ -5688,8 +5689,8 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                           -1)) {
                                                                     return '${animaisProdutoresOfflineInducaoItem.nomeAnimal} - ${animaisProdutoresOfflineInducaoItem.brincoAnimal.toString()}';
                                                                   } else if (animaisProdutoresOfflineInducaoItem
-                                                                              .nomeAnimal !=
-                                                                          '') {
+                                                                          .nomeAnimal !=
+                                                                      '') {
                                                                     return animaisProdutoresOfflineInducaoItem
                                                                         .nomeAnimal;
                                                                   } else {
@@ -5757,9 +5758,11 @@ class _SecasWidgetState extends State<SecasWidget>
                                                               FFButtonWidget(
                                                                 onPressed:
                                                                     () async {
-                                                                  if ((animaisProdutoresOfflineInducaoItem.grupoAnimal ==
+                                                                  if ((animaisProdutoresOfflineInducaoItem
+                                                                              .grupoAnimal ==
                                                                           'Novilha') ||
-                                                                      (animaisProdutoresOfflineInducaoItem.grupoAnimal ==
+                                                                      (animaisProdutoresOfflineInducaoItem
+                                                                              .grupoAnimal ==
                                                                           'Novilhas')) {
                                                                     FFAppState()
                                                                         .updateAnimaisProdutoresOfflineAtIndex(
@@ -6130,8 +6133,8 @@ class _SecasWidgetState extends State<SecasWidget>
                                                         children: [
                                                           Text(
                                                             listViewOnlineAnimaisProdutoresRecord
-                                                                            .nomeAnimal !=
-                                                                        ''
+                                                                        .nomeAnimal !=
+                                                                    ''
                                                                 ? listViewOnlineAnimaisProdutoresRecord
                                                                     .nomeAnimal
                                                                 : listViewOnlineAnimaisProdutoresRecord
@@ -6727,8 +6730,9 @@ class _SecasWidgetState extends State<SecasWidget>
                                                           children: [
                                                             Text(
                                                               () {
-                                                                if ((animaisExistentesOfflineDescarteItem.nomeAnimal !=
-                                                                            '') &&
+                                                                if ((animaisExistentesOfflineDescarteItem
+                                                                            .nomeAnimal !=
+                                                                        '') &&
                                                                     (animaisExistentesOfflineDescarteItem
                                                                             .brincoAnimal !=
                                                                         null) &&
@@ -6737,8 +6741,8 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                         -1)) {
                                                                   return '${animaisExistentesOfflineDescarteItem.nomeAnimal} - ${animaisExistentesOfflineDescarteItem.brincoAnimal.toString()}';
                                                                 } else if (animaisExistentesOfflineDescarteItem
-                                                                            .nomeAnimal !=
-                                                                        '') {
+                                                                        .nomeAnimal !=
+                                                                    '') {
                                                                   return animaisExistentesOfflineDescarteItem
                                                                       .nomeAnimal;
                                                                 } else {
@@ -7459,8 +7463,9 @@ class _SecasWidgetState extends State<SecasWidget>
                                                           children: [
                                                             Text(
                                                               () {
-                                                                if ((animaisProdutoresOfflineDescarteItem.nomeAnimal !=
-                                                                            '') &&
+                                                                if ((animaisProdutoresOfflineDescarteItem
+                                                                            .nomeAnimal !=
+                                                                        '') &&
                                                                     (animaisProdutoresOfflineDescarteItem
                                                                             .brincoAnimal !=
                                                                         null) &&
@@ -7469,8 +7474,8 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                         -1)) {
                                                                   return '${animaisProdutoresOfflineDescarteItem.nomeAnimal} - ${animaisProdutoresOfflineDescarteItem.brincoAnimal.toString()}';
                                                                 } else if (animaisProdutoresOfflineDescarteItem
-                                                                            .nomeAnimal !=
-                                                                        '') {
+                                                                        .nomeAnimal !=
+                                                                    '') {
                                                                   return animaisProdutoresOfflineDescarteItem
                                                                       .nomeAnimal;
                                                                 } else {

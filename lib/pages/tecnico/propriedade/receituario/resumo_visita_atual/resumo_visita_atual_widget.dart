@@ -1,3 +1,5 @@
+// ignore_for_file: dead_code
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -273,16 +275,17 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                         uidResumoVisita: widget.uidResumoVisita!,
                         uidTecnico: widget.uidTecnico!,
                         uidPropriedade: widget.uidPropriedade!,
-                        dtVisita: resumoVisitaAtualResumoDaVisitaRecord.dtVisita!,
+                        dtVisita:
+                            resumoVisitaAtualResumoDaVisitaRecord.dtVisita!,
                       ),
                     ),
                   ),
                   if ((resumoVisitaAtualResumoDaVisitaRecord
-                                  .assinaturaProdutor !=
-                              '') ||
+                              .assinaturaProdutor !=
+                          '') ||
                       (resumoVisitaAtualResumoDaVisitaRecord
-                                  .assinaturaTecnico !=
-                              ''))
+                              .assinaturaTecnico !=
+                          ''))
                     Container(
                       decoration: BoxDecoration(
                         color: FlutterFlowTheme.of(context).secondaryBackground,
@@ -295,8 +298,8 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             if (resumoVisitaAtualResumoDaVisitaRecord
-                                        .dtAssinaturaFormatado !=
-                                    '')
+                                    .dtAssinaturaFormatado !=
+                                '')
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 4.0, 0.0, 0.0),
@@ -323,8 +326,8 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                                 ),
                               ),
                             if (resumoVisitaAtualResumoDaVisitaRecord
-                                        .dtAssinaturaFormatado !=
-                                    '')
+                                    .dtAssinaturaFormatado !=
+                                '')
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 4.0, 0.0, 12.0),
@@ -348,8 +351,8 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                                 ),
                               ),
                             if (resumoVisitaAtualResumoDaVisitaRecord
-                                        .assinaturaTecnico !=
-                                    '')
+                                    .assinaturaTecnico !=
+                                '')
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 4.0, 0.0, 0.0),
@@ -376,8 +379,8 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                                 ),
                               ),
                             if (resumoVisitaAtualResumoDaVisitaRecord
-                                        .assinaturaTecnico !=
-                                    '')
+                                    .assinaturaTecnico !=
+                                '')
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 0.0, 0.0, 10.0),
@@ -393,8 +396,8 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                                 ),
                               ),
                             if (resumoVisitaAtualResumoDaVisitaRecord
-                                        .assinaturaProdutor !=
-                                    '')
+                                    .assinaturaProdutor !=
+                                '')
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 4.0, 0.0, 0.0),
@@ -421,8 +424,8 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                                 ),
                               ),
                             if (resumoVisitaAtualResumoDaVisitaRecord
-                                        .assinaturaProdutor !=
-                                    '')
+                                    .assinaturaProdutor !=
+                                '')
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 0.0, 0.0, 10.0),
@@ -438,8 +441,8 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                                 ),
                               ),
                             if (resumoVisitaAtualResumoDaVisitaRecord
-                                        .obsGeralVisita !=
-                                    '')
+                                    .obsGeralVisita !=
+                                '')
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 10.0, 0.0, 0.0),
@@ -466,8 +469,8 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                                 ),
                               ),
                             if (resumoVisitaAtualResumoDaVisitaRecord
-                                        .obsGeralVisita !=
-                                    '')
+                                    .obsGeralVisita !=
+                                '')
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 4.0, 0.0, 12.0),
@@ -495,11 +498,11 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                       ),
                     ),
                   if ((resumoVisitaAtualResumoDaVisitaRecord
-                                  .assinaturaProdutor ==
-                              '') ||
+                              .assinaturaProdutor ==
+                          '') ||
                       (resumoVisitaAtualResumoDaVisitaRecord
-                                  .assinaturaTecnico ==
-                              ''))
+                              .assinaturaTecnico ==
+                          ''))
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -517,11 +520,11 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   if ((resumoVisitaAtualResumoDaVisitaRecord
-                                                  .assinaturaProdutor ==
-                                              '') &&
+                                              .assinaturaProdutor ==
+                                          '') &&
                                       (resumoVisitaAtualResumoDaVisitaRecord
-                                                  .dtAssinaturaFormatado ==
-                                              ''))
+                                              .dtAssinaturaFormatado ==
+                                          ''))
                                     Padding(
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           0.0, 16.0, 0.0, 0.0),
@@ -547,8 +550,8 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                                                           context),
                                                   child:
                                                       AssinaturaProdutorWidget(
-                                                    uidResumoVisita: widget
-                                                        .uidResumoVisita!,
+                                                    uidResumoVisita:
+                                                        widget.uidResumoVisita!,
                                                   ),
                                                 ),
                                               );
@@ -612,11 +615,11 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                                       ),
                                     ),
                                   if ((resumoVisitaAtualResumoDaVisitaRecord
-                                                  .assinaturaTecnico ==
-                                              '') &&
+                                              .assinaturaTecnico ==
+                                          '') &&
                                       (resumoVisitaAtualResumoDaVisitaRecord
-                                                  .dtAssinaturaFormatado ==
-                                              ''))
+                                              .dtAssinaturaFormatado ==
+                                          ''))
                                     Padding(
                                       padding: EdgeInsetsDirectional.fromSTEB(
                                           0.0, 16.0, 0.0, 0.0),
@@ -642,8 +645,8 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                                                           context),
                                                   child:
                                                       AssinaturaTecnicoWidget(
-                                                    uidResumoVisita: widget
-                                                        .uidResumoVisita!,
+                                                    uidResumoVisita:
+                                                        widget.uidResumoVisita!,
                                                   ),
                                                 ),
                                               );
@@ -713,14 +716,13 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                       ),
                     ),
                   if (((resumoVisitaAtualResumoDaVisitaRecord
-                                      .assinaturaProdutor !=
-                                  '') ||
+                                  .assinaturaProdutor !=
+                              '') ||
                           (resumoVisitaAtualResumoDaVisitaRecord
-                                      .assinaturaTecnico !=
-                                  '')) &&
-                      (resumoVisitaAtualResumoDaVisitaRecord
-                                  .obsGeralVisita ==
-                              ''))
+                                  .assinaturaTecnico !=
+                              '')) &&
+                      (resumoVisitaAtualResumoDaVisitaRecord.obsGeralVisita ==
+                          ''))
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -902,11 +904,11 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                                     child: FFButtonWidget(
                                       onPressed: () async {
                                         if ((resumoVisitaAtualResumoDaVisitaRecord
-                                                        .assinaturaProdutor !=
-                                                    '') ||
+                                                    .assinaturaProdutor !=
+                                                '') ||
                                             (resumoVisitaAtualResumoDaVisitaRecord
-                                                        .assinaturaTecnico !=
-                                                    '')) {
+                                                    .assinaturaTecnico !=
+                                                '')) {
                                           await widget.uidResumoVisita!.update(
                                               createResumoDaVisitaRecordData(
                                             dtAssinatura: getCurrentTimestamp,
@@ -1050,11 +1052,11 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                                       onPressed: () async {
                                         var _shouldSetState = false;
                                         if ((resumoVisitaAtualResumoDaVisitaRecord
-                                                        .assinaturaProdutor !=
-                                                    '') ||
+                                                    .assinaturaProdutor !=
+                                                '') ||
                                             (resumoVisitaAtualResumoDaVisitaRecord
-                                                        .assinaturaTecnico !=
-                                                    '')) {
+                                                    .assinaturaTecnico !=
+                                                '')) {
                                           _model.outUidPropriedade2 =
                                               await PropriedadesRecord
                                                   .getDocumentOnce(
@@ -1182,9 +1184,6 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                                             safeSetState(() {});
                                           return;
                                         }
-
-                                        if (_shouldSetState)
-                                          safeSetState(() {});
                                       },
                                       text: 'Salvar e gerar PDF',
                                       icon: Icon(
@@ -1245,17 +1244,15 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                       ),
                     ),
                   if (((resumoVisitaAtualResumoDaVisitaRecord
-                                      .assinaturaProdutor !=
-                                  '') ||
-                          (resumoVisitaAtualResumoDaVisitaRecord
-                                      .assinaturaTecnico !=
-                                  '')) &&
+                                  .assinaturaProdutor !=
+                              '') ||
+                          (resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico !=
+                              '')) &&
+                      (resumoVisitaAtualResumoDaVisitaRecord.obsGeralVisita !=
+                          '') &&
                       (resumoVisitaAtualResumoDaVisitaRecord
-                                  .obsGeralVisita !=
-                              '') &&
-                      (resumoVisitaAtualResumoDaVisitaRecord
-                                  .dtAssinaturaFormatado !=
-                              ''))
+                              .dtAssinaturaFormatado !=
+                          ''))
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,

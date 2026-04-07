@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison, dead_code
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -3016,18 +3018,20 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
                                   builder: (context) {
                                     final acoesInseminacoes =
                                         FFAppState().acoesOffline.toList()
-                                        ..sort((a, b) {
-                                          // Ordena por dataDaAcao descendente (mais recentes primeiro)
-                                          if (a.dataDaAcao != null && b.dataDaAcao != null) {
-                                            return b.dataDaAcao!.compareTo(a.dataDaAcao!);
-                                          } else if (a.dataDaAcao != null) {
-                                            return -1;
-                                          } else if (b.dataDaAcao != null) {
-                                            return 1;
-                                          } else {
-                                            return 0;
-                                          }
-                                        });
+                                          ..sort((a, b) {
+                                            // Ordena por dataDaAcao descendente (mais recentes primeiro)
+                                            if (a.dataDaAcao != null &&
+                                                b.dataDaAcao != null) {
+                                              return b.dataDaAcao!
+                                                  .compareTo(a.dataDaAcao!);
+                                            } else if (a.dataDaAcao != null) {
+                                              return -1;
+                                            } else if (b.dataDaAcao != null) {
+                                              return 1;
+                                            } else {
+                                              return 0;
+                                            }
+                                          });
 
                                     return ListView.builder(
                                       padding: EdgeInsets.zero,

@@ -1,3 +1,5 @@
+// ignore_for_file: dead_null_aware_expression
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
@@ -1095,11 +1097,11 @@ class _RegistrarPartoOfflineWidgetState
                                 onPressed: () async {
                                   if (_model.novoAnimalValue == true) {
                                     if ((_model.nomeTextController.text !=
-                                                '') ||
+                                            '') ||
                                         (_model.brincoTextController.text !=
-                                                '')) {
+                                            '')) {
                                       if (_model.dtPartoTextController.text !=
-                                              '') {
+                                          '') {
                                         FFAppState()
                                             .updateAnimaisProdutoresOfflineAtIndex(
                                           widget.itemUidIndex!,
@@ -1127,9 +1129,10 @@ class _RegistrarPartoOfflineWidgetState
                                               widget.uidPropriedade,
                                           nomeAnimal:
                                               _model.nomeTextController.text,
-                                          brincoAnimal: (_model.brincoTextController
-                                                              .text !=
-                                                          '') &&
+                                          brincoAnimal: (_model
+                                                          .brincoTextController
+                                                          .text !=
+                                                      '') &&
                                                   (_model.brincoTextController
                                                           .text !=
                                                       '-1')
@@ -1137,9 +1140,10 @@ class _RegistrarPartoOfflineWidgetState
                                                   .brincoTextController.text)
                                               : -1,
                                           racaAnimal: _model.racaPreValue,
-                                          pesoAnimal: _model.pesoNascTextController
-                                                          .text !=
-                                                      ''
+                                          pesoAnimal: _model
+                                                      .pesoNascTextController
+                                                      .text !=
+                                                  ''
                                               ? _model
                                                   .pesoNascTextController.text
                                               : '0',
@@ -1147,8 +1151,7 @@ class _RegistrarPartoOfflineWidgetState
                                               _model.dtPartoTextController.text,
                                           grupoAnimal: _model.sexoValue,
                                           vaca: () {
-                                            if ((widget.nomeVacaAtual !=
-                                                        null &&
+                                            if ((widget.nomeVacaAtual != null &&
                                                     widget.nomeVacaAtual !=
                                                         '') &&
                                                 (widget.brincoVacaAtual !=
@@ -1168,18 +1171,18 @@ class _RegistrarPartoOfflineWidgetState
                                               .nomeTourtoUltimaInseminacao,
                                           nomeBrincoConcat: () {
                                             if ((_model.nomeTextController
-                                                            .text !=
-                                                        '') &&
+                                                        .text !=
+                                                    '') &&
                                                 (_model.brincoTextController
-                                                            .text !=
-                                                        '') &&
+                                                        .text !=
+                                                    '') &&
                                                 (_model.brincoTextController
                                                         .text !=
                                                     '-1')) {
                                               return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                            } else if (_model.nomeTextController
-                                                        .text !=
-                                                    '') {
+                                            } else if (_model
+                                                    .nomeTextController.text !=
+                                                '') {
                                               return _model
                                                   .nomeTextController.text;
                                             } else {
@@ -1187,9 +1190,10 @@ class _RegistrarPartoOfflineWidgetState
                                                   .brincoTextController.text;
                                             }
                                           }(),
-                                          brincoAnimalOrder: (_model.brincoTextController
-                                                              .text !=
-                                                          '') &&
+                                          brincoAnimalOrder: (_model
+                                                          .brincoTextController
+                                                          .text !=
+                                                      '') &&
                                                   (_model.brincoTextController
                                                           .text !=
                                                       '-1')
@@ -1250,9 +1254,10 @@ class _RegistrarPartoOfflineWidgetState
                                         .updateAnimaisProdutoresOfflineAtIndex(
                                       widget.itemUidIndex!,
                                       (e) => e
-                                        ..dtUltimoParto = _model.dtPartoTextController
-                                                        .text !=
-                                                    ''
+                                        ..dtUltimoParto = _model
+                                                    .dtPartoTextController
+                                                    .text !=
+                                                ''
                                             ? _model.dtPartoTextController.text
                                             : dateTimeFormat(
                                                 "dd/MM/yyyy",
@@ -1268,9 +1273,10 @@ class _RegistrarPartoOfflineWidgetState
                                         ..dtSecPrevista = ''
                                         ..grupoAnimal = 'Vacas'
                                         ..status = 'Vazia'
-                                        ..dtUltimoPartoContingencia = _model.dtPartoTextController
-                                                        .text !=
-                                                    ''
+                                        ..dtUltimoPartoContingencia = _model
+                                                    .dtPartoTextController
+                                                    .text !=
+                                                ''
                                             ? _model.dtPartoTextController.text
                                             : dateTimeFormat(
                                                 "dd/MM/yyyy",

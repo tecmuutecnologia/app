@@ -1,3 +1,5 @@
+// ignore_for_file: dead_null_aware_expression
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
@@ -763,7 +765,7 @@ class _NovaInseminacaoOfflineWidgetState
                               if (_model.touroValue != null &&
                                   _model.touroValue != '') {
                                 if (_model.dtInseminacaoTextController.text !=
-                                        '') {
+                                    '') {
                                   if (widget.dtUltimaInseminacao != null &&
                                       widget.dtUltimaInseminacao != '') {
                                     if (functions
@@ -811,8 +813,7 @@ class _NovaInseminacaoOfflineWidgetState
                                               .elementAtOrNull(
                                                   widget.itemUidIndex!)
                                               ?.nomeAnimal,
-                                          uidPropriedade:
-                                              widget.uidPropriedade,
+                                          uidPropriedade: widget.uidPropriedade,
                                           itemAtIndex: widget.itemUidIndex,
                                           uidAnimalOffline: FFAppState()
                                               .animaisProdutoresOffline
@@ -987,15 +988,13 @@ class _NovaInseminacaoOfflineWidgetState
                                     FFAppState().addToAcoesOffline(AcoesStruct(
                                       nomeAnimal: FFAppState()
                                           .animaisProdutoresOffline
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.nomeAnimal,
                                       uidPropriedade: widget.uidPropriedade,
                                       itemAtIndex: widget.itemUidIndex,
                                       uidAnimalOffline: FFAppState()
                                           .animaisProdutoresOffline
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.uidAnimalOffline,
                                       dataDaAcao: getCurrentTimestamp,
                                       acao: 'Inseminada',

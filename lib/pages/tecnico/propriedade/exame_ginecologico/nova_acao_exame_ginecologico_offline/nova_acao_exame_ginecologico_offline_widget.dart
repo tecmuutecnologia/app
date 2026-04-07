@@ -1,3 +1,4 @@
+// ignore_for_file: unused_import, dead_code, unnecessary_null_in_if_null_operators, dead_null_aware_expression
 import '/backend/schema/structs/index.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';

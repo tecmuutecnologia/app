@@ -14,12 +14,18 @@ import 'package:objectbox/internal.dart'
 import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
+import 'backend/objectbox/entities/acao_da_visita_entity.dart';
+import 'backend/objectbox/entities/acao_entity.dart';
 import 'backend/objectbox/entities/animal_entity.dart';
+import 'backend/objectbox/entities/financeiro_entity.dart';
 import 'backend/objectbox/entities/person_entity.dart';
 import 'backend/objectbox/entities/produtor_entity.dart';
 import 'backend/objectbox/entities/propriedade_entity.dart';
+import 'backend/objectbox/entities/reference_entities.dart';
 import 'backend/objectbox/entities/sync_metadata_entity.dart';
 import 'backend/objectbox/entities/tecnico_entity.dart';
+import 'backend/objectbox/entities/tratamento_entity.dart';
+import 'backend/objectbox/entities/visita_entities.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
@@ -814,6 +820,1318 @@ final _entities = <obx_int.ModelEntity>[
     relations: <obx_int.ModelRelation>[],
     backlinks: <obx_int.ModelBacklink>[],
   ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(8, 8034863422158930822),
+    name: 'AcaoDaVisitaEntity',
+    lastPropertyId: const obx_int.IdUid(21, 2525193505626442469),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 7188286234288295366),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 431997457273392221),
+        name: 'firestoreId',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(7, 3982448291611360644),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 7378226230458623513),
+        name: 'parentPath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 5700021859701093980),
+        name: 'acao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 7583256539112749296),
+        name: 'dtAcao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 4568097246738442449),
+        name: 'dtPP',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 5999280225507310432),
+        name: 'dtInseminacao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(8, 3584140742622201165),
+        name: 'tourtoInseminacao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(9, 7508658662270839099),
+        name: 'dtPartoPrevisto',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(10, 5293683916941940265),
+        name: 'dtSecPrevista',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(11, 8253983148927154795),
+        name: 'dtPrePartoPrevista',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(12, 8710575823660715294),
+        name: 'dtDgMais',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(13, 1940215185163125476),
+        name: 'dtDgMenos',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(14, 233469026867823071),
+        name: 'dtAborto',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(15, 4728328413339158376),
+        name: 'dtSecagem',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(16, 3197055480603830717),
+        name: 'tratamento',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(17, 2364043695123808189),
+        name: 'dtVisita',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(18, 204873500805795363),
+        name: 'lastModified',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(19, 6972068580524417311),
+        name: 'lastSynced',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(20, 3718732824913518006),
+        name: 'needsSync',
+        type: 1,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(21, 2525193505626442469),
+        name: 'isDeleted',
+        type: 1,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(9, 7589645042423953833),
+    name: 'AcaoEntity',
+    lastPropertyId: const obx_int.IdUid(22, 7953928503360171684),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 1603706382791699825),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 5015523583624924234),
+        name: 'firestoreId',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(8, 6235266124799058907),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 8085389433142406933),
+        name: 'parentPath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 7845907069055043520),
+        name: 'uidAnimalAnimaisProdutoresPath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 3992087755238845213),
+        name: 'nomeAnimal',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 4930525473954312587),
+        name: 'acao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 7437654863491380239),
+        name: 'obsVisita',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(8, 871233233395752983),
+        name: 'touroInseminacao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(9, 5579918744245439046),
+        name: 'dataVisita',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(10, 9149029851572612245),
+        name: 'dataPartoPrevisto',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(11, 6075895267445350257),
+        name: 'dataSecPrevista',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(12, 2042049181196436408),
+        name: 'dataPrePartoPrevista',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(13, 7671609671190272969),
+        name: 'dtPP',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(14, 654026038192861480),
+        name: 'dtDgMais',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(15, 7012212907056258252),
+        name: 'dtDgMenos',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(16, 9064050804092781997),
+        name: 'dtAborto',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(17, 7230479253314751779),
+        name: 'uidPropriedadePath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(18, 8164704628791544406),
+        name: 'dataDaAcao',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(19, 5071121179847161667),
+        name: 'lastModified',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(20, 703312720838123592),
+        name: 'lastSynced',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(21, 4756299177133566214),
+        name: 'needsSync',
+        type: 1,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(22, 7953928503360171684),
+        name: 'isDeleted',
+        type: 1,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(10, 7897657918415060101),
+    name: 'AcaoSanitarioEntity',
+    lastPropertyId: const obx_int.IdUid(23, 3040072368999762306),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 4134719572548230087),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 325733631329502081),
+        name: 'firestoreId',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(9, 4333059204933188748),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 7064361439147042830),
+        name: 'parentPath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 748468265443245746),
+        name: 'uidAnimal',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 4166532080794698198),
+        name: 'tipoAcao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 8017182589204790468),
+        name: 'nomeAnimal',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 2005224937798508117),
+        name: 'uidPropriedade',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(8, 6916958321041625150),
+        name: 'nomePropriedade',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(9, 6997364484044667207),
+        name: 'acao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(10, 7654455083149033001),
+        name: 'posologia',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(11, 4330771867305062250),
+        name: 'medicamento',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(12, 7726210729900484495),
+        name: 'lote',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(13, 7944621222805705178),
+        name: 'laboratorio',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(14, 5599343838049310861),
+        name: 'resultado',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(15, 2469106191100321355),
+        name: 'obs',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(16, 1454275181538133751),
+        name: 'createdBy',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(17, 3614118878437257753),
+        name: 'lastModifiedBy',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(18, 8807068632205555430),
+        name: 'dtAcao',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(19, 5958341963162955603),
+        name: 'dtCarencia',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(20, 7719527315459308213),
+        name: 'createdAt',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(21, 2405313882071949768),
+        name: 'lastModified',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(22, 978700727038420470),
+        name: 'lastSynced',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(23, 3040072368999762306),
+        name: 'needsSync',
+        type: 1,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(11, 7934301958697073197),
+    name: 'CalendarioSanitarioEntity',
+    lastPropertyId: const obx_int.IdUid(5, 8654656098921339927),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 8763491419407576300),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 431913947664923762),
+        name: 'firestoreId',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(10, 4716945660781285200),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 4908057074568659601),
+        name: 'descricao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 3507981159774485338),
+        name: 'tipo',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 8654656098921339927),
+        name: 'lastSynced',
+        type: 10,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(12, 2504302409910279262),
+    name: 'CidadeEntity',
+    lastPropertyId: const obx_int.IdUid(5, 6633758962368518901),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 7992351070297228389),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 1409579231191540085),
+        name: 'firestoreId',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(11, 3981071338455478433),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 3052196622843367204),
+        name: 'nome',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 2294322294928103235),
+        name: 'nomeuf',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 6633758962368518901),
+        name: 'lastSynced',
+        type: 10,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(13, 8662284862026381314),
+    name: 'FinanceiroEntity',
+    lastPropertyId: const obx_int.IdUid(27, 1623859928614714425),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 2092621551397642119),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 4674865087000488640),
+        name: 'firestoreId',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(12, 2396717919536408135),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 7823097733568851287),
+        name: 'parentPath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 6301029282884354875),
+        name: 'vacasLactacao',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 3891978856761378551),
+        name: 'vacasSecas',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 1328391692789421673),
+        name: 'litrosLeiteMes',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 7773042198183451305),
+        name: 'precoLitroLeite',
+        type: 8,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(8, 877937712170606037),
+        name: 'valorLeiteTotal',
+        type: 8,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(9, 8057285219858469664),
+        name: 'outrasReceitas',
+        type: 8,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(10, 1093235948816824157),
+        name: 'custoRacao',
+        type: 8,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(11, 2438193650364422264),
+        name: 'custoMaoDeObra',
+        type: 8,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(12, 1455866986167657189),
+        name: 'custoMedicamentos',
+        type: 8,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(13, 4979692353759694540),
+        name: 'custoInsumos',
+        type: 8,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(14, 6591854026089724422),
+        name: 'custoManutencao',
+        type: 8,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(15, 376077123831494791),
+        name: 'outrosCustos',
+        type: 8,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(16, 3996372210829150413),
+        name: 'custoTotal',
+        type: 8,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(17, 9194306083320327354),
+        name: 'lucroLiquido',
+        type: 8,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(18, 8375895444281958556),
+        name: 'custoLitro',
+        type: 8,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(19, 5638291359302706846),
+        name: 'mes',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(20, 3016579340863185005),
+        name: 'ano',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(21, 6879441325564192889),
+        name: 'uidPropriedade',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(22, 4063456477417213574),
+        name: 'createdBy',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(23, 3277511602553208496),
+        name: 'lastModifiedBy',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(24, 7116670104126295118),
+        name: 'createdAt',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(25, 3357101847461239078),
+        name: 'lastModified',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(26, 358148534060461422),
+        name: 'lastSynced',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(27, 1623859928614714425),
+        name: 'needsSync',
+        type: 1,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(14, 8316780419431430641),
+    name: 'GrupoEntity',
+    lastPropertyId: const obx_int.IdUid(5, 6634162767224065324),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 6648670366494426270),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 3109711249281027509),
+        name: 'firestoreId',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(13, 1787879374155485647),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 5787800210516440735),
+        name: 'descricao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 2123420731413299908),
+        name: 'grupoId',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 6634162767224065324),
+        name: 'lastSynced',
+        type: 10,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(15, 968370309420796366),
+    name: 'RacaEntity',
+    lastPropertyId: const obx_int.IdUid(4, 750890393593778677),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 4672551822188418529),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 20880455012593763),
+        name: 'firestoreId',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(14, 8032385689841539940),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 4545085900685600330),
+        name: 'descricao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 750890393593778677),
+        name: 'lastSynced',
+        type: 10,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(16, 6914708184729922669),
+    name: 'RecomendacaoEntity',
+    lastPropertyId: const obx_int.IdUid(19, 1512456085671558343),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 3916107512293766335),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 3972635171105443660),
+        name: 'firestoreId',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(15, 4491038380033971273),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 3405569208649093087),
+        name: 'parentPath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 451136642685415972),
+        name: 'uidVisita',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 1843492351676516811),
+        name: 'uidPropriedade',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 1343385545556945658),
+        name: 'tituloRecomendacao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 6966393017723534604),
+        name: 'descricaoRecomendacao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(8, 7317214670359088395),
+        name: 'categoria',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(9, 3084049460423965295),
+        name: 'prioridade',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(10, 1751111624317854113),
+        name: 'status',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(11, 7853700696822900186),
+        name: 'dtRecomendacao',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(12, 4463745071764546090),
+        name: 'dtPrazo',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(13, 7258129447707039021),
+        name: 'dtConclusao',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(14, 445952675818368311),
+        name: 'createdBy',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(15, 8027181477980237726),
+        name: 'lastModifiedBy',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(16, 1697634631127639421),
+        name: 'createdAt',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(17, 8741894446922203439),
+        name: 'lastModified',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(18, 7574827525106212317),
+        name: 'lastSynced',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(19, 1512456085671558343),
+        name: 'needsSync',
+        type: 1,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(17, 7309209184507572377),
+    name: 'ResumoVisitaEntity',
+    lastPropertyId: const obx_int.IdUid(25, 1636003183922573079),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 7906723723461400131),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 5989692700989142247),
+        name: 'firestoreId',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(16, 7055044001594519984),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 6120318138224334332),
+        name: 'parentPath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 2787385871577792531),
+        name: 'uidVisita',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 8864586019553924144),
+        name: 'uidPropriedade',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 874600756111721448),
+        name: 'nomePropriedade',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 479530027478595388),
+        name: 'uidTecnico',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(8, 6693441450120150730),
+        name: 'nomeTecnico',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(9, 8562083519793787540),
+        name: 'uidProdutor',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(10, 4816610961408770541),
+        name: 'nomeProdutor',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(11, 2808579238366059248),
+        name: 'resumo',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(12, 2543680110866368332),
+        name: 'observacoes',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(13, 9085407108432952212),
+        name: 'proximosPassos',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(14, 8853414013170220778),
+        name: 'assinaturaTecnico',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(15, 2351191795132729611),
+        name: 'assinaturaProdutor',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(16, 4323931264807626316),
+        name: 'status',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(17, 869006497477908049),
+        name: 'dtVisita',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(18, 8267599668779459069),
+        name: 'dtInicio',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(19, 5249657267200789632),
+        name: 'dtFim',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(20, 3089340030945837623),
+        name: 'createdBy',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(21, 1862026747626609028),
+        name: 'lastModifiedBy',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(22, 818963482519171880),
+        name: 'createdAt',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(23, 130864210592445281),
+        name: 'lastModified',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(24, 1759939739854606036),
+        name: 'lastSynced',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(25, 1636003183922573079),
+        name: 'needsSync',
+        type: 1,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(18, 8536914603248373287),
+    name: 'StatusAnimalEntity',
+    lastPropertyId: const obx_int.IdUid(5, 8757554011393840861),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 2953899859182267727),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 6197049521902700322),
+        name: 'firestoreId',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(17, 3592443357478951066),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 6759191480810062639),
+        name: 'statusId',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 1575396494474894102),
+        name: 'descricao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 8757554011393840861),
+        name: 'lastSynced',
+        type: 10,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(19, 2248192466376884867),
+    name: 'StatusProdutivoEntity',
+    lastPropertyId: const obx_int.IdUid(5, 1451928039588845525),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 4655487582797722025),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 1634395034654154883),
+        name: 'firestoreId',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(18, 82125855871390390),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 1217672610303912723),
+        name: 'statusId',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 6286867161822094549),
+        name: 'descricao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 1451928039588845525),
+        name: 'lastSynced',
+        type: 10,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(20, 9062510899420106932),
+    name: 'TipoAcaoEntity',
+    lastPropertyId: const obx_int.IdUid(4, 1312360948366062766),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 7405063193942424691),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 2890837259519790695),
+        name: 'firestoreId',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(19, 3372012613696891525),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 8521133397248267287),
+        name: 'descricao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 1312360948366062766),
+        name: 'lastSynced',
+        type: 10,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(21, 6196883581296379914),
+    name: 'TratamentoEntity',
+    lastPropertyId: const obx_int.IdUid(23, 472128557998430777),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 4217756029581374085),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 1627551191071516032),
+        name: 'firestoreId',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(20, 2320840994514035059),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 6793045795314050839),
+        name: 'parentPath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 8317134435129686026),
+        name: 'uidAnimal',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 4890939911208506881),
+        name: 'tipoAcao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 3374968125273445848),
+        name: 'nomeAnimal',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 8951822193467365947),
+        name: 'uidPropriedade',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(8, 428939378527710301),
+        name: 'nomePropriedade',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(9, 7514363815553465071),
+        name: 'posologia',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(10, 1423970966543707233),
+        name: 'medicamento',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(11, 5743743714465154125),
+        name: 'lote',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(12, 4129969446758866828),
+        name: 'laboratorio',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(13, 8794369973358451566),
+        name: 'acao',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(14, 788881441288653421),
+        name: 'resultado',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(15, 816239869422350412),
+        name: 'obs',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(16, 2257618377161826956),
+        name: 'createdBy',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(17, 930288841300683232),
+        name: 'lastModifiedBy',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(18, 4872234371887632450),
+        name: 'dtTratamento',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(19, 5371424766435373146),
+        name: 'dtCarencia',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(20, 8017630778206028698),
+        name: 'createdAt',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(21, 6881304576287842442),
+        name: 'lastModified',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(22, 8908513003831263841),
+        name: 'lastSynced',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(23, 472128557998430777),
+        name: 'needsSync',
+        type: 1,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
 ];
 
 /// Shortcut for [obx.Store.new] that passes [getObjectBoxModel] and for Flutter
@@ -854,8 +2172,8 @@ Future<obx.Store> openStore({
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
     entities: _entities,
-    lastEntityId: const obx_int.IdUid(7, 6395357591972958726),
-    lastIndexId: const obx_int.IdUid(6, 4426326080799698287),
+    lastEntityId: const obx_int.IdUid(21, 6196883581296379914),
+    lastIndexId: const obx_int.IdUid(20, 2320840994514035059),
     lastRelationId: const obx_int.IdUid(0, 0),
     lastSequenceId: const obx_int.IdUid(0, 0),
     retiredEntityUids: const [],
@@ -1952,6 +3270,1838 @@ obx_int.ModelDefinition getObjectBoxModel() {
         return object;
       },
     ),
+    AcaoDaVisitaEntity: obx_int.EntityDefinition<AcaoDaVisitaEntity>(
+      model: _entities[7],
+      toOneRelations: (AcaoDaVisitaEntity object) => [],
+      toManyRelations: (AcaoDaVisitaEntity object) => {},
+      getId: (AcaoDaVisitaEntity object) => object.id,
+      setId: (AcaoDaVisitaEntity object, int id) {
+        object.id = id;
+      },
+      objectToFB: (AcaoDaVisitaEntity object, fb.Builder fbb) {
+        final firestoreIdOffset = object.firestoreId == null
+            ? null
+            : fbb.writeString(object.firestoreId!);
+        final parentPathOffset = object.parentPath == null
+            ? null
+            : fbb.writeString(object.parentPath!);
+        final acaoOffset = object.acao == null
+            ? null
+            : fbb.writeString(object.acao!);
+        final dtAcaoOffset = object.dtAcao == null
+            ? null
+            : fbb.writeString(object.dtAcao!);
+        final dtPPOffset = object.dtPP == null
+            ? null
+            : fbb.writeString(object.dtPP!);
+        final dtInseminacaoOffset = object.dtInseminacao == null
+            ? null
+            : fbb.writeString(object.dtInseminacao!);
+        final tourtoInseminacaoOffset = object.tourtoInseminacao == null
+            ? null
+            : fbb.writeString(object.tourtoInseminacao!);
+        final dtPartoPrevistoOffset = object.dtPartoPrevisto == null
+            ? null
+            : fbb.writeString(object.dtPartoPrevisto!);
+        final dtSecPrevistaOffset = object.dtSecPrevista == null
+            ? null
+            : fbb.writeString(object.dtSecPrevista!);
+        final dtPrePartoPrevistaOffset = object.dtPrePartoPrevista == null
+            ? null
+            : fbb.writeString(object.dtPrePartoPrevista!);
+        final dtDgMaisOffset = object.dtDgMais == null
+            ? null
+            : fbb.writeString(object.dtDgMais!);
+        final dtDgMenosOffset = object.dtDgMenos == null
+            ? null
+            : fbb.writeString(object.dtDgMenos!);
+        final dtAbortoOffset = object.dtAborto == null
+            ? null
+            : fbb.writeString(object.dtAborto!);
+        final dtSecagemOffset = object.dtSecagem == null
+            ? null
+            : fbb.writeString(object.dtSecagem!);
+        final tratamentoOffset = object.tratamento == null
+            ? null
+            : fbb.writeString(object.tratamento!);
+        fbb.startTable(22);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, firestoreIdOffset);
+        fbb.addOffset(2, parentPathOffset);
+        fbb.addOffset(3, acaoOffset);
+        fbb.addOffset(4, dtAcaoOffset);
+        fbb.addOffset(5, dtPPOffset);
+        fbb.addOffset(6, dtInseminacaoOffset);
+        fbb.addOffset(7, tourtoInseminacaoOffset);
+        fbb.addOffset(8, dtPartoPrevistoOffset);
+        fbb.addOffset(9, dtSecPrevistaOffset);
+        fbb.addOffset(10, dtPrePartoPrevistaOffset);
+        fbb.addOffset(11, dtDgMaisOffset);
+        fbb.addOffset(12, dtDgMenosOffset);
+        fbb.addOffset(13, dtAbortoOffset);
+        fbb.addOffset(14, dtSecagemOffset);
+        fbb.addOffset(15, tratamentoOffset);
+        fbb.addInt64(16, object.dtVisita?.millisecondsSinceEpoch);
+        fbb.addInt64(17, object.lastModified?.millisecondsSinceEpoch);
+        fbb.addInt64(18, object.lastSynced?.millisecondsSinceEpoch);
+        fbb.addBool(19, object.needsSync);
+        fbb.addBool(20, object.isDeleted);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final dtVisitaValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          36,
+        );
+        final lastModifiedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          38,
+        );
+        final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          40,
+        );
+        final firestoreIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 6);
+        final parentPathParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 8);
+        final acaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 10);
+        final dtAcaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 12);
+        final dtPPParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 14);
+        final dtInseminacaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 16);
+        final tourtoInseminacaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 18);
+        final dtPartoPrevistoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 20);
+        final dtSecPrevistaParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 22);
+        final dtPrePartoPrevistaParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 24);
+        final dtDgMaisParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 26);
+        final dtDgMenosParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 28);
+        final dtAbortoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 30);
+        final dtSecagemParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 32);
+        final tratamentoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 34);
+        final dtVisitaParam = dtVisitaValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(dtVisitaValue);
+        final lastModifiedParam = lastModifiedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastModifiedValue);
+        final lastSyncedParam = lastSyncedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
+        final needsSyncParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          42,
+          false,
+        );
+        final isDeletedParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          44,
+          false,
+        );
+        final object = AcaoDaVisitaEntity(
+          firestoreId: firestoreIdParam,
+          parentPath: parentPathParam,
+          acao: acaoParam,
+          dtAcao: dtAcaoParam,
+          dtPP: dtPPParam,
+          dtInseminacao: dtInseminacaoParam,
+          tourtoInseminacao: tourtoInseminacaoParam,
+          dtPartoPrevisto: dtPartoPrevistoParam,
+          dtSecPrevista: dtSecPrevistaParam,
+          dtPrePartoPrevista: dtPrePartoPrevistaParam,
+          dtDgMais: dtDgMaisParam,
+          dtDgMenos: dtDgMenosParam,
+          dtAborto: dtAbortoParam,
+          dtSecagem: dtSecagemParam,
+          tratamento: tratamentoParam,
+          dtVisita: dtVisitaParam,
+          lastModified: lastModifiedParam,
+          lastSynced: lastSyncedParam,
+          needsSync: needsSyncParam,
+          isDeleted: isDeletedParam,
+        )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+        return object;
+      },
+    ),
+    AcaoEntity: obx_int.EntityDefinition<AcaoEntity>(
+      model: _entities[8],
+      toOneRelations: (AcaoEntity object) => [],
+      toManyRelations: (AcaoEntity object) => {},
+      getId: (AcaoEntity object) => object.id,
+      setId: (AcaoEntity object, int id) {
+        object.id = id;
+      },
+      objectToFB: (AcaoEntity object, fb.Builder fbb) {
+        final firestoreIdOffset = object.firestoreId == null
+            ? null
+            : fbb.writeString(object.firestoreId!);
+        final parentPathOffset = object.parentPath == null
+            ? null
+            : fbb.writeString(object.parentPath!);
+        final uidAnimalAnimaisProdutoresPathOffset =
+            object.uidAnimalAnimaisProdutoresPath == null
+            ? null
+            : fbb.writeString(object.uidAnimalAnimaisProdutoresPath!);
+        final nomeAnimalOffset = object.nomeAnimal == null
+            ? null
+            : fbb.writeString(object.nomeAnimal!);
+        final acaoOffset = object.acao == null
+            ? null
+            : fbb.writeString(object.acao!);
+        final obsVisitaOffset = object.obsVisita == null
+            ? null
+            : fbb.writeString(object.obsVisita!);
+        final touroInseminacaoOffset = object.touroInseminacao == null
+            ? null
+            : fbb.writeString(object.touroInseminacao!);
+        final dataVisitaOffset = object.dataVisita == null
+            ? null
+            : fbb.writeString(object.dataVisita!);
+        final dataPartoPrevistoOffset = object.dataPartoPrevisto == null
+            ? null
+            : fbb.writeString(object.dataPartoPrevisto!);
+        final dataSecPrevistaOffset = object.dataSecPrevista == null
+            ? null
+            : fbb.writeString(object.dataSecPrevista!);
+        final dataPrePartoPrevistaOffset = object.dataPrePartoPrevista == null
+            ? null
+            : fbb.writeString(object.dataPrePartoPrevista!);
+        final dtPPOffset = object.dtPP == null
+            ? null
+            : fbb.writeString(object.dtPP!);
+        final dtDgMaisOffset = object.dtDgMais == null
+            ? null
+            : fbb.writeString(object.dtDgMais!);
+        final dtDgMenosOffset = object.dtDgMenos == null
+            ? null
+            : fbb.writeString(object.dtDgMenos!);
+        final dtAbortoOffset = object.dtAborto == null
+            ? null
+            : fbb.writeString(object.dtAborto!);
+        final uidPropriedadePathOffset = object.uidPropriedadePath == null
+            ? null
+            : fbb.writeString(object.uidPropriedadePath!);
+        fbb.startTable(23);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, firestoreIdOffset);
+        fbb.addOffset(2, parentPathOffset);
+        fbb.addOffset(3, uidAnimalAnimaisProdutoresPathOffset);
+        fbb.addOffset(4, nomeAnimalOffset);
+        fbb.addOffset(5, acaoOffset);
+        fbb.addOffset(6, obsVisitaOffset);
+        fbb.addOffset(7, touroInseminacaoOffset);
+        fbb.addOffset(8, dataVisitaOffset);
+        fbb.addOffset(9, dataPartoPrevistoOffset);
+        fbb.addOffset(10, dataSecPrevistaOffset);
+        fbb.addOffset(11, dataPrePartoPrevistaOffset);
+        fbb.addOffset(12, dtPPOffset);
+        fbb.addOffset(13, dtDgMaisOffset);
+        fbb.addOffset(14, dtDgMenosOffset);
+        fbb.addOffset(15, dtAbortoOffset);
+        fbb.addOffset(16, uidPropriedadePathOffset);
+        fbb.addInt64(17, object.dataDaAcao?.millisecondsSinceEpoch);
+        fbb.addInt64(18, object.lastModified?.millisecondsSinceEpoch);
+        fbb.addInt64(19, object.lastSynced?.millisecondsSinceEpoch);
+        fbb.addBool(20, object.needsSync);
+        fbb.addBool(21, object.isDeleted);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final dataDaAcaoValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          38,
+        );
+        final lastModifiedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          40,
+        );
+        final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          42,
+        );
+        final firestoreIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 6);
+        final parentPathParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 8);
+        final uidAnimalAnimaisProdutoresPathParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 10);
+        final nomeAnimalParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 12);
+        final acaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 14);
+        final obsVisitaParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 16);
+        final touroInseminacaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 18);
+        final dataVisitaParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 20);
+        final dataPartoPrevistoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 22);
+        final dataSecPrevistaParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 24);
+        final dataPrePartoPrevistaParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 26);
+        final dtPPParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 28);
+        final dtDgMaisParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 30);
+        final dtDgMenosParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 32);
+        final dtAbortoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 34);
+        final uidPropriedadePathParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 36);
+        final dataDaAcaoParam = dataDaAcaoValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(dataDaAcaoValue);
+        final lastModifiedParam = lastModifiedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastModifiedValue);
+        final lastSyncedParam = lastSyncedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
+        final needsSyncParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          44,
+          false,
+        );
+        final isDeletedParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          46,
+          false,
+        );
+        final object = AcaoEntity(
+          firestoreId: firestoreIdParam,
+          parentPath: parentPathParam,
+          uidAnimalAnimaisProdutoresPath: uidAnimalAnimaisProdutoresPathParam,
+          nomeAnimal: nomeAnimalParam,
+          acao: acaoParam,
+          obsVisita: obsVisitaParam,
+          touroInseminacao: touroInseminacaoParam,
+          dataVisita: dataVisitaParam,
+          dataPartoPrevisto: dataPartoPrevistoParam,
+          dataSecPrevista: dataSecPrevistaParam,
+          dataPrePartoPrevista: dataPrePartoPrevistaParam,
+          dtPP: dtPPParam,
+          dtDgMais: dtDgMaisParam,
+          dtDgMenos: dtDgMenosParam,
+          dtAborto: dtAbortoParam,
+          uidPropriedadePath: uidPropriedadePathParam,
+          dataDaAcao: dataDaAcaoParam,
+          lastModified: lastModifiedParam,
+          lastSynced: lastSyncedParam,
+          needsSync: needsSyncParam,
+          isDeleted: isDeletedParam,
+        )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+        return object;
+      },
+    ),
+    AcaoSanitarioEntity: obx_int.EntityDefinition<AcaoSanitarioEntity>(
+      model: _entities[9],
+      toOneRelations: (AcaoSanitarioEntity object) => [],
+      toManyRelations: (AcaoSanitarioEntity object) => {},
+      getId: (AcaoSanitarioEntity object) => object.id,
+      setId: (AcaoSanitarioEntity object, int id) {
+        object.id = id;
+      },
+      objectToFB: (AcaoSanitarioEntity object, fb.Builder fbb) {
+        final firestoreIdOffset = object.firestoreId == null
+            ? null
+            : fbb.writeString(object.firestoreId!);
+        final parentPathOffset = object.parentPath == null
+            ? null
+            : fbb.writeString(object.parentPath!);
+        final uidAnimalOffset = object.uidAnimal == null
+            ? null
+            : fbb.writeString(object.uidAnimal!);
+        final tipoAcaoOffset = object.tipoAcao == null
+            ? null
+            : fbb.writeString(object.tipoAcao!);
+        final nomeAnimalOffset = object.nomeAnimal == null
+            ? null
+            : fbb.writeString(object.nomeAnimal!);
+        final uidPropriedadeOffset = object.uidPropriedade == null
+            ? null
+            : fbb.writeString(object.uidPropriedade!);
+        final nomePropriedadeOffset = object.nomePropriedade == null
+            ? null
+            : fbb.writeString(object.nomePropriedade!);
+        final acaoOffset = object.acao == null
+            ? null
+            : fbb.writeString(object.acao!);
+        final posologiaOffset = object.posologia == null
+            ? null
+            : fbb.writeString(object.posologia!);
+        final medicamentoOffset = object.medicamento == null
+            ? null
+            : fbb.writeString(object.medicamento!);
+        final loteOffset = object.lote == null
+            ? null
+            : fbb.writeString(object.lote!);
+        final laboratorioOffset = object.laboratorio == null
+            ? null
+            : fbb.writeString(object.laboratorio!);
+        final resultadoOffset = object.resultado == null
+            ? null
+            : fbb.writeString(object.resultado!);
+        final obsOffset = object.obs == null
+            ? null
+            : fbb.writeString(object.obs!);
+        final createdByOffset = object.createdBy == null
+            ? null
+            : fbb.writeString(object.createdBy!);
+        final lastModifiedByOffset = object.lastModifiedBy == null
+            ? null
+            : fbb.writeString(object.lastModifiedBy!);
+        fbb.startTable(24);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, firestoreIdOffset);
+        fbb.addOffset(2, parentPathOffset);
+        fbb.addOffset(3, uidAnimalOffset);
+        fbb.addOffset(4, tipoAcaoOffset);
+        fbb.addOffset(5, nomeAnimalOffset);
+        fbb.addOffset(6, uidPropriedadeOffset);
+        fbb.addOffset(7, nomePropriedadeOffset);
+        fbb.addOffset(8, acaoOffset);
+        fbb.addOffset(9, posologiaOffset);
+        fbb.addOffset(10, medicamentoOffset);
+        fbb.addOffset(11, loteOffset);
+        fbb.addOffset(12, laboratorioOffset);
+        fbb.addOffset(13, resultadoOffset);
+        fbb.addOffset(14, obsOffset);
+        fbb.addOffset(15, createdByOffset);
+        fbb.addOffset(16, lastModifiedByOffset);
+        fbb.addInt64(17, object.dtAcao?.millisecondsSinceEpoch);
+        fbb.addInt64(18, object.dtCarencia?.millisecondsSinceEpoch);
+        fbb.addInt64(19, object.createdAt?.millisecondsSinceEpoch);
+        fbb.addInt64(20, object.lastModified?.millisecondsSinceEpoch);
+        fbb.addInt64(21, object.lastSynced?.millisecondsSinceEpoch);
+        fbb.addBool(22, object.needsSync);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final dtAcaoValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          38,
+        );
+        final dtCarenciaValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          40,
+        );
+        final createdAtValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          42,
+        );
+        final lastModifiedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          44,
+        );
+        final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          46,
+        );
+        final firestoreIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 6);
+        final parentPathParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 8);
+        final uidAnimalParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 10);
+        final tipoAcaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 12);
+        final nomeAnimalParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 14);
+        final uidPropriedadeParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 16);
+        final nomePropriedadeParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 18);
+        final acaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 20);
+        final posologiaParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 22);
+        final medicamentoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 24);
+        final loteParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 26);
+        final laboratorioParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 28);
+        final resultadoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 30);
+        final obsParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 32);
+        final dtAcaoParam = dtAcaoValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(dtAcaoValue);
+        final dtCarenciaParam = dtCarenciaValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(dtCarenciaValue);
+        final createdByParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 34);
+        final createdAtParam = createdAtValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(createdAtValue);
+        final lastModifiedByParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 36);
+        final lastModifiedParam = lastModifiedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastModifiedValue);
+        final lastSyncedParam = lastSyncedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
+        final needsSyncParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          48,
+          false,
+        );
+        final object = AcaoSanitarioEntity(
+          firestoreId: firestoreIdParam,
+          parentPath: parentPathParam,
+          uidAnimal: uidAnimalParam,
+          tipoAcao: tipoAcaoParam,
+          nomeAnimal: nomeAnimalParam,
+          uidPropriedade: uidPropriedadeParam,
+          nomePropriedade: nomePropriedadeParam,
+          acao: acaoParam,
+          posologia: posologiaParam,
+          medicamento: medicamentoParam,
+          lote: loteParam,
+          laboratorio: laboratorioParam,
+          resultado: resultadoParam,
+          obs: obsParam,
+          dtAcao: dtAcaoParam,
+          dtCarencia: dtCarenciaParam,
+          createdBy: createdByParam,
+          createdAt: createdAtParam,
+          lastModifiedBy: lastModifiedByParam,
+          lastModified: lastModifiedParam,
+          lastSynced: lastSyncedParam,
+          needsSync: needsSyncParam,
+        )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+        return object;
+      },
+    ),
+    CalendarioSanitarioEntity:
+        obx_int.EntityDefinition<CalendarioSanitarioEntity>(
+          model: _entities[10],
+          toOneRelations: (CalendarioSanitarioEntity object) => [],
+          toManyRelations: (CalendarioSanitarioEntity object) => {},
+          getId: (CalendarioSanitarioEntity object) => object.id,
+          setId: (CalendarioSanitarioEntity object, int id) {
+            object.id = id;
+          },
+          objectToFB: (CalendarioSanitarioEntity object, fb.Builder fbb) {
+            final firestoreIdOffset = object.firestoreId == null
+                ? null
+                : fbb.writeString(object.firestoreId!);
+            final descricaoOffset = object.descricao == null
+                ? null
+                : fbb.writeString(object.descricao!);
+            final tipoOffset = object.tipo == null
+                ? null
+                : fbb.writeString(object.tipo!);
+            fbb.startTable(6);
+            fbb.addInt64(0, object.id);
+            fbb.addOffset(1, firestoreIdOffset);
+            fbb.addOffset(2, descricaoOffset);
+            fbb.addOffset(3, tipoOffset);
+            fbb.addInt64(4, object.lastSynced?.millisecondsSinceEpoch);
+            fbb.finish(fbb.endTable());
+            return object.id;
+          },
+          objectFromFB: (obx.Store store, ByteData fbData) {
+            final buffer = fb.BufferContext(fbData);
+            final rootOffset = buffer.derefObject(0);
+            final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
+              buffer,
+              rootOffset,
+              12,
+            );
+            final firestoreIdParam = const fb.StringReader(
+              asciiOptimization: true,
+            ).vTableGetNullable(buffer, rootOffset, 6);
+            final descricaoParam = const fb.StringReader(
+              asciiOptimization: true,
+            ).vTableGetNullable(buffer, rootOffset, 8);
+            final tipoParam = const fb.StringReader(
+              asciiOptimization: true,
+            ).vTableGetNullable(buffer, rootOffset, 10);
+            final lastSyncedParam = lastSyncedValue == null
+                ? null
+                : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
+            final object = CalendarioSanitarioEntity(
+              firestoreId: firestoreIdParam,
+              descricao: descricaoParam,
+              tipo: tipoParam,
+              lastSynced: lastSyncedParam,
+            )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+            return object;
+          },
+        ),
+    CidadeEntity: obx_int.EntityDefinition<CidadeEntity>(
+      model: _entities[11],
+      toOneRelations: (CidadeEntity object) => [],
+      toManyRelations: (CidadeEntity object) => {},
+      getId: (CidadeEntity object) => object.id,
+      setId: (CidadeEntity object, int id) {
+        object.id = id;
+      },
+      objectToFB: (CidadeEntity object, fb.Builder fbb) {
+        final firestoreIdOffset = object.firestoreId == null
+            ? null
+            : fbb.writeString(object.firestoreId!);
+        final nomeOffset = object.nome == null
+            ? null
+            : fbb.writeString(object.nome!);
+        final nomeufOffset = object.nomeuf == null
+            ? null
+            : fbb.writeString(object.nomeuf!);
+        fbb.startTable(6);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, firestoreIdOffset);
+        fbb.addOffset(2, nomeOffset);
+        fbb.addOffset(3, nomeufOffset);
+        fbb.addInt64(4, object.lastSynced?.millisecondsSinceEpoch);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          12,
+        );
+        final firestoreIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 6);
+        final nomeParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 8);
+        final nomeufParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 10);
+        final lastSyncedParam = lastSyncedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
+        final object = CidadeEntity(
+          firestoreId: firestoreIdParam,
+          nome: nomeParam,
+          nomeuf: nomeufParam,
+          lastSynced: lastSyncedParam,
+        )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+        return object;
+      },
+    ),
+    FinanceiroEntity: obx_int.EntityDefinition<FinanceiroEntity>(
+      model: _entities[12],
+      toOneRelations: (FinanceiroEntity object) => [],
+      toManyRelations: (FinanceiroEntity object) => {},
+      getId: (FinanceiroEntity object) => object.id,
+      setId: (FinanceiroEntity object, int id) {
+        object.id = id;
+      },
+      objectToFB: (FinanceiroEntity object, fb.Builder fbb) {
+        final firestoreIdOffset = object.firestoreId == null
+            ? null
+            : fbb.writeString(object.firestoreId!);
+        final parentPathOffset = object.parentPath == null
+            ? null
+            : fbb.writeString(object.parentPath!);
+        final uidPropriedadeOffset = object.uidPropriedade == null
+            ? null
+            : fbb.writeString(object.uidPropriedade!);
+        final createdByOffset = object.createdBy == null
+            ? null
+            : fbb.writeString(object.createdBy!);
+        final lastModifiedByOffset = object.lastModifiedBy == null
+            ? null
+            : fbb.writeString(object.lastModifiedBy!);
+        fbb.startTable(28);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, firestoreIdOffset);
+        fbb.addOffset(2, parentPathOffset);
+        fbb.addInt64(3, object.vacasLactacao);
+        fbb.addInt64(4, object.vacasSecas);
+        fbb.addInt64(5, object.litrosLeiteMes);
+        fbb.addFloat64(6, object.precoLitroLeite);
+        fbb.addFloat64(7, object.valorLeiteTotal);
+        fbb.addFloat64(8, object.outrasReceitas);
+        fbb.addFloat64(9, object.custoRacao);
+        fbb.addFloat64(10, object.custoMaoDeObra);
+        fbb.addFloat64(11, object.custoMedicamentos);
+        fbb.addFloat64(12, object.custoInsumos);
+        fbb.addFloat64(13, object.custoManutencao);
+        fbb.addFloat64(14, object.outrosCustos);
+        fbb.addFloat64(15, object.custoTotal);
+        fbb.addFloat64(16, object.lucroLiquido);
+        fbb.addFloat64(17, object.custoLitro);
+        fbb.addInt64(18, object.mes);
+        fbb.addInt64(19, object.ano);
+        fbb.addOffset(20, uidPropriedadeOffset);
+        fbb.addOffset(21, createdByOffset);
+        fbb.addOffset(22, lastModifiedByOffset);
+        fbb.addInt64(23, object.createdAt?.millisecondsSinceEpoch);
+        fbb.addInt64(24, object.lastModified?.millisecondsSinceEpoch);
+        fbb.addInt64(25, object.lastSynced?.millisecondsSinceEpoch);
+        fbb.addBool(26, object.needsSync);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final createdAtValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          50,
+        );
+        final lastModifiedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          52,
+        );
+        final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          54,
+        );
+        final firestoreIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 6);
+        final parentPathParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 8);
+        final vacasLactacaoParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          10,
+          0,
+        );
+        final vacasSecasParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          12,
+          0,
+        );
+        final litrosLeiteMesParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          14,
+          0,
+        );
+        final precoLitroLeiteParam = const fb.Float64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          16,
+          0,
+        );
+        final valorLeiteTotalParam = const fb.Float64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          18,
+          0,
+        );
+        final outrasReceitasParam = const fb.Float64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          20,
+          0,
+        );
+        final custoRacaoParam = const fb.Float64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          22,
+          0,
+        );
+        final custoMaoDeObraParam = const fb.Float64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          24,
+          0,
+        );
+        final custoMedicamentosParam = const fb.Float64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          26,
+          0,
+        );
+        final custoInsumosParam = const fb.Float64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          28,
+          0,
+        );
+        final custoManutencaoParam = const fb.Float64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          30,
+          0,
+        );
+        final outrosCustosParam = const fb.Float64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          32,
+          0,
+        );
+        final custoTotalParam = const fb.Float64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          34,
+          0,
+        );
+        final lucroLiquidoParam = const fb.Float64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          36,
+          0,
+        );
+        final custoLitroParam = const fb.Float64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          38,
+          0,
+        );
+        final mesParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          40,
+          0,
+        );
+        final anoParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          42,
+          0,
+        );
+        final uidPropriedadeParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 44);
+        final createdByParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 46);
+        final createdAtParam = createdAtValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(createdAtValue);
+        final lastModifiedByParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 48);
+        final lastModifiedParam = lastModifiedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastModifiedValue);
+        final lastSyncedParam = lastSyncedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
+        final needsSyncParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          56,
+          false,
+        );
+        final object = FinanceiroEntity(
+          firestoreId: firestoreIdParam,
+          parentPath: parentPathParam,
+          vacasLactacao: vacasLactacaoParam,
+          vacasSecas: vacasSecasParam,
+          litrosLeiteMes: litrosLeiteMesParam,
+          precoLitroLeite: precoLitroLeiteParam,
+          valorLeiteTotal: valorLeiteTotalParam,
+          outrasReceitas: outrasReceitasParam,
+          custoRacao: custoRacaoParam,
+          custoMaoDeObra: custoMaoDeObraParam,
+          custoMedicamentos: custoMedicamentosParam,
+          custoInsumos: custoInsumosParam,
+          custoManutencao: custoManutencaoParam,
+          outrosCustos: outrosCustosParam,
+          custoTotal: custoTotalParam,
+          lucroLiquido: lucroLiquidoParam,
+          custoLitro: custoLitroParam,
+          mes: mesParam,
+          ano: anoParam,
+          uidPropriedade: uidPropriedadeParam,
+          createdBy: createdByParam,
+          createdAt: createdAtParam,
+          lastModifiedBy: lastModifiedByParam,
+          lastModified: lastModifiedParam,
+          lastSynced: lastSyncedParam,
+          needsSync: needsSyncParam,
+        )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+        return object;
+      },
+    ),
+    GrupoEntity: obx_int.EntityDefinition<GrupoEntity>(
+      model: _entities[13],
+      toOneRelations: (GrupoEntity object) => [],
+      toManyRelations: (GrupoEntity object) => {},
+      getId: (GrupoEntity object) => object.id,
+      setId: (GrupoEntity object, int id) {
+        object.id = id;
+      },
+      objectToFB: (GrupoEntity object, fb.Builder fbb) {
+        final firestoreIdOffset = object.firestoreId == null
+            ? null
+            : fbb.writeString(object.firestoreId!);
+        final descricaoOffset = object.descricao == null
+            ? null
+            : fbb.writeString(object.descricao!);
+        fbb.startTable(6);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, firestoreIdOffset);
+        fbb.addOffset(2, descricaoOffset);
+        fbb.addInt64(3, object.grupoId);
+        fbb.addInt64(4, object.lastSynced?.millisecondsSinceEpoch);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          12,
+        );
+        final firestoreIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 6);
+        final descricaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 8);
+        final grupoIdParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          10,
+          0,
+        );
+        final lastSyncedParam = lastSyncedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
+        final object = GrupoEntity(
+          firestoreId: firestoreIdParam,
+          descricao: descricaoParam,
+          grupoId: grupoIdParam,
+          lastSynced: lastSyncedParam,
+        )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+        return object;
+      },
+    ),
+    RacaEntity: obx_int.EntityDefinition<RacaEntity>(
+      model: _entities[14],
+      toOneRelations: (RacaEntity object) => [],
+      toManyRelations: (RacaEntity object) => {},
+      getId: (RacaEntity object) => object.id,
+      setId: (RacaEntity object, int id) {
+        object.id = id;
+      },
+      objectToFB: (RacaEntity object, fb.Builder fbb) {
+        final firestoreIdOffset = object.firestoreId == null
+            ? null
+            : fbb.writeString(object.firestoreId!);
+        final descricaoOffset = object.descricao == null
+            ? null
+            : fbb.writeString(object.descricao!);
+        fbb.startTable(5);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, firestoreIdOffset);
+        fbb.addOffset(2, descricaoOffset);
+        fbb.addInt64(3, object.lastSynced?.millisecondsSinceEpoch);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          10,
+        );
+        final firestoreIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 6);
+        final descricaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 8);
+        final lastSyncedParam = lastSyncedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
+        final object = RacaEntity(
+          firestoreId: firestoreIdParam,
+          descricao: descricaoParam,
+          lastSynced: lastSyncedParam,
+        )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+        return object;
+      },
+    ),
+    RecomendacaoEntity: obx_int.EntityDefinition<RecomendacaoEntity>(
+      model: _entities[15],
+      toOneRelations: (RecomendacaoEntity object) => [],
+      toManyRelations: (RecomendacaoEntity object) => {},
+      getId: (RecomendacaoEntity object) => object.id,
+      setId: (RecomendacaoEntity object, int id) {
+        object.id = id;
+      },
+      objectToFB: (RecomendacaoEntity object, fb.Builder fbb) {
+        final firestoreIdOffset = object.firestoreId == null
+            ? null
+            : fbb.writeString(object.firestoreId!);
+        final parentPathOffset = object.parentPath == null
+            ? null
+            : fbb.writeString(object.parentPath!);
+        final uidVisitaOffset = object.uidVisita == null
+            ? null
+            : fbb.writeString(object.uidVisita!);
+        final uidPropriedadeOffset = object.uidPropriedade == null
+            ? null
+            : fbb.writeString(object.uidPropriedade!);
+        final tituloRecomendacaoOffset = object.tituloRecomendacao == null
+            ? null
+            : fbb.writeString(object.tituloRecomendacao!);
+        final descricaoRecomendacaoOffset = object.descricaoRecomendacao == null
+            ? null
+            : fbb.writeString(object.descricaoRecomendacao!);
+        final categoriaOffset = object.categoria == null
+            ? null
+            : fbb.writeString(object.categoria!);
+        final prioridadeOffset = object.prioridade == null
+            ? null
+            : fbb.writeString(object.prioridade!);
+        final statusOffset = object.status == null
+            ? null
+            : fbb.writeString(object.status!);
+        final createdByOffset = object.createdBy == null
+            ? null
+            : fbb.writeString(object.createdBy!);
+        final lastModifiedByOffset = object.lastModifiedBy == null
+            ? null
+            : fbb.writeString(object.lastModifiedBy!);
+        fbb.startTable(20);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, firestoreIdOffset);
+        fbb.addOffset(2, parentPathOffset);
+        fbb.addOffset(3, uidVisitaOffset);
+        fbb.addOffset(4, uidPropriedadeOffset);
+        fbb.addOffset(5, tituloRecomendacaoOffset);
+        fbb.addOffset(6, descricaoRecomendacaoOffset);
+        fbb.addOffset(7, categoriaOffset);
+        fbb.addOffset(8, prioridadeOffset);
+        fbb.addOffset(9, statusOffset);
+        fbb.addInt64(10, object.dtRecomendacao?.millisecondsSinceEpoch);
+        fbb.addInt64(11, object.dtPrazo?.millisecondsSinceEpoch);
+        fbb.addInt64(12, object.dtConclusao?.millisecondsSinceEpoch);
+        fbb.addOffset(13, createdByOffset);
+        fbb.addOffset(14, lastModifiedByOffset);
+        fbb.addInt64(15, object.createdAt?.millisecondsSinceEpoch);
+        fbb.addInt64(16, object.lastModified?.millisecondsSinceEpoch);
+        fbb.addInt64(17, object.lastSynced?.millisecondsSinceEpoch);
+        fbb.addBool(18, object.needsSync);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final dtRecomendacaoValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          24,
+        );
+        final dtPrazoValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          26,
+        );
+        final dtConclusaoValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          28,
+        );
+        final createdAtValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          34,
+        );
+        final lastModifiedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          36,
+        );
+        final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          38,
+        );
+        final firestoreIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 6);
+        final parentPathParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 8);
+        final uidVisitaParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 10);
+        final uidPropriedadeParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 12);
+        final tituloRecomendacaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 14);
+        final descricaoRecomendacaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 16);
+        final categoriaParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 18);
+        final prioridadeParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 20);
+        final statusParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 22);
+        final dtRecomendacaoParam = dtRecomendacaoValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(dtRecomendacaoValue);
+        final dtPrazoParam = dtPrazoValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(dtPrazoValue);
+        final dtConclusaoParam = dtConclusaoValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(dtConclusaoValue);
+        final createdByParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 30);
+        final createdAtParam = createdAtValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(createdAtValue);
+        final lastModifiedByParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 32);
+        final lastModifiedParam = lastModifiedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastModifiedValue);
+        final lastSyncedParam = lastSyncedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
+        final needsSyncParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          40,
+          false,
+        );
+        final object = RecomendacaoEntity(
+          firestoreId: firestoreIdParam,
+          parentPath: parentPathParam,
+          uidVisita: uidVisitaParam,
+          uidPropriedade: uidPropriedadeParam,
+          tituloRecomendacao: tituloRecomendacaoParam,
+          descricaoRecomendacao: descricaoRecomendacaoParam,
+          categoria: categoriaParam,
+          prioridade: prioridadeParam,
+          status: statusParam,
+          dtRecomendacao: dtRecomendacaoParam,
+          dtPrazo: dtPrazoParam,
+          dtConclusao: dtConclusaoParam,
+          createdBy: createdByParam,
+          createdAt: createdAtParam,
+          lastModifiedBy: lastModifiedByParam,
+          lastModified: lastModifiedParam,
+          lastSynced: lastSyncedParam,
+          needsSync: needsSyncParam,
+        )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+        return object;
+      },
+    ),
+    ResumoVisitaEntity: obx_int.EntityDefinition<ResumoVisitaEntity>(
+      model: _entities[16],
+      toOneRelations: (ResumoVisitaEntity object) => [],
+      toManyRelations: (ResumoVisitaEntity object) => {},
+      getId: (ResumoVisitaEntity object) => object.id,
+      setId: (ResumoVisitaEntity object, int id) {
+        object.id = id;
+      },
+      objectToFB: (ResumoVisitaEntity object, fb.Builder fbb) {
+        final firestoreIdOffset = object.firestoreId == null
+            ? null
+            : fbb.writeString(object.firestoreId!);
+        final parentPathOffset = object.parentPath == null
+            ? null
+            : fbb.writeString(object.parentPath!);
+        final uidVisitaOffset = object.uidVisita == null
+            ? null
+            : fbb.writeString(object.uidVisita!);
+        final uidPropriedadeOffset = object.uidPropriedade == null
+            ? null
+            : fbb.writeString(object.uidPropriedade!);
+        final nomePropriedadeOffset = object.nomePropriedade == null
+            ? null
+            : fbb.writeString(object.nomePropriedade!);
+        final uidTecnicoOffset = object.uidTecnico == null
+            ? null
+            : fbb.writeString(object.uidTecnico!);
+        final nomeTecnicoOffset = object.nomeTecnico == null
+            ? null
+            : fbb.writeString(object.nomeTecnico!);
+        final uidProdutorOffset = object.uidProdutor == null
+            ? null
+            : fbb.writeString(object.uidProdutor!);
+        final nomeProdutorOffset = object.nomeProdutor == null
+            ? null
+            : fbb.writeString(object.nomeProdutor!);
+        final resumoOffset = object.resumo == null
+            ? null
+            : fbb.writeString(object.resumo!);
+        final observacoesOffset = object.observacoes == null
+            ? null
+            : fbb.writeString(object.observacoes!);
+        final proximosPassosOffset = object.proximosPassos == null
+            ? null
+            : fbb.writeString(object.proximosPassos!);
+        final assinaturaTecnicoOffset = object.assinaturaTecnico == null
+            ? null
+            : fbb.writeString(object.assinaturaTecnico!);
+        final assinaturaProdutorOffset = object.assinaturaProdutor == null
+            ? null
+            : fbb.writeString(object.assinaturaProdutor!);
+        final statusOffset = object.status == null
+            ? null
+            : fbb.writeString(object.status!);
+        final createdByOffset = object.createdBy == null
+            ? null
+            : fbb.writeString(object.createdBy!);
+        final lastModifiedByOffset = object.lastModifiedBy == null
+            ? null
+            : fbb.writeString(object.lastModifiedBy!);
+        fbb.startTable(26);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, firestoreIdOffset);
+        fbb.addOffset(2, parentPathOffset);
+        fbb.addOffset(3, uidVisitaOffset);
+        fbb.addOffset(4, uidPropriedadeOffset);
+        fbb.addOffset(5, nomePropriedadeOffset);
+        fbb.addOffset(6, uidTecnicoOffset);
+        fbb.addOffset(7, nomeTecnicoOffset);
+        fbb.addOffset(8, uidProdutorOffset);
+        fbb.addOffset(9, nomeProdutorOffset);
+        fbb.addOffset(10, resumoOffset);
+        fbb.addOffset(11, observacoesOffset);
+        fbb.addOffset(12, proximosPassosOffset);
+        fbb.addOffset(13, assinaturaTecnicoOffset);
+        fbb.addOffset(14, assinaturaProdutorOffset);
+        fbb.addOffset(15, statusOffset);
+        fbb.addInt64(16, object.dtVisita?.millisecondsSinceEpoch);
+        fbb.addInt64(17, object.dtInicio?.millisecondsSinceEpoch);
+        fbb.addInt64(18, object.dtFim?.millisecondsSinceEpoch);
+        fbb.addOffset(19, createdByOffset);
+        fbb.addOffset(20, lastModifiedByOffset);
+        fbb.addInt64(21, object.createdAt?.millisecondsSinceEpoch);
+        fbb.addInt64(22, object.lastModified?.millisecondsSinceEpoch);
+        fbb.addInt64(23, object.lastSynced?.millisecondsSinceEpoch);
+        fbb.addBool(24, object.needsSync);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final dtVisitaValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          36,
+        );
+        final dtInicioValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          38,
+        );
+        final dtFimValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          40,
+        );
+        final createdAtValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          46,
+        );
+        final lastModifiedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          48,
+        );
+        final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          50,
+        );
+        final firestoreIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 6);
+        final parentPathParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 8);
+        final uidVisitaParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 10);
+        final uidPropriedadeParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 12);
+        final nomePropriedadeParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 14);
+        final uidTecnicoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 16);
+        final nomeTecnicoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 18);
+        final uidProdutorParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 20);
+        final nomeProdutorParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 22);
+        final resumoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 24);
+        final observacoesParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 26);
+        final proximosPassosParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 28);
+        final assinaturaTecnicoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 30);
+        final assinaturaProdutorParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 32);
+        final statusParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 34);
+        final dtVisitaParam = dtVisitaValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(dtVisitaValue);
+        final dtInicioParam = dtInicioValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(dtInicioValue);
+        final dtFimParam = dtFimValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(dtFimValue);
+        final createdByParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 42);
+        final createdAtParam = createdAtValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(createdAtValue);
+        final lastModifiedByParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 44);
+        final lastModifiedParam = lastModifiedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastModifiedValue);
+        final lastSyncedParam = lastSyncedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
+        final needsSyncParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          52,
+          false,
+        );
+        final object = ResumoVisitaEntity(
+          firestoreId: firestoreIdParam,
+          parentPath: parentPathParam,
+          uidVisita: uidVisitaParam,
+          uidPropriedade: uidPropriedadeParam,
+          nomePropriedade: nomePropriedadeParam,
+          uidTecnico: uidTecnicoParam,
+          nomeTecnico: nomeTecnicoParam,
+          uidProdutor: uidProdutorParam,
+          nomeProdutor: nomeProdutorParam,
+          resumo: resumoParam,
+          observacoes: observacoesParam,
+          proximosPassos: proximosPassosParam,
+          assinaturaTecnico: assinaturaTecnicoParam,
+          assinaturaProdutor: assinaturaProdutorParam,
+          status: statusParam,
+          dtVisita: dtVisitaParam,
+          dtInicio: dtInicioParam,
+          dtFim: dtFimParam,
+          createdBy: createdByParam,
+          createdAt: createdAtParam,
+          lastModifiedBy: lastModifiedByParam,
+          lastModified: lastModifiedParam,
+          lastSynced: lastSyncedParam,
+          needsSync: needsSyncParam,
+        )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+        return object;
+      },
+    ),
+    StatusAnimalEntity: obx_int.EntityDefinition<StatusAnimalEntity>(
+      model: _entities[17],
+      toOneRelations: (StatusAnimalEntity object) => [],
+      toManyRelations: (StatusAnimalEntity object) => {},
+      getId: (StatusAnimalEntity object) => object.id,
+      setId: (StatusAnimalEntity object, int id) {
+        object.id = id;
+      },
+      objectToFB: (StatusAnimalEntity object, fb.Builder fbb) {
+        final firestoreIdOffset = object.firestoreId == null
+            ? null
+            : fbb.writeString(object.firestoreId!);
+        final descricaoOffset = object.descricao == null
+            ? null
+            : fbb.writeString(object.descricao!);
+        fbb.startTable(6);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, firestoreIdOffset);
+        fbb.addInt64(2, object.statusId);
+        fbb.addOffset(3, descricaoOffset);
+        fbb.addInt64(4, object.lastSynced?.millisecondsSinceEpoch);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          12,
+        );
+        final firestoreIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 6);
+        final statusIdParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          8,
+          0,
+        );
+        final descricaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 10);
+        final lastSyncedParam = lastSyncedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
+        final object = StatusAnimalEntity(
+          firestoreId: firestoreIdParam,
+          statusId: statusIdParam,
+          descricao: descricaoParam,
+          lastSynced: lastSyncedParam,
+        )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+        return object;
+      },
+    ),
+    StatusProdutivoEntity: obx_int.EntityDefinition<StatusProdutivoEntity>(
+      model: _entities[18],
+      toOneRelations: (StatusProdutivoEntity object) => [],
+      toManyRelations: (StatusProdutivoEntity object) => {},
+      getId: (StatusProdutivoEntity object) => object.id,
+      setId: (StatusProdutivoEntity object, int id) {
+        object.id = id;
+      },
+      objectToFB: (StatusProdutivoEntity object, fb.Builder fbb) {
+        final firestoreIdOffset = object.firestoreId == null
+            ? null
+            : fbb.writeString(object.firestoreId!);
+        final descricaoOffset = object.descricao == null
+            ? null
+            : fbb.writeString(object.descricao!);
+        fbb.startTable(6);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, firestoreIdOffset);
+        fbb.addInt64(2, object.statusId);
+        fbb.addOffset(3, descricaoOffset);
+        fbb.addInt64(4, object.lastSynced?.millisecondsSinceEpoch);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          12,
+        );
+        final firestoreIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 6);
+        final statusIdParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          8,
+          0,
+        );
+        final descricaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 10);
+        final lastSyncedParam = lastSyncedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
+        final object = StatusProdutivoEntity(
+          firestoreId: firestoreIdParam,
+          statusId: statusIdParam,
+          descricao: descricaoParam,
+          lastSynced: lastSyncedParam,
+        )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+        return object;
+      },
+    ),
+    TipoAcaoEntity: obx_int.EntityDefinition<TipoAcaoEntity>(
+      model: _entities[19],
+      toOneRelations: (TipoAcaoEntity object) => [],
+      toManyRelations: (TipoAcaoEntity object) => {},
+      getId: (TipoAcaoEntity object) => object.id,
+      setId: (TipoAcaoEntity object, int id) {
+        object.id = id;
+      },
+      objectToFB: (TipoAcaoEntity object, fb.Builder fbb) {
+        final firestoreIdOffset = object.firestoreId == null
+            ? null
+            : fbb.writeString(object.firestoreId!);
+        final descricaoOffset = object.descricao == null
+            ? null
+            : fbb.writeString(object.descricao!);
+        fbb.startTable(5);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, firestoreIdOffset);
+        fbb.addOffset(2, descricaoOffset);
+        fbb.addInt64(3, object.lastSynced?.millisecondsSinceEpoch);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          10,
+        );
+        final firestoreIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 6);
+        final descricaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 8);
+        final lastSyncedParam = lastSyncedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
+        final object = TipoAcaoEntity(
+          firestoreId: firestoreIdParam,
+          descricao: descricaoParam,
+          lastSynced: lastSyncedParam,
+        )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+        return object;
+      },
+    ),
+    TratamentoEntity: obx_int.EntityDefinition<TratamentoEntity>(
+      model: _entities[20],
+      toOneRelations: (TratamentoEntity object) => [],
+      toManyRelations: (TratamentoEntity object) => {},
+      getId: (TratamentoEntity object) => object.id,
+      setId: (TratamentoEntity object, int id) {
+        object.id = id;
+      },
+      objectToFB: (TratamentoEntity object, fb.Builder fbb) {
+        final firestoreIdOffset = object.firestoreId == null
+            ? null
+            : fbb.writeString(object.firestoreId!);
+        final parentPathOffset = object.parentPath == null
+            ? null
+            : fbb.writeString(object.parentPath!);
+        final uidAnimalOffset = object.uidAnimal == null
+            ? null
+            : fbb.writeString(object.uidAnimal!);
+        final tipoAcaoOffset = object.tipoAcao == null
+            ? null
+            : fbb.writeString(object.tipoAcao!);
+        final nomeAnimalOffset = object.nomeAnimal == null
+            ? null
+            : fbb.writeString(object.nomeAnimal!);
+        final uidPropriedadeOffset = object.uidPropriedade == null
+            ? null
+            : fbb.writeString(object.uidPropriedade!);
+        final nomePropriedadeOffset = object.nomePropriedade == null
+            ? null
+            : fbb.writeString(object.nomePropriedade!);
+        final posologiaOffset = object.posologia == null
+            ? null
+            : fbb.writeString(object.posologia!);
+        final medicamentoOffset = object.medicamento == null
+            ? null
+            : fbb.writeString(object.medicamento!);
+        final loteOffset = object.lote == null
+            ? null
+            : fbb.writeString(object.lote!);
+        final laboratorioOffset = object.laboratorio == null
+            ? null
+            : fbb.writeString(object.laboratorio!);
+        final acaoOffset = object.acao == null
+            ? null
+            : fbb.writeString(object.acao!);
+        final resultadoOffset = object.resultado == null
+            ? null
+            : fbb.writeString(object.resultado!);
+        final obsOffset = object.obs == null
+            ? null
+            : fbb.writeString(object.obs!);
+        final createdByOffset = object.createdBy == null
+            ? null
+            : fbb.writeString(object.createdBy!);
+        final lastModifiedByOffset = object.lastModifiedBy == null
+            ? null
+            : fbb.writeString(object.lastModifiedBy!);
+        fbb.startTable(24);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, firestoreIdOffset);
+        fbb.addOffset(2, parentPathOffset);
+        fbb.addOffset(3, uidAnimalOffset);
+        fbb.addOffset(4, tipoAcaoOffset);
+        fbb.addOffset(5, nomeAnimalOffset);
+        fbb.addOffset(6, uidPropriedadeOffset);
+        fbb.addOffset(7, nomePropriedadeOffset);
+        fbb.addOffset(8, posologiaOffset);
+        fbb.addOffset(9, medicamentoOffset);
+        fbb.addOffset(10, loteOffset);
+        fbb.addOffset(11, laboratorioOffset);
+        fbb.addOffset(12, acaoOffset);
+        fbb.addOffset(13, resultadoOffset);
+        fbb.addOffset(14, obsOffset);
+        fbb.addOffset(15, createdByOffset);
+        fbb.addOffset(16, lastModifiedByOffset);
+        fbb.addInt64(17, object.dtTratamento?.millisecondsSinceEpoch);
+        fbb.addInt64(18, object.dtCarencia?.millisecondsSinceEpoch);
+        fbb.addInt64(19, object.createdAt?.millisecondsSinceEpoch);
+        fbb.addInt64(20, object.lastModified?.millisecondsSinceEpoch);
+        fbb.addInt64(21, object.lastSynced?.millisecondsSinceEpoch);
+        fbb.addBool(22, object.needsSync);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final dtTratamentoValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          38,
+        );
+        final dtCarenciaValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          40,
+        );
+        final createdAtValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          42,
+        );
+        final lastModifiedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          44,
+        );
+        final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          46,
+        );
+        final firestoreIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 6);
+        final parentPathParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 8);
+        final uidAnimalParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 10);
+        final tipoAcaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 12);
+        final nomeAnimalParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 14);
+        final uidPropriedadeParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 16);
+        final nomePropriedadeParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 18);
+        final posologiaParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 20);
+        final medicamentoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 22);
+        final loteParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 24);
+        final laboratorioParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 26);
+        final acaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 28);
+        final resultadoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 30);
+        final obsParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 32);
+        final dtTratamentoParam = dtTratamentoValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(dtTratamentoValue);
+        final dtCarenciaParam = dtCarenciaValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(dtCarenciaValue);
+        final createdByParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 34);
+        final createdAtParam = createdAtValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(createdAtValue);
+        final lastModifiedByParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 36);
+        final lastModifiedParam = lastModifiedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastModifiedValue);
+        final lastSyncedParam = lastSyncedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
+        final needsSyncParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          48,
+          false,
+        );
+        final object = TratamentoEntity(
+          firestoreId: firestoreIdParam,
+          parentPath: parentPathParam,
+          uidAnimal: uidAnimalParam,
+          tipoAcao: tipoAcaoParam,
+          nomeAnimal: nomeAnimalParam,
+          uidPropriedade: uidPropriedadeParam,
+          nomePropriedade: nomePropriedadeParam,
+          posologia: posologiaParam,
+          medicamento: medicamentoParam,
+          lote: loteParam,
+          laboratorio: laboratorioParam,
+          acao: acaoParam,
+          resultado: resultadoParam,
+          obs: obsParam,
+          dtTratamento: dtTratamentoParam,
+          dtCarencia: dtCarenciaParam,
+          createdBy: createdByParam,
+          createdAt: createdAtParam,
+          lastModifiedBy: lastModifiedByParam,
+          lastModified: lastModifiedParam,
+          lastSynced: lastSyncedParam,
+          needsSync: needsSyncParam,
+        )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+        return object;
+      },
+    ),
   };
 
   return obx_int.ModelDefinition(model, bindings);
@@ -2559,5 +5709,1010 @@ class TecnicoEntity_ {
   /// See [TecnicoEntity.isDeleted].
   static final isDeleted = obx.QueryBooleanProperty<TecnicoEntity>(
     _entities[6].properties[13],
+  );
+}
+
+/// [AcaoDaVisitaEntity] entity fields to define ObjectBox queries.
+class AcaoDaVisitaEntity_ {
+  /// See [AcaoDaVisitaEntity.id].
+  static final id = obx.QueryIntegerProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[0],
+  );
+
+  /// See [AcaoDaVisitaEntity.firestoreId].
+  static final firestoreId = obx.QueryStringProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[1],
+  );
+
+  /// See [AcaoDaVisitaEntity.parentPath].
+  static final parentPath = obx.QueryStringProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[2],
+  );
+
+  /// See [AcaoDaVisitaEntity.acao].
+  static final acao = obx.QueryStringProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[3],
+  );
+
+  /// See [AcaoDaVisitaEntity.dtAcao].
+  static final dtAcao = obx.QueryStringProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[4],
+  );
+
+  /// See [AcaoDaVisitaEntity.dtPP].
+  static final dtPP = obx.QueryStringProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[5],
+  );
+
+  /// See [AcaoDaVisitaEntity.dtInseminacao].
+  static final dtInseminacao = obx.QueryStringProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[6],
+  );
+
+  /// See [AcaoDaVisitaEntity.tourtoInseminacao].
+  static final tourtoInseminacao = obx.QueryStringProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[7],
+  );
+
+  /// See [AcaoDaVisitaEntity.dtPartoPrevisto].
+  static final dtPartoPrevisto = obx.QueryStringProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[8],
+  );
+
+  /// See [AcaoDaVisitaEntity.dtSecPrevista].
+  static final dtSecPrevista = obx.QueryStringProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[9],
+  );
+
+  /// See [AcaoDaVisitaEntity.dtPrePartoPrevista].
+  static final dtPrePartoPrevista = obx.QueryStringProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[10],
+  );
+
+  /// See [AcaoDaVisitaEntity.dtDgMais].
+  static final dtDgMais = obx.QueryStringProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[11],
+  );
+
+  /// See [AcaoDaVisitaEntity.dtDgMenos].
+  static final dtDgMenos = obx.QueryStringProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[12],
+  );
+
+  /// See [AcaoDaVisitaEntity.dtAborto].
+  static final dtAborto = obx.QueryStringProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[13],
+  );
+
+  /// See [AcaoDaVisitaEntity.dtSecagem].
+  static final dtSecagem = obx.QueryStringProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[14],
+  );
+
+  /// See [AcaoDaVisitaEntity.tratamento].
+  static final tratamento = obx.QueryStringProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[15],
+  );
+
+  /// See [AcaoDaVisitaEntity.dtVisita].
+  static final dtVisita = obx.QueryDateProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[16],
+  );
+
+  /// See [AcaoDaVisitaEntity.lastModified].
+  static final lastModified = obx.QueryDateProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[17],
+  );
+
+  /// See [AcaoDaVisitaEntity.lastSynced].
+  static final lastSynced = obx.QueryDateProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[18],
+  );
+
+  /// See [AcaoDaVisitaEntity.needsSync].
+  static final needsSync = obx.QueryBooleanProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[19],
+  );
+
+  /// See [AcaoDaVisitaEntity.isDeleted].
+  static final isDeleted = obx.QueryBooleanProperty<AcaoDaVisitaEntity>(
+    _entities[7].properties[20],
+  );
+}
+
+/// [AcaoEntity] entity fields to define ObjectBox queries.
+class AcaoEntity_ {
+  /// See [AcaoEntity.id].
+  static final id = obx.QueryIntegerProperty<AcaoEntity>(
+    _entities[8].properties[0],
+  );
+
+  /// See [AcaoEntity.firestoreId].
+  static final firestoreId = obx.QueryStringProperty<AcaoEntity>(
+    _entities[8].properties[1],
+  );
+
+  /// See [AcaoEntity.parentPath].
+  static final parentPath = obx.QueryStringProperty<AcaoEntity>(
+    _entities[8].properties[2],
+  );
+
+  /// See [AcaoEntity.uidAnimalAnimaisProdutoresPath].
+  static final uidAnimalAnimaisProdutoresPath =
+      obx.QueryStringProperty<AcaoEntity>(_entities[8].properties[3]);
+
+  /// See [AcaoEntity.nomeAnimal].
+  static final nomeAnimal = obx.QueryStringProperty<AcaoEntity>(
+    _entities[8].properties[4],
+  );
+
+  /// See [AcaoEntity.acao].
+  static final acao = obx.QueryStringProperty<AcaoEntity>(
+    _entities[8].properties[5],
+  );
+
+  /// See [AcaoEntity.obsVisita].
+  static final obsVisita = obx.QueryStringProperty<AcaoEntity>(
+    _entities[8].properties[6],
+  );
+
+  /// See [AcaoEntity.touroInseminacao].
+  static final touroInseminacao = obx.QueryStringProperty<AcaoEntity>(
+    _entities[8].properties[7],
+  );
+
+  /// See [AcaoEntity.dataVisita].
+  static final dataVisita = obx.QueryStringProperty<AcaoEntity>(
+    _entities[8].properties[8],
+  );
+
+  /// See [AcaoEntity.dataPartoPrevisto].
+  static final dataPartoPrevisto = obx.QueryStringProperty<AcaoEntity>(
+    _entities[8].properties[9],
+  );
+
+  /// See [AcaoEntity.dataSecPrevista].
+  static final dataSecPrevista = obx.QueryStringProperty<AcaoEntity>(
+    _entities[8].properties[10],
+  );
+
+  /// See [AcaoEntity.dataPrePartoPrevista].
+  static final dataPrePartoPrevista = obx.QueryStringProperty<AcaoEntity>(
+    _entities[8].properties[11],
+  );
+
+  /// See [AcaoEntity.dtPP].
+  static final dtPP = obx.QueryStringProperty<AcaoEntity>(
+    _entities[8].properties[12],
+  );
+
+  /// See [AcaoEntity.dtDgMais].
+  static final dtDgMais = obx.QueryStringProperty<AcaoEntity>(
+    _entities[8].properties[13],
+  );
+
+  /// See [AcaoEntity.dtDgMenos].
+  static final dtDgMenos = obx.QueryStringProperty<AcaoEntity>(
+    _entities[8].properties[14],
+  );
+
+  /// See [AcaoEntity.dtAborto].
+  static final dtAborto = obx.QueryStringProperty<AcaoEntity>(
+    _entities[8].properties[15],
+  );
+
+  /// See [AcaoEntity.uidPropriedadePath].
+  static final uidPropriedadePath = obx.QueryStringProperty<AcaoEntity>(
+    _entities[8].properties[16],
+  );
+
+  /// See [AcaoEntity.dataDaAcao].
+  static final dataDaAcao = obx.QueryDateProperty<AcaoEntity>(
+    _entities[8].properties[17],
+  );
+
+  /// See [AcaoEntity.lastModified].
+  static final lastModified = obx.QueryDateProperty<AcaoEntity>(
+    _entities[8].properties[18],
+  );
+
+  /// See [AcaoEntity.lastSynced].
+  static final lastSynced = obx.QueryDateProperty<AcaoEntity>(
+    _entities[8].properties[19],
+  );
+
+  /// See [AcaoEntity.needsSync].
+  static final needsSync = obx.QueryBooleanProperty<AcaoEntity>(
+    _entities[8].properties[20],
+  );
+
+  /// See [AcaoEntity.isDeleted].
+  static final isDeleted = obx.QueryBooleanProperty<AcaoEntity>(
+    _entities[8].properties[21],
+  );
+}
+
+/// [AcaoSanitarioEntity] entity fields to define ObjectBox queries.
+class AcaoSanitarioEntity_ {
+  /// See [AcaoSanitarioEntity.id].
+  static final id = obx.QueryIntegerProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[0],
+  );
+
+  /// See [AcaoSanitarioEntity.firestoreId].
+  static final firestoreId = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[1],
+  );
+
+  /// See [AcaoSanitarioEntity.parentPath].
+  static final parentPath = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[2],
+  );
+
+  /// See [AcaoSanitarioEntity.uidAnimal].
+  static final uidAnimal = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[3],
+  );
+
+  /// See [AcaoSanitarioEntity.tipoAcao].
+  static final tipoAcao = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[4],
+  );
+
+  /// See [AcaoSanitarioEntity.nomeAnimal].
+  static final nomeAnimal = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[5],
+  );
+
+  /// See [AcaoSanitarioEntity.uidPropriedade].
+  static final uidPropriedade = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[6],
+  );
+
+  /// See [AcaoSanitarioEntity.nomePropriedade].
+  static final nomePropriedade = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[7],
+  );
+
+  /// See [AcaoSanitarioEntity.acao].
+  static final acao = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[8],
+  );
+
+  /// See [AcaoSanitarioEntity.posologia].
+  static final posologia = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[9],
+  );
+
+  /// See [AcaoSanitarioEntity.medicamento].
+  static final medicamento = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[10],
+  );
+
+  /// See [AcaoSanitarioEntity.lote].
+  static final lote = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[11],
+  );
+
+  /// See [AcaoSanitarioEntity.laboratorio].
+  static final laboratorio = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[12],
+  );
+
+  /// See [AcaoSanitarioEntity.resultado].
+  static final resultado = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[13],
+  );
+
+  /// See [AcaoSanitarioEntity.obs].
+  static final obs = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[14],
+  );
+
+  /// See [AcaoSanitarioEntity.createdBy].
+  static final createdBy = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[15],
+  );
+
+  /// See [AcaoSanitarioEntity.lastModifiedBy].
+  static final lastModifiedBy = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[16],
+  );
+
+  /// See [AcaoSanitarioEntity.dtAcao].
+  static final dtAcao = obx.QueryDateProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[17],
+  );
+
+  /// See [AcaoSanitarioEntity.dtCarencia].
+  static final dtCarencia = obx.QueryDateProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[18],
+  );
+
+  /// See [AcaoSanitarioEntity.createdAt].
+  static final createdAt = obx.QueryDateProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[19],
+  );
+
+  /// See [AcaoSanitarioEntity.lastModified].
+  static final lastModified = obx.QueryDateProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[20],
+  );
+
+  /// See [AcaoSanitarioEntity.lastSynced].
+  static final lastSynced = obx.QueryDateProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[21],
+  );
+
+  /// See [AcaoSanitarioEntity.needsSync].
+  static final needsSync = obx.QueryBooleanProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[22],
+  );
+}
+
+/// [CalendarioSanitarioEntity] entity fields to define ObjectBox queries.
+class CalendarioSanitarioEntity_ {
+  /// See [CalendarioSanitarioEntity.id].
+  static final id = obx.QueryIntegerProperty<CalendarioSanitarioEntity>(
+    _entities[10].properties[0],
+  );
+
+  /// See [CalendarioSanitarioEntity.firestoreId].
+  static final firestoreId = obx.QueryStringProperty<CalendarioSanitarioEntity>(
+    _entities[10].properties[1],
+  );
+
+  /// See [CalendarioSanitarioEntity.descricao].
+  static final descricao = obx.QueryStringProperty<CalendarioSanitarioEntity>(
+    _entities[10].properties[2],
+  );
+
+  /// See [CalendarioSanitarioEntity.tipo].
+  static final tipo = obx.QueryStringProperty<CalendarioSanitarioEntity>(
+    _entities[10].properties[3],
+  );
+
+  /// See [CalendarioSanitarioEntity.lastSynced].
+  static final lastSynced = obx.QueryDateProperty<CalendarioSanitarioEntity>(
+    _entities[10].properties[4],
+  );
+}
+
+/// [CidadeEntity] entity fields to define ObjectBox queries.
+class CidadeEntity_ {
+  /// See [CidadeEntity.id].
+  static final id = obx.QueryIntegerProperty<CidadeEntity>(
+    _entities[11].properties[0],
+  );
+
+  /// See [CidadeEntity.firestoreId].
+  static final firestoreId = obx.QueryStringProperty<CidadeEntity>(
+    _entities[11].properties[1],
+  );
+
+  /// See [CidadeEntity.nome].
+  static final nome = obx.QueryStringProperty<CidadeEntity>(
+    _entities[11].properties[2],
+  );
+
+  /// See [CidadeEntity.nomeuf].
+  static final nomeuf = obx.QueryStringProperty<CidadeEntity>(
+    _entities[11].properties[3],
+  );
+
+  /// See [CidadeEntity.lastSynced].
+  static final lastSynced = obx.QueryDateProperty<CidadeEntity>(
+    _entities[11].properties[4],
+  );
+}
+
+/// [FinanceiroEntity] entity fields to define ObjectBox queries.
+class FinanceiroEntity_ {
+  /// See [FinanceiroEntity.id].
+  static final id = obx.QueryIntegerProperty<FinanceiroEntity>(
+    _entities[12].properties[0],
+  );
+
+  /// See [FinanceiroEntity.firestoreId].
+  static final firestoreId = obx.QueryStringProperty<FinanceiroEntity>(
+    _entities[12].properties[1],
+  );
+
+  /// See [FinanceiroEntity.parentPath].
+  static final parentPath = obx.QueryStringProperty<FinanceiroEntity>(
+    _entities[12].properties[2],
+  );
+
+  /// See [FinanceiroEntity.vacasLactacao].
+  static final vacasLactacao = obx.QueryIntegerProperty<FinanceiroEntity>(
+    _entities[12].properties[3],
+  );
+
+  /// See [FinanceiroEntity.vacasSecas].
+  static final vacasSecas = obx.QueryIntegerProperty<FinanceiroEntity>(
+    _entities[12].properties[4],
+  );
+
+  /// See [FinanceiroEntity.litrosLeiteMes].
+  static final litrosLeiteMes = obx.QueryIntegerProperty<FinanceiroEntity>(
+    _entities[12].properties[5],
+  );
+
+  /// See [FinanceiroEntity.precoLitroLeite].
+  static final precoLitroLeite = obx.QueryDoubleProperty<FinanceiroEntity>(
+    _entities[12].properties[6],
+  );
+
+  /// See [FinanceiroEntity.valorLeiteTotal].
+  static final valorLeiteTotal = obx.QueryDoubleProperty<FinanceiroEntity>(
+    _entities[12].properties[7],
+  );
+
+  /// See [FinanceiroEntity.outrasReceitas].
+  static final outrasReceitas = obx.QueryDoubleProperty<FinanceiroEntity>(
+    _entities[12].properties[8],
+  );
+
+  /// See [FinanceiroEntity.custoRacao].
+  static final custoRacao = obx.QueryDoubleProperty<FinanceiroEntity>(
+    _entities[12].properties[9],
+  );
+
+  /// See [FinanceiroEntity.custoMaoDeObra].
+  static final custoMaoDeObra = obx.QueryDoubleProperty<FinanceiroEntity>(
+    _entities[12].properties[10],
+  );
+
+  /// See [FinanceiroEntity.custoMedicamentos].
+  static final custoMedicamentos = obx.QueryDoubleProperty<FinanceiroEntity>(
+    _entities[12].properties[11],
+  );
+
+  /// See [FinanceiroEntity.custoInsumos].
+  static final custoInsumos = obx.QueryDoubleProperty<FinanceiroEntity>(
+    _entities[12].properties[12],
+  );
+
+  /// See [FinanceiroEntity.custoManutencao].
+  static final custoManutencao = obx.QueryDoubleProperty<FinanceiroEntity>(
+    _entities[12].properties[13],
+  );
+
+  /// See [FinanceiroEntity.outrosCustos].
+  static final outrosCustos = obx.QueryDoubleProperty<FinanceiroEntity>(
+    _entities[12].properties[14],
+  );
+
+  /// See [FinanceiroEntity.custoTotal].
+  static final custoTotal = obx.QueryDoubleProperty<FinanceiroEntity>(
+    _entities[12].properties[15],
+  );
+
+  /// See [FinanceiroEntity.lucroLiquido].
+  static final lucroLiquido = obx.QueryDoubleProperty<FinanceiroEntity>(
+    _entities[12].properties[16],
+  );
+
+  /// See [FinanceiroEntity.custoLitro].
+  static final custoLitro = obx.QueryDoubleProperty<FinanceiroEntity>(
+    _entities[12].properties[17],
+  );
+
+  /// See [FinanceiroEntity.mes].
+  static final mes = obx.QueryIntegerProperty<FinanceiroEntity>(
+    _entities[12].properties[18],
+  );
+
+  /// See [FinanceiroEntity.ano].
+  static final ano = obx.QueryIntegerProperty<FinanceiroEntity>(
+    _entities[12].properties[19],
+  );
+
+  /// See [FinanceiroEntity.uidPropriedade].
+  static final uidPropriedade = obx.QueryStringProperty<FinanceiroEntity>(
+    _entities[12].properties[20],
+  );
+
+  /// See [FinanceiroEntity.createdBy].
+  static final createdBy = obx.QueryStringProperty<FinanceiroEntity>(
+    _entities[12].properties[21],
+  );
+
+  /// See [FinanceiroEntity.lastModifiedBy].
+  static final lastModifiedBy = obx.QueryStringProperty<FinanceiroEntity>(
+    _entities[12].properties[22],
+  );
+
+  /// See [FinanceiroEntity.createdAt].
+  static final createdAt = obx.QueryDateProperty<FinanceiroEntity>(
+    _entities[12].properties[23],
+  );
+
+  /// See [FinanceiroEntity.lastModified].
+  static final lastModified = obx.QueryDateProperty<FinanceiroEntity>(
+    _entities[12].properties[24],
+  );
+
+  /// See [FinanceiroEntity.lastSynced].
+  static final lastSynced = obx.QueryDateProperty<FinanceiroEntity>(
+    _entities[12].properties[25],
+  );
+
+  /// See [FinanceiroEntity.needsSync].
+  static final needsSync = obx.QueryBooleanProperty<FinanceiroEntity>(
+    _entities[12].properties[26],
+  );
+}
+
+/// [GrupoEntity] entity fields to define ObjectBox queries.
+class GrupoEntity_ {
+  /// See [GrupoEntity.id].
+  static final id = obx.QueryIntegerProperty<GrupoEntity>(
+    _entities[13].properties[0],
+  );
+
+  /// See [GrupoEntity.firestoreId].
+  static final firestoreId = obx.QueryStringProperty<GrupoEntity>(
+    _entities[13].properties[1],
+  );
+
+  /// See [GrupoEntity.descricao].
+  static final descricao = obx.QueryStringProperty<GrupoEntity>(
+    _entities[13].properties[2],
+  );
+
+  /// See [GrupoEntity.grupoId].
+  static final grupoId = obx.QueryIntegerProperty<GrupoEntity>(
+    _entities[13].properties[3],
+  );
+
+  /// See [GrupoEntity.lastSynced].
+  static final lastSynced = obx.QueryDateProperty<GrupoEntity>(
+    _entities[13].properties[4],
+  );
+}
+
+/// [RacaEntity] entity fields to define ObjectBox queries.
+class RacaEntity_ {
+  /// See [RacaEntity.id].
+  static final id = obx.QueryIntegerProperty<RacaEntity>(
+    _entities[14].properties[0],
+  );
+
+  /// See [RacaEntity.firestoreId].
+  static final firestoreId = obx.QueryStringProperty<RacaEntity>(
+    _entities[14].properties[1],
+  );
+
+  /// See [RacaEntity.descricao].
+  static final descricao = obx.QueryStringProperty<RacaEntity>(
+    _entities[14].properties[2],
+  );
+
+  /// See [RacaEntity.lastSynced].
+  static final lastSynced = obx.QueryDateProperty<RacaEntity>(
+    _entities[14].properties[3],
+  );
+}
+
+/// [RecomendacaoEntity] entity fields to define ObjectBox queries.
+class RecomendacaoEntity_ {
+  /// See [RecomendacaoEntity.id].
+  static final id = obx.QueryIntegerProperty<RecomendacaoEntity>(
+    _entities[15].properties[0],
+  );
+
+  /// See [RecomendacaoEntity.firestoreId].
+  static final firestoreId = obx.QueryStringProperty<RecomendacaoEntity>(
+    _entities[15].properties[1],
+  );
+
+  /// See [RecomendacaoEntity.parentPath].
+  static final parentPath = obx.QueryStringProperty<RecomendacaoEntity>(
+    _entities[15].properties[2],
+  );
+
+  /// See [RecomendacaoEntity.uidVisita].
+  static final uidVisita = obx.QueryStringProperty<RecomendacaoEntity>(
+    _entities[15].properties[3],
+  );
+
+  /// See [RecomendacaoEntity.uidPropriedade].
+  static final uidPropriedade = obx.QueryStringProperty<RecomendacaoEntity>(
+    _entities[15].properties[4],
+  );
+
+  /// See [RecomendacaoEntity.tituloRecomendacao].
+  static final tituloRecomendacao = obx.QueryStringProperty<RecomendacaoEntity>(
+    _entities[15].properties[5],
+  );
+
+  /// See [RecomendacaoEntity.descricaoRecomendacao].
+  static final descricaoRecomendacao =
+      obx.QueryStringProperty<RecomendacaoEntity>(_entities[15].properties[6]);
+
+  /// See [RecomendacaoEntity.categoria].
+  static final categoria = obx.QueryStringProperty<RecomendacaoEntity>(
+    _entities[15].properties[7],
+  );
+
+  /// See [RecomendacaoEntity.prioridade].
+  static final prioridade = obx.QueryStringProperty<RecomendacaoEntity>(
+    _entities[15].properties[8],
+  );
+
+  /// See [RecomendacaoEntity.status].
+  static final status = obx.QueryStringProperty<RecomendacaoEntity>(
+    _entities[15].properties[9],
+  );
+
+  /// See [RecomendacaoEntity.dtRecomendacao].
+  static final dtRecomendacao = obx.QueryDateProperty<RecomendacaoEntity>(
+    _entities[15].properties[10],
+  );
+
+  /// See [RecomendacaoEntity.dtPrazo].
+  static final dtPrazo = obx.QueryDateProperty<RecomendacaoEntity>(
+    _entities[15].properties[11],
+  );
+
+  /// See [RecomendacaoEntity.dtConclusao].
+  static final dtConclusao = obx.QueryDateProperty<RecomendacaoEntity>(
+    _entities[15].properties[12],
+  );
+
+  /// See [RecomendacaoEntity.createdBy].
+  static final createdBy = obx.QueryStringProperty<RecomendacaoEntity>(
+    _entities[15].properties[13],
+  );
+
+  /// See [RecomendacaoEntity.lastModifiedBy].
+  static final lastModifiedBy = obx.QueryStringProperty<RecomendacaoEntity>(
+    _entities[15].properties[14],
+  );
+
+  /// See [RecomendacaoEntity.createdAt].
+  static final createdAt = obx.QueryDateProperty<RecomendacaoEntity>(
+    _entities[15].properties[15],
+  );
+
+  /// See [RecomendacaoEntity.lastModified].
+  static final lastModified = obx.QueryDateProperty<RecomendacaoEntity>(
+    _entities[15].properties[16],
+  );
+
+  /// See [RecomendacaoEntity.lastSynced].
+  static final lastSynced = obx.QueryDateProperty<RecomendacaoEntity>(
+    _entities[15].properties[17],
+  );
+
+  /// See [RecomendacaoEntity.needsSync].
+  static final needsSync = obx.QueryBooleanProperty<RecomendacaoEntity>(
+    _entities[15].properties[18],
+  );
+}
+
+/// [ResumoVisitaEntity] entity fields to define ObjectBox queries.
+class ResumoVisitaEntity_ {
+  /// See [ResumoVisitaEntity.id].
+  static final id = obx.QueryIntegerProperty<ResumoVisitaEntity>(
+    _entities[16].properties[0],
+  );
+
+  /// See [ResumoVisitaEntity.firestoreId].
+  static final firestoreId = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[1],
+  );
+
+  /// See [ResumoVisitaEntity.parentPath].
+  static final parentPath = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[2],
+  );
+
+  /// See [ResumoVisitaEntity.uidVisita].
+  static final uidVisita = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[3],
+  );
+
+  /// See [ResumoVisitaEntity.uidPropriedade].
+  static final uidPropriedade = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[4],
+  );
+
+  /// See [ResumoVisitaEntity.nomePropriedade].
+  static final nomePropriedade = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[5],
+  );
+
+  /// See [ResumoVisitaEntity.uidTecnico].
+  static final uidTecnico = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[6],
+  );
+
+  /// See [ResumoVisitaEntity.nomeTecnico].
+  static final nomeTecnico = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[7],
+  );
+
+  /// See [ResumoVisitaEntity.uidProdutor].
+  static final uidProdutor = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[8],
+  );
+
+  /// See [ResumoVisitaEntity.nomeProdutor].
+  static final nomeProdutor = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[9],
+  );
+
+  /// See [ResumoVisitaEntity.resumo].
+  static final resumo = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[10],
+  );
+
+  /// See [ResumoVisitaEntity.observacoes].
+  static final observacoes = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[11],
+  );
+
+  /// See [ResumoVisitaEntity.proximosPassos].
+  static final proximosPassos = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[12],
+  );
+
+  /// See [ResumoVisitaEntity.assinaturaTecnico].
+  static final assinaturaTecnico = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[13],
+  );
+
+  /// See [ResumoVisitaEntity.assinaturaProdutor].
+  static final assinaturaProdutor = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[14],
+  );
+
+  /// See [ResumoVisitaEntity.status].
+  static final status = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[15],
+  );
+
+  /// See [ResumoVisitaEntity.dtVisita].
+  static final dtVisita = obx.QueryDateProperty<ResumoVisitaEntity>(
+    _entities[16].properties[16],
+  );
+
+  /// See [ResumoVisitaEntity.dtInicio].
+  static final dtInicio = obx.QueryDateProperty<ResumoVisitaEntity>(
+    _entities[16].properties[17],
+  );
+
+  /// See [ResumoVisitaEntity.dtFim].
+  static final dtFim = obx.QueryDateProperty<ResumoVisitaEntity>(
+    _entities[16].properties[18],
+  );
+
+  /// See [ResumoVisitaEntity.createdBy].
+  static final createdBy = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[19],
+  );
+
+  /// See [ResumoVisitaEntity.lastModifiedBy].
+  static final lastModifiedBy = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[20],
+  );
+
+  /// See [ResumoVisitaEntity.createdAt].
+  static final createdAt = obx.QueryDateProperty<ResumoVisitaEntity>(
+    _entities[16].properties[21],
+  );
+
+  /// See [ResumoVisitaEntity.lastModified].
+  static final lastModified = obx.QueryDateProperty<ResumoVisitaEntity>(
+    _entities[16].properties[22],
+  );
+
+  /// See [ResumoVisitaEntity.lastSynced].
+  static final lastSynced = obx.QueryDateProperty<ResumoVisitaEntity>(
+    _entities[16].properties[23],
+  );
+
+  /// See [ResumoVisitaEntity.needsSync].
+  static final needsSync = obx.QueryBooleanProperty<ResumoVisitaEntity>(
+    _entities[16].properties[24],
+  );
+}
+
+/// [StatusAnimalEntity] entity fields to define ObjectBox queries.
+class StatusAnimalEntity_ {
+  /// See [StatusAnimalEntity.id].
+  static final id = obx.QueryIntegerProperty<StatusAnimalEntity>(
+    _entities[17].properties[0],
+  );
+
+  /// See [StatusAnimalEntity.firestoreId].
+  static final firestoreId = obx.QueryStringProperty<StatusAnimalEntity>(
+    _entities[17].properties[1],
+  );
+
+  /// See [StatusAnimalEntity.statusId].
+  static final statusId = obx.QueryIntegerProperty<StatusAnimalEntity>(
+    _entities[17].properties[2],
+  );
+
+  /// See [StatusAnimalEntity.descricao].
+  static final descricao = obx.QueryStringProperty<StatusAnimalEntity>(
+    _entities[17].properties[3],
+  );
+
+  /// See [StatusAnimalEntity.lastSynced].
+  static final lastSynced = obx.QueryDateProperty<StatusAnimalEntity>(
+    _entities[17].properties[4],
+  );
+}
+
+/// [StatusProdutivoEntity] entity fields to define ObjectBox queries.
+class StatusProdutivoEntity_ {
+  /// See [StatusProdutivoEntity.id].
+  static final id = obx.QueryIntegerProperty<StatusProdutivoEntity>(
+    _entities[18].properties[0],
+  );
+
+  /// See [StatusProdutivoEntity.firestoreId].
+  static final firestoreId = obx.QueryStringProperty<StatusProdutivoEntity>(
+    _entities[18].properties[1],
+  );
+
+  /// See [StatusProdutivoEntity.statusId].
+  static final statusId = obx.QueryIntegerProperty<StatusProdutivoEntity>(
+    _entities[18].properties[2],
+  );
+
+  /// See [StatusProdutivoEntity.descricao].
+  static final descricao = obx.QueryStringProperty<StatusProdutivoEntity>(
+    _entities[18].properties[3],
+  );
+
+  /// See [StatusProdutivoEntity.lastSynced].
+  static final lastSynced = obx.QueryDateProperty<StatusProdutivoEntity>(
+    _entities[18].properties[4],
+  );
+}
+
+/// [TipoAcaoEntity] entity fields to define ObjectBox queries.
+class TipoAcaoEntity_ {
+  /// See [TipoAcaoEntity.id].
+  static final id = obx.QueryIntegerProperty<TipoAcaoEntity>(
+    _entities[19].properties[0],
+  );
+
+  /// See [TipoAcaoEntity.firestoreId].
+  static final firestoreId = obx.QueryStringProperty<TipoAcaoEntity>(
+    _entities[19].properties[1],
+  );
+
+  /// See [TipoAcaoEntity.descricao].
+  static final descricao = obx.QueryStringProperty<TipoAcaoEntity>(
+    _entities[19].properties[2],
+  );
+
+  /// See [TipoAcaoEntity.lastSynced].
+  static final lastSynced = obx.QueryDateProperty<TipoAcaoEntity>(
+    _entities[19].properties[3],
+  );
+}
+
+/// [TratamentoEntity] entity fields to define ObjectBox queries.
+class TratamentoEntity_ {
+  /// See [TratamentoEntity.id].
+  static final id = obx.QueryIntegerProperty<TratamentoEntity>(
+    _entities[20].properties[0],
+  );
+
+  /// See [TratamentoEntity.firestoreId].
+  static final firestoreId = obx.QueryStringProperty<TratamentoEntity>(
+    _entities[20].properties[1],
+  );
+
+  /// See [TratamentoEntity.parentPath].
+  static final parentPath = obx.QueryStringProperty<TratamentoEntity>(
+    _entities[20].properties[2],
+  );
+
+  /// See [TratamentoEntity.uidAnimal].
+  static final uidAnimal = obx.QueryStringProperty<TratamentoEntity>(
+    _entities[20].properties[3],
+  );
+
+  /// See [TratamentoEntity.tipoAcao].
+  static final tipoAcao = obx.QueryStringProperty<TratamentoEntity>(
+    _entities[20].properties[4],
+  );
+
+  /// See [TratamentoEntity.nomeAnimal].
+  static final nomeAnimal = obx.QueryStringProperty<TratamentoEntity>(
+    _entities[20].properties[5],
+  );
+
+  /// See [TratamentoEntity.uidPropriedade].
+  static final uidPropriedade = obx.QueryStringProperty<TratamentoEntity>(
+    _entities[20].properties[6],
+  );
+
+  /// See [TratamentoEntity.nomePropriedade].
+  static final nomePropriedade = obx.QueryStringProperty<TratamentoEntity>(
+    _entities[20].properties[7],
+  );
+
+  /// See [TratamentoEntity.posologia].
+  static final posologia = obx.QueryStringProperty<TratamentoEntity>(
+    _entities[20].properties[8],
+  );
+
+  /// See [TratamentoEntity.medicamento].
+  static final medicamento = obx.QueryStringProperty<TratamentoEntity>(
+    _entities[20].properties[9],
+  );
+
+  /// See [TratamentoEntity.lote].
+  static final lote = obx.QueryStringProperty<TratamentoEntity>(
+    _entities[20].properties[10],
+  );
+
+  /// See [TratamentoEntity.laboratorio].
+  static final laboratorio = obx.QueryStringProperty<TratamentoEntity>(
+    _entities[20].properties[11],
+  );
+
+  /// See [TratamentoEntity.acao].
+  static final acao = obx.QueryStringProperty<TratamentoEntity>(
+    _entities[20].properties[12],
+  );
+
+  /// See [TratamentoEntity.resultado].
+  static final resultado = obx.QueryStringProperty<TratamentoEntity>(
+    _entities[20].properties[13],
+  );
+
+  /// See [TratamentoEntity.obs].
+  static final obs = obx.QueryStringProperty<TratamentoEntity>(
+    _entities[20].properties[14],
+  );
+
+  /// See [TratamentoEntity.createdBy].
+  static final createdBy = obx.QueryStringProperty<TratamentoEntity>(
+    _entities[20].properties[15],
+  );
+
+  /// See [TratamentoEntity.lastModifiedBy].
+  static final lastModifiedBy = obx.QueryStringProperty<TratamentoEntity>(
+    _entities[20].properties[16],
+  );
+
+  /// See [TratamentoEntity.dtTratamento].
+  static final dtTratamento = obx.QueryDateProperty<TratamentoEntity>(
+    _entities[20].properties[17],
+  );
+
+  /// See [TratamentoEntity.dtCarencia].
+  static final dtCarencia = obx.QueryDateProperty<TratamentoEntity>(
+    _entities[20].properties[18],
+  );
+
+  /// See [TratamentoEntity.createdAt].
+  static final createdAt = obx.QueryDateProperty<TratamentoEntity>(
+    _entities[20].properties[19],
+  );
+
+  /// See [TratamentoEntity.lastModified].
+  static final lastModified = obx.QueryDateProperty<TratamentoEntity>(
+    _entities[20].properties[20],
+  );
+
+  /// See [TratamentoEntity.lastSynced].
+  static final lastSynced = obx.QueryDateProperty<TratamentoEntity>(
+    _entities[20].properties[21],
+  );
+
+  /// See [TratamentoEntity.needsSync].
+  static final needsSync = obx.QueryBooleanProperty<TratamentoEntity>(
+    _entities[20].properties[22],
   );
 }

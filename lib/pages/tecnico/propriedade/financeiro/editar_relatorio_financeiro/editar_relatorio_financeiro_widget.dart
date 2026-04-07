@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison, unused_local_variable
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -569,8 +571,8 @@ class _EditarRelatorioFinanceiroWidgetState
                                       Duration(milliseconds: 2000),
                                       () async {
                                         if (_model.vacasLactacaoTextController
-                                                    .text !=
-                                                '') {
+                                                .text !=
+                                            '') {
                                           safeSetState(() {
                                             _model.litrosLeiteMesTextController
                                                     ?.text =
@@ -973,18 +975,16 @@ class _EditarRelatorioFinanceiroWidgetState
                                     children: [
                                       FFButtonWidget(
                                         onPressed: () async {
-                                          if ((_model.dtRelatorioTextController
-                                                          .text !=
-                                                      '') &&
+                                          if ((_model.dtRelatorioTextController.text != '') &&
                                               (_model.vacasLactacaoTextController
-                                                          .text !=
-                                                      '') &&
+                                                      .text !=
+                                                  '') &&
                                               (_model.litrosLeiteDiaTextController
-                                                          .text !=
-                                                      '') &&
+                                                      .text !=
+                                                  '') &&
                                               (_model.litrosLeiteMesTextController
-                                                          .text !=
-                                                      '') &&
+                                                      .text !=
+                                                  '') &&
                                               (FFAppState().despesasNoMes !=
                                                   null) &&
                                               (FFAppState()
@@ -1186,17 +1186,16 @@ class _EditarRelatorioFinanceiroWidgetState
                                         });
                                         safeSetState(() {
                                           _model.faturamentoLiquidoTextController?.text =
-                                              functions
-                                                  .subtracaoFaturamentoLiquido(
-                                                      _model
-                                                          .totalRecebidoTextController
-                                                          .text,
-                                                      FFAppState()
-                                                          .despesasNoMes
-                                                          .toString());
+                                              functions.subtracaoFaturamentoLiquido(
+                                                  _model
+                                                      .totalRecebidoTextController
+                                                      .text,
+                                                  FFAppState()
+                                                      .despesasNoMes
+                                                      .toString());
                                         });
                                         return;
-                                                                            },
+                                      },
                                     ),
                                     autofocus: false,
                                     textCapitalization: TextCapitalization.none,
@@ -1814,18 +1813,17 @@ class _EditarRelatorioFinanceiroWidgetState
                                   ),
                                 ),
                               ),
-                              if ((_model.totalRecebidoTextController
-                                              .text !=
-                                          '') &&
+                              if ((_model
+                                          .totalRecebidoTextController.text !=
+                                      '') &&
                                   (_model.faturamentoLiquidoTextController
-                                              .text !=
-                                          '') &&
+                                          .text !=
+                                      '') &&
                                   (_model.mediaProducaoVacaTextController
-                                              .text !=
-                                          '') &&
-                                  (_model.custoLitroLeiteTextController
-                                              .text !=
-                                          ''))
+                                          .text !=
+                                      '') &&
+                                  (_model.custoLitroLeiteTextController.text !=
+                                      ''))
                                 Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       0.0, 10.0, 0.0, 10.0),

@@ -1,3 +1,5 @@
+// ignore_for_file: dead_code
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -685,8 +687,7 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                                 _model.outNewUidResumoDaVisita =
                                     ResumoDaVisitaRecord.getDocumentFromData(
                                         createResumoDaVisitaRecordData(
-                                          uidPropriedade:
-                                              widget.uidPropriedade,
+                                          uidPropriedade: widget.uidPropriedade,
                                           uidTecnico: widget.uidTecnico,
                                           dtVisita: getCurrentTimestamp,
                                           dtVisitaFormatado: dateTimeFormat(

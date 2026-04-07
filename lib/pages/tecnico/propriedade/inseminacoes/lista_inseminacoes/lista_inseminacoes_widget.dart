@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison, unused_import
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -713,8 +715,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                     Text(
                                                       () {
                                                         if ((listViewOnlineAnimaisProdutoresRecord
-                                                                        .nomeAnimal !=
-                                                                    '') &&
+                                                                    .nomeAnimal !=
+                                                                '') &&
                                                             (listViewOnlineAnimaisProdutoresRecord
                                                                     .brincoAnimal !=
                                                                 null) &&
@@ -723,8 +725,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                 -1)) {
                                                           return '${listViewOnlineAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                         } else if (listViewOnlineAnimaisProdutoresRecord
-                                                                    .nomeAnimal !=
-                                                                '') {
+                                                                .nomeAnimal !=
+                                                            '') {
                                                           return listViewOnlineAnimaisProdutoresRecord
                                                               .nomeAnimal;
                                                         } else {
@@ -885,16 +887,20 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                       children: [
                                                         Expanded(
                                                           child: FFButtonWidget(
-                                                            onPressed: () async {
+                                                            onPressed:
+                                                                () async {
                                                               await showModalBottomSheet(
                                                                 isScrollControlled:
                                                                     true,
                                                                 backgroundColor:
                                                                     Colors
                                                                         .transparent,
-                                                                enableDrag: false,
-                                                                context: context,
-                                                                builder: (context) {
+                                                                enableDrag:
+                                                                    false,
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) {
                                                                   return GestureDetector(
                                                                     onTap: () {
                                                                       FocusScope.of(
@@ -905,42 +911,34 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                           .primaryFocus
                                                                           ?.unfocus();
                                                                     },
-                                                                    child: Padding(
+                                                                    child:
+                                                                        Padding(
                                                                       padding: MediaQuery
                                                                           .viewInsetsOf(
                                                                               context),
                                                                       child:
                                                                           RegistrarCioWidget(
                                                                         uidPropriedade:
-                                                                            widget
-                                                                                .uidPropriedade!,
+                                                                            widget.uidPropriedade!,
                                                                         nomePropriedade:
-                                                                            widget
-                                                                                .nomePropriedade!,
+                                                                            widget.nomePropriedade!,
                                                                         uidTecnico:
-                                                                            widget
-                                                                                .uidTecnico!,
+                                                                            widget.uidTecnico!,
                                                                         emailPropriedade:
-                                                                            widget
-                                                                                .emailPropriedade!,
+                                                                            widget.emailPropriedade!,
                                                                         uidAnimaisProdutores:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .reference,
+                                                                            listViewOnlineAnimaisProdutoresRecord.reference,
                                                                         grupoPredominante:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .grupoAnimal,
+                                                                            listViewOnlineAnimaisProdutoresRecord.grupoAnimal,
                                                                         nomeAnimal:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .nomeAnimal,
+                                                                            listViewOnlineAnimaisProdutoresRecord.nomeAnimal,
                                                                         visitaPresencial:
-                                                                            widget
-                                                                                .visitaPresencial!,
-                                                                        brincoAnimal:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .brincoAnimal
-                                                                                .toString(),
-                                                                        diasDg: widget
-                                                                            .diasDg!,
+                                                                            widget.visitaPresencial!,
+                                                                        brincoAnimal: listViewOnlineAnimaisProdutoresRecord
+                                                                            .brincoAnimal
+                                                                            .toString(),
+                                                                        diasDg:
+                                                                            widget.diasDg!,
                                                                       ),
                                                                     ),
                                                                   );
@@ -971,8 +969,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                           0.0,
                                                                           0.0,
                                                                           0.0),
-                                                              color:
-                                                                  Color(0xFF1A03E9),
+                                                              color: Color(
+                                                                  0xFF1A03E9),
                                                               textStyle:
                                                                   FlutterFlowTheme.of(
                                                                           context)
@@ -980,12 +978,10 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                       .override(
                                                                         font: GoogleFonts
                                                                             .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(
-                                                                                  context)
+                                                                          fontWeight: FlutterFlowTheme.of(context)
                                                                               .titleSmall
                                                                               .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(
-                                                                                  context)
+                                                                          fontStyle: FlutterFlowTheme.of(context)
                                                                               .titleSmall
                                                                               .fontStyle,
                                                                         ),
@@ -995,12 +991,10 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                             12.0,
                                                                         letterSpacing:
                                                                             0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(
-                                                                                context)
+                                                                        fontWeight: FlutterFlowTheme.of(context)
                                                                             .titleSmall
                                                                             .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(
-                                                                                context)
+                                                                        fontStyle: FlutterFlowTheme.of(context)
                                                                             .titleSmall
                                                                             .fontStyle,
                                                                       ),
@@ -1021,16 +1015,20 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                         SizedBox(width: 8.0),
                                                         Expanded(
                                                           child: FFButtonWidget(
-                                                            onPressed: () async {
+                                                            onPressed:
+                                                                () async {
                                                               await showModalBottomSheet(
                                                                 isScrollControlled:
                                                                     true,
                                                                 backgroundColor:
                                                                     Colors
                                                                         .transparent,
-                                                                enableDrag: false,
-                                                                context: context,
-                                                                builder: (context) {
+                                                                enableDrag:
+                                                                    false,
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) {
                                                                   return GestureDetector(
                                                                     onTap: () {
                                                                       FocusScope.of(
@@ -1041,45 +1039,36 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                           .primaryFocus
                                                                           ?.unfocus();
                                                                     },
-                                                                    child: Padding(
+                                                                    child:
+                                                                        Padding(
                                                                       padding: MediaQuery
                                                                           .viewInsetsOf(
                                                                               context),
                                                                       child:
                                                                           NovaInseminacaoWidget(
                                                                         uidPropriedade:
-                                                                            widget
-                                                                                .uidPropriedade!,
+                                                                            widget.uidPropriedade!,
                                                                         nomePropriedade:
-                                                                            widget
-                                                                                .nomePropriedade!,
+                                                                            widget.nomePropriedade!,
                                                                         uidTecnico:
-                                                                            widget
-                                                                                .uidTecnico!,
+                                                                            widget.uidTecnico!,
                                                                         emailPropriedade:
-                                                                            widget
-                                                                                .emailPropriedade!,
+                                                                            widget.emailPropriedade!,
                                                                         uidAnimaisProdutores:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .reference,
+                                                                            listViewOnlineAnimaisProdutoresRecord.reference,
                                                                         grupoPredominante:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .grupoAnimal,
+                                                                            listViewOnlineAnimaisProdutoresRecord.grupoAnimal,
                                                                         nomeAnimal:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .nomeAnimal,
+                                                                            listViewOnlineAnimaisProdutoresRecord.nomeAnimal,
                                                                         visitaPresencial:
-                                                                            widget
-                                                                                .visitaPresencial!,
+                                                                            widget.visitaPresencial!,
                                                                         dtUltimaInseminacao:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .dtUltimaInseminacao,
-                                                                        brincoAnimal:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .brincoAnimal
-                                                                                .toString(),
-                                                                        diasDg: widget
-                                                                            .diasDg!,
+                                                                            listViewOnlineAnimaisProdutoresRecord.dtUltimaInseminacao,
+                                                                        brincoAnimal: listViewOnlineAnimaisProdutoresRecord
+                                                                            .brincoAnimal
+                                                                            .toString(),
+                                                                        diasDg:
+                                                                            widget.diasDg!,
                                                                       ),
                                                                     ),
                                                                   );
@@ -1090,10 +1079,12 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                             },
                                                             text: 'Inseminar',
                                                             icon: Icon(
-                                                              Icons.playlist_add,
+                                                              Icons
+                                                                  .playlist_add,
                                                               size: 15.0,
                                                             ),
-                                                            options: FFButtonOptions(
+                                                            options:
+                                                                FFButtonOptions(
                                                               height: 30.0,
                                                               padding:
                                                                   EdgeInsetsDirectional
@@ -1109,8 +1100,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                           0.0,
                                                                           0.0,
                                                                           0.0),
-                                                              color:
-                                                                  Color(0xFF7E39EF),
+                                                              color: Color(
+                                                                  0xFF7E39EF),
                                                               textStyle:
                                                                   FlutterFlowTheme.of(
                                                                           context)
@@ -1118,12 +1109,10 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                       .override(
                                                                         font: GoogleFonts
                                                                             .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(
-                                                                                  context)
+                                                                          fontWeight: FlutterFlowTheme.of(context)
                                                                               .titleSmall
                                                                               .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(
-                                                                                  context)
+                                                                          fontStyle: FlutterFlowTheme.of(context)
                                                                               .titleSmall
                                                                               .fontStyle,
                                                                         ),
@@ -1133,24 +1122,24 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                             12.0,
                                                                         letterSpacing:
                                                                             0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(
-                                                                                context)
+                                                                        fontWeight: FlutterFlowTheme.of(context)
                                                                             .titleSmall
                                                                             .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(
-                                                                                context)
+                                                                        fontStyle: FlutterFlowTheme.of(context)
                                                                             .titleSmall
                                                                             .fontStyle,
                                                                       ),
                                                               elevation: 3.0,
-                                                              borderSide: BorderSide(
+                                                              borderSide:
+                                                                  BorderSide(
                                                                 color: Colors
                                                                     .transparent,
                                                                 width: 1.0,
                                                               ),
                                                               borderRadius:
                                                                   BorderRadius
-                                                                      .circular(8.0),
+                                                                      .circular(
+                                                                          8.0),
                                                             ),
                                                           ),
                                                         ),
@@ -1408,8 +1397,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                         Text(
                                                           () {
                                                             if ((listaAnimaisOfflineExistenteItem
-                                                                            .nomeAnimal !=
-                                                                        '') &&
+                                                                        .nomeAnimal !=
+                                                                    '') &&
                                                                 (listaAnimaisOfflineExistenteItem
                                                                         .brincoAnimal !=
                                                                     null) &&
@@ -1418,8 +1407,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                     -1)) {
                                                               return '${listaAnimaisOfflineExistenteItem.nomeAnimal} - ${listaAnimaisOfflineExistenteItem.brincoAnimal.toString()}';
                                                             } else if (listaAnimaisOfflineExistenteItem
-                                                                        .nomeAnimal !=
-                                                                    '') {
+                                                                    .nomeAnimal !=
+                                                                '') {
                                                               return listaAnimaisOfflineExistenteItem
                                                                   .nomeAnimal;
                                                             } else {
@@ -1538,7 +1527,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                         Row(
                                                           children: [
                                                             Expanded(
-                                                              child: FFButtonWidget(
+                                                              child:
+                                                                  FFButtonWidget(
                                                                 onPressed:
                                                                     () async {
                                                                   await showModalBottomSheet(
@@ -1554,9 +1544,9 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                     builder:
                                                                         (context) {
                                                                       return GestureDetector(
-                                                                        onTap: () {
-                                                                          FocusScope.of(
-                                                                                  context)
+                                                                        onTap:
+                                                                            () {
+                                                                          FocusScope.of(context)
                                                                               .unfocus();
                                                                           FocusManager
                                                                               .instance
@@ -1565,9 +1555,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                         },
                                                                         child:
                                                                             Padding(
-                                                                          padding: MediaQuery
-                                                                              .viewInsetsOf(
-                                                                                  context),
+                                                                          padding:
+                                                                              MediaQuery.viewInsetsOf(context),
                                                                           child:
                                                                               RegistrarCioExistenteOfflineWidget(
                                                                             uidPropriedade:
@@ -1586,9 +1575,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                                 listaAnimaisOfflineExistenteItem.nomeAnimal,
                                                                             visitaPresencial:
                                                                                 widget.visitaPresencial!,
-                                                                            brincoAnimal: listaAnimaisOfflineExistenteItem
-                                                                                .brincoAnimal
-                                                                                .toString(),
+                                                                            brincoAnimal:
+                                                                                listaAnimaisOfflineExistenteItem.brincoAnimal.toString(),
                                                                             diasDg:
                                                                                 widget.diasDg!,
                                                                             itemUidIndex:
@@ -1609,50 +1597,48 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                 options:
                                                                     FFButtonOptions(
                                                                   height: 30.0,
-                                                                  padding:
-                                                                      EdgeInsetsDirectional
-                                                                          .fromSTEB(
-                                                                              10.0,
-                                                                              0.0,
-                                                                              10.0,
-                                                                              0.0),
-                                                                  iconPadding:
-                                                                      EdgeInsetsDirectional
-                                                                          .fromSTEB(
-                                                                              0.0,
-                                                                              0.0,
-                                                                              0.0,
-                                                                              0.0),
+                                                                  padding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10.0,
+                                                                          0.0,
+                                                                          10.0,
+                                                                          0.0),
+                                                                  iconPadding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
                                                                   color: Color(
                                                                       0xFF1A03E9),
-                                                                  textStyle:
-                                                                      FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .override(
-                                                                            font: GoogleFonts
-                                                                                .readexPro(
-                                                                              fontWeight: FlutterFlowTheme.of(context)
-                                                                                  .titleSmall
-                                                                                  .fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context)
-                                                                                  .titleSmall
-                                                                                  .fontStyle,
-                                                                            ),
-                                                                            color: Colors
-                                                                                .white,
-                                                                            fontSize:
-                                                                                12.0,
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                            fontWeight: FlutterFlowTheme.of(context)
-                                                                                .titleSmall
-                                                                                .fontWeight,
-                                                                            fontStyle: FlutterFlowTheme.of(context)
-                                                                                .titleSmall
-                                                                                .fontStyle,
-                                                                          ),
-                                                                  elevation: 3.0,
+                                                                  textStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleSmall
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
+                                                                          fontWeight: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                                  elevation:
+                                                                      3.0,
                                                                   borderSide:
                                                                       BorderSide(
                                                                     color: Colors
@@ -1666,24 +1652,29 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                 ),
                                                               ),
                                                             ),
-                                                            SizedBox(width: 8.0),
+                                                            SizedBox(
+                                                                width: 8.0),
                                                             Expanded(
-                                                              child: FFButtonWidget(
-                                                                onPressed: () async {
+                                                              child:
+                                                                  FFButtonWidget(
+                                                                onPressed:
+                                                                    () async {
                                                                   await showModalBottomSheet(
                                                                     isScrollControlled:
                                                                         true,
                                                                     backgroundColor:
                                                                         Colors
                                                                             .transparent,
-                                                                    enableDrag: false,
-                                                                    context: context,
+                                                                    enableDrag:
+                                                                        false,
+                                                                    context:
+                                                                        context,
                                                                     builder:
                                                                         (context) {
                                                                       return GestureDetector(
-                                                                        onTap: () {
-                                                                          FocusScope.of(
-                                                                                  context)
+                                                                        onTap:
+                                                                            () {
+                                                                          FocusScope.of(context)
                                                                               .unfocus();
                                                                           FocusManager
                                                                               .instance
@@ -1692,45 +1683,34 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                         },
                                                                         child:
                                                                             Padding(
-                                                                          padding: MediaQuery
-                                                                              .viewInsetsOf(
-                                                                                  context),
+                                                                          padding:
+                                                                              MediaQuery.viewInsetsOf(context),
                                                                           child:
                                                                               NovaInseminacaoExistenteOfflineWidget(
                                                                             uidPropriedade:
-                                                                                widget
-                                                                                    .uidPropriedade!,
+                                                                                widget.uidPropriedade!,
                                                                             nomePropriedade:
-                                                                                widget
-                                                                                    .nomePropriedade!,
+                                                                                widget.nomePropriedade!,
                                                                             uidTecnico:
-                                                                                widget
-                                                                                    .uidTecnico!,
+                                                                                widget.uidTecnico!,
                                                                             emailPropriedade:
-                                                                                widget
-                                                                                    .emailPropriedade!,
+                                                                                widget.emailPropriedade!,
                                                                             grupoPredominante:
-                                                                                listaAnimaisOfflineExistenteItem
-                                                                                    .grupoAnimal,
+                                                                                listaAnimaisOfflineExistenteItem.grupoAnimal,
                                                                             nomeAnimal:
-                                                                                listaAnimaisOfflineExistenteItem
-                                                                                    .nomeAnimal,
+                                                                                listaAnimaisOfflineExistenteItem.nomeAnimal,
                                                                             visitaPresencial:
-                                                                                widget
-                                                                                    .visitaPresencial!,
+                                                                                widget.visitaPresencial!,
                                                                             dtUltimaInseminacao:
-                                                                                listaAnimaisOfflineExistenteItem
-                                                                                    .dtUltimaInseminacao,
-                                                                            brincoAnimal: listaAnimaisOfflineExistenteItem
-                                                                                .brincoAnimal
-                                                                                .toString(),
-                                                                            diasDg: widget
-                                                                                .diasDg!,
+                                                                                listaAnimaisOfflineExistenteItem.dtUltimaInseminacao,
+                                                                            brincoAnimal:
+                                                                                listaAnimaisOfflineExistenteItem.brincoAnimal.toString(),
+                                                                            diasDg:
+                                                                                widget.diasDg!,
                                                                             itemUidIndex:
                                                                                 listaAnimaisOfflineExistenteIndex,
                                                                             uidAnimaisProdutores:
-                                                                                listaAnimaisOfflineExistenteItem
-                                                                                    .uidAnimal!,
+                                                                                listaAnimaisOfflineExistenteItem.uidAnimal!,
                                                                           ),
                                                                         ),
                                                                       );
@@ -1739,60 +1719,58 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                       safeSetState(
                                                                           () {}));
                                                                 },
-                                                                text: 'Inseminar',
+                                                                text:
+                                                                    'Inseminar',
                                                                 icon: Icon(
-                                                                  Icons.playlist_add,
+                                                                  Icons
+                                                                      .playlist_add,
                                                                   size: 15.0,
                                                                 ),
                                                                 options:
                                                                     FFButtonOptions(
                                                                   height: 30.0,
-                                                                  padding:
-                                                                      EdgeInsetsDirectional
-                                                                          .fromSTEB(
-                                                                              10.0,
-                                                                              0.0,
-                                                                              10.0,
-                                                                              0.0),
-                                                                  iconPadding:
-                                                                      EdgeInsetsDirectional
-                                                                          .fromSTEB(
-                                                                              0.0,
-                                                                              0.0,
-                                                                              0.0,
-                                                                              0.0),
+                                                                  padding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10.0,
+                                                                          0.0,
+                                                                          10.0,
+                                                                          0.0),
+                                                                  iconPadding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
                                                                   color: Color(
                                                                       0xFF7E39EF),
-                                                                  textStyle:
-                                                                      FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .override(
-                                                                            font: GoogleFonts
-                                                                                .readexPro(
-                                                                              fontWeight: FlutterFlowTheme.of(context)
-                                                                                  .titleSmall
-                                                                                  .fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context)
-                                                                                  .titleSmall
-                                                                                  .fontStyle,
-                                                                            ),
-                                                                            color: Colors
-                                                                                .white,
-                                                                            fontSize:
-                                                                                12.0,
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                            fontWeight: FlutterFlowTheme.of(
-                                                                                    context)
-                                                                                .titleSmall
-                                                                                .fontWeight,
-                                                                            fontStyle: FlutterFlowTheme.of(
-                                                                                    context)
-                                                                                .titleSmall
-                                                                                .fontStyle,
-                                                                          ),
-                                                                  elevation: 3.0,
+                                                                  textStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleSmall
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
+                                                                          fontWeight: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                                  elevation:
+                                                                      3.0,
                                                                   borderSide:
                                                                       BorderSide(
                                                                     color: Colors
@@ -2041,8 +2019,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                         Text(
                                                           () {
                                                             if ((listaAnimaisOfflineItem
-                                                                            .nomeAnimal !=
-                                                                        '') &&
+                                                                        .nomeAnimal !=
+                                                                    '') &&
                                                                 (listaAnimaisOfflineItem
                                                                         .brincoAnimal !=
                                                                     null) &&
@@ -2051,8 +2029,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                     -1)) {
                                                               return '${listaAnimaisOfflineItem.nomeAnimal} - ${listaAnimaisOfflineItem.brincoAnimal.toString()}';
                                                             } else if (listaAnimaisOfflineItem
-                                                                        .nomeAnimal !=
-                                                                    '') {
+                                                                    .nomeAnimal !=
+                                                                '') {
                                                               return listaAnimaisOfflineItem
                                                                   .nomeAnimal;
                                                             } else {
@@ -2171,7 +2149,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                         Row(
                                                           children: [
                                                             Expanded(
-                                                              child: FFButtonWidget(
+                                                              child:
+                                                                  FFButtonWidget(
                                                                 onPressed:
                                                                     () async {
                                                                   await showModalBottomSheet(
@@ -2187,9 +2166,9 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                     builder:
                                                                         (context) {
                                                                       return GestureDetector(
-                                                                        onTap: () {
-                                                                          FocusScope.of(
-                                                                                  context)
+                                                                        onTap:
+                                                                            () {
+                                                                          FocusScope.of(context)
                                                                               .unfocus();
                                                                           FocusManager
                                                                               .instance
@@ -2198,9 +2177,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                         },
                                                                         child:
                                                                             Padding(
-                                                                          padding: MediaQuery
-                                                                              .viewInsetsOf(
-                                                                                  context),
+                                                                          padding:
+                                                                              MediaQuery.viewInsetsOf(context),
                                                                           child:
                                                                               RegistrarCioOfflineWidget(
                                                                             uidPropriedade:
@@ -2217,9 +2195,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                                 listaAnimaisOfflineItem.nomeAnimal,
                                                                             visitaPresencial:
                                                                                 widget.visitaPresencial!,
-                                                                            brincoAnimal: listaAnimaisOfflineItem
-                                                                                .brincoAnimal
-                                                                                .toString(),
+                                                                            brincoAnimal:
+                                                                                listaAnimaisOfflineItem.brincoAnimal.toString(),
                                                                             diasDg:
                                                                                 widget.diasDg!,
                                                                             uidAnimalOffline:
@@ -2242,50 +2219,48 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                 options:
                                                                     FFButtonOptions(
                                                                   height: 30.0,
-                                                                  padding:
-                                                                      EdgeInsetsDirectional
-                                                                          .fromSTEB(
-                                                                              10.0,
-                                                                              0.0,
-                                                                              10.0,
-                                                                              0.0),
-                                                                  iconPadding:
-                                                                      EdgeInsetsDirectional
-                                                                          .fromSTEB(
-                                                                              0.0,
-                                                                              0.0,
-                                                                              0.0,
-                                                                              0.0),
+                                                                  padding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10.0,
+                                                                          0.0,
+                                                                          10.0,
+                                                                          0.0),
+                                                                  iconPadding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
                                                                   color: Color(
                                                                       0xFF1A03E9),
-                                                                  textStyle:
-                                                                      FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .override(
-                                                                            font: GoogleFonts
-                                                                                .readexPro(
-                                                                              fontWeight: FlutterFlowTheme.of(context)
-                                                                                  .titleSmall
-                                                                                  .fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context)
-                                                                                  .titleSmall
-                                                                                  .fontStyle,
-                                                                            ),
-                                                                            color: Colors
-                                                                                .white,
-                                                                            fontSize:
-                                                                                12.0,
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                            fontWeight: FlutterFlowTheme.of(context)
-                                                                                .titleSmall
-                                                                                .fontWeight,
-                                                                            fontStyle: FlutterFlowTheme.of(context)
-                                                                                .titleSmall
-                                                                                .fontStyle,
-                                                                          ),
-                                                                  elevation: 3.0,
+                                                                  textStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleSmall
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
+                                                                          fontWeight: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                                  elevation:
+                                                                      3.0,
                                                                   borderSide:
                                                                       BorderSide(
                                                                     color: Colors
@@ -2299,24 +2274,29 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                 ),
                                                               ),
                                                             ),
-                                                            SizedBox(width: 8.0),
+                                                            SizedBox(
+                                                                width: 8.0),
                                                             Expanded(
-                                                              child: FFButtonWidget(
-                                                                onPressed: () async {
+                                                              child:
+                                                                  FFButtonWidget(
+                                                                onPressed:
+                                                                    () async {
                                                                   await showModalBottomSheet(
                                                                     isScrollControlled:
                                                                         true,
                                                                     backgroundColor:
                                                                         Colors
                                                                             .transparent,
-                                                                    enableDrag: false,
-                                                                    context: context,
+                                                                    enableDrag:
+                                                                        false,
+                                                                    context:
+                                                                        context,
                                                                     builder:
                                                                         (context) {
                                                                       return GestureDetector(
-                                                                        onTap: () {
-                                                                          FocusScope.of(
-                                                                                  context)
+                                                                        onTap:
+                                                                            () {
+                                                                          FocusScope.of(context)
                                                                               .unfocus();
                                                                           FocusManager
                                                                               .instance
@@ -2325,43 +2305,32 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                         },
                                                                         child:
                                                                             Padding(
-                                                                          padding: MediaQuery
-                                                                              .viewInsetsOf(
-                                                                                  context),
+                                                                          padding:
+                                                                              MediaQuery.viewInsetsOf(context),
                                                                           child:
                                                                               NovaInseminacaoOfflineWidget(
                                                                             uidPropriedade:
-                                                                                widget
-                                                                                    .uidPropriedade!,
+                                                                                widget.uidPropriedade!,
                                                                             nomePropriedade:
-                                                                                widget
-                                                                                    .nomePropriedade!,
+                                                                                widget.nomePropriedade!,
                                                                             uidTecnico:
-                                                                                widget
-                                                                                    .uidTecnico!,
+                                                                                widget.uidTecnico!,
                                                                             emailPropriedade:
-                                                                                widget
-                                                                                    .emailPropriedade!,
+                                                                                widget.emailPropriedade!,
                                                                             grupoPredominante:
-                                                                                listaAnimaisOfflineItem
-                                                                                    .grupoAnimal,
+                                                                                listaAnimaisOfflineItem.grupoAnimal,
                                                                             nomeAnimal:
-                                                                                listaAnimaisOfflineItem
-                                                                                    .nomeAnimal,
+                                                                                listaAnimaisOfflineItem.nomeAnimal,
                                                                             visitaPresencial:
-                                                                                widget
-                                                                                    .visitaPresencial!,
+                                                                                widget.visitaPresencial!,
                                                                             dtUltimaInseminacao:
-                                                                                listaAnimaisOfflineItem
-                                                                                    .dtUltimaInseminacao,
-                                                                            brincoAnimal: listaAnimaisOfflineItem
-                                                                                .brincoAnimal
-                                                                                .toString(),
-                                                                            diasDg: widget
-                                                                                .diasDg!,
+                                                                                listaAnimaisOfflineItem.dtUltimaInseminacao,
+                                                                            brincoAnimal:
+                                                                                listaAnimaisOfflineItem.brincoAnimal.toString(),
+                                                                            diasDg:
+                                                                                widget.diasDg!,
                                                                             uidAnimalOffline:
-                                                                                listaAnimaisOfflineItem
-                                                                                    .uidAnimalOffline,
+                                                                                listaAnimaisOfflineItem.uidAnimalOffline,
                                                                             itemUidIndex:
                                                                                 listaAnimaisOfflineIndex,
                                                                           ),
@@ -2372,60 +2341,58 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                       safeSetState(
                                                                           () {}));
                                                                 },
-                                                                text: 'Inseminar',
+                                                                text:
+                                                                    'Inseminar',
                                                                 icon: Icon(
-                                                                  Icons.playlist_add,
+                                                                  Icons
+                                                                      .playlist_add,
                                                                   size: 15.0,
                                                                 ),
                                                                 options:
                                                                     FFButtonOptions(
                                                                   height: 30.0,
-                                                                  padding:
-                                                                      EdgeInsetsDirectional
-                                                                          .fromSTEB(
-                                                                              10.0,
-                                                                              0.0,
-                                                                              10.0,
-                                                                              0.0),
-                                                                  iconPadding:
-                                                                      EdgeInsetsDirectional
-                                                                          .fromSTEB(
-                                                                              0.0,
-                                                                              0.0,
-                                                                              0.0,
-                                                                              0.0),
+                                                                  padding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10.0,
+                                                                          0.0,
+                                                                          10.0,
+                                                                          0.0),
+                                                                  iconPadding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
                                                                   color: Color(
                                                                       0xFF7E39EF),
-                                                                  textStyle:
-                                                                      FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .override(
-                                                                            font: GoogleFonts
-                                                                                .readexPro(
-                                                                              fontWeight: FlutterFlowTheme.of(context)
-                                                                                  .titleSmall
-                                                                                  .fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context)
-                                                                                  .titleSmall
-                                                                                  .fontStyle,
-                                                                            ),
-                                                                            color: Colors
-                                                                                .white,
-                                                                            fontSize:
-                                                                                12.0,
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                            fontWeight: FlutterFlowTheme.of(
-                                                                                    context)
-                                                                                .titleSmall
-                                                                                .fontWeight,
-                                                                            fontStyle: FlutterFlowTheme.of(
-                                                                                    context)
-                                                                                .titleSmall
-                                                                                .fontStyle,
-                                                                          ),
-                                                                  elevation: 3.0,
+                                                                  textStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleSmall
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
+                                                                          fontWeight: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                                  elevation:
+                                                                      3.0,
                                                                   borderSide:
                                                                       BorderSide(
                                                                     color: Colors
@@ -2519,29 +2486,22 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                               visible: ((listViewOnlineAnimaisProdutoresRecord
                                               .grupoAnimal ==
                                           'Vacas') ||
-                                      (listViewOnlineAnimaisProdutoresRecord
-                                              .grupoAnimal ==
+                                      (listViewOnlineAnimaisProdutoresRecord.grupoAnimal ==
                                           'Novilhas')) &&
-                                  ((listViewOnlineAnimaisProdutoresRecord
-                                              .nomeAnimal
-                                              .toLowerCase()
-                                              .contains(_model
-                                                  .searchListTextController.text
-                                                  .toLowerCase())) ||
+                                  ((listViewOnlineAnimaisProdutoresRecord.nomeAnimal
+                                          .toLowerCase()
+                                          .contains(_model.searchListTextController.text
+                                              .toLowerCase())) ||
                                       (listViewOnlineAnimaisProdutoresRecord
-                                              .brincoAnimal
-                                              .toString()
-                                              .contains(_model
-                                                  .searchListTextController
-                                                  .text))) &&
-                                  ((listViewOnlineAnimaisProdutoresRecord
-                                              .status ==
-                                          'Vazia') ||
-                                      (listViewOnlineAnimaisProdutoresRecord
-                                              .status ==
+                                          .brincoAnimal
+                                          .toString()
+                                          .contains(_model
+                                              .searchListTextController
+                                              .text))) &&
+                                  ((listViewOnlineAnimaisProdutoresRecord.status == 'Vazia') ||
+                                      (listViewOnlineAnimaisProdutoresRecord.status ==
                                           'Inseminada') ||
-                                      (listViewOnlineAnimaisProdutoresRecord
-                                              .status ==
+                                      (listViewOnlineAnimaisProdutoresRecord.status ==
                                           'Inseminada PP')),
                               child: Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
@@ -2755,8 +2715,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                     Text(
                                                       () {
                                                         if ((listViewOnlineAnimaisProdutoresRecord
-                                                                        .nomeAnimal !=
-                                                                    '') &&
+                                                                    .nomeAnimal !=
+                                                                '') &&
                                                             (listViewOnlineAnimaisProdutoresRecord
                                                                     .brincoAnimal !=
                                                                 null) &&
@@ -2765,8 +2725,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                 -1)) {
                                                           return '${listViewOnlineAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                         } else if (listViewOnlineAnimaisProdutoresRecord
-                                                                    .nomeAnimal !=
-                                                                '') {
+                                                                .nomeAnimal !=
+                                                            '') {
                                                           return listViewOnlineAnimaisProdutoresRecord
                                                               .nomeAnimal;
                                                         } else {
@@ -2891,16 +2851,20 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                       children: [
                                                         Expanded(
                                                           child: FFButtonWidget(
-                                                            onPressed: () async {
+                                                            onPressed:
+                                                                () async {
                                                               await showModalBottomSheet(
                                                                 isScrollControlled:
                                                                     true,
                                                                 backgroundColor:
                                                                     Colors
                                                                         .transparent,
-                                                                enableDrag: false,
-                                                                context: context,
-                                                                builder: (context) {
+                                                                enableDrag:
+                                                                    false,
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) {
                                                                   return GestureDetector(
                                                                     onTap: () {
                                                                       FocusScope.of(
@@ -2911,42 +2875,34 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                           .primaryFocus
                                                                           ?.unfocus();
                                                                     },
-                                                                    child: Padding(
+                                                                    child:
+                                                                        Padding(
                                                                       padding: MediaQuery
                                                                           .viewInsetsOf(
                                                                               context),
                                                                       child:
                                                                           RegistrarCioWidget(
                                                                         uidPropriedade:
-                                                                            widget
-                                                                                .uidPropriedade!,
+                                                                            widget.uidPropriedade!,
                                                                         nomePropriedade:
-                                                                            widget
-                                                                                .nomePropriedade!,
+                                                                            widget.nomePropriedade!,
                                                                         uidTecnico:
-                                                                            widget
-                                                                                .uidTecnico!,
+                                                                            widget.uidTecnico!,
                                                                         emailPropriedade:
-                                                                            widget
-                                                                                .emailPropriedade!,
+                                                                            widget.emailPropriedade!,
                                                                         uidAnimaisProdutores:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .reference,
+                                                                            listViewOnlineAnimaisProdutoresRecord.reference,
                                                                         grupoPredominante:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .grupoAnimal,
+                                                                            listViewOnlineAnimaisProdutoresRecord.grupoAnimal,
                                                                         nomeAnimal:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .nomeAnimal,
+                                                                            listViewOnlineAnimaisProdutoresRecord.nomeAnimal,
                                                                         visitaPresencial:
-                                                                            widget
-                                                                                .visitaPresencial!,
-                                                                        brincoAnimal:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .brincoAnimal
-                                                                                .toString(),
-                                                                        diasDg: widget
-                                                                            .diasDg!,
+                                                                            widget.visitaPresencial!,
+                                                                        brincoAnimal: listViewOnlineAnimaisProdutoresRecord
+                                                                            .brincoAnimal
+                                                                            .toString(),
+                                                                        diasDg:
+                                                                            widget.diasDg!,
                                                                       ),
                                                                     ),
                                                                   );
@@ -2977,8 +2933,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                           0.0,
                                                                           0.0,
                                                                           0.0),
-                                                              color:
-                                                                  Color(0xFF1A03E9),
+                                                              color: Color(
+                                                                  0xFF1A03E9),
                                                               textStyle:
                                                                   FlutterFlowTheme.of(
                                                                           context)
@@ -2986,12 +2942,10 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                       .override(
                                                                         font: GoogleFonts
                                                                             .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(
-                                                                                  context)
+                                                                          fontWeight: FlutterFlowTheme.of(context)
                                                                               .titleSmall
                                                                               .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(
-                                                                                  context)
+                                                                          fontStyle: FlutterFlowTheme.of(context)
                                                                               .titleSmall
                                                                               .fontStyle,
                                                                         ),
@@ -3001,12 +2955,10 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                             12.0,
                                                                         letterSpacing:
                                                                             0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(
-                                                                                context)
+                                                                        fontWeight: FlutterFlowTheme.of(context)
                                                                             .titleSmall
                                                                             .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(
-                                                                                context)
+                                                                        fontStyle: FlutterFlowTheme.of(context)
                                                                             .titleSmall
                                                                             .fontStyle,
                                                                       ),
@@ -3027,16 +2979,20 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                         SizedBox(width: 8.0),
                                                         Expanded(
                                                           child: FFButtonWidget(
-                                                            onPressed: () async {
+                                                            onPressed:
+                                                                () async {
                                                               await showModalBottomSheet(
                                                                 isScrollControlled:
                                                                     true,
                                                                 backgroundColor:
                                                                     Colors
                                                                         .transparent,
-                                                                enableDrag: false,
-                                                                context: context,
-                                                                builder: (context) {
+                                                                enableDrag:
+                                                                    false,
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (context) {
                                                                   return GestureDetector(
                                                                     onTap: () {
                                                                       FocusScope.of(
@@ -3047,45 +3003,36 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                           .primaryFocus
                                                                           ?.unfocus();
                                                                     },
-                                                                    child: Padding(
+                                                                    child:
+                                                                        Padding(
                                                                       padding: MediaQuery
                                                                           .viewInsetsOf(
                                                                               context),
                                                                       child:
                                                                           NovaInseminacaoWidget(
                                                                         uidPropriedade:
-                                                                            widget
-                                                                                .uidPropriedade!,
+                                                                            widget.uidPropriedade!,
                                                                         nomePropriedade:
-                                                                            widget
-                                                                                .nomePropriedade!,
+                                                                            widget.nomePropriedade!,
                                                                         uidTecnico:
-                                                                            widget
-                                                                                .uidTecnico!,
+                                                                            widget.uidTecnico!,
                                                                         emailPropriedade:
-                                                                            widget
-                                                                                .emailPropriedade!,
+                                                                            widget.emailPropriedade!,
                                                                         uidAnimaisProdutores:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .reference,
+                                                                            listViewOnlineAnimaisProdutoresRecord.reference,
                                                                         grupoPredominante:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .grupoAnimal,
+                                                                            listViewOnlineAnimaisProdutoresRecord.grupoAnimal,
                                                                         nomeAnimal:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .nomeAnimal,
+                                                                            listViewOnlineAnimaisProdutoresRecord.nomeAnimal,
                                                                         visitaPresencial:
-                                                                            widget
-                                                                                .visitaPresencial!,
+                                                                            widget.visitaPresencial!,
                                                                         dtUltimaInseminacao:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .dtUltimaInseminacao,
-                                                                        brincoAnimal:
-                                                                            listViewOnlineAnimaisProdutoresRecord
-                                                                                .brincoAnimal
-                                                                                .toString(),
-                                                                        diasDg: widget
-                                                                            .diasDg!,
+                                                                            listViewOnlineAnimaisProdutoresRecord.dtUltimaInseminacao,
+                                                                        brincoAnimal: listViewOnlineAnimaisProdutoresRecord
+                                                                            .brincoAnimal
+                                                                            .toString(),
+                                                                        diasDg:
+                                                                            widget.diasDg!,
                                                                       ),
                                                                     ),
                                                                   );
@@ -3096,10 +3043,12 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                             },
                                                             text: 'Inseminar',
                                                             icon: Icon(
-                                                              Icons.playlist_add,
+                                                              Icons
+                                                                  .playlist_add,
                                                               size: 15.0,
                                                             ),
-                                                            options: FFButtonOptions(
+                                                            options:
+                                                                FFButtonOptions(
                                                               height: 30.0,
                                                               padding:
                                                                   EdgeInsetsDirectional
@@ -3115,8 +3064,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                           0.0,
                                                                           0.0,
                                                                           0.0),
-                                                              color:
-                                                                  Color(0xFF7E39EF),
+                                                              color: Color(
+                                                                  0xFF7E39EF),
                                                               textStyle:
                                                                   FlutterFlowTheme.of(
                                                                           context)
@@ -3124,12 +3073,10 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                       .override(
                                                                         font: GoogleFonts
                                                                             .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(
-                                                                                  context)
+                                                                          fontWeight: FlutterFlowTheme.of(context)
                                                                               .titleSmall
                                                                               .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(
-                                                                                  context)
+                                                                          fontStyle: FlutterFlowTheme.of(context)
                                                                               .titleSmall
                                                                               .fontStyle,
                                                                         ),
@@ -3139,24 +3086,24 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                             12.0,
                                                                         letterSpacing:
                                                                             0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(
-                                                                                context)
+                                                                        fontWeight: FlutterFlowTheme.of(context)
                                                                             .titleSmall
                                                                             .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(
-                                                                                context)
+                                                                        fontStyle: FlutterFlowTheme.of(context)
                                                                             .titleSmall
                                                                             .fontStyle,
                                                                       ),
                                                               elevation: 3.0,
-                                                              borderSide: BorderSide(
+                                                              borderSide:
+                                                                  BorderSide(
                                                                 color: Colors
                                                                     .transparent,
                                                                 width: 1.0,
                                                               ),
                                                               borderRadius:
                                                                   BorderRadius
-                                                                      .circular(8.0),
+                                                                      .circular(
+                                                                          8.0),
                                                             ),
                                                           ),
                                                         ),
@@ -3217,17 +3164,15 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                   visible: (listaAnimaisOfflineExistenteItem
                                               .uidTecnicoPropriedade ==
                                           widget.uidPropriedade) &&
-                                      ((listaAnimaisOfflineExistenteItem.nomeAnimal
-                                              .toLowerCase()
-                                              .contains(_model.searchListTextController
-                                                  .text.toLowerCase())) ||
+                                      ((listaAnimaisOfflineExistenteItem.nomeAnimal.toLowerCase().contains(_model.searchListTextController.text.toLowerCase())) ||
                                           (listaAnimaisOfflineExistenteItem.brincoAnimal
                                               .toString()
                                               .contains(_model
                                                   .searchListTextController
                                                   .text))) &&
                                       (((listaAnimaisOfflineExistenteItem.grupoAnimal == 'Vacas') ||
-                                              (listaAnimaisOfflineExistenteItem.grupoAnimal ==
+                                              (listaAnimaisOfflineExistenteItem
+                                                      .grupoAnimal ==
                                                   'Novilhas')) &&
                                           ((listaAnimaisOfflineExistenteItem.status == 'Vazia') ||
                                               (listaAnimaisOfflineExistenteItem.status ==
@@ -3417,8 +3362,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                         Text(
                                                           () {
                                                             if ((listaAnimaisOfflineExistenteItem
-                                                                            .nomeAnimal !=
-                                                                        '') &&
+                                                                        .nomeAnimal !=
+                                                                    '') &&
                                                                 (listaAnimaisOfflineExistenteItem
                                                                         .brincoAnimal !=
                                                                     null) &&
@@ -3427,8 +3372,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                     -1)) {
                                                               return '${listaAnimaisOfflineExistenteItem.nomeAnimal} - ${listaAnimaisOfflineExistenteItem.brincoAnimal.toString()}';
                                                             } else if (listaAnimaisOfflineExistenteItem
-                                                                        .nomeAnimal !=
-                                                                    '') {
+                                                                    .nomeAnimal !=
+                                                                '') {
                                                               return listaAnimaisOfflineExistenteItem
                                                                   .nomeAnimal;
                                                             } else {
@@ -3547,7 +3492,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                         Row(
                                                           children: [
                                                             Expanded(
-                                                              child: FFButtonWidget(
+                                                              child:
+                                                                  FFButtonWidget(
                                                                 onPressed:
                                                                     () async {
                                                                   await showModalBottomSheet(
@@ -3563,9 +3509,9 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                     builder:
                                                                         (context) {
                                                                       return GestureDetector(
-                                                                        onTap: () {
-                                                                          FocusScope.of(
-                                                                                  context)
+                                                                        onTap:
+                                                                            () {
+                                                                          FocusScope.of(context)
                                                                               .unfocus();
                                                                           FocusManager
                                                                               .instance
@@ -3574,9 +3520,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                         },
                                                                         child:
                                                                             Padding(
-                                                                          padding: MediaQuery
-                                                                              .viewInsetsOf(
-                                                                                  context),
+                                                                          padding:
+                                                                              MediaQuery.viewInsetsOf(context),
                                                                           child:
                                                                               RegistrarCioExistenteOfflineWidget(
                                                                             uidPropriedade:
@@ -3595,9 +3540,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                                 listaAnimaisOfflineExistenteItem.nomeAnimal,
                                                                             visitaPresencial:
                                                                                 widget.visitaPresencial!,
-                                                                            brincoAnimal: listaAnimaisOfflineExistenteItem
-                                                                                .brincoAnimal
-                                                                                .toString(),
+                                                                            brincoAnimal:
+                                                                                listaAnimaisOfflineExistenteItem.brincoAnimal.toString(),
                                                                             diasDg:
                                                                                 widget.diasDg!,
                                                                             itemUidIndex:
@@ -3618,50 +3562,48 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                 options:
                                                                     FFButtonOptions(
                                                                   height: 30.0,
-                                                                  padding:
-                                                                      EdgeInsetsDirectional
-                                                                          .fromSTEB(
-                                                                              10.0,
-                                                                              0.0,
-                                                                              10.0,
-                                                                              0.0),
-                                                                  iconPadding:
-                                                                      EdgeInsetsDirectional
-                                                                          .fromSTEB(
-                                                                              0.0,
-                                                                              0.0,
-                                                                              0.0,
-                                                                              0.0),
+                                                                  padding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10.0,
+                                                                          0.0,
+                                                                          10.0,
+                                                                          0.0),
+                                                                  iconPadding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
                                                                   color: Color(
                                                                       0xFF1A03E9),
-                                                                  textStyle:
-                                                                      FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .override(
-                                                                            font: GoogleFonts
-                                                                                .readexPro(
-                                                                              fontWeight: FlutterFlowTheme.of(context)
-                                                                                  .titleSmall
-                                                                                  .fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context)
-                                                                                  .titleSmall
-                                                                                  .fontStyle,
-                                                                            ),
-                                                                            color: Colors
-                                                                                .white,
-                                                                            fontSize:
-                                                                                12.0,
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                            fontWeight: FlutterFlowTheme.of(context)
-                                                                                .titleSmall
-                                                                                .fontWeight,
-                                                                            fontStyle: FlutterFlowTheme.of(context)
-                                                                                .titleSmall
-                                                                                .fontStyle,
-                                                                          ),
-                                                                  elevation: 3.0,
+                                                                  textStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleSmall
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
+                                                                          fontWeight: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                                  elevation:
+                                                                      3.0,
                                                                   borderSide:
                                                                       BorderSide(
                                                                     color: Colors
@@ -3675,24 +3617,29 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                 ),
                                                               ),
                                                             ),
-                                                            SizedBox(width: 8.0),
+                                                            SizedBox(
+                                                                width: 8.0),
                                                             Expanded(
-                                                              child: FFButtonWidget(
-                                                                onPressed: () async {
+                                                              child:
+                                                                  FFButtonWidget(
+                                                                onPressed:
+                                                                    () async {
                                                                   await showModalBottomSheet(
                                                                     isScrollControlled:
                                                                         true,
                                                                     backgroundColor:
                                                                         Colors
                                                                             .transparent,
-                                                                    enableDrag: false,
-                                                                    context: context,
+                                                                    enableDrag:
+                                                                        false,
+                                                                    context:
+                                                                        context,
                                                                     builder:
                                                                         (context) {
                                                                       return GestureDetector(
-                                                                        onTap: () {
-                                                                          FocusScope.of(
-                                                                                  context)
+                                                                        onTap:
+                                                                            () {
+                                                                          FocusScope.of(context)
                                                                               .unfocus();
                                                                           FocusManager
                                                                               .instance
@@ -3701,45 +3648,34 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                         },
                                                                         child:
                                                                             Padding(
-                                                                          padding: MediaQuery
-                                                                              .viewInsetsOf(
-                                                                                  context),
+                                                                          padding:
+                                                                              MediaQuery.viewInsetsOf(context),
                                                                           child:
                                                                               NovaInseminacaoExistenteOfflineWidget(
                                                                             uidPropriedade:
-                                                                                widget
-                                                                                    .uidPropriedade!,
+                                                                                widget.uidPropriedade!,
                                                                             nomePropriedade:
-                                                                                widget
-                                                                                    .nomePropriedade!,
+                                                                                widget.nomePropriedade!,
                                                                             uidTecnico:
-                                                                                widget
-                                                                                    .uidTecnico!,
+                                                                                widget.uidTecnico!,
                                                                             emailPropriedade:
-                                                                                widget
-                                                                                    .emailPropriedade!,
+                                                                                widget.emailPropriedade!,
                                                                             grupoPredominante:
-                                                                                listaAnimaisOfflineExistenteItem
-                                                                                    .grupoAnimal,
+                                                                                listaAnimaisOfflineExistenteItem.grupoAnimal,
                                                                             nomeAnimal:
-                                                                                listaAnimaisOfflineExistenteItem
-                                                                                    .nomeAnimal,
+                                                                                listaAnimaisOfflineExistenteItem.nomeAnimal,
                                                                             visitaPresencial:
-                                                                                widget
-                                                                                    .visitaPresencial!,
+                                                                                widget.visitaPresencial!,
                                                                             dtUltimaInseminacao:
-                                                                                listaAnimaisOfflineExistenteItem
-                                                                                    .dtUltimaInseminacao,
-                                                                            brincoAnimal: listaAnimaisOfflineExistenteItem
-                                                                                .brincoAnimal
-                                                                                .toString(),
-                                                                            diasDg: widget
-                                                                                .diasDg!,
+                                                                                listaAnimaisOfflineExistenteItem.dtUltimaInseminacao,
+                                                                            brincoAnimal:
+                                                                                listaAnimaisOfflineExistenteItem.brincoAnimal.toString(),
+                                                                            diasDg:
+                                                                                widget.diasDg!,
                                                                             itemUidIndex:
                                                                                 listaAnimaisOfflineExistenteIndex,
                                                                             uidAnimaisProdutores:
-                                                                                listaAnimaisOfflineExistenteItem
-                                                                                    .uidAnimal!,
+                                                                                listaAnimaisOfflineExistenteItem.uidAnimal!,
                                                                           ),
                                                                         ),
                                                                       );
@@ -3748,60 +3684,58 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                       safeSetState(
                                                                           () {}));
                                                                 },
-                                                                text: 'Inseminar',
+                                                                text:
+                                                                    'Inseminar',
                                                                 icon: Icon(
-                                                                  Icons.playlist_add,
+                                                                  Icons
+                                                                      .playlist_add,
                                                                   size: 15.0,
                                                                 ),
                                                                 options:
                                                                     FFButtonOptions(
                                                                   height: 30.0,
-                                                                  padding:
-                                                                      EdgeInsetsDirectional
-                                                                          .fromSTEB(
-                                                                              10.0,
-                                                                              0.0,
-                                                                              10.0,
-                                                                              0.0),
-                                                                  iconPadding:
-                                                                      EdgeInsetsDirectional
-                                                                          .fromSTEB(
-                                                                              0.0,
-                                                                              0.0,
-                                                                              0.0,
-                                                                              0.0),
+                                                                  padding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10.0,
+                                                                          0.0,
+                                                                          10.0,
+                                                                          0.0),
+                                                                  iconPadding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
                                                                   color: Color(
                                                                       0xFF7E39EF),
-                                                                  textStyle:
-                                                                      FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .override(
-                                                                            font: GoogleFonts
-                                                                                .readexPro(
-                                                                              fontWeight: FlutterFlowTheme.of(context)
-                                                                                  .titleSmall
-                                                                                  .fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context)
-                                                                                  .titleSmall
-                                                                                  .fontStyle,
-                                                                            ),
-                                                                            color: Colors
-                                                                                .white,
-                                                                            fontSize:
-                                                                                12.0,
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                            fontWeight: FlutterFlowTheme.of(
-                                                                                    context)
-                                                                                .titleSmall
-                                                                                .fontWeight,
-                                                                            fontStyle: FlutterFlowTheme.of(
-                                                                                    context)
-                                                                                .titleSmall
-                                                                                .fontStyle,
-                                                                          ),
-                                                                  elevation: 3.0,
+                                                                  textStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleSmall
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
+                                                                          fontWeight: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                                  elevation:
+                                                                      3.0,
                                                                   borderSide:
                                                                       BorderSide(
                                                                     color: Colors
@@ -3856,22 +3790,20 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                           widget.uidPropriedade) &&
                                       ((listaAnimaisOfflineItem.nomeAnimal
                                               .toLowerCase()
-                                              .contains(_model.searchListTextController
-                                                  .text.toLowerCase())) ||
+                                              .contains(_model
+                                                  .searchListTextController.text
+                                                  .toLowerCase())) ||
                                           (listaAnimaisOfflineItem.brincoAnimal
                                               .toString()
                                               .contains(_model
                                                   .searchListTextController
                                                   .text))) &&
-                                      (((listaAnimaisOfflineItem.grupoAnimal ==
-                                                  'Vacas') ||
+                                      (((listaAnimaisOfflineItem.grupoAnimal == 'Vacas') ||
                                               (listaAnimaisOfflineItem.grupoAnimal ==
                                                   'Novilhas')) &&
                                           ((listaAnimaisOfflineItem.status == 'Vazia') ||
-                                              (listaAnimaisOfflineItem.status ==
-                                                  'Inseminada') ||
-                                              (listaAnimaisOfflineItem.status ==
-                                                  'Inseminada PP'))),
+                                              (listaAnimaisOfflineItem.status == 'Inseminada') ||
+                                              (listaAnimaisOfflineItem.status == 'Inseminada PP'))),
                                   child: Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         16.0, 12.0, 16.0, 12.0),
@@ -4052,8 +3984,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                         Text(
                                                           () {
                                                             if ((listaAnimaisOfflineItem
-                                                                            .nomeAnimal !=
-                                                                        '') &&
+                                                                        .nomeAnimal !=
+                                                                    '') &&
                                                                 (listaAnimaisOfflineItem
                                                                         .brincoAnimal !=
                                                                     null) &&
@@ -4062,8 +3994,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                     -1)) {
                                                               return '${listaAnimaisOfflineItem.nomeAnimal} - ${listaAnimaisOfflineItem.brincoAnimal.toString()}';
                                                             } else if (listaAnimaisOfflineItem
-                                                                        .nomeAnimal !=
-                                                                    '') {
+                                                                    .nomeAnimal !=
+                                                                '') {
                                                               return listaAnimaisOfflineItem
                                                                   .nomeAnimal;
                                                             } else {
@@ -4182,7 +4114,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                         Row(
                                                           children: [
                                                             Expanded(
-                                                              child: FFButtonWidget(
+                                                              child:
+                                                                  FFButtonWidget(
                                                                 onPressed:
                                                                     () async {
                                                                   await showModalBottomSheet(
@@ -4198,9 +4131,9 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                     builder:
                                                                         (context) {
                                                                       return GestureDetector(
-                                                                        onTap: () {
-                                                                          FocusScope.of(
-                                                                                  context)
+                                                                        onTap:
+                                                                            () {
+                                                                          FocusScope.of(context)
                                                                               .unfocus();
                                                                           FocusManager
                                                                               .instance
@@ -4209,9 +4142,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                         },
                                                                         child:
                                                                             Padding(
-                                                                          padding: MediaQuery
-                                                                              .viewInsetsOf(
-                                                                                  context),
+                                                                          padding:
+                                                                              MediaQuery.viewInsetsOf(context),
                                                                           child:
                                                                               RegistrarCioOfflineWidget(
                                                                             uidPropriedade:
@@ -4228,9 +4160,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                                 listaAnimaisOfflineItem.nomeAnimal,
                                                                             visitaPresencial:
                                                                                 widget.visitaPresencial!,
-                                                                            brincoAnimal: listaAnimaisOfflineItem
-                                                                                .brincoAnimal
-                                                                                .toString(),
+                                                                            brincoAnimal:
+                                                                                listaAnimaisOfflineItem.brincoAnimal.toString(),
                                                                             diasDg:
                                                                                 widget.diasDg!,
                                                                             uidAnimalOffline:
@@ -4253,50 +4184,48 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                 options:
                                                                     FFButtonOptions(
                                                                   height: 30.0,
-                                                                  padding:
-                                                                      EdgeInsetsDirectional
-                                                                          .fromSTEB(
-                                                                              10.0,
-                                                                              0.0,
-                                                                              10.0,
-                                                                              0.0),
-                                                                  iconPadding:
-                                                                      EdgeInsetsDirectional
-                                                                          .fromSTEB(
-                                                                              0.0,
-                                                                              0.0,
-                                                                              0.0,
-                                                                              0.0),
+                                                                  padding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10.0,
+                                                                          0.0,
+                                                                          10.0,
+                                                                          0.0),
+                                                                  iconPadding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
                                                                   color: Color(
                                                                       0xFF1A03E9),
-                                                                  textStyle:
-                                                                      FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .override(
-                                                                            font: GoogleFonts
-                                                                                .readexPro(
-                                                                              fontWeight: FlutterFlowTheme.of(context)
-                                                                                  .titleSmall
-                                                                                  .fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context)
-                                                                                  .titleSmall
-                                                                                  .fontStyle,
-                                                                            ),
-                                                                            color: Colors
-                                                                                .white,
-                                                                            fontSize:
-                                                                                12.0,
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                            fontWeight: FlutterFlowTheme.of(context)
-                                                                                .titleSmall
-                                                                                .fontWeight,
-                                                                            fontStyle: FlutterFlowTheme.of(context)
-                                                                                .titleSmall
-                                                                                .fontStyle,
-                                                                          ),
-                                                                  elevation: 3.0,
+                                                                  textStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleSmall
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
+                                                                          fontWeight: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                                  elevation:
+                                                                      3.0,
                                                                   borderSide:
                                                                       BorderSide(
                                                                     color: Colors
@@ -4310,24 +4239,29 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                 ),
                                                               ),
                                                             ),
-                                                            SizedBox(width: 8.0),
+                                                            SizedBox(
+                                                                width: 8.0),
                                                             Expanded(
-                                                              child: FFButtonWidget(
-                                                                onPressed: () async {
+                                                              child:
+                                                                  FFButtonWidget(
+                                                                onPressed:
+                                                                    () async {
                                                                   await showModalBottomSheet(
                                                                     isScrollControlled:
                                                                         true,
                                                                     backgroundColor:
                                                                         Colors
                                                                             .transparent,
-                                                                    enableDrag: false,
-                                                                    context: context,
+                                                                    enableDrag:
+                                                                        false,
+                                                                    context:
+                                                                        context,
                                                                     builder:
                                                                         (context) {
                                                                       return GestureDetector(
-                                                                        onTap: () {
-                                                                          FocusScope.of(
-                                                                                  context)
+                                                                        onTap:
+                                                                            () {
+                                                                          FocusScope.of(context)
                                                                               .unfocus();
                                                                           FocusManager
                                                                               .instance
@@ -4336,43 +4270,32 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                         },
                                                                         child:
                                                                             Padding(
-                                                                          padding: MediaQuery
-                                                                              .viewInsetsOf(
-                                                                                  context),
+                                                                          padding:
+                                                                              MediaQuery.viewInsetsOf(context),
                                                                           child:
                                                                               NovaInseminacaoOfflineWidget(
                                                                             uidPropriedade:
-                                                                                widget
-                                                                                    .uidPropriedade!,
+                                                                                widget.uidPropriedade!,
                                                                             nomePropriedade:
-                                                                                widget
-                                                                                    .nomePropriedade!,
+                                                                                widget.nomePropriedade!,
                                                                             uidTecnico:
-                                                                                widget
-                                                                                    .uidTecnico!,
+                                                                                widget.uidTecnico!,
                                                                             emailPropriedade:
-                                                                                widget
-                                                                                    .emailPropriedade!,
+                                                                                widget.emailPropriedade!,
                                                                             grupoPredominante:
-                                                                                listaAnimaisOfflineItem
-                                                                                    .grupoAnimal,
+                                                                                listaAnimaisOfflineItem.grupoAnimal,
                                                                             nomeAnimal:
-                                                                                listaAnimaisOfflineItem
-                                                                                    .nomeAnimal,
+                                                                                listaAnimaisOfflineItem.nomeAnimal,
                                                                             visitaPresencial:
-                                                                                widget
-                                                                                    .visitaPresencial!,
+                                                                                widget.visitaPresencial!,
                                                                             dtUltimaInseminacao:
-                                                                                listaAnimaisOfflineItem
-                                                                                    .dtUltimaInseminacao,
-                                                                            brincoAnimal: listaAnimaisOfflineItem
-                                                                                .brincoAnimal
-                                                                                .toString(),
-                                                                            diasDg: widget
-                                                                                .diasDg!,
+                                                                                listaAnimaisOfflineItem.dtUltimaInseminacao,
+                                                                            brincoAnimal:
+                                                                                listaAnimaisOfflineItem.brincoAnimal.toString(),
+                                                                            diasDg:
+                                                                                widget.diasDg!,
                                                                             uidAnimalOffline:
-                                                                                listaAnimaisOfflineItem
-                                                                                    .uidAnimalOffline,
+                                                                                listaAnimaisOfflineItem.uidAnimalOffline,
                                                                             itemUidIndex:
                                                                                 listaAnimaisOfflineIndex,
                                                                           ),
@@ -4383,60 +4306,58 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                       safeSetState(
                                                                           () {}));
                                                                 },
-                                                                text: 'Inseminar',
+                                                                text:
+                                                                    'Inseminar',
                                                                 icon: Icon(
-                                                                  Icons.playlist_add,
+                                                                  Icons
+                                                                      .playlist_add,
                                                                   size: 15.0,
                                                                 ),
                                                                 options:
                                                                     FFButtonOptions(
                                                                   height: 30.0,
-                                                                  padding:
-                                                                      EdgeInsetsDirectional
-                                                                          .fromSTEB(
-                                                                              10.0,
-                                                                              0.0,
-                                                                              10.0,
-                                                                              0.0),
-                                                                  iconPadding:
-                                                                      EdgeInsetsDirectional
-                                                                          .fromSTEB(
-                                                                              0.0,
-                                                                              0.0,
-                                                                              0.0,
-                                                                              0.0),
+                                                                  padding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          10.0,
+                                                                          0.0,
+                                                                          10.0,
+                                                                          0.0),
+                                                                  iconPadding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
                                                                   color: Color(
                                                                       0xFF7E39EF),
-                                                                  textStyle:
-                                                                      FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .override(
-                                                                            font: GoogleFonts
-                                                                                .readexPro(
-                                                                              fontWeight: FlutterFlowTheme.of(context)
-                                                                                  .titleSmall
-                                                                                  .fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context)
-                                                                                  .titleSmall
-                                                                                  .fontStyle,
-                                                                            ),
-                                                                            color: Colors
-                                                                                .white,
-                                                                            fontSize:
-                                                                                12.0,
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                            fontWeight: FlutterFlowTheme.of(
-                                                                                    context)
-                                                                                .titleSmall
-                                                                                .fontWeight,
-                                                                            fontStyle: FlutterFlowTheme.of(
-                                                                                    context)
-                                                                                .titleSmall
-                                                                                .fontStyle,
-                                                                          ),
-                                                                  elevation: 3.0,
+                                                                  textStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleSmall
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
+                                                                          fontWeight: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                                  elevation:
+                                                                      3.0,
                                                                   borderSide:
                                                                       BorderSide(
                                                                     color: Colors

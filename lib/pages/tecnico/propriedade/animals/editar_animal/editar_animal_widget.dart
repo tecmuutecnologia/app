@@ -1,3 +1,5 @@
+// ignore_for_file: dead_null_aware_expression
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -1498,23 +1500,23 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                                       editarAnimalAnimaisProdutoresRecord
                                           .grupoAnimal,
                                   nomeBrincoConcat: () {
-                                    if ((_model
-                                                    .nomeTextController.text !=
-                                                '') &&
+                                    if ((_model.nomeTextController.text !=
+                                            '') &&
                                         (_model.brincoTextController.text !=
-                                                '') &&
+                                            '') &&
                                         (_model.brincoTextController.text !=
                                             '-1')) {
                                       return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                    } else if (_model.nomeTextController.text != '') {
+                                    } else if (_model.nomeTextController.text !=
+                                        '') {
                                       return _model.nomeTextController.text;
                                     } else {
                                       return _model.brincoTextController.text;
                                     }
                                   }(),
-                                  brincoAnimalOrder: (_model.brincoTextController
-                                                      .text !=
-                                                  '') &&
+                                  brincoAnimalOrder: (_model
+                                                  .brincoTextController.text !=
+                                              '') &&
                                           (_model.brincoTextController.text !=
                                               '-1')
                                       ? int.tryParse(
@@ -1592,23 +1594,24 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                                             .grupoAnimal,
                                     nomeBrincoConcat: () {
                                       if ((_model.nomeTextController.text !=
-                                                  '') &&
-                                          (_model.brincoTextController
-                                                      .text !=
-                                                  '') &&
+                                              '') &&
+                                          (_model.brincoTextController.text !=
+                                              '') &&
                                           (_model.brincoTextController.text !=
                                               '-1')) {
                                         return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                      } else if (_model.nomeTextController.text !=
-                                              '') {
+                                      } else if (_model
+                                              .nomeTextController.text !=
+                                          '') {
                                         return _model.nomeTextController.text;
                                       } else {
                                         return _model.brincoTextController.text;
                                       }
                                     }(),
-                                    brincoAnimalOrder: (_model.brincoTextController
-                                                        .text !=
-                                                    '') &&
+                                    brincoAnimalOrder: (_model
+                                                    .brincoTextController
+                                                    .text !=
+                                                '') &&
                                             (_model.brincoTextController.text !=
                                                 '-1')
                                         ? int.tryParse(
@@ -1687,27 +1690,27 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                                           editarAnimalAnimaisProdutoresRecord
                                               .grupoAnimal,
                                       nomeBrincoConcat: () {
-                                        if ((_model.nomeTextController
-                                                        .text !=
-                                                    '') &&
-                                            (_model.brincoTextController
-                                                        .text !=
-                                                    '') &&
+                                        if ((_model.nomeTextController.text !=
+                                                '') &&
+                                            (_model.brincoTextController.text !=
+                                                '') &&
                                             (editarAnimalAnimaisProdutoresRecord
                                                     .brincoAnimal !=
                                                 -1)) {
                                           return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                        } else if (_model.nomeTextController.text !=
-                                                '') {
+                                        } else if (_model
+                                                .nomeTextController.text !=
+                                            '') {
                                           return _model.nomeTextController.text;
                                         } else {
                                           return _model
                                               .brincoTextController.text;
                                         }
                                       }(),
-                                      brincoAnimalOrder: (_model.brincoTextController
-                                                          .text !=
-                                                      '') &&
+                                      brincoAnimalOrder: (_model
+                                                      .brincoTextController
+                                                      .text !=
+                                                  '') &&
                                               (_model.brincoTextController
                                                       .text !=
                                                   '-1')
@@ -1788,27 +1791,27 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                                           editarAnimalAnimaisProdutoresRecord
                                               .grupoAnimal,
                                       nomeBrincoConcat: () {
-                                        if ((_model.nomeTextController
-                                                        .text !=
-                                                    '') &&
-                                            (_model.brincoTextController
-                                                        .text !=
-                                                    '') &&
+                                        if ((_model.nomeTextController.text !=
+                                                '') &&
+                                            (_model.brincoTextController.text !=
+                                                '') &&
                                             (editarAnimalAnimaisProdutoresRecord
                                                     .brincoAnimal !=
                                                 -1)) {
                                           return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                        } else if (_model.nomeTextController.text !=
-                                                '') {
+                                        } else if (_model
+                                                .nomeTextController.text !=
+                                            '') {
                                           return _model.nomeTextController.text;
                                         } else {
                                           return _model
                                               .brincoTextController.text;
                                         }
                                       }(),
-                                      brincoAnimalOrder: (_model.brincoTextController
-                                                          .text !=
-                                                      '') &&
+                                      brincoAnimalOrder: (_model
+                                                      .brincoTextController
+                                                      .text !=
+                                                  '') &&
                                               (_model.brincoTextController
                                                       .text !=
                                                   '-1')

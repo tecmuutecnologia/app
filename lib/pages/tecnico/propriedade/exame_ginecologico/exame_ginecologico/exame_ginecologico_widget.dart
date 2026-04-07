@@ -1,3 +1,4 @@
+// ignore_for_file: unnecessary_null_comparison
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -508,8 +509,8 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
                                                   Text(
                                                     () {
                                                       if ((listViewOnlineAnimaisProdutoresRecord
-                                                                      .nomeAnimal !=
-                                                                  '') &&
+                                                                  .nomeAnimal !=
+                                                              '') &&
                                                           (listViewOnlineAnimaisProdutoresRecord
                                                                   .brincoAnimal !=
                                                               null) &&
@@ -518,8 +519,8 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
                                                               -1)) {
                                                         return '${listViewOnlineAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                       } else if (listViewOnlineAnimaisProdutoresRecord
-                                                                  .nomeAnimal !=
-                                                              '') {
+                                                              .nomeAnimal !=
+                                                          '') {
                                                         return listViewOnlineAnimaisProdutoresRecord
                                                             .nomeAnimal;
                                                       } else {
@@ -705,8 +706,8 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
                                                         ),
                                                       ),
                                                       if ((listViewOnlineAnimaisProdutoresRecord
-                                                                      .dtUltimaAcao !=
-                                                                  '') &&
+                                                                  .dtUltimaAcao !=
+                                                              '') &&
                                                           (functions.verificaDataAcaoDataAtual(
                                                                   listViewOnlineAnimaisProdutoresRecord
                                                                       .dtUltimaAcao) ==
@@ -957,8 +958,8 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
                                                   Text(
                                                     () {
                                                       if ((listOfflineExistenteItem
-                                                                      .nomeAnimal !=
-                                                                  '') &&
+                                                                  .nomeAnimal !=
+                                                              '') &&
                                                           (listOfflineExistenteItem
                                                                   .brincoAnimal !=
                                                               null) &&
@@ -967,8 +968,8 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
                                                               -1)) {
                                                         return '${listOfflineExistenteItem.nomeAnimal} - ${listOfflineExistenteItem.brincoAnimal.toString()}';
                                                       } else if (listOfflineExistenteItem
-                                                                  .nomeAnimal !=
-                                                              '') {
+                                                              .nomeAnimal !=
+                                                          '') {
                                                         return listOfflineExistenteItem
                                                             .nomeAnimal;
                                                       } else {
@@ -1156,8 +1157,8 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
                                                         ),
                                                       ),
                                                       if ((listOfflineExistenteItem
-                                                                      .dtUltimaAcao !=
-                                                                  '') &&
+                                                                  .dtUltimaAcao !=
+                                                              '') &&
                                                           (functions.verificaDataAcaoDataAtual(
                                                                   listOfflineExistenteItem
                                                                       .dtUltimaAcao) ==
@@ -1404,9 +1405,7 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
                                                 children: [
                                                   Text(
                                                     () {
-                                                      if ((listViewOfflineItem
-                                                                      .nomeAnimal !=
-                                                                  '') &&
+                                                      if ((listViewOfflineItem.nomeAnimal != '') &&
                                                           (listViewOfflineItem
                                                                   .brincoAnimal !=
                                                               null) &&
@@ -1418,8 +1417,8 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
                                                               'False')) {
                                                         return '${listViewOfflineItem.nomeAnimal} - ${listViewOfflineItem.brincoAnimal.toString()}';
                                                       } else if ((listViewOfflineItem
-                                                                      .nomeAnimal !=
-                                                                  '') &&
+                                                                  .nomeAnimal !=
+                                                              '') &&
                                                           (listViewOfflineItem
                                                                   .nomeAnimal !=
                                                               'False')) {
@@ -1610,8 +1609,8 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
                                                         ),
                                                       ),
                                                       if ((listViewOfflineItem
-                                                                      .dtUltimaAcao !=
-                                                                  '') &&
+                                                                  .dtUltimaAcao !=
+                                                              '') &&
                                                           (functions.verificaDataAcaoDataAtual(
                                                                   listViewOfflineItem
                                                                       .dtUltimaAcao) ==

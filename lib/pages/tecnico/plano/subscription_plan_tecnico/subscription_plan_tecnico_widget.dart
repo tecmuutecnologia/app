@@ -759,8 +759,6 @@ class _SubscriptionPlanTecnicoWidgetState
                                           safeSetState(() {});
                                         return;
                                       }
-
-                                      if (_shouldSetState) safeSetState(() {});
                                     },
                                     text: 'Confirmar e assinar',
                                     options: FFButtonOptions(

@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -169,8 +171,7 @@ class _ProntuarioAnimalOfflineWidgetState
                 final animaisProdutoresOfflineItem =
                     animaisProdutoresOffline[animaisProdutoresOfflineIndex];
                 return Visibility(
-                  visible:
-                      animaisProdutoresOfflineIndex == widget.itemUidIndex,
+                  visible: animaisProdutoresOfflineIndex == widget.itemUidIndex,
                   child: SingleChildScrollView(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -245,8 +246,8 @@ class _ProntuarioAnimalOfflineWidgetState
                                             Text(
                                               () {
                                                 if ((animaisProdutoresOfflineItem
-                                                                .nomeAnimal !=
-                                                            '') &&
+                                                            .nomeAnimal !=
+                                                        '') &&
                                                     (animaisProdutoresOfflineItem
                                                             .brincoAnimal !=
                                                         null) &&
@@ -255,8 +256,8 @@ class _ProntuarioAnimalOfflineWidgetState
                                                         -1)) {
                                                   return '${animaisProdutoresOfflineItem.nomeAnimal} - ${animaisProdutoresOfflineItem.brincoAnimal.toString()}';
                                                 } else if (animaisProdutoresOfflineItem
-                                                            .nomeAnimal !=
-                                                        '') {
+                                                        .nomeAnimal !=
+                                                    '') {
                                                   return animaisProdutoresOfflineItem
                                                       .nomeAnimal;
                                                 } else {
@@ -1252,8 +1253,8 @@ class _ProntuarioAnimalOfflineWidgetState
                                                 ),
                                                 Text(
                                                   animaisProdutoresOfflineItem
-                                                                  .dtUltimoParto !=
-                                                              ''
+                                                              .dtUltimoParto !=
+                                                          ''
                                                       ? functions
                                                           .calcularDiferencaEmDias(
                                                               animaisProdutoresOfflineItem

@@ -1,3 +1,5 @@
+// ignore_for_file: dead_code, dead_null_aware_expression
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
@@ -769,7 +771,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
                               if (_model.touroValue != null &&
                                   _model.touroValue != '') {
                                 if (_model.dtInseminacaoTextController.text !=
-                                        '') {
+                                    '') {
                                   if (widget.dtUltimaInseminacao != null &&
                                       widget.dtUltimaInseminacao != '') {
                                     if (functions
@@ -837,8 +839,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
                                                   .dtInseminacaoTextController
                                                   .text),
                                           dataDaAcao: getCurrentTimestamp,
-                                          uidPropriedade:
-                                              widget.uidPropriedade,
+                                          uidPropriedade: widget.uidPropriedade,
                                         ));
                                         _model.outUidAcaoRealizada =
                                             AcoesRecord.getDocumentFromData(
@@ -846,8 +847,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
                                                   uidAnimalAnimaisProdutores:
                                                       widget
                                                           .uidAnimaisProdutores,
-                                                  nomeAnimal:
-                                                      widget.nomeAnimal,
+                                                  nomeAnimal: widget.nomeAnimal,
                                                   acao: 'Inseminada',
                                                   dataVisita: _model
                                                       .dtInseminacaoTextController
@@ -975,8 +975,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
                                           AcoesRecord.getDocumentFromData(
                                               createAcoesRecordData(
                                                 uidAnimalAnimaisProdutores:
-                                                    widget
-                                                        .uidAnimaisProdutores,
+                                                    widget.uidAnimaisProdutores,
                                                 nomeAnimal: widget.nomeAnimal,
                                                 acao: 'Inseminada',
                                                 dataVisita: _model

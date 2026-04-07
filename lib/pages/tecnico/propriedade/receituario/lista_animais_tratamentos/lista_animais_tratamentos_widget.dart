@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -224,9 +226,8 @@ class _ListaAnimaisTratamentosWidgetState
 
                               return Text(
                                 () {
-                                  if ((textAnimaisProdutoresRecord
-                                                  .nomeAnimal !=
-                                              '') &&
+                                  if ((textAnimaisProdutoresRecord.nomeAnimal !=
+                                          '') &&
                                       (textAnimaisProdutoresRecord
                                               .brincoAnimal !=
                                           null) &&
@@ -234,8 +235,9 @@ class _ListaAnimaisTratamentosWidgetState
                                               .brincoAnimal !=
                                           -1)) {
                                     return '${textAnimaisProdutoresRecord.nomeAnimal} - ${textAnimaisProdutoresRecord.brincoAnimal.toString()}';
-                                  } else if (textAnimaisProdutoresRecord.nomeAnimal !=
-                                          '') {
+                                  } else if (textAnimaisProdutoresRecord
+                                          .nomeAnimal !=
+                                      '') {
                                     return textAnimaisProdutoresRecord
                                         .nomeAnimal;
                                   } else {
@@ -455,9 +457,8 @@ class _ListaAnimaisTratamentosWidgetState
 
                               return Text(
                                 () {
-                                  if ((textAnimaisProdutoresRecord
-                                                  .nomeAnimal !=
-                                              '') &&
+                                  if ((textAnimaisProdutoresRecord.nomeAnimal !=
+                                          '') &&
                                       (textAnimaisProdutoresRecord
                                               .brincoAnimal !=
                                           null) &&
@@ -465,8 +466,9 @@ class _ListaAnimaisTratamentosWidgetState
                                               .brincoAnimal !=
                                           -1)) {
                                     return '${textAnimaisProdutoresRecord.nomeAnimal} - ${textAnimaisProdutoresRecord.brincoAnimal.toString()}';
-                                  } else if (textAnimaisProdutoresRecord.nomeAnimal !=
-                                          '') {
+                                  } else if (textAnimaisProdutoresRecord
+                                          .nomeAnimal !=
+                                      '') {
                                     return textAnimaisProdutoresRecord
                                         .nomeAnimal;
                                   } else {

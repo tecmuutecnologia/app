@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import, unused_local_variable, unnecessary_null_comparison
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';

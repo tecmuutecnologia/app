@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison, unused_local_variable
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_calendar.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -511,8 +513,8 @@ class _CalendarioSanitarioWidgetState extends State<CalendarioSanitarioWidget> {
                                           Text(
                                             () {
                                               if ((columnAnimaisProdutoresRecord
-                                                              .nomeAnimal !=
-                                                          '') &&
+                                                          .nomeAnimal !=
+                                                      '') &&
                                                   (columnAnimaisProdutoresRecord
                                                           .brincoAnimal !=
                                                       null) &&
@@ -521,8 +523,8 @@ class _CalendarioSanitarioWidgetState extends State<CalendarioSanitarioWidget> {
                                                       -1)) {
                                                 return '${columnAnimaisProdutoresRecord.nomeAnimal} - ${columnAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                               } else if (columnAnimaisProdutoresRecord
-                                                          .nomeAnimal !=
-                                                      '') {
+                                                      .nomeAnimal !=
+                                                  '') {
                                                 return columnAnimaisProdutoresRecord
                                                     .nomeAnimal;
                                               } else {

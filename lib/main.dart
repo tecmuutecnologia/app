@@ -26,10 +26,9 @@ void main() async {
 
   await initFirebase();
 
-  // Inicializa ObjectBox para cache local (apenas em plataformas nativas)
+  // Inicializa ObjectBox para armazenamento offline-first (apenas em plataformas nativas)
   if (!kIsWeb) {
-    await ObjectBoxService.initialize();
-    await SyncService.initialize();
+    await ObjectBoxAuthHelper.initializeOfflineFirst();
   }
 
   await FlutterFlowTheme.initialize();

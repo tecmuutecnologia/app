@@ -1,3 +1,5 @@
+// ignore_for_file: dead_code, dead_null_aware_expression
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_choice_chips.dart';
@@ -1080,8 +1082,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                                           acao: _model.valoracaoValue,
                                           dtAcao:
                                               _model.dtAcaoTextController.text,
-                                          uidPropriedade:
-                                              widget.uidPropriedade,
+                                          uidPropriedade: widget.uidPropriedade,
                                           uidAnimalAnimaisProdutores: _model
                                               .outPesquisaAnimalSelecionado
                                               ?.reference,
@@ -1093,8 +1094,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                                           obsVisita:
                                               _model.obsTextController.text,
                                           acao: _model.valoracaoValue,
-                                          uidPropriedade:
-                                              widget.uidPropriedade,
+                                          uidPropriedade: widget.uidPropriedade,
                                           uidAnimalAnimaisProdutores: _model
                                               .outPesquisaAnimalSelecionado
                                               ?.reference,
@@ -1276,8 +1276,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                                                 .doc();
                                         await resumoDaVisitaRecordReference
                                             .set(createResumoDaVisitaRecordData(
-                                          uidPropriedade:
-                                              widget.uidPropriedade,
+                                          uidPropriedade: widget.uidPropriedade,
                                           uidTecnico: widget.uidTecnico,
                                           dtVisita: getCurrentTimestamp,
                                           dtVisitaFormatado: dateTimeFormat(
@@ -1292,8 +1291,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                                                 createResumoDaVisitaRecordData(
                                                   uidPropriedade:
                                                       widget.uidPropriedade,
-                                                  uidTecnico:
-                                                      widget.uidTecnico,
+                                                  uidTecnico: widget.uidTecnico,
                                                   dtVisita: getCurrentTimestamp,
                                                   dtVisitaFormatado:
                                                       dateTimeFormat(

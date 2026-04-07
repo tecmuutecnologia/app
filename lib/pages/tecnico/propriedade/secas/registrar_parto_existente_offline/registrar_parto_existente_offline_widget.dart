@@ -1,3 +1,5 @@
+// ignore_for_file: dead_null_aware_expression
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
@@ -1107,11 +1109,11 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                 onPressed: () async {
                                   if (_model.novoAnimalValue == true) {
                                     if ((_model.nomeTextController.text !=
-                                                '') ||
+                                            '') ||
                                         (_model.brincoTextController.text !=
-                                                '')) {
+                                            '')) {
                                       if (_model.dtPartoTextController.text !=
-                                              '') {
+                                          '') {
                                         // Verifica se o animal que está recebendo um ação já tem alguma lançada de forma offline em antes sincronizar.
                                         if (FFAppState()
                                                 .animaisProdutoresEditados
@@ -1142,9 +1144,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                   .updateAnimaisProdutoresExistentesAtIndex(
                                                 widget.itemUidIndex!,
                                                 (e) => e
-                                                  ..dtUltimoParto = _model.dtPartoTextController
-                                                                  .text !=
-                                                              ''
+                                                  ..dtUltimoParto = _model
+                                                              .dtPartoTextController
+                                                              .text !=
+                                                          ''
                                                       ? _model
                                                           .dtPartoTextController
                                                           .text
@@ -1165,8 +1168,8 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                   ..status = 'Vazia'
                                                   ..dtUltimoPartoContingencia =
                                                       _model.dtPartoTextController
-                                                                      .text !=
-                                                                  ''
+                                                                  .text !=
+                                                              ''
                                                           ? _model
                                                               .dtPartoTextController
                                                               .text
@@ -1187,9 +1190,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                   .updateAnimaisProdutoresEditadosAtIndex(
                                                 FFAppState().contador,
                                                 (e) => e
-                                                  ..dtUltimoParto = _model.dtPartoTextController
-                                                                  .text !=
-                                                              ''
+                                                  ..dtUltimoParto = _model
+                                                              .dtPartoTextController
+                                                              .text !=
+                                                          ''
                                                       ? _model
                                                           .dtPartoTextController
                                                           .text
@@ -1203,8 +1207,8 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                         )
                                                   ..dtUltimoPartoContingencia =
                                                       _model.dtPartoTextController
-                                                                      .text !=
-                                                                  ''
+                                                                  .text !=
+                                                              ''
                                                           ? _model
                                                               .dtPartoTextController
                                                               .text
@@ -1243,9 +1247,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                 widget.uidPropriedade,
                                             nomeAnimal:
                                                 _model.nomeTextController.text,
-                                            brincoAnimal: (_model.brincoTextController
-                                                                .text !=
-                                                            '') &&
+                                            brincoAnimal: (_model
+                                                            .brincoTextController
+                                                            .text !=
+                                                        '') &&
                                                     (_model.brincoTextController
                                                             .text !=
                                                         '-1')
@@ -1253,9 +1258,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                     .brincoTextController.text)
                                                 : -1,
                                             racaAnimal: _model.racaPreValue,
-                                            pesoAnimal: _model.pesoNascTextController
-                                                            .text !=
-                                                        ''
+                                            pesoAnimal: _model
+                                                        .pesoNascTextController
+                                                        .text !=
+                                                    ''
                                                 ? _model
                                                     .pesoNascTextController.text
                                                 : '0',
@@ -1272,8 +1278,7 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                       widget.brincoVacaAtual !=
                                                           '')) {
                                                 return '${widget.nomeVacaAtual} - ${widget.brincoVacaAtual}';
-                                              } else if (widget
-                                                          .nomeVacaAtual !=
+                                              } else if (widget.nomeVacaAtual !=
                                                       null &&
                                                   widget.nomeVacaAtual != '') {
                                                 return widget.nomeVacaAtual;
@@ -1284,20 +1289,20 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                             touro: widget
                                                 .nomeTourtoUltimaInseminacao,
                                             nomeBrincoConcat: () {
-                                              if ((_model
-                                                              .nomeTextController
-                                                              .text !=
-                                                          '') &&
+                                              if ((_model.nomeTextController
+                                                          .text !=
+                                                      '') &&
                                                   (_model.brincoTextController
-                                                              .text !=
-                                                          '') &&
+                                                          .text !=
+                                                      '') &&
                                                   (_model.brincoTextController
                                                           .text !=
                                                       '-1')) {
                                                 return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                              } else if (_model.nomeTextController
-                                                          .text !=
-                                                      '') {
+                                              } else if (_model
+                                                      .nomeTextController
+                                                      .text !=
+                                                  '') {
                                                 return _model
                                                     .nomeTextController.text;
                                               } else {
@@ -1305,9 +1310,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                     .brincoTextController.text;
                                               }
                                             }(),
-                                            brincoAnimalOrder: (_model.brincoTextController
-                                                                .text !=
-                                                            '') &&
+                                            brincoAnimalOrder: (_model
+                                                            .brincoTextController
+                                                            .text !=
+                                                        '') &&
                                                     (_model.brincoTextController
                                                             .text !=
                                                         '-1')
@@ -1325,9 +1331,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                 .updateAnimaisProdutoresExistentesAtIndex(
                                               widget.itemUidIndex!,
                                               (e) => e
-                                                ..dtUltimoParto = _model.dtPartoTextController
-                                                                .text !=
-                                                            ''
+                                                ..dtUltimoParto = _model
+                                                            .dtPartoTextController
+                                                            .text !=
+                                                        ''
                                                     ? _model
                                                         .dtPartoTextController
                                                         .text
@@ -1348,8 +1355,8 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                 ..status = 'Vazia'
                                                 ..dtUltimoPartoContingencia =
                                                     _model.dtPartoTextController
-                                                                    .text !=
-                                                                ''
+                                                                .text !=
+                                                            ''
                                                         ? _model
                                                             .dtPartoTextController
                                                             .text
@@ -1407,9 +1414,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                               status: 'Vazia',
                                               grupoAnimal: 'Vacas',
                                               dtUltimaInseminacao: '0',
-                                              dtUltimoParto: _model.dtPartoTextController
-                                                              .text !=
-                                                          ''
+                                              dtUltimoParto: _model
+                                                          .dtPartoTextController
+                                                          .text !=
+                                                      ''
                                                   ? _model.dtPartoTextController
                                                       .text
                                                   : dateTimeFormat(
@@ -1497,9 +1505,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                   .elementAtOrNull(
                                                       widget.itemUidIndex!)
                                                   ?.idGrupoAnimal,
-                                              dtUltimoPartoContingencia: _model.dtPartoTextController
-                                                              .text !=
-                                                          ''
+                                              dtUltimoPartoContingencia: _model
+                                                          .dtPartoTextController
+                                                          .text !=
+                                                      ''
                                                   ? _model.dtPartoTextController
                                                       .text
                                                   : dateTimeFormat(
@@ -1554,9 +1563,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                               .updateAnimaisProdutoresExistentesAtIndex(
                                             widget.itemUidIndex!,
                                             (e) => e
-                                              ..dtUltimoParto = _model.dtPartoTextController
-                                                              .text !=
-                                                          ''
+                                              ..dtUltimoParto = _model
+                                                          .dtPartoTextController
+                                                          .text !=
+                                                      ''
                                                   ? _model.dtPartoTextController
                                                       .text
                                                   : dateTimeFormat(
@@ -1576,8 +1586,8 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                               ..status = 'Vazia'
                                               ..dtUltimoPartoContingencia =
                                                   _model.dtPartoTextController
-                                                                  .text !=
-                                                              ''
+                                                              .text !=
+                                                          ''
                                                       ? _model
                                                           .dtPartoTextController
                                                           .text
@@ -1635,9 +1645,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                             status: 'Vazia',
                                             grupoAnimal: 'Vacas',
                                             dtUltimaInseminacao: '0',
-                                            dtUltimoParto: _model.dtPartoTextController
-                                                            .text !=
-                                                        ''
+                                            dtUltimoParto: _model
+                                                        .dtPartoTextController
+                                                        .text !=
+                                                    ''
                                                 ? _model
                                                     .dtPartoTextController.text
                                                 : dateTimeFormat(
@@ -1724,9 +1735,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                 .elementAtOrNull(
                                                     widget.itemUidIndex!)
                                                 ?.idGrupoAnimal,
-                                            dtUltimoPartoContingencia: _model.dtPartoTextController
-                                                            .text !=
-                                                        ''
+                                            dtUltimoPartoContingencia: _model
+                                                        .dtPartoTextController
+                                                        .text !=
+                                                    ''
                                                 ? _model
                                                     .dtPartoTextController.text
                                                 : dateTimeFormat(
@@ -1776,9 +1788,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                 widget.uidPropriedade,
                                             nomeAnimal:
                                                 _model.nomeTextController.text,
-                                            brincoAnimal: (_model.brincoTextController
-                                                                .text !=
-                                                            '') &&
+                                            brincoAnimal: (_model
+                                                            .brincoTextController
+                                                            .text !=
+                                                        '') &&
                                                     (_model.brincoTextController
                                                             .text !=
                                                         '-1')
@@ -1786,9 +1799,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                     .brincoTextController.text)
                                                 : -1,
                                             racaAnimal: _model.racaPreValue,
-                                            pesoAnimal: _model.pesoNascTextController
-                                                            .text !=
-                                                        ''
+                                            pesoAnimal: _model
+                                                        .pesoNascTextController
+                                                        .text !=
+                                                    ''
                                                 ? _model
                                                     .pesoNascTextController.text
                                                 : '0',
@@ -1805,8 +1819,7 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                       widget.brincoVacaAtual !=
                                                           '')) {
                                                 return '${widget.nomeVacaAtual} - ${widget.brincoVacaAtual}';
-                                              } else if (widget
-                                                          .nomeVacaAtual !=
+                                              } else if (widget.nomeVacaAtual !=
                                                       null &&
                                                   widget.nomeVacaAtual != '') {
                                                 return widget.nomeVacaAtual;
@@ -1817,20 +1830,20 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                             touro: widget
                                                 .nomeTourtoUltimaInseminacao,
                                             nomeBrincoConcat: () {
-                                              if ((_model
-                                                              .nomeTextController
-                                                              .text !=
-                                                          '') &&
+                                              if ((_model.nomeTextController
+                                                          .text !=
+                                                      '') &&
                                                   (_model.brincoTextController
-                                                              .text !=
-                                                          '') &&
+                                                          .text !=
+                                                      '') &&
                                                   (_model.brincoTextController
                                                           .text !=
                                                       '-1')) {
                                                 return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                              } else if (_model.nomeTextController
-                                                          .text !=
-                                                      '') {
+                                              } else if (_model
+                                                      .nomeTextController
+                                                      .text !=
+                                                  '') {
                                                 return _model
                                                     .nomeTextController.text;
                                               } else {
@@ -1838,9 +1851,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                     .brincoTextController.text;
                                               }
                                             }(),
-                                            brincoAnimalOrder: (_model.brincoTextController
-                                                                .text !=
-                                                            '') &&
+                                            brincoAnimalOrder: (_model
+                                                            .brincoTextController
+                                                            .text !=
+                                                        '') &&
                                                     (_model.brincoTextController
                                                             .text !=
                                                         '-1')
@@ -1926,9 +1940,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                               .updateAnimaisProdutoresExistentesAtIndex(
                                             widget.itemUidIndex!,
                                             (e) => e
-                                              ..dtUltimoParto = _model.dtPartoTextController
-                                                              .text !=
-                                                          ''
+                                              ..dtUltimoParto = _model
+                                                          .dtPartoTextController
+                                                          .text !=
+                                                      ''
                                                   ? _model.dtPartoTextController
                                                       .text
                                                   : dateTimeFormat(
@@ -1948,8 +1963,8 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                               ..status = 'Vazia'
                                               ..dtUltimoPartoContingencia =
                                                   _model.dtPartoTextController
-                                                                  .text !=
-                                                              ''
+                                                              .text !=
+                                                          ''
                                                       ? _model
                                                           .dtPartoTextController
                                                           .text
@@ -1970,9 +1985,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                               .updateAnimaisProdutoresEditadosAtIndex(
                                             FFAppState().contador,
                                             (e) => e
-                                              ..dtUltimoParto = _model.dtPartoTextController
-                                                              .text !=
-                                                          ''
+                                              ..dtUltimoParto = _model
+                                                          .dtPartoTextController
+                                                          .text !=
+                                                      ''
                                                   ? _model.dtPartoTextController
                                                       .text
                                                   : dateTimeFormat(
@@ -1985,8 +2001,8 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                                     )
                                               ..dtUltimoPartoContingencia =
                                                   _model.dtPartoTextController
-                                                                  .text !=
-                                                              ''
+                                                              .text !=
+                                                          ''
                                                       ? _model
                                                           .dtPartoTextController
                                                           .text
@@ -2024,9 +2040,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                             .updateAnimaisProdutoresExistentesAtIndex(
                                           widget.itemUidIndex!,
                                           (e) => e
-                                            ..dtUltimoParto = _model.dtPartoTextController
-                                                            .text !=
-                                                        ''
+                                            ..dtUltimoParto = _model
+                                                        .dtPartoTextController
+                                                        .text !=
+                                                    ''
                                                 ? _model
                                                     .dtPartoTextController.text
                                                 : dateTimeFormat(
@@ -2043,9 +2060,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                             ..dtSecPrevista = ''
                                             ..grupoAnimal = 'Vacas'
                                             ..status = 'Vazia'
-                                            ..dtUltimoPartoContingencia = _model.dtPartoTextController
-                                                            .text !=
-                                                        ''
+                                            ..dtUltimoPartoContingencia = _model
+                                                        .dtPartoTextController
+                                                        .text !=
+                                                    ''
                                                 ? _model
                                                     .dtPartoTextController.text
                                                 : dateTimeFormat(
@@ -2101,9 +2119,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                           status: 'Vazia',
                                           grupoAnimal: 'Vacas',
                                           dtUltimaInseminacao: '0',
-                                          dtUltimoParto: _model.dtPartoTextController
-                                                          .text !=
-                                                      ''
+                                          dtUltimoParto: _model
+                                                      .dtPartoTextController
+                                                      .text !=
+                                                  ''
                                               ? _model
                                                   .dtPartoTextController.text
                                               : dateTimeFormat(
@@ -2190,9 +2209,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                               .elementAtOrNull(
                                                   widget.itemUidIndex!)
                                               ?.idGrupoAnimal,
-                                          dtUltimoPartoContingencia: _model.dtPartoTextController
-                                                          .text !=
-                                                      ''
+                                          dtUltimoPartoContingencia: _model
+                                                      .dtPartoTextController
+                                                      .text !=
+                                                  ''
                                               ? _model
                                                   .dtPartoTextController.text
                                               : dateTimeFormat(
@@ -2246,9 +2266,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                           .updateAnimaisProdutoresExistentesAtIndex(
                                         widget.itemUidIndex!,
                                         (e) => e
-                                          ..dtUltimoParto = _model.dtPartoTextController
-                                                          .text !=
-                                                      ''
+                                          ..dtUltimoParto = _model
+                                                      .dtPartoTextController
+                                                      .text !=
+                                                  ''
                                               ? _model
                                                   .dtPartoTextController.text
                                               : dateTimeFormat(
@@ -2265,9 +2286,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                           ..dtSecPrevista = ''
                                           ..grupoAnimal = 'Vacas'
                                           ..status = 'Vazia'
-                                          ..dtUltimoPartoContingencia = _model.dtPartoTextController
-                                                          .text !=
-                                                      ''
+                                          ..dtUltimoPartoContingencia = _model
+                                                      .dtPartoTextController
+                                                      .text !=
+                                                  ''
                                               ? _model
                                                   .dtPartoTextController.text
                                               : dateTimeFormat(
@@ -2323,9 +2345,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                         status: 'Vazia',
                                         grupoAnimal: 'Vacas',
                                         dtUltimaInseminacao: '0',
-                                        dtUltimoParto: _model.dtPartoTextController
-                                                        .text !=
-                                                    ''
+                                        dtUltimoParto: _model
+                                                    .dtPartoTextController
+                                                    .text !=
+                                                ''
                                             ? _model.dtPartoTextController.text
                                             : dateTimeFormat(
                                                 "dd/MM/yyyy",
@@ -2411,9 +2434,10 @@ class _RegistrarPartoExistenteOfflineWidgetState
                                             .elementAtOrNull(
                                                 widget.itemUidIndex!)
                                             ?.idGrupoAnimal,
-                                        dtUltimoPartoContingencia: _model.dtPartoTextController
-                                                        .text !=
-                                                    ''
+                                        dtUltimoPartoContingencia: _model
+                                                    .dtPartoTextController
+                                                    .text !=
+                                                ''
                                             ? _model.dtPartoTextController.text
                                             : dateTimeFormat(
                                                 "dd/MM/yyyy",

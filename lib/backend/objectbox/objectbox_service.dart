@@ -8,7 +8,7 @@ class ObjectBoxService {
   static ObjectBoxService? _instance;
   static Store? _store;
 
-  // Boxes para cada entidade
+  // Boxes para entidades principais
   late final Box<PersonEntity> personBox;
   late final Box<TecnicoEntity> tecnicoBox;
   late final Box<ProdutorEntity> produtorBox;
@@ -16,6 +16,28 @@ class ObjectBoxService {
   late final Box<AnimalEntity> animalBox;
   late final Box<SyncMetadataEntity> syncMetadataBox;
   late final Box<PendingOperationEntity> pendingOperationBox;
+
+  // Boxes para ações e visitas
+  late final Box<AcaoEntity> acaoBox;
+  late final Box<AcaoDaVisitaEntity> acaoDaVisitaBox;
+  late final Box<ResumoVisitaEntity> resumoVisitaBox;
+  late final Box<RecomendacaoEntity> recomendacaoBox;
+
+  // Boxes para tratamentos e sanitário
+  late final Box<TratamentoEntity> tratamentoBox;
+  late final Box<AcaoSanitarioEntity> acaoSanitarioBox;
+
+  // Box para financeiro
+  late final Box<FinanceiroEntity> financeiroBox;
+
+  // Boxes para tabelas de referência
+  late final Box<GrupoEntity> grupoBox;
+  late final Box<RacaEntity> racaBox;
+  late final Box<StatusAnimalEntity> statusAnimalBox;
+  late final Box<StatusProdutivoEntity> statusProdutivoBox;
+  late final Box<TipoAcaoEntity> tipoAcaoBox;
+  late final Box<CalendarioSanitarioEntity> calendarioSanitarioBox;
+  late final Box<CidadeEntity> cidadeBox;
 
   ObjectBoxService._();
 
@@ -45,7 +67,7 @@ class ObjectBoxService {
     _store = await openStore(directory: dbPath);
     _instance = ObjectBoxService._();
 
-    // Inicializa os boxes
+    // Inicializa os boxes principais
     _instance!.personBox = _store!.box<PersonEntity>();
     _instance!.tecnicoBox = _store!.box<TecnicoEntity>();
     _instance!.produtorBox = _store!.box<ProdutorEntity>();
@@ -53,6 +75,29 @@ class ObjectBoxService {
     _instance!.animalBox = _store!.box<AnimalEntity>();
     _instance!.syncMetadataBox = _store!.box<SyncMetadataEntity>();
     _instance!.pendingOperationBox = _store!.box<PendingOperationEntity>();
+
+    // Boxes para ações e visitas
+    _instance!.acaoBox = _store!.box<AcaoEntity>();
+    _instance!.acaoDaVisitaBox = _store!.box<AcaoDaVisitaEntity>();
+    _instance!.resumoVisitaBox = _store!.box<ResumoVisitaEntity>();
+    _instance!.recomendacaoBox = _store!.box<RecomendacaoEntity>();
+
+    // Boxes para tratamentos e sanitário
+    _instance!.tratamentoBox = _store!.box<TratamentoEntity>();
+    _instance!.acaoSanitarioBox = _store!.box<AcaoSanitarioEntity>();
+
+    // Box para financeiro
+    _instance!.financeiroBox = _store!.box<FinanceiroEntity>();
+
+    // Boxes para tabelas de referência
+    _instance!.grupoBox = _store!.box<GrupoEntity>();
+    _instance!.racaBox = _store!.box<RacaEntity>();
+    _instance!.statusAnimalBox = _store!.box<StatusAnimalEntity>();
+    _instance!.statusProdutivoBox = _store!.box<StatusProdutivoEntity>();
+    _instance!.tipoAcaoBox = _store!.box<TipoAcaoEntity>();
+    _instance!.calendarioSanitarioBox =
+        _store!.box<CalendarioSanitarioEntity>();
+    _instance!.cidadeBox = _store!.box<CidadeEntity>();
 
     return _instance!;
   }
@@ -74,6 +119,7 @@ class ObjectBoxService {
 
   /// Limpa todos os dados do banco local
   Future<void> clearAllData() async {
+    // Entidades principais
     personBox.removeAll();
     tecnicoBox.removeAll();
     produtorBox.removeAll();
@@ -81,6 +127,28 @@ class ObjectBoxService {
     animalBox.removeAll();
     syncMetadataBox.removeAll();
     pendingOperationBox.removeAll();
+
+    // Ações e visitas
+    acaoBox.removeAll();
+    acaoDaVisitaBox.removeAll();
+    resumoVisitaBox.removeAll();
+    recomendacaoBox.removeAll();
+
+    // Tratamentos e sanitário
+    tratamentoBox.removeAll();
+    acaoSanitarioBox.removeAll();
+
+    // Financeiro
+    financeiroBox.removeAll();
+
+    // Tabelas de referência
+    grupoBox.removeAll();
+    racaBox.removeAll();
+    statusAnimalBox.removeAll();
+    statusProdutivoBox.removeAll();
+    tipoAcaoBox.removeAll();
+    calendarioSanitarioBox.removeAll();
+    cidadeBox.removeAll();
   }
 
   /// Limpa dados de um usuário específico (para logout)

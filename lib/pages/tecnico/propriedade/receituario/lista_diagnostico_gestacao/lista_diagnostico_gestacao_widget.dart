@@ -68,7 +68,8 @@ class _ListaDiagnosticoGestacaoWidgetState
   @override
   Widget build(BuildContext context) {
     // Formatar a data da visita para comparação (igual ao campo dataVisita nas ações)
-    final dtVisitaFormatada = _formatDateForComparison(widget.dtVisita);
+    // ignore: unused_local_variable
+    final _dtVisitaFormatada = _formatDateForComparison(widget.dtVisita);
 
     // Obter início e fim do dia da visita para filtrar por dataDaAcao
     final dtInicioDia = _startOfDay(widget.dtVisita);
@@ -105,8 +106,8 @@ class _ListaDiagnosticoGestacaoWidgetState
               .where((acao) =>
                   (acao.acao == 'PP' ||
                       acao.acao == 'DG+' ||
-                  acao.acao == 'DG-' ||
-                  acao.acao == 'Aborto') &&
+                      acao.acao == 'DG-' ||
+                      acao.acao == 'Aborto') &&
                   acao.uidAnimalAnimaisProdutores != null)
               .toList();
 
@@ -145,9 +146,8 @@ class _ListaDiagnosticoGestacaoWidgetState
                   .toList();
               final animaisDGMenos =
                   todosAnimais.where((a) => a.acao == 'DG-').toList();
-                final animaisAbortos = todosAnimais
-                  .where(
-                    (a) => a.acao == 'Aborto' && a.grupoAnimal == 'Vacas')
+              final animaisAbortos = todosAnimais
+                  .where((a) => a.acao == 'Aborto' && a.grupoAnimal == 'Vacas')
                   .toList();
 
               // Ordenar por brinco numérico e depois por nome
@@ -348,9 +348,9 @@ class _ListaDiagnosticoGestacaoWidgetState
                         ),
                         color: animal.acao == 'DG-'
                             ? Color(0xFFFF0076)
-                          : animal.acao == 'Aborto'
-                            ? Color(0xFFEE0000)
-                            : Color(0xFF048508),
+                            : animal.acao == 'Aborto'
+                                ? Color(0xFFEE0000)
+                                : Color(0xFF048508),
                         letterSpacing: 0.0,
                         fontWeight: FontWeight.w600,
                       ),

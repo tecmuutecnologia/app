@@ -1,3 +1,5 @@
+// ignore_for_file: dead_null_aware_expression
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -535,9 +537,9 @@ class _RegistrarPartoInduzidoWidgetState
                               alignment: AlignmentDirectional(0.0, 0.05),
                               child: FFButtonWidget(
                                 onPressed: () async {
-                                  if (_model.dtPartoInduzidoTextController
-                                              .text !=
-                                          '') {
+                                  if (_model
+                                          .dtPartoInduzidoTextController.text !=
+                                      '') {
                                     await widget.uidAnimaisProdutores!.update({
                                       ...createAnimaisProdutoresRecordData(
                                         dtUltimoParto: _model

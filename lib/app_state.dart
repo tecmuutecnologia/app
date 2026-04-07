@@ -262,7 +262,8 @@ class FFAppState extends ChangeNotifier {
           _tipoAcoes;
     });
     _safeInit(() {
-      _acoesPreferidas = prefs.getStringList('ff_acoesPreferidas') ?? _acoesPreferidas;
+      _acoesPreferidas =
+          prefs.getStringList('ff_acoesPreferidas') ?? _acoesPreferidas;
     });
   }
 
@@ -1222,11 +1223,5 @@ class FFAppState extends ChangeNotifier {
 void _safeInit(Function() initializeField) {
   try {
     initializeField();
-  } catch (_) {}
-}
-
-Future _safeInitAsync(Function() initializeField) async {
-  try {
-    await initializeField();
   } catch (_) {}
 }

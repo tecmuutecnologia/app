@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_button_tabbar.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -595,8 +597,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                 ),
                                 if (_model.respostaNet! &&
                                     (_model.searchListBezerrasTextController
-                                                .text !=
-                                            ''))
+                                            .text !=
+                                        ''))
                                   StreamBuilder<List<AnimaisProdutoresRecord>>(
                                     stream: _model.bezerrasAnimaisProdutor(
                                       requestFn: () =>
@@ -611,8 +613,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                     )
                                                     .where(
                                                       'uidTecnicoPropriedade',
-                                                      isEqualTo: widget
-                                                          .uidPropriedade,
+                                                      isEqualTo:
+                                                          widget.uidPropriedade,
                                                     )
                                                     .orderBy('nomeAnimal')
                                                     .orderBy(
@@ -656,7 +658,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                               .searchListBezerrasTextController
                                               .text
                                               .toLowerCase();
-                                          final matchesSearch = searchQuery.isEmpty ||
+                                          final matchesSearch = searchQuery
+                                                  .isEmpty ||
                                               listViewOnlineFilterAnimaisProdutoresRecord
                                                   .nomeAnimal
                                                   .toLowerCase()
@@ -666,10 +669,11 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                   .toString()
                                                   .contains(searchQuery);
                                           return Visibility(
-                                            visible: (listViewOnlineFilterAnimaisProdutoresRecord
-                                                        .status !=
-                                                    'Descarte') &&
-                                                matchesSearch,
+                                            visible:
+                                                (listViewOnlineFilterAnimaisProdutoresRecord
+                                                            .status !=
+                                                        'Descarte') &&
+                                                    matchesSearch,
                                             child: Padding(
                                               padding: EdgeInsetsDirectional
                                                   .fromSTEB(
@@ -704,8 +708,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                       ),
                                                       'emailPropriedade':
                                                           serializeParam(
-                                                        widget
-                                                            .emailPropriedade,
+                                                        widget.emailPropriedade,
                                                         ParamType.String,
                                                       ),
                                                       'uidAnimaisProdutores':
@@ -723,8 +726,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                       ),
                                                       'visitaPresencial':
                                                           serializeParam(
-                                                        widget
-                                                            .visitaPresencial,
+                                                        widget.visitaPresencial,
                                                         ParamType.bool,
                                                       ),
                                                       'diasDg': serializeParam(
@@ -762,9 +764,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                 .nomePropriedade!,
                                                             uidTecnico: widget
                                                                 .uidTecnico!,
-                                                            emailPropriedade:
-                                                                widget
-                                                                    .emailPropriedade!,
+                                                            emailPropriedade: widget
+                                                                .emailPropriedade!,
                                                             uidAnimaisProdutores:
                                                                 listViewOnlineFilterAnimaisProdutoresRecord
                                                                     .reference,
@@ -774,9 +775,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                             nomeAnimal:
                                                                 listViewOnlineFilterAnimaisProdutoresRecord
                                                                     .nomeAnimal,
-                                                            visitaPresencial:
-                                                                widget
-                                                                    .visitaPresencial!,
+                                                            visitaPresencial: widget
+                                                                .visitaPresencial!,
                                                             diasDg: '',
                                                           ),
                                                         ),
@@ -831,8 +831,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                       0.0),
                                                               child: Text(
                                                                 () {
-                                                                  if ((listViewOnlineFilterAnimaisProdutoresRecord.nomeAnimal !=
-                                                                              '') &&
+                                                                  if ((listViewOnlineFilterAnimaisProdutoresRecord.nomeAnimal != '') &&
                                                                       (listViewOnlineFilterAnimaisProdutoresRecord
                                                                               .brincoAnimal !=
                                                                           null) &&
@@ -841,8 +840,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                           -1)) {
                                                                     return '${listViewOnlineFilterAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineFilterAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                                   } else if (listViewOnlineFilterAnimaisProdutoresRecord
-                                                                              .nomeAnimal !=
-                                                                          '') {
+                                                                          .nomeAnimal !=
+                                                                      '') {
                                                                     return listViewOnlineFilterAnimaisProdutoresRecord
                                                                         .nomeAnimal;
                                                                   } else {
@@ -1283,8 +1282,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                   ),
                                 if (_model.respostaNet! &&
                                     (_model.searchListBezerrasTextController
-                                                .text ==
-                                            ''))
+                                            .text ==
+                                        ''))
                                   StreamBuilder<List<AnimaisProdutoresRecord>>(
                                     stream: _model.bezerrasAnimaisProdutor(
                                       requestFn: () =>
@@ -1299,8 +1298,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                     )
                                                     .where(
                                                       'uidTecnicoPropriedade',
-                                                      isEqualTo: widget
-                                                          .uidPropriedade,
+                                                      isEqualTo:
+                                                          widget.uidPropriedade,
                                                     )
                                                     .orderBy('nomeAnimal')
                                                     .orderBy(
@@ -1379,8 +1378,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                       ),
                                                       'emailPropriedade':
                                                           serializeParam(
-                                                        widget
-                                                            .emailPropriedade,
+                                                        widget.emailPropriedade,
                                                         ParamType.String,
                                                       ),
                                                       'uidAnimaisProdutores':
@@ -1398,8 +1396,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                       ),
                                                       'visitaPresencial':
                                                           serializeParam(
-                                                        widget
-                                                            .visitaPresencial,
+                                                        widget.visitaPresencial,
                                                         ParamType.bool,
                                                       ),
                                                       'diasDg': serializeParam(
@@ -1437,9 +1434,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                 .nomePropriedade!,
                                                             uidTecnico: widget
                                                                 .uidTecnico!,
-                                                            emailPropriedade:
-                                                                widget
-                                                                    .emailPropriedade!,
+                                                            emailPropriedade: widget
+                                                                .emailPropriedade!,
                                                             uidAnimaisProdutores:
                                                                 listViewOnlineAnimaisProdutoresRecord
                                                                     .reference,
@@ -1449,9 +1445,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                             nomeAnimal:
                                                                 listViewOnlineAnimaisProdutoresRecord
                                                                     .nomeAnimal,
-                                                            visitaPresencial:
-                                                                widget
-                                                                    .visitaPresencial!,
+                                                            visitaPresencial: widget
+                                                                .visitaPresencial!,
                                                             diasDg: '',
                                                           ),
                                                         ),
@@ -1506,8 +1501,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                       0.0),
                                                               child: Text(
                                                                 () {
-                                                                  if ((listViewOnlineAnimaisProdutoresRecord.nomeAnimal !=
-                                                                              '') &&
+                                                                  if ((listViewOnlineAnimaisProdutoresRecord.nomeAnimal != '') &&
                                                                       (listViewOnlineAnimaisProdutoresRecord
                                                                               .brincoAnimal !=
                                                                           null) &&
@@ -1516,8 +1510,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                           -1)) {
                                                                     return '${listViewOnlineAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                                   } else if (listViewOnlineAnimaisProdutoresRecord
-                                                                              .nomeAnimal !=
-                                                                          '') {
+                                                                          .nomeAnimal !=
+                                                                      '') {
                                                                     return listViewOnlineAnimaisProdutoresRecord
                                                                         .nomeAnimal;
                                                                   } else {
@@ -2025,8 +2019,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                       ),
                                                       'emailPropriedade':
                                                           serializeParam(
-                                                        widget
-                                                            .emailPropriedade,
+                                                        widget.emailPropriedade,
                                                         ParamType.String,
                                                       ),
                                                       'uidAnimaisProdutores':
@@ -2044,8 +2037,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                       ),
                                                       'visitaPresencial':
                                                           serializeParam(
-                                                        widget
-                                                            .visitaPresencial,
+                                                        widget.visitaPresencial,
                                                         ParamType.bool,
                                                       ),
                                                       'diasDg': serializeParam(
@@ -2102,9 +2094,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                       0.0),
                                                               child: Text(
                                                                 () {
-                                                                  if ((listOfflineExistenteItem.nomeAnimal !=
-                                                                              '') &&
-                                                                      (listOfflineExistenteItem.brincoAnimal !=
+                                                                  if ((listOfflineExistenteItem.nomeAnimal != '') &&
+                                                                      (listOfflineExistenteItem
+                                                                              .brincoAnimal !=
                                                                           null) &&
                                                                       (listOfflineExistenteItem
                                                                               .brincoAnimal !=
@@ -2113,8 +2105,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                               .nomeAnimal !=
                                                                           '')) {
                                                                     return '${listOfflineExistenteItem.nomeAnimal} - ${listOfflineExistenteItem.brincoAnimal.toString()}';
-                                                                  } else if ((listOfflineExistenteItem.nomeAnimal !=
-                                                                              '') &&
+                                                                  } else if ((listOfflineExistenteItem
+                                                                              .nomeAnimal !=
+                                                                          '') &&
                                                                       (listOfflineExistenteItem
                                                                               .nomeAnimal !=
                                                                           '')) {
@@ -2645,8 +2638,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                         0.0),
                                                                 child: Text(
                                                                   () {
-                                                                    if ((animaisProdutoresItem.nomeAnimal !=
-                                                                                '') &&
+                                                                    if ((animaisProdutoresItem.nomeAnimal != '') &&
                                                                         (animaisProdutoresItem.brincoAnimal !=
                                                                             null) &&
                                                                         (animaisProdutoresItem.brincoAnimal !=
@@ -2655,7 +2647,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                             '')) {
                                                                       return '${animaisProdutoresItem.nomeAnimal} - ${animaisProdutoresItem.brincoAnimal.toString()}';
                                                                     } else if ((animaisProdutoresItem.nomeAnimal !=
-                                                                                '') &&
+                                                                            '') &&
                                                                         (animaisProdutoresItem.nomeAnimal !=
                                                                             '')) {
                                                                       return animaisProdutoresItem
@@ -3250,8 +3242,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                               ),
                               if (_model.respostaNet! &&
                                   (_model.searchListBezerrosTextController
-                                              .text ==
-                                          ''))
+                                          .text ==
+                                      ''))
                                 StreamBuilder<List<AnimaisProdutoresRecord>>(
                                   stream: _model.bezerrosAnimaisProdutor(
                                     requestFn: () =>
@@ -3466,8 +3458,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                     -1.0, 0.0),
                                                             child: Text(
                                                               () {
-                                                                if ((listViewOnlineAnimaisProdutoresRecord.nomeAnimal !=
-                                                                            '') &&
+                                                                if ((listViewOnlineAnimaisProdutoresRecord
+                                                                            .nomeAnimal !=
+                                                                        '') &&
                                                                     (listViewOnlineAnimaisProdutoresRecord
                                                                             .brincoAnimal !=
                                                                         null) &&
@@ -3476,8 +3469,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                         -1)) {
                                                                   return '${listViewOnlineAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                                 } else if (listViewOnlineAnimaisProdutoresRecord
-                                                                            .nomeAnimal !=
-                                                                        '') {
+                                                                        .nomeAnimal !=
+                                                                    '') {
                                                                   return listViewOnlineAnimaisProdutoresRecord
                                                                       .nomeAnimal;
                                                                 } else {
@@ -3939,8 +3932,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                 ),
                               if (_model.respostaNet! &&
                                   (_model.searchListBezerrosTextController
-                                              .text !=
-                                          ''))
+                                          .text !=
+                                      ''))
                                 StreamBuilder<List<AnimaisProdutoresRecord>>(
                                   stream: _model.bezerrosAnimaisProdutor(
                                     requestFn: () =>
@@ -3998,20 +3991,22 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                             .searchListBezerrosTextController
                                             .text
                                             .toLowerCase();
-                                          final matchesSearch = searchQuery.isEmpty ||
-                                              listViewOnlineFilterAnimaisProdutoresRecord
-                                                  .nomeAnimal
-                                                  .toLowerCase()
-                                                  .contains(searchQuery) ||
-                                              listViewOnlineFilterAnimaisProdutoresRecord
-                                                  .brincoAnimal
-                                                  .toString()
-                                                  .contains(searchQuery);
+                                        final matchesSearch = searchQuery
+                                                .isEmpty ||
+                                            listViewOnlineFilterAnimaisProdutoresRecord
+                                                .nomeAnimal
+                                                .toLowerCase()
+                                                .contains(searchQuery) ||
+                                            listViewOnlineFilterAnimaisProdutoresRecord
+                                                .brincoAnimal
+                                                .toString()
+                                                .contains(searchQuery);
                                         return Visibility(
-                                          visible: (listViewOnlineFilterAnimaisProdutoresRecord
-                                                      .status !=
-                                                  'Descarte') &&
-                                              matchesSearch,
+                                          visible:
+                                              (listViewOnlineFilterAnimaisProdutoresRecord
+                                                          .status !=
+                                                      'Descarte') &&
+                                                  matchesSearch,
                                           child: Padding(
                                             padding:
                                                 EdgeInsetsDirectional.fromSTEB(
@@ -4168,8 +4163,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                     -1.0, 0.0),
                                                             child: Text(
                                                               () {
-                                                                if ((listViewOnlineFilterAnimaisProdutoresRecord.nomeAnimal !=
-                                                                            '') &&
+                                                                if ((listViewOnlineFilterAnimaisProdutoresRecord
+                                                                            .nomeAnimal !=
+                                                                        '') &&
                                                                     (listViewOnlineFilterAnimaisProdutoresRecord
                                                                             .brincoAnimal !=
                                                                         null) &&
@@ -4178,8 +4174,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                         -1)) {
                                                                   return '${listViewOnlineFilterAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineFilterAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                                 } else if (listViewOnlineFilterAnimaisProdutoresRecord
-                                                                            .nomeAnimal !=
-                                                                        '') {
+                                                                        .nomeAnimal !=
+                                                                    '') {
                                                                   return listViewOnlineFilterAnimaisProdutoresRecord
                                                                       .nomeAnimal;
                                                                 } else {
@@ -4664,8 +4660,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                       'Bezerros') &&
                                                   (listOfflineExistenteItem
                                                           .uidTecnicoPropriedade ==
-                                                      widget
-                                                          .uidPropriedade)) &&
+                                                      widget.uidPropriedade)) &&
                                               (listOfflineExistenteItem
                                                       .status !=
                                                   'Descarte'),
@@ -4776,8 +4771,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                     -1.0, 0.0),
                                                             child: Text(
                                                               () {
-                                                                if ((listOfflineExistenteItem.nomeAnimal !=
-                                                                            '') &&
+                                                                if ((listOfflineExistenteItem
+                                                                            .nomeAnimal !=
+                                                                        '') &&
                                                                     (listOfflineExistenteItem
                                                                             .brincoAnimal !=
                                                                         null) &&
@@ -4786,8 +4782,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                         -1)) {
                                                                   return '${listOfflineExistenteItem.nomeAnimal} - ${listOfflineExistenteItem.brincoAnimal.toString()}';
                                                                 } else if (listOfflineExistenteItem
-                                                                            .nomeAnimal !=
-                                                                        '') {
+                                                                        .nomeAnimal !=
+                                                                    '') {
                                                                   return listOfflineExistenteItem
                                                                       .nomeAnimal;
                                                                 } else {
@@ -5332,9 +5328,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                       0.0),
                                                               child: Text(
                                                                 () {
-                                                                  if ((animaisProdutoresItem.nomeAnimal !=
-                                                                              '') &&
-                                                                      (animaisProdutoresItem.brincoAnimal !=
+                                                                  if ((animaisProdutoresItem.nomeAnimal != '') &&
+                                                                      (animaisProdutoresItem
+                                                                              .brincoAnimal !=
                                                                           null) &&
                                                                       (animaisProdutoresItem
                                                                               .brincoAnimal !=
@@ -5343,8 +5339,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                               .nomeAnimal !=
                                                                           '')) {
                                                                     return '${animaisProdutoresItem.nomeAnimal} - ${animaisProdutoresItem.brincoAnimal.toString()}';
-                                                                  } else if ((animaisProdutoresItem.nomeAnimal !=
-                                                                              '') &&
+                                                                  } else if ((animaisProdutoresItem
+                                                                              .nomeAnimal !=
+                                                                          '') &&
                                                                       (animaisProdutoresItem
                                                                               .nomeAnimal !=
                                                                           '')) {
@@ -5962,8 +5959,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                               ),
                               if (_model.respostaNet! &&
                                   (_model.searchListNovilhasTextController
-                                              .text ==
-                                          ''))
+                                          .text ==
+                                      ''))
                                 StreamBuilder<List<AnimaisProdutoresRecord>>(
                                   stream: _model.novilhasAnimaisProdutor(
                                     requestFn: () =>
@@ -6178,8 +6175,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                     -1.0, 0.0),
                                                             child: Text(
                                                               () {
-                                                                if ((listViewOnlineAnimaisProdutoresRecord.nomeAnimal !=
-                                                                            '') &&
+                                                                if ((listViewOnlineAnimaisProdutoresRecord
+                                                                            .nomeAnimal !=
+                                                                        '') &&
                                                                     (listViewOnlineAnimaisProdutoresRecord
                                                                             .brincoAnimal !=
                                                                         null) &&
@@ -6188,8 +6186,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                         -1)) {
                                                                   return '${listViewOnlineAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                                 } else if (listViewOnlineAnimaisProdutoresRecord
-                                                                            .nomeAnimal !=
-                                                                        '') {
+                                                                        .nomeAnimal !=
+                                                                    '') {
                                                                   return listViewOnlineAnimaisProdutoresRecord
                                                                       .nomeAnimal;
                                                                 } else {
@@ -6651,8 +6649,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                 ),
                               if (_model.respostaNet! &&
                                   (_model.searchListNovilhasTextController
-                                              .text !=
-                                          ''))
+                                          .text !=
+                                      ''))
                                 StreamBuilder<List<AnimaisProdutoresRecord>>(
                                   stream: _model.novilhasAnimaisProdutor(
                                     requestFn: () =>
@@ -6710,20 +6708,22 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                             .searchListNovilhasTextController
                                             .text
                                             .toLowerCase();
-                                          final matchesSearch = searchQuery.isEmpty ||
-                                              listViewOnlineFilterAnimaisProdutoresRecord
-                                                  .nomeAnimal
-                                                  .toLowerCase()
-                                                  .contains(searchQuery) ||
-                                              listViewOnlineFilterAnimaisProdutoresRecord
-                                                  .brincoAnimal
-                                                  .toString()
-                                                  .contains(searchQuery);
+                                        final matchesSearch = searchQuery
+                                                .isEmpty ||
+                                            listViewOnlineFilterAnimaisProdutoresRecord
+                                                .nomeAnimal
+                                                .toLowerCase()
+                                                .contains(searchQuery) ||
+                                            listViewOnlineFilterAnimaisProdutoresRecord
+                                                .brincoAnimal
+                                                .toString()
+                                                .contains(searchQuery);
                                         return Visibility(
-                                          visible: (listViewOnlineFilterAnimaisProdutoresRecord
-                                                      .status !=
-                                                  'Descarte') &&
-                                              matchesSearch,
+                                          visible:
+                                              (listViewOnlineFilterAnimaisProdutoresRecord
+                                                          .status !=
+                                                      'Descarte') &&
+                                                  matchesSearch,
                                           child: Padding(
                                             padding:
                                                 EdgeInsetsDirectional.fromSTEB(
@@ -6880,8 +6880,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                     -1.0, 0.0),
                                                             child: Text(
                                                               () {
-                                                                if ((listViewOnlineFilterAnimaisProdutoresRecord.nomeAnimal !=
-                                                                            '') &&
+                                                                if ((listViewOnlineFilterAnimaisProdutoresRecord
+                                                                            .nomeAnimal !=
+                                                                        '') &&
                                                                     (listViewOnlineFilterAnimaisProdutoresRecord
                                                                             .brincoAnimal !=
                                                                         null) &&
@@ -6890,8 +6891,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                         -1)) {
                                                                   return '${listViewOnlineFilterAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineFilterAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                                 } else if (listViewOnlineFilterAnimaisProdutoresRecord
-                                                                            .nomeAnimal !=
-                                                                        '') {
+                                                                        .nomeAnimal !=
+                                                                    '') {
                                                                   return listViewOnlineFilterAnimaisProdutoresRecord
                                                                       .nomeAnimal;
                                                                 } else {
@@ -7376,8 +7377,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                       'Novilhas') &&
                                                   (listOfflineExistenteItem
                                                           .uidTecnicoPropriedade ==
-                                                      widget
-                                                          .uidPropriedade)) &&
+                                                      widget.uidPropriedade)) &&
                                               (listOfflineExistenteItem
                                                       .status !=
                                                   'Descarte'),
@@ -7488,8 +7488,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                     -1.0, 0.0),
                                                             child: Text(
                                                               () {
-                                                                if ((listOfflineExistenteItem.nomeAnimal !=
-                                                                            '') &&
+                                                                if ((listOfflineExistenteItem.nomeAnimal != '') &&
                                                                     (listOfflineExistenteItem
                                                                             .brincoAnimal !=
                                                                         null) &&
@@ -7500,8 +7499,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                             .nomeAnimal !=
                                                                         '')) {
                                                                   return '${listOfflineExistenteItem.nomeAnimal} - ${listOfflineExistenteItem.brincoAnimal.toString()}';
-                                                                } else if ((listOfflineExistenteItem.nomeAnimal !=
-                                                                            '') &&
+                                                                } else if ((listOfflineExistenteItem
+                                                                            .nomeAnimal !=
+                                                                        '') &&
                                                                     (listOfflineExistenteItem
                                                                             .nomeAnimal !=
                                                                         '')) {
@@ -8049,9 +8049,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                       0.0),
                                                               child: Text(
                                                                 () {
-                                                                  if ((animaisProdutoresItem.nomeAnimal !=
-                                                                              '') &&
-                                                                      (animaisProdutoresItem.brincoAnimal !=
+                                                                  if ((animaisProdutoresItem.nomeAnimal != '') &&
+                                                                      (animaisProdutoresItem
+                                                                              .brincoAnimal !=
                                                                           null) &&
                                                                       (animaisProdutoresItem
                                                                               .brincoAnimal !=
@@ -8060,8 +8060,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                               .nomeAnimal !=
                                                                           '')) {
                                                                     return '${animaisProdutoresItem.nomeAnimal} - ${animaisProdutoresItem.brincoAnimal.toString()}';
-                                                                  } else if ((animaisProdutoresItem.nomeAnimal !=
-                                                                              '') &&
+                                                                  } else if ((animaisProdutoresItem
+                                                                              .nomeAnimal !=
+                                                                          '') &&
                                                                       (animaisProdutoresItem
                                                                               .nomeAnimal !=
                                                                           '')) {
@@ -8678,9 +8679,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                 ),
                               ),
                               if (_model.respostaNet! &&
-                                  (_model.searchListSemensTextController
-                                              .text ==
-                                          ''))
+                                  (_model.searchListSemensTextController.text ==
+                                      ''))
                                 StreamBuilder<List<AnimaisProdutoresRecord>>(
                                   stream: _model.semensAnimaisProdutor(
                                     requestFn: () =>
@@ -8895,8 +8895,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                     -1.0, 0.0),
                                                             child: Text(
                                                               () {
-                                                                if ((listViewOnlineAnimaisProdutoresRecord.nomeAnimal !=
-                                                                            '') &&
+                                                                if ((listViewOnlineAnimaisProdutoresRecord
+                                                                            .nomeAnimal !=
+                                                                        '') &&
                                                                     (listViewOnlineAnimaisProdutoresRecord
                                                                             .brincoAnimal !=
                                                                         null) &&
@@ -8905,8 +8906,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                         -1)) {
                                                                   return '${listViewOnlineAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                                 } else if (listViewOnlineAnimaisProdutoresRecord
-                                                                            .nomeAnimal !=
-                                                                        '') {
+                                                                        .nomeAnimal !=
+                                                                    '') {
                                                                   return listViewOnlineAnimaisProdutoresRecord
                                                                       .nomeAnimal;
                                                                 } else {
@@ -9367,9 +9368,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                   },
                                 ),
                               if (_model.respostaNet! &&
-                                  (_model.searchListSemensTextController
-                                              .text !=
-                                          ''))
+                                  (_model.searchListSemensTextController.text !=
+                                      ''))
                                 StreamBuilder<List<AnimaisProdutoresRecord>>(
                                   stream: _model.semensAnimaisProdutor(
                                     requestFn: () =>
@@ -9424,23 +9424,24 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                             listViewOnlineFilterAnimaisProdutoresRecordList[
                                                 listViewOnlineFilterIndex];
                                         final searchQuery = _model
-                                            .searchListSemensTextController
-                                            .text
+                                            .searchListSemensTextController.text
                                             .toLowerCase();
-                                          final matchesSearch = searchQuery.isEmpty ||
-                                              listViewOnlineFilterAnimaisProdutoresRecord
-                                                  .nomeAnimal
-                                                  .toLowerCase()
-                                                  .contains(searchQuery) ||
-                                              listViewOnlineFilterAnimaisProdutoresRecord
-                                                  .brincoAnimal
-                                                  .toString()
-                                                  .contains(searchQuery);
+                                        final matchesSearch = searchQuery
+                                                .isEmpty ||
+                                            listViewOnlineFilterAnimaisProdutoresRecord
+                                                .nomeAnimal
+                                                .toLowerCase()
+                                                .contains(searchQuery) ||
+                                            listViewOnlineFilterAnimaisProdutoresRecord
+                                                .brincoAnimal
+                                                .toString()
+                                                .contains(searchQuery);
                                         return Visibility(
-                                          visible: (listViewOnlineFilterAnimaisProdutoresRecord
-                                                      .status !=
-                                                  'Descarte') &&
-                                              matchesSearch,
+                                          visible:
+                                              (listViewOnlineFilterAnimaisProdutoresRecord
+                                                          .status !=
+                                                      'Descarte') &&
+                                                  matchesSearch,
                                           child: Padding(
                                             padding:
                                                 EdgeInsetsDirectional.fromSTEB(
@@ -9597,8 +9598,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                     -1.0, 0.0),
                                                             child: Text(
                                                               () {
-                                                                if ((listViewOnlineFilterAnimaisProdutoresRecord.nomeAnimal !=
-                                                                            '') &&
+                                                                if ((listViewOnlineFilterAnimaisProdutoresRecord
+                                                                            .nomeAnimal !=
+                                                                        '') &&
                                                                     (listViewOnlineFilterAnimaisProdutoresRecord
                                                                             .brincoAnimal !=
                                                                         null) &&
@@ -9607,8 +9609,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                         -1)) {
                                                                   return '${listViewOnlineFilterAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineFilterAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                                 } else if (listViewOnlineFilterAnimaisProdutoresRecord
-                                                                            .nomeAnimal !=
-                                                                        '') {
+                                                                        .nomeAnimal !=
+                                                                    '') {
                                                                   return listViewOnlineFilterAnimaisProdutoresRecord
                                                                       .nomeAnimal;
                                                                 } else {
@@ -10093,8 +10095,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                       'Sêmens') &&
                                                   (listOfflineExistenteItem
                                                           .uidTecnicoPropriedade ==
-                                                      widget
-                                                          .uidPropriedade)) &&
+                                                      widget.uidPropriedade)) &&
                                               (listOfflineExistenteItem
                                                       .status !=
                                                   'Descarte'),
@@ -10205,8 +10206,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                     -1.0, 0.0),
                                                             child: Text(
                                                               () {
-                                                                if ((listOfflineExistenteItem.nomeAnimal !=
-                                                                            '') &&
+                                                                if ((listOfflineExistenteItem
+                                                                            .nomeAnimal !=
+                                                                        '') &&
                                                                     (listOfflineExistenteItem
                                                                             .brincoAnimal !=
                                                                         null) &&
@@ -10215,8 +10217,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                         -1)) {
                                                                   return '${listOfflineExistenteItem.nomeAnimal} - ${listOfflineExistenteItem.brincoAnimal.toString()}';
                                                                 } else if (listOfflineExistenteItem
-                                                                            .nomeAnimal !=
-                                                                        '') {
+                                                                        .nomeAnimal !=
+                                                                    '') {
                                                                   return listOfflineExistenteItem
                                                                       .nomeAnimal;
                                                                 } else {
@@ -10761,9 +10763,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                       0.0),
                                                               child: Text(
                                                                 () {
-                                                                  if ((animaisProdutoresItem.nomeAnimal !=
-                                                                              '') &&
-                                                                      (animaisProdutoresItem.brincoAnimal !=
+                                                                  if ((animaisProdutoresItem.nomeAnimal != '') &&
+                                                                      (animaisProdutoresItem
+                                                                              .brincoAnimal !=
                                                                           null) &&
                                                                       (animaisProdutoresItem
                                                                               .brincoAnimal !=
@@ -10772,8 +10774,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                               .nomeAnimal !=
                                                                           '')) {
                                                                     return '${animaisProdutoresItem.nomeAnimal} - ${animaisProdutoresItem.brincoAnimal.toString()}';
-                                                                  } else if ((animaisProdutoresItem.nomeAnimal !=
-                                                                              '') &&
+                                                                  } else if ((animaisProdutoresItem
+                                                                              .nomeAnimal !=
+                                                                          '') &&
                                                                       (animaisProdutoresItem
                                                                               .nomeAnimal !=
                                                                           '')) {
@@ -11390,9 +11393,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                 ),
                               ),
                               if (_model.respostaNet! &&
-                                  (_model.searchListTourosTextController
-                                              .text ==
-                                          ''))
+                                  (_model.searchListTourosTextController.text ==
+                                      ''))
                                 StreamBuilder<List<AnimaisProdutoresRecord>>(
                                   stream: _model.tourosAnimaisProdutor(
                                     requestFn: () =>
@@ -11618,15 +11620,15 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                               children: [
                                                                 Text(
                                                                   () {
-                                                                    if ((listViewOnlineAnimaisProdutoresRecord.nomeAnimal !=
-                                                                                '') &&
+                                                                    if ((listViewOnlineAnimaisProdutoresRecord.nomeAnimal != '') &&
                                                                         (listViewOnlineAnimaisProdutoresRecord.brincoAnimal !=
                                                                             null) &&
                                                                         (listViewOnlineAnimaisProdutoresRecord.brincoAnimal !=
                                                                             -1)) {
                                                                       return '${listViewOnlineAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineAnimaisProdutoresRecord.brincoAnimal.toString()}';
-                                                                    } else if (listViewOnlineAnimaisProdutoresRecord.nomeAnimal !=
-                                                                            '') {
+                                                                    } else if (listViewOnlineAnimaisProdutoresRecord
+                                                                            .nomeAnimal !=
+                                                                        '') {
                                                                       return listViewOnlineAnimaisProdutoresRecord
                                                                           .nomeAnimal;
                                                                     } else {
@@ -12118,9 +12120,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                   },
                                 ),
                               if (_model.respostaNet! &&
-                                  (_model.searchListTourosTextController
-                                              .text !=
-                                          ''))
+                                  (_model.searchListTourosTextController.text !=
+                                      ''))
                                 StreamBuilder<List<AnimaisProdutoresRecord>>(
                                   stream: _model.tourosAnimaisProdutor(
                                     requestFn: () =>
@@ -12175,23 +12176,24 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                             listViewOnlineFilterAnimaisProdutoresRecordList[
                                                 listViewOnlineFilterIndex];
                                         final searchQuery = _model
-                                            .searchListTourosTextController
-                                            .text
+                                            .searchListTourosTextController.text
                                             .toLowerCase();
-                                          final matchesSearch = searchQuery.isEmpty ||
-                                              listViewOnlineFilterAnimaisProdutoresRecord
-                                                  .nomeAnimal
-                                                  .toLowerCase()
-                                                  .contains(searchQuery) ||
-                                              listViewOnlineFilterAnimaisProdutoresRecord
-                                                  .brincoAnimal
-                                                  .toString()
-                                                  .contains(searchQuery);
+                                        final matchesSearch = searchQuery
+                                                .isEmpty ||
+                                            listViewOnlineFilterAnimaisProdutoresRecord
+                                                .nomeAnimal
+                                                .toLowerCase()
+                                                .contains(searchQuery) ||
+                                            listViewOnlineFilterAnimaisProdutoresRecord
+                                                .brincoAnimal
+                                                .toString()
+                                                .contains(searchQuery);
                                         return Visibility(
-                                          visible: (listViewOnlineFilterAnimaisProdutoresRecord
-                                                      .status !=
-                                                  'Descarte') &&
-                                              matchesSearch,
+                                          visible:
+                                              (listViewOnlineFilterAnimaisProdutoresRecord
+                                                          .status !=
+                                                      'Descarte') &&
+                                                  matchesSearch,
                                           child: Padding(
                                             padding:
                                                 EdgeInsetsDirectional.fromSTEB(
@@ -12359,15 +12361,15 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                               children: [
                                                                 Text(
                                                                   () {
-                                                                    if ((listViewOnlineFilterAnimaisProdutoresRecord.nomeAnimal !=
-                                                                                '') &&
+                                                                    if ((listViewOnlineFilterAnimaisProdutoresRecord.nomeAnimal != '') &&
                                                                         (listViewOnlineFilterAnimaisProdutoresRecord.brincoAnimal !=
                                                                             null) &&
                                                                         (listViewOnlineFilterAnimaisProdutoresRecord.brincoAnimal !=
                                                                             -1)) {
                                                                       return '${listViewOnlineFilterAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineFilterAnimaisProdutoresRecord.brincoAnimal.toString()}';
-                                                                    } else if (listViewOnlineFilterAnimaisProdutoresRecord.nomeAnimal !=
-                                                                            '') {
+                                                                    } else if (listViewOnlineFilterAnimaisProdutoresRecord
+                                                                            .nomeAnimal !=
+                                                                        '') {
                                                                       return listViewOnlineFilterAnimaisProdutoresRecord
                                                                           .nomeAnimal;
                                                                     } else {
@@ -12883,8 +12885,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                       'Touros') &&
                                                   (listOfflineExistenteItem
                                                           .uidTecnicoPropriedade ==
-                                                      widget
-                                                          .uidPropriedade)) &&
+                                                      widget.uidPropriedade)) &&
                                               (listOfflineExistenteItem
                                                       .status !=
                                                   'Descarte'),
@@ -12995,8 +12996,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                     -1.0, 0.0),
                                                             child: Text(
                                                               () {
-                                                                if ((listOfflineExistenteItem.nomeAnimal !=
-                                                                            '') &&
+                                                                if ((listOfflineExistenteItem.nomeAnimal != '') &&
                                                                     (listOfflineExistenteItem
                                                                             .brincoAnimal !=
                                                                         null) &&
@@ -13007,8 +13007,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                             .nomeAnimal !=
                                                                         '')) {
                                                                   return '${listOfflineExistenteItem.nomeAnimal} - ${listOfflineExistenteItem.brincoAnimal.toString()}';
-                                                                } else if ((listOfflineExistenteItem.nomeAnimal !=
-                                                                            '') &&
+                                                                } else if ((listOfflineExistenteItem
+                                                                            .nomeAnimal !=
+                                                                        '') &&
                                                                     (listOfflineExistenteItem
                                                                             .nomeAnimal !=
                                                                         '')) {
@@ -13556,9 +13557,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                       0.0),
                                                               child: Text(
                                                                 () {
-                                                                  if ((animaisProdutoresItem.nomeAnimal !=
-                                                                              '') &&
-                                                                      (animaisProdutoresItem.brincoAnimal !=
+                                                                  if ((animaisProdutoresItem.nomeAnimal != '') &&
+                                                                      (animaisProdutoresItem
+                                                                              .brincoAnimal !=
                                                                           null) &&
                                                                       (animaisProdutoresItem
                                                                               .brincoAnimal !=
@@ -13567,8 +13568,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                               .nomeAnimal !=
                                                                           '')) {
                                                                     return '${animaisProdutoresItem.nomeAnimal} - ${animaisProdutoresItem.brincoAnimal.toString()}';
-                                                                  } else if ((animaisProdutoresItem.nomeAnimal !=
-                                                                              '') &&
+                                                                  } else if ((animaisProdutoresItem
+                                                                              .nomeAnimal !=
+                                                                          '') &&
                                                                       (animaisProdutoresItem
                                                                               .nomeAnimal !=
                                                                           '')) {
@@ -14168,9 +14170,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                 ),
                               ),
                               if (_model.respostaNet! &&
-                                  (_model.searchListVacasTextController
-                                              .text !=
-                                          ''))
+                                  (_model.searchListVacasTextController.text !=
+                                      ''))
                                 StreamBuilder<List<AnimaisProdutoresRecord>>(
                                   stream: _model.vacasAnimaisProdutor(
                                     requestFn: () =>
@@ -14236,23 +14237,24 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                             listViewOnlineFilterAnimaisProdutoresRecordList[
                                                 listViewOnlineFilterIndex];
                                         final searchQuery = _model
-                                            .searchListVacasTextController
-                                            .text
+                                            .searchListVacasTextController.text
                                             .toLowerCase();
-                                          final matchesSearch = searchQuery.isEmpty ||
-                                              listViewOnlineFilterAnimaisProdutoresRecord
-                                                  .nomeAnimal
-                                                  .toLowerCase()
-                                                  .contains(searchQuery) ||
-                                              listViewOnlineFilterAnimaisProdutoresRecord
-                                                  .brincoAnimal
-                                                  .toString()
-                                                  .contains(searchQuery);
+                                        final matchesSearch = searchQuery
+                                                .isEmpty ||
+                                            listViewOnlineFilterAnimaisProdutoresRecord
+                                                .nomeAnimal
+                                                .toLowerCase()
+                                                .contains(searchQuery) ||
+                                            listViewOnlineFilterAnimaisProdutoresRecord
+                                                .brincoAnimal
+                                                .toString()
+                                                .contains(searchQuery);
                                         return Visibility(
-                                          visible: (listViewOnlineFilterAnimaisProdutoresRecord
-                                                      .status !=
-                                                  'Descarte') &&
-                                              matchesSearch,
+                                          visible:
+                                              (listViewOnlineFilterAnimaisProdutoresRecord
+                                                          .status !=
+                                                      'Descarte') &&
+                                                  matchesSearch,
                                           child: Padding(
                                             padding:
                                                 EdgeInsetsDirectional.fromSTEB(
@@ -14409,8 +14411,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                     -1.0, 0.0),
                                                             child: Text(
                                                               () {
-                                                                if ((listViewOnlineFilterAnimaisProdutoresRecord.nomeAnimal !=
-                                                                            '') &&
+                                                                if ((listViewOnlineFilterAnimaisProdutoresRecord
+                                                                            .nomeAnimal !=
+                                                                        '') &&
                                                                     (listViewOnlineFilterAnimaisProdutoresRecord
                                                                             .brincoAnimal !=
                                                                         null) &&
@@ -14419,8 +14422,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                         -1)) {
                                                                   return '${listViewOnlineFilterAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineFilterAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                                 } else if (listViewOnlineFilterAnimaisProdutoresRecord
-                                                                            .nomeAnimal !=
-                                                                        '') {
+                                                                        .nomeAnimal !=
+                                                                    '') {
                                                                   return listViewOnlineFilterAnimaisProdutoresRecord
                                                                       .nomeAnimal;
                                                                 } else {
@@ -14881,9 +14884,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                   },
                                 ),
                               if (_model.respostaNet! &&
-                                  (_model.searchListVacasTextController
-                                              .text ==
-                                          ''))
+                                  (_model.searchListVacasTextController.text ==
+                                      ''))
                                 StreamBuilder<List<AnimaisProdutoresRecord>>(
                                   stream: _model.vacasAnimaisProdutor(
                                     requestFn: () =>
@@ -15109,8 +15111,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                     -1.0, 0.0),
                                                             child: Text(
                                                               () {
-                                                                if ((listViewOnlineAnimaisProdutoresRecord.nomeAnimal !=
-                                                                            '') &&
+                                                                if ((listViewOnlineAnimaisProdutoresRecord
+                                                                            .nomeAnimal !=
+                                                                        '') &&
                                                                     (listViewOnlineAnimaisProdutoresRecord
                                                                             .brincoAnimal !=
                                                                         null) &&
@@ -15119,8 +15122,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                         -1)) {
                                                                   return '${listViewOnlineAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                                 } else if (listViewOnlineAnimaisProdutoresRecord
-                                                                            .nomeAnimal !=
-                                                                        '') {
+                                                                        .nomeAnimal !=
+                                                                    '') {
                                                                   return listViewOnlineAnimaisProdutoresRecord
                                                                       .nomeAnimal;
                                                                 } else {
@@ -15605,8 +15608,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                       'Vacas') &&
                                                   (listOfflineExistenteItem
                                                           .uidTecnicoPropriedade ==
-                                                      widget
-                                                          .uidPropriedade)) &&
+                                                      widget.uidPropriedade)) &&
                                               (listOfflineExistenteItem
                                                       .status !=
                                                   'Descarte'),
@@ -15717,8 +15719,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                     -1.0, 0.0),
                                                             child: Text(
                                                               () {
-                                                                if ((listOfflineExistenteItem.nomeAnimal !=
-                                                                            '') &&
+                                                                if ((listOfflineExistenteItem.nomeAnimal != '') &&
                                                                     (listOfflineExistenteItem
                                                                             .brincoAnimal !=
                                                                         null) &&
@@ -15729,8 +15730,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                             .nomeAnimal !=
                                                                         '')) {
                                                                   return '${listOfflineExistenteItem.nomeAnimal} - ${listOfflineExistenteItem.brincoAnimal.toString()}';
-                                                                } else if ((listOfflineExistenteItem.nomeAnimal !=
-                                                                            '') &&
+                                                                } else if ((listOfflineExistenteItem
+                                                                            .nomeAnimal !=
+                                                                        '') &&
                                                                     (listOfflineExistenteItem
                                                                             .nomeAnimal !=
                                                                         '')) {
@@ -16278,9 +16280,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                       0.0),
                                                               child: Text(
                                                                 () {
-                                                                  if ((animaisProdutoresItem.nomeAnimal !=
-                                                                              '') &&
-                                                                      (animaisProdutoresItem.nomeAnimal !=
+                                                                  if ((animaisProdutoresItem.nomeAnimal != '') &&
+                                                                      (animaisProdutoresItem
+                                                                              .nomeAnimal !=
                                                                           '') &&
                                                                       (animaisProdutoresItem
                                                                               .brincoAnimal !=
@@ -16290,7 +16292,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                                                           -1)) {
                                                                     return '${animaisProdutoresItem.nomeAnimal} - ${animaisProdutoresItem.brincoAnimal.toString()}';
                                                                   } else if (((animaisProdutoresItem.nomeAnimal !=
-                                                                                  '') !=
+                                                                              '') !=
                                                                           null) &&
                                                                       (animaisProdutoresItem
                                                                               .nomeAnimal !=

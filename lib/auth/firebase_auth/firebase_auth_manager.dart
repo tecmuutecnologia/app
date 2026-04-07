@@ -49,8 +49,10 @@ class FirebaseAuthManager extends AuthManager
         GithubSignInManager,
         PhoneSignInManager {
   // Set when using phone verification (after phone number is provided).
+  // ignore: unused_field
   String? _phoneAuthVerificationCode;
   // Set when using phone sign in in web mode (ignored otherwise).
+  // ignore: unused_field
   ConfirmationResult? _webPhoneAuthConfirmationResult;
   FirebasePhoneAuthManager phoneAuthManager = FirebasePhoneAuthManager();
 

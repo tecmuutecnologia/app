@@ -61,8 +61,7 @@ class _PronInseminacoesWidgetState extends State<PronInseminacoesWidget> {
     context.watch<FFAppState>();
 
     return StreamBuilder<AnimaisProdutoresRecord>(
-      stream:
-          AnimaisProdutoresRecord.getDocument(widget.uidAnimaisProdutores!),
+      stream: AnimaisProdutoresRecord.getDocument(widget.uidAnimaisProdutores!),
       builder: (context, snapshot) {
         // Customize what your widget looks like when it's loading.
         if (!snapshot.hasData) {
@@ -82,7 +81,7 @@ class _PronInseminacoesWidgetState extends State<PronInseminacoesWidget> {
           );
         }
 
-        final pronInseminacoesAnimaisProdutoresRecord = snapshot.data!;
+        final _ = snapshot.data!;
 
         return GestureDetector(
           onTap: () {
@@ -634,18 +633,20 @@ class _PronInseminacoesWidgetState extends State<PronInseminacoesWidget> {
                               builder: (context) {
                                 final acoesInseminacoes =
                                     FFAppState().acoesOffline.toList()
-                                    ..sort((a, b) {
-                                      // Ordena por dataDaAcao descendente (mais recentes primeiro)
-                                      if (a.dataDaAcao != null && b.dataDaAcao != null) {
-                                        return b.dataDaAcao!.compareTo(a.dataDaAcao!);
-                                      } else if (a.dataDaAcao != null) {
-                                        return -1;
-                                      } else if (b.dataDaAcao != null) {
-                                        return 1;
-                                      } else {
-                                        return 0;
-                                      }
-                                    });
+                                      ..sort((a, b) {
+                                        // Ordena por dataDaAcao descendente (mais recentes primeiro)
+                                        if (a.dataDaAcao != null &&
+                                            b.dataDaAcao != null) {
+                                          return b.dataDaAcao!
+                                              .compareTo(a.dataDaAcao!);
+                                        } else if (a.dataDaAcao != null) {
+                                          return -1;
+                                        } else if (b.dataDaAcao != null) {
+                                          return 1;
+                                        } else {
+                                          return 0;
+                                        }
+                                      });
 
                                 return ListView.builder(
                                   padding: EdgeInsets.zero,

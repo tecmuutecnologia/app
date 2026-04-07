@@ -1,3 +1,5 @@
+// ignore_for_file: dead_null_aware_expression
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
@@ -764,7 +766,7 @@ class _NovaInseminacaoExistenteOfflineWidgetState
                               if (_model.touroValue != null &&
                                   _model.touroValue != '') {
                                 if (_model.dtInseminacaoTextController.text !=
-                                        '') {
+                                    '') {
                                   if (widget.dtUltimaInseminacao != null &&
                                       widget.dtUltimaInseminacao != '') {
                                     if (functions
@@ -808,8 +810,7 @@ class _NovaInseminacaoExistenteOfflineWidgetState
                                         FFAppState()
                                             .addToAcoesOffline(AcoesStruct(
                                           nomeAnimal: widget.nomeAnimal,
-                                          uidPropriedade:
-                                              widget.uidPropriedade,
+                                          uidPropriedade: widget.uidPropriedade,
                                           itemAtIndex: widget.itemUidIndex,
                                           uidAnimalAnimaisProdutores:
                                               widget.uidAnimaisProdutores,
@@ -1370,46 +1371,38 @@ class _NovaInseminacaoExistenteOfflineWidgetState
                                       nomeAnimal: widget.nomeAnimal,
                                       racaAnimal: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.racaAnimal,
                                       pesoAnimal: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.pesoAnimal,
                                       dtNascimento: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.dtNascimento,
                                       touro: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.touro,
                                       vaca: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.vaca,
                                       status: 'Inseminada',
                                       grupoAnimal: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.grupoAnimal,
                                       dtUltimaInseminacao: _model
                                           .dtInseminacaoTextController.text,
                                       dtUltimoParto: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.dtUltimoParto,
                                       liberaInseminacao: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.liberaInseminacao,
                                       dtPartoPrevisto: functions.somarDataParto(
                                           _model.dtInseminacaoTextController
@@ -1423,28 +1416,23 @@ class _NovaInseminacaoExistenteOfflineWidgetState
                                               .text),
                                       dtDgMais: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.dtDgMais,
                                       dtDgMenos: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.dtDgMenos,
                                       dtAborto: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.dtAborto,
                                       dtSecagem: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.dtSecagem,
                                       dtUltimoPP: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.dtUltimoPP,
                                       nomeTouroUltimaInseminacao:
                                           _model.touroValue,
@@ -1456,28 +1444,23 @@ class _NovaInseminacaoExistenteOfflineWidgetState
                                           1,
                                       totalPartos: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.totalPartos,
                                       dtPreParto: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.dtPreParto,
                                       motivoDescarteAnimal: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.motivoDescarteAnimal,
                                       dtDescarteAnimal: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.dtDescarteAnimal,
                                       dtUltimaAcao: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.dtUltimaAcao,
                                       compararDtUltimaInseminacao: functions
                                           .converterDataUltimaInseminacao(_model
@@ -1485,44 +1468,36 @@ class _NovaInseminacaoExistenteOfflineWidgetState
                                               .text),
                                       nomeBrincoConcat: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.nomeBrincoConcat,
                                       idGrupoAnimal: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.idGrupoAnimal,
                                       dtUltimoPartoContingencia: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.dtUltimoPartoContingencia,
                                       idStatusAnimal: 3,
                                       dtInducaoLactacao: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.dtInducaoLactacao,
                                       dtDesmame: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.dtDesmame,
                                       brincoAnimal: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.brincoAnimal,
                                       brincoAnimalOrder: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.brincoAnimalOrder,
                                       uidAnimal: FFAppState()
                                           .animaisProdutoresExistentes
-                                          .elementAtOrNull(
-                                              widget.itemUidIndex!)
+                                          .elementAtOrNull(widget.itemUidIndex!)
                                           ?.uidAnimal,
                                     ));
                                     safeSetState(() {});

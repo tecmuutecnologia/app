@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison, unused_import
+
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -504,8 +506,8 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                                                   Text(
                                                     () {
                                                       if ((listViewOnlineAnimaisProdutoresRecord
-                                                                      .nomeAnimal !=
-                                                                  '') &&
+                                                                  .nomeAnimal !=
+                                                              '') &&
                                                           (listViewOnlineAnimaisProdutoresRecord
                                                                   .brincoAnimal !=
                                                               null) &&
@@ -514,8 +516,8 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                                                               -1)) {
                                                         return '${listViewOnlineAnimaisProdutoresRecord.nomeAnimal} - ${listViewOnlineAnimaisProdutoresRecord.brincoAnimal.toString()}';
                                                       } else if (listViewOnlineAnimaisProdutoresRecord
-                                                                  .nomeAnimal !=
-                                                              '') {
+                                                              .nomeAnimal !=
+                                                          '') {
                                                         return listViewOnlineAnimaisProdutoresRecord
                                                             .nomeAnimal;
                                                       } else {
@@ -1278,8 +1280,8 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                                                     Text(
                                                       () {
                                                         if ((animaisExistentesItem
-                                                                        .nomeAnimal !=
-                                                                    '') &&
+                                                                    .nomeAnimal !=
+                                                                '') &&
                                                             (animaisExistentesItem
                                                                     .brincoAnimal !=
                                                                 null) &&
@@ -1288,8 +1290,8 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                                                                 -1)) {
                                                           return '${animaisExistentesItem.nomeAnimal} - ${animaisExistentesItem.brincoAnimal.toString()}';
                                                         } else if (animaisExistentesItem
-                                                                    .nomeAnimal !=
-                                                                '') {
+                                                                .nomeAnimal !=
+                                                            '') {
                                                           return animaisExistentesItem
                                                               .nomeAnimal;
                                                         } else {
@@ -1505,9 +1507,8 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -1721,9 +1722,8 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -2064,8 +2064,8 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                                                     Text(
                                                       () {
                                                         if ((animaisOfflineItem
-                                                                        .nomeAnimal !=
-                                                                    '') &&
+                                                                    .nomeAnimal !=
+                                                                '') &&
                                                             (animaisOfflineItem
                                                                     .brincoAnimal !=
                                                                 null) &&
@@ -2074,8 +2074,8 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                                                                 -1)) {
                                                           return '${animaisOfflineItem.nomeAnimal} - ${animaisOfflineItem.brincoAnimal.toString()}';
                                                         } else if (animaisOfflineItem
-                                                                    .nomeAnimal !=
-                                                                '') {
+                                                                .nomeAnimal !=
+                                                            '') {
                                                           return animaisOfflineItem
                                                               .nomeAnimal;
                                                         } else {
@@ -2291,9 +2291,8 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,
@@ -2507,9 +2506,8 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                                                                   nomePropriedade:
                                                                       widget
                                                                           .nomePropriedade!,
-                                                                  uidTecnico:
-                                                                      widget
-                                                                          .uidTecnico!,
+                                                                  uidTecnico: widget
+                                                                      .uidTecnico!,
                                                                   emailPropriedade:
                                                                       widget
                                                                           .emailPropriedade!,

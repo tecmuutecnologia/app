@@ -61,8 +61,7 @@ class _PronAcoesWidgetState extends State<PronAcoesWidget> {
     context.watch<FFAppState>();
 
     return StreamBuilder<AnimaisProdutoresRecord>(
-      stream:
-          AnimaisProdutoresRecord.getDocument(widget.uidAnimaisProdutores!),
+      stream: AnimaisProdutoresRecord.getDocument(widget.uidAnimaisProdutores!),
       builder: (context, snapshot) {
         // Customize what your widget looks like when it's loading.
         if (!snapshot.hasData) {
@@ -82,7 +81,7 @@ class _PronAcoesWidgetState extends State<PronAcoesWidget> {
           );
         }
 
-        final pronAcoesAnimaisProdutoresRecord = snapshot.data!;
+        final _ = snapshot.data!;
 
         return GestureDetector(
           onTap: () {
