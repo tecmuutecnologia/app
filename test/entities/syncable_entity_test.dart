@@ -22,6 +22,21 @@ void main() {
       expect(PropriedadeEntity(), isA<SyncableEntity>());
     });
 
+    test('entidades do grupo 2 implementam SyncableEntity', () {
+      expect(TratamentoEntity(), isA<SyncableEntity>());
+      expect(AcaoSanitarioEntity(), isA<SyncableEntity>());
+      expect(FinanceiroEntity(), isA<SyncableEntity>());
+      expect(ResumoVisitaEntity(), isA<SyncableEntity>());
+      expect(RecomendacaoEntity(), isA<SyncableEntity>());
+    });
+
+    test('markAsModified do grupo 2 funciona sem userId (via interface)', () {
+      final SyncableEntity entity = TratamentoEntity();
+      entity.markAsModified();
+      expect(entity.needsSync, true);
+      expect(entity.lastModified, isNotNull);
+    });
+
     test('markAsModified liga needsSync via interface', () {
       final SyncableEntity entity = AcaoEntity();
       expect(entity.needsSync, false);

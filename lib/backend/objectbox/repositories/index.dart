@@ -3,3 +3,8 @@ export 'animal_repository.dart';
 export 'acao_repository.dart';
 export 'acao_da_visita_repository.dart';
 export 'propriedade_repository.dart';
+export 'tratamento_repository.dart';
+export 'acao_sanitario_repository.dart';
+export 'financeiro_repository.dart';
+export 'resumo_visita_repository.dart';
+export 'recomendacao_repository.dart';

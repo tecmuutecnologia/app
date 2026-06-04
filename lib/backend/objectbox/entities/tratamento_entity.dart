@@ -1,17 +1,22 @@
 import 'package:objectbox/objectbox.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'syncable_entity.dart';
+
 /// Entidade Tratamento para armazenamento local
 /// Representa tratamentos realizados em animais
 @Entity()
-class TratamentoEntity {
+class TratamentoEntity implements SyncableEntity {
+  @override
   @Id()
   int id = 0;
 
+  @override
   @Unique()
   String? firestoreId;
 
   /// Path do documento pai para subcoleções
+  @override
   String? parentPath;
 
   String? uidAnimal;
@@ -38,13 +43,18 @@ class TratamentoEntity {
   @Property(type: PropertyType.date)
   DateTime? createdAt;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastModified;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastSynced;
 
+  @override
   bool needsSync;
+  @override
+  bool isDeleted;
 
   TratamentoEntity({
     this.firestoreId,
@@ -69,6 +79,7 @@ class TratamentoEntity {
     this.lastModified,
     this.lastSynced,
     this.needsSync = false,
+    this.isDeleted = false,
   });
 
   factory TratamentoEntity.fromFirestore(
@@ -102,6 +113,7 @@ class TratamentoEntity {
     );
   }
 
+  @override
   Map<String, dynamic> toFirestore() {
     final data = <String, dynamic>{};
 
@@ -130,8 +142,9 @@ class TratamentoEntity {
     return data;
   }
 
-  void markAsModified(String userId) {
-    lastModifiedBy = userId;
+  @override
+  void markAsModified([String? userId]) {
+    if (userId != null) lastModifiedBy = userId;
     lastModified = DateTime.now();
     needsSync = true;
   }
@@ -140,13 +153,16 @@ class TratamentoEntity {
 /// Entidade AcaoSanitario para armazenamento local
 /// Representa ações sanitárias realizadas
 @Entity()
-class AcaoSanitarioEntity {
+class AcaoSanitarioEntity implements SyncableEntity {
+  @override
   @Id()
   int id = 0;
 
+  @override
   @Unique()
   String? firestoreId;
 
+  @override
   String? parentPath;
 
   String? uidAnimal;
@@ -173,13 +189,18 @@ class AcaoSanitarioEntity {
   @Property(type: PropertyType.date)
   DateTime? createdAt;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastModified;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastSynced;
 
+  @override
   bool needsSync;
+  @override
+  bool isDeleted;
 
   AcaoSanitarioEntity({
     this.firestoreId,
@@ -204,6 +225,7 @@ class AcaoSanitarioEntity {
     this.lastModified,
     this.lastSynced,
     this.needsSync = false,
+    this.isDeleted = false,
   });
 
   factory AcaoSanitarioEntity.fromFirestore(
@@ -238,6 +260,7 @@ class AcaoSanitarioEntity {
     );
   }
 
+  @override
   Map<String, dynamic> toFirestore() {
     final data = <String, dynamic>{};
 
@@ -265,8 +288,9 @@ class AcaoSanitarioEntity {
     return data;
   }
 
-  void markAsModified(String userId) {
-    lastModifiedBy = userId;
+  @override
+  void markAsModified([String? userId]) {
+    if (userId != null) lastModifiedBy = userId;
     lastModified = DateTime.now();
     needsSync = true;
   }

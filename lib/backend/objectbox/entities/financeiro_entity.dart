@@ -1,16 +1,21 @@
 import 'package:objectbox/objectbox.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'syncable_entity.dart';
+
 /// Entidade Financeiro para armazenamento local
 /// Representa dados financeiros da propriedade
 @Entity()
-class FinanceiroEntity {
+class FinanceiroEntity implements SyncableEntity {
+  @override
   @Id()
   int id = 0;
 
+  @override
   @Unique()
   String? firestoreId;
 
+  @override
   String? parentPath;
 
   /// Dados de produção
@@ -47,13 +52,18 @@ class FinanceiroEntity {
   @Property(type: PropertyType.date)
   DateTime? createdAt;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastModified;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastSynced;
 
+  @override
   bool needsSync;
+  @override
+  bool isDeleted;
 
   FinanceiroEntity({
     this.firestoreId,
@@ -82,6 +92,7 @@ class FinanceiroEntity {
     this.lastModified,
     this.lastSynced,
     this.needsSync = false,
+    this.isDeleted = false,
   });
 
   factory FinanceiroEntity.fromFirestore(
@@ -120,6 +131,7 @@ class FinanceiroEntity {
     );
   }
 
+  @override
   Map<String, dynamic> toFirestore() {
     final data = <String, dynamic>{};
 
@@ -150,8 +162,9 @@ class FinanceiroEntity {
     return data;
   }
 
-  void markAsModified(String userId) {
-    lastModifiedBy = userId;
+  @override
+  void markAsModified([String? userId]) {
+    if (userId != null) lastModifiedBy = userId;
     lastModified = DateTime.now();
     needsSync = true;
   }

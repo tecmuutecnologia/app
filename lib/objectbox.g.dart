@@ -1104,7 +1104,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(10, 7897657918415060101),
     name: 'AcaoSanitarioEntity',
-    lastPropertyId: const obx_int.IdUid(23, 3040072368999762306),
+    lastPropertyId: const obx_int.IdUid(24, 7607819415187119985),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -1246,6 +1246,12 @@ final _entities = <obx_int.ModelEntity>[
         type: 1,
         flags: 0,
       ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(24, 7607819415187119985),
+        name: 'isDeleted',
+        type: 1,
+        flags: 0,
+      ),
     ],
     relations: <obx_int.ModelRelation>[],
     backlinks: <obx_int.ModelBacklink>[],
@@ -1335,7 +1341,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(13, 8662284862026381314),
     name: 'FinanceiroEntity',
-    lastPropertyId: const obx_int.IdUid(27, 1623859928614714425),
+    lastPropertyId: const obx_int.IdUid(28, 858160306604825002),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -1501,6 +1507,12 @@ final _entities = <obx_int.ModelEntity>[
         type: 1,
         flags: 0,
       ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(28, 858160306604825002),
+        name: 'isDeleted',
+        type: 1,
+        flags: 0,
+      ),
     ],
     relations: <obx_int.ModelRelation>[],
     backlinks: <obx_int.ModelBacklink>[],
@@ -1584,7 +1596,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(16, 6914708184729922669),
     name: 'RecomendacaoEntity',
-    lastPropertyId: const obx_int.IdUid(19, 1512456085671558343),
+    lastPropertyId: const obx_int.IdUid(20, 3682952164599703596),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -1702,6 +1714,12 @@ final _entities = <obx_int.ModelEntity>[
         type: 1,
         flags: 0,
       ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(20, 3682952164599703596),
+        name: 'isDeleted',
+        type: 1,
+        flags: 0,
+      ),
     ],
     relations: <obx_int.ModelRelation>[],
     backlinks: <obx_int.ModelBacklink>[],
@@ -1709,7 +1727,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(17, 7309209184507572377),
     name: 'ResumoVisitaEntity',
-    lastPropertyId: const obx_int.IdUid(25, 1636003183922573079),
+    lastPropertyId: const obx_int.IdUid(26, 2081912893931730180),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -1863,6 +1881,12 @@ final _entities = <obx_int.ModelEntity>[
         type: 1,
         flags: 0,
       ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(26, 2081912893931730180),
+        name: 'isDeleted',
+        type: 1,
+        flags: 0,
+      ),
     ],
     relations: <obx_int.ModelRelation>[],
     backlinks: <obx_int.ModelBacklink>[],
@@ -1987,7 +2011,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(21, 6196883581296379914),
     name: 'TratamentoEntity',
-    lastPropertyId: const obx_int.IdUid(23, 472128557998430777),
+    lastPropertyId: const obx_int.IdUid(24, 7544270436894527262),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -2126,6 +2150,12 @@ final _entities = <obx_int.ModelEntity>[
       obx_int.ModelProperty(
         id: const obx_int.IdUid(23, 472128557998430777),
         name: 'needsSync',
+        type: 1,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(24, 7544270436894527262),
+        name: 'isDeleted',
         type: 1,
         flags: 0,
       ),
@@ -3810,7 +3840,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final lastModifiedByOffset = object.lastModifiedBy == null
             ? null
             : fbb.writeString(object.lastModifiedBy!);
-        fbb.startTable(24);
+        fbb.startTable(25);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, firestoreIdOffset);
         fbb.addOffset(2, parentPathOffset);
@@ -3834,6 +3864,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addInt64(20, object.lastModified?.millisecondsSinceEpoch);
         fbb.addInt64(21, object.lastSynced?.millisecondsSinceEpoch);
         fbb.addBool(22, object.needsSync);
+        fbb.addBool(23, object.isDeleted);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -3934,6 +3965,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
           48,
           false,
         );
+        final isDeletedParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          50,
+          false,
+        );
         final object = AcaoSanitarioEntity(
           firestoreId: firestoreIdParam,
           parentPath: parentPathParam,
@@ -3957,6 +3994,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           lastModified: lastModifiedParam,
           lastSynced: lastSyncedParam,
           needsSync: needsSyncParam,
+          isDeleted: isDeletedParam,
         )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
 
         return object;
@@ -4101,7 +4139,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final lastModifiedByOffset = object.lastModifiedBy == null
             ? null
             : fbb.writeString(object.lastModifiedBy!);
-        fbb.startTable(28);
+        fbb.startTable(29);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, firestoreIdOffset);
         fbb.addOffset(2, parentPathOffset);
@@ -4129,6 +4167,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addInt64(24, object.lastModified?.millisecondsSinceEpoch);
         fbb.addInt64(25, object.lastSynced?.millisecondsSinceEpoch);
         fbb.addBool(26, object.needsSync);
+        fbb.addBool(27, object.isDeleted);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -4282,6 +4321,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
           56,
           false,
         );
+        final isDeletedParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          58,
+          false,
+        );
         final object = FinanceiroEntity(
           firestoreId: firestoreIdParam,
           parentPath: parentPathParam,
@@ -4309,6 +4354,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           lastModified: lastModifiedParam,
           lastSynced: lastSyncedParam,
           needsSync: needsSyncParam,
+          isDeleted: isDeletedParam,
         )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
 
         return object;
@@ -4462,7 +4508,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final lastModifiedByOffset = object.lastModifiedBy == null
             ? null
             : fbb.writeString(object.lastModifiedBy!);
-        fbb.startTable(20);
+        fbb.startTable(21);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, firestoreIdOffset);
         fbb.addOffset(2, parentPathOffset);
@@ -4482,6 +4528,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addInt64(16, object.lastModified?.millisecondsSinceEpoch);
         fbb.addInt64(17, object.lastSynced?.millisecondsSinceEpoch);
         fbb.addBool(18, object.needsSync);
+        fbb.addBool(19, object.isDeleted);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -4575,6 +4622,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
           40,
           false,
         );
+        final isDeletedParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          42,
+          false,
+        );
         final object = RecomendacaoEntity(
           firestoreId: firestoreIdParam,
           parentPath: parentPathParam,
@@ -4594,6 +4647,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           lastModified: lastModifiedParam,
           lastSynced: lastSyncedParam,
           needsSync: needsSyncParam,
+          isDeleted: isDeletedParam,
         )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
 
         return object;
@@ -4659,7 +4713,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final lastModifiedByOffset = object.lastModifiedBy == null
             ? null
             : fbb.writeString(object.lastModifiedBy!);
-        fbb.startTable(26);
+        fbb.startTable(27);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, firestoreIdOffset);
         fbb.addOffset(2, parentPathOffset);
@@ -4685,6 +4739,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addInt64(22, object.lastModified?.millisecondsSinceEpoch);
         fbb.addInt64(23, object.lastSynced?.millisecondsSinceEpoch);
         fbb.addBool(24, object.needsSync);
+        fbb.addBool(25, object.isDeleted);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -4796,6 +4851,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
           52,
           false,
         );
+        final isDeletedParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          54,
+          false,
+        );
         final object = ResumoVisitaEntity(
           firestoreId: firestoreIdParam,
           parentPath: parentPathParam,
@@ -4821,6 +4882,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           lastModified: lastModifiedParam,
           lastSynced: lastSyncedParam,
           needsSync: needsSyncParam,
+          isDeleted: isDeletedParam,
         )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
 
         return object;
@@ -5046,7 +5108,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final lastModifiedByOffset = object.lastModifiedBy == null
             ? null
             : fbb.writeString(object.lastModifiedBy!);
-        fbb.startTable(24);
+        fbb.startTable(25);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, firestoreIdOffset);
         fbb.addOffset(2, parentPathOffset);
@@ -5070,6 +5132,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addInt64(20, object.lastModified?.millisecondsSinceEpoch);
         fbb.addInt64(21, object.lastSynced?.millisecondsSinceEpoch);
         fbb.addBool(22, object.needsSync);
+        fbb.addBool(23, object.isDeleted);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -5170,6 +5233,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
           48,
           false,
         );
+        final isDeletedParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          50,
+          false,
+        );
         final object = TratamentoEntity(
           firestoreId: firestoreIdParam,
           parentPath: parentPathParam,
@@ -5193,6 +5262,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           lastModified: lastModifiedParam,
           lastSynced: lastSyncedParam,
           needsSync: needsSyncParam,
+          isDeleted: isDeletedParam,
         )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
 
         return object;
@@ -6260,6 +6330,11 @@ class AcaoSanitarioEntity_ {
   static final needsSync = obx.QueryBooleanProperty<AcaoSanitarioEntity>(
     _entities[9].properties[22],
   );
+
+  /// See [AcaoSanitarioEntity.isDeleted].
+  static final isDeleted = obx.QueryBooleanProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[23],
+  );
 }
 
 /// [CalendarioSanitarioEntity] entity fields to define ObjectBox queries.
@@ -6454,6 +6529,11 @@ class FinanceiroEntity_ {
   static final needsSync = obx.QueryBooleanProperty<FinanceiroEntity>(
     _entities[12].properties[26],
   );
+
+  /// See [FinanceiroEntity.isDeleted].
+  static final isDeleted = obx.QueryBooleanProperty<FinanceiroEntity>(
+    _entities[12].properties[27],
+  );
 }
 
 /// [GrupoEntity] entity fields to define ObjectBox queries.
@@ -6602,6 +6682,11 @@ class RecomendacaoEntity_ {
   static final needsSync = obx.QueryBooleanProperty<RecomendacaoEntity>(
     _entities[15].properties[18],
   );
+
+  /// See [RecomendacaoEntity.isDeleted].
+  static final isDeleted = obx.QueryBooleanProperty<RecomendacaoEntity>(
+    _entities[15].properties[19],
+  );
 }
 
 /// [ResumoVisitaEntity] entity fields to define ObjectBox queries.
@@ -6729,6 +6814,11 @@ class ResumoVisitaEntity_ {
   /// See [ResumoVisitaEntity.needsSync].
   static final needsSync = obx.QueryBooleanProperty<ResumoVisitaEntity>(
     _entities[16].properties[24],
+  );
+
+  /// See [ResumoVisitaEntity.isDeleted].
+  static final isDeleted = obx.QueryBooleanProperty<ResumoVisitaEntity>(
+    _entities[16].properties[25],
   );
 }
 
@@ -6926,6 +7016,11 @@ class TratamentoEntity_ {
   /// See [TratamentoEntity.needsSync].
   static final needsSync = obx.QueryBooleanProperty<TratamentoEntity>(
     _entities[20].properties[22],
+  );
+
+  /// See [TratamentoEntity.isDeleted].
+  static final isDeleted = obx.QueryBooleanProperty<TratamentoEntity>(
+    _entities[20].properties[23],
   );
 }
 

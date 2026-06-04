@@ -1,16 +1,21 @@
 import 'package:objectbox/objectbox.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'syncable_entity.dart';
+
 /// Entidade ResumoVisita para armazenamento local
 /// Representa o resumo de uma visita técnica
 @Entity()
-class ResumoVisitaEntity {
+class ResumoVisitaEntity implements SyncableEntity {
+  @override
   @Id()
   int id = 0;
 
+  @override
   @Unique()
   String? firestoreId;
 
+  @override
   String? parentPath;
 
   String? uidVisita;
@@ -47,13 +52,18 @@ class ResumoVisitaEntity {
   @Property(type: PropertyType.date)
   DateTime? createdAt;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastModified;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastSynced;
 
+  @override
   bool needsSync;
+  @override
+  bool isDeleted;
 
   ResumoVisitaEntity({
     this.firestoreId,
@@ -80,6 +90,7 @@ class ResumoVisitaEntity {
     this.lastModified,
     this.lastSynced,
     this.needsSync = false,
+    this.isDeleted = false,
   });
 
   factory ResumoVisitaEntity.fromFirestore(
@@ -115,6 +126,7 @@ class ResumoVisitaEntity {
     );
   }
 
+  @override
   Map<String, dynamic> toFirestore() {
     final data = <String, dynamic>{};
 
@@ -145,8 +157,9 @@ class ResumoVisitaEntity {
     return data;
   }
 
-  void markAsModified(String userId) {
-    lastModifiedBy = userId;
+  @override
+  void markAsModified([String? userId]) {
+    if (userId != null) lastModifiedBy = userId;
     lastModified = DateTime.now();
     needsSync = true;
   }
@@ -155,13 +168,16 @@ class ResumoVisitaEntity {
 /// Entidade Recomendacao para armazenamento local
 /// Representa recomendações feitas durante visitas
 @Entity()
-class RecomendacaoEntity {
+class RecomendacaoEntity implements SyncableEntity {
+  @override
   @Id()
   int id = 0;
 
+  @override
   @Unique()
   String? firestoreId;
 
+  @override
   String? parentPath;
 
   String? uidVisita;
@@ -187,13 +203,18 @@ class RecomendacaoEntity {
   @Property(type: PropertyType.date)
   DateTime? createdAt;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastModified;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastSynced;
 
+  @override
   bool needsSync;
+  @override
+  bool isDeleted;
 
   RecomendacaoEntity({
     this.firestoreId,
@@ -214,6 +235,7 @@ class RecomendacaoEntity {
     this.lastModified,
     this.lastSynced,
     this.needsSync = false,
+    this.isDeleted = false,
   });
 
   factory RecomendacaoEntity.fromFirestore(
@@ -243,6 +265,7 @@ class RecomendacaoEntity {
     );
   }
 
+  @override
   Map<String, dynamic> toFirestore() {
     final data = <String, dynamic>{};
 
@@ -269,8 +292,9 @@ class RecomendacaoEntity {
     return data;
   }
 
-  void markAsModified(String userId) {
-    lastModifiedBy = userId;
+  @override
+  void markAsModified([String? userId]) {
+    if (userId != null) lastModifiedBy = userId;
     lastModified = DateTime.now();
     needsSync = true;
   }

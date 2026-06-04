@@ -912,7 +912,7 @@
     },
     {
       "id": "10:7897657918415060101",
-      "lastPropertyId": "23:3040072368999762306",
+      "lastPropertyId": "24:7607819415187119985",
       "name": "AcaoSanitarioEntity",
       "properties": [
         {
@@ -1032,6 +1032,11 @@
           "id": "23:3040072368999762306",
           "name": "needsSync",
           "type": 1
+        },
+        {
+          "id": "24:7607819415187119985",
+          "name": "isDeleted",
+          "type": 1
         }
       ],
       "relations": []
@@ -1110,7 +1115,7 @@
     },
     {
       "id": "13:8662284862026381314",
-      "lastPropertyId": "27:1623859928614714425",
+      "lastPropertyId": "28:858160306604825002",
       "name": "FinanceiroEntity",
       "properties": [
         {
@@ -1250,6 +1255,11 @@
           "id": "27:1623859928614714425",
           "name": "needsSync",
           "type": 1
+        },
+        {
+          "id": "28:858160306604825002",
+          "name": "isDeleted",
+          "type": 1
         }
       ],
       "relations": []
@@ -1323,7 +1333,7 @@
     },
     {
       "id": "16:6914708184729922669",
-      "lastPropertyId": "19:1512456085671558343",
+      "lastPropertyId": "20:3682952164599703596",
       "name": "RecomendacaoEntity",
       "properties": [
         {
@@ -1423,13 +1433,18 @@
           "id": "19:1512456085671558343",
           "name": "needsSync",
           "type": 1
+        },
+        {
+          "id": "20:3682952164599703596",
+          "name": "isDeleted",
+          "type": 1
         }
       ],
       "relations": []
     },
     {
       "id": "17:7309209184507572377",
-      "lastPropertyId": "25:1636003183922573079",
+      "lastPropertyId": "26:2081912893931730180",
       "name": "ResumoVisitaEntity",
       "properties": [
         {
@@ -1559,6 +1574,11 @@
           "id": "25:1636003183922573079",
           "name": "needsSync",
           "type": 1
+        },
+        {
+          "id": "26:2081912893931730180",
+          "name": "isDeleted",
+          "type": 1
         }
       ],
       "relations": []
@@ -1668,7 +1688,7 @@
     },
     {
       "id": "21:6196883581296379914",
-      "lastPropertyId": "23:472128557998430777",
+      "lastPropertyId": "24:7544270436894527262",
       "name": "TratamentoEntity",
       "properties": [
         {
@@ -1787,6 +1807,11 @@
         {
           "id": "23:472128557998430777",
           "name": "needsSync",
+          "type": 1
+        },
+        {
+          "id": "24:7544270436894527262",
+          "name": "isDeleted",
           "type": 1
         }
       ],
