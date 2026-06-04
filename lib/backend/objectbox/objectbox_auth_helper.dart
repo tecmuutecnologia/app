@@ -1,8 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../objectbox.g.dart';
 import 'objectbox_service.dart';
 import 'offline_first_sync_service.dart';
+import 'entities/index.dart';
+import 'repositories/index.dart';
 
 /// Helper para integração do ObjectBox com autenticação
 /// Gerencia o ciclo de vida de sincronização offline-first
@@ -51,10 +54,46 @@ class ObjectBoxAuthHelper {
       }
 
       debugPrint('✅ Sincronização após login concluída');
+
+      // Manutenção: remove soft-deletes já sincronizados (Fase 1.5).
+      final purged = purgeAllSyncedSoftDeletes();
+      if (purged > 0) {
+        debugPrint('🧹 $purged registro(s) soft-deleted purgado(s)');
+      }
     } catch (e) {
       debugPrint('❌ Erro ao sincronizar dados após login: $e');
       // Não lança erro para permitir uso offline
     }
+  }
+
+  /// Remove do cache local os soft-deletes já sincronizados de TODAS as
+  /// entidades sincronizáveis (`isDeleted && !needsSync`), evitando que o banco
+  /// cresça indefinidamente. Retorna o total de registros removidos.
+  static int purgeAllSyncedSoftDeletes() {
+    if (kIsWeb || !ObjectBoxService.isInitialized) return 0;
+    final ob = ObjectBoxService.instance;
+    return _purgeBox(ob.animalBox) +
+        _purgeBox(ob.acaoBox) +
+        _purgeBox(ob.acaoDaVisitaBox) +
+        _purgeBox(ob.propriedadeBox) +
+        _purgeBox(ob.tratamentoBox) +
+        _purgeBox(ob.acaoSanitarioBox) +
+        _purgeBox(ob.financeiroBox) +
+        _purgeBox(ob.resumoVisitaBox) +
+        _purgeBox(ob.recomendacaoBox) +
+        _purgeBox(ob.personBox) +
+        _purgeBox(ob.tecnicoBox) +
+        _purgeBox(ob.produtorBox);
+  }
+
+  static int _purgeBox<T extends SyncableEntity>(Box<T> box) {
+    final ids = box
+        .getAll()
+        .where(BaseSyncRepository.isPurgeable)
+        .map((e) => e.id)
+        .toList();
+    if (ids.isNotEmpty) box.removeMany(ids);
+    return ids.length;
   }
 
   /// Limpa dados locais após logout
