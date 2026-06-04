@@ -73,6 +73,20 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
   /// Persiste a entidade localmente e retorna seu ID.
   int put(E entity) => box.put(entity);
 
+  /// Predicado puro: uma entidade pode ser removida do cache local quando já foi
+  /// excluída (soft delete) E já está sincronizada (não tem mudança pendente).
+  /// Manter soft-deletes sincronizados só faz o banco crescer à toa.
+  static bool isPurgeable(SyncableEntity entity) =>
+      entity.isDeleted && !entity.needsSync;
+
+  /// Remove do cache local os soft-deletes já sincronizados ([isPurgeable]).
+  /// Retorna a quantidade de registros removidos.
+  int purgeSyncedSoftDeletes() {
+    final ids = box.getAll().where(isPurgeable).map((e) => e.id).toList();
+    if (ids.isNotEmpty) box.removeMany(ids);
+    return ids.length;
+  }
+
   // ---------------------------------------------------------------------------
   // Escrita com sincronização (offline-first)
   // ---------------------------------------------------------------------------

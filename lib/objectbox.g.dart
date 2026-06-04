@@ -18,6 +18,7 @@ import 'backend/objectbox/entities/acao_da_visita_entity.dart';
 import 'backend/objectbox/entities/acao_entity.dart';
 import 'backend/objectbox/entities/animal_entity.dart';
 import 'backend/objectbox/entities/financeiro_entity.dart';
+import 'backend/objectbox/entities/pending_operation_entity.dart';
 import 'backend/objectbox/entities/person_entity.dart';
 import 'backend/objectbox/entities/produtor_entity.dart';
 import 'backend/objectbox/entities/propriedade_entity.dart';

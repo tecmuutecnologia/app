@@ -10,6 +10,7 @@ export 'produtor_entity.dart';
 export 'propriedade_entity.dart';
 export 'animal_entity.dart';
 export 'sync_metadata_entity.dart';
+export 'pending_operation_entity.dart';
 
 // Autenticação offline
 export 'user_session_entity.dart';
