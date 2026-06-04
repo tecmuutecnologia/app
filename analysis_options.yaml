@@ -1,7 +1,25 @@
-
-
+# Regras de análise estática do projeto Tecmuu.
+#
+# Inclui o conjunto recomendado do `flutter_lints` (boas práticas oficiais do
+# Flutter). O código gerado (FlutterFlow custom_functions, arquivos *.g.dart do
+# ObjectBox) e o `custom_code/` continuam excluídos para reduzir ruído — eles não
+# devem ser editados manualmente.
+#
+# Estratégia: tratamos o baseline atual de avisos como "congelado" e o reduzimos
+# de forma incremental à medida que cada feature é refatorada. Novo código deve
+# entrar sem violações.
+include: package:flutter_lints/flutter.yaml
 
 analyzer:
   exclude:
     - lib/custom_code/**
     - lib/flutter_flow/custom_functions.dart
+    - "**/*.g.dart"
+    - lib/objectbox.g.dart
+    - lib/backend/schema/**
+    - build/**
+
+linter:
+  rules:
+    # Habilitadas explicitamente por relevância para um legado em manutenção.
+    # (Mantidas alinhadas ao flutter_lints; ajustar conforme o time avança.)

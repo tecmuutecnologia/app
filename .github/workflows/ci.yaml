@@ -1,0 +1,49 @@
+# CI mínimo do app Tecmuu (Fase 0 da refatoração).
+#
+# Objetivo: criar uma rede de segurança contra regressões antes de refatorar o
+# legado FlutterFlow. Roda a cada push/PR.
+#
+# Política de análise estática (baseline congelado):
+# - O projeto carrega ~7,6 mil avisos `info` legados (em sua maioria
+#   `prefer_const_constructors` de código gerado). Reduzi-los de uma vez é
+#   inviável, então o gate usa `--no-fatal-infos`: o build SÓ falha em novos
+#   `warning`/`error` (hoje há zero). Assim a base fica congelada e novo código
+#   não pode introduzir problemas mais graves.
+# - À medida que features são refatoradas, os `info` vão sendo eliminados e,
+#   quando chegarem a zero numa pasta, pode-se endurecer o gate.
+
+name: CI
+
+on:
+  push:
+    branches: [main, feature-base-offline]
+  pull_request:
+    branches: [main]
+
+jobs:
+  analyze-and-test:
+    name: Analyze & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.8'
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate ObjectBox bindings
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      # Falha apenas em warnings/errors. Infos legados são tolerados (baseline congelado).
+      - name: Static analysis
+        run: flutter analyze --no-fatal-infos
+
+      - name: Run tests
+        run: flutter test
