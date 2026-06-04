@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../objectbox_debug_service.dart';
 
@@ -149,6 +150,10 @@ class _ObjectBoxDebugMenuState extends State<ObjectBoxDebugMenu> {
 
   @override
   Widget build(BuildContext context) {
+    // Defesa em profundidade: ferramentas de debug nunca aparecem em release,
+    // mesmo que sejam acionadas por algum caminho não previsto.
+    if (kReleaseMode) return const SizedBox.shrink();
+
     final status = ObjectBoxDebugService.getStatus();
     final isInitialized = status['initialized'] as bool;
     final adminRunning = status['adminRunning'] as bool;

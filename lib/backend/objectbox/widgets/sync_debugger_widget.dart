@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../sync_debugger_service.dart';
 
@@ -52,6 +53,9 @@ class _SyncDebuggerState extends State<SyncDebugger> {
 
   @override
   Widget build(BuildContext context) {
+    // Defesa em profundidade: o debugger de sync nunca aparece em release.
+    if (kReleaseMode) return const SizedBox.shrink();
+
     if (!_isExpanded) {
       return Positioned(
         bottom: 16,
