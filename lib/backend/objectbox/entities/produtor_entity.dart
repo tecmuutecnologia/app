@@ -1,15 +1,23 @@
 import 'package:objectbox/objectbox.dart';
 
+import 'syncable_entity.dart';
+
 /// Entidade Produtor para armazenamento local com ObjectBox
 /// Sincroniza com a coleção 'produtor' do Firestore
 @Entity()
-class ProdutorEntity {
+class ProdutorEntity implements SyncableEntity {
+  @override
   @Id()
   int id = 0;
 
   /// ID do documento no Firestore (usado para sincronização)
+  @override
   @Unique()
   String? firestoreId;
+
+  /// Coleção de topo: não tem documento pai (getter computado, não persistido).
+  @override
+  String? get parentPath => null;
 
   bool liberado;
 
@@ -20,13 +28,17 @@ class ProdutorEntity {
   String? uidPersonPath;
 
   /// Campos de controle de sincronização
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastModified;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastSynced;
 
+  @override
   bool needsSync;
+  @override
   bool isDeleted;
 
   ProdutorEntity({
@@ -54,6 +66,7 @@ class ProdutorEntity {
     );
   }
 
+  @override
   Map<String, dynamic> toFirestore() {
     return {
       'liberado': liberado,
@@ -70,6 +83,7 @@ class ProdutorEntity {
     needsSync = false;
   }
 
+  @override
   void markAsModified() {
     lastModified = DateTime.now();
     needsSync = true;

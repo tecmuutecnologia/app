@@ -1,15 +1,23 @@
 import 'package:objectbox/objectbox.dart';
 
+import 'syncable_entity.dart';
+
 /// Entidade Person para armazenamento local com ObjectBox
 /// Sincroniza com a coleção 'person' do Firestore
 @Entity()
-class PersonEntity {
+class PersonEntity implements SyncableEntity {
+  @override
   @Id()
   int id = 0;
 
   /// ID do documento no Firestore (usado para sincronização)
+  @override
   @Unique()
   String? firestoreId;
+
+  /// Coleção de topo: não tem documento pai (getter computado, não persistido).
+  @override
+  String? get parentPath => null;
 
   String? dtNascimento;
   String? cpf;
@@ -29,16 +37,20 @@ class PersonEntity {
   String? tipo;
 
   /// Campos de controle de sincronização
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastModified;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastSynced;
 
   /// Indica se o registro foi modificado localmente e precisa ser sincronizado
+  @override
   bool needsSync;
 
   /// Indica se o registro foi deletado localmente (soft delete)
+  @override
   bool isDeleted;
 
   PersonEntity({
@@ -89,6 +101,7 @@ class PersonEntity {
   }
 
   /// Converte entidade ObjectBox para dados do Firestore
+  @override
   Map<String, dynamic> toFirestore() {
     return {
       'dtNascimento': dtNascimento,
@@ -129,6 +142,7 @@ class PersonEntity {
   }
 
   /// Marca o registro como modificado localmente
+  @override
   void markAsModified() {
     lastModified = DateTime.now();
     needsSync = true;

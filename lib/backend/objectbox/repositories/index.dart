@@ -1,4 +1,5 @@
 export 'base_sync_repository.dart';
+export 'top_level_sync_repository.dart';
 export 'animal_repository.dart';
 export 'acao_repository.dart';
 export 'acao_da_visita_repository.dart';
@@ -8,3 +9,6 @@ export 'acao_sanitario_repository.dart';
 export 'financeiro_repository.dart';
 export 'resumo_visita_repository.dart';
 export 'recomendacao_repository.dart';
+export 'person_repository.dart';
+export 'tecnico_repository.dart';
+export 'produtor_repository.dart';

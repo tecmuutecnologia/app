@@ -99,6 +99,23 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
   /// Exclui (soft delete) a entidade e sincroniza (ou enfileira).
   Future<Result<void>> softDelete(E entity) => pushDelete(entity);
 
+  // ---------------------------------------------------------------------------
+  // Construção de paths do Firestore (sobrescrevível por subclasses)
+  // ---------------------------------------------------------------------------
+
+  /// Path da coleção onde o documento de [entity] vive.
+  ///
+  /// Padrão para subcoleções: `<parentPath>/<collectionName>`. Repositórios de
+  /// coleção de topo (ex.: `person`) sobrescrevem para retornar só [collectionName]
+  /// (ver [TopLevelSyncRepository]).
+  @protected
+  String collectionPathFor(E entity) => '${entity.parentPath}/$collectionName';
+
+  /// Path completo do documento de [entity] no Firestore.
+  @protected
+  String documentPathFor(E entity, String firestoreId) =>
+      '${collectionPathFor(entity)}/$firestoreId';
+
   /// Cria a entidade no Firestore (ou enfileira se offline/erro).
   ///
   /// Pré-condição: [entity] já foi persistida localmente (tem `id` e
@@ -106,7 +123,7 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
   /// limpa `needsSync`.
   @protected
   Future<Result<E>> pushCreate(E entity) async {
-    final collectionPath = '${entity.parentPath}/$collectionName';
+    final collectionPath = collectionPathFor(entity);
 
     if (isOnline) {
       try {
@@ -140,7 +157,7 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
     final firestoreId = entity.firestoreId;
     if (firestoreId == null) return Success(entity);
 
-    final documentPath = '${entity.parentPath}/$collectionName/$firestoreId';
+    final documentPath = documentPathFor(entity, firestoreId);
 
     if (isOnline) {
       try {
@@ -176,7 +193,7 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
     final firestoreId = entity.firestoreId;
     if (firestoreId == null) return const Success(null);
 
-    final documentPath = '${entity.parentPath}/$collectionName/$firestoreId';
+    final documentPath = documentPathFor(entity, firestoreId);
 
     if (isOnline) {
       try {

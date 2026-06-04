@@ -1,15 +1,23 @@
 import 'package:objectbox/objectbox.dart';
 
+import 'syncable_entity.dart';
+
 /// Entidade Tecnico para armazenamento local com ObjectBox
 /// Sincroniza com a coleção 'tecnico' do Firestore
 @Entity()
-class TecnicoEntity {
+class TecnicoEntity implements SyncableEntity {
+  @override
   @Id()
   int id = 0;
 
   /// ID do documento no Firestore (usado para sincronização)
+  @override
   @Unique()
   String? firestoreId;
+
+  /// Coleção de topo: não tem documento pai (getter computado, não persistido).
+  @override
+  String? get parentPath => null;
 
   String? uidPerson;
   bool liberado;
@@ -21,13 +29,17 @@ class TecnicoEntity {
   int restanteLimiteAnimais;
 
   /// Campos de controle de sincronização
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastModified;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastSynced;
 
+  @override
   bool needsSync;
+  @override
   bool isDeleted;
 
   TecnicoEntity({
@@ -70,6 +82,7 @@ class TecnicoEntity {
     );
   }
 
+  @override
   Map<String, dynamic> toFirestore() {
     return {
       'uidPerson': uidPerson,
@@ -107,6 +120,7 @@ class TecnicoEntity {
     needsSync = false;
   }
 
+  @override
   void markAsModified() {
     lastModified = DateTime.now();
     needsSync = true;

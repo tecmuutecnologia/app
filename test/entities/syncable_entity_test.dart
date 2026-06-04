@@ -37,6 +37,17 @@ void main() {
       expect(entity.lastModified, isNotNull);
     });
 
+    test('entidades de topo implementam SyncableEntity com parentPath nulo', () {
+      for (final SyncableEntity e in [
+        PersonEntity(),
+        TecnicoEntity(),
+        ProdutorEntity(),
+      ]) {
+        expect(e, isA<SyncableEntity>());
+        expect(e.parentPath, isNull); // coleção de topo, sem documento pai
+      }
+    });
+
     test('markAsModified liga needsSync via interface', () {
       final SyncableEntity entity = AcaoEntity();
       expect(entity.needsSync, false);
