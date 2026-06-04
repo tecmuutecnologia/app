@@ -11,7 +11,9 @@ import '/flutter_flow/instant_timer.dart';
 import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';
 import 'dart:ui';
 import '/custom_code/actions/index.dart' as actions;
+import '/backend/objectbox/index.dart';
 import '/index.dart';
+import 'dart:async';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -130,6 +132,25 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
     _model.dispose();
 
     super.dispose();
+  }
+
+  /// Salva a edição do animal de forma offline-first.
+  ///
+  /// Grava no ObjectBox (síncrono, funciona sem internet) via AnimalRepository e
+  /// dispara o push ao Firestore em segundo plano (online envia agora; offline
+  /// enfileira para o sync automático). A UI NÃO bloqueia esperando a rede —
+  /// corrige o botão "Editar animal" que ficava girando sem conexão.
+  Future<void> _saveAnimalOfflineFirst(Map<String, dynamic> recordData) async {
+    final repo = AnimalRepository();
+    final entity = repo.getByFirestoreId(widget.uidAnimal!.id);
+    if (entity == null) {
+      // Registro ainda não está no cache local: grava direto no Firestore
+      // (persistência offline cuida do envio) sem aguardar a rede.
+      unawaited(widget.uidAnimal!.update(recordData));
+      return;
+    }
+    // A escrita local do ObjectBox é síncrona; o push corre em segundo plano.
+    unawaited(repo.update(entity, recordData));
   }
 
   @override
@@ -1482,8 +1503,8 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                               }
                               if ((_model.grupoValue == 'Vacas') ||
                                   (_model.grupoValue == 'Novilhas')) {
-                                await widget.uidAnimal!
-                                    .update(createAnimaisProdutoresRecordData(
+                                await _saveAnimalOfflineFirst(
+                                    createAnimaisProdutoresRecordData(
                                   uidTecnicoPropriedade:
                                       editarAnimalAnimaisProdutoresRecord
                                           .uidTecnicoPropriedade,
@@ -1575,8 +1596,8 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                                 return;
                               } else {
                                 if (_model.grupoValue == 'Touros') {
-                                  await widget.uidAnimal!
-                                      .update(createAnimaisProdutoresRecordData(
+                                  await _saveAnimalOfflineFirst(
+                                      createAnimaisProdutoresRecordData(
                                     uidTecnicoPropriedade:
                                         editarAnimalAnimaisProdutoresRecord
                                             .uidTecnicoPropriedade,
@@ -1672,7 +1693,7 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                                   return;
                                 } else {
                                   if (_model.grupoValue == 'Sêmens') {
-                                    await widget.uidAnimal!.update(
+                                    await _saveAnimalOfflineFirst(
                                         createAnimaisProdutoresRecordData(
                                       uidTecnicoPropriedade:
                                           editarAnimalAnimaisProdutoresRecord
@@ -1771,7 +1792,7 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
 
                                     return;
                                   } else {
-                                    await widget.uidAnimal!.update(
+                                    await _saveAnimalOfflineFirst(
                                         createAnimaisProdutoresRecordData(
                                       uidTecnicoPropriedade:
                                           editarAnimalAnimaisProdutoresRecord
