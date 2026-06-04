@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'objectbox_service.dart';
 import 'entities/index.dart';
+import '../../core/sync/conflict_resolver.dart';
 import '../../objectbox.g.dart';
 
 /// Serviço de listeners para sincronização BIDIRECIONAL
@@ -134,27 +135,23 @@ class RemoteSyncListenersService {
           .findFirst();
 
       if (existing != null) {
-        // Compara timestamp para resolver conflitos
         final remoteTimestamp =
             (data['lastModified'] as dynamic)?.toDate() as DateTime?;
-        final localTimestamp = existing.lastModified;
 
-        if (remoteTimestamp != null &&
-            localTimestamp != null &&
-            remoteTimestamp.isAfter(localTimestamp)) {
-          // Remoto é mais recente
+        if (ConflictResolver.shouldApplyRemote(
+          localHasPendingChanges: existing.needsSync,
+          localLastModified: existing.lastModified,
+          remoteLastModified: remoteTimestamp,
+        )) {
           existing.updateFromFirestore(data);
           _objectBox.animalBox.put(existing);
           debugPrint(
             '🔄 Animal ${existing.nomeAnimal} atualizado do Firestore',
           );
-        } else if (!existing.needsSync) {
-          // Local não tem mudanças pendentes, atualiza mesmo assim
-          existing.updateFromFirestore(data);
-          _objectBox.animalBox.put(existing);
         } else {
           debugPrint(
-            '⚠️ Conflito ignorado para ${existing.nomeAnimal} (local tem mudanças)',
+            '⚠️ Mudança remota ignorada para ${existing.nomeAnimal} '
+            '(local mais recente ou com edição pendente)',
           );
         }
       }
@@ -253,15 +250,24 @@ class RemoteSyncListenersService {
           .build()
           .findFirst();
 
-      if (existing != null && !existing.needsSync) {
-        // Re-cria entidade a partir dos dados remotos
-        final updated = AcaoEntity.fromFirestore(
-          data,
-          acaoId,
-          existing.parentPath ?? '',
-        );
-        _objectBox.acaoBox.put(updated);
-        debugPrint('🔄 Ação atualizada do Firestore');
+      if (existing != null) {
+        final remoteTimestamp =
+            (data['lastModified'] as dynamic)?.toDate() as DateTime?;
+
+        if (ConflictResolver.shouldApplyRemote(
+          localHasPendingChanges: existing.needsSync,
+          localLastModified: existing.lastModified,
+          remoteLastModified: remoteTimestamp,
+        )) {
+          // Re-cria entidade a partir dos dados remotos, preservando o parentPath.
+          final updated = AcaoEntity.fromFirestore(
+            data,
+            acaoId,
+            existing.parentPath ?? '',
+          );
+          _objectBox.acaoBox.put(updated);
+          debugPrint('🔄 Ação atualizada do Firestore');
+        }
       }
     } catch (e) {
       debugPrint('❌ Erro ao processar mudança de ação: $e');
@@ -362,15 +368,25 @@ class RemoteSyncListenersService {
           .build()
           .findFirst();
 
-      if (existing != null && !existing.needsSync) {
-        // Re-cria entidade a partir dos dados remotos
-        final updated = TratamentoEntity.fromFirestore(
-          data,
-          tratamentoId,
-          parentPath: existing.parentPath,
-        );
-        _objectBox.tratamentoBox.put(updated);
-        debugPrint('🔄 Tratamento atualizado do Firestore');
+      if (existing != null) {
+        // Tratamentos usam a chave snake_case 'last_modified' (Timestamp).
+        final remoteTimestamp =
+            (data['last_modified'] as Timestamp?)?.toDate();
+
+        if (ConflictResolver.shouldApplyRemote(
+          localHasPendingChanges: existing.needsSync,
+          localLastModified: existing.lastModified,
+          remoteLastModified: remoteTimestamp,
+        )) {
+          // Re-cria entidade a partir dos dados remotos, preservando o parentPath.
+          final updated = TratamentoEntity.fromFirestore(
+            data,
+            tratamentoId,
+            parentPath: existing.parentPath,
+          );
+          _objectBox.tratamentoBox.put(updated);
+          debugPrint('🔄 Tratamento atualizado do Firestore');
+        }
       }
     } catch (e) {
       debugPrint('❌ Erro ao processar mudança de tratamento: $e');
