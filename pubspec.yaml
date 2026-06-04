@@ -67,6 +67,7 @@ dependencies:
   flutter_animate: 4.5.0
   flutter_cache_manager: 3.4.1
   flutter_plugin_android_lifecycle: 2.0.28
+  flutter_riverpod: 2.6.1
   flutter_stripe: 11.5.0
   flutter_stripe_web: 6.5.1
   font_awesome_flutter: 10.7.0

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' show ProviderScope;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -41,9 +42,13 @@ void main() async {
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
   }
 
-  runApp(ChangeNotifierProvider(
-    create: (context) => appState,
-    child: MyApp(),
+  // ProviderScope habilita a injeção via Riverpod (camada offline-first),
+  // coexistindo com o ChangeNotifierProvider/FFAppState durante a migração.
+  runApp(ProviderScope(
+    child: ChangeNotifierProvider(
+      create: (context) => appState,
+      child: MyApp(),
+    ),
   ));
 }
 
