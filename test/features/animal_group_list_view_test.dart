@@ -5,9 +5,9 @@ import 'package:tecmuu/backend/objectbox/entities/index.dart';
 import 'package:tecmuu/features/animais/application/animais_providers.dart';
 import 'package:tecmuu/features/animais/presentation/animal_group_list_view.dart';
 
-/// Valida o piloto de substituição de UMA aba: AnimalGroupListView renderiza
-/// só os animais do grupo, a partir do provider (sobrescrito), e dispara o
-/// callback de toque com o firestoreId.
+/// Valida o piloto de substituição de UMA aba por uma lista ÚNICA do ObjectBox:
+/// AnimalGroupListView renderiza só o grupo, com ação de editar (offline), a
+/// partir do provider sobrescrito.
 void main() {
   const path = 'produtor/p1/propriedades/prop1';
   const args = (propriedadePath: path, grupo: 'Vacas');
@@ -16,6 +16,7 @@ void main() {
     WidgetTester tester,
     List<AnimalEntity> animais, {
     void Function(String)? onTap,
+    void Function(String)? onEdit,
   }) async {
     await tester.pumpWidget(
       ProviderScope(
@@ -28,6 +29,7 @@ void main() {
               propriedadePath: path,
               grupo: 'Vacas',
               onTapAnimal: onTap,
+              onEditAnimal: onEdit,
             ),
           ),
         ),
@@ -36,7 +38,7 @@ void main() {
     await tester.pump();
   }
 
-  testWidgets('renderiza os animais do grupo', (tester) async {
+  testWidgets('renderiza os animais do grupo com brinco/status', (tester) async {
     await pump(tester, [
       AnimalEntity(
         firestoreId: 'a1',
@@ -48,7 +50,7 @@ void main() {
     ]);
 
     expect(find.text('Mimosa #12'), findsOneWidget);
-    expect(find.text('Brinco 12'), findsOneWidget);
+    expect(find.text('Brinco 12 • Prenha'), findsOneWidget);
     expect(find.byType(Card), findsOneWidget);
   });
 
@@ -57,8 +59,9 @@ void main() {
     expect(find.text('Nenhum animal no grupo Vacas'), findsOneWidget);
   });
 
-  testWidgets('toque dispara onTapAnimal com o firestoreId', (tester) async {
-    String? tapped;
+  testWidgets('botão de editar dispara onEditAnimal com o firestoreId',
+      (tester) async {
+    String? edited;
     await pump(
       tester,
       [
@@ -69,10 +72,18 @@ void main() {
           grupoAnimal: 'Vacas',
         ),
       ],
-      onTap: (id) => tapped = id,
+      onEdit: (id) => edited = id,
     );
 
-    await tester.tap(find.byType(ListTile));
-    expect(tapped, 'a1');
+    expect(find.byIcon(Icons.edit), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.edit));
+    expect(edited, 'a1');
+  });
+
+  testWidgets('sem onEditAnimal não mostra botão de editar', (tester) async {
+    await pump(tester, [
+      AnimalEntity(firestoreId: 'a1', nomeAnimal: 'X', grupoAnimal: 'Vacas'),
+    ]);
+    expect(find.byIcon(Icons.edit), findsNothing);
   });
 }

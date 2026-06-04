@@ -19,6 +19,7 @@ class AnimalGroupListView extends ConsumerWidget {
     required this.propriedadePath,
     required this.grupo,
     this.onTapAnimal,
+    this.onEditAnimal,
   });
 
   /// Path do documento da propriedade (parentPath dos animais).
@@ -29,6 +30,11 @@ class AnimalGroupListView extends ConsumerWidget {
 
   /// Callback opcional ao tocar num animal (recebe o firestoreId).
   final void Function(String firestoreId)? onTapAnimal;
+
+  /// Callback opcional para editar um animal (recebe o firestoreId). A tela
+  /// monta a navegação para EditarAnimal com seus próprios parâmetros e a
+  /// referência reconstruída a partir do firestoreId. Funciona offline.
+  final void Function(String firestoreId)? onEditAnimal;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,6 +58,7 @@ class AnimalGroupListView extends ConsumerWidget {
             final titulo = animal.nomeBrincoConcat?.isNotEmpty == true
                 ? animal.nomeBrincoConcat!
                 : (animal.nomeAnimal ?? 'Animal sem nome');
+            final firestoreId = animal.firestoreId;
             return Card(
               margin:
                   const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -60,14 +67,21 @@ class AnimalGroupListView extends ConsumerWidget {
                 title: Text(titulo),
                 subtitle: Text(
                   [
+                    'Brinco ${animal.brincoAnimal}',
                     if ((animal.status ?? '').isNotEmpty) animal.status!,
                     if ((animal.racaAnimal ?? '').isNotEmpty) animal.racaAnimal!,
                   ].join(' • '),
                 ),
-                trailing: Text('Brinco ${animal.brincoAnimal}'),
-                onTap: animal.firestoreId == null || onTapAnimal == null
+                trailing: (firestoreId != null && onEditAnimal != null)
+                    ? IconButton(
+                        icon: const Icon(Icons.edit),
+                        tooltip: 'Editar animal',
+                        onPressed: () => onEditAnimal!(firestoreId),
+                      )
+                    : null,
+                onTap: (firestoreId == null || onTapAnimal == null)
                     ? null
-                    : () => onTapAnimal!(animal.firestoreId!),
+                    : () => onTapAnimal!(firestoreId),
               ),
             );
           },
