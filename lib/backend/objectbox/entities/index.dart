@@ -1,5 +1,8 @@
 // Exporta todas as entidades ObjectBox
 
+// Contrato comum de sincronização
+export 'syncable_entity.dart';
+
 // Entidades principais
 export 'person_entity.dart';
 export 'tecnico_entity.dart';

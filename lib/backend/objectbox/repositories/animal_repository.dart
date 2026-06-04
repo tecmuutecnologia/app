@@ -1,60 +1,60 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 
+import '../../../core/result/result.dart';
 import '../objectbox_service.dart';
-import '../offline_first_sync_service.dart';
 import '../entities/index.dart';
 import '../../../objectbox.g.dart';
+import 'base_sync_repository.dart';
 
-/// Repositório para gerenciar AnimaisProdutores (Animais)
-/// Usa ObjectBox como fonte primária e Firestore para sincronização
-class AnimalRepository {
-  final ObjectBoxService _objectBox;
-  final OfflineFirstSyncService _syncService;
-  final FirebaseFirestore _firestore;
-
+/// Repositório de AnimaisProdutores (animais).
+///
+/// Usa ObjectBox como fonte primária e delega a [BaseSyncRepository] toda a
+/// orquestração de sincronização com o Firestore (criar/atualizar/excluir com
+/// fila de pendências). Aqui ficam apenas as queries e o mapeamento de campos
+/// específicos do animal.
+class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
   AnimalRepository({
     ObjectBoxService? objectBox,
-    OfflineFirstSyncService? syncService,
-    FirebaseFirestore? firestore,
-  })  : _objectBox = objectBox ?? ObjectBoxService.instance,
-        _syncService = syncService ?? OfflineFirstSyncService.instance,
-        _firestore = firestore ?? FirebaseFirestore.instance;
+    super.syncService,
+    super.firestore,
+  }) : _objectBox = objectBox ?? ObjectBoxService.instance;
 
-  /// Obtém todos os animais de uma propriedade (local)
+  final ObjectBoxService _objectBox;
+
+  @override
+  Box<AnimalEntity> get box => _objectBox.animalBox;
+
+  @override
+  String get collectionName => 'animaisProdutores';
+
+  // ---------------------------------------------------------------------------
+  // Queries específicas de animal
+  // ---------------------------------------------------------------------------
+
+  /// Obtém todos os animais de uma propriedade (local).
   List<AnimalEntity> getAnimaisByPropriedade(String propriedadePath) {
-    return _objectBox.animalBox
+    return box
         .query(AnimalEntity_.parentPath.equals(propriedadePath))
         .build()
         .find();
   }
 
-  /// Obtém um animal pelo ID do Firestore
+  /// Obtém um animal pelo ID do Firestore.
   AnimalEntity? getByFirestoreId(String firestoreId) {
-    return _objectBox.animalBox
+    return box
         .query(AnimalEntity_.firestoreId.equals(firestoreId))
         .build()
         .findFirst();
   }
 
-  /// Obtém um animal pelo ID local do ObjectBox
-  AnimalEntity? getById(int id) {
-    return _objectBox.animalBox.get(id);
-  }
-
-  /// Busca animais pelo nome ou brinco
+  /// Busca animais pelo nome ou brinco.
   List<AnimalEntity> search(String query, {String? propriedadePath}) {
     final queryLower = query.toLowerCase();
 
-    var queryBuilder = _objectBox.animalBox.query();
-
-    if (propriedadePath != null) {
-      queryBuilder = _objectBox.animalBox
-          .query(AnimalEntity_.parentPath.equals(propriedadePath));
-    }
-
-    final allAnimals = queryBuilder.build().find();
+    final builder = propriedadePath != null
+        ? box.query(AnimalEntity_.parentPath.equals(propriedadePath))
+        : box.query();
+    final allAnimals = builder.build().find();
 
     return allAnimals.where((animal) {
       final nome = animal.nomeAnimal?.toLowerCase() ?? '';
@@ -67,12 +67,57 @@ class AnimalRepository {
     }).toList();
   }
 
-  /// Cria um novo animal
-  Future<AnimalEntity> create({
+  /// Stream de animais de uma propriedade (reatividade local do ObjectBox).
+  Stream<List<AnimalEntity>> watchAnimaisByPropriedade(String propriedadePath) {
+    return box
+        .query(AnimalEntity_.parentPath.equals(propriedadePath))
+        .watch(triggerImmediately: true)
+        .map((query) => query.find());
+  }
+
+  /// Conta animais por propriedade.
+  int countByPropriedade(String propriedadePath) {
+    return box
+        .query(AnimalEntity_.parentPath.equals(propriedadePath))
+        .build()
+        .count();
+  }
+
+  /// Animais pendentes de sincronização (query indexada).
+  @override
+  List<AnimalEntity> getPendingSync() {
+    return box.query(AnimalEntity_.needsSync.equals(true)).build().find();
+  }
+
+  /// Obtém animais por status.
+  List<AnimalEntity> getByStatus(String status, {String? propriedadePath}) {
+    final condition = propriedadePath != null
+        ? AnimalEntity_.status
+            .equals(status)
+            .and(AnimalEntity_.parentPath.equals(propriedadePath))
+        : AnimalEntity_.status.equals(status);
+    return box.query(condition).build().find();
+  }
+
+  /// Obtém animais por grupo.
+  List<AnimalEntity> getByGrupo(int idGrupo, {String? propriedadePath}) {
+    final condition = propriedadePath != null
+        ? AnimalEntity_.idGrupoAnimal
+            .equals(idGrupo)
+            .and(AnimalEntity_.parentPath.equals(propriedadePath))
+        : AnimalEntity_.idGrupoAnimal.equals(idGrupo);
+    return box.query(condition).build().find();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Escrita (delega a sincronização à BaseSyncRepository)
+  // ---------------------------------------------------------------------------
+
+  /// Cria um novo animal localmente e sincroniza (ou enfileira).
+  Future<Result<AnimalEntity>> create({
     required String propriedadePath,
     required Map<String, dynamic> data,
   }) async {
-    // Cria localmente
     final entity = AnimalEntity(
       parentPath: propriedadePath,
       nomeAnimal: data['nomeAnimal'],
@@ -92,48 +137,15 @@ class AnimalRepository {
       needsSync: true,
     );
 
-    final id = _objectBox.animalBox.put(entity);
+    final id = box.put(entity);
     entity.id = id;
 
-    // Agenda sincronização com Firestore
-    if (_syncService.isOnline) {
-      try {
-        final collectionRef =
-            _firestore.collection('$propriedadePath/animaisProdutores');
-        final docRef = collectionRef.doc();
-        await docRef.set(entity.toFirestore());
-
-        entity.firestoreId = docRef.id;
-        entity.needsSync = false;
-        entity.lastSynced = DateTime.now();
-        _objectBox.animalBox.put(entity);
-      } catch (e) {
-        debugPrint('❌ Erro ao sincronizar animal: $e');
-        // Adiciona à fila de pendências
-        _syncService.queueOperation(
-          operationType: 'CREATE',
-          collectionName: 'animaisProdutores',
-          documentPath: '$propriedadePath/animaisProdutores/${entity.id}',
-          data: entity.toFirestore(),
-        );
-      }
-    } else {
-      // Offline - adiciona à fila
-      _syncService.queueOperation(
-        operationType: 'CREATE',
-        collectionName: 'animaisProdutores',
-        documentPath: '$propriedadePath/animaisProdutores/${entity.id}',
-        data: entity.toFirestore(),
-      );
-    }
-
-    return entity;
+    return pushCreate(entity);
   }
 
-  /// Atualiza um animal existente
-  Future<AnimalEntity> update(
+  /// Atualiza um animal existente localmente e sincroniza (ou enfileira).
+  Future<Result<AnimalEntity>> update(
       AnimalEntity entity, Map<String, dynamic> data) async {
-    // Atualiza localmente
     entity.nomeAnimal = data['nomeAnimal'] ?? entity.nomeAnimal;
     entity.racaAnimal = data['racaAnimal'] ?? entity.racaAnimal;
     entity.pesoAnimal = data['pesoAnimal'] ?? entity.pesoAnimal;
@@ -157,132 +169,11 @@ class AnimalRepository {
     entity.totalPartos = data['totalPartos'] ?? entity.totalPartos;
 
     entity.markAsModified();
-    _objectBox.animalBox.put(entity);
+    box.put(entity);
 
-    // Sincroniza com Firestore
-    if (entity.firestoreId != null) {
-      final documentPath =
-          '${entity.parentPath}/animaisProdutores/${entity.firestoreId}';
-
-      if (_syncService.isOnline) {
-        try {
-          await _firestore.doc(documentPath).update(entity.toFirestore());
-          entity.needsSync = false;
-          entity.lastSynced = DateTime.now();
-          _objectBox.animalBox.put(entity);
-        } catch (e) {
-          debugPrint('❌ Erro ao atualizar animal no Firestore: $e');
-          _syncService.queueOperation(
-            operationType: 'UPDATE',
-            collectionName: 'animaisProdutores',
-            documentPath: documentPath,
-            firestoreId: entity.firestoreId,
-            data: entity.toFirestore(),
-          );
-        }
-      } else {
-        _syncService.queueOperation(
-          operationType: 'UPDATE',
-          collectionName: 'animaisProdutores',
-          documentPath: documentPath,
-          firestoreId: entity.firestoreId,
-          data: entity.toFirestore(),
-        );
-      }
-    }
-
-    return entity;
+    return pushUpdate(entity);
   }
 
-  /// Remove um animal (soft delete)
-  Future<void> delete(AnimalEntity entity) async {
-    entity.isDeleted = true;
-    entity.markAsModified();
-    _objectBox.animalBox.put(entity);
-
-    if (entity.firestoreId != null) {
-      final documentPath =
-          '${entity.parentPath}/animaisProdutores/${entity.firestoreId}';
-
-      if (_syncService.isOnline) {
-        try {
-          await _firestore.doc(documentPath).delete();
-          _objectBox.animalBox.remove(entity.id);
-        } catch (e) {
-          debugPrint('❌ Erro ao deletar animal no Firestore: $e');
-          _syncService.queueOperation(
-            operationType: 'DELETE',
-            collectionName: 'animaisProdutores',
-            documentPath: documentPath,
-            firestoreId: entity.firestoreId,
-          );
-        }
-      } else {
-        _syncService.queueOperation(
-          operationType: 'DELETE',
-          collectionName: 'animaisProdutores',
-          documentPath: documentPath,
-          firestoreId: entity.firestoreId,
-        );
-      }
-    }
-  }
-
-  /// Obtém stream de animais (reatividade local)
-  Stream<List<AnimalEntity>> watchAnimaisByPropriedade(String propriedadePath) {
-    return _objectBox.animalBox
-        .query(AnimalEntity_.parentPath.equals(propriedadePath))
-        .watch(triggerImmediately: true)
-        .map((query) => query.find());
-  }
-
-  /// Conta animais por propriedade
-  int countByPropriedade(String propriedadePath) {
-    return _objectBox.animalBox
-        .query(AnimalEntity_.parentPath.equals(propriedadePath))
-        .build()
-        .count();
-  }
-
-  /// Obtém animais que precisam de sincronização
-  List<AnimalEntity> getPendingSync() {
-    return _objectBox.animalBox
-        .query(AnimalEntity_.needsSync.equals(true))
-        .build()
-        .find();
-  }
-
-  /// Obtém animais por status
-  List<AnimalEntity> getByStatus(String status, {String? propriedadePath}) {
-    if (propriedadePath != null) {
-      return _objectBox.animalBox
-          .query(AnimalEntity_.status
-              .equals(status)
-              .and(AnimalEntity_.parentPath.equals(propriedadePath)))
-          .build()
-          .find();
-    }
-
-    return _objectBox.animalBox
-        .query(AnimalEntity_.status.equals(status))
-        .build()
-        .find();
-  }
-
-  /// Obtém animais por grupo
-  List<AnimalEntity> getByGrupo(int idGrupo, {String? propriedadePath}) {
-    if (propriedadePath != null) {
-      return _objectBox.animalBox
-          .query(AnimalEntity_.idGrupoAnimal
-              .equals(idGrupo)
-              .and(AnimalEntity_.parentPath.equals(propriedadePath)))
-          .build()
-          .find();
-    }
-
-    return _objectBox.animalBox
-        .query(AnimalEntity_.idGrupoAnimal.equals(idGrupo))
-        .build()
-        .find();
-  }
+  /// Remove um animal (soft delete) localmente e sincroniza (ou enfileira).
+  Future<Result<void>> delete(AnimalEntity entity) => pushDelete(entity);
 }

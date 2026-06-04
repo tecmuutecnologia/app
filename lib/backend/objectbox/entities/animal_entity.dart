@@ -1,17 +1,22 @@
 import 'package:objectbox/objectbox.dart';
 
+import 'syncable_entity.dart';
+
 /// Entidade AnimaisProdutores para armazenamento local com ObjectBox
 /// Sincroniza com a subcoleção 'animaisProdutores' do Firestore
 @Entity()
-class AnimalEntity {
+class AnimalEntity implements SyncableEntity {
+  @override
   @Id()
   int id = 0;
 
   /// ID do documento no Firestore (usado para sincronização)
+  @override
   @Unique()
   String? firestoreId;
 
   /// Path do documento pai (propriedade)
+  @override
   String? parentPath;
 
   /// Referência ao técnico/propriedade (path do documento Firestore)
@@ -66,13 +71,17 @@ class AnimalEntity {
   DateTime? dtDesmame;
 
   /// Campos de controle de sincronização
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastModified;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastSynced;
 
+  @override
   bool needsSync;
+  @override
   bool isDeleted;
 
   AnimalEntity({
@@ -179,6 +188,7 @@ class AnimalEntity {
     );
   }
 
+  @override
   Map<String, dynamic> toFirestore() {
     return {
       'nomeAnimal': nomeAnimal,
@@ -279,6 +289,7 @@ class AnimalEntity {
     needsSync = false;
   }
 
+  @override
   void markAsModified() {
     lastModified = DateTime.now();
     needsSync = true;
