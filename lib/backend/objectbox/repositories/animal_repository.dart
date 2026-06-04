@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 import '../objectbox_service.dart';
-import '../sync_service.dart';
+import '../offline_first_sync_service.dart';
 import '../entities/index.dart';
 import '../../../objectbox.g.dart';
 
@@ -11,15 +11,15 @@ import '../../../objectbox.g.dart';
 /// Usa ObjectBox como fonte primária e Firestore para sincronização
 class AnimalRepository {
   final ObjectBoxService _objectBox;
-  final SyncService _syncService;
+  final OfflineFirstSyncService _syncService;
   final FirebaseFirestore _firestore;
 
   AnimalRepository({
     ObjectBoxService? objectBox,
-    SyncService? syncService,
+    OfflineFirstSyncService? syncService,
     FirebaseFirestore? firestore,
   })  : _objectBox = objectBox ?? ObjectBoxService.instance,
-        _syncService = syncService ?? SyncService.instance,
+        _syncService = syncService ?? OfflineFirstSyncService.instance,
         _firestore = firestore ?? FirebaseFirestore.instance;
 
   /// Obtém todos os animais de uma propriedade (local)

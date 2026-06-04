@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'objectbox_service.dart';
-import 'sync_service.dart' as legacy;
 import 'offline_first_sync_service.dart';
 
 /// Helper para integração do ObjectBox com autenticação
@@ -135,29 +134,5 @@ class ObjectBoxAuthHelper {
 
     await ObjectBoxService.instance.clearAllData();
     debugPrint('⚠️ Todos os dados locais foram limpos');
-  }
-
-  // ==========================================================================
-  // Métodos legados para compatibilidade com SyncService antigo
-  // ==========================================================================
-
-  @Deprecated('Use onUserLogin com OfflineFirstSyncService')
-  static Future<void> syncFromFirestoreLegacy(String userId) async {
-    if (kIsWeb) return;
-
-    if (!ObjectBoxService.isInitialized) {
-      await ObjectBoxService.initialize();
-    }
-
-    if (!legacy.SyncService.isInitialized) {
-      await legacy.SyncService.initialize();
-    }
-
-    try {
-      await legacy.SyncService.instance.syncFromFirestore(userId: userId);
-      debugPrint('✅ Dados do usuário sincronizados (legacy)');
-    } catch (e) {
-      debugPrint('❌ Erro ao sincronizar dados (legacy): $e');
-    }
   }
 }

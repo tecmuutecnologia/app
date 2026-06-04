@@ -41,7 +41,6 @@ export 'entities/index.dart';
 
 // Serviços
 export 'objectbox_service.dart';
-export 'sync_service.dart' hide SyncStatus;
 export 'offline_first_sync_service.dart';
 
 // Helpers
