@@ -12,6 +12,7 @@ import 'auth/firebase_auth/auth_util.dart';
 
 import 'backend/firebase/firebase_config.dart';
 import 'backend/objectbox/index.dart';
+import 'core/connectivity/connectivity_service.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 import 'flutter_flow/internationalization.dart';
@@ -31,6 +32,9 @@ void main() async {
   if (!kIsWeb) {
     await ObjectBoxAuthHelper.initializeOfflineFirst();
   }
+
+  // Começa a observar a conectividade (alimenta isOnlineProvider/SyncStatusBanner).
+  unawaited(ConnectivityService.instance.start());
 
   await FlutterFlowTheme.initialize();
 
