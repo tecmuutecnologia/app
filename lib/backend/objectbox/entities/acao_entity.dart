@@ -1,17 +1,22 @@
 import 'package:objectbox/objectbox.dart';
 
+import 'syncable_entity.dart';
+
 /// Entidade Acao para armazenamento local com ObjectBox
 /// Sincroniza com a subcoleção 'acoes' do Firestore
 @Entity()
-class AcaoEntity {
+class AcaoEntity implements SyncableEntity {
+  @override
   @Id()
   int id = 0;
 
   /// ID do documento no Firestore
+  @override
   @Unique()
   String? firestoreId;
 
   /// Path do documento pai
+  @override
   String? parentPath;
 
   /// Referência ao animal (path)
@@ -35,13 +40,17 @@ class AcaoEntity {
   DateTime? dataDaAcao;
 
   /// Campos de controle de sincronização
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastModified;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastSynced;
 
+  @override
   bool needsSync;
+  @override
   bool isDeleted;
 
   AcaoEntity({
@@ -100,6 +109,7 @@ class AcaoEntity {
     );
   }
 
+  @override
   Map<String, dynamic> toFirestore() {
     return {
       'nomeAnimal': nomeAnimal,
@@ -118,6 +128,7 @@ class AcaoEntity {
     };
   }
 
+  @override
   void markAsModified() {
     lastModified = DateTime.now();
     needsSync = true;

@@ -1,15 +1,20 @@
 import 'package:objectbox/objectbox.dart';
 
+import 'syncable_entity.dart';
+
 /// Entidade AcaoDaVisita para armazenamento local com ObjectBox
 /// Sincroniza com a subcoleção 'acoes_da_visita' do Firestore
 @Entity()
-class AcaoDaVisitaEntity {
+class AcaoDaVisitaEntity implements SyncableEntity {
+  @override
   @Id()
   int id = 0;
 
+  @override
   @Unique()
   String? firestoreId;
 
+  @override
   String? parentPath;
 
   String? acao;
@@ -29,13 +34,17 @@ class AcaoDaVisitaEntity {
   @Property(type: PropertyType.date)
   DateTime? dtVisita;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastModified;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastSynced;
 
+  @override
   bool needsSync;
+  @override
   bool isDeleted;
 
   AcaoDaVisitaEntity({
@@ -92,6 +101,7 @@ class AcaoDaVisitaEntity {
     );
   }
 
+  @override
   Map<String, dynamic> toFirestore() {
     return {
       'acao': acao,
@@ -111,6 +121,7 @@ class AcaoDaVisitaEntity {
     };
   }
 
+  @override
   void markAsModified() {
     lastModified = DateTime.now();
     needsSync = true;

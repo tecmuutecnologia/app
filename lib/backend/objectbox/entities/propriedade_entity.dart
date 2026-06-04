@@ -1,17 +1,22 @@
 import 'package:objectbox/objectbox.dart';
 
+import 'syncable_entity.dart';
+
 /// Entidade Propriedades para armazenamento local com ObjectBox
 /// Sincroniza com a subcoleção 'propriedades' do Firestore
 @Entity()
-class PropriedadeEntity {
+class PropriedadeEntity implements SyncableEntity {
+  @override
   @Id()
   int id = 0;
 
   /// ID do documento no Firestore (usado para sincronização)
+  @override
   @Unique()
   String? firestoreId;
 
   /// Path do documento pai (produtor)
+  @override
   String? parentPath;
 
   /// Referência ao person produtor (path do documento Firestore)
@@ -24,18 +29,22 @@ class PropriedadeEntity {
   String? cidade;
   String? phoneNumber;
   String? diasParaDg;
+  @override
   bool isDeleted;
 
   @Property(type: PropertyType.date)
   DateTime? deletedAt;
 
   /// Campos de controle de sincronização
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastModified;
 
+  @override
   @Property(type: PropertyType.date)
   DateTime? lastSynced;
 
+  @override
   bool needsSync;
 
   PropriedadeEntity({
@@ -82,6 +91,7 @@ class PropriedadeEntity {
     );
   }
 
+  @override
   Map<String, dynamic> toFirestore() {
     return {
       'email': email,
@@ -114,6 +124,7 @@ class PropriedadeEntity {
     needsSync = false;
   }
 
+  @override
   void markAsModified() {
     lastModified = DateTime.now();
     needsSync = true;

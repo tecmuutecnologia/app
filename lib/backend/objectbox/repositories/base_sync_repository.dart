@@ -63,12 +63,41 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
   /// grandes.
   List<E> getPendingSync() => box.getAll().where((e) => e.needsSync).toList();
 
+  /// Entidades cujo documento pai no Firestore é [parentPath].
+  ///
+  /// Implementação padrão por varredura em memória; subclasses podem sobrescrever
+  /// com uma query indexada (`EntityName_.parentPath.equals(parentPath)`).
+  List<E> getByParentPath(String parentPath) =>
+      box.getAll().where((e) => e.parentPath == parentPath).toList();
+
   /// Persiste a entidade localmente e retorna seu ID.
   int put(E entity) => box.put(entity);
 
   // ---------------------------------------------------------------------------
   // Escrita com sincronização (offline-first)
   // ---------------------------------------------------------------------------
+
+  /// Adiciona uma NOVA entidade: marca para sync, persiste localmente e
+  /// sincroniza (ou enfileira se offline/erro). A entidade deve ter `parentPath`
+  /// definido.
+  Future<Result<E>> add(E entity) async {
+    entity.needsSync = true;
+    entity.lastModified = DateTime.now();
+    final id = put(entity);
+    entity.id = id;
+    return pushCreate(entity);
+  }
+
+  /// Salva alterações de uma entidade EXISTENTE: marca como modificada, persiste
+  /// localmente e sincroniza (ou enfileira).
+  Future<Result<E>> save(E entity) async {
+    entity.markAsModified();
+    put(entity);
+    return pushUpdate(entity);
+  }
+
+  /// Exclui (soft delete) a entidade e sincroniza (ou enfileira).
+  Future<Result<void>> softDelete(E entity) => pushDelete(entity);
 
   /// Cria a entidade no Firestore (ou enfileira se offline/erro).
   ///
