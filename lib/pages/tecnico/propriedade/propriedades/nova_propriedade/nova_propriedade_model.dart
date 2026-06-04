@@ -160,6 +160,45 @@ class NovaPropriedadeModel extends FlutterFlowModel<NovaPropriedadeWidget> {
   TextEditingController? senhaTextController;
   late bool senhaVisibility;
   String? Function(BuildContext, String?)? senhaTextControllerValidator;
+  String? _senhaTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+
+    if (val.length < 6) {
+      return 'Mínimo 6 caracteres.';
+    }
+    if (val.length > 100) {
+      return 'Máximo 100 caracteres.';
+    }
+
+    return null;
+  }
+
+  // State field(s) for confirmaSenha widget.
+  FocusNode? confirmaSenhaFocusNode;
+  TextEditingController? confirmaSenhaTextController;
+  late bool confirmaSenhaVisibility;
+  String? Function(BuildContext, String?)? confirmaSenhaTextControllerValidator;
+  String? _confirmaSenhaTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+
+    if (val.length < 6) {
+      return 'Mínimo 6 caracteres.';
+    }
+    if (val.length > 100) {
+      return 'Máximo 100 caracteres.';
+    }
+    if (val != senhaTextController?.text) {
+      return 'As senhas não correspondem.';
+    }
+
+    return null;
+  }
+
   // Stores action output result for [Firestore Query - Query a collection] action in Button widget.
   PersonRecord? outRetornoPersonExist;
   // Stores action output result for [Firestore Query - Query a collection] action in Button widget.
@@ -176,7 +215,11 @@ class NovaPropriedadeModel extends FlutterFlowModel<NovaPropriedadeWidget> {
     cidadeTextControllerValidator = _cidadeTextControllerValidator;
     enderecoTextControllerValidator = _enderecoTextControllerValidator;
     cepTextControllerValidator = _cepTextControllerValidator;
+    senhaTextControllerValidator = _senhaTextControllerValidator;
+    confirmaSenhaTextControllerValidator =
+        _confirmaSenhaTextControllerValidator;
     senhaVisibility = false;
+    confirmaSenhaVisibility = false;
   }
 
   @override
@@ -207,5 +250,8 @@ class NovaPropriedadeModel extends FlutterFlowModel<NovaPropriedadeWidget> {
 
     senhaFocusNode?.dispose();
     senhaTextController?.dispose();
+
+    confirmaSenhaFocusNode?.dispose();
+    confirmaSenhaTextController?.dispose();
   }
 }

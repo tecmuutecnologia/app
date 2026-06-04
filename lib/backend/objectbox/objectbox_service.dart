@@ -39,6 +39,9 @@ class ObjectBoxService {
   late final Box<CalendarioSanitarioEntity> calendarioSanitarioBox;
   late final Box<CidadeEntity> cidadeBox;
 
+  // Box para sessões de usuário (autenticação offline)
+  late final Box<UserSessionEntity> userSessionBox;
+
   ObjectBoxService._();
 
   /// Obtém a instância singleton do ObjectBoxService
@@ -99,6 +102,9 @@ class ObjectBoxService {
         _store!.box<CalendarioSanitarioEntity>();
     _instance!.cidadeBox = _store!.box<CidadeEntity>();
 
+    // Box para autenticação offline
+    _instance!.userSessionBox = _store!.box<UserSessionEntity>();
+
     return _instance!;
   }
 
@@ -149,6 +155,9 @@ class ObjectBoxService {
     tipoAcaoBox.removeAll();
     calendarioSanitarioBox.removeAll();
     cidadeBox.removeAll();
+
+    // Sessões de usuário
+    userSessionBox.removeAll();
   }
 
   /// Limpa dados de um usuário específico (para logout)

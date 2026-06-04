@@ -1,3 +1,5 @@
+import 'package:tecmuu/backend/objectbox/widgets/objectbox_debug_menu.dart';
+
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
@@ -9,6 +11,7 @@ import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_
 import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -211,8 +214,9 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
   /// AppBar do dashboard.
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor:
-          _model.respostaNet! ? const Color(0xFFF75E38) : const Color(0xFFF2886E),
+      backgroundColor: _model.respostaNet!
+          ? const Color(0xFFF75E38)
+          : const Color(0xFFF2886E),
       automaticallyImplyLeading: false,
       title: Text(
         currentUserDisplayName,
@@ -231,6 +235,30 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
             ),
       ),
       actions: [
+        // Botão Debug (apenas em debug mode)
+        if (kDebugMode)
+          Padding(
+            padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
+            child: FlutterFlowIconButton(
+              borderColor: Colors.transparent,
+              borderRadius: 30.0,
+              borderWidth: 1.0,
+              buttonSize: 60.0,
+              icon: const Icon(
+                Icons.bug_report_outlined,
+                color: Colors.white,
+                size: 30.0,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const ObjectBoxDebugMenu(),
+                  ),
+                );
+              },
+            ),
+          ),
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 12.0, 0.0),
           child: FlutterFlowIconButton(
@@ -326,7 +354,8 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
         }
 
         final animaisAtivos = snapshot.data!
-            .where((e) => (e.status != 'Descarte') && (e.grupoAnimal != 'Sêmens'))
+            .where(
+                (e) => (e.status != 'Descarte') && (e.grupoAnimal != 'Sêmens'))
             .toList()
             .length;
 

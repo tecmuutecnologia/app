@@ -1791,10 +1791,91 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "22:5299997838202207882",
+      "lastPropertyId": "14:3164064302486094546",
+      "name": "UserSessionEntity",
+      "properties": [
+        {
+          "id": "1:6434756409910344814",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:6783312106716456297",
+          "name": "email",
+          "indexId": "21:7893203319794127174",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:5577824650558225572",
+          "name": "passwordHash",
+          "type": 9
+        },
+        {
+          "id": "4:996129745225324124",
+          "name": "firebaseUid",
+          "type": 9
+        },
+        {
+          "id": "5:8688655025420732205",
+          "name": "sessionToken",
+          "type": 9
+        },
+        {
+          "id": "6:1452822414393728023",
+          "name": "displayName",
+          "type": 9
+        },
+        {
+          "id": "7:8958188425057595182",
+          "name": "emailVerified",
+          "type": 1
+        },
+        {
+          "id": "8:4605901620521133869",
+          "name": "lastSuccessfulLogin",
+          "type": 10
+        },
+        {
+          "id": "9:1362842684722958424",
+          "name": "lastSyncedAt",
+          "type": 10
+        },
+        {
+          "id": "10:3551570678968173033",
+          "name": "needsSync",
+          "type": 1
+        },
+        {
+          "id": "11:852814083758856919",
+          "name": "deviceFingerprint",
+          "type": 9
+        },
+        {
+          "id": "12:2205086468935563901",
+          "name": "createdAt",
+          "type": 10
+        },
+        {
+          "id": "13:6158544631854625445",
+          "name": "updatedAt",
+          "type": 10
+        },
+        {
+          "id": "14:3164064302486094546",
+          "name": "isActive",
+          "type": 1
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "21:6196883581296379914",
-  "lastIndexId": "20:2320840994514035059",
+  "lastEntityId": "22:5299997838202207882",
+  "lastIndexId": "21:7893203319794127174",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

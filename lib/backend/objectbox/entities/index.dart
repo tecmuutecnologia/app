@@ -11,6 +11,9 @@ export 'propriedade_entity.dart';
 export 'animal_entity.dart';
 export 'sync_metadata_entity.dart';
 
+// Autenticação offline
+export 'user_session_entity.dart';
+
 // Ações e visitas
 export 'acao_entity.dart';
 export 'acao_da_visita_entity.dart';

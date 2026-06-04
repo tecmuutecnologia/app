@@ -42,6 +42,8 @@ export 'entities/index.dart';
 // Serviços
 export 'objectbox_service.dart';
 export 'offline_first_sync_service.dart';
+export 'sync_debugger_service.dart';
+export 'remote_sync_listeners_service.dart';
 
 // Helpers
 export 'objectbox_auth_helper.dart';

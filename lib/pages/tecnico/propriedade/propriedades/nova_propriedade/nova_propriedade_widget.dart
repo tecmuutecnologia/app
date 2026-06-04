@@ -15,6 +15,10 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'nova_propriedade_model.dart';
 export 'nova_propriedade_model.dart';
 
+//TODO Esta pedidndo para o tecnico confirmar a senha após criar a propriedade, 
+//isso acontece pela criação dos dados da conta do produtor, não seria mais facil 
+//armazenar a senha em um local seguro e deopis somente utilizar?? Outra coisa é que pede para gerar uma senha e depois manda um e-mail para a pessoa com uma senha padrão, não seria melhor remover os campos de gerar senha, e utilizar o cpf como senha padrão e no primeiro acesso do produtor pedir pra trocar, e informar no email que a senha é o cpf??
+
 class NovaPropriedadeWidget extends StatefulWidget {
   const NovaPropriedadeWidget({
     super.key,
@@ -73,6 +77,9 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
 
     _model.senhaTextController ??= TextEditingController();
     _model.senhaFocusNode ??= FocusNode();
+
+    _model.confirmaSenhaTextController ??= TextEditingController();
+    _model.confirmaSenhaFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
@@ -1207,6 +1214,126 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
                                 null,
                             cursorColor: FlutterFlowTheme.of(context).primary,
                             validator: _model.senhaTextControllerValidator
+                                .asValidator(context),
+                          ),
+                          TextFormField(
+                            controller: _model.confirmaSenhaTextController,
+                            focusNode: _model.confirmaSenhaFocusNode,
+                            autofocus: true,
+                            obscureText: !_model.confirmaSenhaVisibility,
+                            decoration: InputDecoration(
+                              labelText: 'Repita a Senha temporária',
+                              labelStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .override(
+                                    font: GoogleFonts.readexPro(
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .labelMedium
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .labelMedium
+                                          .fontStyle,
+                                    ),
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontStyle,
+                                  ),
+                              hintStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .override(
+                                    font: GoogleFonts.readexPro(
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .labelMedium
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .labelMedium
+                                          .fontStyle,
+                                    ),
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontStyle,
+                                  ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).alternate,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).primary,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).error,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).error,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              contentPadding: EdgeInsetsDirectional.fromSTEB(
+                                  16.0, 12.0, 16.0, 12.0),
+                              suffixIcon: InkWell(
+                                onTap: () => safeSetState(
+                                  () => _model.confirmaSenhaVisibility =
+                                      !_model.confirmaSenhaVisibility,
+                                ),
+                                focusNode: FocusNode(skipTraversal: true),
+                                child: Icon(
+                                  _model.confirmaSenhaVisibility
+                                      ? Icons.visibility_outlined
+                                      : Icons.visibility_off_outlined,
+                                  size: 22,
+                                ),
+                              ),
+                            ),
+                            style: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .override(
+                                  font: GoogleFonts.readexPro(
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
+                                  ),
+                                  letterSpacing: 0.0,
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontStyle,
+                                ),
+                            maxLength: 100,
+                            maxLengthEnforcement: MaxLengthEnforcement.none,
+                            buildCounter: (context,
+                                    {required currentLength,
+                                    required isFocused,
+                                    maxLength}) =>
+                                null,
+                            cursorColor: FlutterFlowTheme.of(context).primary,
+                            validator: _model
+                                .confirmaSenhaTextControllerValidator
                                 .asValidator(context),
                           ),
                         ].divide(SizedBox(height: 12.0)),

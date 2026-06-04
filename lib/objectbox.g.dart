@@ -25,6 +25,7 @@ import 'backend/objectbox/entities/reference_entities.dart';
 import 'backend/objectbox/entities/sync_metadata_entity.dart';
 import 'backend/objectbox/entities/tecnico_entity.dart';
 import 'backend/objectbox/entities/tratamento_entity.dart';
+import 'backend/objectbox/entities/user_session_entity.dart';
 import 'backend/objectbox/entities/visita_entities.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
@@ -2132,6 +2133,101 @@ final _entities = <obx_int.ModelEntity>[
     relations: <obx_int.ModelRelation>[],
     backlinks: <obx_int.ModelBacklink>[],
   ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(22, 5299997838202207882),
+    name: 'UserSessionEntity',
+    lastPropertyId: const obx_int.IdUid(14, 3164064302486094546),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 6434756409910344814),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 6783312106716456297),
+        name: 'email',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(21, 7893203319794127174),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 5577824650558225572),
+        name: 'passwordHash',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 996129745225324124),
+        name: 'firebaseUid',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 8688655025420732205),
+        name: 'sessionToken',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 1452822414393728023),
+        name: 'displayName',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 8958188425057595182),
+        name: 'emailVerified',
+        type: 1,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(8, 4605901620521133869),
+        name: 'lastSuccessfulLogin',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(9, 1362842684722958424),
+        name: 'lastSyncedAt',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(10, 3551570678968173033),
+        name: 'needsSync',
+        type: 1,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(11, 852814083758856919),
+        name: 'deviceFingerprint',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(12, 2205086468935563901),
+        name: 'createdAt',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(13, 6158544631854625445),
+        name: 'updatedAt',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(14, 3164064302486094546),
+        name: 'isActive',
+        type: 1,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
 ];
 
 /// Shortcut for [obx.Store.new] that passes [getObjectBoxModel] and for Flutter
@@ -2172,8 +2268,8 @@ Future<obx.Store> openStore({
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
     entities: _entities,
-    lastEntityId: const obx_int.IdUid(21, 6196883581296379914),
-    lastIndexId: const obx_int.IdUid(20, 2320840994514035059),
+    lastEntityId: const obx_int.IdUid(22, 5299997838202207882),
+    lastIndexId: const obx_int.IdUid(21, 7893203319794127174),
     lastRelationId: const obx_int.IdUid(0, 0),
     lastSequenceId: const obx_int.IdUid(0, 0),
     retiredEntityUids: const [],
@@ -5102,6 +5198,122 @@ obx_int.ModelDefinition getObjectBoxModel() {
         return object;
       },
     ),
+    UserSessionEntity: obx_int.EntityDefinition<UserSessionEntity>(
+      model: _entities[21],
+      toOneRelations: (UserSessionEntity object) => [],
+      toManyRelations: (UserSessionEntity object) => {},
+      getId: (UserSessionEntity object) => object.id,
+      setId: (UserSessionEntity object, int id) {
+        object.id = id;
+      },
+      objectToFB: (UserSessionEntity object, fb.Builder fbb) {
+        final emailOffset = fbb.writeString(object.email);
+        final passwordHashOffset = fbb.writeString(object.passwordHash);
+        final firebaseUidOffset = object.firebaseUid == null
+            ? null
+            : fbb.writeString(object.firebaseUid!);
+        final sessionTokenOffset = fbb.writeString(object.sessionToken);
+        final displayNameOffset = object.displayName == null
+            ? null
+            : fbb.writeString(object.displayName!);
+        final deviceFingerprintOffset = object.deviceFingerprint == null
+            ? null
+            : fbb.writeString(object.deviceFingerprint!);
+        fbb.startTable(15);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, emailOffset);
+        fbb.addOffset(2, passwordHashOffset);
+        fbb.addOffset(3, firebaseUidOffset);
+        fbb.addOffset(4, sessionTokenOffset);
+        fbb.addOffset(5, displayNameOffset);
+        fbb.addBool(6, object.emailVerified);
+        fbb.addInt64(7, object.lastSuccessfulLogin?.millisecondsSinceEpoch);
+        fbb.addInt64(8, object.lastSyncedAt?.millisecondsSinceEpoch);
+        fbb.addBool(9, object.needsSync);
+        fbb.addOffset(10, deviceFingerprintOffset);
+        fbb.addInt64(11, object.createdAt.millisecondsSinceEpoch);
+        fbb.addInt64(12, object.updatedAt.millisecondsSinceEpoch);
+        fbb.addBool(13, object.isActive);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final lastSuccessfulLoginValue = const fb.Int64Reader()
+            .vTableGetNullable(buffer, rootOffset, 18);
+        final lastSyncedAtValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          20,
+        );
+        final emailParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 6, '');
+        final passwordHashParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 8, '');
+        final firebaseUidParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 10);
+        final sessionTokenParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 12, '');
+        final displayNameParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 14);
+        final emailVerifiedParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          16,
+          false,
+        );
+        final lastSuccessfulLoginParam = lastSuccessfulLoginValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSuccessfulLoginValue);
+        final lastSyncedAtParam = lastSyncedAtValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSyncedAtValue);
+        final needsSyncParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          22,
+          false,
+        );
+        final deviceFingerprintParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 24);
+        final isActiveParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          30,
+          false,
+        );
+        final object =
+            UserSessionEntity(
+                email: emailParam,
+                passwordHash: passwordHashParam,
+                firebaseUid: firebaseUidParam,
+                sessionToken: sessionTokenParam,
+                displayName: displayNameParam,
+                emailVerified: emailVerifiedParam,
+                lastSuccessfulLogin: lastSuccessfulLoginParam,
+                lastSyncedAt: lastSyncedAtParam,
+                needsSync: needsSyncParam,
+                deviceFingerprint: deviceFingerprintParam,
+                isActive: isActiveParam,
+              )
+              ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0)
+              ..createdAt = DateTime.fromMillisecondsSinceEpoch(
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 26, 0),
+              )
+              ..updatedAt = DateTime.fromMillisecondsSinceEpoch(
+                const fb.Int64Reader().vTableGet(buffer, rootOffset, 28, 0),
+              );
+
+        return object;
+      },
+    ),
   };
 
   return obx_int.ModelDefinition(model, bindings);
@@ -6714,5 +6926,78 @@ class TratamentoEntity_ {
   /// See [TratamentoEntity.needsSync].
   static final needsSync = obx.QueryBooleanProperty<TratamentoEntity>(
     _entities[20].properties[22],
+  );
+}
+
+/// [UserSessionEntity] entity fields to define ObjectBox queries.
+class UserSessionEntity_ {
+  /// See [UserSessionEntity.id].
+  static final id = obx.QueryIntegerProperty<UserSessionEntity>(
+    _entities[21].properties[0],
+  );
+
+  /// See [UserSessionEntity.email].
+  static final email = obx.QueryStringProperty<UserSessionEntity>(
+    _entities[21].properties[1],
+  );
+
+  /// See [UserSessionEntity.passwordHash].
+  static final passwordHash = obx.QueryStringProperty<UserSessionEntity>(
+    _entities[21].properties[2],
+  );
+
+  /// See [UserSessionEntity.firebaseUid].
+  static final firebaseUid = obx.QueryStringProperty<UserSessionEntity>(
+    _entities[21].properties[3],
+  );
+
+  /// See [UserSessionEntity.sessionToken].
+  static final sessionToken = obx.QueryStringProperty<UserSessionEntity>(
+    _entities[21].properties[4],
+  );
+
+  /// See [UserSessionEntity.displayName].
+  static final displayName = obx.QueryStringProperty<UserSessionEntity>(
+    _entities[21].properties[5],
+  );
+
+  /// See [UserSessionEntity.emailVerified].
+  static final emailVerified = obx.QueryBooleanProperty<UserSessionEntity>(
+    _entities[21].properties[6],
+  );
+
+  /// See [UserSessionEntity.lastSuccessfulLogin].
+  static final lastSuccessfulLogin = obx.QueryDateProperty<UserSessionEntity>(
+    _entities[21].properties[7],
+  );
+
+  /// See [UserSessionEntity.lastSyncedAt].
+  static final lastSyncedAt = obx.QueryDateProperty<UserSessionEntity>(
+    _entities[21].properties[8],
+  );
+
+  /// See [UserSessionEntity.needsSync].
+  static final needsSync = obx.QueryBooleanProperty<UserSessionEntity>(
+    _entities[21].properties[9],
+  );
+
+  /// See [UserSessionEntity.deviceFingerprint].
+  static final deviceFingerprint = obx.QueryStringProperty<UserSessionEntity>(
+    _entities[21].properties[10],
+  );
+
+  /// See [UserSessionEntity.createdAt].
+  static final createdAt = obx.QueryDateProperty<UserSessionEntity>(
+    _entities[21].properties[11],
+  );
+
+  /// See [UserSessionEntity.updatedAt].
+  static final updatedAt = obx.QueryDateProperty<UserSessionEntity>(
+    _entities[21].properties[12],
+  );
+
+  /// See [UserSessionEntity.isActive].
+  static final isActive = obx.QueryBooleanProperty<UserSessionEntity>(
+    _entities[21].properties[13],
   );
 }
