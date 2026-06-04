@@ -3,6 +3,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../core/security/password_hasher.dart';
 import '../../objectbox.g.dart';
 import 'objectbox_service.dart';
 import 'entities/user_session_entity.dart';
@@ -29,12 +30,6 @@ class OfflineAuthService {
     await instance;
   }
 
-  /// Gera hash SHA256 seguro da senha
-  /// Nunca armazenar senha em texto simples!
-  static String hashPassword(String password) {
-    return sha256.convert(utf8.encode(password)).toString();
-  }
-
   /// Realiza login offline (funciona sem internet)
   /// Valida credenciais contra cache local
   Future<UserSessionEntity?> loginOffline({
@@ -45,7 +40,6 @@ class OfflineAuthService {
       debugPrint('🔐 Tentando login offline para: $email');
 
       final trimmedEmail = email.trim().toLowerCase();
-      final passwordHash = hashPassword(password);
 
       // Busca usuário no cache local
       final box = _objectBox.userSessionBox;
@@ -60,10 +54,16 @@ class OfflineAuthService {
         return null;
       }
 
-      // Valida senha
-      if (existingSession.passwordHash != passwordHash) {
+      // Valida senha (PBKDF2 salgado; aceita formato legado para migração)
+      if (!PasswordHasher.verify(password, existingSession.passwordHash)) {
         debugPrint('❌ Senha incorreta para: $email');
         return null;
+      }
+
+      // Migração: regrava verificador legado (SHA256 puro) no formato seguro.
+      if (PasswordHasher.isLegacyFormat(existingSession.passwordHash)) {
+        existingSession.passwordHash = PasswordHasher.hash(password);
+        debugPrint('🔐 Verificador de senha migrado para PBKDF2');
       }
 
       // Valida se sessão não expirou
@@ -98,7 +98,7 @@ class OfflineAuthService {
 
       final box = _objectBox.userSessionBox;
       final email = firebaseUser.email?.toLowerCase() ?? '';
-      final passwordHash = hashPassword(password);
+      final passwordHash = PasswordHasher.hash(password);
 
       // Remove sessão antiga se existir
       final oldSession =
