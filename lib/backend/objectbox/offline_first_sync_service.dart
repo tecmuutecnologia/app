@@ -168,7 +168,7 @@ class OfflineFirstSyncService {
       _reportProgress('Animais baixados', 0.70);
 
       // 7. Baixa ações e tratamentos
-      await _downloadAcoesETratamentos();
+      await _downloadAcoesETratamentos(tecnicoRef);
       _reportProgress('Ações e tratamentos baixados', 0.85);
 
       // 8. Baixa dados financeiros e visitas
@@ -437,34 +437,38 @@ class OfflineFirstSyncService {
     debugPrint('🐄 $totalAnimais animal(is) baixado(s)');
   }
 
-  /// Baixa ações e tratamentos dos animais
-  Future<void> _downloadAcoesETratamentos() async {
-    final animais = _objectBox.animalBox.getAll();
+  /// Baixa ações e tratamentos.
+  ///
+  /// As AÇÕES vivem na subcoleção `acoes` do TÉCNICO
+  /// (`tecnico/{id}/acoes`), cada uma com `uidAnimalAnimaisProdutores` e
+  /// `uidPropriedade` ligando ao animal/propriedade — por isso o `parentPath`
+  /// da AcaoEntity é o path do técnico. Tratamentos e ações sanitárias seguem
+  /// como subcoleções do animal.
+  Future<void> _downloadAcoesETratamentos(DocumentReference? tecnicoRef) async {
     int totalAcoes = 0;
     int totalTratamentos = 0;
 
+    // Ações do técnico.
+    if (tecnicoRef != null) {
+      try {
+        final acoesSnapshot = await tecnicoRef.collection('acoes').get();
+        for (final doc in acoesSnapshot.docs) {
+          final entity =
+              AcaoEntity.fromFirestore(doc.data(), doc.id, tecnicoRef.path);
+          _objectBox.acaoBox.put(entity);
+          totalAcoes++;
+        }
+      } catch (e) {
+        debugPrint('⚠️ Erro ao baixar ações: $e');
+      }
+    }
+
+    final animais = _objectBox.animalBox.getAll();
     for (final animal in animais) {
       if (animal.firestoreId == null || animal.parentPath == null) continue;
 
       final animalRef = _firestore
           .doc('${animal.parentPath}/animaisProdutores/${animal.firestoreId}');
-
-      // Baixa ações do animal
-      try {
-        final acoesSnapshot = await animalRef.collection('acoes').get();
-        for (final doc in acoesSnapshot.docs) {
-          final entity = AcaoEntity.fromFirestore(
-            doc.data(),
-            doc.id,
-            animalRef.path,
-          );
-          _objectBox.acaoBox.put(entity);
-          totalAcoes++;
-        }
-      } catch (e) {
-        debugPrint(
-            '⚠️ Erro ao baixar ações do animal ${animal.firestoreId}: $e');
-      }
 
       // Baixa tratamentos do animal
       try {
