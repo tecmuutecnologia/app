@@ -14,7 +14,6 @@ import '/pages/tecnico/propriedade/inseminacoes/nova_inseminacao_existente_offli
 import '/pages/tecnico/propriedade/inseminacoes/nova_inseminacao_offline/nova_inseminacao_offline_widget.dart';
 import '/pages/tecnico/propriedade/inseminacoes/registrar_cio/registrar_cio_widget.dart';
 import '/pages/tecnico/propriedade/inseminacoes/registrar_cio_existente_offline/registrar_cio_existente_offline_widget.dart';
-import '/pages/tecnico/propriedade/inseminacoes/registrar_cio_offline/registrar_cio_offline_widget.dart';
 import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
@@ -1459,7 +1458,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                           padding:
                                                                               MediaQuery.viewInsetsOf(context),
                                                                           child:
-                                                                              RegistrarCioOfflineWidget(
+                                                                              RegistrarCioWidget(
                                                                             uidPropriedade:
                                                                                 widget.uidPropriedade!,
                                                                             nomePropriedade:
@@ -1478,10 +1477,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                                 listaAnimaisOfflineItem.brincoAnimal.toString(),
                                                                             diasDg:
                                                                                 widget.diasDg!,
-                                                                            uidAnimalOffline:
-                                                                                listaAnimaisOfflineItem.uidAnimalOffline,
-                                                                            itemUidIndex:
-                                                                                listaAnimaisOfflineIndex,
+                                                                            uidAnimaisProdutores: listaAnimaisOfflineItem.uidAnimal,
                                                                           ),
                                                                         ),
                                                                       );
@@ -2721,7 +2717,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                           padding:
                                                                               MediaQuery.viewInsetsOf(context),
                                                                           child:
-                                                                              RegistrarCioOfflineWidget(
+                                                                              RegistrarCioWidget(
                                                                             uidPropriedade:
                                                                                 widget.uidPropriedade!,
                                                                             nomePropriedade:
@@ -2740,10 +2736,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                                 listaAnimaisOfflineItem.brincoAnimal.toString(),
                                                                             diasDg:
                                                                                 widget.diasDg!,
-                                                                            uidAnimalOffline:
-                                                                                listaAnimaisOfflineItem.uidAnimalOffline,
-                                                                            itemUidIndex:
-                                                                                listaAnimaisOfflineIndex,
+                                                                            uidAnimaisProdutores: listaAnimaisOfflineItem.uidAnimal,
                                                                           ),
                                                                         ),
                                                                       );
