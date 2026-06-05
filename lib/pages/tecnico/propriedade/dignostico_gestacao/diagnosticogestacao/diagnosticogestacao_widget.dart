@@ -7,15 +7,15 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/instant_timer.dart';
-import '/pages/tecnico/propriedade/dignostico_gestacao/confirma_pp_existente_offline/confirma_pp_existente_offline_widget.dart';
 import '/pages/tecnico/propriedade/dignostico_gestacao/confirma_pp_offline/confirma_pp_offline_widget.dart';
-import '/pages/tecnico/propriedade/dignostico_gestacao/dg_mais_existente_offline/dg_mais_existente_offline_widget.dart';
 import '/pages/tecnico/propriedade/dignostico_gestacao/dg_mais_offline/dg_mais_offline_widget.dart';
-import '/pages/tecnico/propriedade/dignostico_gestacao/dg_menos_existente_offline/dg_menos_existente_offline_widget.dart';
 import '/pages/tecnico/propriedade/dignostico_gestacao/dg_menos_offline/dg_menos_offline_widget.dart';
 import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
+import '/pages/tecnico/propriedade/dignostico_gestacao/dg_mais/dg_mais_widget.dart';
+import '/pages/tecnico/propriedade/dignostico_gestacao/dg_menos/dg_menos_widget.dart';
+import '/pages/tecnico/propriedade/dignostico_gestacao/confirma_pp/confirma_pp_widget.dart';
 import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -619,7 +619,7 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                                           padding:
                                                                               MediaQuery.viewInsetsOf(context),
                                                                           child:
-                                                                              DgMaisExistenteOfflineWidget(
+                                                                              DgMaisWidget(
                                                                             uidPropriedade:
                                                                                 widget.uidPropriedade!,
                                                                             nomePropriedade:
@@ -638,8 +638,6 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                                                 widget.visitaPresencial!,
                                                                             diasDg:
                                                                                 widget.diasDg!,
-                                                                            itemUidIndex:
-                                                                                animaisExistentesIndex,
                                                                           ),
                                                                         ),
                                                                       );
@@ -758,7 +756,7 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                                         .viewInsetsOf(
                                                                             context),
                                                                     child:
-                                                                        ConfirmaPpExistenteOfflineWidget(
+                                                                        ConfirmaPpWidget(
                                                                       uidPropriedade:
                                                                           widget
                                                                               .uidPropriedade!,
@@ -785,8 +783,6 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                                               .visitaPresencial!,
                                                                       diasDg: widget
                                                                           .diasDg!,
-                                                                      itemUidIndex:
-                                                                          animaisExistentesIndex,
                                                                     ),
                                                                   ),
                                                                 );
@@ -901,7 +897,7 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                                         .viewInsetsOf(
                                                                             context),
                                                                     child:
-                                                                        DgMenosExistenteOfflineWidget(
+                                                                        DgMenosWidget(
                                                                       uidPropriedade:
                                                                           widget
                                                                               .uidPropriedade!,
@@ -926,8 +922,6 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                                       visitaPresencial:
                                                                           widget
                                                                               .visitaPresencial!,
-                                                                      itemUidIndex:
-                                                                          animaisExistentesIndex,
                                                                     ),
                                                                   ),
                                                                 );
