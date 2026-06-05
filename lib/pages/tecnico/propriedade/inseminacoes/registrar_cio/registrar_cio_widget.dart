@@ -1,6 +1,8 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
 import '/backend/backend.dart';
+import '/backend/objectbox/index.dart';
+import 'dart:async';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -122,6 +124,56 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
     _model.maybeDispose();
 
     super.dispose();
+  }
+
+  /// Registra o cio de forma offline-first: cria a ação no ObjectBox (via
+  /// AcaoRepository) e atualiza o animal (via AnimalRepository), sincronizando
+  /// ou enfileirando. Não bloqueia a UI esperando a rede — funciona sem internet
+  /// e sincroniza automaticamente ao reconectar.
+  Future<void> _registrarCioOfflineFirst() async {
+    final acao = AcaoEntity(
+      parentPath: widget.uidTecnico!.path,
+      uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
+      uidPropriedadePath: widget.uidPropriedade?.path,
+      nomeAnimal: widget.nomeAnimal,
+      acao: 'Cio',
+      dataVisita: dateTimeFormat('dd/MM/yyyy', getCurrentTimestamp,
+          locale: FFLocalizations.of(context).languageCode),
+      obsVisita: _model.obsTextController.text,
+      dataDaAcao:
+          functions.converteDataStringDate(_model.dtCioTextController.text),
+    );
+    unawaited(AcaoRepository().add(acao));
+
+    const dadosAnimal = <String, dynamic>{
+      'dtUltimaInseminacao': '',
+      'status': 'Vazia',
+      'dtPartoPrevisto': '',
+      'dtSecPrevista': '',
+      'dtPrePartoPrevista': '',
+      'dtPP': '',
+      'idStatusAnimal': 2,
+    };
+    final animalRepo = AnimalRepository();
+    final entity = widget.uidAnimaisProdutores != null
+        ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
+        : null;
+    if (entity != null) {
+      unawaited(animalRepo.update(entity, dadosAnimal));
+    } else if (_model.outUidAnimaisAnimal != null) {
+      // Fallback: animal não está no cache local (grava direto; persistência
+      // offline do Firestore cuida do envio).
+      unawaited(_model.outUidAnimaisAnimal!.reference
+          .update(createAnimaisProdutoresRecordData(
+        dtUltimaInseminacao: '',
+        status: 'Vazia',
+        dtPartoPrevisto: '',
+        dtSecPrevista: '',
+        dtPrePartoPrevista: '',
+        dtPP: '',
+        idStatusAnimal: 2,
+      )));
+    }
   }
 
   @override
@@ -679,58 +731,7 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
                                 return;
                               }
 
-                              var acoesRecordReference =
-                                  AcoesRecord.createDoc(widget.uidTecnico!);
-                              await acoesRecordReference
-                                  .set(createAcoesRecordData(
-                                uidAnimalAnimaisProdutores:
-                                    widget.uidAnimaisProdutores,
-                                nomeAnimal: widget.nomeAnimal,
-                                acao: 'Cio',
-                                dataVisita: dateTimeFormat(
-                                  "dd/MM/yyyy",
-                                  getCurrentTimestamp,
-                                  locale:
-                                      FFLocalizations.of(context).languageCode,
-                                ),
-                                obsVisita: _model.obsTextController.text,
-                                dataDaAcao: functions.converteDataStringDate(
-                                    _model.dtCioTextController.text),
-                                uidPropriedade: widget.uidPropriedade,
-                              ));
-                              _model.outUidAcaoRealizada =
-                                  AcoesRecord.getDocumentFromData(
-                                      createAcoesRecordData(
-                                        uidAnimalAnimaisProdutores:
-                                            widget.uidAnimaisProdutores,
-                                        nomeAnimal: widget.nomeAnimal,
-                                        acao: 'Cio',
-                                        dataVisita: dateTimeFormat(
-                                          "dd/MM/yyyy",
-                                          getCurrentTimestamp,
-                                          locale: FFLocalizations.of(context)
-                                              .languageCode,
-                                        ),
-                                        obsVisita:
-                                            _model.obsTextController.text,
-                                        dataDaAcao: functions
-                                            .converteDataStringDate(_model
-                                                .dtCioTextController.text),
-                                        uidPropriedade: widget.uidPropriedade,
-                                      ),
-                                      acoesRecordReference);
-                              _shouldSetState = true;
-
-                              await _model.outUidAnimaisAnimal!.reference
-                                  .update(createAnimaisProdutoresRecordData(
-                                dtUltimaInseminacao: '',
-                                status: 'Vazia',
-                                dtPartoPrevisto: '',
-                                dtSecPrevista: '',
-                                dtPrePartoPrevista: '',
-                                dtPP: '',
-                                idStatusAnimal: 2,
-                              ));
+                              await _registrarCioOfflineFirst();
                               Navigator.pop(context);
                               if (_shouldSetState) safeSetState(() {});
                             },

@@ -157,6 +157,16 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
     entity.dtUltimaInseminacao =
         data['dtUltimaInseminacao'] ?? entity.dtUltimaInseminacao;
     entity.dtUltimoParto = data['dtUltimoParto'] ?? entity.dtUltimoParto;
+    // Datas de ciclo (definidas/limpas pelos formulários de ação).
+    entity.dtPartoPrevisto = data['dtPartoPrevisto'] ?? entity.dtPartoPrevisto;
+    entity.dtSecPrevista = data['dtSecPrevista'] ?? entity.dtSecPrevista;
+    entity.dtPrePartoPrevista =
+        data['dtPrePartoPrevista'] ?? entity.dtPrePartoPrevista;
+    entity.dtPP = data['dtPP'] ?? entity.dtPP;
+    entity.dtDgMais = data['dtDgMais'] ?? entity.dtDgMais;
+    entity.dtDgMenos = data['dtDgMenos'] ?? entity.dtDgMenos;
+    entity.dtAborto = data['dtAborto'] ?? entity.dtAborto;
+    entity.dtSecagem = data['dtSecagem'] ?? entity.dtSecagem;
     entity.liberaInseminacao =
         data['liberaInseminacao'] ?? entity.liberaInseminacao;
     entity.brincoAnimal = data['brincoAnimal'] ?? entity.brincoAnimal;
