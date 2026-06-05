@@ -1,5 +1,10 @@
 // ignore_for_file: unused_import, dead_code, unnecessary_null_in_if_null_operators, dead_null_aware_expression
 import '/backend/backend.dart';
+import '/backend/objectbox/entities/index.dart';
+import '/backend/objectbox/repositories/acao_repository.dart';
+import '/backend/objectbox/repositories/animal_repository.dart';
+import '/core/connectivity/connectivity_service.dart';
+import 'dart:async';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -119,6 +124,44 @@ class _NovaAcaoExameGinecologicoWidgetState
     _model.maybeDispose();
 
     super.dispose();
+  }
+
+  /// Registra a ação do exame ginecológico de forma offline-first: grava a ação
+  /// selecionada e atualiza a data da última ação do animal direto no ObjectBox
+  /// (fonte única), delegando o sync com o Firestore aos repositórios. Funciona
+  /// sem conexão.
+  Future<void> _novaAcaoExameOfflineFirst() async {
+    final acao = AcaoEntity(
+      parentPath: widget.uidTecnico!.path,
+      uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
+      uidPropriedadePath: widget.uidPropriedade?.path,
+      nomeAnimal: widget.nomeAnimal,
+      acao: _model.acoesDispoValue,
+      obsVisita: _model.obsInfoTextController.text,
+      dataVisita: _model.dtAcaoTextController.text,
+      dataDaAcao: getCurrentTimestamp,
+    );
+    unawaited(AcaoRepository().add(acao));
+
+    final dados = {
+      'dtUltimaAcao': dateTimeFormat(
+        'dd/MM/yyyy',
+        getCurrentTimestamp,
+        locale: FFLocalizations.of(context).languageCode,
+      ),
+    };
+    final animalRepo = AnimalRepository();
+    final entity = widget.uidAnimaisProdutores != null
+        ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
+        : null;
+    if (entity != null) {
+      unawaited(animalRepo.update(entity, dados));
+    } else {
+      unawaited(
+          widget.uidAnimaisProdutores!.update(createAnimaisProdutoresRecordData(
+        dtUltimaAcao: dados['dtUltimaAcao'],
+      )));
+    }
   }
 
   @override
@@ -753,48 +796,39 @@ class _NovaAcaoExameGinecologicoWidgetState
                           child: FFButtonWidget(
                             onPressed: () async {
                               var _shouldSetState = false;
-                              if ((_model.acoesDispoValue != null &&
+                              if (!((_model.acoesDispoValue != null &&
                                       _model.acoesDispoValue != '') &&
-                                  (_model.dtAcaoTextController.text != '')) {
-                                var acoesRecordReference =
-                                    AcoesRecord.createDoc(widget.uidTecnico!);
-                                await acoesRecordReference
-                                    .set(createAcoesRecordData(
-                                  uidAnimalAnimaisProdutores:
-                                      widget.uidAnimaisProdutores,
-                                  nomeAnimal: widget.nomeAnimal,
-                                  acao: _model.acoesDispoValue,
-                                  obsVisita: _model.obsInfoTextController.text,
-                                  dataVisita: _model.dtAcaoTextController.text,
-                                  dataDaAcao: getCurrentTimestamp,
-                                  uidPropriedade: widget.uidPropriedade,
-                                ));
-                                _model.uidAcaoLancada =
-                                    AcoesRecord.getDocumentFromData(
-                                        createAcoesRecordData(
-                                          uidAnimalAnimaisProdutores:
-                                              widget.uidAnimaisProdutores,
-                                          nomeAnimal: widget.nomeAnimal,
-                                          acao: _model.acoesDispoValue,
-                                          obsVisita:
-                                              _model.obsInfoTextController.text,
-                                          dataVisita:
-                                              _model.dtAcaoTextController.text,
-                                          dataDaAcao: getCurrentTimestamp,
-                                          uidPropriedade: widget.uidPropriedade,
+                                  (_model.dtAcaoTextController.text != ''))) {
+                                await showDialog(
+                                  context: context,
+                                  builder: (alertDialogContext) {
+                                    return AlertDialog(
+                                      title: Text(
+                                          'Campos obrigatórios não preenchidos.'),
+                                      content: Text(
+                                          'Preencha os campos obrigatórios.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(alertDialogContext),
+                                          child: Text('Ok'),
                                         ),
-                                        acoesRecordReference);
-                                _shouldSetState = true;
+                                      ],
+                                    );
+                                  },
+                                );
+                                if (_shouldSetState) safeSetState(() {});
+                                return;
+                              }
 
-                                await widget.uidAnimaisProdutores!
-                                    .update(createAnimaisProdutoresRecordData(
-                                  dtUltimaAcao: dateTimeFormat(
-                                    "dd/MM/yyyy",
-                                    getCurrentTimestamp,
-                                    locale: FFLocalizations.of(context)
-                                        .languageCode,
-                                  ),
-                                ));
+                              // Offline-first: ação + dtUltimaAcao no ObjectBox;
+                              // sync enfileirado pelos repositórios.
+                              await _novaAcaoExameOfflineFirst();
+                              _shouldSetState = true;
+
+                              // Bookkeeping de visita/tratamento/recomendação roda
+                              // só online (offline a antiga variante também omite).
+                              if (ConnectivityService.instance.isOnline) {
                                 _model.outUidResumoDaVisita =
                                     await queryResumoDaVisitaRecordOnce(
                                   queryBuilder: (resumoDaVisitaRecord) =>
@@ -978,28 +1012,10 @@ class _NovaAcaoExameGinecologicoWidgetState
                                     return;
                                   }
                                 }
-                              } else {
-                                await showDialog(
-                                  context: context,
-                                  builder: (alertDialogContext) {
-                                    return AlertDialog(
-                                      title: Text(
-                                          'Campos obrigatórios não preenchidos.'),
-                                      content: Text(
-                                          'Preencha os campos obrigatórios.'),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(alertDialogContext),
-                                          child: Text('Ok'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                                if (_shouldSetState) safeSetState(() {});
-                                return;
                               }
+
+                              Navigator.pop(context);
+                              if (_shouldSetState) safeSetState(() {});
                             },
                             text: 'Salvar',
                             icon: Icon(

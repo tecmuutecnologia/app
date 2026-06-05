@@ -52,7 +52,8 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
     final queryLower = query.toLowerCase();
 
     final builder = propriedadePath != null
-        ? box.query(AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
+        ? box.query(
+            AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
         : box.query();
     final allAnimals = builder.build().find();
 
@@ -92,9 +93,8 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
   /// Obtém animais por status.
   List<AnimalEntity> getByStatus(String status, {String? propriedadePath}) {
     final condition = propriedadePath != null
-        ? AnimalEntity_.status
-            .equals(status)
-            .and(AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
+        ? AnimalEntity_.status.equals(status).and(
+            AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
         : AnimalEntity_.status.equals(status);
     return box.query(condition).build().find();
   }
@@ -102,9 +102,8 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
   /// Obtém animais por grupo.
   List<AnimalEntity> getByGrupo(int idGrupo, {String? propriedadePath}) {
     final condition = propriedadePath != null
-        ? AnimalEntity_.idGrupoAnimal
-            .equals(idGrupo)
-            .and(AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
+        ? AnimalEntity_.idGrupoAnimal.equals(idGrupo).and(
+            AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
         : AnimalEntity_.idGrupoAnimal.equals(idGrupo);
     return box.query(condition).build().find();
   }
@@ -172,6 +171,9 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
     entity.dtDgMenos = data['dtDgMenos'] ?? entity.dtDgMenos;
     entity.dtAborto = data['dtAborto'] ?? entity.dtAborto;
     entity.dtSecagem = data['dtSecagem'] ?? entity.dtSecagem;
+    entity.dtInducaoLactacao =
+        data['dtInducaoLactacao'] ?? entity.dtInducaoLactacao;
+    entity.dtUltimaAcao = data['dtUltimaAcao'] ?? entity.dtUltimaAcao;
     entity.liberaInseminacao =
         data['liberaInseminacao'] ?? entity.liberaInseminacao;
     entity.brincoAnimal = data['brincoAnimal'] ?? entity.brincoAnimal;

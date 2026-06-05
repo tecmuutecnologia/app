@@ -1,4 +1,8 @@
 import '/backend/backend.dart';
+import '/backend/objectbox/entities/index.dart';
+import '/backend/objectbox/repositories/acao_repository.dart';
+import '/backend/objectbox/repositories/animal_repository.dart';
+import 'dart:async';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -91,6 +95,38 @@ class _InduzirLactacaoWidgetState extends State<InduzirLactacaoWidget>
     _model.maybeDispose();
 
     super.dispose();
+  }
+
+  /// Induz a lactação de forma offline-first: grava a ação 'Indução de Lactação'
+  /// e a data no animal direto no ObjectBox (fonte única), delegando o sync com
+  /// o Firestore aos repositórios. Funciona sem conexão.
+  Future<void> _induzirLactacaoOfflineFirst() async {
+    final agora = getCurrentTimestamp;
+    final acao = AcaoEntity(
+      parentPath: widget.uidTecnico!.path,
+      uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
+      uidPropriedadePath: widget.uidPropriedade?.path,
+      nomeAnimal: widget.nomeAnimal,
+      acao: 'Indução de Lactação',
+      dataVisita: dateTimeFormat('dd/MM/yyyy', agora,
+          locale: FFLocalizations.of(context).languageCode),
+      dataDaAcao: agora,
+    );
+    unawaited(AcaoRepository().add(acao));
+
+    final dados = {'dtInducaoLactacao': agora};
+    final animalRepo = AnimalRepository();
+    final entity = widget.uidAnimaisProdutores != null
+        ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
+        : null;
+    if (entity != null) {
+      unawaited(animalRepo.update(entity, dados));
+    } else {
+      unawaited(
+          widget.uidAnimaisProdutores!.update(createAnimaisProdutoresRecordData(
+        dtInducaoLactacao: agora,
+      )));
+    }
   }
 
   @override
@@ -250,26 +286,9 @@ class _InduzirLactacaoWidgetState extends State<InduzirLactacaoWidget>
                           alignment: AlignmentDirectional(0.0, 0.05),
                           child: FFButtonWidget(
                             onPressed: () async {
-                              await widget.uidAnimaisProdutores!
-                                  .update(createAnimaisProdutoresRecordData(
-                                dtInducaoLactacao: getCurrentTimestamp,
-                              ));
-
-                              await AcoesRecord.createDoc(widget.uidTecnico!)
-                                  .set(createAcoesRecordData(
-                                uidAnimalAnimaisProdutores:
-                                    widget.uidAnimaisProdutores,
-                                nomeAnimal: widget.nomeAnimal,
-                                acao: 'Indução de Lactação',
-                                dataDaAcao: getCurrentTimestamp,
-                                uidPropriedade: widget.uidPropriedade,
-                                dataVisita: dateTimeFormat(
-                                  "dd/MM/yyyy",
-                                  getCurrentTimestamp,
-                                  locale:
-                                      FFLocalizations.of(context).languageCode,
-                                ),
-                              ));
+                              // Offline-first: ação + data de indução no ObjectBox;
+                              // sync com o Firestore enfileirado pelos repositórios.
+                              await _induzirLactacaoOfflineFirst();
                               Navigator.pop(context);
                             },
                             text: 'Sim induzir',
