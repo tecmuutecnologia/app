@@ -1,10 +1,9 @@
-import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
+import '/backend/objectbox/index.dart';
+import '/features/animais/application/animal_struct_adapter.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/instant_timer.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
@@ -99,161 +98,19 @@ class _AlertaSemInternetWidgetState extends State<AlertaSemInternetWidget> {
             ),
             FFButtonWidget(
               onPressed: () async {
-                FFAppState().contador = -1;
-                FFAppState().animaisProdutoresExistentes = [];
+                // Fonte única: preenche a lista offline a partir do ObjectBox
+                // (não mais via consulta ao Firestore + loop).
+                FFAppState().animaisProdutoresExistentes =
+                    ObjectBoxService.isInitialized
+                        ? AnimalRepository()
+                            .getAll()
+                            .where((a) => !a.isDeleted)
+                            .map(animalEntityToStruct)
+                            .toList()
+                        : <AnimaisProdutoresStruct>[];
+                FFAppState().verificaInternet = 0;
                 safeSetState(() {});
-                _model.outUidTecnico = await queryTecnicoRecordOnce(
-                  queryBuilder: (tecnicoRecord) => tecnicoRecord.where(
-                    'uidPerson',
-                    isEqualTo: currentUserUid,
-                  ),
-                  singleRecord: true,
-                ).then((s) => s.firstOrNull);
-                _model.outListAnimaisTecnico =
-                    await queryAnimaisProdutoresRecordOnce(
-                  parent: _model.outUidTecnico?.reference,
-                  queryBuilder: (animaisProdutoresRecord) =>
-                      animaisProdutoresRecord
-                          .orderBy('nomeAnimal')
-                          .orderBy('brincoAnimalOrder'),
-                );
-                _model.instantTimer = InstantTimer.periodic(
-                  duration: Duration(milliseconds: 500),
-                  callback: (timer) async {
-                    while (FFAppState().contador <=
-                        _model.outListAnimaisTecnico!.length) {
-                      FFAppState().contador = FFAppState().contador + 1;
-                      safeSetState(() {});
-                      FFAppState().addToAnimaisProdutoresExistentes(
-                          AnimaisProdutoresStruct(
-                        uidTecnicoPropriedade: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.uidTecnicoPropriedade,
-                        nomeAnimal: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.nomeAnimal,
-                        racaAnimal: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.racaAnimal,
-                        pesoAnimal: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.pesoAnimal,
-                        dtNascimento: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtNascimento,
-                        touro: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.touro,
-                        vaca: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.vaca,
-                        status: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.status,
-                        grupoAnimal: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.grupoAnimal,
-                        dtUltimaInseminacao: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtUltimaInseminacao,
-                        dtUltimoParto: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtUltimoParto,
-                        liberaInseminacao: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.liberaInseminacao,
-                        dtPartoPrevisto: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtPartoPrevisto,
-                        dtSecPrevista: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtSecPrevista,
-                        dtPrePartoPrevista: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtPrePartoPrevista,
-                        dtPP: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtPP,
-                        dtDgMais: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtDgMais,
-                        dtDgMenos: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtDgMenos,
-                        dtAborto: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtAborto,
-                        dtSecagem: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtSecagem,
-                        dtUltimoPP: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtUltimoPP,
-                        nomeTouroUltimaInseminacao: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.nomeTouroUltimaInseminacao,
-                        totalInseminacoes: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.totalInseminacoes,
-                        totalPartos: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.totalPartos,
-                        dtPreParto: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtPreParto,
-                        motivoDescarteAnimal: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.motivoDescarteAnimal,
-                        dtDescarteAnimal: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtDescarteAnimal,
-                        dtUltimaAcao: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtUltimaAcao,
-                        compararDtUltimaInseminacao: _model
-                            .outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.compararDtUltimaInseminacao,
-                        nomeBrincoConcat: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.nomeBrincoConcat,
-                        idGrupoAnimal: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.idGrupoAnimal,
-                        dtUltimoPartoContingencia: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtUltimoPartoContingencia,
-                        idStatusAnimal: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.idStatusAnimal,
-                        dtInducaoLactacao: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtInducaoLactacao,
-                        dtDesmame: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.dtDesmame,
-                        brincoAnimal: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.brincoAnimal,
-                        brincoAnimalOrder: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.brincoAnimalOrder,
-                        uidAnimal: _model.outListAnimaisTecnico
-                            ?.elementAtOrNull(FFAppState().contador)
-                            ?.reference,
-                        itemUidIndexAtual: FFAppState().contador,
-                      ));
-                      safeSetState(() {});
-                    }
-                    _model.instantTimer?.cancel();
-                    FFAppState().verificaInternet = 0;
-                    safeSetState(() {});
-                    Navigator.pop(context);
-                  },
-                  startImmediately: false,
-                );
-
-                safeSetState(() {});
+                Navigator.pop(context);
               },
               text: 'OK',
               icon: Icon(
