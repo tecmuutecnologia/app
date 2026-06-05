@@ -1,6 +1,8 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
 import '/backend/backend.dart';
+import '/backend/objectbox/index.dart';
+import 'dart:async';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -127,6 +129,70 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
     _model.maybeDispose();
 
     super.dispose();
+  }
+
+  /// Registra a inseminação de forma offline-first (mesma lógica dos 3 ramos):
+  /// cria a ação 'Inseminada' via AcaoRepository e atualiza o animal via
+  /// AnimalRepository (status 'Inseminada' + incrementa total), sem bloquear a
+  /// UI. Funciona sem internet e sincroniza ao reconectar.
+  Future<void> _inseminarOfflineFirst() async {
+    final dtIns = _model.dtInseminacaoTextController.text;
+
+    final acao = AcaoEntity(
+      parentPath: widget.uidTecnico!.path,
+      uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
+      uidPropriedadePath: widget.uidPropriedade?.path,
+      nomeAnimal: widget.nomeAnimal,
+      acao: 'Inseminada',
+      dataVisita: dtIns,
+      obsVisita: _model.obsTextController.text,
+      touroInseminacao: _model.touroValue,
+      dataPartoPrevisto: functions.somarDataParto(dtIns),
+      dataSecPrevista: functions.somarDataSecagem(dtIns),
+      dataPrePartoPrevista: functions.somarDataPreParto(dtIns),
+      dataDaAcao: getCurrentTimestamp,
+    );
+    unawaited(AcaoRepository().add(acao));
+
+    final dadosAnimal = <String, dynamic>{
+      'dtUltimaInseminacao': dtIns,
+      'status': 'Inseminada',
+      'dtPartoPrevisto': functions.somarDataParto(dtIns),
+      'dtSecPrevista': functions.somarDataSecagem(dtIns),
+      'dtPrePartoPrevista': functions.somarDataPreParto(dtIns),
+      'dtPP': '',
+      'nomeTouroUltimaInseminacao': _model.touroValue,
+      'compararDtUltimaInseminacao':
+          functions.converterDataUltimaInseminacao(dtIns),
+      'idStatusAnimal': 3,
+    };
+    final animalRepo = AnimalRepository();
+    final entity = widget.uidAnimaisProdutores != null
+        ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
+        : null;
+    if (entity != null) {
+      unawaited(animalRepo.update(entity, {
+        ...dadosAnimal,
+        'totalInseminacoes': entity.totalInseminacoes + 1,
+      }));
+    } else if (_model.outUidAnimaisAnimal != null) {
+      // Fallback: animal não no cache local (grava direto; persistência offline).
+      unawaited(_model.outUidAnimaisAnimal!.reference.update({
+        ...createAnimaisProdutoresRecordData(
+          dtUltimaInseminacao: dtIns,
+          status: 'Inseminada',
+          dtPartoPrevisto: functions.somarDataParto(dtIns),
+          dtSecPrevista: functions.somarDataSecagem(dtIns),
+          dtPrePartoPrevista: functions.somarDataPreParto(dtIns),
+          dtPP: '',
+          nomeTouroUltimaInseminacao: _model.touroValue,
+          compararDtUltimaInseminacao:
+              functions.converterDataUltimaInseminacao(dtIns),
+          idStatusAnimal: 3,
+        ),
+        ...mapToFirestore({'totalInseminacoes': FieldValue.increment(1)}),
+      }));
+    }
   }
 
   @override
@@ -812,107 +878,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
                                               ) ??
                                               false;
                                       if (confirmDialogResponse) {
-                                        var acoesRecordReference1 =
-                                            AcoesRecord.createDoc(
-                                                widget.uidTecnico!);
-                                        await acoesRecordReference1
-                                            .set(createAcoesRecordData(
-                                          uidAnimalAnimaisProdutores:
-                                              widget.uidAnimaisProdutores,
-                                          nomeAnimal: widget.nomeAnimal,
-                                          acao: 'Inseminada',
-                                          dataVisita: _model
-                                              .dtInseminacaoTextController.text,
-                                          obsVisita:
-                                              _model.obsTextController.text,
-                                          touroInseminacao: _model.touroValue,
-                                          dataPartoPrevisto:
-                                              functions.somarDataParto(_model
-                                                  .dtInseminacaoTextController
-                                                  .text),
-                                          dataSecPrevista:
-                                              functions.somarDataSecagem(_model
-                                                  .dtInseminacaoTextController
-                                                  .text),
-                                          dataPrePartoPrevista:
-                                              functions.somarDataPreParto(_model
-                                                  .dtInseminacaoTextController
-                                                  .text),
-                                          dataDaAcao: getCurrentTimestamp,
-                                          uidPropriedade: widget.uidPropriedade,
-                                        ));
-                                        _model.outUidAcaoRealizada =
-                                            AcoesRecord.getDocumentFromData(
-                                                createAcoesRecordData(
-                                                  uidAnimalAnimaisProdutores:
-                                                      widget
-                                                          .uidAnimaisProdutores,
-                                                  nomeAnimal: widget.nomeAnimal,
-                                                  acao: 'Inseminada',
-                                                  dataVisita: _model
-                                                      .dtInseminacaoTextController
-                                                      .text,
-                                                  obsVisita: _model
-                                                      .obsTextController.text,
-                                                  touroInseminacao:
-                                                      _model.touroValue,
-                                                  dataPartoPrevisto: functions
-                                                      .somarDataParto(_model
-                                                          .dtInseminacaoTextController
-                                                          .text),
-                                                  dataSecPrevista: functions
-                                                      .somarDataSecagem(_model
-                                                          .dtInseminacaoTextController
-                                                          .text),
-                                                  dataPrePartoPrevista: functions
-                                                      .somarDataPreParto(_model
-                                                          .dtInseminacaoTextController
-                                                          .text),
-                                                  dataDaAcao:
-                                                      getCurrentTimestamp,
-                                                  uidPropriedade:
-                                                      widget.uidPropriedade,
-                                                ),
-                                                acoesRecordReference1);
-                                        _shouldSetState = true;
-
-                                        await _model
-                                            .outUidAnimaisAnimal!.reference
-                                            .update({
-                                          ...createAnimaisProdutoresRecordData(
-                                            dtUltimaInseminacao: _model
-                                                .dtInseminacaoTextController
-                                                .text,
-                                            status: 'Inseminada',
-                                            dtPartoPrevisto:
-                                                functions.somarDataParto(_model
-                                                    .dtInseminacaoTextController
-                                                    .text),
-                                            dtSecPrevista: functions
-                                                .somarDataSecagem(_model
-                                                    .dtInseminacaoTextController
-                                                    .text),
-                                            dtPrePartoPrevista: functions
-                                                .somarDataPreParto(_model
-                                                    .dtInseminacaoTextController
-                                                    .text),
-                                            dtPP: '',
-                                            nomeTouroUltimaInseminacao:
-                                                _model.touroValue,
-                                            compararDtUltimaInseminacao: functions
-                                                .converterDataUltimaInseminacao(
-                                                    _model
-                                                        .dtInseminacaoTextController
-                                                        .text),
-                                            idStatusAnimal: 3,
-                                          ),
-                                          ...mapToFirestore(
-                                            {
-                                              'totalInseminacoes':
-                                                  FieldValue.increment(1),
-                                            },
-                                          ),
-                                        });
+                                        await _inseminarOfflineFirst();
                                         await showDialog(
                                           context: context,
                                           builder: (alertDialogContext) {
@@ -942,104 +908,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
                                         return;
                                       }
                                     } else {
-                                      var acoesRecordReference2 =
-                                          AcoesRecord.createDoc(
-                                              widget.uidTecnico!);
-                                      await acoesRecordReference2
-                                          .set(createAcoesRecordData(
-                                        uidAnimalAnimaisProdutores:
-                                            widget.uidAnimaisProdutores,
-                                        nomeAnimal: widget.nomeAnimal,
-                                        acao: 'Inseminada',
-                                        dataVisita: _model
-                                            .dtInseminacaoTextController.text,
-                                        obsVisita:
-                                            _model.obsTextController.text,
-                                        touroInseminacao: _model.touroValue,
-                                        dataPartoPrevisto:
-                                            functions.somarDataParto(_model
-                                                .dtInseminacaoTextController
-                                                .text),
-                                        dataSecPrevista:
-                                            functions.somarDataSecagem(_model
-                                                .dtInseminacaoTextController
-                                                .text),
-                                        dataPrePartoPrevista:
-                                            functions.somarDataPreParto(_model
-                                                .dtInseminacaoTextController
-                                                .text),
-                                        dataDaAcao: getCurrentTimestamp,
-                                        uidPropriedade: widget.uidPropriedade,
-                                      ));
-                                      _model.outUidAcaoRealizada2 =
-                                          AcoesRecord.getDocumentFromData(
-                                              createAcoesRecordData(
-                                                uidAnimalAnimaisProdutores:
-                                                    widget.uidAnimaisProdutores,
-                                                nomeAnimal: widget.nomeAnimal,
-                                                acao: 'Inseminada',
-                                                dataVisita: _model
-                                                    .dtInseminacaoTextController
-                                                    .text,
-                                                obsVisita: _model
-                                                    .obsTextController.text,
-                                                touroInseminacao:
-                                                    _model.touroValue,
-                                                dataPartoPrevisto: functions
-                                                    .somarDataParto(_model
-                                                        .dtInseminacaoTextController
-                                                        .text),
-                                                dataSecPrevista: functions
-                                                    .somarDataSecagem(_model
-                                                        .dtInseminacaoTextController
-                                                        .text),
-                                                dataPrePartoPrevista: functions
-                                                    .somarDataPreParto(_model
-                                                        .dtInseminacaoTextController
-                                                        .text),
-                                                dataDaAcao: getCurrentTimestamp,
-                                                uidPropriedade:
-                                                    widget.uidPropriedade,
-                                              ),
-                                              acoesRecordReference2);
-                                      _shouldSetState = true;
-
-                                      await _model
-                                          .outUidAnimaisAnimal!.reference
-                                          .update({
-                                        ...createAnimaisProdutoresRecordData(
-                                          dtUltimaInseminacao: _model
-                                              .dtInseminacaoTextController.text,
-                                          status: 'Inseminada',
-                                          dtPartoPrevisto:
-                                              functions.somarDataParto(_model
-                                                  .dtInseminacaoTextController
-                                                  .text),
-                                          dtSecPrevista:
-                                              functions.somarDataSecagem(_model
-                                                  .dtInseminacaoTextController
-                                                  .text),
-                                          dtPrePartoPrevista:
-                                              functions.somarDataPreParto(_model
-                                                  .dtInseminacaoTextController
-                                                  .text),
-                                          dtPP: '',
-                                          nomeTouroUltimaInseminacao:
-                                              _model.touroValue,
-                                          compararDtUltimaInseminacao: functions
-                                              .converterDataUltimaInseminacao(
-                                                  _model
-                                                      .dtInseminacaoTextController
-                                                      .text),
-                                          idStatusAnimal: 3,
-                                        ),
-                                        ...mapToFirestore(
-                                          {
-                                            'totalInseminacoes':
-                                                FieldValue.increment(1),
-                                          },
-                                        ),
-                                      });
+                                      await _inseminarOfflineFirst();
                                       await showDialog(
                                         context: context,
                                         builder: (alertDialogContext) {
@@ -1063,102 +932,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
                                       return;
                                     }
                                   } else {
-                                    var acoesRecordReference3 =
-                                        AcoesRecord.createDoc(
-                                            widget.uidTecnico!);
-                                    await acoesRecordReference3
-                                        .set(createAcoesRecordData(
-                                      uidAnimalAnimaisProdutores:
-                                          widget.uidAnimaisProdutores,
-                                      nomeAnimal: widget.nomeAnimal,
-                                      acao: 'Inseminada',
-                                      dataVisita: _model
-                                          .dtInseminacaoTextController.text,
-                                      obsVisita: _model.obsTextController.text,
-                                      touroInseminacao: _model.touroValue,
-                                      dataPartoPrevisto:
-                                          functions.somarDataParto(_model
-                                              .dtInseminacaoTextController
-                                              .text),
-                                      dataSecPrevista:
-                                          functions.somarDataSecagem(_model
-                                              .dtInseminacaoTextController
-                                              .text),
-                                      dataPrePartoPrevista:
-                                          functions.somarDataPreParto(_model
-                                              .dtInseminacaoTextController
-                                              .text),
-                                      dataDaAcao: getCurrentTimestamp,
-                                      uidPropriedade: widget.uidPropriedade,
-                                    ));
-                                    _model.outUidAcaoRealizada3 =
-                                        AcoesRecord.getDocumentFromData(
-                                            createAcoesRecordData(
-                                              uidAnimalAnimaisProdutores:
-                                                  widget.uidAnimaisProdutores,
-                                              nomeAnimal: widget.nomeAnimal,
-                                              acao: 'Inseminada',
-                                              dataVisita: _model
-                                                  .dtInseminacaoTextController
-                                                  .text,
-                                              obsVisita:
-                                                  _model.obsTextController.text,
-                                              touroInseminacao:
-                                                  _model.touroValue,
-                                              dataPartoPrevisto: functions
-                                                  .somarDataParto(_model
-                                                      .dtInseminacaoTextController
-                                                      .text),
-                                              dataSecPrevista: functions
-                                                  .somarDataSecagem(_model
-                                                      .dtInseminacaoTextController
-                                                      .text),
-                                              dataPrePartoPrevista: functions
-                                                  .somarDataPreParto(_model
-                                                      .dtInseminacaoTextController
-                                                      .text),
-                                              dataDaAcao: getCurrentTimestamp,
-                                              uidPropriedade:
-                                                  widget.uidPropriedade,
-                                            ),
-                                            acoesRecordReference3);
-                                    _shouldSetState = true;
-
-                                    await _model.outUidAnimaisAnimal!.reference
-                                        .update({
-                                      ...createAnimaisProdutoresRecordData(
-                                        dtUltimaInseminacao: _model
-                                            .dtInseminacaoTextController.text,
-                                        status: 'Inseminada',
-                                        dtPartoPrevisto:
-                                            functions.somarDataParto(_model
-                                                .dtInseminacaoTextController
-                                                .text),
-                                        dtSecPrevista:
-                                            functions.somarDataSecagem(_model
-                                                .dtInseminacaoTextController
-                                                .text),
-                                        dtPrePartoPrevista:
-                                            functions.somarDataPreParto(_model
-                                                .dtInseminacaoTextController
-                                                .text),
-                                        dtPP: '',
-                                        nomeTouroUltimaInseminacao:
-                                            _model.touroValue,
-                                        compararDtUltimaInseminacao: functions
-                                            .converterDataUltimaInseminacao(
-                                                _model
-                                                    .dtInseminacaoTextController
-                                                    .text),
-                                        idStatusAnimal: 3,
-                                      ),
-                                      ...mapToFirestore(
-                                        {
-                                          'totalInseminacoes':
-                                              FieldValue.increment(1),
-                                        },
-                                      ),
-                                    });
+                                    await _inseminarOfflineFirst();
                                     await showDialog(
                                       context: context,
                                       builder: (alertDialogContext) {
