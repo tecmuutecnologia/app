@@ -75,10 +75,12 @@ class _SyncTechnicianWidgetState extends State<SyncTechnicianWidget> {
         );
         await queryTipoAcoesRecordOnce();
 
+        if (!mounted) return;
         context.pushNamed(DashboardTecnicoWidget.routeName);
 
         return;
       } else {
+        if (!mounted) return;
         await showDialog(
           context: context,
           builder: (alertDialogContext) {
@@ -95,6 +97,7 @@ class _SyncTechnicianWidgetState extends State<SyncTechnicianWidget> {
           },
         );
 
+        if (!mounted) return;
         context.goNamed(CompletarPerfilTecnicoWidget.routeName);
 
         return;
