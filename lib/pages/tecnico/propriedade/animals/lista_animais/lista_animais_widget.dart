@@ -13954,8 +13954,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                 'initialTabSelect': serializeParam(
                                     widget.initialTabSelect, ParamType.int),
                                 'uidAnimal': serializeParam(
+                                    // Animais vivem sob o técnico: tecnico/{id}/animaisProdutores/{id}
                                     FirebaseFirestore.instance.doc(
-                                        '${widget.uidPropriedade!.path}/animaisProdutores/$firestoreId'),
+                                        '${widget.uidTecnico!.path}/animaisProdutores/$firestoreId'),
                                     ParamType.DocumentReference),
                                 'diasDg': serializeParam(
                                     widget.diasDg, ParamType.String),
