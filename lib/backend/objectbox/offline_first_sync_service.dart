@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../core/sync/queue_payload_codec.dart';
 import 'objectbox_service.dart';
 import 'entities/index.dart';
 import '../../objectbox.g.dart';
@@ -816,9 +816,8 @@ class OfflineFirstSyncService {
     if (op.documentPath == null) return;
 
     final docRef = _firestore.doc(op.documentPath!);
-    final data = op.dataJson != null
-        ? jsonDecode(op.dataJson!) as Map<String, dynamic>
-        : null;
+    final data =
+        op.dataJson != null ? QueuePayloadCodec.decode(op.dataJson!) : null;
 
     switch (op.operationType) {
       case 'CREATE':
@@ -901,7 +900,7 @@ class OfflineFirstSyncService {
       collectionName: collectionName,
       documentPath: documentPath,
       firestoreId: firestoreId,
-      dataJson: data != null ? jsonEncode(data) : null,
+      dataJson: data != null ? QueuePayloadCodec.encode(data) : null,
       createdAt: DateTime.now(),
       priority: priority,
     );
