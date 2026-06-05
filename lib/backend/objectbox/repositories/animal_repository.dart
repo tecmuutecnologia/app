@@ -34,7 +34,7 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
   /// Obtém todos os animais de uma propriedade (local).
   List<AnimalEntity> getAnimaisByPropriedade(String propriedadePath) {
     return box
-        .query(AnimalEntity_.parentPath.equals(propriedadePath))
+        .query(AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
         .build()
         .find();
   }
@@ -52,7 +52,7 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
     final queryLower = query.toLowerCase();
 
     final builder = propriedadePath != null
-        ? box.query(AnimalEntity_.parentPath.equals(propriedadePath))
+        ? box.query(AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
         : box.query();
     final allAnimals = builder.build().find();
 
@@ -70,7 +70,7 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
   /// Stream de animais de uma propriedade (reatividade local do ObjectBox).
   Stream<List<AnimalEntity>> watchAnimaisByPropriedade(String propriedadePath) {
     return box
-        .query(AnimalEntity_.parentPath.equals(propriedadePath))
+        .query(AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
         .watch(triggerImmediately: true)
         .map((query) => query.find());
   }
@@ -78,7 +78,7 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
   /// Conta animais por propriedade.
   int countByPropriedade(String propriedadePath) {
     return box
-        .query(AnimalEntity_.parentPath.equals(propriedadePath))
+        .query(AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
         .build()
         .count();
   }
@@ -94,7 +94,7 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
     final condition = propriedadePath != null
         ? AnimalEntity_.status
             .equals(status)
-            .and(AnimalEntity_.parentPath.equals(propriedadePath))
+            .and(AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
         : AnimalEntity_.status.equals(status);
     return box.query(condition).build().find();
   }
@@ -104,7 +104,7 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
     final condition = propriedadePath != null
         ? AnimalEntity_.idGrupoAnimal
             .equals(idGrupo)
-            .and(AnimalEntity_.parentPath.equals(propriedadePath))
+            .and(AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
         : AnimalEntity_.idGrupoAnimal.equals(idGrupo);
     return box.query(condition).build().find();
   }

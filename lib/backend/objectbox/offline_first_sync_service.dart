@@ -163,8 +163,8 @@ class OfflineFirstSyncService {
       await _downloadTodasPropriedades();
       _reportProgress('Propriedades baixadas', 0.60);
 
-      // 6. Baixa todos os animais
-      await _downloadTodosAnimais();
+      // 6. Baixa todos os animais (subcoleção 'animaisProdutores' do técnico)
+      await _downloadTodosAnimais(tecnicoRef);
       _reportProgress('Animais baixados', 0.70);
 
       // 7. Baixa ações e tratamentos
@@ -403,36 +403,36 @@ class OfflineFirstSyncService {
   }
 
   /// Baixa todos os animais das propriedades locais
-  Future<void> _downloadTodosAnimais() async {
-    final propriedades = _objectBox.propriedadeBox.getAll();
+  /// Baixa os animais do técnico.
+  ///
+  /// Os animais vivem na subcoleção `animaisProdutores` do documento do TÉCNICO
+  /// (não da propriedade); cada animal referencia sua propriedade no campo
+  /// `uidTecnicoPropriedade`. Por isso o `parentPath` da entidade é o path do
+  /// documento do técnico — o que também alinha os paths de sincronização e de
+  /// edição (`<parentPath>/animaisProdutores/<id>`).
+  Future<void> _downloadTodosAnimais(DocumentReference? tecnicoRef) async {
+    if (tecnicoRef == null) return;
     int totalAnimais = 0;
 
-    for (final prop in propriedades) {
-      if (prop.firestoreId == null || prop.parentPath == null) continue;
+    final snapshot = await tecnicoRef.collection('animaisProdutores').get();
+    for (final doc in snapshot.docs) {
+      final existing = _objectBox.animalBox
+          .query(AnimalEntity_.firestoreId.equals(doc.id))
+          .build()
+          .findFirst();
 
-      final propRef =
-          _firestore.doc('${prop.parentPath}/propriedades/${prop.firestoreId}');
-      final snapshot = await propRef.collection('animaisProdutores').get();
-
-      for (final doc in snapshot.docs) {
-        final existing = _objectBox.animalBox
-            .query(AnimalEntity_.firestoreId.equals(doc.id))
-            .build()
-            .findFirst();
-
-        if (existing != null) {
-          existing.updateFromFirestore(doc.data());
-          _objectBox.animalBox.put(existing);
-        } else {
-          final entity = AnimalEntity.fromFirestore(
-            doc.data(),
-            doc.id,
-            propRef.path,
-          );
-          _objectBox.animalBox.put(entity);
-        }
-        totalAnimais++;
+      if (existing != null) {
+        existing.updateFromFirestore(doc.data());
+        _objectBox.animalBox.put(existing);
+      } else {
+        final entity = AnimalEntity.fromFirestore(
+          doc.data(),
+          doc.id,
+          tecnicoRef.path,
+        );
+        _objectBox.animalBox.put(entity);
       }
+      totalAnimais++;
     }
     debugPrint('🐄 $totalAnimais animal(is) baixado(s)');
   }
