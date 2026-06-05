@@ -1,6 +1,10 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
 import '/backend/backend.dart';
+import '/backend/objectbox/entities/index.dart';
+import '/backend/objectbox/repositories/acao_repository.dart';
+import '/backend/objectbox/repositories/animal_repository.dart';
+import 'dart:async';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -114,6 +118,58 @@ class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
     _model.maybeDispose();
 
     super.dispose();
+  }
+
+  /// Registra o aborto de forma offline-first: grava a ação e atualiza o animal
+  /// no ObjectBox (fonte única) e delega a sincronização com o Firestore aos
+  /// repositórios. Não depende de conexão — a fila de pendências cuida do push.
+  Future<void> _registroAbortoOfflineFirst() async {
+    final acao = AcaoEntity(
+      parentPath: widget.uidTecnico!.path,
+      uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
+      nomeAnimal: widget.nomeAnimal,
+      acao: 'Aborto',
+      dataVisita: dateTimeFormat(
+        'dd/MM/yyyy',
+        getCurrentTimestamp,
+        locale: FFLocalizations.of(context).languageCode,
+      ),
+      dataDaAcao: getCurrentTimestamp,
+      dtAborto: _model.dtAbortoTextController.text,
+    );
+    unawaited(AcaoRepository().add(acao));
+
+    final dados = {
+      'status': 'Vazia',
+      'dtAborto': _model.dtAbortoTextController.text,
+      'dtPartoPrevisto': '',
+      'dtSecPrevista': '',
+      'dtPrePartoPrevista': '',
+      'dtPP': '',
+      'dtDgMais': '',
+      'dtDgMenos': '',
+      'idStatusAnimal': 2,
+    };
+    final animalRepo = AnimalRepository();
+    final entity = widget.uidAnimaisProdutores != null
+        ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
+        : null;
+    if (entity != null) {
+      unawaited(animalRepo.update(entity, dados));
+    } else if (_model.outUidAnimaisAnimal != null) {
+      unawaited(_model.outUidAnimaisAnimal!.reference
+          .update(createAnimaisProdutoresRecordData(
+        status: 'Vazia',
+        dtAborto: _model.dtAbortoTextController.text,
+        dtPartoPrevisto: '',
+        dtSecPrevista: '',
+        dtPrePartoPrevista: '',
+        dtPP: '',
+        dtDgMais: '',
+        dtDgMenos: '',
+        idStatusAnimal: 2,
+      )));
+    }
   }
 
   @override
@@ -526,44 +582,7 @@ class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
                           child: FFButtonWidget(
                             onPressed: () async {
                               var _shouldSetState = false;
-                              if (_model.dtAbortoTextController.text != '') {
-                                var acoesRecordReference =
-                                    AcoesRecord.createDoc(widget.uidTecnico!);
-                                await acoesRecordReference
-                                    .set(createAcoesRecordData(
-                                  uidAnimalAnimaisProdutores:
-                                      widget.uidAnimaisProdutores,
-                                  nomeAnimal: widget.nomeAnimal,
-                                  acao: 'Aborto',
-                                  dataVisita: dateTimeFormat(
-                                    "dd/MM/yyyy",
-                                    getCurrentTimestamp,
-                                    locale: FFLocalizations.of(context)
-                                        .languageCode,
-                                  ),
-                                  dataDaAcao: getCurrentTimestamp,
-                                  dtAborto: _model.dtAbortoTextController.text,
-                                ));
-                                _model.outUidAcaoRealizada =
-                                    AcoesRecord.getDocumentFromData(
-                                        createAcoesRecordData(
-                                          uidAnimalAnimaisProdutores:
-                                              widget.uidAnimaisProdutores,
-                                          nomeAnimal: widget.nomeAnimal,
-                                          acao: 'Aborto',
-                                          dataVisita: dateTimeFormat(
-                                            "dd/MM/yyyy",
-                                            getCurrentTimestamp,
-                                            locale: FFLocalizations.of(context)
-                                                .languageCode,
-                                          ),
-                                          dataDaAcao: getCurrentTimestamp,
-                                          dtAborto: _model
-                                              .dtAbortoTextController.text,
-                                        ),
-                                        acoesRecordReference);
-                                _shouldSetState = true;
-                              } else {
+                              if (_model.dtAbortoTextController.text == '') {
                                 await showDialog(
                                   context: context,
                                   builder: (alertDialogContext) {
@@ -584,18 +603,10 @@ class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
                                 return;
                               }
 
-                              await _model.outUidAnimaisAnimal!.reference
-                                  .update(createAnimaisProdutoresRecordData(
-                                status: 'Vazia',
-                                dtAborto: _model.dtAbortoTextController.text,
-                                dtPartoPrevisto: '',
-                                dtSecPrevista: '',
-                                dtPrePartoPrevista: '',
-                                dtPP: '',
-                                dtDgMais: '',
-                                dtDgMenos: '',
-                                idStatusAnimal: 2,
-                              ));
+                              // Offline-first: grava ação + atualiza animal no
+                              // ObjectBox e enfileira o sync (sem depender de rede).
+                              await _registroAbortoOfflineFirst();
+                              _shouldSetState = true;
                               await showDialog(
                                 context: context,
                                 builder: (alertDialogContext) {

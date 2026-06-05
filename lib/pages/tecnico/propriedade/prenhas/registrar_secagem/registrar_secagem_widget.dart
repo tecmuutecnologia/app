@@ -1,6 +1,11 @@
 // ignore_for_file: dead_code
 
 import '/backend/backend.dart';
+import '/backend/objectbox/entities/index.dart';
+import '/backend/objectbox/repositories/acao_repository.dart';
+import '/backend/objectbox/repositories/animal_repository.dart';
+import '/core/connectivity/connectivity_service.dart';
+import 'dart:async';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -122,6 +127,43 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
     _model.maybeDispose();
 
     super.dispose();
+  }
+
+  /// Registra a secagem de forma offline-first: grava a ação 'Secagem' e
+  /// atualiza o status do animal ('Seca') no ObjectBox (fonte única), delegando
+  /// a sincronização com o Firestore aos repositórios. Funciona sem conexão.
+  Future<void> _registrarSecagemOfflineFirst() async {
+    final acao = AcaoEntity(
+      parentPath: widget.uidTecnico!.path,
+      uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
+      nomeAnimal: widget.nomeAnimal,
+      acao: 'Secagem',
+      dataVisita: _model.dtSecagemTextController.text,
+      dataDaAcao: getCurrentTimestamp,
+    );
+    unawaited(AcaoRepository().add(acao));
+
+    final dados = {
+      'status': 'Seca',
+      'dtSecagem': _model.dtSecagemTextController.text,
+      'dtUltimoParto': '',
+      'idStatusAnimal': 4,
+    };
+    final animalRepo = AnimalRepository();
+    final entity = widget.uidAnimaisProdutores != null
+        ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
+        : null;
+    if (entity != null) {
+      unawaited(animalRepo.update(entity, dados));
+    } else if (_model.outUidAnimaisAnimal != null) {
+      unawaited(_model.outUidAnimaisAnimal!.reference
+          .update(createAnimaisProdutoresRecordData(
+        status: 'Seca',
+        dtSecagem: _model.dtSecagemTextController.text,
+        dtUltimoParto: '',
+        idStatusAnimal: 4,
+      )));
+    }
   }
 
   @override
@@ -536,33 +578,7 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                           child: FFButtonWidget(
                             onPressed: () async {
                               var _shouldSetState = false;
-                              if (_model.dtSecagemTextController.text != '') {
-                                var acoesRecordReference =
-                                    AcoesRecord.createDoc(widget.uidTecnico!);
-                                await acoesRecordReference
-                                    .set(createAcoesRecordData(
-                                  uidAnimalAnimaisProdutores:
-                                      widget.uidAnimaisProdutores,
-                                  nomeAnimal: widget.nomeAnimal,
-                                  acao: 'Secagem',
-                                  dataVisita:
-                                      _model.dtSecagemTextController.text,
-                                  dataDaAcao: getCurrentTimestamp,
-                                ));
-                                _model.outUidAcaoRealizada =
-                                    AcoesRecord.getDocumentFromData(
-                                        createAcoesRecordData(
-                                          uidAnimalAnimaisProdutores:
-                                              widget.uidAnimaisProdutores,
-                                          nomeAnimal: widget.nomeAnimal,
-                                          acao: 'Secagem',
-                                          dataVisita: _model
-                                              .dtSecagemTextController.text,
-                                          dataDaAcao: getCurrentTimestamp,
-                                        ),
-                                        acoesRecordReference);
-                                _shouldSetState = true;
-                              } else {
+                              if (_model.dtSecagemTextController.text == '') {
                                 await showDialog(
                                   context: context,
                                   builder: (alertDialogContext) {
@@ -583,181 +599,189 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                                 return;
                               }
 
-                              await _model.outUidAnimaisAnimal!.reference
-                                  .update(createAnimaisProdutoresRecordData(
-                                status: 'Seca',
-                                dtSecagem: _model.dtSecagemTextController.text,
-                                dtUltimoParto: '',
-                                idStatusAnimal: 4,
-                              ));
-                              _model.outUidResumoDaVisita =
-                                  await queryResumoDaVisitaRecordOnce(
-                                queryBuilder: (resumoDaVisitaRecord) =>
-                                    resumoDaVisitaRecord
-                                        .where(
-                                          'uidPropriedade',
-                                          isEqualTo: widget.uidPropriedade,
-                                        )
-                                        .where(
-                                          'uidTecnico',
-                                          isEqualTo: widget.uidTecnico,
-                                        )
-                                        .where(
-                                          'dtVisitaFormatado',
-                                          isEqualTo: dateTimeFormat(
-                                            "dd/MM/yyyy",
-                                            getCurrentTimestamp,
-                                            locale: FFLocalizations.of(context)
-                                                .languageCode,
-                                          ),
-                                        ),
-                                singleRecord: true,
-                              ).then((s) => s.firstOrNull);
+                              // Offline-first: grava a ação 'Secagem' e atualiza o
+                              // status do animal ('Seca') no ObjectBox; o sync com o
+                              // Firestore é enfileirado pelos repositórios.
+                              await _registrarSecagemOfflineFirst();
                               _shouldSetState = true;
-                              if (_model.outUidResumoDaVisita != null) {
-                                _model.uidAnimalRecebeAcao1 =
-                                    await AnimaisProdutoresRecord
-                                        .getDocumentOnce(
-                                            widget.uidAnimaisProdutores!);
-                                _shouldSetState = true;
 
-                                await TratamentosRecord.createDoc(
-                                        _model.outUidResumoDaVisita!.reference)
-                                    .set(createTratamentosRecordData(
-                                  uidAnimal: widget.uidAnimaisProdutores,
-                                  tipoAcao: 'Secagem',
-                                  uidResumoDaVisita:
-                                      _model.outUidResumoDaVisita?.reference,
-                                  observacaoAcao:
-                                      _model.dtSecagemTextController.text,
-                                  brincoAnimal: widget.brincoAnimal,
-                                  nomeAnimal: widget.nomeAnimal,
-                                  grupoAnimal: widget.grupoAnimal,
-                                  brincoAnimalOrder:
-                                      functions.converterStringToInt(
-                                          widget.brincoAnimal!),
-                                  compararDtUltimaInseminacao: _model
-                                      .uidAnimalRecebeAcao1
-                                      ?.compararDtUltimaInseminacao,
-                                ));
-                                _model.outUidRecomendacoes =
-                                    await queryRecomendacoesRecordOnce(
-                                  parent:
-                                      _model.outUidResumoDaVisita?.reference,
-                                  queryBuilder: (recomendacoesRecord) =>
-                                      recomendacoesRecord
+                              // Bookkeeping de visita/tratamento/recomendação roda
+                              // só online — offline a variante original também o omite
+                              // (evita travar em queries sem rede).
+                              if (ConnectivityService.instance.isOnline) {
+                                _model.outUidResumoDaVisita =
+                                    await queryResumoDaVisitaRecordOnce(
+                                  queryBuilder: (resumoDaVisitaRecord) =>
+                                      resumoDaVisitaRecord
                                           .where(
-                                            'uidResumoDaVisita',
-                                            isEqualTo: _model
-                                                .outUidResumoDaVisita
-                                                ?.reference,
+                                            'uidPropriedade',
+                                            isEqualTo: widget.uidPropriedade,
                                           )
                                           .where(
-                                            'tituloRecomendacao',
-                                            isEqualTo: 'Secagem',
+                                            'uidTecnico',
+                                            isEqualTo: widget.uidTecnico,
+                                          )
+                                          .where(
+                                            'dtVisitaFormatado',
+                                            isEqualTo: dateTimeFormat(
+                                              "dd/MM/yyyy",
+                                              getCurrentTimestamp,
+                                              locale:
+                                                  FFLocalizations.of(context)
+                                                      .languageCode,
+                                            ),
                                           ),
                                   singleRecord: true,
                                 ).then((s) => s.firstOrNull);
                                 _shouldSetState = true;
-                                if (_model.outUidRecomendacoes?.reference ==
-                                    null) {
-                                  await RecomendacoesRecord.createDoc(_model
+                                if (_model.outUidResumoDaVisita != null) {
+                                  _model.uidAnimalRecebeAcao1 =
+                                      await AnimaisProdutoresRecord
+                                          .getDocumentOnce(
+                                              widget.uidAnimaisProdutores!);
+                                  _shouldSetState = true;
+
+                                  await TratamentosRecord.createDoc(_model
                                           .outUidResumoDaVisita!.reference)
-                                      .set(createRecomendacoesRecordData(
-                                    tituloRecomendacao: 'Secagem',
+                                      .set(createTratamentosRecordData(
+                                    uidAnimal: widget.uidAnimaisProdutores,
+                                    tipoAcao: 'Secagem',
                                     uidResumoDaVisita:
                                         _model.outUidResumoDaVisita?.reference,
+                                    observacaoAcao:
+                                        _model.dtSecagemTextController.text,
+                                    brincoAnimal: widget.brincoAnimal,
+                                    nomeAnimal: widget.nomeAnimal,
+                                    grupoAnimal: widget.grupoAnimal,
+                                    brincoAnimalOrder:
+                                        functions.converterStringToInt(
+                                            widget.brincoAnimal!),
+                                    compararDtUltimaInseminacao: _model
+                                        .uidAnimalRecebeAcao1
+                                        ?.compararDtUltimaInseminacao,
                                   ));
-                                }
-                              } else {
-                                var resumoDaVisitaRecordReference =
-                                    ResumoDaVisitaRecord.collection.doc();
-                                await resumoDaVisitaRecordReference
-                                    .set(createResumoDaVisitaRecordData(
-                                  uidPropriedade: widget.uidPropriedade,
-                                  uidTecnico: widget.uidTecnico,
-                                  dtVisita: getCurrentTimestamp,
-                                  dtVisitaFormatado: dateTimeFormat(
-                                    "dd/MM/yyyy",
-                                    getCurrentTimestamp,
-                                    locale: FFLocalizations.of(context)
-                                        .languageCode,
-                                  ),
-                                ));
-                                _model.outNewUidResumoDaVisita =
-                                    ResumoDaVisitaRecord.getDocumentFromData(
-                                        createResumoDaVisitaRecordData(
-                                          uidPropriedade: widget.uidPropriedade,
-                                          uidTecnico: widget.uidTecnico,
-                                          dtVisita: getCurrentTimestamp,
-                                          dtVisitaFormatado: dateTimeFormat(
-                                            "dd/MM/yyyy",
-                                            getCurrentTimestamp,
-                                            locale: FFLocalizations.of(context)
-                                                .languageCode,
+                                  _model.outUidRecomendacoes =
+                                      await queryRecomendacoesRecordOnce(
+                                    parent:
+                                        _model.outUidResumoDaVisita?.reference,
+                                    queryBuilder: (recomendacoesRecord) =>
+                                        recomendacoesRecord
+                                            .where(
+                                              'uidResumoDaVisita',
+                                              isEqualTo: _model
+                                                  .outUidResumoDaVisita
+                                                  ?.reference,
+                                            )
+                                            .where(
+                                              'tituloRecomendacao',
+                                              isEqualTo: 'Secagem',
+                                            ),
+                                    singleRecord: true,
+                                  ).then((s) => s.firstOrNull);
+                                  _shouldSetState = true;
+                                  if (_model.outUidRecomendacoes?.reference ==
+                                      null) {
+                                    await RecomendacoesRecord.createDoc(_model
+                                            .outUidResumoDaVisita!.reference)
+                                        .set(createRecomendacoesRecordData(
+                                      tituloRecomendacao: 'Secagem',
+                                      uidResumoDaVisita: _model
+                                          .outUidResumoDaVisita?.reference,
+                                    ));
+                                  }
+                                } else {
+                                  var resumoDaVisitaRecordReference =
+                                      ResumoDaVisitaRecord.collection.doc();
+                                  await resumoDaVisitaRecordReference
+                                      .set(createResumoDaVisitaRecordData(
+                                    uidPropriedade: widget.uidPropriedade,
+                                    uidTecnico: widget.uidTecnico,
+                                    dtVisita: getCurrentTimestamp,
+                                    dtVisitaFormatado: dateTimeFormat(
+                                      "dd/MM/yyyy",
+                                      getCurrentTimestamp,
+                                      locale: FFLocalizations.of(context)
+                                          .languageCode,
+                                    ),
+                                  ));
+                                  _model.outNewUidResumoDaVisita =
+                                      ResumoDaVisitaRecord.getDocumentFromData(
+                                          createResumoDaVisitaRecordData(
+                                            uidPropriedade:
+                                                widget.uidPropriedade,
+                                            uidTecnico: widget.uidTecnico,
+                                            dtVisita: getCurrentTimestamp,
+                                            dtVisitaFormatado: dateTimeFormat(
+                                              "dd/MM/yyyy",
+                                              getCurrentTimestamp,
+                                              locale:
+                                                  FFLocalizations.of(context)
+                                                      .languageCode,
+                                            ),
                                           ),
-                                        ),
-                                        resumoDaVisitaRecordReference);
-                                _shouldSetState = true;
+                                          resumoDaVisitaRecordReference);
+                                  _shouldSetState = true;
 
-                                await _model.outNewUidResumoDaVisita!.reference
-                                    .update(createResumoDaVisitaRecordData(
-                                  uidResumoDaVisita:
-                                      _model.outNewUidResumoDaVisita?.reference,
-                                ));
-                                _model.uidAnimalRecebeAcao =
-                                    await AnimaisProdutoresRecord
-                                        .getDocumentOnce(
-                                            widget.uidAnimaisProdutores!);
-                                _shouldSetState = true;
-
-                                await TratamentosRecord.createDoc(_model
-                                        .outNewUidResumoDaVisita!.reference)
-                                    .set(createTratamentosRecordData(
-                                  uidAnimal: widget.uidAnimaisProdutores,
-                                  tipoAcao: 'Secagem',
-                                  uidResumoDaVisita:
-                                      _model.outNewUidResumoDaVisita?.reference,
-                                  observacaoAcao:
-                                      _model.dtSecagemTextController.text,
-                                  brincoAnimal: widget.brincoAnimal,
-                                  nomeAnimal: widget.nomeAnimal,
-                                  grupoAnimal: widget.grupoAnimal,
-                                  brincoAnimalOrder:
-                                      functions.converterStringToInt(
-                                          widget.brincoAnimal!),
-                                  compararDtUltimaInseminacao: _model
-                                      .uidAnimalRecebeAcao
-                                      ?.compararDtUltimaInseminacao,
-                                ));
-                                _model.outUidRecomendacoes2 =
-                                    await queryRecomendacoesRecordOnce(
-                                  parent:
-                                      _model.outNewUidResumoDaVisita?.reference,
-                                  queryBuilder: (recomendacoesRecord) =>
-                                      recomendacoesRecord
-                                          .where(
-                                            'uidResumoDaVisita',
-                                            isEqualTo: _model
-                                                .outNewUidResumoDaVisita
-                                                ?.reference,
-                                          )
-                                          .where(
-                                            'tituloRecomendacao',
-                                            isEqualTo: 'Secagem',
-                                          ),
-                                  singleRecord: true,
-                                ).then((s) => s.firstOrNull);
-                                _shouldSetState = true;
-                                if (_model.outUidRecomendacoes2?.reference ==
-                                    null) {
-                                  await RecomendacoesRecord.createDoc(_model
-                                          .outNewUidResumoDaVisita!.reference)
-                                      .set(createRecomendacoesRecordData(
-                                    tituloRecomendacao: 'Secagem',
+                                  await _model
+                                      .outNewUidResumoDaVisita!.reference
+                                      .update(createResumoDaVisitaRecordData(
                                     uidResumoDaVisita: _model
                                         .outNewUidResumoDaVisita?.reference,
                                   ));
+                                  _model.uidAnimalRecebeAcao =
+                                      await AnimaisProdutoresRecord
+                                          .getDocumentOnce(
+                                              widget.uidAnimaisProdutores!);
+                                  _shouldSetState = true;
+
+                                  await TratamentosRecord.createDoc(_model
+                                          .outNewUidResumoDaVisita!.reference)
+                                      .set(createTratamentosRecordData(
+                                    uidAnimal: widget.uidAnimaisProdutores,
+                                    tipoAcao: 'Secagem',
+                                    uidResumoDaVisita: _model
+                                        .outNewUidResumoDaVisita?.reference,
+                                    observacaoAcao:
+                                        _model.dtSecagemTextController.text,
+                                    brincoAnimal: widget.brincoAnimal,
+                                    nomeAnimal: widget.nomeAnimal,
+                                    grupoAnimal: widget.grupoAnimal,
+                                    brincoAnimalOrder:
+                                        functions.converterStringToInt(
+                                            widget.brincoAnimal!),
+                                    compararDtUltimaInseminacao: _model
+                                        .uidAnimalRecebeAcao
+                                        ?.compararDtUltimaInseminacao,
+                                  ));
+                                  _model.outUidRecomendacoes2 =
+                                      await queryRecomendacoesRecordOnce(
+                                    parent: _model
+                                        .outNewUidResumoDaVisita?.reference,
+                                    queryBuilder: (recomendacoesRecord) =>
+                                        recomendacoesRecord
+                                            .where(
+                                              'uidResumoDaVisita',
+                                              isEqualTo: _model
+                                                  .outNewUidResumoDaVisita
+                                                  ?.reference,
+                                            )
+                                            .where(
+                                              'tituloRecomendacao',
+                                              isEqualTo: 'Secagem',
+                                            ),
+                                    singleRecord: true,
+                                  ).then((s) => s.firstOrNull);
+                                  _shouldSetState = true;
+                                  if (_model.outUidRecomendacoes2?.reference ==
+                                      null) {
+                                    await RecomendacoesRecord.createDoc(_model
+                                            .outNewUidResumoDaVisita!.reference)
+                                        .set(createRecomendacoesRecordData(
+                                      tituloRecomendacao: 'Secagem',
+                                      uidResumoDaVisita: _model
+                                          .outNewUidResumoDaVisita?.reference,
+                                    ));
+                                  }
                                 }
                               }
 
