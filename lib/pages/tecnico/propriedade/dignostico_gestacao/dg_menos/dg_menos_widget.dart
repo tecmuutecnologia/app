@@ -1,5 +1,7 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 import '/backend/backend.dart';
+import '/backend/objectbox/index.dart';
+import 'dart:async';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -113,6 +115,41 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
     _model.maybeDispose();
 
     super.dispose();
+  }
+
+  /// Registra o DG- offline-first: cria a ação 'DG-' via AcaoRepository e
+  /// atualiza o animal (Vazia) via AnimalRepository, sem bloquear a UI.
+  Future<void> _dgMenosOfflineFirst() async {
+    final acao = AcaoEntity(
+      parentPath: widget.uidTecnico!.path,
+      uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
+      nomeAnimal: widget.nomeAnimal,
+      acao: 'DG-',
+      dataVisita: dateTimeFormat('dd/MM/yyyy', getCurrentTimestamp,
+          locale: FFLocalizations.of(context).languageCode),
+      dataDaAcao: getCurrentTimestamp,
+      dtDgMenos: _model.dtDgMenosTextController.text,
+    );
+    unawaited(AcaoRepository().add(acao));
+
+    final dados = <String, dynamic>{
+      'status': 'Vazia',
+      'dtDgMenos': _model.dtDgMenosTextController.text,
+      'idStatusAnimal': 2,
+    };
+    final animalRepo = AnimalRepository();
+    final entity = widget.uidAnimaisProdutores != null
+        ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
+        : null;
+    if (entity != null) {
+      unawaited(animalRepo.update(entity, dados));
+    } else if (_model.outUidAnimaisAnimal != null) {
+      unawaited(_model.outUidAnimaisAnimal!.reference.update(
+          createAnimaisProdutoresRecordData(
+              status: 'Vazia',
+              dtDgMenos: _model.dtDgMenosTextController.text,
+              idStatusAnimal: 2)));
+    }
   }
 
   @override
@@ -527,42 +564,7 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
                             onPressed: () async {
                               var _shouldSetState = false;
                               if (_model.dtDgMenosTextController.text != '') {
-                                var acoesRecordReference =
-                                    AcoesRecord.createDoc(widget.uidTecnico!);
-                                await acoesRecordReference
-                                    .set(createAcoesRecordData(
-                                  uidAnimalAnimaisProdutores:
-                                      _model.outUidAnimaisAnimal?.reference,
-                                  nomeAnimal: widget.nomeAnimal,
-                                  acao: 'DG-',
-                                  dataVisita: dateTimeFormat(
-                                    "dd/MM/yyyy",
-                                    getCurrentTimestamp,
-                                    locale: FFLocalizations.of(context)
-                                        .languageCode,
-                                  ),
-                                  dataDaAcao: getCurrentTimestamp,
-                                  dtDgMenos:
-                                      _model.dtDgMenosTextController.text,
-                                ));
-                                _model.outUidAcaoRealizada =
-                                    AcoesRecord.getDocumentFromData(
-                                        createAcoesRecordData(
-                                          uidAnimalAnimaisProdutores: _model
-                                              .outUidAnimaisAnimal?.reference,
-                                          nomeAnimal: widget.nomeAnimal,
-                                          acao: 'DG-',
-                                          dataVisita: dateTimeFormat(
-                                            "dd/MM/yyyy",
-                                            getCurrentTimestamp,
-                                            locale: FFLocalizations.of(context)
-                                                .languageCode,
-                                          ),
-                                          dataDaAcao: getCurrentTimestamp,
-                                          dtDgMenos: _model
-                                              .dtDgMenosTextController.text,
-                                        ),
-                                        acoesRecordReference);
+                                await _dgMenosOfflineFirst();
                                 _shouldSetState = true;
                               } else {
                                 await showDialog(
@@ -585,12 +587,6 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
                                 return;
                               }
 
-                              await _model.outUidAnimaisAnimal!.reference
-                                  .update(createAnimaisProdutoresRecordData(
-                                status: 'Vazia',
-                                dtDgMenos: _model.dtDgMenosTextController.text,
-                                idStatusAnimal: 2,
-                              ));
                               Navigator.pop(context);
                               if (_shouldSetState) safeSetState(() {});
                             },

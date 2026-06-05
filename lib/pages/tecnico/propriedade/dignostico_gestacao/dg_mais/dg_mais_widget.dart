@@ -1,5 +1,7 @@
 // ignore_for_file: dead_null_aware_expression
 import '/backend/backend.dart';
+import '/backend/objectbox/index.dart';
+import 'dart:async';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -115,6 +117,42 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
     _model.maybeDispose();
 
     super.dispose();
+  }
+
+  /// Registra o DG+ offline-first: cria a ação ([acaoNome] = 'DG+' p/ Vacas,
+  /// 'Secagem' p/ os demais) via AcaoRepository e atualiza o animal (Prenha)
+  /// via AnimalRepository, sem bloquear a UI.
+  Future<void> _dgMaisOfflineFirst(String acaoNome) async {
+    final acao = AcaoEntity(
+      parentPath: widget.uidTecnico!.path,
+      uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
+      nomeAnimal: widget.nomeAnimal,
+      acao: acaoNome,
+      dataVisita: dateTimeFormat('dd/MM/yyyy', getCurrentTimestamp,
+          locale: FFLocalizations.of(context).languageCode),
+      dataDaAcao: getCurrentTimestamp,
+      dtDgMais: _model.dtDgMaisTextController.text,
+    );
+    unawaited(AcaoRepository().add(acao));
+
+    final dados = <String, dynamic>{
+      'status': 'Prenha',
+      'dtDgMais': _model.dtDgMaisTextController.text,
+      'idStatusAnimal': 6,
+    };
+    final animalRepo = AnimalRepository();
+    final entity = widget.uidAnimaisProdutores != null
+        ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
+        : null;
+    if (entity != null) {
+      unawaited(animalRepo.update(entity, dados));
+    } else if (_model.outUidAnimaisAnimal != null) {
+      unawaited(_model.outUidAnimaisAnimal!.reference.update(
+          createAnimaisProdutoresRecordData(
+              status: 'Prenha',
+              dtDgMais: _model.dtDgMaisTextController.text,
+              idStatusAnimal: 6)));
+    }
   }
 
   @override
@@ -528,57 +566,11 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
                             onPressed: () async {
                               if (_model.dtDgMaisTextController.text != '') {
                                 if (widget.grupoPredominante == 'Vacas') {
-                                  await AcoesRecord.createDoc(
-                                          widget.uidTecnico!)
-                                      .set(createAcoesRecordData(
-                                    uidAnimalAnimaisProdutores:
-                                        _model.outUidAnimaisAnimal?.reference,
-                                    nomeAnimal: widget.nomeAnimal,
-                                    acao: 'DG+',
-                                    dataVisita: dateTimeFormat(
-                                      "dd/MM/yyyy",
-                                      getCurrentTimestamp,
-                                      locale: FFLocalizations.of(context)
-                                          .languageCode,
-                                    ),
-                                    dataDaAcao: getCurrentTimestamp,
-                                    dtDgMais:
-                                        _model.dtDgMaisTextController.text,
-                                  ));
-
-                                  await _model.outUidAnimaisAnimal!.reference
-                                      .update(createAnimaisProdutoresRecordData(
-                                    status: 'Prenha',
-                                    dtDgMais:
-                                        _model.dtDgMaisTextController.text,
-                                    idStatusAnimal: 6,
-                                  ));
+                                  await _dgMaisOfflineFirst('DG+');
                                   Navigator.pop(context);
                                   return;
                                 } else {
-                                  await AcoesRecord.createDoc(
-                                          widget.uidTecnico!)
-                                      .set(createAcoesRecordData(
-                                    uidAnimalAnimaisProdutores:
-                                        widget.uidAnimaisProdutores,
-                                    nomeAnimal: widget.nomeAnimal,
-                                    acao: 'Secagem',
-                                    dataVisita: dateTimeFormat(
-                                      "dd/MM/yyyy",
-                                      getCurrentTimestamp,
-                                      locale: FFLocalizations.of(context)
-                                          .languageCode,
-                                    ),
-                                    dataDaAcao: getCurrentTimestamp,
-                                  ));
-
-                                  await widget.uidAnimaisProdutores!
-                                      .update(createAnimaisProdutoresRecordData(
-                                    status: 'Prenha',
-                                    dtDgMais:
-                                        _model.dtDgMaisTextController.text,
-                                    idStatusAnimal: 6,
-                                  ));
+                                  await _dgMaisOfflineFirst('Secagem');
                                   Navigator.pop(context);
                                   return;
                                 }

@@ -1,5 +1,7 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 import '/backend/backend.dart';
+import '/backend/objectbox/index.dart';
+import 'dart:async';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -115,6 +117,45 @@ class _ConfirmaPpWidgetState extends State<ConfirmaPpWidget>
     _model.maybeDispose();
 
     super.dispose();
+  }
+
+  /// Registra a confirmação de PP offline-first: cria a ação 'PP' via
+  /// AcaoRepository e atualiza o animal (Inseminada PP) via AnimalRepository,
+  /// sem bloquear a UI.
+  Future<void> _confirmaPpOfflineFirst() async {
+    final hoje = dateTimeFormat('dd/MM/yyyy', getCurrentTimestamp,
+        locale: FFLocalizations.of(context).languageCode);
+    final acao = AcaoEntity(
+      parentPath: widget.uidTecnico!.path,
+      uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
+      nomeAnimal: widget.nomeAnimal,
+      acao: 'PP',
+      dataVisita: hoje,
+      dataDaAcao: getCurrentTimestamp,
+      dtPP: _model.dtPPTextController.text,
+    );
+    unawaited(AcaoRepository().add(acao));
+
+    final dados = <String, dynamic>{
+      'status': 'Inseminada PP',
+      'dtPP': _model.dtPPTextController.text,
+      'dtUltimoPP': hoje,
+      'idStatusAnimal': 1,
+    };
+    final animalRepo = AnimalRepository();
+    final entity = widget.uidAnimaisProdutores != null
+        ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
+        : null;
+    if (entity != null) {
+      unawaited(animalRepo.update(entity, dados));
+    } else if (_model.outUidAnimaisAnimal != null) {
+      unawaited(_model.outUidAnimaisAnimal!.reference.update(
+          createAnimaisProdutoresRecordData(
+              status: 'Inseminada PP',
+              dtPP: _model.dtPPTextController.text,
+              dtUltimoPP: hoje,
+              idStatusAnimal: 1)));
+    }
   }
 
   @override
@@ -527,40 +568,7 @@ class _ConfirmaPpWidgetState extends State<ConfirmaPpWidget>
                             onPressed: () async {
                               var _shouldSetState = false;
                               if (_model.dtPPTextController.text != '') {
-                                var acoesRecordReference =
-                                    AcoesRecord.createDoc(widget.uidTecnico!);
-                                await acoesRecordReference
-                                    .set(createAcoesRecordData(
-                                  uidAnimalAnimaisProdutores:
-                                      widget.uidAnimaisProdutores,
-                                  nomeAnimal: widget.nomeAnimal,
-                                  acao: 'PP',
-                                  dataVisita: dateTimeFormat(
-                                    "dd/MM/yyyy",
-                                    getCurrentTimestamp,
-                                    locale: FFLocalizations.of(context)
-                                        .languageCode,
-                                  ),
-                                  dataDaAcao: getCurrentTimestamp,
-                                  dtPP: _model.dtPPTextController.text,
-                                ));
-                                _model.outUidAcaoRealizada =
-                                    AcoesRecord.getDocumentFromData(
-                                        createAcoesRecordData(
-                                          uidAnimalAnimaisProdutores:
-                                              widget.uidAnimaisProdutores,
-                                          nomeAnimal: widget.nomeAnimal,
-                                          acao: 'PP',
-                                          dataVisita: dateTimeFormat(
-                                            "dd/MM/yyyy",
-                                            getCurrentTimestamp,
-                                            locale: FFLocalizations.of(context)
-                                                .languageCode,
-                                          ),
-                                          dataDaAcao: getCurrentTimestamp,
-                                          dtPP: _model.dtPPTextController.text,
-                                        ),
-                                        acoesRecordReference);
+                                await _confirmaPpOfflineFirst();
                                 _shouldSetState = true;
                               } else {
                                 await showDialog(
@@ -583,18 +591,6 @@ class _ConfirmaPpWidgetState extends State<ConfirmaPpWidget>
                                 return;
                               }
 
-                              await _model.outUidAnimaisAnimal!.reference
-                                  .update(createAnimaisProdutoresRecordData(
-                                status: 'Inseminada PP',
-                                dtPP: _model.dtPPTextController.text,
-                                dtUltimoPP: dateTimeFormat(
-                                  "dd/MM/yyyy",
-                                  getCurrentTimestamp,
-                                  locale:
-                                      FFLocalizations.of(context).languageCode,
-                                ),
-                                idStatusAnimal: 1,
-                              ));
                               Navigator.pop(context);
                               if (_shouldSetState) safeSetState(() {});
                             },
