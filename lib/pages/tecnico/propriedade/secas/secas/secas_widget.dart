@@ -56,6 +56,10 @@ class _SecasWidgetState extends State<SecasWidget>
     with TickerProviderStateMixin {
   late SecasModel _model;
 
+  /// Lista de animais existentes (fonte ObjectBox). Antes em
+  /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
+  List<AnimaisProdutoresStruct> _animaisExistentes = [];
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -66,7 +70,7 @@ class _SecasWidgetState extends State<SecasWidget>
     // Fonte única: carrega a lista do ObjectBox (offline-first). A tela renderiza
     // sempre desta lista; o Firestore é usado apenas para sincronizar.
     if (ObjectBoxService.isInitialized) {
-      FFAppState().animaisProdutoresExistentes = AnimalRepository()
+      _animaisExistentes = AnimalRepository()
           .getAll()
           .where((a) => !a.isDeleted)
           .map(animalEntityToStruct)
@@ -296,15 +300,15 @@ class _SecasWidgetState extends State<SecasWidget>
                             children: [
                               Builder(
                                 builder: (context) {
-                                  final vacasExistenteOffline = FFAppState()
-                                      .animaisProdutoresExistentes
-                                      .map((e) => e)
-                                      .toList()
-                                      .sortedList(
-                                          keyOf: (e) =>
-                                              e.compararDtUltimaInseminacao,
-                                          desc: false)
-                                      .toList();
+                                  final vacasExistenteOffline =
+                                      _animaisExistentes
+                                          .map((e) => e)
+                                          .toList()
+                                          .sortedList(
+                                              keyOf: (e) =>
+                                                  e.compararDtUltimaInseminacao,
+                                              desc: false)
+                                          .toList();
 
                                   return ListView.builder(
                                     padding: EdgeInsets.zero,
@@ -1832,15 +1836,15 @@ class _SecasWidgetState extends State<SecasWidget>
                             children: [
                               Builder(
                                 builder: (context) {
-                                  final animaisExistentesOffline = FFAppState()
-                                      .animaisProdutoresExistentes
-                                      .map((e) => e)
-                                      .toList()
-                                      .sortedList(
-                                          keyOf: (e) =>
-                                              e.compararDtUltimaInseminacao,
-                                          desc: false)
-                                      .toList();
+                                  final animaisExistentesOffline =
+                                      _animaisExistentes
+                                          .map((e) => e)
+                                          .toList()
+                                          .sortedList(
+                                              keyOf: (e) =>
+                                                  e.compararDtUltimaInseminacao,
+                                              desc: false)
+                                          .toList();
 
                                   return ListView.builder(
                                     padding: EdgeInsets.zero,
@@ -3170,9 +3174,8 @@ class _SecasWidgetState extends State<SecasWidget>
                             children: [
                               Builder(
                                 builder: (context) {
-                                  final animaisExistenteOffline = FFAppState()
-                                      .animaisProdutoresExistentes
-                                      .toList();
+                                  final animaisExistenteOffline =
+                                      _animaisExistentes.toList();
 
                                   return ListView.builder(
                                     padding: EdgeInsets.zero,
@@ -3471,13 +3474,10 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                     (animaisExistenteOfflineItem
                                                                             .grupoAnimal ==
                                                                         'Novilhas')) {
-                                                                  FFAppState()
-                                                                      .updateAnimaisProdutoresExistentesAtIndex(
-                                                                    animaisExistenteOfflineIndex,
-                                                                    (e) => e
-                                                                      ..grupoAnimal =
-                                                                          'Vacas',
-                                                                  );
+                                                                  _animaisExistentes[
+                                                                              animaisExistenteOfflineIndex]
+                                                                          .grupoAnimal =
+                                                                      'Vacas';
                                                                   safeSetState(
                                                                       () {});
                                                                 }
@@ -4019,9 +4019,7 @@ class _SecasWidgetState extends State<SecasWidget>
                               Builder(
                                 builder: (context) {
                                   final animaisExistentesOfflineDescarte =
-                                      FFAppState()
-                                          .animaisProdutoresExistentes
-                                          .toList();
+                                      _animaisExistentes.toList();
 
                                   return ListView.builder(
                                     padding: EdgeInsets.zero,
@@ -4399,170 +4397,128 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                             ) ??
                                                                             false;
                                                                     if (confirmDialogResponse) {
-                                                                      FFAppState()
-                                                                          .updateAnimaisProdutoresExistentesAtIndex(
-                                                                        animaisExistentesOfflineDescarteIndex,
-                                                                        (e) => e
-                                                                          ..status =
-                                                                              'Vazia',
-                                                                      );
+                                                                      _animaisExistentes[animaisExistentesOfflineDescarteIndex]
+                                                                              .status =
+                                                                          'Vazia';
                                                                       safeSetState(
                                                                           () {});
                                                                       FFAppState()
                                                                           .addToAnimaisProdutoresEditados(
                                                                               AnimaisProdutoresStruct(
-                                                                        uidTecnicoPropriedade: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        uidTecnicoPropriedade: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.uidTecnicoPropriedade,
-                                                                        nomeAnimal: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        nomeAnimal: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.nomeAnimal,
-                                                                        racaAnimal: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        racaAnimal: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.racaAnimal,
-                                                                        pesoAnimal: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        pesoAnimal: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.pesoAnimal,
-                                                                        dtNascimento: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtNascimento: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtNascimento,
-                                                                        touro: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        touro: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.touro,
-                                                                        vaca: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        vaca: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.vaca,
                                                                         status:
                                                                             'Vazia',
-                                                                        grupoAnimal: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        grupoAnimal: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.grupoAnimal,
-                                                                        dtUltimaInseminacao: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtUltimaInseminacao: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtUltimaInseminacao,
-                                                                        dtUltimoParto: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtUltimoParto: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtUltimoParto,
-                                                                        liberaInseminacao: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        liberaInseminacao: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.liberaInseminacao,
-                                                                        dtPartoPrevisto: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtPartoPrevisto: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtPartoPrevisto,
-                                                                        dtSecPrevista: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtSecPrevista: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtSecPrevista,
-                                                                        dtPrePartoPrevista: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtPrePartoPrevista: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtPrePartoPrevista,
-                                                                        dtPP: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtPP: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtPP,
-                                                                        dtDgMais: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtDgMais: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtDgMais,
-                                                                        dtDgMenos: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtDgMenos: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtDgMenos,
-                                                                        dtAborto: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtAborto: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtAborto,
-                                                                        dtSecagem: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtSecagem: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtSecagem,
-                                                                        dtUltimoPP: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtUltimoPP: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtUltimoPP,
-                                                                        nomeTouroUltimaInseminacao: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        nomeTouroUltimaInseminacao: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.nomeTouroUltimaInseminacao,
-                                                                        totalInseminacoes: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        totalInseminacoes: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.totalInseminacoes,
-                                                                        totalPartos: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        totalPartos: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.totalPartos,
-                                                                        dtPreParto: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtPreParto: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtPreParto,
-                                                                        motivoDescarteAnimal: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        motivoDescarteAnimal: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.motivoDescarteAnimal,
-                                                                        dtDescarteAnimal: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtDescarteAnimal: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtDescarteAnimal,
-                                                                        dtUltimaAcao: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtUltimaAcao: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtUltimaAcao,
-                                                                        compararDtUltimaInseminacao: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        compararDtUltimaInseminacao: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.compararDtUltimaInseminacao,
-                                                                        nomeBrincoConcat: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        nomeBrincoConcat: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.nomeBrincoConcat,
-                                                                        idGrupoAnimal: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        idGrupoAnimal: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.idGrupoAnimal,
-                                                                        dtUltimoPartoContingencia: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtUltimoPartoContingencia: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtUltimoPartoContingencia,
-                                                                        idStatusAnimal: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        idStatusAnimal: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.idStatusAnimal,
-                                                                        dtInducaoLactacao: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtInducaoLactacao: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtInducaoLactacao,
-                                                                        dtDesmame: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        dtDesmame: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.dtDesmame,
-                                                                        brincoAnimal: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        brincoAnimal: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.brincoAnimal,
-                                                                        brincoAnimalOrder: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        brincoAnimalOrder: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.brincoAnimalOrder,
-                                                                        uidAnimal: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        uidAnimal: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.uidAnimal,
-                                                                        uidAnimalOffline: FFAppState()
-                                                                            .animaisProdutoresExistentes
+                                                                        uidAnimalOffline: _animaisExistentes
                                                                             .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
                                                                             ?.uidAnimalOffline,
                                                                       ));
@@ -4710,8 +4666,8 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                     ));
                                                                     safeSetState(
                                                                         () {});
-                                                                    FFAppState()
-                                                                        .removeAtIndexFromAnimaisProdutoresExistentes(
+                                                                    _animaisExistentes
+                                                                        .removeAt(
                                                                             animaisExistentesOfflineDescarteIndex);
                                                                     safeSetState(
                                                                         () {});

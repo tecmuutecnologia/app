@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../backend/objectbox/entities/index.dart';
+import '../../../backend/objectbox/objectbox_service.dart';
+import '../../../backend/objectbox/repositories/animal_repository.dart';
 import '../../../backend/schema/structs/index.dart';
 
 /// Converte uma [AnimalEntity] (ObjectBox) no [AnimaisProdutoresStruct] usado
@@ -60,4 +62,20 @@ AnimaisProdutoresStruct animalEntityToStruct(AnimalEntity e) {
     brincoAnimal: e.brincoAnimal,
     brincoAnimalOrder: e.brincoAnimalOrder,
   );
+}
+
+/// Fonte única da lista de animais existentes para a UI legada: lê do ObjectBox
+/// (via [AnimalRepository]), descarta os soft-deletados e converte para struct.
+///
+/// Substitui o antigo cache global `FFAppState().animaisProdutoresExistentes`.
+/// As telas de lista devem chamar isto UMA vez (no `initState`, guardando num
+/// campo local) para não remapear a cada rebuild; leitores pontuais podem
+/// chamar direto. Retorna lista vazia se o ObjectBox ainda não inicializou.
+List<AnimaisProdutoresStruct> animaisProdutoresExistentesObjectBox() {
+  if (!ObjectBoxService.isInitialized) return <AnimaisProdutoresStruct>[];
+  return AnimalRepository()
+      .getAll()
+      .where((a) => !a.isDeleted)
+      .map(animalEntityToStruct)
+      .toList();
 }

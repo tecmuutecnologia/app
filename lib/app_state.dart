@@ -36,22 +36,6 @@ class FFAppState extends ChangeNotifier {
           _animaisProdutoresOffline;
     });
     _safeInit(() {
-      _animaisProdutoresExistentes = prefs
-              .getStringList('ff_animaisProdutoresExistentes')
-              ?.map((x) {
-                try {
-                  return AnimaisProdutoresStruct.fromSerializableMap(
-                      jsonDecode(x));
-                } catch (e) {
-                  print("Can't decode persisted data type. Error: $e.");
-                  return null;
-                }
-              })
-              .withoutNulls
-              .toList() ??
-          _animaisProdutoresExistentes;
-    });
-    _safeInit(() {
       _animaisProdutoresEditados = prefs
               .getStringList('ff_animaisProdutoresEditados')
               ?.map((x) {
@@ -276,50 +260,6 @@ class FFAppState extends ChangeNotifier {
     animaisProdutoresOffline.insert(index, value);
     prefs.setStringList('ff_animaisProdutoresOffline',
         _animaisProdutoresOffline.map((x) => x.serialize()).toList());
-  }
-
-  List<AnimaisProdutoresStruct> _animaisProdutoresExistentes = [];
-  List<AnimaisProdutoresStruct> get animaisProdutoresExistentes =>
-      _animaisProdutoresExistentes;
-  set animaisProdutoresExistentes(List<AnimaisProdutoresStruct> value) {
-    _animaisProdutoresExistentes = value;
-    prefs.setStringList('ff_animaisProdutoresExistentes',
-        value.map((x) => x.serialize()).toList());
-  }
-
-  void addToAnimaisProdutoresExistentes(AnimaisProdutoresStruct value) {
-    animaisProdutoresExistentes.add(value);
-    prefs.setStringList('ff_animaisProdutoresExistentes',
-        _animaisProdutoresExistentes.map((x) => x.serialize()).toList());
-  }
-
-  void removeFromAnimaisProdutoresExistentes(AnimaisProdutoresStruct value) {
-    animaisProdutoresExistentes.remove(value);
-    prefs.setStringList('ff_animaisProdutoresExistentes',
-        _animaisProdutoresExistentes.map((x) => x.serialize()).toList());
-  }
-
-  void removeAtIndexFromAnimaisProdutoresExistentes(int index) {
-    animaisProdutoresExistentes.removeAt(index);
-    prefs.setStringList('ff_animaisProdutoresExistentes',
-        _animaisProdutoresExistentes.map((x) => x.serialize()).toList());
-  }
-
-  void updateAnimaisProdutoresExistentesAtIndex(
-    int index,
-    AnimaisProdutoresStruct Function(AnimaisProdutoresStruct) updateFn,
-  ) {
-    animaisProdutoresExistentes[index] =
-        updateFn(_animaisProdutoresExistentes[index]);
-    prefs.setStringList('ff_animaisProdutoresExistentes',
-        _animaisProdutoresExistentes.map((x) => x.serialize()).toList());
-  }
-
-  void insertAtIndexInAnimaisProdutoresExistentes(
-      int index, AnimaisProdutoresStruct value) {
-    animaisProdutoresExistentes.insert(index, value);
-    prefs.setStringList('ff_animaisProdutoresExistentes',
-        _animaisProdutoresExistentes.map((x) => x.serialize()).toList());
   }
 
   List<AnimaisProdutoresStruct> _animaisProdutoresEditados = [];

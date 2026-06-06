@@ -1332,7 +1332,6 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
                     child: FFButtonWidget(
                       onPressed: () async {
                         FFAppState().animaisProdutoresOffline = [];
-                        FFAppState().animaisProdutoresExistentes = [];
                         FFAppState().animaisProdutoresEditados = [];
                         FFAppState().animaisApagadosExistentesOffline = [];
                         FFAppState().acoesExistentes = [];

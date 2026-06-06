@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '/features/animais/application/animal_struct_adapter.dart';
 
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
@@ -209,7 +210,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
             .length
             .toString();
       } else {
-        final existentesCount = appState.animaisProdutoresExistentes
+        final existentesCount = animaisProdutoresExistentesObjectBox()
             .where((e) =>
                 (e.uidTecnicoPropriedade == navigationParams.uidPropriedade) &&
                 (e.grupoAnimal == 'Vacas') &&

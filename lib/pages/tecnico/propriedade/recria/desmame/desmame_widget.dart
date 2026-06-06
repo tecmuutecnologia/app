@@ -19,9 +19,6 @@ enum DesmameMode {
 
   /// Offline para animais novos criados localmente
   offlineNew,
-
-  /// Offline para animais existentes que precisam de sincronização
-  offlineExisting,
 }
 
 /// Widget para desmame de animais
@@ -330,9 +327,6 @@ class _DesmameWidgetState extends State<DesmameWidget>
       case DesmameMode.offlineNew:
         _performOfflineNewDesmame();
         break;
-      case DesmameMode.offlineExisting:
-        _performOfflineExistingDesmame(context);
-        break;
     }
   }
 
@@ -394,116 +388,5 @@ class _DesmameWidgetState extends State<DesmameWidget>
       );
     }
     safeSetState(() {});
-  }
-
-  /// Desmame offline para animais existentes - atualiza local e adiciona a editados
-  void _performOfflineExistingDesmame(BuildContext context) {
-    final index = widget.itemUidIndex!;
-    final existingAnimal =
-        FFAppState().animaisProdutoresExistentes.elementAtOrNull(index);
-
-    if (existingAnimal == null) return;
-
-    if (widget.grupoAnimal == 'Bezerras') {
-      // Atualiza no local
-      FFAppState().updateAnimaisProdutoresOfflineAtIndex(
-        index,
-        (e) => e
-          ..grupoAnimal = 'Novilhas'
-          ..dtDesmame = getCurrentTimestamp
-          ..status = 'Vazia',
-      );
-      safeSetState(() {});
-
-      // Adiciona aos editados para sincronização
-      FFAppState().addToAnimaisProdutoresEditados(
-        _createEditedAnimalStruct(
-          existingAnimal,
-          grupoAnimal: 'Novilhas',
-          status: 'Vazia',
-          context: context,
-        ),
-      );
-    } else {
-      // Atualiza no local
-      FFAppState().updateAnimaisProdutoresExistentesAtIndex(
-        index,
-        (e) => e
-          ..grupoAnimal = 'Touros'
-          ..dtDesmame = getCurrentTimestamp
-          ..liberaInseminacao = false,
-      );
-      safeSetState(() {});
-
-      // Adiciona aos editados para sincronização
-      FFAppState().addToAnimaisProdutoresEditados(
-        _createEditedAnimalStruct(
-          existingAnimal,
-          grupoAnimal: 'Touros',
-          liberaInseminacao: false,
-          context: context,
-        ),
-      );
-    }
-    safeSetState(() {});
-  }
-
-  /// Cria struct do animal editado para sincronização
-  AnimaisProdutoresStruct _createEditedAnimalStruct(
-    AnimaisProdutoresStruct existingAnimal, {
-    required String grupoAnimal,
-    String? status,
-    bool? liberaInseminacao,
-    required BuildContext context,
-  }) {
-    final dtUltimoParto = existingAnimal.dtUltimoParto.isNotEmpty
-        ? existingAnimal.dtUltimoParto
-        : dateTimeFormat(
-            "dd/MM/yyyy",
-            getCurrentTimestamp,
-            locale: FFLocalizations.of(context).languageCode,
-          );
-
-    return AnimaisProdutoresStruct(
-      uidTecnicoPropriedade: existingAnimal.uidTecnicoPropriedade,
-      nomeAnimal: existingAnimal.nomeAnimal,
-      racaAnimal: existingAnimal.racaAnimal,
-      pesoAnimal: existingAnimal.pesoAnimal,
-      dtNascimento: existingAnimal.dtNascimento,
-      touro: existingAnimal.touro,
-      vaca: existingAnimal.vaca,
-      status: status ?? existingAnimal.status,
-      grupoAnimal: grupoAnimal,
-      dtUltimaInseminacao: existingAnimal.dtUltimaInseminacao,
-      dtUltimoParto: dtUltimoParto,
-      liberaInseminacao: liberaInseminacao ?? existingAnimal.liberaInseminacao,
-      dtPartoPrevisto: existingAnimal.dtPartoPrevisto,
-      dtSecPrevista: existingAnimal.dtSecPrevista,
-      dtPrePartoPrevista: existingAnimal.dtPrePartoPrevista,
-      dtPP: existingAnimal.dtPP,
-      dtDgMais: existingAnimal.dtDgMais,
-      dtDgMenos: existingAnimal.dtDgMenos,
-      dtAborto: existingAnimal.dtAborto,
-      dtSecagem: existingAnimal.dtSecagem,
-      dtUltimoPP: existingAnimal.dtUltimoPP,
-      nomeTouroUltimaInseminacao: existingAnimal.nomeTouroUltimaInseminacao,
-      totalInseminacoes: existingAnimal.totalInseminacoes,
-      totalPartos: existingAnimal.totalPartos,
-      dtPreParto: existingAnimal.dtPreParto,
-      motivoDescarteAnimal: existingAnimal.motivoDescarteAnimal,
-      dtDescarteAnimal: existingAnimal.dtDescarteAnimal,
-      dtUltimaAcao: existingAnimal.dtUltimaAcao,
-      compararDtUltimaInseminacao: existingAnimal.compararDtUltimaInseminacao,
-      nomeBrincoConcat: existingAnimal.nomeBrincoConcat,
-      idGrupoAnimal: existingAnimal.idGrupoAnimal,
-      dtUltimoPartoContingencia: dtUltimoParto,
-      idStatusAnimal: existingAnimal.idStatusAnimal,
-      dtInducaoLactacao: existingAnimal.dtInducaoLactacao,
-      dtDesmame: getCurrentTimestamp,
-      brincoAnimal: existingAnimal.brincoAnimal,
-      brincoAnimalOrder: existingAnimal.brincoAnimalOrder,
-      uidAnimal: existingAnimal.uidAnimal,
-      uidAnimalOffline: existingAnimal.uidAnimalOffline,
-    );
   }
 }

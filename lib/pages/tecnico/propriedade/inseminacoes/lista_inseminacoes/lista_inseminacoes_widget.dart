@@ -52,6 +52,10 @@ class ListaInseminacoesWidget extends StatefulWidget {
 class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
   late ListaInseminacoesModel _model;
 
+  /// Lista de animais existentes (fonte ObjectBox). Antes em
+  /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
+  List<AnimaisProdutoresStruct> _animaisExistentes = [];
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -62,7 +66,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
     // Fonte única: carrega a lista do ObjectBox (offline-first). A tela renderiza
     // sempre desta lista; o Firestore é usado apenas para sincronizar.
     if (ObjectBoxService.isInitialized) {
-      FFAppState().animaisProdutoresExistentes = AnimalRepository()
+      _animaisExistentes = AnimalRepository()
           .getAll()
           .where((a) => !a.isDeleted)
           .map(animalEntityToStruct)
@@ -432,7 +436,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                       Builder(
                         builder: (context) {
                           final listaAnimaisOfflineExistente =
-                              FFAppState().animaisProdutoresExistentes.toList();
+                              _animaisExistentes.toList();
 
                           return ListView.builder(
                             padding: EdgeInsetsDirectional.fromSTEB(
@@ -1680,9 +1684,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                       if (_model.searchListTextController.text != '')
                         Builder(
                           builder: (context) {
-                            final listaAnimaisOfflineExistente = FFAppState()
-                                .animaisProdutoresExistentes
-                                .toList();
+                            final listaAnimaisOfflineExistente =
+                                _animaisExistentes.toList();
 
                             return ListView.builder(
                               padding: EdgeInsetsDirectional.fromSTEB(

@@ -1,6 +1,4 @@
 import '/backend/backend.dart';
-import '/backend/objectbox/index.dart';
-import '/features/animais/application/animal_struct_adapter.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -98,16 +96,8 @@ class _AlertaSemInternetWidgetState extends State<AlertaSemInternetWidget> {
             ),
             FFButtonWidget(
               onPressed: () async {
-                // Fonte única: preenche a lista offline a partir do ObjectBox
-                // (não mais via consulta ao Firestore + loop).
-                FFAppState().animaisProdutoresExistentes =
-                    ObjectBoxService.isInitialized
-                        ? AnimalRepository()
-                            .getAll()
-                            .where((a) => !a.isDeleted)
-                            .map(animalEntityToStruct)
-                            .toList()
-                        : <AnimaisProdutoresStruct>[];
+                // As listas leem direto do ObjectBox (campo local por tela);
+                // não há mais cache global a preencher aqui.
                 safeSetState(() {});
                 Navigator.pop(context);
               },

@@ -42,7 +42,6 @@ class _SyncTechnicianWidgetState extends State<SyncTechnicianWidget> {
         singleRecord: true,
       ).then((s) => s.firstOrNull);
       FFAppState().animaisProdutoresOffline = [];
-      FFAppState().animaisProdutoresExistentes = [];
       FFAppState().animaisProdutoresEditados = [];
       FFAppState().animaisApagadosExistentesOffline = [];
       FFAppState().acoesExistentes = [];

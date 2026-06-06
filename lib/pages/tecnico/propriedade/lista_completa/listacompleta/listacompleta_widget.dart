@@ -70,6 +70,10 @@ class ListacompletaWidget extends StatefulWidget {
 class _ListacompletaWidgetState extends State<ListacompletaWidget> {
   late ListacompletaModel _model;
 
+  /// Lista de animais existentes (fonte ObjectBox). Antes em
+  /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
+  List<AnimaisProdutoresStruct> _animaisExistentes = [];
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -80,7 +84,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
     // Fonte única: carrega a lista do ObjectBox (offline-first). A tela renderiza
     // sempre desta lista; o Firestore é usado apenas para sincronizar.
     if (ObjectBoxService.isInitialized) {
-      FFAppState().animaisProdutoresExistentes = AnimalRepository()
+      _animaisExistentes = AnimalRepository()
           .getAll()
           .where((a) => !a.isDeleted)
           .map(animalEntityToStruct)
@@ -4061,7 +4065,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                       Builder(
                         builder: (context) {
                           final animaisProdutoresExistentesOffline =
-                              FFAppState().animaisProdutoresExistentes.toList();
+                              _animaisExistentes.toList();
 
                           return ListView.builder(
                             padding: EdgeInsetsDirectional.fromSTEB(
@@ -11299,7 +11303,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                       Builder(
                         builder: (context) {
                           final animaisProdutoresExistentesOffline =
-                              FFAppState().animaisProdutoresExistentes.toList();
+                              _animaisExistentes.toList();
 
                           return ListView.builder(
                             padding: EdgeInsetsDirectional.fromSTEB(

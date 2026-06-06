@@ -52,6 +52,10 @@ class AnimaisPrenhasWidget extends StatefulWidget {
 class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
   late AnimaisPrenhasModel _model;
 
+  /// Lista de animais existentes (fonte ObjectBox). Antes em
+  /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
+  List<AnimaisProdutoresStruct> _animaisExistentes = [];
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -62,7 +66,7 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
     // Fonte única: carrega a lista do ObjectBox (offline-first). A tela renderiza
     // sempre desta lista; o Firestore é usado apenas para sincronizar.
     if (ObjectBoxService.isInitialized) {
-      FFAppState().animaisProdutoresExistentes = AnimalRepository()
+      _animaisExistentes = AnimalRepository()
           .getAll()
           .where((a) => !a.isDeleted)
           .map(animalEntityToStruct)
@@ -213,8 +217,7 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
             children: [
               Builder(
                 builder: (context) {
-                  final animaisExistentes = FFAppState()
-                      .animaisProdutoresExistentes
+                  final animaisExistentes = _animaisExistentes
                       .map((e) => e)
                       .toList()
                       .sortedList(

@@ -52,6 +52,10 @@ class DiagnosticogestacaoWidget extends StatefulWidget {
 class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
   late DiagnosticogestacaoModel _model;
 
+  /// Lista de animais existentes (fonte ObjectBox). Antes em
+  /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
+  List<AnimaisProdutoresStruct> _animaisExistentes = [];
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -62,7 +66,7 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
     // Fonte única: carrega a lista do ObjectBox (offline-first). A tela renderiza
     // sempre desta lista; o Firestore é usado apenas para sincronizar.
     if (ObjectBoxService.isInitialized) {
-      FFAppState().animaisProdutoresExistentes = AnimalRepository()
+      _animaisExistentes = AnimalRepository()
           .getAll()
           .where((a) => !a.isDeleted)
           .map(animalEntityToStruct)
@@ -214,8 +218,7 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
             children: [
               Builder(
                 builder: (context) {
-                  final animaisExistentes =
-                      FFAppState().animaisProdutoresExistentes.toList();
+                  final animaisExistentes = _animaisExistentes.toList();
 
                   return ListView.builder(
                     padding: EdgeInsets.zero,

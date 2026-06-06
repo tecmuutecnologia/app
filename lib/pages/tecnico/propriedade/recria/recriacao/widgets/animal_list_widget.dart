@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '/features/animais/application/animal_struct_adapter.dart';
 import 'package:provider/provider.dart';
 
 import '/backend/backend.dart';
@@ -122,7 +123,7 @@ class AnimalListWidget extends StatelessWidget {
         final appState = context.watch<FFAppState>();
 
         // Processar animais existentes (offline)
-        final existingAnimals = appState.animaisProdutoresExistentes
+        final existingAnimals = animaisProdutoresExistentesObjectBox()
             .asMap()
             .entries
             .where((entry) {
