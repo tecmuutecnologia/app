@@ -228,9 +228,6 @@ class FFAppState extends ChangeNotifier {
           _recomendacoes;
     });
     _safeInit(() {
-      _contador2 = prefs.getInt('ff_contador2') ?? _contador2;
-    });
-    _safeInit(() {
       _animaisApagadosExistentesOffline = prefs
               .getStringList('ff_animaisApagadosExistentesOffline')
               ?.map((x) {
@@ -946,13 +943,6 @@ class FFAppState extends ChangeNotifier {
     recomendacoes.insert(index, value);
     prefs.setStringList(
         'ff_recomendacoes', _recomendacoes.map((x) => x.serialize()).toList());
-  }
-
-  int _contador2 = -1;
-  int get contador2 => _contador2;
-  set contador2(int value) {
-    _contador2 = value;
-    prefs.setInt('ff_contador2', value);
   }
 
   int _verificadorIgualdade = 0;
