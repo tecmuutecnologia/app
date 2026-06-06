@@ -44,10 +44,7 @@ class _SyncTechnicianWidgetState extends State<SyncTechnicianWidget> {
       FFAppState().animaisProdutoresOffline = [];
       FFAppState().animaisProdutoresEditados = [];
       FFAppState().animaisApagadosExistentesOffline = [];
-      FFAppState().acoesExistentes = [];
       FFAppState().acoesOffline = [];
-      FFAppState().acoesSanitarioExistentes = [];
-      FFAppState().acoesSanitarioOffline = [];
       safeSetState(() {});
       if (_model.personverify != null) {
         _model.uidTecnico = await queryTecnicoRecordOnce(

@@ -55,21 +55,6 @@ class FFAppState extends ChangeNotifier {
       _contador = prefs.getInt('ff_contador') ?? _contador;
     });
     _safeInit(() {
-      _acoesExistentes = prefs
-              .getStringList('ff_acoesExistentes')
-              ?.map((x) {
-                try {
-                  return AcoesStruct.fromSerializableMap(jsonDecode(x));
-                } catch (e) {
-                  print("Can't decode persisted data type. Error: $e.");
-                  return null;
-                }
-              })
-              .withoutNulls
-              .toList() ??
-          _acoesExistentes;
-    });
-    _safeInit(() {
       _acoesOffline = prefs
               .getStringList('ff_acoesOffline')
               ?.map((x) {
@@ -83,38 +68,6 @@ class FFAppState extends ChangeNotifier {
               .withoutNulls
               .toList() ??
           _acoesOffline;
-    });
-    _safeInit(() {
-      _acoesSanitarioExistentes = prefs
-              .getStringList('ff_acoesSanitarioExistentes')
-              ?.map((x) {
-                try {
-                  return AcoesSanitarioStruct.fromSerializableMap(
-                      jsonDecode(x));
-                } catch (e) {
-                  print("Can't decode persisted data type. Error: $e.");
-                  return null;
-                }
-              })
-              .withoutNulls
-              .toList() ??
-          _acoesSanitarioExistentes;
-    });
-    _safeInit(() {
-      _acoesSanitarioOffline = prefs
-              .getStringList('ff_acoesSanitarioOffline')
-              ?.map((x) {
-                try {
-                  return AcoesSanitarioStruct.fromSerializableMap(
-                      jsonDecode(x));
-                } catch (e) {
-                  print("Can't decode persisted data type. Error: $e.");
-                  return null;
-                }
-              })
-              .withoutNulls
-              .toList() ??
-          _acoesSanitarioOffline;
     });
     _safeInit(() {
       _animaisApagadosExistentesOffline = prefs
@@ -252,47 +205,6 @@ class FFAppState extends ChangeNotifier {
     prefs.setInt('ff_contador', value);
   }
 
-  List<AcoesStruct> _acoesExistentes = [];
-  List<AcoesStruct> get acoesExistentes => _acoesExistentes;
-  set acoesExistentes(List<AcoesStruct> value) {
-    _acoesExistentes = value;
-    prefs.setStringList(
-        'ff_acoesExistentes', value.map((x) => x.serialize()).toList());
-  }
-
-  void addToAcoesExistentes(AcoesStruct value) {
-    acoesExistentes.add(value);
-    prefs.setStringList('ff_acoesExistentes',
-        _acoesExistentes.map((x) => x.serialize()).toList());
-  }
-
-  void removeFromAcoesExistentes(AcoesStruct value) {
-    acoesExistentes.remove(value);
-    prefs.setStringList('ff_acoesExistentes',
-        _acoesExistentes.map((x) => x.serialize()).toList());
-  }
-
-  void removeAtIndexFromAcoesExistentes(int index) {
-    acoesExistentes.removeAt(index);
-    prefs.setStringList('ff_acoesExistentes',
-        _acoesExistentes.map((x) => x.serialize()).toList());
-  }
-
-  void updateAcoesExistentesAtIndex(
-    int index,
-    AcoesStruct Function(AcoesStruct) updateFn,
-  ) {
-    acoesExistentes[index] = updateFn(_acoesExistentes[index]);
-    prefs.setStringList('ff_acoesExistentes',
-        _acoesExistentes.map((x) => x.serialize()).toList());
-  }
-
-  void insertAtIndexInAcoesExistentes(int index, AcoesStruct value) {
-    acoesExistentes.insert(index, value);
-    prefs.setStringList('ff_acoesExistentes',
-        _acoesExistentes.map((x) => x.serialize()).toList());
-  }
-
   List<AcoesStruct> _acoesOffline = [];
   List<AcoesStruct> get acoesOffline => _acoesOffline;
   set acoesOffline(List<AcoesStruct> value) {
@@ -332,93 +244,6 @@ class FFAppState extends ChangeNotifier {
     acoesOffline.insert(index, value);
     prefs.setStringList(
         'ff_acoesOffline', _acoesOffline.map((x) => x.serialize()).toList());
-  }
-
-  List<AcoesSanitarioStruct> _acoesSanitarioExistentes = [];
-  List<AcoesSanitarioStruct> get acoesSanitarioExistentes =>
-      _acoesSanitarioExistentes;
-  set acoesSanitarioExistentes(List<AcoesSanitarioStruct> value) {
-    _acoesSanitarioExistentes = value;
-    prefs.setStringList('ff_acoesSanitarioExistentes',
-        value.map((x) => x.serialize()).toList());
-  }
-
-  void addToAcoesSanitarioExistentes(AcoesSanitarioStruct value) {
-    acoesSanitarioExistentes.add(value);
-    prefs.setStringList('ff_acoesSanitarioExistentes',
-        _acoesSanitarioExistentes.map((x) => x.serialize()).toList());
-  }
-
-  void removeFromAcoesSanitarioExistentes(AcoesSanitarioStruct value) {
-    acoesSanitarioExistentes.remove(value);
-    prefs.setStringList('ff_acoesSanitarioExistentes',
-        _acoesSanitarioExistentes.map((x) => x.serialize()).toList());
-  }
-
-  void removeAtIndexFromAcoesSanitarioExistentes(int index) {
-    acoesSanitarioExistentes.removeAt(index);
-    prefs.setStringList('ff_acoesSanitarioExistentes',
-        _acoesSanitarioExistentes.map((x) => x.serialize()).toList());
-  }
-
-  void updateAcoesSanitarioExistentesAtIndex(
-    int index,
-    AcoesSanitarioStruct Function(AcoesSanitarioStruct) updateFn,
-  ) {
-    acoesSanitarioExistentes[index] =
-        updateFn(_acoesSanitarioExistentes[index]);
-    prefs.setStringList('ff_acoesSanitarioExistentes',
-        _acoesSanitarioExistentes.map((x) => x.serialize()).toList());
-  }
-
-  void insertAtIndexInAcoesSanitarioExistentes(
-      int index, AcoesSanitarioStruct value) {
-    acoesSanitarioExistentes.insert(index, value);
-    prefs.setStringList('ff_acoesSanitarioExistentes',
-        _acoesSanitarioExistentes.map((x) => x.serialize()).toList());
-  }
-
-  List<AcoesSanitarioStruct> _acoesSanitarioOffline = [];
-  List<AcoesSanitarioStruct> get acoesSanitarioOffline =>
-      _acoesSanitarioOffline;
-  set acoesSanitarioOffline(List<AcoesSanitarioStruct> value) {
-    _acoesSanitarioOffline = value;
-    prefs.setStringList(
-        'ff_acoesSanitarioOffline', value.map((x) => x.serialize()).toList());
-  }
-
-  void addToAcoesSanitarioOffline(AcoesSanitarioStruct value) {
-    acoesSanitarioOffline.add(value);
-    prefs.setStringList('ff_acoesSanitarioOffline',
-        _acoesSanitarioOffline.map((x) => x.serialize()).toList());
-  }
-
-  void removeFromAcoesSanitarioOffline(AcoesSanitarioStruct value) {
-    acoesSanitarioOffline.remove(value);
-    prefs.setStringList('ff_acoesSanitarioOffline',
-        _acoesSanitarioOffline.map((x) => x.serialize()).toList());
-  }
-
-  void removeAtIndexFromAcoesSanitarioOffline(int index) {
-    acoesSanitarioOffline.removeAt(index);
-    prefs.setStringList('ff_acoesSanitarioOffline',
-        _acoesSanitarioOffline.map((x) => x.serialize()).toList());
-  }
-
-  void updateAcoesSanitarioOfflineAtIndex(
-    int index,
-    AcoesSanitarioStruct Function(AcoesSanitarioStruct) updateFn,
-  ) {
-    acoesSanitarioOffline[index] = updateFn(_acoesSanitarioOffline[index]);
-    prefs.setStringList('ff_acoesSanitarioOffline',
-        _acoesSanitarioOffline.map((x) => x.serialize()).toList());
-  }
-
-  void insertAtIndexInAcoesSanitarioOffline(
-      int index, AcoesSanitarioStruct value) {
-    acoesSanitarioOffline.insert(index, value);
-    prefs.setStringList('ff_acoesSanitarioOffline',
-        _acoesSanitarioOffline.map((x) => x.serialize()).toList());
   }
 
   int _verificadorIgualdade = 0;

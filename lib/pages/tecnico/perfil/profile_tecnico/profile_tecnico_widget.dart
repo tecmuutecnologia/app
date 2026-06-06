@@ -1334,10 +1334,7 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
                         FFAppState().animaisProdutoresOffline = [];
                         FFAppState().animaisProdutoresEditados = [];
                         FFAppState().animaisApagadosExistentesOffline = [];
-                        FFAppState().acoesExistentes = [];
                         FFAppState().acoesOffline = [];
-                        FFAppState().acoesSanitarioExistentes = [];
-                        FFAppState().acoesSanitarioOffline = [];
                         safeSetState(() {});
                         GoRouter.of(context).prepareAuthEvent();
                         await authManager.signOut();
