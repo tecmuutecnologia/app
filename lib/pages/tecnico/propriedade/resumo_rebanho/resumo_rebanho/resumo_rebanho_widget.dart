@@ -1,6 +1,7 @@
 // ignore_for_file: dead_code, unnecessary_null_comparison, dead_null_aware_expression, unused_import
 
 import '/backend/backend.dart';
+import '/core/constants/grupos_racas_constantes.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -293,10 +294,7 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
                               ? categoriaAnimalGrupoRecordList
                                   .map((e) => e.descricao)
                                   .toList()
-                              : FFAppState()
-                                  .grupo
-                                  .map((e) => e.descricao)
-                                  .toList(),
+                              : kGruposDescricoes.toList(),
                           width: double.infinity,
                           height: 50.0,
                           searchHintTextStyle:

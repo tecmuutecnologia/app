@@ -1,6 +1,7 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
 import '/backend/backend.dart';
+import '/core/constants/grupos_racas_constantes.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -568,10 +569,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                           ? racaRacasRecordList
                                               .map((e) => e.descricao)
                                               .toList()
-                                          : FFAppState()
-                                              .racas
-                                              .map((e) => e.descricao)
-                                              .toList(),
+                                          : kRacasDescricoes.toList(),
                                       onChanged: (val) => safeSetState(
                                           () => _model.racaValue = val),
                                       width: double.infinity,
@@ -705,10 +703,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                           ? grupoGrupoRecordList
                                               .map((e) => e.descricao)
                                               .toList()
-                                          : FFAppState()
-                                              .grupo
-                                              .map((e) => e.descricao)
-                                              .toList(),
+                                          : kGruposDescricoes.toList(),
                                       onChanged: (val) => safeSetState(
                                           () => _model.grupoValue = val),
                                       width: double.infinity,
