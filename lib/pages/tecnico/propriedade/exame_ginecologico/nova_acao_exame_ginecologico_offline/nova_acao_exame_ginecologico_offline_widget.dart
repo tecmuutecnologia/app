@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import, dead_code, unnecessary_null_in_if_null_operators, dead_null_aware_expression
 import '/backend/schema/structs/index.dart';
+import '/core/constants/tipo_acoes_constantes.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -205,10 +206,7 @@ class _NovaAcaoExameGinecologicoOfflineWidgetState
                         padding: EdgeInsetsDirectional.fromSTEB(
                             16.0, 16.0, 16.0, 0.0),
                         child: AcoesDropdownCustom(
-                          opcoes: FFAppState()
-                              .tipoAcoes
-                              .map((e) => e.descricao)
-                              .toList(),
+                          opcoes: kTipoAcoesDescricoes.toList(),
                           valueSelected: _model.acoesDispoValue,
                           onChanged: (val) =>
                               safeSetState(() => _model.acoesDispoValue = val),

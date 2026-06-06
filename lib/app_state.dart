@@ -244,21 +244,6 @@ class FFAppState extends ChangeNotifier {
           _animaisApagadosExistentesOffline;
     });
     _safeInit(() {
-      _tipoAcoes = prefs
-              .getStringList('ff_tipoAcoes')
-              ?.map((x) {
-                try {
-                  return TipoAcoesStruct.fromSerializableMap(jsonDecode(x));
-                } catch (e) {
-                  print("Can't decode persisted data type. Error: $e.");
-                  return null;
-                }
-              })
-              .withoutNulls
-              .toList() ??
-          _tipoAcoes;
-    });
-    _safeInit(() {
       _acoesPreferidas =
           prefs.getStringList('ff_acoesPreferidas') ?? _acoesPreferidas;
     });
@@ -970,107 +955,6 @@ class FFAppState extends ChangeNotifier {
     animaisApagadosExistentesOffline.insert(index, value);
     prefs.setStringList('ff_animaisApagadosExistentesOffline',
         _animaisApagadosExistentesOffline.map((x) => x.serialize()).toList());
-  }
-
-  List<TipoAcoesStruct> _tipoAcoes = [
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Aborto\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Anestro\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Ausência de Muco\"}')),
-    TipoAcoesStruct.fromSerializableMap(jsonDecode('{\"descricao\":\"CG I\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"CG II\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"CG III\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"CG IV\"}')),
-    TipoAcoesStruct.fromSerializableMap(jsonDecode('{\"descricao\":\"Cio\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Cisto Folicular\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Cisto Luteinico\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Cl cavitário\"}')),
-    TipoAcoesStruct.fromSerializableMap(jsonDecode('{\"descricao\":\"Cloe\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Endometrite\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Feto mumificado\"}')),
-    TipoAcoesStruct.fromSerializableMap(jsonDecode('{\"descricao\":\"Fl-\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Hemorragia de Metaestro\"}')),
-    TipoAcoesStruct.fromSerializableMap(jsonDecode('{\"descricao\":\"IATF\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"IATF com Implante\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Indução de Lactação\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Inseminação\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Liberada\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Lóquio\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Metrite\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Muco Turvo\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Mucometra\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Outros\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Ovsynch\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Piometra\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Reabsorção Embrionária\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Retenção de Placenta\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Secagem\"}')),
-    TipoAcoesStruct.fromSerializableMap(
-        jsonDecode('{\"descricao\":\"Prostaglandina\"}'))
-  ];
-  List<TipoAcoesStruct> get tipoAcoes => _tipoAcoes;
-  set tipoAcoes(List<TipoAcoesStruct> value) {
-    _tipoAcoes = value;
-    prefs.setStringList(
-        'ff_tipoAcoes', value.map((x) => x.serialize()).toList());
-  }
-
-  void addToTipoAcoes(TipoAcoesStruct value) {
-    tipoAcoes.add(value);
-    prefs.setStringList(
-        'ff_tipoAcoes', _tipoAcoes.map((x) => x.serialize()).toList());
-  }
-
-  void removeFromTipoAcoes(TipoAcoesStruct value) {
-    tipoAcoes.remove(value);
-    prefs.setStringList(
-        'ff_tipoAcoes', _tipoAcoes.map((x) => x.serialize()).toList());
-  }
-
-  void removeAtIndexFromTipoAcoes(int index) {
-    tipoAcoes.removeAt(index);
-    prefs.setStringList(
-        'ff_tipoAcoes', _tipoAcoes.map((x) => x.serialize()).toList());
-  }
-
-  void updateTipoAcoesAtIndex(
-    int index,
-    TipoAcoesStruct Function(TipoAcoesStruct) updateFn,
-  ) {
-    tipoAcoes[index] = updateFn(_tipoAcoes[index]);
-    prefs.setStringList(
-        'ff_tipoAcoes', _tipoAcoes.map((x) => x.serialize()).toList());
-  }
-
-  void insertAtIndexInTipoAcoes(int index, TipoAcoesStruct value) {
-    tipoAcoes.insert(index, value);
-    prefs.setStringList(
-        'ff_tipoAcoes', _tipoAcoes.map((x) => x.serialize()).toList());
   }
 
   List<String> _acoesPreferidas = [];
