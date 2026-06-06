@@ -7,7 +7,6 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/instant_timer.dart';
-import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
 
@@ -70,38 +69,14 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
             if (FFAppState().verificaInternet == -1) {
               FFAppState().verificaInternet = 0;
               safeSetState(() {});
-              await _showNoInternetAlert();
-              _model.instantTimer?.cancel();
-              return;
+              // Notificação passiva via SyncStatusBanner (app-wide); sem modal.
+              // Timer segue ativo; sync ao reconectar é automático.
             }
           }
         },
         startImmediately: false,
       );
     });
-  }
-
-  /// Exibe alerta de sem internet.
-  Future<void> _showNoInternetAlert() async {
-    await showModalBottomSheet(
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      isDismissible: false,
-      enableDrag: false,
-      context: context,
-      builder: (context) {
-        return GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
-          child: Padding(
-            padding: MediaQuery.viewInsetsOf(context),
-            child: const AlertaSemInternetWidget(),
-          ),
-        );
-      },
-    ).then((value) => safeSetState(() {}));
   }
 
   /// Configura as animações da página.

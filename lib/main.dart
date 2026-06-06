@@ -13,6 +13,7 @@ import 'auth/firebase_auth/auth_util.dart';
 import 'backend/firebase/firebase_config.dart';
 import 'backend/objectbox/index.dart';
 import 'core/connectivity/connectivity_service.dart';
+import 'features/shared/widgets/sync_status_banner.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import 'flutter_flow/flutter_flow_util.dart';
 import 'flutter_flow/internationalization.dart';
@@ -161,6 +162,19 @@ class _MyAppState extends State<MyApp> {
       ),
       themeMode: _themeMode,
       routerConfig: _router,
+      // Notificação passiva de conectividade app-wide: o banner fica com altura
+      // zero quando online (não desloca nada) e mostra um aviso fino no topo
+      // quando offline — sem modal nem clique. A sincronização ao reconectar é
+      // automática (OfflineFirstSyncService), então não há botão de sincronizar.
+      builder: (context, child) => Column(
+        children: [
+          const SafeArea(
+            bottom: false,
+            child: SyncStatusBanner(),
+          ),
+          Expanded(child: child ?? const SizedBox.shrink()),
+        ],
+      ),
     );
   }
 }

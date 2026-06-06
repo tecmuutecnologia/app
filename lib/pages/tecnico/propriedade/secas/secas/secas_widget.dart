@@ -17,7 +17,6 @@ import '/pages/tecnico/propriedade/secas/registrar_parto_induzido_offline/regist
 import '/pages/tecnico/propriedade/secas/registrar_parto_offline/registrar_parto_offline_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_pre_parto/registrar_pre_parto_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_pre_parto_offline/registrar_pre_parto_offline_widget.dart';
-import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
 import '/index.dart';
@@ -89,28 +88,9 @@ class _SecasWidgetState extends State<SecasWidget>
             if (FFAppState().verificaInternet == -1) {
               FFAppState().verificaInternet = 0;
               safeSetState(() {});
-              _model.instantTimer?.cancel();
-              await showModalBottomSheet(
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                isDismissible: false,
-                enableDrag: false,
-                context: context,
-                builder: (context) {
-                  return GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).unfocus();
-                      FocusManager.instance.primaryFocus?.unfocus();
-                    },
-                    child: Padding(
-                      padding: MediaQuery.viewInsetsOf(context),
-                      child: AlertaSemInternetWidget(),
-                    ),
-                  );
-                },
-              ).then((value) => safeSetState(() {}));
-
-              return;
+              // Notificação passiva via SyncStatusBanner (app-wide); sem modal.
+              // O timer segue ativo (respostaNet atualizado) e o sync ao
+              // reconectar é automático (OfflineFirstSyncService).
             }
           }
         },

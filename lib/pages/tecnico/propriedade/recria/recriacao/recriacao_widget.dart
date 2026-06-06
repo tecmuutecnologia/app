@@ -5,7 +5,6 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/form_field_controller.dart';
 import '/flutter_flow/instant_timer.dart';
-import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
 import 'package:flutter/material.dart';
@@ -80,29 +79,9 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
           if (FFAppState().verificaInternet == -1) {
             FFAppState().verificaInternet = 0;
             safeSetState(() {});
-            _model.instantTimer?.cancel();
-
-            if (!mounted) return;
-
-            await showModalBottomSheet(
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              isDismissible: false,
-              enableDrag: false,
-              context: context,
-              builder: (context) {
-                return GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).unfocus();
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  },
-                  child: Padding(
-                    padding: MediaQuery.viewInsetsOf(context),
-                    child: const AlertaSemInternetWidget(),
-                  ),
-                );
-              },
-            ).then((value) => safeSetState(() {}));
+            // Notificação passiva via SyncStatusBanner (app-wide); sem modal.
+            // O timer segue ativo para manter `respostaNet` atualizado e o sync
+            // ao reconectar é automático (OfflineFirstSyncService).
           }
         }
       },
