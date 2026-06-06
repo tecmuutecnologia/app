@@ -1,6 +1,9 @@
 // ignore_for_file: dead_code
 
 import '/backend/backend.dart';
+import '/backend/objectbox/repositories/animal_repository.dart';
+import '/core/connectivity/connectivity_service.dart';
+import 'dart:async';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -114,6 +117,31 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
     _model.maybeDispose();
 
     super.dispose();
+  }
+
+  /// Registra o pré-parto de forma offline-first: atualiza o status do animal
+  /// ('Pré Parto') direto no ObjectBox (fonte única), delegando o sync com o
+  /// Firestore aos repositórios. Funciona sem conexão.
+  Future<void> _registrarPrePartoOfflineFirst() async {
+    final dados = {
+      'status': 'Pré Parto',
+      'dtPreParto': _model.dtPrePartoTextController.text,
+      'idStatusAnimal': 5,
+    };
+    final animalRepo = AnimalRepository();
+    final entity = widget.uidAnimaisProdutores != null
+        ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
+        : null;
+    if (entity != null) {
+      unawaited(animalRepo.update(entity, dados));
+    } else {
+      unawaited(
+          widget.uidAnimaisProdutores!.update(createAnimaisProdutoresRecordData(
+        status: 'Pré Parto',
+        dtPreParto: _model.dtPrePartoTextController.text,
+        idStatusAnimal: 5,
+      )));
+    }
   }
 
   @override
@@ -514,14 +542,37 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
                           child: FFButtonWidget(
                             onPressed: () async {
                               var _shouldSetState = false;
-                              if (_model.dtPrePartoTextController.text != '') {
-                                await widget.uidAnimaisProdutores!
-                                    .update(createAnimaisProdutoresRecordData(
-                                  status: 'Pré Parto',
-                                  dtPreParto:
-                                      _model.dtPrePartoTextController.text,
-                                  idStatusAnimal: 5,
-                                ));
+                              if (_model.dtPrePartoTextController.text == '') {
+                                await showDialog(
+                                  context: context,
+                                  builder: (alertDialogContext) {
+                                    return AlertDialog(
+                                      title: Text(
+                                          'Data do Pré-Parto obrigatória.'),
+                                      content:
+                                          Text('Preencha todos os campos.'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(alertDialogContext),
+                                          child: Text('Ok'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                                if (_shouldSetState) safeSetState(() {});
+                                return;
+                              }
+
+                              // Offline-first: atualiza o animal (Pré Parto) no
+                              // ObjectBox; sync enfileirado pelos repositórios.
+                              await _registrarPrePartoOfflineFirst();
+                              _shouldSetState = true;
+
+                              // Bookkeeping de visita/tratamento/recomendação roda
+                              // só online (offline a antiga variante também omite).
+                              if (ConnectivityService.instance.isOnline) {
                                 _model.outUidResumoDaVisita =
                                     await queryResumoDaVisitaRecordOnce(
                                   queryBuilder: (resumoDaVisitaRecord) =>
@@ -696,33 +747,9 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
                                     ));
                                   }
                                 }
-
-                                Navigator.pop(context);
-                                if (_shouldSetState) safeSetState(() {});
-                                return;
-                              } else {
-                                await showDialog(
-                                  context: context,
-                                  builder: (alertDialogContext) {
-                                    return AlertDialog(
-                                      title: Text(
-                                          'Data do Pré-Parto obrigatória.'),
-                                      content:
-                                          Text('Preencha todos os campos.'),
-                                      actions: [
-                                        TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(alertDialogContext),
-                                          child: Text('Ok'),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                                if (_shouldSetState) safeSetState(() {});
-                                return;
                               }
 
+                              Navigator.pop(context);
                               if (_shouldSetState) safeSetState(() {});
                             },
                             text: 'Registrar',

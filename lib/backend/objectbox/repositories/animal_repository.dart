@@ -165,6 +165,7 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
     entity.dtSecPrevista = data['dtSecPrevista'] ?? entity.dtSecPrevista;
     entity.dtPrePartoPrevista =
         data['dtPrePartoPrevista'] ?? entity.dtPrePartoPrevista;
+    entity.dtPreParto = data['dtPreParto'] ?? entity.dtPreParto;
     entity.dtPP = data['dtPP'] ?? entity.dtPP;
     entity.dtUltimoPP = data['dtUltimoPP'] ?? entity.dtUltimoPP;
     entity.dtDgMais = data['dtDgMais'] ?? entity.dtDgMais;
@@ -174,6 +175,8 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
     entity.dtInducaoLactacao =
         data['dtInducaoLactacao'] ?? entity.dtInducaoLactacao;
     entity.dtUltimaAcao = data['dtUltimaAcao'] ?? entity.dtUltimaAcao;
+    entity.dtUltimoPartoContingencia =
+        data['dtUltimoPartoContingencia'] ?? entity.dtUltimoPartoContingencia;
     entity.liberaInseminacao =
         data['liberaInseminacao'] ?? entity.liberaInseminacao;
     entity.brincoAnimal = data['brincoAnimal'] ?? entity.brincoAnimal;

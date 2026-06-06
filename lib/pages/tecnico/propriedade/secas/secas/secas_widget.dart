@@ -9,13 +9,13 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/instant_timer.dart';
-import '/pages/tecnico/propriedade/prenhas/registro_aborto_existente_offline/registro_aborto_existente_offline_widget.dart';
+import '/pages/tecnico/propriedade/prenhas/registro_aborto/registro_aborto_widget.dart';
 import '/pages/tecnico/propriedade/prenhas/registro_aborto_offline/registro_aborto_offline_widget.dart';
-import '/pages/tecnico/propriedade/secas/registrar_parto_existente_offline/registrar_parto_existente_offline_widget.dart';
-import '/pages/tecnico/propriedade/secas/registrar_parto_induzido_existente_offline/registrar_parto_induzido_existente_offline_widget.dart';
+import '/pages/tecnico/propriedade/secas/registrar_parto/registrar_parto_widget.dart';
+import '/pages/tecnico/propriedade/secas/registrar_parto_induzido/registrar_parto_induzido_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_parto_induzido_offline/registrar_parto_induzido_offline_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_parto_offline/registrar_parto_offline_widget.dart';
-import '/pages/tecnico/propriedade/secas/registrar_pre_parto_existente_offline/registrar_pre_parto_existente_offline_widget.dart';
+import '/pages/tecnico/propriedade/secas/registrar_pre_parto/registrar_pre_parto_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_pre_parto_offline/registrar_pre_parto_offline_widget.dart';
 import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
@@ -320,163 +320,146 @@ class _SecasWidgetState extends State<SecasWidget>
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                                Builder(
-                                  builder: (context) {
-                                    final vacasExistenteOffline = FFAppState()
-                                        .animaisProdutoresExistentes
-                                        .map((e) => e)
-                                        .toList()
-                                        .sortedList(
-                                            keyOf: (e) =>
-                                                e.compararDtUltimaInseminacao,
-                                            desc: false)
-                                        .toList();
+                              Builder(
+                                builder: (context) {
+                                  final vacasExistenteOffline = FFAppState()
+                                      .animaisProdutoresExistentes
+                                      .map((e) => e)
+                                      .toList()
+                                      .sortedList(
+                                          keyOf: (e) =>
+                                              e.compararDtUltimaInseminacao,
+                                          desc: false)
+                                      .toList();
 
-                                    return ListView.builder(
-                                      padding: EdgeInsets.zero,
-                                      primary: false,
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.vertical,
-                                      itemCount: vacasExistenteOffline.length,
-                                      itemBuilder: (context,
-                                          vacasExistenteOfflineIndex) {
-                                        final vacasExistenteOfflineItem =
-                                            vacasExistenteOffline[
-                                                vacasExistenteOfflineIndex];
-                                        return Visibility(
-                                          visible: (vacasExistenteOfflineItem
-                                                      .uidTecnicoPropriedade ==
-                                                  widget.uidPropriedade) &&
-                                              (vacasExistenteOfflineItem
-                                                      .grupoAnimal ==
-                                                  'Vacas') &&
-                                              (vacasExistenteOfflineItem
-                                                      .status ==
-                                                  'Seca') &&
-                                              (dateTimeFormat(
-                                                    "d/M/y",
-                                                    vacasExistenteOfflineItem
-                                                        .compararDtUltimaInseminacao,
-                                                    locale: FFLocalizations.of(
-                                                            context)
-                                                        .languageCode,
-                                                  ) !=
-                                                  '31/12/2050'),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    16.0, 8.0, 16.0, 0.0),
-                                            child: InkWell(
-                                              splashColor: Colors.transparent,
-                                              focusColor: Colors.transparent,
-                                              hoverColor: Colors.transparent,
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              onTap: () async {},
-                                              child: Container(
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
+                                  return ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    primary: false,
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: vacasExistenteOffline.length,
+                                    itemBuilder:
+                                        (context, vacasExistenteOfflineIndex) {
+                                      final vacasExistenteOfflineItem =
+                                          vacasExistenteOffline[
+                                              vacasExistenteOfflineIndex];
+                                      return Visibility(
+                                        visible: (vacasExistenteOfflineItem
+                                                    .uidTecnicoPropriedade ==
+                                                widget.uidPropriedade) &&
+                                            (vacasExistenteOfflineItem
+                                                    .grupoAnimal ==
+                                                'Vacas') &&
+                                            (vacasExistenteOfflineItem.status ==
+                                                'Seca') &&
+                                            (dateTimeFormat(
+                                                  "d/M/y",
+                                                  vacasExistenteOfflineItem
+                                                      .compararDtUltimaInseminacao,
+                                                  locale: FFLocalizations.of(
                                                           context)
-                                                      .primaryBackground,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12.0),
-                                                ),
-                                                child: ListView(
-                                                  padding: EdgeInsets.zero,
-                                                  primary: false,
-                                                  shrinkWrap: true,
-                                                  scrollDirection:
-                                                      Axis.vertical,
-                                                  children: [
-                                                    InkWell(
-                                                      splashColor:
-                                                          Colors.transparent,
-                                                      focusColor:
-                                                          Colors.transparent,
-                                                      hoverColor:
-                                                          Colors.transparent,
-                                                      highlightColor:
-                                                          Colors.transparent,
-                                                      onTap: () async {},
-                                                      child: Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.max,
-                                                        children: [
-                                                          Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .max,
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(
-                                                                            10.0),
-                                                                child:
-                                                                    Container(
-                                                                  width: 44.0,
-                                                                  height: 44.0,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color: () {
-                                                                      if (vacasExistenteOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Vacas') {
-                                                                        return Color(
-                                                                            0xFF048508);
-                                                                      } else if (vacasExistenteOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Novilhas') {
-                                                                        return Color(
-                                                                            0xFFFF0076);
-                                                                      } else {
-                                                                        return Color(
-                                                                            0x00000000);
-                                                                      }
-                                                                    }(),
-                                                                    shape: BoxShape
-                                                                        .circle,
-                                                                  ),
-                                                                  alignment:
-                                                                      AlignmentDirectional(
-                                                                          0.0,
-                                                                          0.0),
-                                                                  child: Text(
-                                                                    () {
-                                                                      if (vacasExistenteOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Vacas') {
-                                                                        return 'VAC';
-                                                                      } else if (vacasExistenteOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Novilhas') {
-                                                                        return 'NOV';
-                                                                      } else {
-                                                                        return 'N/C';
-                                                                      }
-                                                                    }(),
-                                                                    style: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .titleMedium
-                                                                        .override(
-                                                                          font:
-                                                                              GoogleFonts.readexPro(
-                                                                            fontWeight:
-                                                                                FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                                                                            fontStyle:
-                                                                                FlutterFlowTheme.of(context).titleMedium.fontStyle,
-                                                                          ),
-                                                                          color:
-                                                                              Colors.white,
-                                                                          fontSize:
-                                                                              13.0,
-                                                                          letterSpacing:
-                                                                              0.0,
+                                                      .languageCode,
+                                                ) !=
+                                                '31/12/2050'),
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  16.0, 8.0, 16.0, 0.0),
+                                          child: InkWell(
+                                            splashColor: Colors.transparent,
+                                            focusColor: Colors.transparent,
+                                            hoverColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            onTap: () async {},
+                                            child: Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
+                                                borderRadius:
+                                                    BorderRadius.circular(12.0),
+                                              ),
+                                              child: ListView(
+                                                padding: EdgeInsets.zero,
+                                                primary: false,
+                                                shrinkWrap: true,
+                                                scrollDirection: Axis.vertical,
+                                                children: [
+                                                  InkWell(
+                                                    splashColor:
+                                                        Colors.transparent,
+                                                    focusColor:
+                                                        Colors.transparent,
+                                                    hoverColor:
+                                                        Colors.transparent,
+                                                    highlightColor:
+                                                        Colors.transparent,
+                                                    onTap: () async {},
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      children: [
+                                                        Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(
+                                                                          10.0),
+                                                              child: Container(
+                                                                width: 44.0,
+                                                                height: 44.0,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color: () {
+                                                                    if (vacasExistenteOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Vacas') {
+                                                                      return Color(
+                                                                          0xFF048508);
+                                                                    } else if (vacasExistenteOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Novilhas') {
+                                                                      return Color(
+                                                                          0xFFFF0076);
+                                                                    } else {
+                                                                      return Color(
+                                                                          0x00000000);
+                                                                    }
+                                                                  }(),
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                ),
+                                                                alignment:
+                                                                    AlignmentDirectional(
+                                                                        0.0,
+                                                                        0.0),
+                                                                child: Text(
+                                                                  () {
+                                                                    if (vacasExistenteOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Vacas') {
+                                                                      return 'VAC';
+                                                                    } else if (vacasExistenteOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Novilhas') {
+                                                                      return 'NOV';
+                                                                    } else {
+                                                                      return 'N/C';
+                                                                    }
+                                                                  }(),
+                                                                  style: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleMedium
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
                                                                           fontWeight: FlutterFlowTheme.of(context)
                                                                               .titleMedium
                                                                               .fontWeight,
@@ -484,55 +467,60 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                               .titleMedium
                                                                               .fontStyle,
                                                                         ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .max,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                () {
-                                                                  if ((vacasExistenteOfflineItem.nomeAnimal != '') &&
-                                                                      (vacasExistenteOfflineItem
-                                                                              .brincoAnimal !=
-                                                                          null) &&
-                                                                      (vacasExistenteOfflineItem
-                                                                              .brincoAnimal !=
-                                                                          -1)) {
-                                                                    return '${vacasExistenteOfflineItem.nomeAnimal} - ${vacasExistenteOfflineItem.brincoAnimal.toString()}';
-                                                                  } else if (vacasExistenteOfflineItem
-                                                                          .nomeAnimal !=
-                                                                      '') {
-                                                                    return vacasExistenteOfflineItem
-                                                                        .nomeAnimal;
-                                                                  } else {
-                                                                    return vacasExistenteOfflineItem
-                                                                        .brincoAnimal
-                                                                        .toString();
-                                                                  }
-                                                                }(),
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyLarge
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .readexPro(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            13.0,
+                                                                        letterSpacing:
+                                                                            0.0,
                                                                         fontWeight: FlutterFlowTheme.of(context)
-                                                                            .bodyLarge
+                                                                            .titleMedium
                                                                             .fontWeight,
                                                                         fontStyle: FlutterFlowTheme.of(context)
-                                                                            .bodyLarge
+                                                                            .titleMedium
                                                                             .fontStyle,
                                                                       ),
-                                                                      letterSpacing:
-                                                                          0.0,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              () {
+                                                                if ((vacasExistenteOfflineItem
+                                                                            .nomeAnimal !=
+                                                                        '') &&
+                                                                    (vacasExistenteOfflineItem
+                                                                            .brincoAnimal !=
+                                                                        null) &&
+                                                                    (vacasExistenteOfflineItem
+                                                                            .brincoAnimal !=
+                                                                        -1)) {
+                                                                  return '${vacasExistenteOfflineItem.nomeAnimal} - ${vacasExistenteOfflineItem.brincoAnimal.toString()}';
+                                                                } else if (vacasExistenteOfflineItem
+                                                                        .nomeAnimal !=
+                                                                    '') {
+                                                                  return vacasExistenteOfflineItem
+                                                                      .nomeAnimal;
+                                                                } else {
+                                                                  return vacasExistenteOfflineItem
+                                                                      .brincoAnimal
+                                                                      .toString();
+                                                                }
+                                                              }(),
+                                                              style: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .bodyLarge
+                                                                  .override(
+                                                                    font: GoogleFonts
+                                                                        .readexPro(
                                                                       fontWeight: FlutterFlowTheme.of(
                                                                               context)
                                                                           .bodyLarge
@@ -542,7 +530,156 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                           .bodyLarge
                                                                           .fontStyle,
                                                                     ),
+                                                                    letterSpacing:
+                                                                        0.0,
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyLarge
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyLarge
+                                                                        .fontStyle,
+                                                                  ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          4.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child: Text(
+                                                                'Inseminada em: ${vacasExistenteOfflineItem.dtUltimaInseminacao}',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .labelMedium
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontStyle,
+                                                                      ),
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
                                                               ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          4.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child: Text(
+                                                                'Pré parto prev.: ${vacasExistenteOfflineItem.dtPrePartoPrevista}',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .labelMedium
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontStyle,
+                                                                      ),
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          4.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child: Text(
+                                                                'Parto previsto: ${vacasExistenteOfflineItem.dtPartoPrevisto}',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .labelMedium
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontStyle,
+                                                                      ),
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsetsDirectional
+                                                            .fromSTEB(0.0, 15.0,
+                                                                0.0, 15.0),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      0.0,
+                                                                      0.0,
+                                                                      10.0,
+                                                                      0.0),
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .max,
+                                                            children: [
                                                               Padding(
                                                                 padding:
                                                                     EdgeInsetsDirectional
@@ -551,111 +688,1554 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                             4.0,
                                                                             0.0,
                                                                             0.0),
-                                                                child: Text(
-                                                                  'Inseminada em: ${vacasExistenteOfflineItem.dtUltimaInseminacao}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        letterSpacing:
+                                                                child:
+                                                                    FFButtonWidget(
+                                                                  onPressed:
+                                                                      () async {
+                                                                    await showModalBottomSheet(
+                                                                      isScrollControlled:
+                                                                          true,
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .transparent,
+                                                                      enableDrag:
+                                                                          false,
+                                                                      context:
+                                                                          context,
+                                                                      builder:
+                                                                          (context) {
+                                                                        return GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            FocusScope.of(context).unfocus();
+                                                                            FocusManager.instance.primaryFocus?.unfocus();
+                                                                          },
+                                                                          child:
+                                                                              Padding(
+                                                                            padding:
+                                                                                MediaQuery.viewInsetsOf(context),
+                                                                            child:
+                                                                                RegistroAbortoWidget(
+                                                                              uidPropriedade: widget.uidPropriedade!,
+                                                                              nomePropriedade: widget.nomePropriedade!,
+                                                                              uidTecnico: widget.uidTecnico!,
+                                                                              emailPropriedade: widget.emailPropriedade!,
+                                                                              visitaPresencial: widget.visitaPresencial!,
+                                                                              diasDg: widget.diasDg!,
+                                                                              uidAnimaisProdutores: vacasExistenteOfflineItem.uidAnimal!,
+                                                                              nomeAnimal: vacasExistenteOfflineItem.nomeAnimal,
+                                                                            ),
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                    ).then((value) =>
+                                                                        safeSetState(
+                                                                            () {}));
+                                                                  },
+                                                                  text:
+                                                                      'Aborto',
+                                                                  icon: Icon(
+                                                                    Icons
+                                                                        .cancel_sharp,
+                                                                    size: 15.0,
+                                                                  ),
+                                                                  options:
+                                                                      FFButtonOptions(
+                                                                    width:
+                                                                        100.0,
+                                                                    height:
+                                                                        40.0,
+                                                                    padding:
+                                                                        EdgeInsets.all(
+                                                                            0.0),
+                                                                    iconPadding:
+                                                                        EdgeInsetsDirectional.fromSTEB(
                                                                             0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
                                                                             0.0,
-                                                                            4.0,
                                                                             0.0,
                                                                             0.0),
-                                                                child: Text(
-                                                                  'Pré parto prev.: ${vacasExistenteOfflineItem.dtPrePartoPrevista}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
+                                                                    color: Color(
+                                                                        0xFFAE0303),
+                                                                    textStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .titleSmall
+                                                                        .override(
+                                                                          font:
+                                                                              GoogleFonts.readexPro(
+                                                                            fontWeight:
+                                                                                FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                                                                            fontStyle:
+                                                                                FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                                                                          ),
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontSize:
+                                                                              12.0,
+                                                                          letterSpacing:
+                                                                              0.0,
                                                                           fontWeight: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
+                                                                              .titleSmall
                                                                               .fontWeight,
                                                                           fontStyle: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
+                                                                              .titleSmall
                                                                               .fontStyle,
                                                                         ),
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            4.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                child: Text(
-                                                                  'Parto previsto: ${vacasExistenteOfflineItem.dtPartoPrevisto}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontStyle,
-                                                                      ),
+                                                                    elevation:
+                                                                        3.0,
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      color: Colors
+                                                                          .transparent,
+                                                                      width:
+                                                                          1.0,
+                                                                    ),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            8.0),
+                                                                  ),
                                                                 ),
                                                               ),
                                                             ],
                                                           ),
-                                                        ],
-                                                      ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      0.0,
+                                                                      0.0,
+                                                                      10.0,
+                                                                      0.0),
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .max,
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    EdgeInsetsDirectional
+                                                                        .fromSTEB(
+                                                                            0.0,
+                                                                            4.0,
+                                                                            0.0,
+                                                                            0.0),
+                                                                child:
+                                                                    FFButtonWidget(
+                                                                  onPressed:
+                                                                      () async {
+                                                                    await showModalBottomSheet(
+                                                                      isScrollControlled:
+                                                                          true,
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .transparent,
+                                                                      enableDrag:
+                                                                          false,
+                                                                      context:
+                                                                          context,
+                                                                      builder:
+                                                                          (context) {
+                                                                        return GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            FocusScope.of(context).unfocus();
+                                                                            FocusManager.instance.primaryFocus?.unfocus();
+                                                                          },
+                                                                          child:
+                                                                              Padding(
+                                                                            padding:
+                                                                                MediaQuery.viewInsetsOf(context),
+                                                                            child:
+                                                                                RegistrarPartoWidget(
+                                                                              uidPropriedade: widget.uidPropriedade!,
+                                                                              nomePropriedade: widget.nomePropriedade!,
+                                                                              uidTecnico: widget.uidTecnico!,
+                                                                              emailPropriedade: widget.emailPropriedade!,
+                                                                              visitaPresencial: widget.visitaPresencial!,
+                                                                              diasDg: widget.diasDg!,
+                                                                              uidAnimaisProdutores: vacasExistenteOfflineItem.uidAnimal!,
+                                                                              nomeVacaAtual: vacasExistenteOfflineItem.nomeAnimal,
+                                                                              nomeTourtoUltimaInseminacao: vacasExistenteOfflineItem.nomeTouroUltimaInseminacao,
+                                                                              brincoVacaAtual: vacasExistenteOfflineItem.brincoAnimal.toString(),
+                                                                            ),
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                    ).then((value) =>
+                                                                        safeSetState(
+                                                                            () {}));
+                                                                  },
+                                                                  text: 'Parto',
+                                                                  icon: Icon(
+                                                                    Icons
+                                                                        .add_alert,
+                                                                    size: 15.0,
+                                                                  ),
+                                                                  options:
+                                                                      FFButtonOptions(
+                                                                    width:
+                                                                        100.0,
+                                                                    height:
+                                                                        40.0,
+                                                                    padding:
+                                                                        EdgeInsets.all(
+                                                                            0.0),
+                                                                    iconPadding:
+                                                                        EdgeInsetsDirectional.fromSTEB(
+                                                                            0.0,
+                                                                            0.0,
+                                                                            0.0,
+                                                                            0.0),
+                                                                    color: Color(
+                                                                        0xFF048508),
+                                                                    textStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .titleSmall
+                                                                        .override(
+                                                                          font:
+                                                                              GoogleFonts.readexPro(
+                                                                            fontWeight:
+                                                                                FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                                                                            fontStyle:
+                                                                                FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                                                                          ),
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontSize:
+                                                                              12.0,
+                                                                          letterSpacing:
+                                                                              0.0,
+                                                                          fontWeight: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                    elevation:
+                                                                        3.0,
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      color: Colors
+                                                                          .transparent,
+                                                                      width:
+                                                                          1.0,
+                                                                    ),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            8.0),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          4.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child:
+                                                                  FFButtonWidget(
+                                                                onPressed:
+                                                                    () async {
+                                                                  await showModalBottomSheet(
+                                                                    isScrollControlled:
+                                                                        true,
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    enableDrag:
+                                                                        false,
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (context) {
+                                                                      return GestureDetector(
+                                                                        onTap:
+                                                                            () {
+                                                                          FocusScope.of(context)
+                                                                              .unfocus();
+                                                                          FocusManager
+                                                                              .instance
+                                                                              .primaryFocus
+                                                                              ?.unfocus();
+                                                                        },
+                                                                        child:
+                                                                            Padding(
+                                                                          padding:
+                                                                              MediaQuery.viewInsetsOf(context),
+                                                                          child:
+                                                                              RegistrarPrePartoWidget(
+                                                                            uidPropriedade:
+                                                                                widget.uidPropriedade!,
+                                                                            nomePropriedade:
+                                                                                widget.nomePropriedade!,
+                                                                            uidTecnico:
+                                                                                widget.uidTecnico!,
+                                                                            emailPropriedade:
+                                                                                widget.emailPropriedade!,
+                                                                            visitaPresencial:
+                                                                                widget.visitaPresencial!,
+                                                                            diasDg:
+                                                                                widget.diasDg!,
+                                                                            uidAnimaisProdutores:
+                                                                                vacasExistenteOfflineItem.uidAnimal!,
+                                                                            nomeAnimal:
+                                                                                vacasExistenteOfflineItem.nomeAnimal,
+                                                                            brincoAnimal:
+                                                                                vacasExistenteOfflineItem.brincoAnimal.toString(),
+                                                                            grupoAnimal:
+                                                                                vacasExistenteOfflineItem.grupoAnimal,
+                                                                            dtPrePartoPrevista:
+                                                                                functions.converteDataStringDate(vacasExistenteOfflineItem.dtPrePartoPrevista),
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  ).then((value) =>
+                                                                      safeSetState(
+                                                                          () {}));
+                                                                },
+                                                                text:
+                                                                    'Pré-parto',
+                                                                icon: Icon(
+                                                                  Icons.check,
+                                                                  size: 15.0,
+                                                                ),
+                                                                options:
+                                                                    FFButtonOptions(
+                                                                  width: 100.0,
+                                                                  height: 40.0,
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              0.0),
+                                                                  iconPadding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                                  color: Color(
+                                                                      0xFF1A03E9),
+                                                                  textStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleSmall
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
+                                                                          fontWeight: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                                  elevation:
+                                                                      3.0,
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.0,
+                                                                  ),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8.0),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                              Builder(
+                                builder: (context) {
+                                  final vacasSecasOffline = FFAppState()
+                                      .animaisProdutoresOffline
+                                      .map((e) => e)
+                                      .toList()
+                                      .sortedList(
+                                          keyOf: (e) =>
+                                              e.compararDtUltimaInseminacao,
+                                          desc: false)
+                                      .toList();
+
+                                  return ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    primary: false,
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: vacasSecasOffline.length,
+                                    itemBuilder:
+                                        (context, vacasSecasOfflineIndex) {
+                                      final vacasSecasOfflineItem =
+                                          vacasSecasOffline[
+                                              vacasSecasOfflineIndex];
+                                      return Visibility(
+                                        visible: (vacasSecasOfflineItem
+                                                    .uidTecnicoPropriedade ==
+                                                widget.uidPropriedade) &&
+                                            (vacasSecasOfflineItem
+                                                    .grupoAnimal ==
+                                                'Vacas') &&
+                                            (vacasSecasOfflineItem.status ==
+                                                'Seca') &&
+                                            (dateTimeFormat(
+                                                  "d/M/y",
+                                                  vacasSecasOfflineItem
+                                                      .compararDtUltimaInseminacao,
+                                                  locale: FFLocalizations.of(
+                                                          context)
+                                                      .languageCode,
+                                                ) !=
+                                                '31/12/2050'),
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  16.0, 8.0, 16.0, 0.0),
+                                          child: InkWell(
+                                            splashColor: Colors.transparent,
+                                            focusColor: Colors.transparent,
+                                            hoverColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            onTap: () async {},
+                                            child: Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
+                                                borderRadius:
+                                                    BorderRadius.circular(12.0),
+                                              ),
+                                              child: ListView(
+                                                padding: EdgeInsets.zero,
+                                                primary: false,
+                                                shrinkWrap: true,
+                                                scrollDirection: Axis.vertical,
+                                                children: [
+                                                  InkWell(
+                                                    splashColor:
+                                                        Colors.transparent,
+                                                    focusColor:
+                                                        Colors.transparent,
+                                                    hoverColor:
+                                                        Colors.transparent,
+                                                    highlightColor:
+                                                        Colors.transparent,
+                                                    onTap: () async {},
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      children: [
+                                                        Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(
+                                                                          10.0),
+                                                              child: Container(
+                                                                width: 44.0,
+                                                                height: 44.0,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color: () {
+                                                                    if (vacasSecasOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Vacas') {
+                                                                      return Color(
+                                                                          0xFF048508);
+                                                                    } else if (vacasSecasOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Novilhas') {
+                                                                      return Color(
+                                                                          0xFFFF0076);
+                                                                    } else {
+                                                                      return Color(
+                                                                          0x00000000);
+                                                                    }
+                                                                  }(),
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                ),
+                                                                alignment:
+                                                                    AlignmentDirectional(
+                                                                        0.0,
+                                                                        0.0),
+                                                                child: Text(
+                                                                  () {
+                                                                    if (vacasSecasOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Vacas') {
+                                                                      return 'VAC';
+                                                                    } else if (vacasSecasOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Novilhas') {
+                                                                      return 'NOV';
+                                                                    } else {
+                                                                      return 'N/C';
+                                                                    }
+                                                                  }(),
+                                                                  style: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleMedium
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
+                                                                          fontWeight: FlutterFlowTheme.of(context)
+                                                                              .titleMedium
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(context)
+                                                                              .titleMedium
+                                                                              .fontStyle,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            13.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleMedium
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleMedium
+                                                                            .fontStyle,
+                                                                      ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              () {
+                                                                if ((vacasSecasOfflineItem
+                                                                            .nomeAnimal !=
+                                                                        '') &&
+                                                                    (vacasSecasOfflineItem
+                                                                            .brincoAnimal !=
+                                                                        null) &&
+                                                                    (vacasSecasOfflineItem
+                                                                            .brincoAnimal !=
+                                                                        -1)) {
+                                                                  return '${vacasSecasOfflineItem.nomeAnimal} - ${vacasSecasOfflineItem.brincoAnimal.toString()}';
+                                                                } else if (vacasSecasOfflineItem
+                                                                        .nomeAnimal !=
+                                                                    '') {
+                                                                  return vacasSecasOfflineItem
+                                                                      .nomeAnimal;
+                                                                } else {
+                                                                  return vacasSecasOfflineItem
+                                                                      .brincoAnimal
+                                                                      .toString();
+                                                                }
+                                                              }(),
+                                                              style: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .bodyLarge
+                                                                  .override(
+                                                                    font: GoogleFonts
+                                                                        .readexPro(
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .bodyLarge
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .bodyLarge
+                                                                          .fontStyle,
+                                                                    ),
+                                                                    letterSpacing:
+                                                                        0.0,
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyLarge
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyLarge
+                                                                        .fontStyle,
+                                                                  ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          4.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child: Text(
+                                                                'Inseminada em: ${vacasSecasOfflineItem.dtUltimaInseminacao}',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .labelMedium
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontStyle,
+                                                                      ),
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          4.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child: Text(
+                                                                'Pré parto prev.: ${vacasSecasOfflineItem.dtPrePartoPrevista}',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .labelMedium
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontStyle,
+                                                                      ),
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          4.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child: Text(
+                                                                'Parto previsto: ${vacasSecasOfflineItem.dtPartoPrevisto}',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .labelMedium
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontStyle,
+                                                                      ),
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsetsDirectional
+                                                            .fromSTEB(0.0, 15.0,
+                                                                0.0, 15.0),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      0.0,
+                                                                      0.0,
+                                                                      10.0,
+                                                                      0.0),
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .max,
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    EdgeInsetsDirectional
+                                                                        .fromSTEB(
+                                                                            0.0,
+                                                                            4.0,
+                                                                            0.0,
+                                                                            0.0),
+                                                                child:
+                                                                    FFButtonWidget(
+                                                                  onPressed:
+                                                                      () async {
+                                                                    await showModalBottomSheet(
+                                                                      isScrollControlled:
+                                                                          true,
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .transparent,
+                                                                      enableDrag:
+                                                                          false,
+                                                                      context:
+                                                                          context,
+                                                                      builder:
+                                                                          (context) {
+                                                                        return GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            FocusScope.of(context).unfocus();
+                                                                            FocusManager.instance.primaryFocus?.unfocus();
+                                                                          },
+                                                                          child:
+                                                                              Padding(
+                                                                            padding:
+                                                                                MediaQuery.viewInsetsOf(context),
+                                                                            child:
+                                                                                RegistroAbortoOfflineWidget(
+                                                                              uidPropriedade: widget.uidPropriedade!,
+                                                                              nomePropriedade: widget.nomePropriedade!,
+                                                                              uidTecnico: widget.uidTecnico!,
+                                                                              emailPropriedade: widget.emailPropriedade!,
+                                                                              visitaPresencial: widget.visitaPresencial!,
+                                                                              diasDg: widget.diasDg!,
+                                                                              nomeAnimal: vacasSecasOfflineItem.nomeAnimal,
+                                                                              itemUidIndex: vacasSecasOfflineItem.itemUidIndexAtual,
+                                                                              uidAnimalOffline: vacasSecasOfflineItem.uidAnimalOffline,
+                                                                            ),
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                    ).then((value) =>
+                                                                        safeSetState(
+                                                                            () {}));
+                                                                  },
+                                                                  text:
+                                                                      'Aborto',
+                                                                  icon: Icon(
+                                                                    Icons
+                                                                        .cancel_sharp,
+                                                                    size: 15.0,
+                                                                  ),
+                                                                  options:
+                                                                      FFButtonOptions(
+                                                                    width:
+                                                                        100.0,
+                                                                    height:
+                                                                        40.0,
+                                                                    padding:
+                                                                        EdgeInsets.all(
+                                                                            0.0),
+                                                                    iconPadding:
+                                                                        EdgeInsetsDirectional.fromSTEB(
+                                                                            0.0,
+                                                                            0.0,
+                                                                            0.0,
+                                                                            0.0),
+                                                                    color: Color(
+                                                                        0xFFAE0303),
+                                                                    textStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .titleSmall
+                                                                        .override(
+                                                                          font:
+                                                                              GoogleFonts.readexPro(
+                                                                            fontWeight:
+                                                                                FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                                                                            fontStyle:
+                                                                                FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                                                                          ),
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontSize:
+                                                                              12.0,
+                                                                          letterSpacing:
+                                                                              0.0,
+                                                                          fontWeight: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                    elevation:
+                                                                        3.0,
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      color: Colors
+                                                                          .transparent,
+                                                                      width:
+                                                                          1.0,
+                                                                    ),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            8.0),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      0.0,
+                                                                      0.0,
+                                                                      10.0,
+                                                                      0.0),
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .max,
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    EdgeInsetsDirectional
+                                                                        .fromSTEB(
+                                                                            0.0,
+                                                                            4.0,
+                                                                            0.0,
+                                                                            0.0),
+                                                                child:
+                                                                    FFButtonWidget(
+                                                                  onPressed:
+                                                                      () async {
+                                                                    await showModalBottomSheet(
+                                                                      isScrollControlled:
+                                                                          true,
+                                                                      backgroundColor:
+                                                                          Colors
+                                                                              .transparent,
+                                                                      enableDrag:
+                                                                          false,
+                                                                      context:
+                                                                          context,
+                                                                      builder:
+                                                                          (context) {
+                                                                        return GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            FocusScope.of(context).unfocus();
+                                                                            FocusManager.instance.primaryFocus?.unfocus();
+                                                                          },
+                                                                          child:
+                                                                              Padding(
+                                                                            padding:
+                                                                                MediaQuery.viewInsetsOf(context),
+                                                                            child:
+                                                                                RegistrarPartoOfflineWidget(
+                                                                              uidPropriedade: widget.uidPropriedade!,
+                                                                              nomePropriedade: widget.nomePropriedade!,
+                                                                              uidTecnico: widget.uidTecnico!,
+                                                                              emailPropriedade: widget.emailPropriedade!,
+                                                                              visitaPresencial: widget.visitaPresencial!,
+                                                                              diasDg: widget.diasDg!,
+                                                                              nomeVacaAtual: vacasSecasOfflineItem.nomeAnimal,
+                                                                              nomeTourtoUltimaInseminacao: vacasSecasOfflineItem.nomeTouroUltimaInseminacao,
+                                                                              brincoVacaAtual: vacasSecasOfflineItem.brincoAnimal.toString(),
+                                                                              uidAnimalOffline: vacasSecasOfflineItem.uidAnimalOffline,
+                                                                              itemUidIndex: vacasSecasOfflineItem.itemUidIndexAtual,
+                                                                            ),
+                                                                          ),
+                                                                        );
+                                                                      },
+                                                                    ).then((value) =>
+                                                                        safeSetState(
+                                                                            () {}));
+                                                                  },
+                                                                  text: 'Parto',
+                                                                  icon: Icon(
+                                                                    Icons
+                                                                        .add_alert,
+                                                                    size: 15.0,
+                                                                  ),
+                                                                  options:
+                                                                      FFButtonOptions(
+                                                                    width:
+                                                                        100.0,
+                                                                    height:
+                                                                        40.0,
+                                                                    padding:
+                                                                        EdgeInsets.all(
+                                                                            0.0),
+                                                                    iconPadding:
+                                                                        EdgeInsetsDirectional.fromSTEB(
+                                                                            0.0,
+                                                                            0.0,
+                                                                            0.0,
+                                                                            0.0),
+                                                                    color: Color(
+                                                                        0xFF048508),
+                                                                    textStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .titleSmall
+                                                                        .override(
+                                                                          font:
+                                                                              GoogleFonts.readexPro(
+                                                                            fontWeight:
+                                                                                FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                                                                            fontStyle:
+                                                                                FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                                                                          ),
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontSize:
+                                                                              12.0,
+                                                                          letterSpacing:
+                                                                              0.0,
+                                                                          fontWeight: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                    elevation:
+                                                                        3.0,
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      color: Colors
+                                                                          .transparent,
+                                                                      width:
+                                                                          1.0,
+                                                                    ),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            8.0),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          4.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child:
+                                                                  FFButtonWidget(
+                                                                onPressed:
+                                                                    () async {
+                                                                  await showModalBottomSheet(
+                                                                    isScrollControlled:
+                                                                        true,
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    enableDrag:
+                                                                        false,
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (context) {
+                                                                      return GestureDetector(
+                                                                        onTap:
+                                                                            () {
+                                                                          FocusScope.of(context)
+                                                                              .unfocus();
+                                                                          FocusManager
+                                                                              .instance
+                                                                              .primaryFocus
+                                                                              ?.unfocus();
+                                                                        },
+                                                                        child:
+                                                                            Padding(
+                                                                          padding:
+                                                                              MediaQuery.viewInsetsOf(context),
+                                                                          child:
+                                                                              RegistrarPrePartoOfflineWidget(
+                                                                            uidPropriedade:
+                                                                                widget.uidPropriedade!,
+                                                                            nomePropriedade:
+                                                                                widget.nomePropriedade!,
+                                                                            uidTecnico:
+                                                                                widget.uidTecnico!,
+                                                                            emailPropriedade:
+                                                                                widget.emailPropriedade!,
+                                                                            visitaPresencial:
+                                                                                widget.visitaPresencial!,
+                                                                            diasDg:
+                                                                                widget.diasDg!,
+                                                                            nomeAnimal:
+                                                                                vacasSecasOfflineItem.nomeAnimal,
+                                                                            brincoAnimal:
+                                                                                vacasSecasOfflineItem.brincoAnimal.toString(),
+                                                                            grupoAnimal:
+                                                                                vacasSecasOfflineItem.grupoAnimal,
+                                                                            dtPrePartoPrevista:
+                                                                                functions.converteDataStringDate(vacasSecasOfflineItem.dtPrePartoPrevista),
+                                                                            itemUidIndex:
+                                                                                vacasSecasOfflineItem.itemUidIndexAtual,
+                                                                            uidAnimalOffline:
+                                                                                vacasSecasOfflineItem.uidAnimalOffline,
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  ).then((value) =>
+                                                                      safeSetState(
+                                                                          () {}));
+                                                                },
+                                                                text:
+                                                                    'Pré-parto',
+                                                                icon: Icon(
+                                                                  Icons.check,
+                                                                  size: 15.0,
+                                                                ),
+                                                                options:
+                                                                    FFButtonOptions(
+                                                                  width: 100.0,
+                                                                  height: 40.0,
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              0.0),
+                                                                  iconPadding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                                  color: Color(
+                                                                      0xFF1A03E9),
+                                                                  textStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleSmall
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
+                                                                          fontWeight: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                                  elevation:
+                                                                      3.0,
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.0,
+                                                                  ),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8.0),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        SingleChildScrollView(
+                          primary: false,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Builder(
+                                builder: (context) {
+                                  final animaisExistentesOffline = FFAppState()
+                                      .animaisProdutoresExistentes
+                                      .map((e) => e)
+                                      .toList()
+                                      .sortedList(
+                                          keyOf: (e) =>
+                                              e.compararDtUltimaInseminacao,
+                                          desc: false)
+                                      .toList();
+
+                                  return ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    primary: false,
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: animaisExistentesOffline.length,
+                                    itemBuilder: (context,
+                                        animaisExistentesOfflineIndex) {
+                                      final animaisExistentesOfflineItem =
+                                          animaisExistentesOffline[
+                                              animaisExistentesOfflineIndex];
+                                      return Visibility(
+                                        visible: (animaisExistentesOfflineItem
+                                                    .uidTecnicoPropriedade ==
+                                                widget.uidPropriedade) &&
+                                            (animaisExistentesOfflineItem
+                                                    .status ==
+                                                'Pré Parto') &&
+                                            (dateTimeFormat(
+                                                  "d/M/y",
+                                                  animaisExistentesOfflineItem
+                                                      .compararDtUltimaInseminacao,
+                                                  locale: FFLocalizations.of(
+                                                          context)
+                                                      .languageCode,
+                                                ) !=
+                                                '31/12/2050'),
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  16.0, 8.0, 16.0, 0.0),
+                                          child: InkWell(
+                                            splashColor: Colors.transparent,
+                                            focusColor: Colors.transparent,
+                                            hoverColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            onTap: () async {
+                                              context.pushNamed(
+                                                ProntuarioAnimalWidget
+                                                    .routeName,
+                                                queryParameters: {
+                                                  'uidPropriedade':
+                                                      serializeParam(
+                                                    widget.uidPropriedade,
+                                                    ParamType.DocumentReference,
+                                                  ),
+                                                  'nomePropriedade':
+                                                      serializeParam(
+                                                    widget.nomePropriedade,
+                                                    ParamType.String,
+                                                  ),
+                                                  'uidTecnico': serializeParam(
+                                                    widget.uidTecnico,
+                                                    ParamType.DocumentReference,
+                                                  ),
+                                                  'emailPropriedade':
+                                                      serializeParam(
+                                                    widget.emailPropriedade,
+                                                    ParamType.String,
+                                                  ),
+                                                  'uidAnimaisProdutores':
+                                                      serializeParam(
+                                                    animaisExistentesOfflineItem
+                                                        .uidAnimal,
+                                                    ParamType.DocumentReference,
+                                                  ),
+                                                  'grupoPredominante':
+                                                      serializeParam(
+                                                    animaisExistentesOfflineItem
+                                                        .grupoAnimal,
+                                                    ParamType.String,
+                                                  ),
+                                                  'visitaPresencial':
+                                                      serializeParam(
+                                                    widget.visitaPresencial,
+                                                    ParamType.bool,
+                                                  ),
+                                                  'diasDg': serializeParam(
+                                                    widget.diasDg,
+                                                    ParamType.String,
+                                                  ),
+                                                }.withoutNulls,
+                                              );
+                                            },
+                                            child: Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
+                                                borderRadius:
+                                                    BorderRadius.circular(12.0),
+                                              ),
+                                              child: Padding(
+                                                padding: EdgeInsetsDirectional
+                                                    .fromSTEB(
+                                                        0.0, 10.0, 0.0, 10.0),
+                                                child: ListView(
+                                                  padding: EdgeInsets.zero,
+                                                  primary: false,
+                                                  shrinkWrap: true,
+                                                  scrollDirection:
+                                                      Axis.vertical,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      children: [
+                                                        Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(
+                                                                          10.0),
+                                                              child: Container(
+                                                                width: 44.0,
+                                                                height: 44.0,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color: () {
+                                                                    if (animaisExistentesOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Vacas') {
+                                                                      return Color(
+                                                                          0xFF048508);
+                                                                    } else if (animaisExistentesOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Novilhas') {
+                                                                      return Color(
+                                                                          0xFFFF0076);
+                                                                    } else {
+                                                                      return Color(
+                                                                          0x00000000);
+                                                                    }
+                                                                  }(),
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                ),
+                                                                alignment:
+                                                                    AlignmentDirectional(
+                                                                        0.0,
+                                                                        0.0),
+                                                                child: Text(
+                                                                  () {
+                                                                    if (animaisExistentesOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Vacas') {
+                                                                      return 'VAC';
+                                                                    } else if (animaisExistentesOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Novilhas') {
+                                                                      return 'NOV';
+                                                                    } else {
+                                                                      return 'N/C';
+                                                                    }
+                                                                  }(),
+                                                                  style: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleMedium
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
+                                                                          fontWeight: FlutterFlowTheme.of(context)
+                                                                              .titleMedium
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(context)
+                                                                              .titleMedium
+                                                                              .fontStyle,
+                                                                        ),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            13.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleMedium
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleMedium
+                                                                            .fontStyle,
+                                                                      ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              () {
+                                                                if ((animaisExistentesOfflineItem
+                                                                            .nomeAnimal !=
+                                                                        '') &&
+                                                                    (animaisExistentesOfflineItem
+                                                                            .brincoAnimal !=
+                                                                        null) &&
+                                                                    (animaisExistentesOfflineItem
+                                                                            .brincoAnimal !=
+                                                                        -1)) {
+                                                                  return '${animaisExistentesOfflineItem.nomeAnimal} - ${animaisExistentesOfflineItem.brincoAnimal.toString()}';
+                                                                } else if (animaisExistentesOfflineItem
+                                                                        .nomeAnimal !=
+                                                                    '') {
+                                                                  return animaisExistentesOfflineItem
+                                                                      .nomeAnimal;
+                                                                } else {
+                                                                  return animaisExistentesOfflineItem
+                                                                      .brincoAnimal
+                                                                      .toString();
+                                                                }
+                                                              }(),
+                                                              style: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .bodyLarge
+                                                                  .override(
+                                                                    font: GoogleFonts
+                                                                        .readexPro(
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .bodyLarge
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .bodyLarge
+                                                                          .fontStyle,
+                                                                    ),
+                                                                    letterSpacing:
+                                                                        0.0,
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyLarge
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyLarge
+                                                                        .fontStyle,
+                                                                  ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          4.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child: Text(
+                                                                'Inseminada em: ${animaisExistentesOfflineItem.dtUltimaInseminacao}',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .labelMedium
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontStyle,
+                                                                      ),
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          4.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child: Text(
+                                                                'Pré parto prev.: ${animaisExistentesOfflineItem.dtPrePartoPrevista}',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .labelMedium
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontStyle,
+                                                                      ),
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          4.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child: Text(
+                                                                'Parto previsto: ${animaisExistentesOfflineItem.dtPartoPrevisto}',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .labelMedium
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .labelMedium
+                                                                            .fontStyle,
+                                                                      ),
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
                                                     ),
                                                     Padding(
                                                       padding:
                                                           EdgeInsetsDirectional
                                                               .fromSTEB(
                                                                   0.0,
-                                                                  15.0,
+                                                                  5.0,
                                                                   0.0,
                                                                   15.0),
                                                       child: Row(
@@ -709,16 +2289,15 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                             child:
                                                                                 Padding(
                                                                               padding: MediaQuery.viewInsetsOf(context),
-                                                                              child: RegistroAbortoExistenteOfflineWidget(
+                                                                              child: RegistroAbortoWidget(
                                                                                 uidPropriedade: widget.uidPropriedade!,
                                                                                 nomePropriedade: widget.nomePropriedade!,
                                                                                 uidTecnico: widget.uidTecnico!,
                                                                                 emailPropriedade: widget.emailPropriedade!,
                                                                                 visitaPresencial: widget.visitaPresencial!,
                                                                                 diasDg: widget.diasDg!,
-                                                                                uidAnimaisProdutores: vacasExistenteOfflineItem.uidAnimal!,
-                                                                                nomeAnimal: vacasExistenteOfflineItem.nomeAnimal,
-                                                                                itemUidIndex: vacasExistenteOfflineItem.itemUidIndexAtual,
+                                                                                uidAnimaisProdutores: animaisExistentesOfflineItem.uidAnimal!,
+                                                                                nomeAnimal: animaisExistentesOfflineItem.nomeAnimal,
                                                                               ),
                                                                             ),
                                                                           );
@@ -801,118 +2380,7 @@ class _SecasWidgetState extends State<SecasWidget>
                                                               mainAxisSize:
                                                                   MainAxisSize
                                                                       .max,
-                                                              children: [
-                                                                Padding(
-                                                                  padding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          4.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                                  child:
-                                                                      FFButtonWidget(
-                                                                    onPressed:
-                                                                        () async {
-                                                                      await showModalBottomSheet(
-                                                                        isScrollControlled:
-                                                                            true,
-                                                                        backgroundColor:
-                                                                            Colors.transparent,
-                                                                        enableDrag:
-                                                                            false,
-                                                                        context:
-                                                                            context,
-                                                                        builder:
-                                                                            (context) {
-                                                                          return GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              FocusScope.of(context).unfocus();
-                                                                              FocusManager.instance.primaryFocus?.unfocus();
-                                                                            },
-                                                                            child:
-                                                                                Padding(
-                                                                              padding: MediaQuery.viewInsetsOf(context),
-                                                                              child: RegistrarPartoExistenteOfflineWidget(
-                                                                                uidPropriedade: widget.uidPropriedade!,
-                                                                                nomePropriedade: widget.nomePropriedade!,
-                                                                                uidTecnico: widget.uidTecnico!,
-                                                                                emailPropriedade: widget.emailPropriedade!,
-                                                                                visitaPresencial: widget.visitaPresencial!,
-                                                                                diasDg: widget.diasDg!,
-                                                                                uidAnimaisProdutores: vacasExistenteOfflineItem.uidAnimal!,
-                                                                                nomeVacaAtual: vacasExistenteOfflineItem.nomeAnimal,
-                                                                                nomeTourtoUltimaInseminacao: vacasExistenteOfflineItem.nomeTouroUltimaInseminacao,
-                                                                                brincoVacaAtual: vacasExistenteOfflineItem.brincoAnimal.toString(),
-                                                                                itemUidIndex: vacasExistenteOfflineItem.itemUidIndexAtual,
-                                                                              ),
-                                                                            ),
-                                                                          );
-                                                                        },
-                                                                      ).then((value) =>
-                                                                          safeSetState(
-                                                                              () {}));
-                                                                    },
-                                                                    text:
-                                                                        'Parto',
-                                                                    icon: Icon(
-                                                                      Icons
-                                                                          .add_alert,
-                                                                      size:
-                                                                          15.0,
-                                                                    ),
-                                                                    options:
-                                                                        FFButtonOptions(
-                                                                      width:
-                                                                          100.0,
-                                                                      height:
-                                                                          40.0,
-                                                                      padding:
-                                                                          EdgeInsets.all(
-                                                                              0.0),
-                                                                      iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                                      color: Color(
-                                                                          0xFF048508),
-                                                                      textStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .override(
-                                                                            font:
-                                                                                GoogleFonts.readexPro(
-                                                                              fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                            ),
-                                                                            color:
-                                                                                Colors.white,
-                                                                            fontSize:
-                                                                                12.0,
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                            fontWeight:
-                                                                                FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                            fontStyle:
-                                                                                FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                          ),
-                                                                      elevation:
-                                                                          3.0,
-                                                                      borderSide:
-                                                                          BorderSide(
-                                                                        color: Colors
-                                                                            .transparent,
-                                                                        width:
-                                                                            1.0,
-                                                                      ),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8.0),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
+                                                              children: [],
                                                             ),
                                                           ),
                                                           Column(
@@ -955,19 +2423,17 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                             padding:
                                                                                 MediaQuery.viewInsetsOf(context),
                                                                             child:
-                                                                                RegistrarPrePartoExistenteOfflineWidget(
+                                                                                RegistrarPartoWidget(
                                                                               uidPropriedade: widget.uidPropriedade!,
                                                                               nomePropriedade: widget.nomePropriedade!,
                                                                               uidTecnico: widget.uidTecnico!,
                                                                               emailPropriedade: widget.emailPropriedade!,
                                                                               visitaPresencial: widget.visitaPresencial!,
                                                                               diasDg: widget.diasDg!,
-                                                                              uidAnimaisProdutores: vacasExistenteOfflineItem.uidAnimal!,
-                                                                              nomeAnimal: vacasExistenteOfflineItem.nomeAnimal,
-                                                                              brincoAnimal: vacasExistenteOfflineItem.brincoAnimal.toString(),
-                                                                              grupoAnimal: vacasExistenteOfflineItem.grupoAnimal,
-                                                                              dtPrePartoPrevista: functions.converteDataStringDate(vacasExistenteOfflineItem.dtPrePartoPrevista),
-                                                                              itemUidIndex: vacasExistenteOfflineItem.itemUidIndexAtual,
+                                                                              uidAnimaisProdutores: animaisExistentesOfflineItem.uidAnimal!,
+                                                                              nomeVacaAtual: animaisExistentesOfflineItem.nomeAnimal,
+                                                                              nomeTourtoUltimaInseminacao: animaisExistentesOfflineItem.nomeTouroUltimaInseminacao,
+                                                                              brincoVacaAtual: animaisExistentesOfflineItem.brincoAnimal.toString(),
                                                                             ),
                                                                           ),
                                                                         );
@@ -976,10 +2442,10 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                         safeSetState(
                                                                             () {}));
                                                                   },
-                                                                  text:
-                                                                      'Pré-parto',
+                                                                  text: 'Parto',
                                                                   icon: Icon(
-                                                                    Icons.check,
+                                                                    Icons
+                                                                        .add_alert,
                                                                     size: 15.0,
                                                                   ),
                                                                   options:
@@ -998,7 +2464,7 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                             0.0,
                                                                             0.0),
                                                                     color: Color(
-                                                                        0xFF1A03E9),
+                                                                        0xFF12BE24),
                                                                     textStyle: FlutterFlowTheme.of(
                                                                             context)
                                                                         .titleSmall
@@ -1048,73 +2514,121 @@ class _SecasWidgetState extends State<SecasWidget>
                                               ),
                                             ),
                                           ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                                Builder(
-                                  builder: (context) {
-                                    final vacasSecasOffline = FFAppState()
-                                        .animaisProdutoresOffline
-                                        .map((e) => e)
-                                        .toList()
-                                        .sortedList(
-                                            keyOf: (e) =>
-                                                e.compararDtUltimaInseminacao,
-                                            desc: false)
-                                        .toList();
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                              Builder(
+                                builder: (context) {
+                                  final animaisProdutoresOffline = FFAppState()
+                                      .animaisProdutoresOffline
+                                      .map((e) => e)
+                                      .toList()
+                                      .sortedList(
+                                          keyOf: (e) =>
+                                              e.compararDtUltimaInseminacao,
+                                          desc: false)
+                                      .toList();
 
-                                    return ListView.builder(
-                                      padding: EdgeInsets.zero,
-                                      primary: false,
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.vertical,
-                                      itemCount: vacasSecasOffline.length,
-                                      itemBuilder:
-                                          (context, vacasSecasOfflineIndex) {
-                                        final vacasSecasOfflineItem =
-                                            vacasSecasOffline[
-                                                vacasSecasOfflineIndex];
-                                        return Visibility(
-                                          visible: (vacasSecasOfflineItem
-                                                      .uidTecnicoPropriedade ==
-                                                  widget.uidPropriedade) &&
-                                              (vacasSecasOfflineItem
-                                                      .grupoAnimal ==
-                                                  'Vacas') &&
-                                              (vacasSecasOfflineItem.status ==
-                                                  'Seca') &&
-                                              (dateTimeFormat(
-                                                    "d/M/y",
-                                                    vacasSecasOfflineItem
-                                                        .compararDtUltimaInseminacao,
-                                                    locale: FFLocalizations.of(
-                                                            context)
-                                                        .languageCode,
-                                                  ) !=
-                                                  '31/12/2050'),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    16.0, 8.0, 16.0, 0.0),
-                                            child: InkWell(
-                                              splashColor: Colors.transparent,
-                                              focusColor: Colors.transparent,
-                                              hoverColor: Colors.transparent,
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              onTap: () async {},
-                                              child: Container(
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
+                                  return ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    primary: false,
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: animaisProdutoresOffline.length,
+                                    itemBuilder: (context,
+                                        animaisProdutoresOfflineIndex) {
+                                      final animaisProdutoresOfflineItem =
+                                          animaisProdutoresOffline[
+                                              animaisProdutoresOfflineIndex];
+                                      return Visibility(
+                                        visible: (animaisProdutoresOfflineItem
+                                                    .uidTecnicoPropriedade ==
+                                                widget.uidPropriedade) &&
+                                            (animaisProdutoresOfflineItem
+                                                    .status ==
+                                                'Pré Parto') &&
+                                            (dateTimeFormat(
+                                                  "d/M/y",
+                                                  animaisProdutoresOfflineItem
+                                                      .compararDtUltimaInseminacao,
+                                                  locale: FFLocalizations.of(
                                                           context)
-                                                      .primaryBackground,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12.0),
-                                                ),
+                                                      .languageCode,
+                                                ) !=
+                                                '31/12/2050'),
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  16.0, 8.0, 16.0, 0.0),
+                                          child: InkWell(
+                                            splashColor: Colors.transparent,
+                                            focusColor: Colors.transparent,
+                                            hoverColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            onTap: () async {
+                                              context.pushNamed(
+                                                ProntuarioAnimalWidget
+                                                    .routeName,
+                                                queryParameters: {
+                                                  'uidPropriedade':
+                                                      serializeParam(
+                                                    widget.uidPropriedade,
+                                                    ParamType.DocumentReference,
+                                                  ),
+                                                  'nomePropriedade':
+                                                      serializeParam(
+                                                    widget.nomePropriedade,
+                                                    ParamType.String,
+                                                  ),
+                                                  'uidTecnico': serializeParam(
+                                                    widget.uidTecnico,
+                                                    ParamType.DocumentReference,
+                                                  ),
+                                                  'emailPropriedade':
+                                                      serializeParam(
+                                                    widget.emailPropriedade,
+                                                    ParamType.String,
+                                                  ),
+                                                  'uidAnimaisProdutores':
+                                                      serializeParam(
+                                                    animaisProdutoresOfflineItem
+                                                        .uidAnimal,
+                                                    ParamType.DocumentReference,
+                                                  ),
+                                                  'grupoPredominante':
+                                                      serializeParam(
+                                                    animaisProdutoresOfflineItem
+                                                        .grupoAnimal,
+                                                    ParamType.String,
+                                                  ),
+                                                  'visitaPresencial':
+                                                      serializeParam(
+                                                    widget.visitaPresencial,
+                                                    ParamType.bool,
+                                                  ),
+                                                  'diasDg': serializeParam(
+                                                    widget.diasDg,
+                                                    ParamType.String,
+                                                  ),
+                                                }.withoutNulls,
+                                              );
+                                            },
+                                            child: Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
+                                                borderRadius:
+                                                    BorderRadius.circular(12.0),
+                                              ),
+                                              child: Padding(
+                                                padding: EdgeInsetsDirectional
+                                                    .fromSTEB(
+                                                        0.0, 10.0, 0.0, 10.0),
                                                 child: ListView(
                                                   padding: EdgeInsets.zero,
                                                   primary: false,
@@ -1122,93 +2636,70 @@ class _SecasWidgetState extends State<SecasWidget>
                                                   scrollDirection:
                                                       Axis.vertical,
                                                   children: [
-                                                    InkWell(
-                                                      splashColor:
-                                                          Colors.transparent,
-                                                      focusColor:
-                                                          Colors.transparent,
-                                                      hoverColor:
-                                                          Colors.transparent,
-                                                      highlightColor:
-                                                          Colors.transparent,
-                                                      onTap: () async {},
-                                                      child: Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.max,
-                                                        children: [
-                                                          Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .max,
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(
-                                                                            10.0),
-                                                                child:
-                                                                    Container(
-                                                                  width: 44.0,
-                                                                  height: 44.0,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color: () {
-                                                                      if (vacasSecasOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Vacas') {
-                                                                        return Color(
-                                                                            0xFF048508);
-                                                                      } else if (vacasSecasOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Novilhas') {
-                                                                        return Color(
-                                                                            0xFFFF0076);
-                                                                      } else {
-                                                                        return Color(
-                                                                            0x00000000);
-                                                                      }
-                                                                    }(),
-                                                                    shape: BoxShape
-                                                                        .circle,
-                                                                  ),
-                                                                  alignment:
-                                                                      AlignmentDirectional(
-                                                                          0.0,
-                                                                          0.0),
-                                                                  child: Text(
-                                                                    () {
-                                                                      if (vacasSecasOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Vacas') {
-                                                                        return 'VAC';
-                                                                      } else if (vacasSecasOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Novilhas') {
-                                                                        return 'NOV';
-                                                                      } else {
-                                                                        return 'N/C';
-                                                                      }
-                                                                    }(),
-                                                                    style: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .titleMedium
-                                                                        .override(
-                                                                          font:
-                                                                              GoogleFonts.readexPro(
-                                                                            fontWeight:
-                                                                                FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                                                                            fontStyle:
-                                                                                FlutterFlowTheme.of(context).titleMedium.fontStyle,
-                                                                          ),
-                                                                          color:
-                                                                              Colors.white,
-                                                                          fontSize:
-                                                                              13.0,
-                                                                          letterSpacing:
-                                                                              0.0,
+                                                    Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      children: [
+                                                        Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(
+                                                                          10.0),
+                                                              child: Container(
+                                                                width: 44.0,
+                                                                height: 44.0,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color: () {
+                                                                    if (animaisProdutoresOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Vacas') {
+                                                                      return Color(
+                                                                          0xFF048508);
+                                                                    } else if (animaisProdutoresOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Novilhas') {
+                                                                      return Color(
+                                                                          0xFFFF0076);
+                                                                    } else {
+                                                                      return Color(
+                                                                          0x00000000);
+                                                                    }
+                                                                  }(),
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                ),
+                                                                alignment:
+                                                                    AlignmentDirectional(
+                                                                        0.0,
+                                                                        0.0),
+                                                                child: Text(
+                                                                  () {
+                                                                    if (animaisProdutoresOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Vacas') {
+                                                                      return 'VAC';
+                                                                    } else if (animaisProdutoresOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Novilhas') {
+                                                                      return 'NOV';
+                                                                    } else {
+                                                                      return 'N/C';
+                                                                    }
+                                                                  }(),
+                                                                  style: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleMedium
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
                                                                           fontWeight: FlutterFlowTheme.of(context)
                                                                               .titleMedium
                                                                               .fontWeight,
@@ -1216,55 +2707,60 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                               .titleMedium
                                                                               .fontStyle,
                                                                         ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .max,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                () {
-                                                                  if ((vacasSecasOfflineItem.nomeAnimal != '') &&
-                                                                      (vacasSecasOfflineItem
-                                                                              .brincoAnimal !=
-                                                                          null) &&
-                                                                      (vacasSecasOfflineItem
-                                                                              .brincoAnimal !=
-                                                                          -1)) {
-                                                                    return '${vacasSecasOfflineItem.nomeAnimal} - ${vacasSecasOfflineItem.brincoAnimal.toString()}';
-                                                                  } else if (vacasSecasOfflineItem
-                                                                          .nomeAnimal !=
-                                                                      '') {
-                                                                    return vacasSecasOfflineItem
-                                                                        .nomeAnimal;
-                                                                  } else {
-                                                                    return vacasSecasOfflineItem
-                                                                        .brincoAnimal
-                                                                        .toString();
-                                                                  }
-                                                                }(),
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyLarge
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .readexPro(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            13.0,
+                                                                        letterSpacing:
+                                                                            0.0,
                                                                         fontWeight: FlutterFlowTheme.of(context)
-                                                                            .bodyLarge
+                                                                            .titleMedium
                                                                             .fontWeight,
                                                                         fontStyle: FlutterFlowTheme.of(context)
-                                                                            .bodyLarge
+                                                                            .titleMedium
                                                                             .fontStyle,
                                                                       ),
-                                                                      letterSpacing:
-                                                                          0.0,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              () {
+                                                                if ((animaisProdutoresOfflineItem
+                                                                            .nomeAnimal !=
+                                                                        '') &&
+                                                                    (animaisProdutoresOfflineItem
+                                                                            .brincoAnimal !=
+                                                                        null) &&
+                                                                    (animaisProdutoresOfflineItem
+                                                                            .brincoAnimal !=
+                                                                        -1)) {
+                                                                  return '${animaisProdutoresOfflineItem.nomeAnimal} - ${animaisProdutoresOfflineItem.brincoAnimal.toString()}';
+                                                                } else if (animaisProdutoresOfflineItem
+                                                                        .nomeAnimal !=
+                                                                    '') {
+                                                                  return animaisProdutoresOfflineItem
+                                                                      .nomeAnimal;
+                                                                } else {
+                                                                  return animaisProdutoresOfflineItem
+                                                                      .brincoAnimal
+                                                                      .toString();
+                                                                }
+                                                              }(),
+                                                              style: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .bodyLarge
+                                                                  .override(
+                                                                    font: GoogleFonts
+                                                                        .readexPro(
                                                                       fontWeight: FlutterFlowTheme.of(
                                                                               context)
                                                                           .bodyLarge
@@ -1274,32 +2770,34 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                           .bodyLarge
                                                                           .fontStyle,
                                                                     ),
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            4.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                child: Text(
-                                                                  'Inseminada em: ${vacasSecasOfflineItem.dtUltimaInseminacao}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        letterSpacing:
-                                                                            0.0,
+                                                                    letterSpacing:
+                                                                        0.0,
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyLarge
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyLarge
+                                                                        .fontStyle,
+                                                                  ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          4.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child: Text(
+                                                                'Inseminada em: ${animaisProdutoresOfflineItem.dtUltimaInseminacao}',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .labelMedium
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
                                                                         fontWeight: FlutterFlowTheme.of(context)
                                                                             .labelMedium
                                                                             .fontWeight,
@@ -1307,33 +2805,35 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                             .labelMedium
                                                                             .fontStyle,
                                                                       ),
-                                                                ),
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
                                                               ),
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            4.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                child: Text(
-                                                                  'Pré parto prev.: ${vacasSecasOfflineItem.dtPrePartoPrevista}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        letterSpacing:
-                                                                            0.0,
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          4.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child: Text(
+                                                                'Pré parto prev.: ${animaisProdutoresOfflineItem.dtPrePartoPrevista}',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .labelMedium
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
                                                                         fontWeight: FlutterFlowTheme.of(context)
                                                                             .labelMedium
                                                                             .fontWeight,
@@ -1341,33 +2841,35 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                             .labelMedium
                                                                             .fontStyle,
                                                                       ),
-                                                                ),
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
                                                               ),
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            4.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                child: Text(
-                                                                  'Parto previsto: ${vacasSecasOfflineItem.dtPartoPrevisto}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        letterSpacing:
-                                                                            0.0,
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          4.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child: Text(
+                                                                'Parto previsto: ${animaisProdutoresOfflineItem.dtPartoPrevisto}',
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .labelMedium
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
                                                                         fontWeight: FlutterFlowTheme.of(context)
                                                                             .labelMedium
                                                                             .fontWeight,
@@ -1375,19 +2877,29 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                             .labelMedium
                                                                             .fontStyle,
                                                                       ),
-                                                                ),
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
                                                               ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
                                                     ),
                                                     Padding(
                                                       padding:
                                                           EdgeInsetsDirectional
                                                               .fromSTEB(
                                                                   0.0,
-                                                                  15.0,
+                                                                  5.0,
                                                                   0.0,
                                                                   15.0),
                                                       child: Row(
@@ -1448,9 +2960,9 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                                 emailPropriedade: widget.emailPropriedade!,
                                                                                 visitaPresencial: widget.visitaPresencial!,
                                                                                 diasDg: widget.diasDg!,
-                                                                                nomeAnimal: vacasSecasOfflineItem.nomeAnimal,
-                                                                                itemUidIndex: vacasSecasOfflineItem.itemUidIndexAtual,
-                                                                                uidAnimalOffline: vacasSecasOfflineItem.uidAnimalOffline,
+                                                                                nomeAnimal: animaisProdutoresOfflineItem.nomeAnimal,
+                                                                                itemUidIndex: animaisProdutoresOfflineItem.itemUidIndexAtual,
+                                                                                uidAnimalOffline: animaisProdutoresOfflineItem.uidAnimalOffline,
                                                                               ),
                                                                             ),
                                                                           );
@@ -1533,118 +3045,7 @@ class _SecasWidgetState extends State<SecasWidget>
                                                               mainAxisSize:
                                                                   MainAxisSize
                                                                       .max,
-                                                              children: [
-                                                                Padding(
-                                                                  padding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          4.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                                  child:
-                                                                      FFButtonWidget(
-                                                                    onPressed:
-                                                                        () async {
-                                                                      await showModalBottomSheet(
-                                                                        isScrollControlled:
-                                                                            true,
-                                                                        backgroundColor:
-                                                                            Colors.transparent,
-                                                                        enableDrag:
-                                                                            false,
-                                                                        context:
-                                                                            context,
-                                                                        builder:
-                                                                            (context) {
-                                                                          return GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              FocusScope.of(context).unfocus();
-                                                                              FocusManager.instance.primaryFocus?.unfocus();
-                                                                            },
-                                                                            child:
-                                                                                Padding(
-                                                                              padding: MediaQuery.viewInsetsOf(context),
-                                                                              child: RegistrarPartoOfflineWidget(
-                                                                                uidPropriedade: widget.uidPropriedade!,
-                                                                                nomePropriedade: widget.nomePropriedade!,
-                                                                                uidTecnico: widget.uidTecnico!,
-                                                                                emailPropriedade: widget.emailPropriedade!,
-                                                                                visitaPresencial: widget.visitaPresencial!,
-                                                                                diasDg: widget.diasDg!,
-                                                                                nomeVacaAtual: vacasSecasOfflineItem.nomeAnimal,
-                                                                                nomeTourtoUltimaInseminacao: vacasSecasOfflineItem.nomeTouroUltimaInseminacao,
-                                                                                brincoVacaAtual: vacasSecasOfflineItem.brincoAnimal.toString(),
-                                                                                uidAnimalOffline: vacasSecasOfflineItem.uidAnimalOffline,
-                                                                                itemUidIndex: vacasSecasOfflineItem.itemUidIndexAtual,
-                                                                              ),
-                                                                            ),
-                                                                          );
-                                                                        },
-                                                                      ).then((value) =>
-                                                                          safeSetState(
-                                                                              () {}));
-                                                                    },
-                                                                    text:
-                                                                        'Parto',
-                                                                    icon: Icon(
-                                                                      Icons
-                                                                          .add_alert,
-                                                                      size:
-                                                                          15.0,
-                                                                    ),
-                                                                    options:
-                                                                        FFButtonOptions(
-                                                                      width:
-                                                                          100.0,
-                                                                      height:
-                                                                          40.0,
-                                                                      padding:
-                                                                          EdgeInsets.all(
-                                                                              0.0),
-                                                                      iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                                      color: Color(
-                                                                          0xFF048508),
-                                                                      textStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .override(
-                                                                            font:
-                                                                                GoogleFonts.readexPro(
-                                                                              fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                            ),
-                                                                            color:
-                                                                                Colors.white,
-                                                                            fontSize:
-                                                                                12.0,
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                            fontWeight:
-                                                                                FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                            fontStyle:
-                                                                                FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                          ),
-                                                                      elevation:
-                                                                          3.0,
-                                                                      borderSide:
-                                                                          BorderSide(
-                                                                        color: Colors
-                                                                            .transparent,
-                                                                        width:
-                                                                            1.0,
-                                                                      ),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8.0),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
+                                                              children: [],
                                                             ),
                                                           ),
                                                           Column(
@@ -1687,19 +3088,18 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                             padding:
                                                                                 MediaQuery.viewInsetsOf(context),
                                                                             child:
-                                                                                RegistrarPrePartoOfflineWidget(
+                                                                                RegistrarPartoOfflineWidget(
                                                                               uidPropriedade: widget.uidPropriedade!,
                                                                               nomePropriedade: widget.nomePropriedade!,
                                                                               uidTecnico: widget.uidTecnico!,
                                                                               emailPropriedade: widget.emailPropriedade!,
                                                                               visitaPresencial: widget.visitaPresencial!,
                                                                               diasDg: widget.diasDg!,
-                                                                              nomeAnimal: vacasSecasOfflineItem.nomeAnimal,
-                                                                              brincoAnimal: vacasSecasOfflineItem.brincoAnimal.toString(),
-                                                                              grupoAnimal: vacasSecasOfflineItem.grupoAnimal,
-                                                                              dtPrePartoPrevista: functions.converteDataStringDate(vacasSecasOfflineItem.dtPrePartoPrevista),
-                                                                              itemUidIndex: vacasSecasOfflineItem.itemUidIndexAtual,
-                                                                              uidAnimalOffline: vacasSecasOfflineItem.uidAnimalOffline,
+                                                                              nomeVacaAtual: animaisProdutoresOfflineItem.nomeAnimal,
+                                                                              nomeTourtoUltimaInseminacao: animaisProdutoresOfflineItem.nomeTouroUltimaInseminacao,
+                                                                              brincoVacaAtual: animaisProdutoresOfflineItem.brincoAnimal.toString(),
+                                                                              uidAnimalOffline: animaisProdutoresOfflineItem.uidAnimalOffline,
+                                                                              itemUidIndex: animaisProdutoresOfflineItem.itemUidIndexAtual,
                                                                             ),
                                                                           ),
                                                                         );
@@ -1708,10 +3108,10 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                         safeSetState(
                                                                             () {}));
                                                                   },
-                                                                  text:
-                                                                      'Pré-parto',
+                                                                  text: 'Parto',
                                                                   icon: Icon(
-                                                                    Icons.check,
+                                                                    Icons
+                                                                        .add_alert,
                                                                     size: 15.0,
                                                                   ),
                                                                   options:
@@ -1730,7 +3130,7 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                             0.0,
                                                                             0.0),
                                                                     color: Color(
-                                                                        0xFF1A03E9),
+                                                                        0xFF12BE24),
                                                                     textStyle: FlutterFlowTheme.of(
                                                                             context)
                                                                         .titleSmall
@@ -1780,11 +3180,12 @@ class _SecasWidgetState extends State<SecasWidget>
                                               ),
                                             ),
                                           ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
                             ],
                           ),
                         ),
@@ -1793,1955 +3194,239 @@ class _SecasWidgetState extends State<SecasWidget>
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                                Builder(
-                                  builder: (context) {
-                                    final animaisExistentesOffline = FFAppState()
-                                        .animaisProdutoresExistentes
-                                        .map((e) => e)
-                                        .toList()
-                                        .sortedList(
-                                            keyOf: (e) =>
-                                                e.compararDtUltimaInseminacao,
-                                            desc: false)
-                                        .toList();
+                              Builder(
+                                builder: (context) {
+                                  final animaisExistenteOffline = FFAppState()
+                                      .animaisProdutoresExistentes
+                                      .toList();
 
-                                    return ListView.builder(
-                                      padding: EdgeInsets.zero,
-                                      primary: false,
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.vertical,
-                                      itemCount:
-                                          animaisExistentesOffline.length,
-                                      itemBuilder: (context,
-                                          animaisExistentesOfflineIndex) {
-                                        final animaisExistentesOfflineItem =
-                                            animaisExistentesOffline[
-                                                animaisExistentesOfflineIndex];
-                                        return Visibility(
-                                          visible: (animaisExistentesOfflineItem
-                                                      .uidTecnicoPropriedade ==
-                                                  widget.uidPropriedade) &&
-                                              (animaisExistentesOfflineItem
-                                                      .status ==
-                                                  'Pré Parto') &&
-                                              (dateTimeFormat(
-                                                    "d/M/y",
-                                                    animaisExistentesOfflineItem
-                                                        .compararDtUltimaInseminacao,
-                                                    locale: FFLocalizations.of(
-                                                            context)
-                                                        .languageCode,
-                                                  ) !=
-                                                  '31/12/2050'),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    16.0, 8.0, 16.0, 0.0),
-                                            child: InkWell(
-                                              splashColor: Colors.transparent,
-                                              focusColor: Colors.transparent,
-                                              hoverColor: Colors.transparent,
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              onTap: () async {
-                                                context.pushNamed(
-                                                  ProntuarioAnimalWidget
-                                                      .routeName,
-                                                  queryParameters: {
-                                                    'uidPropriedade':
-                                                        serializeParam(
-                                                      widget.uidPropriedade,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'nomePropriedade':
-                                                        serializeParam(
-                                                      widget.nomePropriedade,
-                                                      ParamType.String,
-                                                    ),
-                                                    'uidTecnico':
-                                                        serializeParam(
-                                                      widget.uidTecnico,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'emailPropriedade':
-                                                        serializeParam(
-                                                      widget.emailPropriedade,
-                                                      ParamType.String,
-                                                    ),
-                                                    'uidAnimaisProdutores':
-                                                        serializeParam(
-                                                      animaisExistentesOfflineItem
-                                                          .uidAnimal,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'grupoPredominante':
-                                                        serializeParam(
-                                                      animaisExistentesOfflineItem
-                                                          .grupoAnimal,
-                                                      ParamType.String,
-                                                    ),
-                                                    'visitaPresencial':
-                                                        serializeParam(
-                                                      widget.visitaPresencial,
-                                                      ParamType.bool,
-                                                    ),
-                                                    'diasDg': serializeParam(
-                                                      widget.diasDg,
-                                                      ParamType.String,
-                                                    ),
-                                                  }.withoutNulls,
-                                                );
-                                              },
-                                              child: Container(
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .primaryBackground,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12.0),
-                                                ),
-                                                child: Padding(
-                                                  padding: EdgeInsetsDirectional
-                                                      .fromSTEB(
-                                                          0.0, 10.0, 0.0, 10.0),
-                                                  child: ListView(
-                                                    padding: EdgeInsets.zero,
-                                                    primary: false,
-                                                    shrinkWrap: true,
-                                                    scrollDirection:
-                                                        Axis.vertical,
+                                  return ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    primary: false,
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.vertical,
+                                    itemCount: animaisExistenteOffline.length,
+                                    itemBuilder: (context,
+                                        animaisExistenteOfflineIndex) {
+                                      final animaisExistenteOfflineItem =
+                                          animaisExistenteOffline[
+                                              animaisExistenteOfflineIndex];
+                                      return Visibility(
+                                        visible: (animaisExistenteOfflineItem
+                                                    .uidTecnicoPropriedade ==
+                                                widget.uidPropriedade) &&
+                                            (animaisExistenteOfflineItem
+                                                    .status ==
+                                                'Vazia') &&
+                                            (animaisExistenteOfflineItem
+                                                    .dtInducaoLactacao !=
+                                                null),
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  16.0, 8.0, 16.0, 0.0),
+                                          child: InkWell(
+                                            splashColor: Colors.transparent,
+                                            focusColor: Colors.transparent,
+                                            hoverColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            onTap: () async {
+                                              context.pushNamed(
+                                                ProntuarioAnimalWidget
+                                                    .routeName,
+                                                queryParameters: {
+                                                  'uidPropriedade':
+                                                      serializeParam(
+                                                    widget.uidPropriedade,
+                                                    ParamType.DocumentReference,
+                                                  ),
+                                                  'nomePropriedade':
+                                                      serializeParam(
+                                                    widget.nomePropriedade,
+                                                    ParamType.String,
+                                                  ),
+                                                  'uidTecnico': serializeParam(
+                                                    widget.uidTecnico,
+                                                    ParamType.DocumentReference,
+                                                  ),
+                                                  'emailPropriedade':
+                                                      serializeParam(
+                                                    widget.emailPropriedade,
+                                                    ParamType.String,
+                                                  ),
+                                                  'uidAnimaisProdutores':
+                                                      serializeParam(
+                                                    animaisExistenteOfflineItem
+                                                        .uidAnimal,
+                                                    ParamType.DocumentReference,
+                                                  ),
+                                                  'grupoPredominante':
+                                                      serializeParam(
+                                                    animaisExistenteOfflineItem
+                                                        .grupoAnimal,
+                                                    ParamType.String,
+                                                  ),
+                                                  'visitaPresencial':
+                                                      serializeParam(
+                                                    widget.visitaPresencial,
+                                                    ParamType.bool,
+                                                  ),
+                                                  'diasDg': serializeParam(
+                                                    widget.diasDg,
+                                                    ParamType.String,
+                                                  ),
+                                                }.withoutNulls,
+                                              );
+                                            },
+                                            child: Container(
+                                              width: double.infinity,
+                                              height: 100.0,
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
+                                                borderRadius:
+                                                    BorderRadius.circular(12.0),
+                                              ),
+                                              child: ListView(
+                                                padding: EdgeInsets.zero,
+                                                primary: false,
+                                                shrinkWrap: true,
+                                                scrollDirection: Axis.vertical,
+                                                children: [
+                                                  Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
                                                     children: [
-                                                      Row(
+                                                      Column(
                                                         mainAxisSize:
                                                             MainAxisSize.max,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
                                                         children: [
-                                                          Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .max,
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(
-                                                                            10.0),
-                                                                child:
-                                                                    Container(
-                                                                  width: 44.0,
-                                                                  height: 44.0,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color: () {
-                                                                      if (animaisExistentesOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Vacas') {
-                                                                        return Color(
-                                                                            0xFF048508);
-                                                                      } else if (animaisExistentesOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Novilhas') {
-                                                                        return Color(
-                                                                            0xFFFF0076);
-                                                                      } else {
-                                                                        return Color(
-                                                                            0x00000000);
-                                                                      }
-                                                                    }(),
-                                                                    shape: BoxShape
-                                                                        .circle,
-                                                                  ),
-                                                                  alignment:
-                                                                      AlignmentDirectional(
-                                                                          0.0,
-                                                                          0.0),
-                                                                  child: Text(
-                                                                    () {
-                                                                      if (animaisExistentesOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Vacas') {
-                                                                        return 'VAC';
-                                                                      } else if (animaisExistentesOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Novilhas') {
-                                                                        return 'NOV';
-                                                                      } else {
-                                                                        return 'N/C';
-                                                                      }
-                                                                    }(),
-                                                                    style: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .titleMedium
-                                                                        .override(
-                                                                          font:
-                                                                              GoogleFonts.readexPro(
-                                                                            fontWeight:
-                                                                                FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                                                                            fontStyle:
-                                                                                FlutterFlowTheme.of(context).titleMedium.fontStyle,
-                                                                          ),
-                                                                          color:
-                                                                              Colors.white,
-                                                                          fontSize:
-                                                                              13.0,
-                                                                          letterSpacing:
-                                                                              0.0,
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .titleMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .titleMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .max,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                () {
-                                                                  if ((animaisExistentesOfflineItem.nomeAnimal != '') &&
-                                                                      (animaisExistentesOfflineItem
-                                                                              .brincoAnimal !=
-                                                                          null) &&
-                                                                      (animaisExistentesOfflineItem
-                                                                              .brincoAnimal !=
-                                                                          -1)) {
-                                                                    return '${animaisExistentesOfflineItem.nomeAnimal} - ${animaisExistentesOfflineItem.brincoAnimal.toString()}';
-                                                                  } else if (animaisExistentesOfflineItem
-                                                                          .nomeAnimal !=
-                                                                      '') {
-                                                                    return animaisExistentesOfflineItem
-                                                                        .nomeAnimal;
-                                                                  } else {
-                                                                    return animaisExistentesOfflineItem
-                                                                        .brincoAnimal
-                                                                        .toString();
-                                                                  }
-                                                                }(),
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyLarge
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .readexPro(
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .bodyLarge
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .bodyLarge
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .bodyLarge
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .bodyLarge
-                                                                          .fontStyle,
-                                                                    ),
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            4.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                child: Text(
-                                                                  'Inseminada em: ${animaisExistentesOfflineItem.dtUltimaInseminacao}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            4.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                child: Text(
-                                                                  'Pré parto prev.: ${animaisExistentesOfflineItem.dtPrePartoPrevista}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            4.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                child: Text(
-                                                                  'Parto previsto: ${animaisExistentesOfflineItem.dtPartoPrevisto}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            EdgeInsetsDirectional
-                                                                .fromSTEB(
-                                                                    0.0,
-                                                                    5.0,
-                                                                    0.0,
-                                                                    15.0),
-                                                        child: Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.max,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          10.0,
-                                                                          0.0),
-                                                              child: Column(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .max,
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            4.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                    child:
-                                                                        FFButtonWidget(
-                                                                      onPressed:
-                                                                          () async {
-                                                                        await showModalBottomSheet(
-                                                                          isScrollControlled:
-                                                                              true,
-                                                                          backgroundColor:
-                                                                              Colors.transparent,
-                                                                          enableDrag:
-                                                                              false,
-                                                                          context:
-                                                                              context,
-                                                                          builder:
-                                                                              (context) {
-                                                                            return GestureDetector(
-                                                                              onTap: () {
-                                                                                FocusScope.of(context).unfocus();
-                                                                                FocusManager.instance.primaryFocus?.unfocus();
-                                                                              },
-                                                                              child: Padding(
-                                                                                padding: MediaQuery.viewInsetsOf(context),
-                                                                                child: RegistroAbortoExistenteOfflineWidget(
-                                                                                  uidPropriedade: widget.uidPropriedade!,
-                                                                                  nomePropriedade: widget.nomePropriedade!,
-                                                                                  uidTecnico: widget.uidTecnico!,
-                                                                                  emailPropriedade: widget.emailPropriedade!,
-                                                                                  visitaPresencial: widget.visitaPresencial!,
-                                                                                  diasDg: widget.diasDg!,
-                                                                                  uidAnimaisProdutores: animaisExistentesOfflineItem.uidAnimal!,
-                                                                                  nomeAnimal: animaisExistentesOfflineItem.nomeAnimal,
-                                                                                  itemUidIndex: animaisExistentesOfflineItem.itemUidIndexAtual,
-                                                                                ),
-                                                                              ),
-                                                                            );
-                                                                          },
-                                                                        ).then((value) =>
-                                                                            safeSetState(() {}));
-                                                                      },
-                                                                      text:
-                                                                          'Aborto',
-                                                                      icon:
-                                                                          Icon(
-                                                                        Icons
-                                                                            .cancel_sharp,
-                                                                        size:
-                                                                            15.0,
-                                                                      ),
-                                                                      options:
-                                                                          FFButtonOptions(
-                                                                        width:
-                                                                            100.0,
-                                                                        height:
-                                                                            40.0,
-                                                                        padding:
-                                                                            EdgeInsets.all(0.0),
-                                                                        iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                        color: Color(
-                                                                            0xFFAE0303),
-                                                                        textStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .override(
-                                                                              font: GoogleFonts.readexPro(
-                                                                                fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                                fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                              ),
-                                                                              color: Colors.white,
-                                                                              fontSize: 12.0,
-                                                                              letterSpacing: 0.0,
-                                                                              fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                            ),
-                                                                        elevation:
-                                                                            3.0,
-                                                                        borderSide:
-                                                                            BorderSide(
-                                                                          color:
-                                                                              Colors.transparent,
-                                                                          width:
-                                                                              1.0,
-                                                                        ),
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(8.0),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Padding(
-                                                              padding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          10.0,
-                                                                          0.0),
-                                                              child: Column(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .max,
-                                                                children: [],
-                                                              ),
-                                                            ),
-                                                            Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .max,
-                                                              children: [
-                                                                Padding(
-                                                                  padding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          4.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                                  child:
-                                                                      FFButtonWidget(
-                                                                    onPressed:
-                                                                        () async {
-                                                                      await showModalBottomSheet(
-                                                                        isScrollControlled:
-                                                                            true,
-                                                                        backgroundColor:
-                                                                            Colors.transparent,
-                                                                        enableDrag:
-                                                                            false,
-                                                                        context:
-                                                                            context,
-                                                                        builder:
-                                                                            (context) {
-                                                                          return GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              FocusScope.of(context).unfocus();
-                                                                              FocusManager.instance.primaryFocus?.unfocus();
-                                                                            },
-                                                                            child:
-                                                                                Padding(
-                                                                              padding: MediaQuery.viewInsetsOf(context),
-                                                                              child: RegistrarPartoExistenteOfflineWidget(
-                                                                                uidPropriedade: widget.uidPropriedade!,
-                                                                                nomePropriedade: widget.nomePropriedade!,
-                                                                                uidTecnico: widget.uidTecnico!,
-                                                                                emailPropriedade: widget.emailPropriedade!,
-                                                                                visitaPresencial: widget.visitaPresencial!,
-                                                                                diasDg: widget.diasDg!,
-                                                                                uidAnimaisProdutores: animaisExistentesOfflineItem.uidAnimal!,
-                                                                                nomeVacaAtual: animaisExistentesOfflineItem.nomeAnimal,
-                                                                                nomeTourtoUltimaInseminacao: animaisExistentesOfflineItem.nomeTouroUltimaInseminacao,
-                                                                                brincoVacaAtual: animaisExistentesOfflineItem.brincoAnimal.toString(),
-                                                                                itemUidIndex: animaisExistentesOfflineItem.itemUidIndexAtual,
-                                                                              ),
-                                                                            ),
-                                                                          );
-                                                                        },
-                                                                      ).then((value) =>
-                                                                          safeSetState(
-                                                                              () {}));
-                                                                    },
-                                                                    text:
-                                                                        'Parto',
-                                                                    icon: Icon(
-                                                                      Icons
-                                                                          .add_alert,
-                                                                      size:
-                                                                          15.0,
-                                                                    ),
-                                                                    options:
-                                                                        FFButtonOptions(
-                                                                      width:
-                                                                          100.0,
-                                                                      height:
-                                                                          40.0,
-                                                                      padding:
-                                                                          EdgeInsets.all(
-                                                                              0.0),
-                                                                      iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                                      color: Color(
-                                                                          0xFF12BE24),
-                                                                      textStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .override(
-                                                                            font:
-                                                                                GoogleFonts.readexPro(
-                                                                              fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                            ),
-                                                                            color:
-                                                                                Colors.white,
-                                                                            fontSize:
-                                                                                12.0,
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                            fontWeight:
-                                                                                FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                            fontStyle:
-                                                                                FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                          ),
-                                                                      elevation:
-                                                                          3.0,
-                                                                      borderSide:
-                                                                          BorderSide(
-                                                                        color: Colors
-                                                                            .transparent,
-                                                                        width:
-                                                                            1.0,
-                                                                      ),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8.0),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                                Builder(
-                                  builder: (context) {
-                                    final animaisProdutoresOffline = FFAppState()
-                                        .animaisProdutoresOffline
-                                        .map((e) => e)
-                                        .toList()
-                                        .sortedList(
-                                            keyOf: (e) =>
-                                                e.compararDtUltimaInseminacao,
-                                            desc: false)
-                                        .toList();
-
-                                    return ListView.builder(
-                                      padding: EdgeInsets.zero,
-                                      primary: false,
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.vertical,
-                                      itemCount:
-                                          animaisProdutoresOffline.length,
-                                      itemBuilder: (context,
-                                          animaisProdutoresOfflineIndex) {
-                                        final animaisProdutoresOfflineItem =
-                                            animaisProdutoresOffline[
-                                                animaisProdutoresOfflineIndex];
-                                        return Visibility(
-                                          visible: (animaisProdutoresOfflineItem
-                                                      .uidTecnicoPropriedade ==
-                                                  widget.uidPropriedade) &&
-                                              (animaisProdutoresOfflineItem
-                                                      .status ==
-                                                  'Pré Parto') &&
-                                              (dateTimeFormat(
-                                                    "d/M/y",
-                                                    animaisProdutoresOfflineItem
-                                                        .compararDtUltimaInseminacao,
-                                                    locale: FFLocalizations.of(
-                                                            context)
-                                                        .languageCode,
-                                                  ) !=
-                                                  '31/12/2050'),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    16.0, 8.0, 16.0, 0.0),
-                                            child: InkWell(
-                                              splashColor: Colors.transparent,
-                                              focusColor: Colors.transparent,
-                                              hoverColor: Colors.transparent,
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              onTap: () async {
-                                                context.pushNamed(
-                                                  ProntuarioAnimalWidget
-                                                      .routeName,
-                                                  queryParameters: {
-                                                    'uidPropriedade':
-                                                        serializeParam(
-                                                      widget.uidPropriedade,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'nomePropriedade':
-                                                        serializeParam(
-                                                      widget.nomePropriedade,
-                                                      ParamType.String,
-                                                    ),
-                                                    'uidTecnico':
-                                                        serializeParam(
-                                                      widget.uidTecnico,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'emailPropriedade':
-                                                        serializeParam(
-                                                      widget.emailPropriedade,
-                                                      ParamType.String,
-                                                    ),
-                                                    'uidAnimaisProdutores':
-                                                        serializeParam(
-                                                      animaisProdutoresOfflineItem
-                                                          .uidAnimal,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'grupoPredominante':
-                                                        serializeParam(
-                                                      animaisProdutoresOfflineItem
-                                                          .grupoAnimal,
-                                                      ParamType.String,
-                                                    ),
-                                                    'visitaPresencial':
-                                                        serializeParam(
-                                                      widget.visitaPresencial,
-                                                      ParamType.bool,
-                                                    ),
-                                                    'diasDg': serializeParam(
-                                                      widget.diasDg,
-                                                      ParamType.String,
-                                                    ),
-                                                  }.withoutNulls,
-                                                );
-                                              },
-                                              child: Container(
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .primaryBackground,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12.0),
-                                                ),
-                                                child: Padding(
-                                                  padding: EdgeInsetsDirectional
-                                                      .fromSTEB(
-                                                          0.0, 10.0, 0.0, 10.0),
-                                                  child: ListView(
-                                                    padding: EdgeInsets.zero,
-                                                    primary: false,
-                                                    shrinkWrap: true,
-                                                    scrollDirection:
-                                                        Axis.vertical,
-                                                    children: [
-                                                      Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.max,
-                                                        children: [
-                                                          Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .max,
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsets
-                                                                        .all(
-                                                                            10.0),
-                                                                child:
-                                                                    Container(
-                                                                  width: 44.0,
-                                                                  height: 44.0,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color: () {
-                                                                      if (animaisProdutoresOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Vacas') {
-                                                                        return Color(
-                                                                            0xFF048508);
-                                                                      } else if (animaisProdutoresOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Novilhas') {
-                                                                        return Color(
-                                                                            0xFFFF0076);
-                                                                      } else {
-                                                                        return Color(
-                                                                            0x00000000);
-                                                                      }
-                                                                    }(),
-                                                                    shape: BoxShape
-                                                                        .circle,
-                                                                  ),
-                                                                  alignment:
-                                                                      AlignmentDirectional(
-                                                                          0.0,
-                                                                          0.0),
-                                                                  child: Text(
-                                                                    () {
-                                                                      if (animaisProdutoresOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Vacas') {
-                                                                        return 'VAC';
-                                                                      } else if (animaisProdutoresOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Novilhas') {
-                                                                        return 'NOV';
-                                                                      } else {
-                                                                        return 'N/C';
-                                                                      }
-                                                                    }(),
-                                                                    style: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .titleMedium
-                                                                        .override(
-                                                                          font:
-                                                                              GoogleFonts.readexPro(
-                                                                            fontWeight:
-                                                                                FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                                                                            fontStyle:
-                                                                                FlutterFlowTheme.of(context).titleMedium.fontStyle,
-                                                                          ),
-                                                                          color:
-                                                                              Colors.white,
-                                                                          fontSize:
-                                                                              13.0,
-                                                                          letterSpacing:
-                                                                              0.0,
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .titleMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .titleMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .max,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                () {
-                                                                  if ((animaisProdutoresOfflineItem.nomeAnimal != '') &&
-                                                                      (animaisProdutoresOfflineItem
-                                                                              .brincoAnimal !=
-                                                                          null) &&
-                                                                      (animaisProdutoresOfflineItem
-                                                                              .brincoAnimal !=
-                                                                          -1)) {
-                                                                    return '${animaisProdutoresOfflineItem.nomeAnimal} - ${animaisProdutoresOfflineItem.brincoAnimal.toString()}';
-                                                                  } else if (animaisProdutoresOfflineItem
-                                                                          .nomeAnimal !=
-                                                                      '') {
-                                                                    return animaisProdutoresOfflineItem
-                                                                        .nomeAnimal;
-                                                                  } else {
-                                                                    return animaisProdutoresOfflineItem
-                                                                        .brincoAnimal
-                                                                        .toString();
-                                                                  }
-                                                                }(),
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyLarge
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .readexPro(
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .bodyLarge
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .bodyLarge
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .bodyLarge
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .bodyLarge
-                                                                          .fontStyle,
-                                                                    ),
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            4.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                child: Text(
-                                                                  'Inseminada em: ${animaisProdutoresOfflineItem.dtUltimaInseminacao}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            4.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                child: Text(
-                                                                  'Pré parto prev.: ${animaisProdutoresOfflineItem.dtPrePartoPrevista}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            4.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                child: Text(
-                                                                  'Parto previsto: ${animaisProdutoresOfflineItem.dtPartoPrevisto}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            EdgeInsetsDirectional
-                                                                .fromSTEB(
-                                                                    0.0,
-                                                                    5.0,
-                                                                    0.0,
-                                                                    15.0),
-                                                        child: Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.max,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          10.0,
-                                                                          0.0),
-                                                              child: Column(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .max,
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            4.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                    child:
-                                                                        FFButtonWidget(
-                                                                      onPressed:
-                                                                          () async {
-                                                                        await showModalBottomSheet(
-                                                                          isScrollControlled:
-                                                                              true,
-                                                                          backgroundColor:
-                                                                              Colors.transparent,
-                                                                          enableDrag:
-                                                                              false,
-                                                                          context:
-                                                                              context,
-                                                                          builder:
-                                                                              (context) {
-                                                                            return GestureDetector(
-                                                                              onTap: () {
-                                                                                FocusScope.of(context).unfocus();
-                                                                                FocusManager.instance.primaryFocus?.unfocus();
-                                                                              },
-                                                                              child: Padding(
-                                                                                padding: MediaQuery.viewInsetsOf(context),
-                                                                                child: RegistroAbortoOfflineWidget(
-                                                                                  uidPropriedade: widget.uidPropriedade!,
-                                                                                  nomePropriedade: widget.nomePropriedade!,
-                                                                                  uidTecnico: widget.uidTecnico!,
-                                                                                  emailPropriedade: widget.emailPropriedade!,
-                                                                                  visitaPresencial: widget.visitaPresencial!,
-                                                                                  diasDg: widget.diasDg!,
-                                                                                  nomeAnimal: animaisProdutoresOfflineItem.nomeAnimal,
-                                                                                  itemUidIndex: animaisProdutoresOfflineItem.itemUidIndexAtual,
-                                                                                  uidAnimalOffline: animaisProdutoresOfflineItem.uidAnimalOffline,
-                                                                                ),
-                                                                              ),
-                                                                            );
-                                                                          },
-                                                                        ).then((value) =>
-                                                                            safeSetState(() {}));
-                                                                      },
-                                                                      text:
-                                                                          'Aborto',
-                                                                      icon:
-                                                                          Icon(
-                                                                        Icons
-                                                                            .cancel_sharp,
-                                                                        size:
-                                                                            15.0,
-                                                                      ),
-                                                                      options:
-                                                                          FFButtonOptions(
-                                                                        width:
-                                                                            100.0,
-                                                                        height:
-                                                                            40.0,
-                                                                        padding:
-                                                                            EdgeInsets.all(0.0),
-                                                                        iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                        color: Color(
-                                                                            0xFFAE0303),
-                                                                        textStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .override(
-                                                                              font: GoogleFonts.readexPro(
-                                                                                fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                                fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                              ),
-                                                                              color: Colors.white,
-                                                                              fontSize: 12.0,
-                                                                              letterSpacing: 0.0,
-                                                                              fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                            ),
-                                                                        elevation:
-                                                                            3.0,
-                                                                        borderSide:
-                                                                            BorderSide(
-                                                                          color:
-                                                                              Colors.transparent,
-                                                                          width:
-                                                                              1.0,
-                                                                        ),
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(8.0),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Padding(
-                                                              padding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          10.0,
-                                                                          0.0),
-                                                              child: Column(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .max,
-                                                                children: [],
-                                                              ),
-                                                            ),
-                                                            Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .max,
-                                                              children: [
-                                                                Padding(
-                                                                  padding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          4.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                                  child:
-                                                                      FFButtonWidget(
-                                                                    onPressed:
-                                                                        () async {
-                                                                      await showModalBottomSheet(
-                                                                        isScrollControlled:
-                                                                            true,
-                                                                        backgroundColor:
-                                                                            Colors.transparent,
-                                                                        enableDrag:
-                                                                            false,
-                                                                        context:
-                                                                            context,
-                                                                        builder:
-                                                                            (context) {
-                                                                          return GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              FocusScope.of(context).unfocus();
-                                                                              FocusManager.instance.primaryFocus?.unfocus();
-                                                                            },
-                                                                            child:
-                                                                                Padding(
-                                                                              padding: MediaQuery.viewInsetsOf(context),
-                                                                              child: RegistrarPartoOfflineWidget(
-                                                                                uidPropriedade: widget.uidPropriedade!,
-                                                                                nomePropriedade: widget.nomePropriedade!,
-                                                                                uidTecnico: widget.uidTecnico!,
-                                                                                emailPropriedade: widget.emailPropriedade!,
-                                                                                visitaPresencial: widget.visitaPresencial!,
-                                                                                diasDg: widget.diasDg!,
-                                                                                nomeVacaAtual: animaisProdutoresOfflineItem.nomeAnimal,
-                                                                                nomeTourtoUltimaInseminacao: animaisProdutoresOfflineItem.nomeTouroUltimaInseminacao,
-                                                                                brincoVacaAtual: animaisProdutoresOfflineItem.brincoAnimal.toString(),
-                                                                                uidAnimalOffline: animaisProdutoresOfflineItem.uidAnimalOffline,
-                                                                                itemUidIndex: animaisProdutoresOfflineItem.itemUidIndexAtual,
-                                                                              ),
-                                                                            ),
-                                                                          );
-                                                                        },
-                                                                      ).then((value) =>
-                                                                          safeSetState(
-                                                                              () {}));
-                                                                    },
-                                                                    text:
-                                                                        'Parto',
-                                                                    icon: Icon(
-                                                                      Icons
-                                                                          .add_alert,
-                                                                      size:
-                                                                          15.0,
-                                                                    ),
-                                                                    options:
-                                                                        FFButtonOptions(
-                                                                      width:
-                                                                          100.0,
-                                                                      height:
-                                                                          40.0,
-                                                                      padding:
-                                                                          EdgeInsets.all(
-                                                                              0.0),
-                                                                      iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                                      color: Color(
-                                                                          0xFF12BE24),
-                                                                      textStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .override(
-                                                                            font:
-                                                                                GoogleFonts.readexPro(
-                                                                              fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                            ),
-                                                                            color:
-                                                                                Colors.white,
-                                                                            fontSize:
-                                                                                12.0,
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                            fontWeight:
-                                                                                FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                            fontStyle:
-                                                                                FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                          ),
-                                                                      elevation:
-                                                                          3.0,
-                                                                      borderSide:
-                                                                          BorderSide(
-                                                                        color: Colors
-                                                                            .transparent,
-                                                                        width:
-                                                                            1.0,
-                                                                      ),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8.0),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                            ],
-                          ),
-                        ),
-                        SingleChildScrollView(
-                          primary: false,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                                Builder(
-                                  builder: (context) {
-                                    final animaisExistenteOffline = FFAppState()
-                                        .animaisProdutoresExistentes
-                                        .toList();
-
-                                    return ListView.builder(
-                                      padding: EdgeInsets.zero,
-                                      primary: false,
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.vertical,
-                                      itemCount: animaisExistenteOffline.length,
-                                      itemBuilder: (context,
-                                          animaisExistenteOfflineIndex) {
-                                        final animaisExistenteOfflineItem =
-                                            animaisExistenteOffline[
-                                                animaisExistenteOfflineIndex];
-                                        return Visibility(
-                                          visible: (animaisExistenteOfflineItem
-                                                      .uidTecnicoPropriedade ==
-                                                  widget.uidPropriedade) &&
-                                              (animaisExistenteOfflineItem
-                                                      .status ==
-                                                  'Vazia') &&
-                                              (animaisExistenteOfflineItem
-                                                      .dtInducaoLactacao !=
-                                                  null),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    16.0, 8.0, 16.0, 0.0),
-                                            child: InkWell(
-                                              splashColor: Colors.transparent,
-                                              focusColor: Colors.transparent,
-                                              hoverColor: Colors.transparent,
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              onTap: () async {
-                                                context.pushNamed(
-                                                  ProntuarioAnimalWidget
-                                                      .routeName,
-                                                  queryParameters: {
-                                                    'uidPropriedade':
-                                                        serializeParam(
-                                                      widget.uidPropriedade,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'nomePropriedade':
-                                                        serializeParam(
-                                                      widget.nomePropriedade,
-                                                      ParamType.String,
-                                                    ),
-                                                    'uidTecnico':
-                                                        serializeParam(
-                                                      widget.uidTecnico,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'emailPropriedade':
-                                                        serializeParam(
-                                                      widget.emailPropriedade,
-                                                      ParamType.String,
-                                                    ),
-                                                    'uidAnimaisProdutores':
-                                                        serializeParam(
-                                                      animaisExistenteOfflineItem
-                                                          .uidAnimal,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'grupoPredominante':
-                                                        serializeParam(
-                                                      animaisExistenteOfflineItem
-                                                          .grupoAnimal,
-                                                      ParamType.String,
-                                                    ),
-                                                    'visitaPresencial':
-                                                        serializeParam(
-                                                      widget.visitaPresencial,
-                                                      ParamType.bool,
-                                                    ),
-                                                    'diasDg': serializeParam(
-                                                      widget.diasDg,
-                                                      ParamType.String,
-                                                    ),
-                                                  }.withoutNulls,
-                                                );
-                                              },
-                                              child: Container(
-                                                width: double.infinity,
-                                                height: 100.0,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .primaryBackground,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12.0),
-                                                ),
-                                                child: ListView(
-                                                  padding: EdgeInsets.zero,
-                                                  primary: false,
-                                                  shrinkWrap: true,
-                                                  scrollDirection:
-                                                      Axis.vertical,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      children: [
-                                                        Column(
-                                                          mainAxisSize:
-                                                              MainAxisSize.max,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(
-                                                                          10.0),
-                                                              child: Container(
-                                                                width: 44.0,
-                                                                height: 44.0,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: () {
-                                                                    if (animaisExistenteOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Vacas') {
-                                                                      return Color(
-                                                                          0xFF048508);
-                                                                    } else if (animaisExistenteOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas') {
-                                                                      return Color(
-                                                                          0xFFFF0076);
-                                                                    } else {
-                                                                      return Color(
-                                                                          0x00000000);
-                                                                    }
-                                                                  }(),
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                ),
-                                                                alignment:
-                                                                    AlignmentDirectional(
-                                                                        0.0,
-                                                                        0.0),
-                                                                child: Text(
-                                                                  () {
-                                                                    if (animaisExistenteOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Vacas') {
-                                                                      return 'VAC';
-                                                                    } else if (animaisExistenteOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas') {
-                                                                      return 'NOV';
-                                                                    } else {
-                                                                      return 'N/C';
-                                                                    }
-                                                                  }(),
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .titleMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .titleMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            13.0,
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      0.0,
-                                                                      10.0,
-                                                                      0.0,
-                                                                      10.0),
-                                                          child: Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .max,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                () {
-                                                                  if ((animaisExistenteOfflineItem.nomeAnimal != '') &&
-                                                                      (animaisExistenteOfflineItem
-                                                                              .brincoAnimal !=
-                                                                          null) &&
-                                                                      (animaisExistenteOfflineItem
-                                                                              .brincoAnimal !=
-                                                                          -1)) {
-                                                                    return '${animaisExistenteOfflineItem.nomeAnimal} - ${animaisExistenteOfflineItem.brincoAnimal.toString()}';
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    10.0),
+                                                            child: Container(
+                                                              width: 44.0,
+                                                              height: 44.0,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: () {
+                                                                  if (animaisExistenteOfflineItem
+                                                                          .grupoAnimal ==
+                                                                      'Vacas') {
+                                                                    return Color(
+                                                                        0xFF048508);
                                                                   } else if (animaisExistenteOfflineItem
-                                                                          .nomeAnimal !=
-                                                                      '') {
-                                                                    return animaisExistenteOfflineItem
-                                                                        .nomeAnimal;
+                                                                          .grupoAnimal ==
+                                                                      'Novilhas') {
+                                                                    return Color(
+                                                                        0xFFFF0076);
                                                                   } else {
-                                                                    return animaisExistenteOfflineItem
-                                                                        .brincoAnimal
-                                                                        .toString();
+                                                                    return Color(
+                                                                        0x00000000);
+                                                                  }
+                                                                }(),
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                              alignment:
+                                                                  AlignmentDirectional(
+                                                                      0.0, 0.0),
+                                                              child: Text(
+                                                                () {
+                                                                  if (animaisExistenteOfflineItem
+                                                                          .grupoAnimal ==
+                                                                      'Vacas') {
+                                                                    return 'VAC';
+                                                                  } else if (animaisExistenteOfflineItem
+                                                                          .grupoAnimal ==
+                                                                      'Novilhas') {
+                                                                    return 'NOV';
+                                                                  } else {
+                                                                    return 'N/C';
                                                                   }
                                                                 }(),
                                                                 style: FlutterFlowTheme.of(
                                                                         context)
-                                                                    .bodyLarge
+                                                                    .titleMedium
                                                                     .override(
                                                                       font: GoogleFonts
                                                                           .readexPro(
                                                                         fontWeight: FlutterFlowTheme.of(context)
-                                                                            .bodyLarge
+                                                                            .titleMedium
                                                                             .fontWeight,
                                                                         fontStyle: FlutterFlowTheme.of(context)
-                                                                            .bodyLarge
+                                                                            .titleMedium
                                                                             .fontStyle,
                                                                       ),
+                                                                      color: Colors
+                                                                          .white,
                                                                       fontSize:
-                                                                          14.0,
+                                                                          13.0,
                                                                       letterSpacing:
                                                                           0.0,
                                                                       fontWeight: FlutterFlowTheme.of(
                                                                               context)
-                                                                          .bodyLarge
+                                                                          .titleMedium
                                                                           .fontWeight,
                                                                       fontStyle: FlutterFlowTheme.of(
                                                                               context)
-                                                                          .bodyLarge
+                                                                          .titleMedium
                                                                           .fontStyle,
                                                                     ),
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            4.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                child: Text(
-                                                                  'Indução lactação: ${animaisExistenteOfflineItem.dtInducaoLactacao?.toString()}',
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .labelMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        fontSize:
-                                                                            13.0,
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                              FFButtonWidget(
-                                                                onPressed:
-                                                                    () async {
-                                                                  if ((animaisExistenteOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Novilha') ||
-                                                                      (animaisExistenteOfflineItem
-                                                                              .grupoAnimal ==
-                                                                          'Novilhas')) {
-                                                                    FFAppState()
-                                                                        .updateAnimaisProdutoresExistentesAtIndex(
-                                                                      animaisExistenteOfflineIndex,
-                                                                      (e) => e
-                                                                        ..grupoAnimal =
-                                                                            'Vacas',
-                                                                    );
-                                                                    safeSetState(
-                                                                        () {});
-                                                                  }
-
-                                                                  await showModalBottomSheet(
-                                                                    isScrollControlled:
-                                                                        true,
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .transparent,
-                                                                    enableDrag:
-                                                                        false,
-                                                                    context:
-                                                                        context,
-                                                                    builder:
-                                                                        (context) {
-                                                                      return GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          FocusScope.of(context)
-                                                                              .unfocus();
-                                                                          FocusManager
-                                                                              .instance
-                                                                              .primaryFocus
-                                                                              ?.unfocus();
-                                                                        },
-                                                                        child:
-                                                                            Padding(
-                                                                          padding:
-                                                                              MediaQuery.viewInsetsOf(context),
-                                                                          child:
-                                                                              RegistrarPartoInduzidoExistenteOfflineWidget(
-                                                                            uidPropriedade:
-                                                                                widget.uidPropriedade!,
-                                                                            nomePropriedade:
-                                                                                widget.nomePropriedade!,
-                                                                            uidTecnico:
-                                                                                widget.uidTecnico!,
-                                                                            emailPropriedade:
-                                                                                widget.emailPropriedade!,
-                                                                            visitaPresencial:
-                                                                                widget.visitaPresencial!,
-                                                                            diasDg:
-                                                                                widget.diasDg!,
-                                                                            uidAnimaisProdutores:
-                                                                                animaisExistenteOfflineItem.uidAnimal!,
-                                                                            nomeAnimal:
-                                                                                animaisExistenteOfflineItem.nomeAnimal,
-                                                                            itemUidIndex:
-                                                                                animaisExistenteOfflineIndex,
-                                                                          ),
-                                                                        ),
-                                                                      );
-                                                                    },
-                                                                  ).then((value) =>
-                                                                      safeSetState(
-                                                                          () {}));
-                                                                },
-                                                                text:
-                                                                    'Induzir lactação',
-                                                                icon: Icon(
-                                                                  Icons
-                                                                      .add_alert,
-                                                                  size: 15.0,
-                                                                ),
-                                                                options:
-                                                                    FFButtonOptions(
-                                                                  width: 140.0,
-                                                                  height: 40.0,
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              0.0),
-                                                                  iconPadding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                                  color: Color(
-                                                                      0xFF12BE24),
-                                                                  textStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleSmall
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .titleSmall
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .titleSmall
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            10.0,
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontStyle,
-                                                                      ),
-                                                                  elevation:
-                                                                      3.0,
-                                                                  borderSide:
-                                                                      BorderSide(
-                                                                    color: Colors
-                                                                        .transparent,
-                                                                    width: 1.0,
-                                                                  ),
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              8.0),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                                Builder(
-                                  builder: (context) {
-                                    final animaisProdutoresOfflineInducao =
-                                        FFAppState()
-                                            .animaisProdutoresOffline
-                                            .toList();
-
-                                    return ListView.builder(
-                                      padding: EdgeInsets.zero,
-                                      primary: false,
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.vertical,
-                                      itemCount: animaisProdutoresOfflineInducao
-                                          .length,
-                                      itemBuilder: (context,
-                                          animaisProdutoresOfflineInducaoIndex) {
-                                        final animaisProdutoresOfflineInducaoItem =
-                                            animaisProdutoresOfflineInducao[
-                                                animaisProdutoresOfflineInducaoIndex];
-                                        return Visibility(
-                                          visible: (animaisProdutoresOfflineInducaoItem
-                                                      .uidTecnicoPropriedade ==
-                                                  widget.uidPropriedade) &&
-                                              (animaisProdutoresOfflineInducaoItem
-                                                      .status ==
-                                                  'Vazia') &&
-                                              (animaisProdutoresOfflineInducaoItem
-                                                      .dtInducaoLactacao !=
-                                                  null),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    16.0, 8.0, 16.0, 0.0),
-                                            child: InkWell(
-                                              splashColor: Colors.transparent,
-                                              focusColor: Colors.transparent,
-                                              hoverColor: Colors.transparent,
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              onTap: () async {},
-                                              child: Container(
-                                                width: double.infinity,
-                                                height: 100.0,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .primaryBackground,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12.0),
-                                                ),
-                                                child: ListView(
-                                                  padding: EdgeInsets.zero,
-                                                  primary: false,
-                                                  shrinkWrap: true,
-                                                  scrollDirection:
-                                                      Axis.vertical,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      children: [
-                                                        Column(
-                                                          mainAxisSize:
-                                                              MainAxisSize.max,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(
-                                                                          10.0),
-                                                              child: Container(
-                                                                width: 44.0,
-                                                                height: 44.0,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: () {
-                                                                    if (animaisProdutoresOfflineInducaoItem
-                                                                            .grupoAnimal ==
-                                                                        'Vacas') {
-                                                                      return Color(
-                                                                          0xFF048508);
-                                                                    } else if (animaisProdutoresOfflineInducaoItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas') {
-                                                                      return Color(
-                                                                          0xFFFF0076);
-                                                                    } else {
-                                                                      return Color(
-                                                                          0x00000000);
-                                                                    }
-                                                                  }(),
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                ),
-                                                                alignment:
-                                                                    AlignmentDirectional(
-                                                                        0.0,
-                                                                        0.0),
-                                                                child: Text(
-                                                                  () {
-                                                                    if (animaisProdutoresOfflineInducaoItem
-                                                                            .grupoAnimal ==
-                                                                        'Vacas') {
-                                                                      return 'VAC';
-                                                                    } else if (animaisProdutoresOfflineInducaoItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas') {
-                                                                      return 'NOV';
-                                                                    } else {
-                                                                      return 'N/C';
-                                                                    }
-                                                                  }(),
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .titleMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .titleMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            13.0,
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                ),
                                                               ),
                                                             ),
-                                                          ],
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      0.0,
-                                                                      10.0,
-                                                                      0.0,
-                                                                      10.0),
-                                                          child: Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .max,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                () {
-                                                                  if ((animaisProdutoresOfflineInducaoItem.nomeAnimal != '') &&
-                                                                      (animaisProdutoresOfflineInducaoItem
-                                                                              .brincoAnimal !=
-                                                                          null) &&
-                                                                      (animaisProdutoresOfflineInducaoItem
-                                                                              .brincoAnimal !=
-                                                                          -1)) {
-                                                                    return '${animaisProdutoresOfflineInducaoItem.nomeAnimal} - ${animaisProdutoresOfflineInducaoItem.brincoAnimal.toString()}';
-                                                                  } else if (animaisProdutoresOfflineInducaoItem
-                                                                          .nomeAnimal !=
-                                                                      '') {
-                                                                    return animaisProdutoresOfflineInducaoItem
-                                                                        .nomeAnimal;
-                                                                  } else {
-                                                                    return animaisProdutoresOfflineInducaoItem
-                                                                        .brincoAnimal
-                                                                        .toString();
-                                                                  }
-                                                                }(),
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyLarge
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .readexPro(
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .bodyLarge
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .bodyLarge
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      fontSize:
-                                                                          14.0,
-                                                                      letterSpacing:
-                                                                          0.0,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsetsDirectional
+                                                                .fromSTEB(
+                                                                    0.0,
+                                                                    10.0,
+                                                                    0.0,
+                                                                    10.0),
+                                                        child: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              () {
+                                                                if ((animaisExistenteOfflineItem
+                                                                            .nomeAnimal !=
+                                                                        '') &&
+                                                                    (animaisExistenteOfflineItem
+                                                                            .brincoAnimal !=
+                                                                        null) &&
+                                                                    (animaisExistenteOfflineItem
+                                                                            .brincoAnimal !=
+                                                                        -1)) {
+                                                                  return '${animaisExistenteOfflineItem.nomeAnimal} - ${animaisExistenteOfflineItem.brincoAnimal.toString()}';
+                                                                } else if (animaisExistenteOfflineItem
+                                                                        .nomeAnimal !=
+                                                                    '') {
+                                                                  return animaisExistenteOfflineItem
+                                                                      .nomeAnimal;
+                                                                } else {
+                                                                  return animaisExistenteOfflineItem
+                                                                      .brincoAnimal
+                                                                      .toString();
+                                                                }
+                                                              }(),
+                                                              style: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .bodyLarge
+                                                                  .override(
+                                                                    font: GoogleFonts
+                                                                        .readexPro(
                                                                       fontWeight: FlutterFlowTheme.of(
                                                                               context)
                                                                           .bodyLarge
@@ -3751,9 +3436,30 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                           .bodyLarge
                                                                           .fontStyle,
                                                                     ),
-                                                              ),
-                                                              Text(
-                                                                'Indução lactação: ${animaisProdutoresOfflineInducaoItem.dtInducaoLactacao?.toString()}',
+                                                                    fontSize:
+                                                                        14.0,
+                                                                    letterSpacing:
+                                                                        0.0,
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyLarge
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyLarge
+                                                                        .fontStyle,
+                                                                  ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          4.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child: Text(
+                                                                'Indução lactação: ${animaisExistenteOfflineItem.dtInducaoLactacao?.toString()}',
                                                                 style: FlutterFlowTheme.of(
                                                                         context)
                                                                     .labelMedium
@@ -3781,90 +3487,1277 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                           .fontStyle,
                                                                     ),
                                                               ),
-                                                              FFButtonWidget(
+                                                            ),
+                                                            FFButtonWidget(
+                                                              onPressed:
+                                                                  () async {
+                                                                if ((animaisExistenteOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Novilha') ||
+                                                                    (animaisExistenteOfflineItem
+                                                                            .grupoAnimal ==
+                                                                        'Novilhas')) {
+                                                                  FFAppState()
+                                                                      .updateAnimaisProdutoresExistentesAtIndex(
+                                                                    animaisExistenteOfflineIndex,
+                                                                    (e) => e
+                                                                      ..grupoAnimal =
+                                                                          'Vacas',
+                                                                  );
+                                                                  safeSetState(
+                                                                      () {});
+                                                                }
+
+                                                                await showModalBottomSheet(
+                                                                  isScrollControlled:
+                                                                      true,
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                  enableDrag:
+                                                                      false,
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (context) {
+                                                                    return GestureDetector(
+                                                                      onTap:
+                                                                          () {
+                                                                        FocusScope.of(context)
+                                                                            .unfocus();
+                                                                        FocusManager
+                                                                            .instance
+                                                                            .primaryFocus
+                                                                            ?.unfocus();
+                                                                      },
+                                                                      child:
+                                                                          Padding(
+                                                                        padding:
+                                                                            MediaQuery.viewInsetsOf(context),
+                                                                        child:
+                                                                            RegistrarPartoInduzidoWidget(
+                                                                          uidPropriedade:
+                                                                              widget.uidPropriedade!,
+                                                                          nomePropriedade:
+                                                                              widget.nomePropriedade!,
+                                                                          uidTecnico:
+                                                                              widget.uidTecnico!,
+                                                                          emailPropriedade:
+                                                                              widget.emailPropriedade!,
+                                                                          visitaPresencial:
+                                                                              widget.visitaPresencial!,
+                                                                          diasDg:
+                                                                              widget.diasDg!,
+                                                                          uidAnimaisProdutores:
+                                                                              animaisExistenteOfflineItem.uidAnimal!,
+                                                                          nomeAnimal:
+                                                                              animaisExistenteOfflineItem.nomeAnimal,
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                ).then((value) =>
+                                                                    safeSetState(
+                                                                        () {}));
+                                                              },
+                                                              text:
+                                                                  'Induzir lactação',
+                                                              icon: Icon(
+                                                                Icons.add_alert,
+                                                                size: 15.0,
+                                                              ),
+                                                              options:
+                                                                  FFButtonOptions(
+                                                                width: 140.0,
+                                                                height: 40.0,
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .all(
+                                                                            0.0),
+                                                                iconPadding:
+                                                                    EdgeInsetsDirectional
+                                                                        .fromSTEB(
+                                                                            0.0,
+                                                                            0.0,
+                                                                            0.0,
+                                                                            0.0),
+                                                                color: Color(
+                                                                    0xFF12BE24),
+                                                                textStyle: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .titleSmall
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          10.0,
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleSmall
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleSmall
+                                                                          .fontStyle,
+                                                                    ),
+                                                                elevation: 3.0,
+                                                                borderSide:
+                                                                    BorderSide(
+                                                                  color: Colors
+                                                                      .transparent,
+                                                                  width: 1.0,
+                                                                ),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8.0),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                              Builder(
+                                builder: (context) {
+                                  final animaisProdutoresOfflineInducao =
+                                      FFAppState()
+                                          .animaisProdutoresOffline
+                                          .toList();
+
+                                  return ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    primary: false,
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.vertical,
+                                    itemCount:
+                                        animaisProdutoresOfflineInducao.length,
+                                    itemBuilder: (context,
+                                        animaisProdutoresOfflineInducaoIndex) {
+                                      final animaisProdutoresOfflineInducaoItem =
+                                          animaisProdutoresOfflineInducao[
+                                              animaisProdutoresOfflineInducaoIndex];
+                                      return Visibility(
+                                        visible: (animaisProdutoresOfflineInducaoItem
+                                                    .uidTecnicoPropriedade ==
+                                                widget.uidPropriedade) &&
+                                            (animaisProdutoresOfflineInducaoItem
+                                                    .status ==
+                                                'Vazia') &&
+                                            (animaisProdutoresOfflineInducaoItem
+                                                    .dtInducaoLactacao !=
+                                                null),
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  16.0, 8.0, 16.0, 0.0),
+                                          child: InkWell(
+                                            splashColor: Colors.transparent,
+                                            focusColor: Colors.transparent,
+                                            hoverColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            onTap: () async {},
+                                            child: Container(
+                                              width: double.infinity,
+                                              height: 100.0,
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
+                                                borderRadius:
+                                                    BorderRadius.circular(12.0),
+                                              ),
+                                              child: ListView(
+                                                padding: EdgeInsets.zero,
+                                                primary: false,
+                                                shrinkWrap: true,
+                                                scrollDirection: Axis.vertical,
+                                                children: [
+                                                  Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
+                                                    children: [
+                                                      Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    10.0),
+                                                            child: Container(
+                                                              width: 44.0,
+                                                              height: 44.0,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: () {
+                                                                  if (animaisProdutoresOfflineInducaoItem
+                                                                          .grupoAnimal ==
+                                                                      'Vacas') {
+                                                                    return Color(
+                                                                        0xFF048508);
+                                                                  } else if (animaisProdutoresOfflineInducaoItem
+                                                                          .grupoAnimal ==
+                                                                      'Novilhas') {
+                                                                    return Color(
+                                                                        0xFFFF0076);
+                                                                  } else {
+                                                                    return Color(
+                                                                        0x00000000);
+                                                                  }
+                                                                }(),
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                              alignment:
+                                                                  AlignmentDirectional(
+                                                                      0.0, 0.0),
+                                                              child: Text(
+                                                                () {
+                                                                  if (animaisProdutoresOfflineInducaoItem
+                                                                          .grupoAnimal ==
+                                                                      'Vacas') {
+                                                                    return 'VAC';
+                                                                  } else if (animaisProdutoresOfflineInducaoItem
+                                                                          .grupoAnimal ==
+                                                                      'Novilhas') {
+                                                                    return 'NOV';
+                                                                  } else {
+                                                                    return 'N/C';
+                                                                  }
+                                                                }(),
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .titleMedium
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleMedium
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleMedium
+                                                                            .fontStyle,
+                                                                      ),
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          13.0,
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleMedium
+                                                                          .fontStyle,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            EdgeInsetsDirectional
+                                                                .fromSTEB(
+                                                                    0.0,
+                                                                    10.0,
+                                                                    0.0,
+                                                                    10.0),
+                                                        child: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              () {
+                                                                if ((animaisProdutoresOfflineInducaoItem
+                                                                            .nomeAnimal !=
+                                                                        '') &&
+                                                                    (animaisProdutoresOfflineInducaoItem
+                                                                            .brincoAnimal !=
+                                                                        null) &&
+                                                                    (animaisProdutoresOfflineInducaoItem
+                                                                            .brincoAnimal !=
+                                                                        -1)) {
+                                                                  return '${animaisProdutoresOfflineInducaoItem.nomeAnimal} - ${animaisProdutoresOfflineInducaoItem.brincoAnimal.toString()}';
+                                                                } else if (animaisProdutoresOfflineInducaoItem
+                                                                        .nomeAnimal !=
+                                                                    '') {
+                                                                  return animaisProdutoresOfflineInducaoItem
+                                                                      .nomeAnimal;
+                                                                } else {
+                                                                  return animaisProdutoresOfflineInducaoItem
+                                                                      .brincoAnimal
+                                                                      .toString();
+                                                                }
+                                                              }(),
+                                                              style: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .bodyLarge
+                                                                  .override(
+                                                                    font: GoogleFonts
+                                                                        .readexPro(
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .bodyLarge
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .bodyLarge
+                                                                          .fontStyle,
+                                                                    ),
+                                                                    fontSize:
+                                                                        14.0,
+                                                                    letterSpacing:
+                                                                        0.0,
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyLarge
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyLarge
+                                                                        .fontStyle,
+                                                                  ),
+                                                            ),
+                                                            Text(
+                                                              'Indução lactação: ${animaisProdutoresOfflineInducaoItem.dtInducaoLactacao?.toString()}',
+                                                              style: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .labelMedium
+                                                                  .override(
+                                                                    font: GoogleFonts
+                                                                        .readexPro(
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
+                                                                    fontSize:
+                                                                        13.0,
+                                                                    letterSpacing:
+                                                                        0.0,
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelMedium
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelMedium
+                                                                        .fontStyle,
+                                                                  ),
+                                                            ),
+                                                            FFButtonWidget(
+                                                              onPressed:
+                                                                  () async {
+                                                                if ((animaisProdutoresOfflineInducaoItem
+                                                                            .grupoAnimal ==
+                                                                        'Novilha') ||
+                                                                    (animaisProdutoresOfflineInducaoItem
+                                                                            .grupoAnimal ==
+                                                                        'Novilhas')) {
+                                                                  FFAppState()
+                                                                      .updateAnimaisProdutoresOfflineAtIndex(
+                                                                    animaisProdutoresOfflineInducaoIndex,
+                                                                    (e) => e
+                                                                      ..grupoAnimal =
+                                                                          'Vacas',
+                                                                  );
+                                                                  safeSetState(
+                                                                      () {});
+                                                                }
+
+                                                                await showModalBottomSheet(
+                                                                  isScrollControlled:
+                                                                      true,
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                  enableDrag:
+                                                                      false,
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (context) {
+                                                                    return GestureDetector(
+                                                                      onTap:
+                                                                          () {
+                                                                        FocusScope.of(context)
+                                                                            .unfocus();
+                                                                        FocusManager
+                                                                            .instance
+                                                                            .primaryFocus
+                                                                            ?.unfocus();
+                                                                      },
+                                                                      child:
+                                                                          Padding(
+                                                                        padding:
+                                                                            MediaQuery.viewInsetsOf(context),
+                                                                        child:
+                                                                            RegistrarPartoInduzidoOfflineWidget(
+                                                                          uidPropriedade:
+                                                                              widget.uidPropriedade!,
+                                                                          nomePropriedade:
+                                                                              widget.nomePropriedade!,
+                                                                          uidTecnico:
+                                                                              widget.uidTecnico!,
+                                                                          emailPropriedade:
+                                                                              widget.emailPropriedade!,
+                                                                          visitaPresencial:
+                                                                              widget.visitaPresencial!,
+                                                                          diasDg:
+                                                                              widget.diasDg!,
+                                                                          nomeAnimal:
+                                                                              animaisProdutoresOfflineInducaoItem.nomeAnimal,
+                                                                          itemUidIndex:
+                                                                              animaisProdutoresOfflineInducaoIndex,
+                                                                          uidAnimalOffline:
+                                                                              animaisProdutoresOfflineInducaoItem.uidAnimalOffline,
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                ).then((value) =>
+                                                                    safeSetState(
+                                                                        () {}));
+                                                              },
+                                                              text:
+                                                                  'Induzir lactação',
+                                                              icon: Icon(
+                                                                Icons.add_alert,
+                                                                size: 15.0,
+                                                              ),
+                                                              options:
+                                                                  FFButtonOptions(
+                                                                width: 140.0,
+                                                                height: 40.0,
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .all(
+                                                                            0.0),
+                                                                iconPadding:
+                                                                    EdgeInsetsDirectional
+                                                                        .fromSTEB(
+                                                                            0.0,
+                                                                            0.0,
+                                                                            0.0,
+                                                                            0.0),
+                                                                color: Color(
+                                                                    0xFF12BE24),
+                                                                textStyle: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .titleSmall
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          12.0,
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleSmall
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleSmall
+                                                                          .fontStyle,
+                                                                    ),
+                                                                elevation: 3.0,
+                                                                borderSide:
+                                                                    BorderSide(
+                                                                  color: Colors
+                                                                      .transparent,
+                                                                  width: 1.0,
+                                                                ),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8.0),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        SingleChildScrollView(
+                          primary: false,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Builder(
+                                builder: (context) {
+                                  final animaisExistentesOfflineDescarte =
+                                      FFAppState()
+                                          .animaisProdutoresExistentes
+                                          .toList();
+
+                                  return ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    primary: false,
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.vertical,
+                                    itemCount:
+                                        animaisExistentesOfflineDescarte.length,
+                                    itemBuilder: (context,
+                                        animaisExistentesOfflineDescarteIndex) {
+                                      final animaisExistentesOfflineDescarteItem =
+                                          animaisExistentesOfflineDescarte[
+                                              animaisExistentesOfflineDescarteIndex];
+                                      return Visibility(
+                                        visible: (animaisExistentesOfflineDescarteItem
+                                                    .uidTecnicoPropriedade ==
+                                                widget.uidPropriedade) &&
+                                            (animaisExistentesOfflineDescarteItem
+                                                    .status ==
+                                                'Descarte'),
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  16.0, 8.0, 16.0, 0.0),
+                                          child: InkWell(
+                                            splashColor: Colors.transparent,
+                                            focusColor: Colors.transparent,
+                                            hoverColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            onTap: () async {
+                                              context.pushNamed(
+                                                ProntuarioAnimalWidget
+                                                    .routeName,
+                                                queryParameters: {
+                                                  'uidPropriedade':
+                                                      serializeParam(
+                                                    widget.uidPropriedade,
+                                                    ParamType.DocumentReference,
+                                                  ),
+                                                  'nomePropriedade':
+                                                      serializeParam(
+                                                    widget.nomePropriedade,
+                                                    ParamType.String,
+                                                  ),
+                                                  'uidTecnico': serializeParam(
+                                                    widget.uidTecnico,
+                                                    ParamType.DocumentReference,
+                                                  ),
+                                                  'emailPropriedade':
+                                                      serializeParam(
+                                                    widget.emailPropriedade,
+                                                    ParamType.String,
+                                                  ),
+                                                  'uidAnimaisProdutores':
+                                                      serializeParam(
+                                                    animaisExistentesOfflineDescarteItem
+                                                        .uidAnimal,
+                                                    ParamType.DocumentReference,
+                                                  ),
+                                                  'grupoPredominante':
+                                                      serializeParam(
+                                                    animaisExistentesOfflineDescarteItem
+                                                        .grupoAnimal,
+                                                    ParamType.String,
+                                                  ),
+                                                  'visitaPresencial':
+                                                      serializeParam(
+                                                    widget.visitaPresencial,
+                                                    ParamType.bool,
+                                                  ),
+                                                  'diasDg': serializeParam(
+                                                    widget.diasDg,
+                                                    ParamType.String,
+                                                  ),
+                                                }.withoutNulls,
+                                              );
+                                            },
+                                            child: Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
+                                                borderRadius:
+                                                    BorderRadius.circular(12.0),
+                                              ),
+                                              child: ListView(
+                                                padding: EdgeInsets.zero,
+                                                primary: false,
+                                                shrinkWrap: true,
+                                                scrollDirection: Axis.vertical,
+                                                children: [
+                                                  Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
+                                                    children: [
+                                                      Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    10.0),
+                                                            child: Container(
+                                                              width: 44.0,
+                                                              height: 44.0,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: () {
+                                                                  if (animaisExistentesOfflineDescarteItem
+                                                                          .grupoAnimal ==
+                                                                      'Vacas') {
+                                                                    return Color(
+                                                                        0xFF048508);
+                                                                  } else if (animaisExistentesOfflineDescarteItem
+                                                                          .grupoAnimal ==
+                                                                      'Novilhas') {
+                                                                    return Color(
+                                                                        0xFFFF0076);
+                                                                  } else {
+                                                                    return Color(
+                                                                        0x00000000);
+                                                                  }
+                                                                }(),
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                              alignment:
+                                                                  AlignmentDirectional(
+                                                                      0.0, 0.0),
+                                                              child: Text(
+                                                                () {
+                                                                  if (animaisExistentesOfflineDescarteItem
+                                                                          .grupoAnimal ==
+                                                                      'Vacas') {
+                                                                    return 'VAC';
+                                                                  } else if (animaisExistentesOfflineDescarteItem
+                                                                          .grupoAnimal ==
+                                                                      'Novilhas') {
+                                                                    return 'NOV';
+                                                                  } else {
+                                                                    return 'N/C';
+                                                                  }
+                                                                }(),
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .titleMedium
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleMedium
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleMedium
+                                                                            .fontStyle,
+                                                                      ),
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          13.0,
+                                                                      letterSpacing:
+                                                                          0.0,
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .titleMedium
+                                                                          .fontStyle,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            () {
+                                                              if ((animaisExistentesOfflineDescarteItem
+                                                                          .nomeAnimal !=
+                                                                      '') &&
+                                                                  (animaisExistentesOfflineDescarteItem
+                                                                          .brincoAnimal !=
+                                                                      null) &&
+                                                                  (animaisExistentesOfflineDescarteItem
+                                                                          .brincoAnimal !=
+                                                                      -1)) {
+                                                                return '${animaisExistentesOfflineDescarteItem.nomeAnimal} - ${animaisExistentesOfflineDescarteItem.brincoAnimal.toString()}';
+                                                              } else if (animaisExistentesOfflineDescarteItem
+                                                                      .nomeAnimal !=
+                                                                  '') {
+                                                                return animaisExistentesOfflineDescarteItem
+                                                                    .nomeAnimal;
+                                                              } else {
+                                                                return animaisExistentesOfflineDescarteItem
+                                                                    .brincoAnimal
+                                                                    .toString();
+                                                              }
+                                                            }(),
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodyLarge
+                                                                .override(
+                                                                  font: GoogleFonts
+                                                                      .readexPro(
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyLarge
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyLarge
+                                                                        .fontStyle,
+                                                                  ),
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                  fontWeight: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .bodyLarge
+                                                                      .fontWeight,
+                                                                  fontStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .bodyLarge
+                                                                      .fontStyle,
+                                                                ),
+                                                          ),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsetsDirectional
+                                                                    .fromSTEB(
+                                                                        0.0,
+                                                                        4.0,
+                                                                        0.0,
+                                                                        0.0),
+                                                            child: Text(
+                                                              'Data do descarte: ${animaisExistentesOfflineDescarteItem.dtDescarteAnimal}',
+                                                              style: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .labelMedium
+                                                                  .override(
+                                                                    font: GoogleFonts
+                                                                        .readexPro(
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
+                                                                    letterSpacing:
+                                                                        0.0,
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelMedium
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelMedium
+                                                                        .fontStyle,
+                                                                  ),
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsetsDirectional
+                                                                    .fromSTEB(
+                                                                        0.0,
+                                                                        4.0,
+                                                                        0.0,
+                                                                        0.0),
+                                                            child: Text(
+                                                              'Motivo: ${animaisExistentesOfflineDescarteItem.motivoDescarteAnimal}',
+                                                              style: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .labelMedium
+                                                                  .override(
+                                                                    font: GoogleFonts
+                                                                        .readexPro(
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
+                                                                    letterSpacing:
+                                                                        0.0,
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelMedium
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelMedium
+                                                                        .fontStyle,
+                                                                  ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsetsDirectional
+                                                            .fromSTEB(0.0, 15.0,
+                                                                0.0, 15.0),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      0.0,
+                                                                      0.0,
+                                                                      10.0,
+                                                                      0.0),
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .max,
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    EdgeInsetsDirectional
+                                                                        .fromSTEB(
+                                                                            0.0,
+                                                                            4.0,
+                                                                            0.0,
+                                                                            0.0),
+                                                                child:
+                                                                    FFButtonWidget(
+                                                                  onPressed:
+                                                                      () async {
+                                                                    var confirmDialogResponse =
+                                                                        await showDialog<bool>(
+                                                                              context: context,
+                                                                              builder: (alertDialogContext) {
+                                                                                return AlertDialog(
+                                                                                  title: Text('Deseja realmente restaurar  o animal?'),
+                                                                                  content: Text('Ele voltará para a lista do rebanho com o status vazia.'),
+                                                                                  actions: [
+                                                                                    TextButton(
+                                                                                      onPressed: () => Navigator.pop(alertDialogContext, false),
+                                                                                      child: Text('Cancelar'),
+                                                                                    ),
+                                                                                    TextButton(
+                                                                                      onPressed: () => Navigator.pop(alertDialogContext, true),
+                                                                                      child: Text('Confirmar'),
+                                                                                    ),
+                                                                                  ],
+                                                                                );
+                                                                              },
+                                                                            ) ??
+                                                                            false;
+                                                                    if (confirmDialogResponse) {
+                                                                      FFAppState()
+                                                                          .updateAnimaisProdutoresExistentesAtIndex(
+                                                                        animaisExistentesOfflineDescarteIndex,
+                                                                        (e) => e
+                                                                          ..status =
+                                                                              'Vazia',
+                                                                      );
+                                                                      safeSetState(
+                                                                          () {});
+                                                                      FFAppState()
+                                                                          .addToAnimaisProdutoresEditados(
+                                                                              AnimaisProdutoresStruct(
+                                                                        uidTecnicoPropriedade: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.uidTecnicoPropriedade,
+                                                                        nomeAnimal: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.nomeAnimal,
+                                                                        racaAnimal: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.racaAnimal,
+                                                                        pesoAnimal: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.pesoAnimal,
+                                                                        dtNascimento: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtNascimento,
+                                                                        touro: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.touro,
+                                                                        vaca: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.vaca,
+                                                                        status:
+                                                                            'Vazia',
+                                                                        grupoAnimal: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.grupoAnimal,
+                                                                        dtUltimaInseminacao: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtUltimaInseminacao,
+                                                                        dtUltimoParto: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtUltimoParto,
+                                                                        liberaInseminacao: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.liberaInseminacao,
+                                                                        dtPartoPrevisto: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtPartoPrevisto,
+                                                                        dtSecPrevista: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtSecPrevista,
+                                                                        dtPrePartoPrevista: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtPrePartoPrevista,
+                                                                        dtPP: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtPP,
+                                                                        dtDgMais: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtDgMais,
+                                                                        dtDgMenos: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtDgMenos,
+                                                                        dtAborto: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtAborto,
+                                                                        dtSecagem: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtSecagem,
+                                                                        dtUltimoPP: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtUltimoPP,
+                                                                        nomeTouroUltimaInseminacao: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.nomeTouroUltimaInseminacao,
+                                                                        totalInseminacoes: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.totalInseminacoes,
+                                                                        totalPartos: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.totalPartos,
+                                                                        dtPreParto: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtPreParto,
+                                                                        motivoDescarteAnimal: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.motivoDescarteAnimal,
+                                                                        dtDescarteAnimal: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtDescarteAnimal,
+                                                                        dtUltimaAcao: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtUltimaAcao,
+                                                                        compararDtUltimaInseminacao: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.compararDtUltimaInseminacao,
+                                                                        nomeBrincoConcat: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.nomeBrincoConcat,
+                                                                        idGrupoAnimal: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.idGrupoAnimal,
+                                                                        dtUltimoPartoContingencia: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtUltimoPartoContingencia,
+                                                                        idStatusAnimal: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.idStatusAnimal,
+                                                                        dtInducaoLactacao: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtInducaoLactacao,
+                                                                        dtDesmame: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.dtDesmame,
+                                                                        brincoAnimal: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.brincoAnimal,
+                                                                        brincoAnimalOrder: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.brincoAnimalOrder,
+                                                                        uidAnimal: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.uidAnimal,
+                                                                        uidAnimalOffline: FFAppState()
+                                                                            .animaisProdutoresExistentes
+                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
+                                                                            ?.uidAnimalOffline,
+                                                                      ));
+                                                                      safeSetState(
+                                                                          () {});
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                      return;
+                                                                    } else {
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    }
+                                                                  },
+                                                                  text:
+                                                                      'Restaurar',
+                                                                  icon: Icon(
+                                                                    Icons
+                                                                        .restore,
+                                                                    size: 15.0,
+                                                                  ),
+                                                                  options:
+                                                                      FFButtonOptions(
+                                                                    width:
+                                                                        100.0,
+                                                                    height:
+                                                                        40.0,
+                                                                    padding:
+                                                                        EdgeInsets.all(
+                                                                            0.0),
+                                                                    iconPadding:
+                                                                        EdgeInsetsDirectional.fromSTEB(
+                                                                            0.0,
+                                                                            0.0,
+                                                                            0.0,
+                                                                            0.0),
+                                                                    color: Color(
+                                                                        0xFF12BE24),
+                                                                    textStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .titleSmall
+                                                                        .override(
+                                                                          font:
+                                                                              GoogleFonts.readexPro(
+                                                                            fontWeight:
+                                                                                FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                                                                            fontStyle:
+                                                                                FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                                                                          ),
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontSize:
+                                                                              12.0,
+                                                                          letterSpacing:
+                                                                              0.0,
+                                                                          fontWeight: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontWeight,
+                                                                          fontStyle: FlutterFlowTheme.of(context)
+                                                                              .titleSmall
+                                                                              .fontStyle,
+                                                                        ),
+                                                                    elevation:
+                                                                        3.0,
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      color: Colors
+                                                                          .transparent,
+                                                                      width:
+                                                                          1.0,
+                                                                    ),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            8.0),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      0.0,
+                                                                      0.0,
+                                                                      10.0,
+                                                                      0.0),
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .max,
+                                                            children: [],
+                                                          ),
+                                                        ),
+                                                        Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          4.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                              child:
+                                                                  FFButtonWidget(
                                                                 onPressed:
                                                                     () async {
-                                                                  if ((animaisProdutoresOfflineInducaoItem
-                                                                              .grupoAnimal ==
-                                                                          'Novilha') ||
-                                                                      (animaisProdutoresOfflineInducaoItem
-                                                                              .grupoAnimal ==
-                                                                          'Novilhas')) {
+                                                                  var confirmDialogResponse =
+                                                                      await showDialog<
+                                                                              bool>(
+                                                                            context:
+                                                                                context,
+                                                                            builder:
+                                                                                (alertDialogContext) {
+                                                                              return AlertDialog(
+                                                                                title: Text('Deseja realmente apagar o animal?'),
+                                                                                content: Text('Essa ação é irreversível.'),
+                                                                                actions: [
+                                                                                  TextButton(
+                                                                                    onPressed: () => Navigator.pop(alertDialogContext, false),
+                                                                                    child: Text('Cancelar'),
+                                                                                  ),
+                                                                                  TextButton(
+                                                                                    onPressed: () => Navigator.pop(alertDialogContext, true),
+                                                                                    child: Text('Confirmar'),
+                                                                                  ),
+                                                                                ],
+                                                                              );
+                                                                            },
+                                                                          ) ??
+                                                                          false;
+                                                                  if (confirmDialogResponse) {
                                                                     FFAppState()
-                                                                        .updateAnimaisProdutoresOfflineAtIndex(
-                                                                      animaisProdutoresOfflineInducaoIndex,
-                                                                      (e) => e
-                                                                        ..grupoAnimal =
-                                                                            'Vacas',
-                                                                    );
+                                                                        .addToAnimaisApagadosExistentesOffline(
+                                                                            AnimaisApagadosExistentesOfflineStruct(
+                                                                      uidAnimal:
+                                                                          animaisExistentesOfflineDescarteItem
+                                                                              .uidAnimal,
+                                                                      uidTecnicoPropriedade:
+                                                                          widget
+                                                                              .uidPropriedade,
+                                                                    ));
                                                                     safeSetState(
                                                                         () {});
+                                                                    FFAppState()
+                                                                        .removeAtIndexFromAnimaisProdutoresExistentes(
+                                                                            animaisExistentesOfflineDescarteIndex);
+                                                                    safeSetState(
+                                                                        () {});
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                    return;
+                                                                  } else {
+                                                                    Navigator.pop(
+                                                                        context);
                                                                   }
-
-                                                                  await showModalBottomSheet(
-                                                                    isScrollControlled:
-                                                                        true,
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .transparent,
-                                                                    enableDrag:
-                                                                        false,
-                                                                    context:
-                                                                        context,
-                                                                    builder:
-                                                                        (context) {
-                                                                      return GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          FocusScope.of(context)
-                                                                              .unfocus();
-                                                                          FocusManager
-                                                                              .instance
-                                                                              .primaryFocus
-                                                                              ?.unfocus();
-                                                                        },
-                                                                        child:
-                                                                            Padding(
-                                                                          padding:
-                                                                              MediaQuery.viewInsetsOf(context),
-                                                                          child:
-                                                                              RegistrarPartoInduzidoOfflineWidget(
-                                                                            uidPropriedade:
-                                                                                widget.uidPropriedade!,
-                                                                            nomePropriedade:
-                                                                                widget.nomePropriedade!,
-                                                                            uidTecnico:
-                                                                                widget.uidTecnico!,
-                                                                            emailPropriedade:
-                                                                                widget.emailPropriedade!,
-                                                                            visitaPresencial:
-                                                                                widget.visitaPresencial!,
-                                                                            diasDg:
-                                                                                widget.diasDg!,
-                                                                            nomeAnimal:
-                                                                                animaisProdutoresOfflineInducaoItem.nomeAnimal,
-                                                                            itemUidIndex:
-                                                                                animaisProdutoresOfflineInducaoIndex,
-                                                                            uidAnimalOffline:
-                                                                                animaisProdutoresOfflineInducaoItem.uidAnimalOffline,
-                                                                          ),
-                                                                        ),
-                                                                      );
-                                                                    },
-                                                                  ).then((value) =>
-                                                                      safeSetState(
-                                                                          () {}));
                                                                 },
                                                                 text:
-                                                                    'Induzir lactação',
+                                                                    'Eliminar',
                                                                 icon: Icon(
-                                                                  Icons
-                                                                      .add_alert,
+                                                                  Icons.clear,
                                                                   size: 15.0,
                                                                 ),
                                                                 options:
                                                                     FFButtonOptions(
-                                                                  width: 140.0,
+                                                                  width: 100.0,
                                                                   height: 40.0,
                                                                   padding:
                                                                       EdgeInsets
@@ -3877,7 +4770,7 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                           0.0,
                                                                           0.0),
                                                                   color: Color(
-                                                                      0xFF12BE24),
+                                                                      0xFFAE0303),
                                                                   textStyle: FlutterFlowTheme.of(
                                                                           context)
                                                                       .titleSmall
@@ -3918,212 +4811,135 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                               8.0),
                                                                 ),
                                                               ),
-                                                            ],
-                                                          ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ],
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                            ],
-                          ),
-                        ),
-                        SingleChildScrollView(
-                          primary: false,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                                Builder(
-                                  builder: (context) {
-                                    final animaisExistentesOfflineDescarte =
-                                        FFAppState()
-                                            .animaisProdutoresExistentes
-                                            .toList();
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                              Builder(
+                                builder: (context) {
+                                  final animaisProdutoresOfflineDescarte =
+                                      FFAppState()
+                                          .animaisProdutoresOffline
+                                          .toList();
 
-                                    return ListView.builder(
-                                      padding: EdgeInsets.zero,
-                                      primary: false,
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.vertical,
-                                      itemCount:
-                                          animaisExistentesOfflineDescarte
-                                              .length,
-                                      itemBuilder: (context,
-                                          animaisExistentesOfflineDescarteIndex) {
-                                        final animaisExistentesOfflineDescarteItem =
-                                            animaisExistentesOfflineDescarte[
-                                                animaisExistentesOfflineDescarteIndex];
-                                        return Visibility(
-                                          visible: (animaisExistentesOfflineDescarteItem
-                                                      .uidTecnicoPropriedade ==
-                                                  widget.uidPropriedade) &&
-                                              (animaisExistentesOfflineDescarteItem
-                                                      .status ==
-                                                  'Descarte'),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    16.0, 8.0, 16.0, 0.0),
-                                            child: InkWell(
-                                              splashColor: Colors.transparent,
-                                              focusColor: Colors.transparent,
-                                              hoverColor: Colors.transparent,
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              onTap: () async {
-                                                context.pushNamed(
-                                                  ProntuarioAnimalWidget
-                                                      .routeName,
-                                                  queryParameters: {
-                                                    'uidPropriedade':
-                                                        serializeParam(
-                                                      widget.uidPropriedade,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'nomePropriedade':
-                                                        serializeParam(
-                                                      widget.nomePropriedade,
-                                                      ParamType.String,
-                                                    ),
-                                                    'uidTecnico':
-                                                        serializeParam(
-                                                      widget.uidTecnico,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'emailPropriedade':
-                                                        serializeParam(
-                                                      widget.emailPropriedade,
-                                                      ParamType.String,
-                                                    ),
-                                                    'uidAnimaisProdutores':
-                                                        serializeParam(
-                                                      animaisExistentesOfflineDescarteItem
-                                                          .uidAnimal,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'grupoPredominante':
-                                                        serializeParam(
-                                                      animaisExistentesOfflineDescarteItem
-                                                          .grupoAnimal,
-                                                      ParamType.String,
-                                                    ),
-                                                    'visitaPresencial':
-                                                        serializeParam(
-                                                      widget.visitaPresencial,
-                                                      ParamType.bool,
-                                                    ),
-                                                    'diasDg': serializeParam(
-                                                      widget.diasDg,
-                                                      ParamType.String,
-                                                    ),
-                                                  }.withoutNulls,
-                                                );
-                                              },
-                                              child: Container(
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .primaryBackground,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12.0),
-                                                ),
-                                                child: ListView(
-                                                  padding: EdgeInsets.zero,
-                                                  primary: false,
-                                                  shrinkWrap: true,
-                                                  scrollDirection:
-                                                      Axis.vertical,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      children: [
-                                                        Column(
-                                                          mainAxisSize:
-                                                              MainAxisSize.max,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(
-                                                                          10.0),
-                                                              child: Container(
-                                                                width: 44.0,
-                                                                height: 44.0,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: () {
-                                                                    if (animaisExistentesOfflineDescarteItem
-                                                                            .grupoAnimal ==
-                                                                        'Vacas') {
-                                                                      return Color(
-                                                                          0xFF048508);
-                                                                    } else if (animaisExistentesOfflineDescarteItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas') {
-                                                                      return Color(
-                                                                          0xFFFF0076);
-                                                                    } else {
-                                                                      return Color(
-                                                                          0x00000000);
-                                                                    }
-                                                                  }(),
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                ),
-                                                                alignment:
-                                                                    AlignmentDirectional(
-                                                                        0.0,
-                                                                        0.0),
-                                                                child: Text(
-                                                                  () {
-                                                                    if (animaisExistentesOfflineDescarteItem
-                                                                            .grupoAnimal ==
-                                                                        'Vacas') {
-                                                                      return 'VAC';
-                                                                    } else if (animaisExistentesOfflineDescarteItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas') {
-                                                                      return 'NOV';
-                                                                    } else {
-                                                                      return 'N/C';
-                                                                    }
-                                                                  }(),
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .titleMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .titleMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            13.0,
-                                                                        letterSpacing:
-                                                                            0.0,
+                                  return ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    primary: false,
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.vertical,
+                                    itemCount:
+                                        animaisProdutoresOfflineDescarte.length,
+                                    itemBuilder: (context,
+                                        animaisProdutoresOfflineDescarteIndex) {
+                                      final animaisProdutoresOfflineDescarteItem =
+                                          animaisProdutoresOfflineDescarte[
+                                              animaisProdutoresOfflineDescarteIndex];
+                                      return Visibility(
+                                        visible: (animaisProdutoresOfflineDescarteItem
+                                                    .uidTecnicoPropriedade ==
+                                                widget.uidPropriedade) &&
+                                            (animaisProdutoresOfflineDescarteItem
+                                                    .status ==
+                                                'Descarte'),
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  16.0, 8.0, 16.0, 0.0),
+                                          child: InkWell(
+                                            splashColor: Colors.transparent,
+                                            focusColor: Colors.transparent,
+                                            hoverColor: Colors.transparent,
+                                            highlightColor: Colors.transparent,
+                                            onTap: () async {},
+                                            child: Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .primaryBackground,
+                                                borderRadius:
+                                                    BorderRadius.circular(12.0),
+                                              ),
+                                              child: ListView(
+                                                padding: EdgeInsets.zero,
+                                                primary: false,
+                                                shrinkWrap: true,
+                                                scrollDirection: Axis.vertical,
+                                                children: [
+                                                  Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
+                                                    children: [
+                                                      Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    10.0),
+                                                            child: Container(
+                                                              width: 44.0,
+                                                              height: 44.0,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: () {
+                                                                  if (animaisProdutoresOfflineDescarteItem
+                                                                          .grupoAnimal ==
+                                                                      'Vacas') {
+                                                                    return Color(
+                                                                        0xFF048508);
+                                                                  } else if (animaisProdutoresOfflineDescarteItem
+                                                                          .grupoAnimal ==
+                                                                      'Novilhas') {
+                                                                    return Color(
+                                                                        0xFFFF0076);
+                                                                  } else {
+                                                                    return Color(
+                                                                        0x00000000);
+                                                                  }
+                                                                }(),
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                              alignment:
+                                                                  AlignmentDirectional(
+                                                                      0.0, 0.0),
+                                                              child: Text(
+                                                                () {
+                                                                  if (animaisProdutoresOfflineDescarteItem
+                                                                          .grupoAnimal ==
+                                                                      'Vacas') {
+                                                                    return 'VAC';
+                                                                  } else if (animaisProdutoresOfflineDescarteItem
+                                                                          .grupoAnimal ==
+                                                                      'Novilhas') {
+                                                                    return 'NOV';
+                                                                  } else {
+                                                                    return 'N/C';
+                                                                  }
+                                                                }(),
+                                                                style: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .titleMedium
+                                                                    .override(
+                                                                      font: GoogleFonts
+                                                                          .readexPro(
                                                                         fontWeight: FlutterFlowTheme.of(context)
                                                                             .titleMedium
                                                                             .fontWeight,
@@ -4131,58 +4947,62 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                             .titleMedium
                                                                             .fontStyle,
                                                                       ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        Column(
-                                                          mainAxisSize:
-                                                              MainAxisSize.max,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            Text(
-                                                              () {
-                                                                if ((animaisExistentesOfflineDescarteItem
-                                                                            .nomeAnimal !=
-                                                                        '') &&
-                                                                    (animaisExistentesOfflineDescarteItem
-                                                                            .brincoAnimal !=
-                                                                        null) &&
-                                                                    (animaisExistentesOfflineDescarteItem
-                                                                            .brincoAnimal !=
-                                                                        -1)) {
-                                                                  return '${animaisExistentesOfflineDescarteItem.nomeAnimal} - ${animaisExistentesOfflineDescarteItem.brincoAnimal.toString()}';
-                                                                } else if (animaisExistentesOfflineDescarteItem
-                                                                        .nomeAnimal !=
-                                                                    '') {
-                                                                  return animaisExistentesOfflineDescarteItem
-                                                                      .nomeAnimal;
-                                                                } else {
-                                                                  return animaisExistentesOfflineDescarteItem
-                                                                      .brincoAnimal
-                                                                      .toString();
-                                                                }
-                                                              }(),
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .bodyLarge
-                                                                  .override(
-                                                                    font: GoogleFonts
-                                                                        .readexPro(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          13.0,
+                                                                      letterSpacing:
+                                                                          0.0,
                                                                       fontWeight: FlutterFlowTheme.of(
                                                                               context)
-                                                                          .bodyLarge
+                                                                          .titleMedium
                                                                           .fontWeight,
                                                                       fontStyle: FlutterFlowTheme.of(
                                                                               context)
-                                                                          .bodyLarge
+                                                                          .titleMedium
                                                                           .fontStyle,
                                                                     ),
-                                                                    letterSpacing:
-                                                                        0.0,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.max,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            () {
+                                                              if ((animaisProdutoresOfflineDescarteItem
+                                                                          .nomeAnimal !=
+                                                                      '') &&
+                                                                  (animaisProdutoresOfflineDescarteItem
+                                                                          .brincoAnimal !=
+                                                                      null) &&
+                                                                  (animaisProdutoresOfflineDescarteItem
+                                                                          .brincoAnimal !=
+                                                                      -1)) {
+                                                                return '${animaisProdutoresOfflineDescarteItem.nomeAnimal} - ${animaisProdutoresOfflineDescarteItem.brincoAnimal.toString()}';
+                                                              } else if (animaisProdutoresOfflineDescarteItem
+                                                                      .nomeAnimal !=
+                                                                  '') {
+                                                                return animaisProdutoresOfflineDescarteItem
+                                                                    .nomeAnimal;
+                                                              } else {
+                                                                return animaisProdutoresOfflineDescarteItem
+                                                                    .brincoAnimal
+                                                                    .toString();
+                                                              }
+                                                            }(),
+                                                            style: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .bodyLarge
+                                                                .override(
+                                                                  font: GoogleFonts
+                                                                      .readexPro(
                                                                     fontWeight: FlutterFlowTheme.of(
                                                                             context)
                                                                         .bodyLarge
@@ -4192,451 +5012,164 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                         .bodyLarge
                                                                         .fontStyle,
                                                                   ),
-                                                            ),
-                                                            Padding(
-                                                              padding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          4.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                              child: Text(
-                                                                'Data do descarte: ${animaisExistentesOfflineDescarteItem.dtDescarteAnimal}',
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .labelMedium
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .readexPro(
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .labelMedium
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .labelMedium
-                                                                          .fontStyle,
-                                                                    ),
-                                                              ),
-                                                            ),
-                                                            Padding(
-                                                              padding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          4.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                              child: Text(
-                                                                'Motivo: ${animaisExistentesOfflineDescarteItem.motivoDescarteAnimal}',
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .labelMedium
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .readexPro(
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .labelMedium
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .labelMedium
-                                                                          .fontStyle,
-                                                                    ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsetsDirectional
-                                                              .fromSTEB(
-                                                                  0.0,
-                                                                  15.0,
-                                                                  0.0,
-                                                                  15.0),
-                                                      child: Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.max,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
+                                                                  letterSpacing:
+                                                                      0.0,
+                                                                  fontWeight: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .bodyLarge
+                                                                      .fontWeight,
+                                                                  fontStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .bodyLarge
+                                                                      .fontStyle,
+                                                                ),
+                                                          ),
                                                           Padding(
                                                             padding:
                                                                 EdgeInsetsDirectional
                                                                     .fromSTEB(
                                                                         0.0,
+                                                                        4.0,
                                                                         0.0,
-                                                                        10.0,
                                                                         0.0),
-                                                            child: Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .max,
-                                                              children: [
-                                                                Padding(
-                                                                  padding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          4.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                                  child:
-                                                                      FFButtonWidget(
-                                                                    onPressed:
-                                                                        () async {
-                                                                      var confirmDialogResponse = await showDialog<
-                                                                              bool>(
-                                                                            context:
-                                                                                context,
-                                                                            builder:
-                                                                                (alertDialogContext) {
-                                                                              return AlertDialog(
-                                                                                title: Text('Deseja realmente restaurar  o animal?'),
-                                                                                content: Text('Ele voltará para a lista do rebanho com o status vazia.'),
-                                                                                actions: [
-                                                                                  TextButton(
-                                                                                    onPressed: () => Navigator.pop(alertDialogContext, false),
-                                                                                    child: Text('Cancelar'),
-                                                                                  ),
-                                                                                  TextButton(
-                                                                                    onPressed: () => Navigator.pop(alertDialogContext, true),
-                                                                                    child: Text('Confirmar'),
-                                                                                  ),
-                                                                                ],
-                                                                              );
-                                                                            },
-                                                                          ) ??
-                                                                          false;
-                                                                      if (confirmDialogResponse) {
-                                                                        FFAppState()
-                                                                            .updateAnimaisProdutoresExistentesAtIndex(
-                                                                          animaisExistentesOfflineDescarteIndex,
-                                                                          (e) => e
-                                                                            ..status =
-                                                                                'Vazia',
-                                                                        );
-                                                                        safeSetState(
-                                                                            () {});
-                                                                        FFAppState()
-                                                                            .addToAnimaisProdutoresEditados(AnimaisProdutoresStruct(
-                                                                          uidTecnicoPropriedade: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.uidTecnicoPropriedade,
-                                                                          nomeAnimal: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.nomeAnimal,
-                                                                          racaAnimal: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.racaAnimal,
-                                                                          pesoAnimal: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.pesoAnimal,
-                                                                          dtNascimento: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtNascimento,
-                                                                          touro: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.touro,
-                                                                          vaca: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.vaca,
-                                                                          status:
+                                                            child: Text(
+                                                              'Data do descarte: ${animaisProdutoresOfflineDescarteItem.dtDescarteAnimal}',
+                                                              style: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .labelMedium
+                                                                  .override(
+                                                                    font: GoogleFonts
+                                                                        .readexPro(
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
+                                                                    letterSpacing:
+                                                                        0.0,
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelMedium
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelMedium
+                                                                        .fontStyle,
+                                                                  ),
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsetsDirectional
+                                                                    .fromSTEB(
+                                                                        0.0,
+                                                                        4.0,
+                                                                        0.0,
+                                                                        0.0),
+                                                            child: Text(
+                                                              'Motivo: ${animaisProdutoresOfflineDescarteItem.motivoDescarteAnimal}',
+                                                              style: FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .labelMedium
+                                                                  .override(
+                                                                    font: GoogleFonts
+                                                                        .readexPro(
+                                                                      fontWeight: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontWeight,
+                                                                      fontStyle: FlutterFlowTheme.of(
+                                                                              context)
+                                                                          .labelMedium
+                                                                          .fontStyle,
+                                                                    ),
+                                                                    letterSpacing:
+                                                                        0.0,
+                                                                    fontWeight: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelMedium
+                                                                        .fontWeight,
+                                                                    fontStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .labelMedium
+                                                                        .fontStyle,
+                                                                  ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsetsDirectional
+                                                            .fromSTEB(0.0, 15.0,
+                                                                0.0, 15.0),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.max,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      0.0,
+                                                                      0.0,
+                                                                      10.0,
+                                                                      0.0),
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .max,
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    EdgeInsetsDirectional
+                                                                        .fromSTEB(
+                                                                            0.0,
+                                                                            4.0,
+                                                                            0.0,
+                                                                            0.0),
+                                                                child:
+                                                                    FFButtonWidget(
+                                                                  onPressed:
+                                                                      () async {
+                                                                    var confirmDialogResponse =
+                                                                        await showDialog<bool>(
+                                                                              context: context,
+                                                                              builder: (alertDialogContext) {
+                                                                                return AlertDialog(
+                                                                                  title: Text('Deseja realmente restaurar  o animal?'),
+                                                                                  content: Text('Ele voltará para a lista do rebanho com o status vazia.'),
+                                                                                  actions: [
+                                                                                    TextButton(
+                                                                                      onPressed: () => Navigator.pop(alertDialogContext, false),
+                                                                                      child: Text('Cancelar'),
+                                                                                    ),
+                                                                                    TextButton(
+                                                                                      onPressed: () => Navigator.pop(alertDialogContext, true),
+                                                                                      child: Text('Confirmar'),
+                                                                                    ),
+                                                                                  ],
+                                                                                );
+                                                                              },
+                                                                            ) ??
+                                                                            false;
+                                                                    if (confirmDialogResponse) {
+                                                                      FFAppState()
+                                                                          .updateAnimaisProdutoresOfflineAtIndex(
+                                                                        animaisProdutoresOfflineDescarteIndex,
+                                                                        (e) => e
+                                                                          ..status =
                                                                               'Vazia',
-                                                                          grupoAnimal: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.grupoAnimal,
-                                                                          dtUltimaInseminacao: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtUltimaInseminacao,
-                                                                          dtUltimoParto: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtUltimoParto,
-                                                                          liberaInseminacao: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.liberaInseminacao,
-                                                                          dtPartoPrevisto: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtPartoPrevisto,
-                                                                          dtSecPrevista: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtSecPrevista,
-                                                                          dtPrePartoPrevista: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtPrePartoPrevista,
-                                                                          dtPP: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtPP,
-                                                                          dtDgMais: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtDgMais,
-                                                                          dtDgMenos: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtDgMenos,
-                                                                          dtAborto: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtAborto,
-                                                                          dtSecagem: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtSecagem,
-                                                                          dtUltimoPP: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtUltimoPP,
-                                                                          nomeTouroUltimaInseminacao: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.nomeTouroUltimaInseminacao,
-                                                                          totalInseminacoes: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.totalInseminacoes,
-                                                                          totalPartos: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.totalPartos,
-                                                                          dtPreParto: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtPreParto,
-                                                                          motivoDescarteAnimal: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.motivoDescarteAnimal,
-                                                                          dtDescarteAnimal: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtDescarteAnimal,
-                                                                          dtUltimaAcao: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtUltimaAcao,
-                                                                          compararDtUltimaInseminacao: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.compararDtUltimaInseminacao,
-                                                                          nomeBrincoConcat: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.nomeBrincoConcat,
-                                                                          idGrupoAnimal: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.idGrupoAnimal,
-                                                                          dtUltimoPartoContingencia: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtUltimoPartoContingencia,
-                                                                          idStatusAnimal: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.idStatusAnimal,
-                                                                          dtInducaoLactacao: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtInducaoLactacao,
-                                                                          dtDesmame: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.dtDesmame,
-                                                                          brincoAnimal: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.brincoAnimal,
-                                                                          brincoAnimalOrder: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.brincoAnimalOrder,
-                                                                          uidAnimal: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.uidAnimal,
-                                                                          uidAnimalOffline: FFAppState()
-                                                                              .animaisProdutoresExistentes
-                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                              ?.uidAnimalOffline,
-                                                                        ));
-                                                                        safeSetState(
-                                                                            () {});
-                                                                        Navigator.pop(
-                                                                            context);
-                                                                        return;
-                                                                      } else {
-                                                                        Navigator.pop(
-                                                                            context);
-                                                                      }
-                                                                    },
-                                                                    text:
-                                                                        'Restaurar',
-                                                                    icon: Icon(
-                                                                      Icons
-                                                                          .restore,
-                                                                      size:
-                                                                          15.0,
-                                                                    ),
-                                                                    options:
-                                                                        FFButtonOptions(
-                                                                      width:
-                                                                          100.0,
-                                                                      height:
-                                                                          40.0,
-                                                                      padding:
-                                                                          EdgeInsets.all(
-                                                                              0.0),
-                                                                      iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                                      color: Color(
-                                                                          0xFF12BE24),
-                                                                      textStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .override(
-                                                                            font:
-                                                                                GoogleFonts.readexPro(
-                                                                              fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                            ),
-                                                                            color:
-                                                                                Colors.white,
-                                                                            fontSize:
-                                                                                12.0,
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                            fontWeight:
-                                                                                FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                            fontStyle:
-                                                                                FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                          ),
-                                                                      elevation:
-                                                                          3.0,
-                                                                      borderSide:
-                                                                          BorderSide(
-                                                                        color: Colors
-                                                                            .transparent,
-                                                                        width:
-                                                                            1.0,
-                                                                      ),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8.0),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        0.0,
-                                                                        0.0,
-                                                                        10.0,
-                                                                        0.0),
-                                                            child: Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .max,
-                                                              children: [],
-                                                            ),
-                                                          ),
-                                                          Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .max,
-                                                            children: [
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            4.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                child:
-                                                                    FFButtonWidget(
-                                                                  onPressed:
-                                                                      () async {
-                                                                    var confirmDialogResponse =
-                                                                        await showDialog<bool>(
-                                                                              context: context,
-                                                                              builder: (alertDialogContext) {
-                                                                                return AlertDialog(
-                                                                                  title: Text('Deseja realmente apagar o animal?'),
-                                                                                  content: Text('Essa ação é irreversível.'),
-                                                                                  actions: [
-                                                                                    TextButton(
-                                                                                      onPressed: () => Navigator.pop(alertDialogContext, false),
-                                                                                      child: Text('Cancelar'),
-                                                                                    ),
-                                                                                    TextButton(
-                                                                                      onPressed: () => Navigator.pop(alertDialogContext, true),
-                                                                                      child: Text('Confirmar'),
-                                                                                    ),
-                                                                                  ],
-                                                                                );
-                                                                              },
-                                                                            ) ??
-                                                                            false;
-                                                                    if (confirmDialogResponse) {
-                                                                      FFAppState()
-                                                                          .addToAnimaisApagadosExistentesOffline(
-                                                                              AnimaisApagadosExistentesOfflineStruct(
-                                                                        uidAnimal:
-                                                                            animaisExistentesOfflineDescarteItem.uidAnimal,
-                                                                        uidTecnicoPropriedade:
-                                                                            widget.uidPropriedade,
-                                                                      ));
-                                                                      safeSetState(
-                                                                          () {});
-                                                                      FFAppState()
-                                                                          .removeAtIndexFromAnimaisProdutoresExistentes(
-                                                                              animaisExistentesOfflineDescarteIndex);
+                                                                      );
                                                                       safeSetState(
                                                                           () {});
                                                                       Navigator.pop(
@@ -4648,9 +5181,10 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                     }
                                                                   },
                                                                   text:
-                                                                      'Eliminar',
+                                                                      'Restaurar',
                                                                   icon: Icon(
-                                                                    Icons.clear,
+                                                                    Icons
+                                                                        .restore,
                                                                     size: 15.0,
                                                                   ),
                                                                   options:
@@ -4669,7 +5203,7 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                             0.0,
                                                                             0.0),
                                                                     color: Color(
-                                                                        0xFFAE0303),
+                                                                        0xFF12BE24),
                                                                     textStyle: FlutterFlowTheme.of(
                                                                             context)
                                                                         .titleSmall
@@ -4711,220 +5245,26 @@ class _SecasWidgetState extends State<SecasWidget>
                                                               ),
                                                             ],
                                                           ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                                Builder(
-                                  builder: (context) {
-                                    final animaisProdutoresOfflineDescarte =
-                                        FFAppState()
-                                            .animaisProdutoresOffline
-                                            .toList();
-
-                                    return ListView.builder(
-                                      padding: EdgeInsets.zero,
-                                      primary: false,
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.vertical,
-                                      itemCount:
-                                          animaisProdutoresOfflineDescarte
-                                              .length,
-                                      itemBuilder: (context,
-                                          animaisProdutoresOfflineDescarteIndex) {
-                                        final animaisProdutoresOfflineDescarteItem =
-                                            animaisProdutoresOfflineDescarte[
-                                                animaisProdutoresOfflineDescarteIndex];
-                                        return Visibility(
-                                          visible: (animaisProdutoresOfflineDescarteItem
-                                                      .uidTecnicoPropriedade ==
-                                                  widget.uidPropriedade) &&
-                                              (animaisProdutoresOfflineDescarteItem
-                                                      .status ==
-                                                  'Descarte'),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    16.0, 8.0, 16.0, 0.0),
-                                            child: InkWell(
-                                              splashColor: Colors.transparent,
-                                              focusColor: Colors.transparent,
-                                              hoverColor: Colors.transparent,
-                                              highlightColor:
-                                                  Colors.transparent,
-                                              onTap: () async {},
-                                              child: Container(
-                                                width: double.infinity,
-                                                decoration: BoxDecoration(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .primaryBackground,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12.0),
-                                                ),
-                                                child: ListView(
-                                                  padding: EdgeInsets.zero,
-                                                  primary: false,
-                                                  shrinkWrap: true,
-                                                  scrollDirection:
-                                                      Axis.vertical,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      children: [
-                                                        Column(
-                                                          mainAxisSize:
-                                                              MainAxisSize.max,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(
-                                                                          10.0),
-                                                              child: Container(
-                                                                width: 44.0,
-                                                                height: 44.0,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: () {
-                                                                    if (animaisProdutoresOfflineDescarteItem
-                                                                            .grupoAnimal ==
-                                                                        'Vacas') {
-                                                                      return Color(
-                                                                          0xFF048508);
-                                                                    } else if (animaisProdutoresOfflineDescarteItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas') {
-                                                                      return Color(
-                                                                          0xFFFF0076);
-                                                                    } else {
-                                                                      return Color(
-                                                                          0x00000000);
-                                                                    }
-                                                                  }(),
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                ),
-                                                                alignment:
-                                                                    AlignmentDirectional(
-                                                                        0.0,
-                                                                        0.0),
-                                                                child: Text(
-                                                                  () {
-                                                                    if (animaisProdutoresOfflineDescarteItem
-                                                                            .grupoAnimal ==
-                                                                        'Vacas') {
-                                                                      return 'VAC';
-                                                                    } else if (animaisProdutoresOfflineDescarteItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas') {
-                                                                      return 'NOV';
-                                                                    } else {
-                                                                      return 'N/C';
-                                                                    }
-                                                                  }(),
-                                                                  style: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleMedium
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .titleMedium
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .titleMedium
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            13.0,
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsetsDirectional
+                                                                  .fromSTEB(
+                                                                      0.0,
+                                                                      0.0,
+                                                                      10.0,
+                                                                      0.0),
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .max,
+                                                            children: [],
+                                                          ),
                                                         ),
                                                         Column(
                                                           mainAxisSize:
                                                               MainAxisSize.max,
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
                                                           children: [
-                                                            Text(
-                                                              () {
-                                                                if ((animaisProdutoresOfflineDescarteItem
-                                                                            .nomeAnimal !=
-                                                                        '') &&
-                                                                    (animaisProdutoresOfflineDescarteItem
-                                                                            .brincoAnimal !=
-                                                                        null) &&
-                                                                    (animaisProdutoresOfflineDescarteItem
-                                                                            .brincoAnimal !=
-                                                                        -1)) {
-                                                                  return '${animaisProdutoresOfflineDescarteItem.nomeAnimal} - ${animaisProdutoresOfflineDescarteItem.brincoAnimal.toString()}';
-                                                                } else if (animaisProdutoresOfflineDescarteItem
-                                                                        .nomeAnimal !=
-                                                                    '') {
-                                                                  return animaisProdutoresOfflineDescarteItem
-                                                                      .nomeAnimal;
-                                                                } else {
-                                                                  return animaisProdutoresOfflineDescarteItem
-                                                                      .brincoAnimal
-                                                                      .toString();
-                                                                }
-                                                              }(),
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .bodyLarge
-                                                                  .override(
-                                                                    font: GoogleFonts
-                                                                        .readexPro(
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .bodyLarge
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .bodyLarge
-                                                                          .fontStyle,
-                                                                    ),
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                    fontWeight: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .bodyLarge
-                                                                        .fontWeight,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .bodyLarge
-                                                                        .fontStyle,
-                                                                  ),
-                                                            ),
                                                             Padding(
                                                               padding:
                                                                   EdgeInsetsDirectional
@@ -4933,122 +5273,20 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                           4.0,
                                                                           0.0,
                                                                           0.0),
-                                                              child: Text(
-                                                                'Data do descarte: ${animaisProdutoresOfflineDescarteItem.dtDescarteAnimal}',
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .labelMedium
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .readexPro(
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .labelMedium
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .labelMedium
-                                                                          .fontStyle,
-                                                                    ),
-                                                              ),
-                                                            ),
-                                                            Padding(
-                                                              padding:
-                                                                  EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          4.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                              child: Text(
-                                                                'Motivo: ${animaisProdutoresOfflineDescarteItem.motivoDescarteAnimal}',
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .labelMedium
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .readexPro(
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .labelMedium
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .labelMedium
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .labelMedium
-                                                                          .fontStyle,
-                                                                    ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsetsDirectional
-                                                              .fromSTEB(
-                                                                  0.0,
-                                                                  15.0,
-                                                                  0.0,
-                                                                  15.0),
-                                                      child: Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.max,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        0.0,
-                                                                        0.0,
-                                                                        10.0,
-                                                                        0.0),
-                                                            child: Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .max,
-                                                              children: [
-                                                                Padding(
-                                                                  padding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          4.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                                  child:
-                                                                      FFButtonWidget(
-                                                                    onPressed:
-                                                                        () async {
-                                                                      var confirmDialogResponse = await showDialog<
+                                                              child:
+                                                                  FFButtonWidget(
+                                                                onPressed:
+                                                                    () async {
+                                                                  var confirmDialogResponse =
+                                                                      await showDialog<
                                                                               bool>(
                                                                             context:
                                                                                 context,
                                                                             builder:
                                                                                 (alertDialogContext) {
                                                                               return AlertDialog(
-                                                                                title: Text('Deseja realmente restaurar  o animal?'),
-                                                                                content: Text('Ele voltará para a lista do rebanho com o status vazia.'),
+                                                                                title: Text('Deseja realmente apagar o animal?'),
+                                                                                content: Text('Essa ação é irreversível.'),
                                                                                 actions: [
                                                                                   TextButton(
                                                                                     onPressed: () => Navigator.pop(alertDialogContext, false),
@@ -5063,193 +5301,48 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                             },
                                                                           ) ??
                                                                           false;
-                                                                      if (confirmDialogResponse) {
-                                                                        FFAppState()
-                                                                            .updateAnimaisProdutoresOfflineAtIndex(
-                                                                          animaisProdutoresOfflineDescarteIndex,
-                                                                          (e) => e
-                                                                            ..status =
-                                                                                'Vazia',
-                                                                        );
-                                                                        safeSetState(
-                                                                            () {});
-                                                                        Navigator.pop(
-                                                                            context);
-                                                                        return;
-                                                                      } else {
-                                                                        Navigator.pop(
-                                                                            context);
-                                                                      }
-                                                                    },
-                                                                    text:
-                                                                        'Restaurar',
-                                                                    icon: Icon(
-                                                                      Icons
-                                                                          .restore,
-                                                                      size:
-                                                                          15.0,
-                                                                    ),
-                                                                    options:
-                                                                        FFButtonOptions(
-                                                                      width:
-                                                                          100.0,
-                                                                      height:
-                                                                          40.0,
-                                                                      padding:
-                                                                          EdgeInsets.all(
+                                                                  if (confirmDialogResponse) {
+                                                                    FFAppState()
+                                                                        .removeAtIndexFromAnimaisProdutoresOffline(
+                                                                            animaisProdutoresOfflineDescarteIndex);
+                                                                    safeSetState(
+                                                                        () {});
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                    return;
+                                                                  } else {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  }
+                                                                },
+                                                                text:
+                                                                    'Eliminar',
+                                                                icon: Icon(
+                                                                  Icons.clear,
+                                                                  size: 15.0,
+                                                                ),
+                                                                options:
+                                                                    FFButtonOptions(
+                                                                  width: 100.0,
+                                                                  height: 40.0,
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
                                                                               0.0),
-                                                                      iconPadding: EdgeInsetsDirectional.fromSTEB(
+                                                                  iconPadding: EdgeInsetsDirectional
+                                                                      .fromSTEB(
                                                                           0.0,
                                                                           0.0,
                                                                           0.0,
                                                                           0.0),
-                                                                      color: Color(
-                                                                          0xFF12BE24),
-                                                                      textStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .override(
-                                                                            font:
-                                                                                GoogleFonts.readexPro(
-                                                                              fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                              fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                            ),
-                                                                            color:
-                                                                                Colors.white,
-                                                                            fontSize:
-                                                                                12.0,
-                                                                            letterSpacing:
-                                                                                0.0,
-                                                                            fontWeight:
-                                                                                FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                            fontStyle:
-                                                                                FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                          ),
-                                                                      elevation:
-                                                                          3.0,
-                                                                      borderSide:
-                                                                          BorderSide(
-                                                                        color: Colors
-                                                                            .transparent,
-                                                                        width:
-                                                                            1.0,
-                                                                      ),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              8.0),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        0.0,
-                                                                        0.0,
-                                                                        10.0,
-                                                                        0.0),
-                                                            child: Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .max,
-                                                              children: [],
-                                                            ),
-                                                          ),
-                                                          Column(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .max,
-                                                            children: [
-                                                              Padding(
-                                                                padding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            4.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                child:
-                                                                    FFButtonWidget(
-                                                                  onPressed:
-                                                                      () async {
-                                                                    var confirmDialogResponse =
-                                                                        await showDialog<bool>(
-                                                                              context: context,
-                                                                              builder: (alertDialogContext) {
-                                                                                return AlertDialog(
-                                                                                  title: Text('Deseja realmente apagar o animal?'),
-                                                                                  content: Text('Essa ação é irreversível.'),
-                                                                                  actions: [
-                                                                                    TextButton(
-                                                                                      onPressed: () => Navigator.pop(alertDialogContext, false),
-                                                                                      child: Text('Cancelar'),
-                                                                                    ),
-                                                                                    TextButton(
-                                                                                      onPressed: () => Navigator.pop(alertDialogContext, true),
-                                                                                      child: Text('Confirmar'),
-                                                                                    ),
-                                                                                  ],
-                                                                                );
-                                                                              },
-                                                                            ) ??
-                                                                            false;
-                                                                    if (confirmDialogResponse) {
-                                                                      FFAppState()
-                                                                          .removeAtIndexFromAnimaisProdutoresOffline(
-                                                                              animaisProdutoresOfflineDescarteIndex);
-                                                                      safeSetState(
-                                                                          () {});
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                      return;
-                                                                    } else {
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                    }
-                                                                  },
-                                                                  text:
-                                                                      'Eliminar',
-                                                                  icon: Icon(
-                                                                    Icons.clear,
-                                                                    size: 15.0,
-                                                                  ),
-                                                                  options:
-                                                                      FFButtonOptions(
-                                                                    width:
-                                                                        100.0,
-                                                                    height:
-                                                                        40.0,
-                                                                    padding:
-                                                                        EdgeInsets.all(
-                                                                            0.0),
-                                                                    iconPadding:
-                                                                        EdgeInsetsDirectional.fromSTEB(
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                    color: Color(
-                                                                        0xFFAE0303),
-                                                                    textStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .titleSmall
-                                                                        .override(
-                                                                          font:
-                                                                              GoogleFonts.readexPro(
-                                                                            fontWeight:
-                                                                                FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                                                                            fontStyle:
-                                                                                FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                                                                          ),
-                                                                          color:
-                                                                              Colors.white,
-                                                                          fontSize:
-                                                                              12.0,
-                                                                          letterSpacing:
-                                                                              0.0,
+                                                                  color: Color(
+                                                                      0xFFAE0303),
+                                                                  textStyle: FlutterFlowTheme.of(
+                                                                          context)
+                                                                      .titleSmall
+                                                                      .override(
+                                                                        font: GoogleFonts
+                                                                            .readexPro(
                                                                           fontWeight: FlutterFlowTheme.of(context)
                                                                               .titleSmall
                                                                               .fontWeight,
@@ -5257,36 +5350,49 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                               .titleSmall
                                                                               .fontStyle,
                                                                         ),
-                                                                    elevation:
-                                                                        3.0,
-                                                                    borderSide:
-                                                                        BorderSide(
-                                                                      color: Colors
-                                                                          .transparent,
-                                                                      width:
-                                                                          1.0,
-                                                                    ),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            8.0),
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            12.0,
+                                                                        letterSpacing:
+                                                                            0.0,
+                                                                        fontWeight: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontWeight,
+                                                                        fontStyle: FlutterFlowTheme.of(context)
+                                                                            .titleSmall
+                                                                            .fontStyle,
+                                                                      ),
+                                                                  elevation:
+                                                                      3.0,
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                    color: Colors
+                                                                        .transparent,
+                                                                    width: 1.0,
                                                                   ),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8.0),
                                                                 ),
                                                               ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
                             ],
                           ),
                         ),

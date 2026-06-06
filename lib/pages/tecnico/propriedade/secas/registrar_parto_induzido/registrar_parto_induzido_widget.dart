@@ -1,6 +1,8 @@
 // ignore_for_file: dead_null_aware_expression
 
 import '/backend/backend.dart';
+import '/backend/objectbox/repositories/animal_repository.dart';
+import 'dart:async';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -115,6 +117,53 @@ class _RegistrarPartoInduzidoWidgetState
     _model.maybeDispose();
 
     super.dispose();
+  }
+
+  /// Registra o parto induzido de forma offline-first: atualiza o animal (parto,
+  /// status 'Vazia', limpa datas de ciclo, incrementa partos e remove a indução)
+  /// direto no ObjectBox (fonte única), delegando o sync com o Firestore aos
+  /// repositórios. Funciona sem conexão.
+  Future<void> _registrarPartoInduzidoOfflineFirst() async {
+    final dados = <String, dynamic>{
+      'dtUltimoParto': _model.dtPartoInduzidoTextController.text,
+      'dtPartoPrevisto': '',
+      'dtPrePartoPrevista': '',
+      'dtSecagem': '',
+      'dtSecPrevista': '',
+      'grupoAnimal': 'Vacas',
+      'status': 'Vazia',
+      'dtUltimoPartoContingencia': _model.dtPartoInduzidoTextController.text,
+      'idStatusAnimal': 2,
+    };
+    final animalRepo = AnimalRepository();
+    final entity = widget.uidAnimaisProdutores != null
+        ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
+        : null;
+    if (entity != null) {
+      dados['totalPartos'] = entity.totalPartos + 1;
+      entity.dtInducaoLactacao = null; // equivale ao FieldValue.delete()
+      unawaited(animalRepo.update(entity, dados));
+    } else {
+      unawaited(widget.uidAnimaisProdutores!.update({
+        ...createAnimaisProdutoresRecordData(
+          dtUltimoParto: _model.dtPartoInduzidoTextController.text,
+          dtPartoPrevisto: '',
+          dtPrePartoPrevista: '',
+          dtSecagem: '',
+          dtSecPrevista: '',
+          grupoAnimal: 'Vacas',
+          status: 'Vazia',
+          dtUltimoPartoContingencia: _model.dtPartoInduzidoTextController.text,
+          idStatusAnimal: 2,
+        ),
+        ...mapToFirestore(
+          {
+            'totalPartos': FieldValue.increment(1),
+            'dtInducaoLactacao': FieldValue.delete(),
+          },
+        ),
+      }));
+    }
   }
 
   @override
@@ -538,34 +587,8 @@ class _RegistrarPartoInduzidoWidgetState
                               child: FFButtonWidget(
                                 onPressed: () async {
                                   if (_model
-                                          .dtPartoInduzidoTextController.text !=
+                                          .dtPartoInduzidoTextController.text ==
                                       '') {
-                                    await widget.uidAnimaisProdutores!.update({
-                                      ...createAnimaisProdutoresRecordData(
-                                        dtUltimoParto: _model
-                                            .dtPartoInduzidoTextController.text,
-                                        dtPartoPrevisto: '',
-                                        dtPrePartoPrevista: '',
-                                        dtSecagem: '',
-                                        dtSecPrevista: '',
-                                        grupoAnimal: 'Vacas',
-                                        status: 'Vazia',
-                                        dtUltimoPartoContingencia: _model
-                                            .dtPartoInduzidoTextController.text,
-                                        idStatusAnimal: 2,
-                                      ),
-                                      ...mapToFirestore(
-                                        {
-                                          'totalPartos':
-                                              FieldValue.increment(1),
-                                          'dtInducaoLactacao':
-                                              FieldValue.delete(),
-                                        },
-                                      ),
-                                    });
-                                    Navigator.pop(context);
-                                    return;
-                                  } else {
                                     await showDialog(
                                       context: context,
                                       builder: (alertDialogContext) {
@@ -584,6 +607,11 @@ class _RegistrarPartoInduzidoWidgetState
                                     );
                                     return;
                                   }
+
+                                  // Offline-first: atualiza o animal (parto) no
+                                  // ObjectBox; sync enfileirado pelos repositórios.
+                                  await _registrarPartoInduzidoOfflineFirst();
+                                  Navigator.pop(context);
                                 },
                                 text: 'Salvar',
                                 icon: Icon(

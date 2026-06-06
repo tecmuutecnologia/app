@@ -1,6 +1,9 @@
 // ignore_for_file: dead_null_aware_expression
 
 import '/backend/backend.dart';
+import '/backend/objectbox/repositories/animal_repository.dart';
+import '/core/connectivity/connectivity_service.dart';
+import 'dart:async';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -129,6 +132,56 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     _model.maybeDispose();
 
     super.dispose();
+  }
+
+  /// Registra o parto da mãe de forma offline-first: atualiza o animal (parto,
+  /// status 'Vazia', limpa datas de ciclo/inseminação e incrementa partos) direto
+  /// no ObjectBox (fonte única), delegando o sync com o Firestore aos
+  /// repositórios. Funciona sem conexão. O cadastro do bezerro (quando há) é
+  /// tratado à parte e só online, pois criar animal offline é caso ainda pendente.
+  Future<void> _registrarPartoMaeOfflineFirst(String dtParto) async {
+    final dados = <String, dynamic>{
+      'dtUltimoParto': dtParto,
+      'dtPartoPrevisto': '',
+      'dtPrePartoPrevista': '',
+      'dtSecPrevista': '',
+      'dtSecagem': '',
+      'grupoAnimal': 'Vacas',
+      'status': 'Vazia',
+      'dtUltimoPartoContingencia': dtParto,
+      'idStatusAnimal': 2,
+      'dtUltimaInseminacao': '',
+      'nomeTouroUltimaInseminacao': '',
+    };
+    final animalRepo = AnimalRepository();
+    final entity = widget.uidAnimaisProdutores != null
+        ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
+        : null;
+    if (entity != null) {
+      dados['totalPartos'] = entity.totalPartos + 1;
+      unawaited(animalRepo.update(entity, dados));
+    } else {
+      unawaited(widget.uidAnimaisProdutores!.update({
+        ...createAnimaisProdutoresRecordData(
+          dtUltimoParto: dtParto,
+          dtPartoPrevisto: '',
+          dtPrePartoPrevista: '',
+          dtSecPrevista: '',
+          dtSecagem: '',
+          grupoAnimal: 'Vacas',
+          status: 'Vazia',
+          dtUltimoPartoContingencia: dtParto,
+          idStatusAnimal: 2,
+          dtUltimaInseminacao: '',
+          nomeTouroUltimaInseminacao: '',
+        ),
+        ...mapToFirestore(
+          {
+            'totalPartos': FieldValue.increment(1),
+          },
+        ),
+      }));
+    }
   }
 
   @override
@@ -1107,107 +1160,96 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
                                             '')) {
                                       if (_model.dtPartoTextController.text !=
                                           '') {
-                                        await widget.uidAnimaisProdutores!
-                                            .update({
-                                          ...createAnimaisProdutoresRecordData(
-                                            dtUltimoParto: _model
-                                                .dtPartoTextController.text,
-                                            dtPartoPrevisto: '',
-                                            dtPrePartoPrevista: '',
-                                            dtSecPrevista: '',
-                                            dtSecagem: '',
-                                            grupoAnimal: 'Vacas',
-                                            status: 'Vazia',
-                                            dtUltimoPartoContingencia: _model
-                                                .dtPartoTextController.text,
-                                            idStatusAnimal: 2,
-                                            nomeTouroUltimaInseminacao: '',
-                                            dtUltimaInseminacao: '',
-                                          ),
-                                          ...mapToFirestore(
-                                            {
-                                              'totalPartos':
-                                                  FieldValue.increment(1),
-                                            },
-                                          ),
-                                        });
+                                        // Offline-first: atualiza a mãe (parto)
+                                        // no ObjectBox; sync enfileirado.
+                                        await _registrarPartoMaeOfflineFirst(
+                                            _model.dtPartoTextController.text);
 
-                                        await AnimaisProdutoresRecord.createDoc(
-                                                widget.uidTecnico!)
-                                            .set(
-                                                createAnimaisProdutoresRecordData(
-                                          uidTecnicoPropriedade:
-                                              widget.uidPropriedade,
-                                          nomeAnimal:
-                                              _model.nomeTextController.text,
-                                          brincoAnimal: (_model
-                                                          .brincoTextController
-                                                          .text !=
-                                                      '') &&
-                                                  (_model.brincoTextController
-                                                          .text !=
-                                                      '-1')
-                                              ? int.tryParse(_model
-                                                  .brincoTextController.text)
-                                              : -1,
-                                          racaAnimal: _model.racaPreValue,
-                                          pesoAnimal: _model
-                                              .pesoNascTextController.text,
-                                          dtNascimento:
-                                              _model.dtPartoTextController.text,
-                                          grupoAnimal: _model.sexoValue,
-                                          vaca: () {
-                                            if ((widget.nomeVacaAtual != null &&
-                                                    widget.nomeVacaAtual !=
+                                        // Cadastro do bezerro: só online (criar
+                                        // animal offline é caso ainda pendente).
+                                        if (ConnectivityService
+                                            .instance.isOnline) {
+                                          await AnimaisProdutoresRecord
+                                                  .createDoc(widget.uidTecnico!)
+                                              .set(
+                                                  createAnimaisProdutoresRecordData(
+                                            uidTecnicoPropriedade:
+                                                widget.uidPropriedade,
+                                            nomeAnimal:
+                                                _model.nomeTextController.text,
+                                            brincoAnimal: (_model
+                                                            .brincoTextController
+                                                            .text !=
                                                         '') &&
-                                                (widget.brincoVacaAtual !=
-                                                        null &&
-                                                    widget.brincoVacaAtual !=
-                                                        '')) {
-                                              return '${widget.nomeVacaAtual} - ${widget.brincoVacaAtual}';
-                                            } else if (widget.brincoVacaAtual !=
-                                                    null &&
-                                                widget.brincoVacaAtual != '') {
-                                              return widget.brincoVacaAtual;
-                                            } else {
-                                              return widget.nomeVacaAtual;
-                                            }
-                                          }(),
-                                          touro: widget
-                                              .nomeTourtoUltimaInseminacao,
-                                          status: '',
-                                          nomeBrincoConcat: () {
-                                            if ((_model.nomeTextController
-                                                        .text !=
-                                                    '') &&
-                                                (_model.brincoTextController
-                                                        .text !=
-                                                    '') &&
-                                                (_model.brincoTextController
-                                                        .text !=
-                                                    '-1')) {
-                                              return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                            } else if (_model
-                                                    .nomeTextController.text !=
-                                                '') {
-                                              return _model
-                                                  .nomeTextController.text;
-                                            } else {
-                                              return _model
-                                                  .brincoTextController.text;
-                                            }
-                                          }(),
-                                          brincoAnimalOrder: (_model
-                                                          .brincoTextController
+                                                    (_model.brincoTextController
+                                                            .text !=
+                                                        '-1')
+                                                ? int.tryParse(_model
+                                                    .brincoTextController.text)
+                                                : -1,
+                                            racaAnimal: _model.racaPreValue,
+                                            pesoAnimal: _model
+                                                .pesoNascTextController.text,
+                                            dtNascimento: _model
+                                                .dtPartoTextController.text,
+                                            grupoAnimal: _model.sexoValue,
+                                            vaca: () {
+                                              if ((widget.nomeVacaAtual !=
+                                                          null &&
+                                                      widget.nomeVacaAtual !=
+                                                          '') &&
+                                                  (widget.brincoVacaAtual !=
+                                                          null &&
+                                                      widget.brincoVacaAtual !=
+                                                          '')) {
+                                                return '${widget.nomeVacaAtual} - ${widget.brincoVacaAtual}';
+                                              } else if (widget
+                                                          .brincoVacaAtual !=
+                                                      null &&
+                                                  widget.brincoVacaAtual !=
+                                                      '') {
+                                                return widget.brincoVacaAtual;
+                                              } else {
+                                                return widget.nomeVacaAtual;
+                                              }
+                                            }(),
+                                            touro: widget
+                                                .nomeTourtoUltimaInseminacao,
+                                            status: '',
+                                            nomeBrincoConcat: () {
+                                              if ((_model.nomeTextController
                                                           .text !=
                                                       '') &&
                                                   (_model.brincoTextController
                                                           .text !=
-                                                      '-1')
-                                              ? int.tryParse(_model
-                                                  .brincoTextController.text)
-                                              : 999999,
-                                        ));
+                                                      '') &&
+                                                  (_model.brincoTextController
+                                                          .text !=
+                                                      '-1')) {
+                                                return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                                              } else if (_model
+                                                      .nomeTextController
+                                                      .text !=
+                                                  '') {
+                                                return _model
+                                                    .nomeTextController.text;
+                                              } else {
+                                                return _model
+                                                    .brincoTextController.text;
+                                              }
+                                            }(),
+                                            brincoAnimalOrder: (_model
+                                                            .brincoTextController
+                                                            .text !=
+                                                        '') &&
+                                                    (_model.brincoTextController
+                                                            .text !=
+                                                        '-1')
+                                                ? int.tryParse(_model
+                                                    .brincoTextController.text)
+                                                : 999999,
+                                          ));
+                                        }
                                         Navigator.pop(context);
                                         return;
                                       } else {
@@ -1254,49 +1296,19 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
                                       return;
                                     }
                                   } else {
-                                    await widget.uidAnimaisProdutores!.update({
-                                      ...createAnimaisProdutoresRecordData(
-                                        dtUltimoParto: _model
-                                                    .dtPartoTextController
-                                                    .text !=
-                                                ''
-                                            ? _model.dtPartoTextController.text
-                                            : dateTimeFormat(
-                                                "dd/MM/yyyy",
-                                                getCurrentTimestamp,
-                                                locale:
-                                                    FFLocalizations.of(context)
-                                                        .languageCode,
-                                              ),
-                                        dtPartoPrevisto: '',
-                                        dtPrePartoPrevista: '',
-                                        dtSecagem: '',
-                                        dtSecPrevista: '',
-                                        grupoAnimal: 'Vacas',
-                                        status: 'Vazia',
-                                        dtUltimoPartoContingencia: _model
-                                                    .dtPartoTextController
-                                                    .text !=
-                                                ''
-                                            ? _model.dtPartoTextController.text
-                                            : dateTimeFormat(
-                                                "dd/MM/yyyy",
-                                                getCurrentTimestamp,
-                                                locale:
-                                                    FFLocalizations.of(context)
-                                                        .languageCode,
-                                              ),
-                                        idStatusAnimal: 2,
-                                        dtUltimaInseminacao: '',
-                                        nomeTouroUltimaInseminacao: '',
-                                      ),
-                                      ...mapToFirestore(
-                                        {
-                                          'totalPartos':
-                                              FieldValue.increment(1),
-                                        },
-                                      ),
-                                    });
+                                    // Offline-first: atualiza a mãe (parto) no
+                                    // ObjectBox; sync enfileirado.
+                                    await _registrarPartoMaeOfflineFirst(
+                                      _model.dtPartoTextController.text != ''
+                                          ? _model.dtPartoTextController.text
+                                          : dateTimeFormat(
+                                              "dd/MM/yyyy",
+                                              getCurrentTimestamp,
+                                              locale:
+                                                  FFLocalizations.of(context)
+                                                      .languageCode,
+                                            ),
+                                    );
                                     Navigator.pop(context);
                                     return;
                                   }
