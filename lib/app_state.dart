@@ -286,18 +286,6 @@ class FFAppState extends ChangeNotifier {
     _precoRecebidoLitro = value;
   }
 
-  bool _grupoAnimalVacas = true;
-  bool get grupoAnimalVacas => _grupoAnimalVacas;
-  set grupoAnimalVacas(bool value) {
-    _grupoAnimalVacas = value;
-  }
-
-  bool _grupoAnimalNovilhas = true;
-  bool get grupoAnimalNovilhas => _grupoAnimalNovilhas;
-  set grupoAnimalNovilhas(bool value) {
-    _grupoAnimalNovilhas = value;
-  }
-
   List<String> _statusExtras = ['Indução de Lactação', 'Descarte'];
   List<String> get statusExtras => _statusExtras;
   set statusExtras(List<String> value) {
@@ -325,12 +313,6 @@ class FFAppState extends ChangeNotifier {
 
   void insertAtIndexInStatusExtras(int index, String value) {
     statusExtras.insert(index, value);
-  }
-
-  bool _mostrarListaCompleta = true;
-  bool get mostrarListaCompleta => _mostrarListaCompleta;
-  set mostrarListaCompleta(bool value) {
-    _mostrarListaCompleta = value;
   }
 
   List<GrupoStruct> _grupo = [
