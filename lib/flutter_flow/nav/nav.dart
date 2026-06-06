@@ -1213,40 +1213,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: DiagnosticogestacaoModo1OffWidget.routeName,
-          path: DiagnosticogestacaoModo1OffWidget.routePath,
-          builder: (context, params) => DiagnosticogestacaoModo1OffWidget(
-            uidPropriedade: params.getParam(
-              'uidPropriedade',
-              ParamType.DocumentReference,
-              isList: false,
-              collectionNamePath: ['tecnico', 'propriedades'],
-            ),
-            nomePropriedade: params.getParam(
-              'nomePropriedade',
-              ParamType.String,
-            ),
-            uidTecnico: params.getParam(
-              'uidTecnico',
-              ParamType.DocumentReference,
-              isList: false,
-              collectionNamePath: ['tecnico'],
-            ),
-            emailPropriedade: params.getParam(
-              'emailPropriedade',
-              ParamType.String,
-            ),
-            visitaPresencial: params.getParam(
-              'visitaPresencial',
-              ParamType.bool,
-            ),
-            diasDg: params.getParam(
-              'diasDg',
-              ParamType.String,
-            ),
-          ),
-        ),
-        FFRoute(
           name: AcoesFalhadasWidget.routeName,
           path: AcoesFalhadasWidget.routePath,
           builder: (context, params) => AcoesFalhadasWidget(

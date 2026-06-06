@@ -15,8 +15,8 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'nova_propriedade_model.dart';
 export 'nova_propriedade_model.dart';
 
-//TODO Esta pedidndo para o tecnico confirmar a senha após criar a propriedade, 
-//isso acontece pela criação dos dados da conta do produtor, não seria mais facil 
+//TODO Esta pedidndo para o tecnico confirmar a senha após criar a propriedade,
+//isso acontece pela criação dos dados da conta do produtor, não seria mais facil
 //armazenar a senha em um local seguro e deopis somente utilizar?? Outra coisa é que pede para gerar uma senha e depois manda um e-mail para a pessoa com uma senha padrão, não seria melhor remover os campos de gerar senha, e utilizar o cpf como senha padrão e no primeiro acesso do produtor pedir pra trocar, e informar no email que a senha é o cpf??
 
 class NovaPropriedadeWidget extends StatefulWidget {
