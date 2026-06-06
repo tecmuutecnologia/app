@@ -35,7 +35,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(1, 8986228835005611182),
     name: 'AnimalEntity',
-    lastPropertyId: const obx_int.IdUid(44, 7363795320818029985),
+    lastPropertyId: const obx_int.IdUid(45, 6074494206480083533),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -302,6 +302,13 @@ final _entities = <obx_int.ModelEntity>[
         name: 'isDeleted',
         type: 1,
         flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(45, 6074494206480083533),
+        name: 'uidAnimalOffline',
+        type: 9,
+        flags: 2048,
+        indexId: const obx_int.IdUid(22, 2324975574822149543),
       ),
     ],
     relations: <obx_int.ModelRelation>[],
@@ -2300,7 +2307,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
     entities: _entities,
     lastEntityId: const obx_int.IdUid(22, 5299997838202207882),
-    lastIndexId: const obx_int.IdUid(21, 7893203319794127174),
+    lastIndexId: const obx_int.IdUid(22, 2324975574822149543),
     lastRelationId: const obx_int.IdUid(0, 0),
     lastSequenceId: const obx_int.IdUid(0, 0),
     retiredEntityUids: const [],
@@ -2412,7 +2419,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final nomeBrincoConcatOffset = object.nomeBrincoConcat == null
             ? null
             : fbb.writeString(object.nomeBrincoConcat!);
-        fbb.startTable(45);
+        final uidAnimalOfflineOffset = object.uidAnimalOffline == null
+            ? null
+            : fbb.writeString(object.uidAnimalOffline!);
+        fbb.startTable(46);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, firestoreIdOffset);
         fbb.addOffset(2, parentPathOffset);
@@ -2460,6 +2470,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addInt64(41, object.lastSynced?.millisecondsSinceEpoch);
         fbb.addBool(42, object.needsSync);
         fbb.addBool(43, object.isDeleted);
+        fbb.addOffset(44, uidAnimalOfflineOffset);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -2497,6 +2508,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final uidTecnicoPropriedadePathParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGetNullable(buffer, rootOffset, 10);
+        final uidAnimalOfflineParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 92);
         final nomeAnimalParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGetNullable(buffer, rootOffset, 12);
@@ -2651,6 +2665,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           firestoreId: firestoreIdParam,
           parentPath: parentPathParam,
           uidTecnicoPropriedadePath: uidTecnicoPropriedadePathParam,
+          uidAnimalOffline: uidAnimalOfflineParam,
           nomeAnimal: nomeAnimalParam,
           racaAnimal: racaAnimalParam,
           pesoAnimal: pesoAnimalParam,
@@ -5606,6 +5621,11 @@ class AnimalEntity_ {
   /// See [AnimalEntity.isDeleted].
   static final isDeleted = obx.QueryBooleanProperty<AnimalEntity>(
     _entities[0].properties[43],
+  );
+
+  /// See [AnimalEntity.uidAnimalOffline].
+  static final uidAnimalOffline = obx.QueryStringProperty<AnimalEntity>(
+    _entities[0].properties[44],
   );
 }
 

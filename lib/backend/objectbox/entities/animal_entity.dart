@@ -22,6 +22,12 @@ class AnimalEntity implements SyncableEntity {
   /// Referência ao técnico/propriedade (path do documento Firestore)
   String? uidTecnicoPropriedadePath;
 
+  /// Identidade local de um animal criado offline (ainda sem `firestoreId`).
+  /// Permite localizar/agir sobre o animal antes de ele ter sido sincronizado.
+  /// Indexado para o lookup `getByUidAnimalOffline`.
+  @Index()
+  String? uidAnimalOffline;
+
   // Dados básicos do animal
   String? nomeAnimal;
   String? racaAnimal;
@@ -88,6 +94,7 @@ class AnimalEntity implements SyncableEntity {
     this.firestoreId,
     this.parentPath,
     this.uidTecnicoPropriedadePath,
+    this.uidAnimalOffline,
     this.nomeAnimal,
     this.racaAnimal,
     this.pesoAnimal,

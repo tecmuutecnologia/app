@@ -79,3 +79,73 @@ List<AnimaisProdutoresStruct> animaisProdutoresExistentesObjectBox() {
       .map(animalEntityToStruct)
       .toList();
 }
+
+/// Mapeia um [AnimaisProdutoresStruct] da UI legada para uma nova [AnimalEntity]
+/// de animal CRIADO OFFLINE (ainda sem `firestoreId`).
+///
+/// [parentPath] deve ser o caminho do TÉCNICO (os animais vivem em
+/// `tecnico/<id>/animaisProdutores`). [uidAnimalOffline] é a identidade local:
+/// reaproveita a do struct se existir, senão gera uma.
+AnimalEntity structToAnimalEntityOffline(
+  AnimaisProdutoresStruct s, {
+  required String parentPath,
+}) {
+  final uidOffline = s.uidAnimalOffline.isNotEmpty
+      ? s.uidAnimalOffline
+      : 'offline_${DateTime.now().microsecondsSinceEpoch}';
+  return AnimalEntity(
+    parentPath: parentPath,
+    uidTecnicoPropriedadePath: s.uidTecnicoPropriedade?.path,
+    uidAnimalOffline: uidOffline,
+    nomeAnimal: s.nomeAnimal,
+    racaAnimal: s.racaAnimal,
+    pesoAnimal: s.pesoAnimal,
+    dtNascimento: s.dtNascimento,
+    touro: s.touro,
+    vaca: s.vaca,
+    status: s.status,
+    grupoAnimal: s.grupoAnimal,
+    dtUltimaInseminacao: s.dtUltimaInseminacao,
+    dtUltimoParto: s.dtUltimoParto,
+    liberaInseminacao: s.liberaInseminacao,
+    dtPartoPrevisto: s.dtPartoPrevisto,
+    dtSecPrevista: s.dtSecPrevista,
+    dtPrePartoPrevista: s.dtPrePartoPrevista,
+    dtPP: s.dtPP,
+    dtDgMais: s.dtDgMais,
+    dtDgMenos: s.dtDgMenos,
+    dtAborto: s.dtAborto,
+    dtSecagem: s.dtSecagem,
+    dtUltimoPP: s.dtUltimoPP,
+    nomeTouroUltimaInseminacao: s.nomeTouroUltimaInseminacao,
+    totalInseminacoes: s.totalInseminacoes,
+    totalPartos: s.totalPartos,
+    dtPreParto: s.dtPreParto,
+    motivoDescarteAnimal: s.motivoDescarteAnimal,
+    dtDescarteAnimal: s.dtDescarteAnimal,
+    dtUltimaAcao: s.dtUltimaAcao,
+    compararDtUltimaInseminacao: s.compararDtUltimaInseminacao,
+    nomeBrincoConcat: s.nomeBrincoConcat,
+    idGrupoAnimal: s.idGrupoAnimal,
+    dtUltimoPartoContingencia: s.dtUltimoPartoContingencia,
+    idStatusAnimal: s.idStatusAnimal,
+    dtInducaoLactacao: s.dtInducaoLactacao,
+    dtDesmame: s.dtDesmame,
+    brincoAnimal: s.brincoAnimal,
+    brincoAnimalOrder: s.brincoAnimalOrder,
+  );
+}
+
+/// Cria um animal OFFLINE no ObjectBox (fonte única) e enfileira o push para o
+/// Firestore (`needsSync`). Substitui `FFAppState().addToAnimaisProdutoresOffline`.
+///
+/// [tecnicoPath] é o caminho do documento do técnico. Retorna o
+/// `uidAnimalOffline` gerado/usado, para identidade local nas ações.
+Future<String> criarAnimalOffline(
+  AnimaisProdutoresStruct s, {
+  required String tecnicoPath,
+}) async {
+  final entity = structToAnimalEntityOffline(s, parentPath: tecnicoPath);
+  await AnimalRepository().add(entity);
+  return entity.uidAnimalOffline!;
+}

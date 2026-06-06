@@ -47,6 +47,15 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
         .findFirst();
   }
 
+  /// Obtém um animal criado offline pela sua identidade local (uidAnimalOffline).
+  /// Usado para localizar/agir sobre animais que ainda não têm `firestoreId`.
+  AnimalEntity? getByUidAnimalOffline(String uidAnimalOffline) {
+    return box
+        .query(AnimalEntity_.uidAnimalOffline.equals(uidAnimalOffline))
+        .build()
+        .findFirst();
+  }
+
   /// Busca animais pelo nome ou brinco.
   List<AnimalEntity> search(String query, {String? propriedadePath}) {
     final queryLower = query.toLowerCase();

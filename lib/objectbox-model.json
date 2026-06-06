@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:8986228835005611182",
-      "lastPropertyId": "44:7363795320818029985",
+      "lastPropertyId": "45:6074494206480083533",
       "name": "AnimalEntity",
       "properties": [
         {
@@ -230,6 +230,13 @@
           "id": "44:7363795320818029985",
           "name": "isDeleted",
           "type": 1
+        },
+        {
+          "id": "45:6074494206480083533",
+          "name": "uidAnimalOffline",
+          "indexId": "22:2324975574822149543",
+          "type": 9,
+          "flags": 2048
         }
       ],
       "relations": []
@@ -1900,7 +1907,7 @@
     }
   ],
   "lastEntityId": "22:5299997838202207882",
-  "lastIndexId": "21:7893203319794127174",
+  "lastIndexId": "22:2324975574822149543",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
