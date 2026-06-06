@@ -1,4 +1,6 @@
 import '/backend/backend.dart';
+import '/backend/objectbox/repositories/animal_repository.dart';
+import 'dart:async';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -334,21 +336,40 @@ class _DesmameWidgetState extends State<DesmameWidget>
     }
   }
 
-  /// Desmame online - salva direto no Firestore
+  /// Desmame offline-first - grava no ObjectBox (fonte única) e delega o sync
+  /// com o Firestore ao repositório. Funciona com ou sem conexão (usado tanto
+  /// para o caso online quanto para o de animal existente offline).
   Future<void> _performOnlineDesmame() async {
-    if (widget.grupoAnimal == 'Bezerras') {
-      await widget.uidAnimaisProdutores!
-          .update(createAnimaisProdutoresRecordData(
-        grupoAnimal: 'Novilhas',
-        dtDesmame: getCurrentTimestamp,
-        status: 'Vazia',
-      ));
-    } else {
-      await widget.uidAnimaisProdutores!
-          .update(createAnimaisProdutoresRecordData(
-        grupoAnimal: 'Touros',
-        dtDesmame: getCurrentTimestamp,
-        liberaInseminacao: false,
+    final dados = widget.grupoAnimal == 'Bezerras'
+        ? <String, dynamic>{
+            'grupoAnimal': 'Novilhas',
+            'dtDesmame': getCurrentTimestamp,
+            'status': 'Vazia',
+          }
+        : <String, dynamic>{
+            'grupoAnimal': 'Touros',
+            'dtDesmame': getCurrentTimestamp,
+            'liberaInseminacao': false,
+          };
+    final animalRepo = AnimalRepository();
+    final entity = widget.uidAnimaisProdutores != null
+        ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
+        : null;
+    if (entity != null) {
+      unawaited(animalRepo.update(entity, dados));
+    } else if (widget.uidAnimaisProdutores != null) {
+      unawaited(widget.uidAnimaisProdutores!.update(
+        widget.grupoAnimal == 'Bezerras'
+            ? createAnimaisProdutoresRecordData(
+                grupoAnimal: 'Novilhas',
+                dtDesmame: getCurrentTimestamp,
+                status: 'Vazia',
+              )
+            : createAnimaisProdutoresRecordData(
+                grupoAnimal: 'Touros',
+                dtDesmame: getCurrentTimestamp,
+                liberaInseminacao: false,
+              ),
       ));
     }
   }

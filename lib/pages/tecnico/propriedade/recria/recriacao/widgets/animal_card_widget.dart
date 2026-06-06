@@ -19,15 +19,6 @@ import '/pages/tecnico/propriedade/recria/desmame/desmame_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_parto/registrar_parto_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_pre_parto/registrar_pre_parto_widget.dart';
 
-// Imports para bottom sheets offline (existentes)
-import '/pages/tecnico/propriedade/dignostico_gestacao/dg_mais_existente_offline/dg_mais_existente_offline_widget.dart';
-import '/pages/tecnico/propriedade/dignostico_gestacao/dg_menos_existente_offline/dg_menos_existente_offline_widget.dart';
-import '/pages/tecnico/propriedade/exame_ginecologico/nova_acao_exame_ginecologico_existente_offline/nova_acao_exame_ginecologico_existente_offline_widget.dart';
-import '/pages/tecnico/propriedade/inseminacoes/nova_inseminacao_existente_offline/nova_inseminacao_existente_offline_widget.dart';
-import '/pages/tecnico/propriedade/prenhas/registro_aborto_existente_offline/registro_aborto_existente_offline_widget.dart';
-import '/pages/tecnico/propriedade/secas/registrar_parto_existente_offline/registrar_parto_existente_offline_widget.dart';
-import '/pages/tecnico/propriedade/secas/registrar_pre_parto_existente_offline/registrar_pre_parto_existente_offline_widget.dart';
-
 // Imports para bottom sheets offline (novos)
 import '/pages/tecnico/propriedade/dignostico_gestacao/dg_mais_offline/dg_mais_offline_widget.dart';
 import '/pages/tecnico/propriedade/dignostico_gestacao/dg_menos_offline/dg_menos_offline_widget.dart';
@@ -709,21 +700,8 @@ class AnimalCardWidget extends StatelessWidget {
   }
 
   Widget _getExameGinecologicoWidget() {
-    if (isOnline) {
+    if (isOnline || animal.isExistingOffline) {
       return NovaAcaoExameGinecologicoWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg!,
-        uidAnimaisProdutores: animal.reference!,
-        nomeAnimal: animal.nomeAnimal,
-        brincoAnimal: animal.brincoAnimal?.toString() ?? '',
-        grupoAnimal: animal.grupoAnimal,
-      );
-    } else if (animal.isExistingOffline) {
-      return NovaAcaoExameGinecologicoExistenteOfflineWidget(
         uidPropriedade: uidPropriedade!,
         nomePropriedade: nomePropriedade!,
         uidTecnico: uidTecnico!,
@@ -734,7 +712,6 @@ class AnimalCardWidget extends StatelessWidget {
         nomeAnimal: animal.nomeAnimal,
         brincoAnimal: animal.brincoAnimal?.toString() ?? '',
         grupoAnimal: animal.grupoAnimal,
-        itemUidIndex: animal.itemIndex ?? 0,
       );
     } else {
       return NovaAcaoExameGinecologicoOfflineWidget(
@@ -754,15 +731,12 @@ class AnimalCardWidget extends StatelessWidget {
   }
 
   Widget _getDesmameWidget() {
-    // Determina o modo baseado no estado online/offline e tipo de animal
-    final DesmameMode mode;
-    if (isOnline) {
-      mode = DesmameMode.online;
-    } else if (animal.isExistingOffline) {
-      mode = DesmameMode.offlineExisting;
-    } else {
-      mode = DesmameMode.offlineNew;
-    }
+    // O modo "online" agora é offline-first (grava no ObjectBox e enfileira o
+    // sync), então cobre tanto o caso online quanto o de animal existente
+    // offline. Só o animal criado offline (sem ref Firestore) usa offlineNew.
+    final DesmameMode mode = (isOnline || animal.isExistingOffline)
+        ? DesmameMode.online
+        : DesmameMode.offlineNew;
 
     return DesmameWidget(
       mode: mode,
@@ -786,22 +760,8 @@ class AnimalCardWidget extends StatelessWidget {
   }
 
   Widget _getInseminacaoWidget() {
-    if (isOnline) {
+    if (isOnline || animal.isExistingOffline) {
       return NovaInseminacaoWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        uidAnimaisProdutores: animal.reference!,
-        grupoPredominante: animal.grupoAnimal,
-        nomeAnimal: animal.nomeAnimal,
-        visitaPresencial: visitaPresencial!,
-        dtUltimaInseminacao: animal.dtUltimaInseminacao ?? '',
-        brincoAnimal: animal.brincoAnimal?.toString() ?? '',
-        diasDg: diasDg!,
-      );
-    } else if (animal.isExistingOffline) {
-      return NovaInseminacaoExistenteOfflineWidget(
         uidPropriedade: uidPropriedade!,
         nomePropriedade: nomePropriedade!,
         uidTecnico: uidTecnico!,
@@ -812,8 +772,7 @@ class AnimalCardWidget extends StatelessWidget {
         visitaPresencial: visitaPresencial!,
         dtUltimaInseminacao: animal.dtUltimaInseminacao ?? '',
         brincoAnimal: animal.brincoAnimal?.toString() ?? '',
-        diasDg: diasDg ?? '',
-        itemUidIndex: animal.itemIndex ?? 0,
+        diasDg: diasDg!,
       );
     } else {
       return NovaInseminacaoOfflineWidget(
@@ -834,7 +793,7 @@ class AnimalCardWidget extends StatelessWidget {
   }
 
   Widget _getDgMaisWidget() {
-    if (isOnline) {
+    if (isOnline || animal.isExistingOffline) {
       return DgMaisWidget(
         uidPropriedade: uidPropriedade!,
         nomePropriedade: nomePropriedade!,
@@ -842,22 +801,9 @@ class AnimalCardWidget extends StatelessWidget {
         emailPropriedade: emailPropriedade!,
         visitaPresencial: visitaPresencial!,
         diasDg: diasDg!,
-        uidAnimaisProdutores: animal.reference!,
-        grupoPredominante: animal.grupoAnimal,
-        nomeAnimal: animal.nomeAnimal,
-      );
-    } else if (animal.isExistingOffline) {
-      return DgMaisExistenteOfflineWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg ?? '',
         uidAnimaisProdutores: animal.reference,
         grupoPredominante: animal.grupoAnimal,
         nomeAnimal: animal.nomeAnimal,
-        itemUidIndex: animal.itemIndex ?? 0,
       );
     } else {
       return DgMaisOfflineWidget(
@@ -876,19 +822,8 @@ class AnimalCardWidget extends StatelessWidget {
   }
 
   Widget _getDgMenosWidget() {
-    if (isOnline) {
+    if (isOnline || animal.isExistingOffline) {
       return DgMenosWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        uidAnimaisProdutores: animal.reference!,
-        grupoPredominante: animal.grupoAnimal,
-        nomeAnimal: animal.nomeAnimal,
-      );
-    } else if (animal.isExistingOffline) {
-      return DgMenosExistenteOfflineWidget(
         uidPropriedade: uidPropriedade!,
         nomePropriedade: nomePropriedade!,
         uidTecnico: uidTecnico!,
@@ -897,7 +832,6 @@ class AnimalCardWidget extends StatelessWidget {
         uidAnimaisProdutores: animal.reference,
         grupoPredominante: animal.grupoAnimal,
         nomeAnimal: animal.nomeAnimal,
-        itemUidIndex: animal.itemIndex ?? 0,
       );
     } else {
       return DgMenosOfflineWidget(
@@ -915,21 +849,8 @@ class AnimalCardWidget extends StatelessWidget {
   }
 
   Widget _getPartoWidget() {
-    if (isOnline) {
+    if (isOnline || animal.isExistingOffline) {
       return RegistrarPartoWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg!,
-        uidAnimaisProdutores: animal.reference!,
-        nomeVacaAtual: animal.nomeAnimal,
-        nomeTourtoUltimaInseminacao: animal.nomeTouroUltimaInseminacao ?? '',
-        brincoVacaAtual: animal.brincoAnimal?.toString() ?? '',
-      );
-    } else if (animal.isExistingOffline) {
-      return RegistrarPartoExistenteOfflineWidget(
         uidPropriedade: uidPropriedade!,
         nomePropriedade: nomePropriedade!,
         uidTecnico: uidTecnico!,
@@ -940,7 +861,6 @@ class AnimalCardWidget extends StatelessWidget {
         nomeVacaAtual: animal.nomeAnimal,
         nomeTourtoUltimaInseminacao: animal.nomeTouroUltimaInseminacao ?? '',
         brincoVacaAtual: animal.brincoAnimal?.toString() ?? '',
-        itemUidIndex: animal.itemIndex ?? 0,
       );
     } else {
       return RegistrarPartoOfflineWidget(
@@ -965,22 +885,8 @@ class AnimalCardWidget extends StatelessWidget {
         ? functions.converteDataStringDate(dtPreParto)
         : null;
 
-    if (isOnline) {
+    if (isOnline || animal.isExistingOffline) {
       return RegistrarPrePartoWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg!,
-        uidAnimaisProdutores: animal.reference!,
-        nomeAnimal: animal.nomeAnimal,
-        brincoAnimal: animal.brincoAnimalOrder?.toString() ?? '',
-        grupoAnimal: animal.grupoAnimal,
-        dtPrePartoPrevista: convertedDate,
-      );
-    } else if (animal.isExistingOffline) {
-      return RegistrarPrePartoExistenteOfflineWidget(
         uidPropriedade: uidPropriedade!,
         nomePropriedade: nomePropriedade!,
         uidTecnico: uidTecnico!,
@@ -992,7 +898,6 @@ class AnimalCardWidget extends StatelessWidget {
         brincoAnimal: animal.brincoAnimalOrder?.toString() ?? '',
         grupoAnimal: animal.grupoAnimal,
         dtPrePartoPrevista: convertedDate,
-        itemUidIndex: animal.itemIndex ?? 0,
       );
     } else {
       return RegistrarPrePartoOfflineWidget(
@@ -1013,19 +918,8 @@ class AnimalCardWidget extends StatelessWidget {
   }
 
   Widget _getAbortoWidget() {
-    if (isOnline) {
+    if (isOnline || animal.isExistingOffline) {
       return RegistroAbortoWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg!,
-        uidAnimaisProdutores: animal.reference!,
-        nomeAnimal: animal.nomeAnimal,
-      );
-    } else if (animal.isExistingOffline) {
-      return RegistroAbortoExistenteOfflineWidget(
         uidPropriedade: uidPropriedade!,
         nomePropriedade: nomePropriedade!,
         uidTecnico: uidTecnico!,
@@ -1034,7 +928,6 @@ class AnimalCardWidget extends StatelessWidget {
         diasDg: diasDg!,
         uidAnimaisProdutores: animal.reference,
         nomeAnimal: animal.nomeAnimal,
-        itemUidIndex: animal.itemIndex ?? 0,
       );
     } else {
       return RegistroAbortoOfflineWidget(

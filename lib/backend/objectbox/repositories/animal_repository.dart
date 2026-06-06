@@ -177,6 +177,7 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
     entity.dtUltimaAcao = data['dtUltimaAcao'] ?? entity.dtUltimaAcao;
     entity.dtUltimoPartoContingencia =
         data['dtUltimoPartoContingencia'] ?? entity.dtUltimoPartoContingencia;
+    entity.dtDesmame = data['dtDesmame'] ?? entity.dtDesmame;
     entity.liberaInseminacao =
         data['liberaInseminacao'] ?? entity.liberaInseminacao;
     entity.brincoAnimal = data['brincoAnimal'] ?? entity.brincoAnimal;
