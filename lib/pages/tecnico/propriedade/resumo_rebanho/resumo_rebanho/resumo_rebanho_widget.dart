@@ -19,6 +19,11 @@ import 'package:provider/provider.dart';
 import 'resumo_rebanho_model.dart';
 export 'resumo_rebanho_model.dart';
 
+/// Status extras fixos (antes em FFAppState.statusExtras, que nunca era
+/// escrito — constante de fato). Combinados com os status vindos do Firestore
+/// nas opções do dropdown de categoria.
+const kStatusExtrasFixos = ['Indução de Lactação', 'Descarte'];
+
 class ResumoRebanhoWidget extends StatefulWidget {
   const ResumoRebanhoWidget({
     super.key,
@@ -404,7 +409,7 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
                                       .toList()
                                       .map((e) => e.descricao)
                                       .toList(),
-                                  FFAppState().statusExtras.toList()) ??
+                                  kStatusExtrasFixos.toList()) ??
                               [],
                         )),
                         options: functions.combinarListas(
@@ -413,7 +418,7 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
                                 .toList()
                                 .map((e) => e.descricao)
                                 .toList(),
-                            FFAppState().statusExtras.toList())!,
+                            kStatusExtrasFixos.toList())!,
                         width: double.infinity,
                         height: 50.0,
                         searchHintTextStyle:

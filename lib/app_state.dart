@@ -283,35 +283,6 @@ class FFAppState extends ChangeNotifier {
     _precoRecebidoLitro = value;
   }
 
-  List<String> _statusExtras = ['Indução de Lactação', 'Descarte'];
-  List<String> get statusExtras => _statusExtras;
-  set statusExtras(List<String> value) {
-    _statusExtras = value;
-  }
-
-  void addToStatusExtras(String value) {
-    statusExtras.add(value);
-  }
-
-  void removeFromStatusExtras(String value) {
-    statusExtras.remove(value);
-  }
-
-  void removeAtIndexFromStatusExtras(int index) {
-    statusExtras.removeAt(index);
-  }
-
-  void updateStatusExtrasAtIndex(
-    int index,
-    String Function(String) updateFn,
-  ) {
-    statusExtras[index] = updateFn(_statusExtras[index]);
-  }
-
-  void insertAtIndexInStatusExtras(int index, String value) {
-    statusExtras.insert(index, value);
-  }
-
   List<GrupoStruct> _grupo = [
     GrupoStruct.fromSerializableMap(
         jsonDecode('{\"descricao\":\"Touros\",\"id\":\"1\"}')),
