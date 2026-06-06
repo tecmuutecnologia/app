@@ -67,7 +67,6 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
 
           safeSetState(() {});
           if (_model.respostaNet!) {
-            FFAppState().verificaInternet = -1;
             safeSetState(() {});
           } else {
             // Offline: notificação passiva via SyncStatusBanner (app-wide);

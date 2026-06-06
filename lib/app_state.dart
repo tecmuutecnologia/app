@@ -133,10 +133,6 @@ class FFAppState extends ChangeNotifier {
           _acoesSanitarioOffline;
     });
     _safeInit(() {
-      _verificaInternet =
-          prefs.getInt('ff_verificaInternet') ?? _verificaInternet;
-    });
-    _safeInit(() {
       _resumoDaVisita = prefs
               .getStringList('ff_resumoDaVisita')
               ?.map((x) {
@@ -544,13 +540,6 @@ class FFAppState extends ChangeNotifier {
     acoesSanitarioOffline.insert(index, value);
     prefs.setStringList('ff_acoesSanitarioOffline',
         _acoesSanitarioOffline.map((x) => x.serialize()).toList());
-  }
-
-  int _verificaInternet = -1;
-  int get verificaInternet => _verificaInternet;
-  set verificaInternet(int value) {
-    _verificaInternet = value;
-    prefs.setInt('ff_verificaInternet', value);
   }
 
   List<ResumoDaVisitaStruct> _resumoDaVisita = [];

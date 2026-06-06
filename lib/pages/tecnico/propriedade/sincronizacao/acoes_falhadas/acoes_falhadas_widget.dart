@@ -33,6 +33,10 @@ class AcoesFalhadasWidget extends StatefulWidget {
 class _AcoesFalhadasWidgetState extends State<AcoesFalhadasWidget> {
   late AcoesFalhadasModel _model;
 
+  /// Flag local (antes em FFAppState.verificaInternet, removido): -1 = online,
+  /// 0 = offline já notificado, para mostrar o alerta uma única vez na transição.
+  int _verificaInternet = -1;
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -49,11 +53,11 @@ class _AcoesFalhadasWidgetState extends State<AcoesFalhadasWidget> {
 
           safeSetState(() {});
           if (_model.respostaNet!) {
-            FFAppState().verificaInternet = -1;
+            _verificaInternet = -1;
             safeSetState(() {});
           } else {
-            if (FFAppState().verificaInternet == -1) {
-              FFAppState().verificaInternet = 0;
+            if (_verificaInternet == -1) {
+              _verificaInternet = 0;
               safeSetState(() {});
               _model.instantTimer?.cancel();
               await showModalBottomSheet(

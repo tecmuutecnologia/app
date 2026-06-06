@@ -907,7 +907,6 @@ class _SincronizarWidgetState extends State<SincronizarWidget> {
       if ((FFAppState().animaisProdutoresOffline.length == 0) &&
           (FFAppState().animaisProdutoresEditados.length == 0) &&
           (FFAppState().acoesOffline.length == 0)) {
-        FFAppState().verificaInternet = -1;
         FFAppState().contador = -1;
         safeSetState(() {});
         Navigator.pop(context);

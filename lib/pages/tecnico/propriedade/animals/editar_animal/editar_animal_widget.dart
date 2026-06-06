@@ -74,7 +74,6 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
 
           safeSetState(() {});
           if (_model.respostaNet!) {
-            FFAppState().verificaInternet = -1;
             safeSetState(() {});
           } else {
             // Offline: notificação passiva via SyncStatusBanner (app-wide);

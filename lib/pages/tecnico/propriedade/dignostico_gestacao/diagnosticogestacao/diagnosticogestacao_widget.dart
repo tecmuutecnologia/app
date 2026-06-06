@@ -78,7 +78,6 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
 
           safeSetState(() {});
           if (_model.respostaNet!) {
-            FFAppState().verificaInternet = -1;
             safeSetState(() {});
           } else {
             // Offline: notificação passiva via SyncStatusBanner (app-wide);

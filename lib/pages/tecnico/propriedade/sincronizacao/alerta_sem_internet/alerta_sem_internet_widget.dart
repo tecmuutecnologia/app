@@ -108,7 +108,6 @@ class _AlertaSemInternetWidgetState extends State<AlertaSemInternetWidget> {
                             .map(animalEntityToStruct)
                             .toList()
                         : <AnimaisProdutoresStruct>[];
-                FFAppState().verificaInternet = 0;
                 safeSetState(() {});
                 Navigator.pop(context);
               },

@@ -15,7 +15,7 @@ typedef InternetAccessProbe = Future<bool> Function();
 /// independentes e inconsistentes:
 /// - `connectivity_plus` (apenas detecta a interface: Wi-Fi/dados/none);
 /// - `internet_connection_checker_plus` (confirma acesso real à internet);
-/// - flags manuais espalhadas (ex.: `FFAppState().verificaInternet`).
+/// - flags manuais espalhadas no `FFAppState` (já removidas).
 ///
 /// Este serviço combina as duas bibliotecas: a interface (`connectivity_plus`)
 /// dispara as mudanças e o acesso real (`internet_connection_checker_plus`)
