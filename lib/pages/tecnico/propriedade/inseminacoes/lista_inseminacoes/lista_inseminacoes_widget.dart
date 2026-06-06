@@ -807,7 +807,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                         padding:
                                                                             MediaQuery.viewInsetsOf(context),
                                                                         child:
-                                                                            RegistrarCioExistenteOfflineWidget(
+                                                                            RegistrarCioWidget(
                                                                           uidPropriedade:
                                                                               widget.uidPropriedade!,
                                                                           nomePropriedade:
@@ -829,8 +829,6 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                               .toString(),
                                                                           diasDg:
                                                                               widget.diasDg!,
-                                                                          itemUidIndex:
-                                                                              listaAnimaisOfflineExistenteIndex,
                                                                         ),
                                                                       ),
                                                                     );
@@ -2062,7 +2060,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                           padding:
                                                                               MediaQuery.viewInsetsOf(context),
                                                                           child:
-                                                                              RegistrarCioExistenteOfflineWidget(
+                                                                              RegistrarCioWidget(
                                                                             uidPropriedade:
                                                                                 widget.uidPropriedade!,
                                                                             nomePropriedade:
@@ -2083,8 +2081,6 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                                 listaAnimaisOfflineExistenteItem.brincoAnimal.toString(),
                                                                             diasDg:
                                                                                 widget.diasDg!,
-                                                                            itemUidIndex:
-                                                                                listaAnimaisOfflineExistenteIndex,
                                                                           ),
                                                                         ),
                                                                       );
