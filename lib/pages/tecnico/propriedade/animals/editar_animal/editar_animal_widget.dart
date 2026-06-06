@@ -8,7 +8,6 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
 import '/flutter_flow/instant_timer.dart';
-import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';
 import 'dart:ui';
 import '/custom_code/actions/index.dart' as actions;
 import '/backend/objectbox/index.dart';
@@ -78,32 +77,9 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
             FFAppState().verificaInternet = -1;
             safeSetState(() {});
           } else {
-            if (FFAppState().verificaInternet == -1) {
-              FFAppState().verificaInternet = 0;
-              safeSetState(() {});
-              _model.instantTimer?.cancel();
-              await showModalBottomSheet(
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                isDismissible: false,
-                enableDrag: false,
-                context: context,
-                builder: (context) {
-                  return GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).unfocus();
-                      FocusManager.instance.primaryFocus?.unfocus();
-                    },
-                    child: Padding(
-                      padding: MediaQuery.viewInsetsOf(context),
-                      child: AlertaSemInternetWidget(),
-                    ),
-                  );
-                },
-              ).then((value) => safeSetState(() {}));
-
-              return;
-            }
+            // Offline: notificação passiva via SyncStatusBanner (app-wide);
+            // sem modal bloqueante nem flag global. O respostaNet acima já
+            // atualiza a UI e o sync ao reconectar é automático.
           }
         },
         startImmediately: false,

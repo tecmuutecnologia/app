@@ -7,7 +7,6 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/instant_timer.dart';
-import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
 import '/features/animais/presentation/animal_group_list_view.dart';
@@ -71,32 +70,9 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
             FFAppState().verificaInternet = -1;
             safeSetState(() {});
           } else {
-            if (FFAppState().verificaInternet == -1) {
-              FFAppState().verificaInternet = 0;
-              safeSetState(() {});
-              _model.instantTimer?.cancel();
-              await showModalBottomSheet(
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                isDismissible: false,
-                enableDrag: false,
-                context: context,
-                builder: (context) {
-                  return GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).unfocus();
-                      FocusManager.instance.primaryFocus?.unfocus();
-                    },
-                    child: Padding(
-                      padding: MediaQuery.viewInsetsOf(context),
-                      child: AlertaSemInternetWidget(),
-                    ),
-                  );
-                },
-              ).then((value) => safeSetState(() {}));
-
-              return;
-            }
+            // Offline: notificação passiva via SyncStatusBanner (app-wide);
+            // sem modal bloqueante nem flag global. O respostaNet acima já
+            // atualiza a UI e o sync ao reconectar é automático.
           }
         },
         startImmediately: false,
@@ -354,8 +330,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                     ParamType.DocumentReference),
                                 'emailPropriedade': serializeParam(
                                     widget.emailPropriedade, ParamType.String),
-                                'grupoPredominante':
-                                    serializeParam('Bezerras', ParamType.String),
+                                'grupoPredominante': serializeParam(
+                                    'Bezerras', ParamType.String),
                                 'visitaPresencial': serializeParam(
                                     widget.visitaPresencial, ParamType.bool),
                                 'initialTabSelect': serializeParam(
@@ -387,8 +363,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                     ParamType.DocumentReference),
                                 'emailPropriedade': serializeParam(
                                     widget.emailPropriedade, ParamType.String),
-                                'grupoPredominante':
-                                    serializeParam('Bezerros', ParamType.String),
+                                'grupoPredominante': serializeParam(
+                                    'Bezerros', ParamType.String),
                                 'visitaPresencial': serializeParam(
                                     widget.visitaPresencial, ParamType.bool),
                                 'initialTabSelect': serializeParam(
@@ -420,8 +396,8 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                                     ParamType.DocumentReference),
                                 'emailPropriedade': serializeParam(
                                     widget.emailPropriedade, ParamType.String),
-                                'grupoPredominante':
-                                    serializeParam('Novilhas', ParamType.String),
+                                'grupoPredominante': serializeParam(
+                                    'Novilhas', ParamType.String),
                                 'visitaPresencial': serializeParam(
                                     widget.visitaPresencial, ParamType.bool),
                                 'initialTabSelect': serializeParam(

@@ -77,13 +77,8 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
             FFAppState().verificaInternet = -1;
             safeSetState(() {});
           } else {
-            if (FFAppState().verificaInternet == -1) {
-              FFAppState().verificaInternet = 0;
-              safeSetState(() {});
-              // Notificação passiva via SyncStatusBanner (app-wide); sem modal.
-              // O timer segue ativo (respostaNet atualizado) e o sync ao
-              // reconectar é automático (OfflineFirstSyncService).
-            }
+            // Offline: notificação passiva via SyncStatusBanner (app-wide);
+            // sem flag global. O respostaNet acima já atualiza a UI.
           }
         },
         startImmediately: false,

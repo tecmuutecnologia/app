@@ -66,12 +66,8 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
         callback: (timer) async {
           _model.respostaNet = await actions.checkInternetConnection();
           if (!_model.respostaNet!) {
-            if (FFAppState().verificaInternet == -1) {
-              FFAppState().verificaInternet = 0;
-              safeSetState(() {});
-              // Notificação passiva via SyncStatusBanner (app-wide); sem modal.
-              // Timer segue ativo; sync ao reconectar é automático.
-            }
+            // Offline: notificação passiva via SyncStatusBanner (app-wide);
+            // sem flag global. O respostaNet acima já atualiza a UI.
           }
         },
         startImmediately: false,

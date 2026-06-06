@@ -6,7 +6,6 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/instant_timer.dart';
-import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';
 import '/pages/tecnico/propriedade/sincronizacao/sincronizar/sincronizar_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
@@ -105,41 +104,13 @@ class _InicioPropriedadeProdutorWidgetState
             FFAppState().verificaInternet = -1;
             safeSetState(() {});
           } else {
-            if (FFAppState().verificaInternet == -1) {
-              FFAppState().verificaInternet = 0;
-              safeSetState(() {});
-              _model.instantTimer?.cancel();
-              await _showNoInternetAlert();
-              return;
-            }
+            // Offline: notificação passiva via SyncStatusBanner (app-wide);
+            // sem modal bloqueante. O respostaNet acima já atualiza a UI.
           }
         },
         startImmediately: false,
       );
     });
-  }
-
-  /// Exibe o alerta de sem internet.
-  Future<void> _showNoInternetAlert() async {
-    await showModalBottomSheet(
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      isDismissible: false,
-      enableDrag: false,
-      context: context,
-      builder: (context) {
-        return GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
-          child: Padding(
-            padding: MediaQuery.viewInsetsOf(context),
-            child: const AlertaSemInternetWidget(),
-          ),
-        );
-      },
-    ).then((value) => safeSetState(() {}));
   }
 
   /// Configura as animações dos containers.
