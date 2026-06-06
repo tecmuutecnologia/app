@@ -4566,7 +4566,9 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     .viewInsetsOf(
                                                                         context),
                                                                 child:
-                                                                    DesmameExistenteOfflineWidget(
+                                                                    DesmameWidget(
+                                                                  mode: DesmameMode
+                                                                      .online,
                                                                   uidPropriedade:
                                                                       widget
                                                                           .uidPropriedade!,
@@ -4705,7 +4707,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      NovaAcaoExameGinecologicoExistenteOfflineWidget(
+                                                                      NovaAcaoExameGinecologicoWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -4736,8 +4738,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     grupoAnimal:
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .grupoAnimal,
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                   ),
                                                                 ),
                                                               );
@@ -4990,7 +4990,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      NovaInseminacaoExistenteOfflineWidget(
+                                                                      NovaInseminacaoWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -5021,8 +5021,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                             .toString(),
                                                                     diasDg: widget
                                                                         .diasDg!,
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                     uidAnimaisProdutores:
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .uidAnimal!,
@@ -5129,7 +5127,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     .viewInsetsOf(
                                                                         context),
                                                                 child:
-                                                                    NovaAcaoExameGinecologicoExistenteOfflineWidget(
+                                                                    NovaAcaoExameGinecologicoWidget(
                                                                   uidPropriedade:
                                                                       widget
                                                                           .uidPropriedade!,
@@ -5159,8 +5157,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   grupoAnimal:
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .grupoAnimal,
-                                                                  itemUidIndex:
-                                                                      animaisProdutoresExistentesOfflineIndex,
                                                                 ),
                                                               ),
                                                             );
@@ -5424,7 +5420,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   .viewInsetsOf(
                                                                       context),
                                                               child:
-                                                                  RegistrarPartoExistenteOfflineWidget(
+                                                                  RegistrarPartoWidget(
                                                                 uidPropriedade:
                                                                     widget
                                                                         .uidPropriedade!,
@@ -5454,8 +5450,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     animaisProdutoresExistentesOfflineItem
                                                                         .brincoAnimal
                                                                         .toString(),
-                                                                itemUidIndex:
-                                                                    animaisProdutoresExistentesOfflineIndex,
                                                               ),
                                                             ),
                                                           );
@@ -5553,7 +5547,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     .viewInsetsOf(
                                                                         context),
                                                                 child:
-                                                                    RegistroAbortoExistenteOfflineWidget(
+                                                                    RegistroAbortoWidget(
                                                                   uidPropriedade:
                                                                       widget
                                                                           .uidPropriedade!,
@@ -5576,8 +5570,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomeAnimal:
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .nomeAnimal,
-                                                                  itemUidIndex:
-                                                                      animaisProdutoresExistentesOfflineIndex,
                                                                 ),
                                                               ),
                                                             );
@@ -5828,7 +5820,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     .viewInsetsOf(
                                                                         context),
                                                                 child:
-                                                                    RegistroAbortoExistenteOfflineWidget(
+                                                                    RegistroAbortoWidget(
                                                                   uidPropriedade:
                                                                       widget
                                                                           .uidPropriedade!,
@@ -5851,8 +5843,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomeAnimal:
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .nomeAnimal,
-                                                                  itemUidIndex:
-                                                                      animaisProdutoresExistentesOfflineIndex,
                                                                 ),
                                                               ),
                                                             );
@@ -5956,7 +5946,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      RegistrarPartoExistenteOfflineWidget(
+                                                                      RegistrarPartoWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -5987,8 +5977,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .brincoAnimal
                                                                             .toString(),
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                   ),
                                                                 ),
                                                               );
@@ -6097,7 +6085,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      RegistrarPrePartoExistenteOfflineWidget(
+                                                                      RegistrarPrePartoWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -6131,8 +6119,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     dtPrePartoPrevista:
                                                                         functions
                                                                             .converteDataStringDate(animaisProdutoresExistentesOfflineItem.dtPrePartoPrevista),
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                   ),
                                                                 ),
                                                               );
@@ -6388,7 +6374,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     .viewInsetsOf(
                                                                         context),
                                                                 child:
-                                                                    RegistrarPartoExistenteOfflineWidget(
+                                                                    RegistrarPartoWidget(
                                                                   uidPropriedade:
                                                                       widget
                                                                           .uidPropriedade!,
@@ -6418,8 +6404,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .brincoAnimal
                                                                           .toString(),
-                                                                  itemUidIndex:
-                                                                      animaisProdutoresExistentesOfflineIndex,
                                                                 ),
                                                               ),
                                                             );
@@ -6523,7 +6507,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      RegistrarPrePartoExistenteOfflineWidget(
+                                                                      RegistrarPrePartoWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -6557,8 +6541,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     dtPrePartoPrevista:
                                                                         functions
                                                                             .converteDataStringDate(animaisProdutoresExistentesOfflineItem.dtPrePartoPrevista),
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                   ),
                                                                 ),
                                                               );
@@ -6659,7 +6641,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     .viewInsetsOf(
                                                                         context),
                                                                 child:
-                                                                    RegistroAbortoExistenteOfflineWidget(
+                                                                    RegistroAbortoWidget(
                                                                   uidPropriedade:
                                                                       widget
                                                                           .uidPropriedade!,
@@ -6682,8 +6664,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomeAnimal:
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .nomeAnimal,
-                                                                  itemUidIndex:
-                                                                      animaisProdutoresExistentesOfflineIndex,
                                                                 ),
                                                               ),
                                                             );
@@ -6942,7 +6922,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      RegistroAbortoExistenteOfflineWidget(
+                                                                      RegistroAbortoWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -6966,8 +6946,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     nomeAnimal:
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .nomeAnimal,
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                   ),
                                                                 ),
                                                               );
@@ -7077,7 +7055,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      RegistrarSecagemExistenteOfflineWidget(
+                                                                      RegistrarSecagemWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -7111,8 +7089,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     dtSecPrevista:
                                                                         functions
                                                                             .converteDataStringDate(animaisProdutoresExistentesOfflineItem.dtSecPrevista),
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                   ),
                                                                 ),
                                                               );
@@ -7315,7 +7291,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                           .viewInsetsOf(
                                                                               context),
                                                                       child:
-                                                                          DgMaisExistenteOfflineWidget(
+                                                                          DgMaisWidget(
                                                                         uidPropriedade:
                                                                             widget.uidPropriedade!,
                                                                         nomePropriedade:
@@ -7334,8 +7310,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                             widget.visitaPresencial!,
                                                                         diasDg:
                                                                             widget.diasDg!,
-                                                                        itemUidIndex:
-                                                                            animaisProdutoresExistentesOfflineIndex,
                                                                       ),
                                                                     ),
                                                                   );
@@ -7443,7 +7417,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      ConfirmaPpExistenteOfflineWidget(
+                                                                      ConfirmaPpWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -7470,8 +7444,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                             .visitaPresencial!,
                                                                     diasDg: widget
                                                                         .diasDg!,
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                   ),
                                                                 ),
                                                               );
@@ -7580,7 +7552,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      DgMenosExistenteOfflineWidget(
+                                                                      DgMenosWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -7605,8 +7577,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     visitaPresencial:
                                                                         widget
                                                                             .visitaPresencial!,
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                   ),
                                                                 ),
                                                               );
@@ -11847,7 +11817,9 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     .viewInsetsOf(
                                                                         context),
                                                                 child:
-                                                                    DesmameExistenteOfflineWidget(
+                                                                    DesmameWidget(
+                                                                  mode: DesmameMode
+                                                                      .online,
                                                                   uidPropriedade:
                                                                       widget
                                                                           .uidPropriedade!,
@@ -11986,7 +11958,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      NovaAcaoExameGinecologicoExistenteOfflineWidget(
+                                                                      NovaAcaoExameGinecologicoWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -12017,8 +11989,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     grupoAnimal:
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .grupoAnimal,
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                   ),
                                                                 ),
                                                               );
@@ -12271,7 +12241,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      NovaInseminacaoExistenteOfflineWidget(
+                                                                      NovaInseminacaoWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -12302,8 +12272,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                             .toString(),
                                                                     diasDg: widget
                                                                         .diasDg!,
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                     uidAnimaisProdutores:
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .uidAnimal!,
@@ -12410,7 +12378,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     .viewInsetsOf(
                                                                         context),
                                                                 child:
-                                                                    NovaAcaoExameGinecologicoExistenteOfflineWidget(
+                                                                    NovaAcaoExameGinecologicoWidget(
                                                                   uidPropriedade:
                                                                       widget
                                                                           .uidPropriedade!,
@@ -12440,8 +12408,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   grupoAnimal:
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .grupoAnimal,
-                                                                  itemUidIndex:
-                                                                      animaisProdutoresExistentesOfflineIndex,
                                                                 ),
                                                               ),
                                                             );
@@ -12705,7 +12671,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   .viewInsetsOf(
                                                                       context),
                                                               child:
-                                                                  RegistrarPartoExistenteOfflineWidget(
+                                                                  RegistrarPartoWidget(
                                                                 uidPropriedade:
                                                                     widget
                                                                         .uidPropriedade!,
@@ -12735,8 +12701,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     animaisProdutoresExistentesOfflineItem
                                                                         .brincoAnimal
                                                                         .toString(),
-                                                                itemUidIndex:
-                                                                    animaisProdutoresExistentesOfflineIndex,
                                                               ),
                                                             ),
                                                           );
@@ -12834,7 +12798,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     .viewInsetsOf(
                                                                         context),
                                                                 child:
-                                                                    RegistroAbortoExistenteOfflineWidget(
+                                                                    RegistroAbortoWidget(
                                                                   uidPropriedade:
                                                                       widget
                                                                           .uidPropriedade!,
@@ -12857,8 +12821,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomeAnimal:
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .nomeAnimal,
-                                                                  itemUidIndex:
-                                                                      animaisProdutoresExistentesOfflineIndex,
                                                                 ),
                                                               ),
                                                             );
@@ -13109,7 +13071,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     .viewInsetsOf(
                                                                         context),
                                                                 child:
-                                                                    RegistroAbortoExistenteOfflineWidget(
+                                                                    RegistroAbortoWidget(
                                                                   uidPropriedade:
                                                                       widget
                                                                           .uidPropriedade!,
@@ -13132,8 +13094,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomeAnimal:
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .nomeAnimal,
-                                                                  itemUidIndex:
-                                                                      animaisProdutoresExistentesOfflineIndex,
                                                                 ),
                                                               ),
                                                             );
@@ -13237,7 +13197,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      RegistrarPartoExistenteOfflineWidget(
+                                                                      RegistrarPartoWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -13268,8 +13228,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .brincoAnimal
                                                                             .toString(),
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                   ),
                                                                 ),
                                                               );
@@ -13378,7 +13336,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      RegistrarPrePartoExistenteOfflineWidget(
+                                                                      RegistrarPrePartoWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -13412,8 +13370,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     dtPrePartoPrevista:
                                                                         functions
                                                                             .converteDataStringDate(animaisProdutoresExistentesOfflineItem.dtPrePartoPrevista),
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                   ),
                                                                 ),
                                                               );
@@ -13669,7 +13625,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     .viewInsetsOf(
                                                                         context),
                                                                 child:
-                                                                    RegistrarPartoExistenteOfflineWidget(
+                                                                    RegistrarPartoWidget(
                                                                   uidPropriedade:
                                                                       widget
                                                                           .uidPropriedade!,
@@ -13699,8 +13655,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .brincoAnimal
                                                                           .toString(),
-                                                                  itemUidIndex:
-                                                                      animaisProdutoresExistentesOfflineIndex,
                                                                 ),
                                                               ),
                                                             );
@@ -13804,7 +13758,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      RegistrarPrePartoExistenteOfflineWidget(
+                                                                      RegistrarPrePartoWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -13838,8 +13792,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     dtPrePartoPrevista:
                                                                         functions
                                                                             .converteDataStringDate(animaisProdutoresExistentesOfflineItem.dtPrePartoPrevista),
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                   ),
                                                                 ),
                                                               );
@@ -13940,7 +13892,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     .viewInsetsOf(
                                                                         context),
                                                                 child:
-                                                                    RegistroAbortoExistenteOfflineWidget(
+                                                                    RegistroAbortoWidget(
                                                                   uidPropriedade:
                                                                       widget
                                                                           .uidPropriedade!,
@@ -13963,8 +13915,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                   nomeAnimal:
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .nomeAnimal,
-                                                                  itemUidIndex:
-                                                                      animaisProdutoresExistentesOfflineIndex,
                                                                 ),
                                                               ),
                                                             );
@@ -14223,7 +14173,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      RegistroAbortoExistenteOfflineWidget(
+                                                                      RegistroAbortoWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -14247,8 +14197,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     nomeAnimal:
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .nomeAnimal,
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                   ),
                                                                 ),
                                                               );
@@ -14358,7 +14306,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      RegistrarSecagemExistenteOfflineWidget(
+                                                                      RegistrarSecagemWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -14392,8 +14340,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     dtSecPrevista:
                                                                         functions
                                                                             .converteDataStringDate(animaisProdutoresExistentesOfflineItem.dtSecPrevista),
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                   ),
                                                                 ),
                                                               );
@@ -14596,7 +14542,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                           .viewInsetsOf(
                                                                               context),
                                                                       child:
-                                                                          DgMaisExistenteOfflineWidget(
+                                                                          DgMaisWidget(
                                                                         uidPropriedade:
                                                                             widget.uidPropriedade!,
                                                                         nomePropriedade:
@@ -14615,8 +14561,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                             widget.visitaPresencial!,
                                                                         diasDg:
                                                                             widget.diasDg!,
-                                                                        itemUidIndex:
-                                                                            animaisProdutoresExistentesOfflineIndex,
                                                                       ),
                                                                     ),
                                                                   );
@@ -14724,7 +14668,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      ConfirmaPpExistenteOfflineWidget(
+                                                                      ConfirmaPpWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -14751,8 +14695,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                             .visitaPresencial!,
                                                                     diasDg: widget
                                                                         .diasDg!,
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                   ),
                                                                 ),
                                                               );
@@ -14861,7 +14803,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .viewInsetsOf(
                                                                           context),
                                                                   child:
-                                                                      DgMenosExistenteOfflineWidget(
+                                                                      DgMenosWidget(
                                                                     uidPropriedade:
                                                                         widget
                                                                             .uidPropriedade!,
@@ -14886,8 +14828,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     visitaPresencial:
                                                                         widget
                                                                             .visitaPresencial!,
-                                                                    itemUidIndex:
-                                                                        animaisProdutoresExistentesOfflineIndex,
                                                                   ),
                                                                 ),
                                                               );
