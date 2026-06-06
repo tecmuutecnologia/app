@@ -52,9 +52,6 @@ class FFAppState extends ChangeNotifier {
           _animaisProdutoresEditados;
     });
     _safeInit(() {
-      _contador = prefs.getInt('ff_contador') ?? _contador;
-    });
-    _safeInit(() {
       _acoesOffline = prefs
               .getStringList('ff_acoesOffline')
               ?.map((x) {
@@ -198,13 +195,6 @@ class FFAppState extends ChangeNotifier {
         _animaisProdutoresEditados.map((x) => x.serialize()).toList());
   }
 
-  int _contador = -1;
-  int get contador => _contador;
-  set contador(int value) {
-    _contador = value;
-    prefs.setInt('ff_contador', value);
-  }
-
   List<AcoesStruct> _acoesOffline = [];
   List<AcoesStruct> get acoesOffline => _acoesOffline;
   set acoesOffline(List<AcoesStruct> value) {
@@ -244,12 +234,6 @@ class FFAppState extends ChangeNotifier {
     acoesOffline.insert(index, value);
     prefs.setStringList(
         'ff_acoesOffline', _acoesOffline.map((x) => x.serialize()).toList());
-  }
-
-  int _verificadorIgualdade = 0;
-  int get verificadorIgualdade => _verificadorIgualdade;
-  set verificadorIgualdade(int value) {
-    _verificadorIgualdade = value;
   }
 
   List<AnimaisApagadosExistentesOfflineStruct>
