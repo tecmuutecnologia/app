@@ -49,6 +49,10 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
   late RecriacaoModel _model;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  /// Direção da ordenação da lista (antes em FFAppState.ordenacaoQuery, que era
+  /// global e não-persistido, usado só nesta tela). Local: false = descendente.
+  bool _ordenacaoQuery = false;
+
   // Constantes de cores
   static const Color _appBarColorOnline = Color(0xFFF75E38);
   static const Color _appBarColorOffline = Color(0xFFF2886E);
@@ -193,7 +197,7 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
 
   Widget _buildFilterSection(BuildContext context) {
     final isNovilhasSelected = _model.choiceChipsValue == 'Novilhas';
-    final isAscending = FFAppState().ordenacaoQuery;
+    final isAscending = _ordenacaoQuery;
 
     return Column(
       children: [
@@ -289,7 +293,7 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
         size: 24.0,
       ),
       onPressed: () {
-        FFAppState().ordenacaoQuery = !isAscending;
+        _ordenacaoQuery = !isAscending;
         safeSetState(() {});
       },
     );
@@ -313,7 +317,7 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
           diasDg: widget.diasDg,
           filterCategory: _model.choiceChipsValue,
           isOnline: isOnline,
-          ascending: FFAppState().ordenacaoQuery,
+          ascending: _ordenacaoQuery,
         ),
       ],
     );

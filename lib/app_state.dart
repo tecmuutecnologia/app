@@ -783,12 +783,6 @@ class FFAppState extends ChangeNotifier {
     return _acoesPreferidas.contains(acao);
   }
 
-  bool _ordenacaoQuery = false;
-  bool get ordenacaoQuery => _ordenacaoQuery;
-  set ordenacaoQuery(bool value) {
-    _ordenacaoQuery = value;
-  }
-
   final _allAnimaisProdutorManager =
       StreamRequestManager<List<AnimaisProdutoresRecord>>();
   Stream<List<AnimaisProdutoresRecord>> allAnimaisProdutor({
