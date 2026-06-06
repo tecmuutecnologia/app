@@ -10,7 +10,6 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/instant_timer.dart';
 import '/pages/tecnico/propriedade/animals/descarte_animal/descarte_animal_widget.dart';
 import '/pages/tecnico/propriedade/inseminacoes/nova_inseminacao/nova_inseminacao_widget.dart';
-import '/pages/tecnico/propriedade/inseminacoes/nova_inseminacao_existente_offline/nova_inseminacao_existente_offline_widget.dart';
 import '/pages/tecnico/propriedade/inseminacoes/registrar_cio/registrar_cio_widget.dart';
 import '/pages/tecnico/propriedade/inseminacoes/registrar_cio_existente_offline/registrar_cio_existente_offline_widget.dart';
 import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';
@@ -938,7 +937,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                         padding:
                                                                             MediaQuery.viewInsetsOf(context),
                                                                         child:
-                                                                            NovaInseminacaoExistenteOfflineWidget(
+                                                                            NovaInseminacaoWidget(
                                                                           uidPropriedade:
                                                                               widget.uidPropriedade!,
                                                                           nomePropriedade:
@@ -960,8 +959,6 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                               .toString(),
                                                                           diasDg:
                                                                               widget.diasDg!,
-                                                                          itemUidIndex:
-                                                                              listaAnimaisOfflineExistenteIndex,
                                                                           uidAnimaisProdutores:
                                                                               listaAnimaisOfflineExistenteItem.uidAnimal!,
                                                                         ),
@@ -2193,7 +2190,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                           padding:
                                                                               MediaQuery.viewInsetsOf(context),
                                                                           child:
-                                                                              NovaInseminacaoExistenteOfflineWidget(
+                                                                              NovaInseminacaoWidget(
                                                                             uidPropriedade:
                                                                                 widget.uidPropriedade!,
                                                                             nomePropriedade:
@@ -2214,8 +2211,6 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                                 listaAnimaisOfflineExistenteItem.brincoAnimal.toString(),
                                                                             diasDg:
                                                                                 widget.diasDg!,
-                                                                            itemUidIndex:
-                                                                                listaAnimaisOfflineExistenteIndex,
                                                                             uidAnimaisProdutores:
                                                                                 listaAnimaisOfflineExistenteItem.uidAnimal!,
                                                                           ),
