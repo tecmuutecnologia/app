@@ -879,6 +879,7 @@ class OfflineFirstSyncService {
     switch (op.operationType) {
       case 'CREATE':
         if (data != null) await docRef.set(data);
+        _reconcileQueuedCreate(op, docRef.id);
         break;
       case 'UPDATE':
         if (data != null) await docRef.update(data);
@@ -887,6 +888,60 @@ class OfflineFirstSyncService {
         await docRef.delete();
         break;
     }
+  }
+
+  /// Após um CREATE pela fila, grava o `firestoreId` e limpa `needsSync` na
+  /// entity local. Diferente dos laços `_syncModifiedX`, a fila não reconciliava
+  /// — deixando a entity como `firestoreId=null`/dirty, o que tornava edições
+  /// futuras um no-op (`pushUpdate` com firestoreId nulo) e podia gerar
+  /// duplicata via listener remoto. Só se aplica aos repositórios SEM laço
+  /// próprio (os com laço já não enfileiram CREATE).
+  ///
+  /// O documento foi criado em `.../{collectionName}/{objectboxId}` (a fila usa
+  /// o id local do ObjectBox como id do documento), logo `docRef.id` é o
+  /// `firestoreId` e o id local é o último segmento do path.
+  void _reconcileQueuedCreate(PendingOperationEntity op, String firestoreId) {
+    final objectboxId = int.tryParse(op.documentPath?.split('/').last ?? '');
+    if (objectboxId == null) return;
+
+    SyncableEntity? entity;
+    void Function(SyncableEntity)? save;
+    switch (op.collectionName) {
+      case 'person':
+        entity = _objectBox.personBox.get(objectboxId);
+        save = (e) => _objectBox.personBox.put(e as PersonEntity);
+        break;
+      case 'tecnico':
+        entity = _objectBox.tecnicoBox.get(objectboxId);
+        save = (e) => _objectBox.tecnicoBox.put(e as TecnicoEntity);
+        break;
+      case 'produtor':
+        entity = _objectBox.produtorBox.get(objectboxId);
+        save = (e) => _objectBox.produtorBox.put(e as ProdutorEntity);
+        break;
+      case 'propriedades':
+        entity = _objectBox.propriedadeBox.get(objectboxId);
+        save = (e) => _objectBox.propriedadeBox.put(e as PropriedadeEntity);
+        break;
+      case 'acoes_da_visita':
+        entity = _objectBox.acaoDaVisitaBox.get(objectboxId);
+        save = (e) => _objectBox.acaoDaVisitaBox.put(e as AcaoDaVisitaEntity);
+        break;
+      case 'acoes_sanitario':
+        entity = _objectBox.acaoSanitarioBox.get(objectboxId);
+        save = (e) => _objectBox.acaoSanitarioBox.put(e as AcaoSanitarioEntity);
+        break;
+      case 'recomendacoes':
+        entity = _objectBox.recomendacaoBox.get(objectboxId);
+        save = (e) => _objectBox.recomendacaoBox.put(e as RecomendacaoEntity);
+        break;
+    }
+    if (entity == null || save == null) return;
+
+    entity.firestoreId = firestoreId;
+    entity.needsSync = false;
+    entity.lastSynced = DateTime.now();
+    save(entity);
   }
 
   // ==========================================================================
