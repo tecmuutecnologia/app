@@ -28,6 +28,7 @@ class RegistrarCioWidget extends StatefulWidget {
     required this.uidTecnico,
     required this.emailPropriedade,
     required this.uidAnimaisProdutores,
+    this.uidAnimalOffline,
     required this.grupoPredominante,
     required this.nomeAnimal,
     required this.visitaPresencial,
@@ -40,6 +41,11 @@ class RegistrarCioWidget extends StatefulWidget {
   final DocumentReference? uidTecnico;
   final String? emailPropriedade;
   final DocumentReference? uidAnimaisProdutores;
+
+  /// Identidade local do animal criado OFFLINE (sem firestoreId no Firestore).
+  /// Para esses, [uidAnimaisProdutores] e null; a acao guarda este id e o
+  /// vinculo e resolvido pela cascata quando o animal sincroniza (E3p2).
+  final String? uidAnimalOffline;
   final String? grupoPredominante;
   final String? nomeAnimal;
   final bool? visitaPresencial;
@@ -134,6 +140,8 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
     final acao = AcaoEntity(
       parentPath: widget.uidTecnico!.path,
       uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
+      uidAnimalOffline:
+          widget.uidAnimaisProdutores == null ? widget.uidAnimalOffline : null,
       uidPropriedadePath: widget.uidPropriedade?.path,
       nomeAnimal: widget.nomeAnimal,
       acao: 'Cio',
@@ -157,7 +165,10 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
     final animalRepo = AnimalRepository();
     final entity = widget.uidAnimaisProdutores != null
         ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
-        : null;
+        : (widget.uidAnimalOffline != null &&
+                widget.uidAnimalOffline!.isNotEmpty
+            ? animalRepo.getByUidAnimalOffline(widget.uidAnimalOffline!)
+            : null);
     if (entity != null) {
       unawaited(animalRepo.update(entity, dadosAnimal));
     } else if (_model.outUidAnimaisAnimal != null) {

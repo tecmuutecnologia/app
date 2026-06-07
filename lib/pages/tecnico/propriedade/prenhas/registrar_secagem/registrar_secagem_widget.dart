@@ -34,6 +34,7 @@ class RegistrarSecagemWidget extends StatefulWidget {
     required this.visitaPresencial,
     required this.diasDg,
     required this.uidAnimaisProdutores,
+    this.uidAnimalOffline,
     required this.nomeAnimal,
     required this.brincoAnimal,
     required this.grupoAnimal,
@@ -47,6 +48,11 @@ class RegistrarSecagemWidget extends StatefulWidget {
   final bool? visitaPresencial;
   final String? diasDg;
   final DocumentReference? uidAnimaisProdutores;
+
+  /// Identidade local do animal criado OFFLINE (sem firestoreId no Firestore).
+  /// Para esses, [uidAnimaisProdutores] e null; a acao guarda este id e o
+  /// vinculo e resolvido pela cascata quando o animal sincroniza (E3p2).
+  final String? uidAnimalOffline;
   final String? nomeAnimal;
   final String? brincoAnimal;
   final String? grupoAnimal;
@@ -136,6 +142,8 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
     final acao = AcaoEntity(
       parentPath: widget.uidTecnico!.path,
       uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
+      uidAnimalOffline:
+          widget.uidAnimaisProdutores == null ? widget.uidAnimalOffline : null,
       nomeAnimal: widget.nomeAnimal,
       acao: 'Secagem',
       dataVisita: _model.dtSecagemTextController.text,
@@ -152,7 +160,10 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
     final animalRepo = AnimalRepository();
     final entity = widget.uidAnimaisProdutores != null
         ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
-        : null;
+        : (widget.uidAnimalOffline != null &&
+                widget.uidAnimalOffline!.isNotEmpty
+            ? animalRepo.getByUidAnimalOffline(widget.uidAnimalOffline!)
+            : null);
     if (entity != null) {
       unawaited(animalRepo.update(entity, dados));
     } else if (_model.outUidAnimaisAnimal != null) {

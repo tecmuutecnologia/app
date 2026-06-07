@@ -23,6 +23,7 @@ class InduzirLactacaoWidget extends StatefulWidget {
     required this.visitaPresencial,
     required this.diasDg,
     required this.uidAnimaisProdutores,
+    this.uidAnimalOffline,
     required this.nomeAnimal,
     required this.brincoAnimal,
   });
@@ -34,6 +35,11 @@ class InduzirLactacaoWidget extends StatefulWidget {
   final bool? visitaPresencial;
   final String? diasDg;
   final DocumentReference? uidAnimaisProdutores;
+
+  /// Identidade local do animal criado OFFLINE (sem firestoreId no Firestore).
+  /// Para esses, [uidAnimaisProdutores] e null; a acao guarda este id e o
+  /// vinculo e resolvido pela cascata quando o animal sincroniza (E3p2).
+  final String? uidAnimalOffline;
   final String? nomeAnimal;
   final String? brincoAnimal;
 
@@ -105,6 +111,8 @@ class _InduzirLactacaoWidgetState extends State<InduzirLactacaoWidget>
     final acao = AcaoEntity(
       parentPath: widget.uidTecnico!.path,
       uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
+      uidAnimalOffline:
+          widget.uidAnimaisProdutores == null ? widget.uidAnimalOffline : null,
       uidPropriedadePath: widget.uidPropriedade?.path,
       nomeAnimal: widget.nomeAnimal,
       acao: 'Indução de Lactação',
@@ -118,7 +126,10 @@ class _InduzirLactacaoWidgetState extends State<InduzirLactacaoWidget>
     final animalRepo = AnimalRepository();
     final entity = widget.uidAnimaisProdutores != null
         ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
-        : null;
+        : (widget.uidAnimalOffline != null &&
+                widget.uidAnimalOffline!.isNotEmpty
+            ? animalRepo.getByUidAnimalOffline(widget.uidAnimalOffline!)
+            : null);
     if (entity != null) {
       unawaited(animalRepo.update(entity, dados));
     } else {
