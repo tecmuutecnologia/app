@@ -22,6 +22,11 @@ class ResumoVisitaRepository extends BaseSyncRepository<ResumoVisitaEntity> {
   @override
   String get collectionName => 'resumo_da_visita';
 
+  /// O CREATE/UPDATE é feito por `_syncModifiedVisitas` (que reconcilia o
+  /// `firestoreId`). Não enfileirar evita dupla-sync e o furo de reconcile.
+  @override
+  bool get syncedByModifiedLoop => true;
+
   ResumoVisitaEntity? getByFirestoreId(String firestoreId) => box
       .query(ResumoVisitaEntity_.firestoreId.equals(firestoreId))
       .build()
@@ -34,10 +39,8 @@ class ResumoVisitaRepository extends BaseSyncRepository<ResumoVisitaEntity> {
       .find();
 
   @override
-  List<ResumoVisitaEntity> getPendingSync() => box
-      .query(ResumoVisitaEntity_.needsSync.equals(true))
-      .build()
-      .find();
+  List<ResumoVisitaEntity> getPendingSync() =>
+      box.query(ResumoVisitaEntity_.needsSync.equals(true)).build().find();
 
   Stream<List<ResumoVisitaEntity>> watchByParentPath(String parentPath) => box
       .query(ResumoVisitaEntity_.parentPath.equals(parentPath))

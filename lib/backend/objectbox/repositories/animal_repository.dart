@@ -27,6 +27,12 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
   @override
   String get collectionName => 'animaisProdutores';
 
+  /// O CREATE/UPDATE dos animais é feito por `_syncModifiedAnimals` (que
+  /// reconcilia o `firestoreId` de volta). Não enfileirar evita dupla-sync e o
+  /// furo de `firestoreId` não-reconciliado da fila.
+  @override
+  bool get syncedByModifiedLoop => true;
+
   // ---------------------------------------------------------------------------
   // Queries específicas de animal
   // ---------------------------------------------------------------------------

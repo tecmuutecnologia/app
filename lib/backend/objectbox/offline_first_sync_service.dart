@@ -643,6 +643,17 @@ class OfflineFirstSyncService {
           animal.needsSync = false;
           animal.lastSynced = DateTime.now();
           _objectBox.animalBox.put(animal);
+        } else if (animal.firestoreId == null &&
+            animal.parentPath != null &&
+            !animal.isDeleted) {
+          // Novo animal (criado offline) - criar no Firestore e reconciliar.
+          final collectionRef =
+              _firestore.collection('${animal.parentPath}/animaisProdutores');
+          final docRef = await collectionRef.add(animal.toFirestore());
+          animal.firestoreId = docRef.id;
+          animal.needsSync = false;
+          animal.lastSynced = DateTime.now();
+          _objectBox.animalBox.put(animal);
         }
       } catch (e) {
         debugPrint('❌ Erro ao sincronizar animal ${animal.firestoreId}: $e');
@@ -766,6 +777,17 @@ class OfflineFirstSyncService {
           fin.needsSync = false;
           fin.lastSynced = DateTime.now();
           _objectBox.financeiroBox.put(fin);
+        } else if (fin.firestoreId == null &&
+            fin.parentPath != null &&
+            !fin.isDeleted) {
+          // Novo registro (criado offline) - criar no Firestore e reconciliar.
+          final collectionRef =
+              _firestore.collection('${fin.parentPath}/financeiro');
+          final docRef = await collectionRef.add(fin.toFirestore());
+          fin.firestoreId = docRef.id;
+          fin.needsSync = false;
+          fin.lastSynced = DateTime.now();
+          _objectBox.financeiroBox.put(fin);
         }
       } catch (e) {
         debugPrint('❌ Erro ao sincronizar financeiro ${fin.firestoreId}: $e');
@@ -792,6 +814,17 @@ class OfflineFirstSyncService {
             '${visita.parentPath}/resumo_da_visita/${visita.firestoreId}',
           );
           await docRef.update(visita.toFirestore());
+          visita.needsSync = false;
+          visita.lastSynced = DateTime.now();
+          _objectBox.resumoVisitaBox.put(visita);
+        } else if (visita.firestoreId == null &&
+            visita.parentPath != null &&
+            !visita.isDeleted) {
+          // Nova visita (criada offline) - criar no Firestore e reconciliar.
+          final collectionRef =
+              _firestore.collection('${visita.parentPath}/resumo_da_visita');
+          final docRef = await collectionRef.add(visita.toFirestore());
+          visita.firestoreId = docRef.id;
           visita.needsSync = false;
           visita.lastSynced = DateTime.now();
           _objectBox.resumoVisitaBox.put(visita);
