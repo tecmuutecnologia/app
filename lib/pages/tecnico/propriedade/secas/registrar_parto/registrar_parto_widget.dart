@@ -2,7 +2,7 @@
 
 import '/backend/backend.dart';
 import '/backend/objectbox/repositories/animal_repository.dart';
-import '/core/connectivity/connectivity_service.dart';
+import '/features/animais/application/animal_struct_adapter.dart';
 import 'dart:async';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
@@ -138,7 +138,7 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
   /// status 'Vazia', limpa datas de ciclo/inseminação e incrementa partos) direto
   /// no ObjectBox (fonte única), delegando o sync com o Firestore aos
   /// repositórios. Funciona sem conexão. O cadastro do bezerro (quando há) é
-  /// tratado à parte e só online, pois criar animal offline é caso ainda pendente.
+  /// tratado à parte, também offline-first, via `criarAnimalOffline`.
   Future<void> _registrarPartoMaeOfflineFirst(String dtParto) async {
     final dados = <String, dynamic>{
       'dtUltimoParto': dtParto,
@@ -1165,91 +1165,86 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
                                         await _registrarPartoMaeOfflineFirst(
                                             _model.dtPartoTextController.text);
 
-                                        // Cadastro do bezerro: só online (criar
-                                        // animal offline é caso ainda pendente).
-                                        if (ConnectivityService
-                                            .instance.isOnline) {
-                                          await AnimaisProdutoresRecord
-                                                  .createDoc(widget.uidTecnico!)
-                                              .set(
-                                                  createAnimaisProdutoresRecordData(
-                                            uidTecnicoPropriedade:
-                                                widget.uidPropriedade,
-                                            nomeAnimal:
-                                                _model.nomeTextController.text,
-                                            brincoAnimal: (_model
-                                                            .brincoTextController
-                                                            .text !=
-                                                        '') &&
-                                                    (_model.brincoTextController
-                                                            .text !=
-                                                        '-1')
-                                                ? int.tryParse(_model
-                                                    .brincoTextController.text)
-                                                : -1,
-                                            racaAnimal: _model.racaPreValue,
-                                            pesoAnimal: _model
-                                                .pesoNascTextController.text,
-                                            dtNascimento: _model
-                                                .dtPartoTextController.text,
-                                            grupoAnimal: _model.sexoValue,
-                                            vaca: () {
-                                              if ((widget.nomeVacaAtual !=
-                                                          null &&
-                                                      widget.nomeVacaAtual !=
-                                                          '') &&
-                                                  (widget.brincoVacaAtual !=
-                                                          null &&
-                                                      widget.brincoVacaAtual !=
-                                                          '')) {
-                                                return '${widget.nomeVacaAtual} - ${widget.brincoVacaAtual}';
-                                              } else if (widget
-                                                          .brincoVacaAtual !=
-                                                      null &&
-                                                  widget.brincoVacaAtual !=
-                                                      '') {
-                                                return widget.brincoVacaAtual;
-                                              } else {
-                                                return widget.nomeVacaAtual;
-                                              }
-                                            }(),
-                                            touro: widget
-                                                .nomeTourtoUltimaInseminacao,
-                                            status: '',
-                                            nomeBrincoConcat: () {
-                                              if ((_model.nomeTextController
+                                        // Cadastro do bezerro offline-first: cria
+                                        // no ObjectBox (online empurra na hora;
+                                        // offline enfileira e a cascata liga as
+                                        // ações ao bezerro quando ele sincroniza).
+                                        await criarAnimalOffline(
+                                            AnimaisProdutoresStruct(
+                                          uidTecnicoPropriedade:
+                                              widget.uidPropriedade,
+                                          nomeAnimal:
+                                              _model.nomeTextController.text,
+                                          brincoAnimal: (_model
+                                                          .brincoTextController
                                                           .text !=
                                                       '') &&
                                                   (_model.brincoTextController
                                                           .text !=
+                                                      '-1')
+                                              ? int.tryParse(_model
+                                                  .brincoTextController.text)
+                                              : -1,
+                                          racaAnimal: _model.racaPreValue,
+                                          pesoAnimal: _model
+                                              .pesoNascTextController.text,
+                                          dtNascimento:
+                                              _model.dtPartoTextController.text,
+                                          grupoAnimal: _model.sexoValue,
+                                          vaca: () {
+                                            if ((widget.nomeVacaAtual != null &&
+                                                    widget.nomeVacaAtual !=
+                                                        '') &&
+                                                (widget.brincoVacaAtual !=
+                                                        null &&
+                                                    widget.brincoVacaAtual !=
+                                                        '')) {
+                                              return '${widget.nomeVacaAtual} - ${widget.brincoVacaAtual}';
+                                            } else if (widget.brincoVacaAtual !=
+                                                    null &&
+                                                widget.brincoVacaAtual != '') {
+                                              return widget.brincoVacaAtual;
+                                            } else {
+                                              return widget.nomeVacaAtual;
+                                            }
+                                          }(),
+                                          touro: widget
+                                              .nomeTourtoUltimaInseminacao,
+                                          status: '',
+                                          nomeBrincoConcat: () {
+                                            if ((_model.nomeTextController
+                                                        .text !=
+                                                    '') &&
+                                                (_model.brincoTextController
+                                                        .text !=
+                                                    '') &&
+                                                (_model.brincoTextController
+                                                        .text !=
+                                                    '-1')) {
+                                              return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                                            } else if (_model
+                                                    .nomeTextController.text !=
+                                                '') {
+                                              return _model
+                                                  .nomeTextController.text;
+                                            } else {
+                                              return _model
+                                                  .brincoTextController.text;
+                                            }
+                                          }(),
+                                          brincoAnimalOrder: (_model
+                                                          .brincoTextController
+                                                          .text !=
                                                       '') &&
                                                   (_model.brincoTextController
                                                           .text !=
-                                                      '-1')) {
-                                                return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                              } else if (_model
-                                                      .nomeTextController
-                                                      .text !=
-                                                  '') {
-                                                return _model
-                                                    .nomeTextController.text;
-                                              } else {
-                                                return _model
-                                                    .brincoTextController.text;
-                                              }
-                                            }(),
-                                            brincoAnimalOrder: (_model
-                                                            .brincoTextController
-                                                            .text !=
-                                                        '') &&
-                                                    (_model.brincoTextController
-                                                            .text !=
-                                                        '-1')
-                                                ? int.tryParse(_model
-                                                    .brincoTextController.text)
-                                                : 999999,
-                                          ));
-                                        }
+                                                      '-1')
+                                              ? int.tryParse(_model
+                                                  .brincoTextController.text)
+                                              : 999999,
+                                          uidAnimalOffline:
+                                              functions.criarUidRandom(),
+                                        ));
                                         Navigator.pop(context);
                                         return;
                                       } else {
