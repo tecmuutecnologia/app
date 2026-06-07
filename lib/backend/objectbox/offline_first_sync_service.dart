@@ -654,6 +654,7 @@ class OfflineFirstSyncService {
           animal.needsSync = false;
           animal.lastSynced = DateTime.now();
           _objectBox.animalBox.put(animal);
+          _resolveAcoesParaAnimalSincronizado(animal);
         }
       } catch (e) {
         debugPrint('❌ Erro ao sincronizar animal ${animal.firestoreId}: $e');
@@ -701,8 +702,10 @@ class OfflineFirstSyncService {
           _objectBox.acaoBox.put(acao);
         } else if (acao.firestoreId == null &&
             acao.parentPath != null &&
-            !acao.isDeleted) {
-          // Nova ação - criar no Firestore (não ressuscita soft-delete pendente)
+            !acao.isDeleted &&
+            _acaoVinculoResolvido(acao)) {
+          // Nova ação - criar no Firestore (não ressuscita soft-delete pendente;
+          // não cria se o vínculo com animal-offline ainda não foi resolvido).
           final collectionRef =
               _firestore.collection('${acao.parentPath}/acoes');
           final docRef = await collectionRef.add(_acaoPayload(acao));
@@ -718,6 +721,50 @@ class OfflineFirstSyncService {
 
     if (modified.isNotEmpty) {
       debugPrint('📋 ${modified.length} ação(ões) sincronizada(s)');
+    }
+  }
+
+  /// `true` se a ação NÃO tem dependência pendente de um animal criado offline:
+  /// ou não referencia animal-offline (`uidAnimalOffline` vazio), ou o vínculo
+  /// já foi resolvido (`uidAnimalAnimaisProdutoresPath` preenchido pela cascata
+  /// [_resolveAcoesParaAnimalSincronizado] quando o animal sincronizou).
+  ///
+  /// Segura a criação de uma ação sobre animal-offline até o animal subir, para
+  /// não gravar no Firestore uma ação SEM a `DocumentReference` do animal.
+  bool _acaoVinculoResolvido(AcaoEntity acao) =>
+      acao.uidAnimalOffline == null ||
+      acao.uidAnimalOffline!.isEmpty ||
+      acao.uidAnimalAnimaisProdutoresPath != null;
+
+  /// Quando um animal criado offline finalmente sobe e ganha `firestoreId`,
+  /// preenche o vínculo (`uidAnimalAnimaisProdutoresPath`) das ações criadas
+  /// referenciando esse animal só pela identidade local (`uidAnimalOffline`) e
+  /// as remarca para sync. Como `_syncModifiedAnimals` roda ANTES de
+  /// `_syncModifiedAcoes` no mesmo ciclo, essas ações são criadas logo em
+  /// seguida já com a `DocumentReference` correta do animal.
+  void _resolveAcoesParaAnimalSincronizado(AnimalEntity animal) {
+    final uidOffline = animal.uidAnimalOffline;
+    if (uidOffline == null ||
+        uidOffline.isEmpty ||
+        animal.firestoreId == null) {
+      return;
+    }
+    final novoPath =
+        '${animal.parentPath}/animaisProdutores/${animal.firestoreId}';
+    final pendentes = _objectBox.acaoBox
+        .query(AcaoEntity_.uidAnimalOffline.equals(uidOffline))
+        .build()
+        .find()
+        .where((a) => a.uidAnimalAnimaisProdutoresPath == null && !a.isDeleted)
+        .toList();
+    for (final acao in pendentes) {
+      acao.uidAnimalAnimaisProdutoresPath = novoPath;
+      acao.needsSync = true;
+      _objectBox.acaoBox.put(acao);
+    }
+    if (pendentes.isNotEmpty) {
+      debugPrint(
+          '🔗 ${pendentes.length} ação(ões) vinculada(s) ao animal recém-sincronizado');
     }
   }
 
