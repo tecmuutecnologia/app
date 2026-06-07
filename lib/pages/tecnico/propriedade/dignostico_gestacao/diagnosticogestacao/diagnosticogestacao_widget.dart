@@ -598,7 +598,9 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                                           emailPropriedade:
                                                                               widget.emailPropriedade!,
                                                                           uidAnimaisProdutores:
-                                                                              animaisExistentesItem.uidAnimal!,
+                                                                              animaisExistentesItem.uidAnimal,
+                                                                          uidAnimalOffline:
+                                                                              animaisExistentesItem.uidAnimalOffline,
                                                                           grupoPredominante:
                                                                               animaisExistentesItem.grupoAnimal,
                                                                           nomeAnimal:
@@ -740,7 +742,10 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                                             .emailPropriedade!,
                                                                     uidAnimaisProdutores:
                                                                         animaisExistentesItem
-                                                                            .uidAnimal!,
+                                                                            .uidAnimal,
+                                                                    uidAnimalOffline:
+                                                                        animaisExistentesItem
+                                                                            .uidAnimalOffline,
                                                                     grupoPredominante:
                                                                         animaisExistentesItem
                                                                             .grupoAnimal,
@@ -881,7 +886,10 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                                             .emailPropriedade!,
                                                                     uidAnimaisProdutores:
                                                                         animaisExistentesItem
-                                                                            .uidAnimal!,
+                                                                            .uidAnimal,
+                                                                    uidAnimalOffline:
+                                                                        animaisExistentesItem
+                                                                            .uidAnimalOffline,
                                                                     grupoPredominante:
                                                                         animaisExistentesItem
                                                                             .grupoAnimal,

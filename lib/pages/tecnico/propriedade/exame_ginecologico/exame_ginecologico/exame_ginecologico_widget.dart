@@ -530,7 +530,10 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
                                                                       .diasDg!,
                                                                   uidAnimaisProdutores:
                                                                       listOfflineExistenteItem
-                                                                          .uidAnimal!,
+                                                                          .uidAnimal,
+                                                                  uidAnimalOffline:
+                                                                      listOfflineExistenteItem
+                                                                          .uidAnimalOffline,
                                                                   nomeAnimal:
                                                                       listOfflineExistenteItem
                                                                           .nomeAnimal,

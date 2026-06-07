@@ -4721,7 +4721,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                         .diasDg!,
                                                                     uidAnimaisProdutores:
                                                                         animaisProdutoresExistentesOfflineItem
-                                                                            .uidAnimal!,
+                                                                            .uidAnimal,
+                                                                    uidAnimalOffline:
+                                                                        animaisProdutoresExistentesOfflineItem
+                                                                            .uidAnimalOffline,
                                                                     nomeAnimal:
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .nomeAnimal,
@@ -5017,7 +5020,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                         .diasDg!,
                                                                     uidAnimaisProdutores:
                                                                         animaisProdutoresExistentesOfflineItem
-                                                                            .uidAnimal!,
+                                                                            .uidAnimal,
+                                                                    uidAnimalOffline:
+                                                                        animaisProdutoresExistentesOfflineItem
+                                                                            .uidAnimalOffline,
                                                                   ),
                                                                 ),
                                                               );
@@ -5140,7 +5146,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .diasDg!,
                                                                   uidAnimaisProdutores:
                                                                       animaisProdutoresExistentesOfflineItem
-                                                                          .uidAnimal!,
+                                                                          .uidAnimal,
+                                                                  uidAnimalOffline:
+                                                                      animaisProdutoresExistentesOfflineItem
+                                                                          .uidAnimalOffline,
                                                                   nomeAnimal:
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .nomeAnimal,
@@ -5560,7 +5569,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .diasDg!,
                                                                   uidAnimaisProdutores:
                                                                       animaisProdutoresExistentesOfflineItem
-                                                                          .uidAnimal!,
+                                                                          .uidAnimal,
+                                                                  uidAnimalOffline:
+                                                                      animaisProdutoresExistentesOfflineItem
+                                                                          .uidAnimalOffline,
                                                                   nomeAnimal:
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .nomeAnimal,
@@ -5833,7 +5845,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .diasDg!,
                                                                   uidAnimaisProdutores:
                                                                       animaisProdutoresExistentesOfflineItem
-                                                                          .uidAnimal!,
+                                                                          .uidAnimal,
+                                                                  uidAnimalOffline:
+                                                                      animaisProdutoresExistentesOfflineItem
+                                                                          .uidAnimalOffline,
                                                                   nomeAnimal:
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .nomeAnimal,
@@ -6654,7 +6669,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .diasDg!,
                                                                   uidAnimaisProdutores:
                                                                       animaisProdutoresExistentesOfflineItem
-                                                                          .uidAnimal!,
+                                                                          .uidAnimal,
+                                                                  uidAnimalOffline:
+                                                                      animaisProdutoresExistentesOfflineItem
+                                                                          .uidAnimalOffline,
                                                                   nomeAnimal:
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .nomeAnimal,
@@ -6936,7 +6954,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                         .diasDg!,
                                                                     uidAnimaisProdutores:
                                                                         animaisProdutoresExistentesOfflineItem
-                                                                            .uidAnimal!,
+                                                                            .uidAnimal,
+                                                                    uidAnimalOffline:
+                                                                        animaisProdutoresExistentesOfflineItem
+                                                                            .uidAnimalOffline,
                                                                     nomeAnimal:
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .nomeAnimal,
@@ -7069,7 +7090,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                         .diasDg!,
                                                                     uidAnimaisProdutores:
                                                                         animaisProdutoresExistentesOfflineItem
-                                                                            .uidAnimal!,
+                                                                            .uidAnimal,
+                                                                    uidAnimalOffline:
+                                                                        animaisProdutoresExistentesOfflineItem
+                                                                            .uidAnimalOffline,
                                                                     nomeAnimal:
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .nomeAnimal,
@@ -7295,7 +7319,9 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                         emailPropriedade:
                                                                             widget.emailPropriedade!,
                                                                         uidAnimaisProdutores:
-                                                                            animaisProdutoresExistentesOfflineItem.uidAnimal!,
+                                                                            animaisProdutoresExistentesOfflineItem.uidAnimal,
+                                                                        uidAnimalOffline:
+                                                                            animaisProdutoresExistentesOfflineItem.uidAnimalOffline,
                                                                         grupoPredominante:
                                                                             animaisProdutoresExistentesOfflineItem.grupoAnimal,
                                                                         nomeAnimal:
@@ -7426,7 +7452,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                             .emailPropriedade!,
                                                                     uidAnimaisProdutores:
                                                                         animaisProdutoresExistentesOfflineItem
-                                                                            .uidAnimal!,
+                                                                            .uidAnimal,
+                                                                    uidAnimalOffline:
+                                                                        animaisProdutoresExistentesOfflineItem
+                                                                            .uidAnimalOffline,
                                                                     grupoPredominante:
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .grupoAnimal,
@@ -7561,7 +7590,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                             .emailPropriedade!,
                                                                     uidAnimaisProdutores:
                                                                         animaisProdutoresExistentesOfflineItem
-                                                                            .uidAnimal!,
+                                                                            .uidAnimal,
+                                                                    uidAnimalOffline:
+                                                                        animaisProdutoresExistentesOfflineItem
+                                                                            .uidAnimalOffline,
                                                                     grupoPredominante:
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .grupoAnimal,
@@ -11972,7 +12004,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                         .diasDg!,
                                                                     uidAnimaisProdutores:
                                                                         animaisProdutoresExistentesOfflineItem
-                                                                            .uidAnimal!,
+                                                                            .uidAnimal,
+                                                                    uidAnimalOffline:
+                                                                        animaisProdutoresExistentesOfflineItem
+                                                                            .uidAnimalOffline,
                                                                     nomeAnimal:
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .nomeAnimal,
@@ -12268,7 +12303,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                         .diasDg!,
                                                                     uidAnimaisProdutores:
                                                                         animaisProdutoresExistentesOfflineItem
-                                                                            .uidAnimal!,
+                                                                            .uidAnimal,
+                                                                    uidAnimalOffline:
+                                                                        animaisProdutoresExistentesOfflineItem
+                                                                            .uidAnimalOffline,
                                                                   ),
                                                                 ),
                                                               );
@@ -12391,7 +12429,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .diasDg!,
                                                                   uidAnimaisProdutores:
                                                                       animaisProdutoresExistentesOfflineItem
-                                                                          .uidAnimal!,
+                                                                          .uidAnimal,
+                                                                  uidAnimalOffline:
+                                                                      animaisProdutoresExistentesOfflineItem
+                                                                          .uidAnimalOffline,
                                                                   nomeAnimal:
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .nomeAnimal,
@@ -12811,7 +12852,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .diasDg!,
                                                                   uidAnimaisProdutores:
                                                                       animaisProdutoresExistentesOfflineItem
-                                                                          .uidAnimal!,
+                                                                          .uidAnimal,
+                                                                  uidAnimalOffline:
+                                                                      animaisProdutoresExistentesOfflineItem
+                                                                          .uidAnimalOffline,
                                                                   nomeAnimal:
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .nomeAnimal,
@@ -13084,7 +13128,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .diasDg!,
                                                                   uidAnimaisProdutores:
                                                                       animaisProdutoresExistentesOfflineItem
-                                                                          .uidAnimal!,
+                                                                          .uidAnimal,
+                                                                  uidAnimalOffline:
+                                                                      animaisProdutoresExistentesOfflineItem
+                                                                          .uidAnimalOffline,
                                                                   nomeAnimal:
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .nomeAnimal,
@@ -13905,7 +13952,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                       .diasDg!,
                                                                   uidAnimaisProdutores:
                                                                       animaisProdutoresExistentesOfflineItem
-                                                                          .uidAnimal!,
+                                                                          .uidAnimal,
+                                                                  uidAnimalOffline:
+                                                                      animaisProdutoresExistentesOfflineItem
+                                                                          .uidAnimalOffline,
                                                                   nomeAnimal:
                                                                       animaisProdutoresExistentesOfflineItem
                                                                           .nomeAnimal,
@@ -14187,7 +14237,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                         .diasDg!,
                                                                     uidAnimaisProdutores:
                                                                         animaisProdutoresExistentesOfflineItem
-                                                                            .uidAnimal!,
+                                                                            .uidAnimal,
+                                                                    uidAnimalOffline:
+                                                                        animaisProdutoresExistentesOfflineItem
+                                                                            .uidAnimalOffline,
                                                                     nomeAnimal:
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .nomeAnimal,
@@ -14320,7 +14373,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                         .diasDg!,
                                                                     uidAnimaisProdutores:
                                                                         animaisProdutoresExistentesOfflineItem
-                                                                            .uidAnimal!,
+                                                                            .uidAnimal,
+                                                                    uidAnimalOffline:
+                                                                        animaisProdutoresExistentesOfflineItem
+                                                                            .uidAnimalOffline,
                                                                     nomeAnimal:
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .nomeAnimal,
@@ -14546,7 +14602,9 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                         emailPropriedade:
                                                                             widget.emailPropriedade!,
                                                                         uidAnimaisProdutores:
-                                                                            animaisProdutoresExistentesOfflineItem.uidAnimal!,
+                                                                            animaisProdutoresExistentesOfflineItem.uidAnimal,
+                                                                        uidAnimalOffline:
+                                                                            animaisProdutoresExistentesOfflineItem.uidAnimalOffline,
                                                                         grupoPredominante:
                                                                             animaisProdutoresExistentesOfflineItem.grupoAnimal,
                                                                         nomeAnimal:
@@ -14677,7 +14735,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                             .emailPropriedade!,
                                                                     uidAnimaisProdutores:
                                                                         animaisProdutoresExistentesOfflineItem
-                                                                            .uidAnimal!,
+                                                                            .uidAnimal,
+                                                                    uidAnimalOffline:
+                                                                        animaisProdutoresExistentesOfflineItem
+                                                                            .uidAnimalOffline,
                                                                     grupoPredominante:
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .grupoAnimal,
@@ -14812,7 +14873,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                             .emailPropriedade!,
                                                                     uidAnimaisProdutores:
                                                                         animaisProdutoresExistentesOfflineItem
-                                                                            .uidAnimal!,
+                                                                            .uidAnimal,
+                                                                    uidAnimalOffline:
+                                                                        animaisProdutoresExistentesOfflineItem
+                                                                            .uidAnimalOffline,
                                                                     grupoPredominante:
                                                                         animaisProdutoresExistentesOfflineItem
                                                                             .grupoAnimal,

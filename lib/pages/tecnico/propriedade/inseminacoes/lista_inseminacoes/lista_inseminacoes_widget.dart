@@ -820,7 +820,9 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                           emailPropriedade:
                                                                               widget.emailPropriedade!,
                                                                           uidAnimaisProdutores:
-                                                                              listaAnimaisOfflineExistenteItem.uidAnimal!,
+                                                                              listaAnimaisOfflineExistenteItem.uidAnimal,
+                                                                          uidAnimalOffline:
+                                                                              listaAnimaisOfflineExistenteItem.uidAnimalOffline,
                                                                           grupoPredominante:
                                                                               listaAnimaisOfflineExistenteItem.grupoAnimal,
                                                                           nomeAnimal:
@@ -961,7 +963,9 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                           diasDg:
                                                                               widget.diasDg!,
                                                                           uidAnimaisProdutores:
-                                                                              listaAnimaisOfflineExistenteItem.uidAnimal!,
+                                                                              listaAnimaisOfflineExistenteItem.uidAnimal,
+                                                                          uidAnimalOffline:
+                                                                              listaAnimaisOfflineExistenteItem.uidAnimalOffline,
                                                                         ),
                                                                       ),
                                                                     );
@@ -1444,6 +1448,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                               widget.diasDg!,
                                                                           uidAnimaisProdutores:
                                                                               listaAnimaisOfflineItem.uidAnimal,
+                                                                          uidAnimalOffline:
+                                                                              listaAnimaisOfflineItem.uidAnimalOffline,
                                                                         ),
                                                                       ),
                                                                     );
@@ -1574,6 +1580,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                               widget.diasDg!,
                                                                           uidAnimaisProdutores:
                                                                               listaAnimaisOfflineItem.uidAnimal,
+                                                                          uidAnimalOffline:
+                                                                              listaAnimaisOfflineItem.uidAnimalOffline,
                                                                         ),
                                                                       ),
                                                                     );
@@ -2072,7 +2080,9 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                             emailPropriedade:
                                                                                 widget.emailPropriedade!,
                                                                             uidAnimaisProdutores:
-                                                                                listaAnimaisOfflineExistenteItem.uidAnimal!,
+                                                                                listaAnimaisOfflineExistenteItem.uidAnimal,
+                                                                            uidAnimalOffline:
+                                                                                listaAnimaisOfflineExistenteItem.uidAnimalOffline,
                                                                             grupoPredominante:
                                                                                 listaAnimaisOfflineExistenteItem.grupoAnimal,
                                                                             nomeAnimal:
@@ -2210,7 +2220,9 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                             diasDg:
                                                                                 widget.diasDg!,
                                                                             uidAnimaisProdutores:
-                                                                                listaAnimaisOfflineExistenteItem.uidAnimal!,
+                                                                                listaAnimaisOfflineExistenteItem.uidAnimal,
+                                                                            uidAnimalOffline:
+                                                                                listaAnimaisOfflineExistenteItem.uidAnimalOffline,
                                                                           ),
                                                                         ),
                                                                       );
@@ -2700,6 +2712,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                                 widget.diasDg!,
                                                                             uidAnimaisProdutores:
                                                                                 listaAnimaisOfflineItem.uidAnimal,
+                                                                            uidAnimalOffline:
+                                                                                listaAnimaisOfflineItem.uidAnimalOffline,
                                                                           ),
                                                                         ),
                                                                       );
@@ -2828,6 +2842,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                                 widget.diasDg!,
                                                                             uidAnimaisProdutores:
                                                                                 listaAnimaisOfflineItem.uidAnimal,
+                                                                            uidAnimalOffline:
+                                                                                listaAnimaisOfflineItem.uidAnimalOffline,
                                                                           ),
                                                                         ),
                                                                       );

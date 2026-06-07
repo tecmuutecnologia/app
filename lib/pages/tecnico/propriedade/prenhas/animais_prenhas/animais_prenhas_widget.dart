@@ -675,7 +675,10 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                                                                     .diasDg!,
                                                                 uidAnimaisProdutores:
                                                                     animaisExistentesItem
-                                                                        .uidAnimal!,
+                                                                        .uidAnimal,
+                                                                uidAnimalOffline:
+                                                                    animaisExistentesItem
+                                                                        .uidAnimalOffline,
                                                                 nomeAnimal:
                                                                     animaisExistentesItem
                                                                         .nomeAnimal,
@@ -885,7 +888,10 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                                                                     .diasDg!,
                                                                 uidAnimaisProdutores:
                                                                     animaisExistentesItem
-                                                                        .uidAnimal!,
+                                                                        .uidAnimal,
+                                                                uidAnimalOffline:
+                                                                    animaisExistentesItem
+                                                                        .uidAnimalOffline,
                                                                 nomeAnimal:
                                                                     animaisExistentesItem
                                                                         .nomeAnimal,
