@@ -878,8 +878,7 @@ class OfflineFirstSyncService {
 
     switch (op.operationType) {
       case 'CREATE':
-        if (data != null) await docRef.set(data);
-        _reconcileQueuedCreate(op, docRef.id);
+        await _executeQueuedCreate(op, docRef, data);
         break;
       case 'UPDATE':
         if (data != null) await docRef.update(data);
@@ -890,58 +889,90 @@ class OfflineFirstSyncService {
     }
   }
 
-  /// Após um CREATE pela fila, grava o `firestoreId` e limpa `needsSync` na
-  /// entity local. Diferente dos laços `_syncModifiedX`, a fila não reconciliava
-  /// — deixando a entity como `firestoreId=null`/dirty, o que tornava edições
-  /// futuras um no-op (`pushUpdate` com firestoreId nulo) e podia gerar
-  /// duplicata via listener remoto. Só se aplica aos repositórios SEM laço
-  /// próprio (os com laço já não enfileiram CREATE).
+  /// Executa um CREATE da fila relendo o ESTADO ATUAL da entity (em vez do
+  /// snapshot capturado no enqueue) e reconciliando a entity local depois.
   ///
-  /// O documento foi criado em `.../{collectionName}/{objectboxId}` (a fila usa
-  /// o id local do ObjectBox como id do documento), logo `docRef.id` é o
-  /// `firestoreId` e o id local é o último segmento do path.
-  void _reconcileQueuedCreate(PendingOperationEntity op, String firestoreId) {
+  /// Duas correções num passo, válidas para os repositórios SEM laço próprio
+  /// (os com laço não enfileiram CREATE):
+  /// 1. **Snapshot velho**: a fila guardava o payload do momento do enqueue, então
+  ///    uma edição feita offline DEPOIS do enqueue e ANTES do reconnect se perdia.
+  ///    Relendo `entity.toFirestore()` aqui, o doc sobe com o estado mais recente.
+  /// 2. **Reconcile**: a fila não gravava `firestoreId`/`needsSync` de volta —
+  ///    deixando a entity dirty (edição futura virava no-op; duplicata via
+  ///    listener). Como o doc é criado em `.../{collectionName}/{objectboxId}`,
+  ///    `docRef.id` é o `firestoreId` e o id local é o último segmento do path.
+  ///
+  /// Se a entity foi soft-deletada offline antes do 1º sync, NÃO a cria (não
+  /// ressuscita). Para coleções sem acessor (ex.: tabelas de referência) cai no
+  /// snapshot da fila, sem reconciliar.
+  Future<void> _executeQueuedCreate(
+    PendingOperationEntity op,
+    DocumentReference<Map<String, dynamic>> docRef,
+    Map<String, dynamic>? snapshot,
+  ) async {
     final objectboxId = int.tryParse(op.documentPath?.split('/').last ?? '');
-    if (objectboxId == null) return;
+    final accessor = _accessorFor(op.collectionName);
+    final current = (accessor != null && objectboxId != null)
+        ? accessor.get(objectboxId)
+        : null;
 
-    SyncableEntity? entity;
-    void Function(SyncableEntity)? save;
-    switch (op.collectionName) {
-      case 'person':
-        entity = _objectBox.personBox.get(objectboxId);
-        save = (e) => _objectBox.personBox.put(e as PersonEntity);
-        break;
-      case 'tecnico':
-        entity = _objectBox.tecnicoBox.get(objectboxId);
-        save = (e) => _objectBox.tecnicoBox.put(e as TecnicoEntity);
-        break;
-      case 'produtor':
-        entity = _objectBox.produtorBox.get(objectboxId);
-        save = (e) => _objectBox.produtorBox.put(e as ProdutorEntity);
-        break;
-      case 'propriedades':
-        entity = _objectBox.propriedadeBox.get(objectboxId);
-        save = (e) => _objectBox.propriedadeBox.put(e as PropriedadeEntity);
-        break;
-      case 'acoes_da_visita':
-        entity = _objectBox.acaoDaVisitaBox.get(objectboxId);
-        save = (e) => _objectBox.acaoDaVisitaBox.put(e as AcaoDaVisitaEntity);
-        break;
-      case 'acoes_sanitario':
-        entity = _objectBox.acaoSanitarioBox.get(objectboxId);
-        save = (e) => _objectBox.acaoSanitarioBox.put(e as AcaoSanitarioEntity);
-        break;
-      case 'recomendacoes':
-        entity = _objectBox.recomendacaoBox.get(objectboxId);
-        save = (e) => _objectBox.recomendacaoBox.put(e as RecomendacaoEntity);
-        break;
+    if (current != null && current.isDeleted) return; // não ressuscita
+
+    final payload = current?.toFirestore() ?? snapshot;
+    if (payload == null) return;
+    await docRef.set(payload);
+
+    if (current != null && accessor != null) {
+      current.firestoreId = docRef.id;
+      current.needsSync = false;
+      current.lastSynced = DateTime.now();
+      accessor.put(current);
     }
-    if (entity == null || save == null) return;
+  }
 
-    entity.firestoreId = firestoreId;
-    entity.needsSync = false;
-    entity.lastSynced = DateTime.now();
-    save(entity);
+  /// Acessor `get`/`put` tipado da box de uma coleção SEM laço próprio. Retorna
+  /// `null` para coleções com laço (que não passam CREATE pela fila) e tabelas
+  /// de referência. Reusado para reler o estado atual e reconciliar no CREATE.
+  ({SyncableEntity? Function(int id) get, void Function(SyncableEntity e) put})?
+      _accessorFor(String? collectionName) {
+    switch (collectionName) {
+      case 'person':
+        return (
+          get: _objectBox.personBox.get,
+          put: (e) => _objectBox.personBox.put(e as PersonEntity),
+        );
+      case 'tecnico':
+        return (
+          get: _objectBox.tecnicoBox.get,
+          put: (e) => _objectBox.tecnicoBox.put(e as TecnicoEntity),
+        );
+      case 'produtor':
+        return (
+          get: _objectBox.produtorBox.get,
+          put: (e) => _objectBox.produtorBox.put(e as ProdutorEntity),
+        );
+      case 'propriedades':
+        return (
+          get: _objectBox.propriedadeBox.get,
+          put: (e) => _objectBox.propriedadeBox.put(e as PropriedadeEntity),
+        );
+      case 'acoes_da_visita':
+        return (
+          get: _objectBox.acaoDaVisitaBox.get,
+          put: (e) => _objectBox.acaoDaVisitaBox.put(e as AcaoDaVisitaEntity),
+        );
+      case 'acoes_sanitario':
+        return (
+          get: _objectBox.acaoSanitarioBox.get,
+          put: (e) => _objectBox.acaoSanitarioBox.put(e as AcaoSanitarioEntity),
+        );
+      case 'recomendacoes':
+        return (
+          get: _objectBox.recomendacaoBox.get,
+          put: (e) => _objectBox.recomendacaoBox.put(e as RecomendacaoEntity),
+        );
+    }
+    return null;
   }
 
   // ==========================================================================
