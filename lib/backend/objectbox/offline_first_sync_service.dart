@@ -688,8 +688,10 @@ class OfflineFirstSyncService {
           acao.needsSync = false;
           acao.lastSynced = DateTime.now();
           _objectBox.acaoBox.put(acao);
-        } else if (acao.firestoreId == null && acao.parentPath != null) {
-          // Nova ação - criar no Firestore
+        } else if (acao.firestoreId == null &&
+            acao.parentPath != null &&
+            !acao.isDeleted) {
+          // Nova ação - criar no Firestore (não ressuscita soft-delete pendente)
           final collectionRef =
               _firestore.collection('${acao.parentPath}/acoes');
           final docRef = await collectionRef.add(_acaoPayload(acao));
@@ -726,7 +728,8 @@ class OfflineFirstSyncService {
           tratamento.lastSynced = DateTime.now();
           _objectBox.tratamentoBox.put(tratamento);
         } else if (tratamento.firestoreId == null &&
-            tratamento.parentPath != null) {
+            tratamento.parentPath != null &&
+            !tratamento.isDeleted) {
           final collectionRef =
               _firestore.collection('${tratamento.parentPath}/tratamentos');
           final docRef = await collectionRef.add(tratamento.toFirestore());

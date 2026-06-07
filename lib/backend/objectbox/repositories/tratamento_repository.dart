@@ -22,22 +22,23 @@ class TratamentoRepository extends BaseSyncRepository<TratamentoEntity> {
   @override
   String get collectionName => 'tratamentos';
 
+  /// O CREATE/UPDATE dos tratamentos já é feito por `_syncModifiedTratamentos`
+  /// (que reconcilia o `firestoreId`). Não enfileirar evita a dupla-sincronização.
+  @override
+  bool get syncedByModifiedLoop => true;
+
   TratamentoEntity? getByFirestoreId(String firestoreId) => box
       .query(TratamentoEntity_.firestoreId.equals(firestoreId))
       .build()
       .findFirst();
 
   @override
-  List<TratamentoEntity> getByParentPath(String parentPath) => box
-      .query(TratamentoEntity_.parentPath.equals(parentPath))
-      .build()
-      .find();
+  List<TratamentoEntity> getByParentPath(String parentPath) =>
+      box.query(TratamentoEntity_.parentPath.equals(parentPath)).build().find();
 
   @override
-  List<TratamentoEntity> getPendingSync() => box
-      .query(TratamentoEntity_.needsSync.equals(true))
-      .build()
-      .find();
+  List<TratamentoEntity> getPendingSync() =>
+      box.query(TratamentoEntity_.needsSync.equals(true)).build().find();
 
   Stream<List<TratamentoEntity>> watchByParentPath(String parentPath) => box
       .query(TratamentoEntity_.parentPath.equals(parentPath))

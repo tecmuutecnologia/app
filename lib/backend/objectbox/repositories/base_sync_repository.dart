@@ -140,6 +140,20 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
   /// sync por-entidade) use o mesmo payload e não perca as referências.
   Map<String, dynamic> firestorePayloadFor(E entity) => entity.toFirestore();
 
+  /// `true` se o CREATE/UPDATE desta entidade já é feito pelo laço por-entidade
+  /// (`_syncModifiedX`) do [OfflineFirstSyncService] ao reconectar.
+  ///
+  /// Quando `true`, `pushCreate`/`pushUpdate` NÃO enfileiram na fila de
+  /// pendências — senão a entidade subiria DUAS vezes (a fila com um `set` e o
+  /// laço com um `add`). O laço é a autoridade porque, diferente da fila, ele
+  /// reconcilia o `firestoreId`/`needsSync` de volta no ObjectBox após criar.
+  /// O DELETE continua sempre indo pela fila (nenhum laço exclui no Firestore).
+  ///
+  /// Padrão `false`: a maioria dos repositórios não tem laço próprio e depende
+  /// inteiramente da fila.
+  @protected
+  bool get syncedByModifiedLoop => false;
+
   /// Cria a entidade no Firestore (ou enfileira se offline/erro).
   ///
   /// Pré-condição: [entity] já foi persistida localmente (tem `id` e
@@ -161,15 +175,23 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
         return Success(entity);
       } catch (e, st) {
         debugPrint('❌ [$collectionName] erro ao criar no Firestore: $e');
-        _queue('CREATE', '$collectionPath/${entity.id}',
-            data: firestorePayloadFor(entity));
-        return Failure('Falha ao criar $collectionName (enfileirado)',
+        if (!syncedByModifiedLoop) {
+          _queue('CREATE', '$collectionPath/${entity.id}',
+              data: firestorePayloadFor(entity));
+        }
+        // needsSync permanece true: recriado pela fila (acima) ou, para
+        // entidades com laço próprio, pelo `_syncModifiedX` ao reconectar.
+        return Failure('Falha ao criar $collectionName (será re-sincronizado)',
             error: e, stackTrace: st);
       }
     }
 
-    _queue('CREATE', '$collectionPath/${entity.id}',
-        data: firestorePayloadFor(entity));
+    if (!syncedByModifiedLoop) {
+      _queue('CREATE', '$collectionPath/${entity.id}',
+          data: firestorePayloadFor(entity));
+    }
+    // needsSync permanece true: recriado pela fila (acima) ou, para entidades
+    // com laço próprio, pelo `_syncModifiedX` ao reconectar.
     return Success(entity);
   }
 
@@ -192,15 +214,23 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
         return Success(entity);
       } catch (e, st) {
         debugPrint('❌ [$collectionName] erro ao atualizar no Firestore: $e');
-        _queue('UPDATE', documentPath,
-            firestoreId: firestoreId, data: firestorePayloadFor(entity));
-        return Failure('Falha ao atualizar $collectionName (enfileirado)',
-            error: e, stackTrace: st);
+        if (!syncedByModifiedLoop) {
+          _queue('UPDATE', documentPath,
+              firestoreId: firestoreId, data: firestorePayloadFor(entity));
+        }
+        // needsSync permanece true: reenviado pela fila (acima) ou pelo laço.
+        return Failure(
+            'Falha ao atualizar $collectionName (será re-sincronizado)',
+            error: e,
+            stackTrace: st);
       }
     }
 
-    _queue('UPDATE', documentPath,
-        firestoreId: firestoreId, data: firestorePayloadFor(entity));
+    if (!syncedByModifiedLoop) {
+      _queue('UPDATE', documentPath,
+          firestoreId: firestoreId, data: firestorePayloadFor(entity));
+    }
+    // needsSync permanece true: reenviado pela fila (acima) ou pelo laço.
     return Success(entity);
   }
 
