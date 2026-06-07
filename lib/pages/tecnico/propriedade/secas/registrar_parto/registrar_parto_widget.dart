@@ -35,6 +35,7 @@ class RegistrarPartoWidget extends StatefulWidget {
     required this.nomeVacaAtual,
     required this.nomeTourtoUltimaInseminacao,
     required this.brincoVacaAtual,
+    this.uidAnimalOffline,
   });
 
   final DocumentReference? uidPropriedade;
@@ -44,6 +45,10 @@ class RegistrarPartoWidget extends StatefulWidget {
   final bool? visitaPresencial;
   final String? diasDg;
   final DocumentReference? uidAnimaisProdutores;
+
+  /// Identidade local da MÃE criada OFFLINE (sem firestoreId). Para esses,
+  /// [uidAnimaisProdutores] é null; o parto é localizado por getByUidAnimalOffline.
+  final String? uidAnimalOffline;
   final String? nomeVacaAtual;
   final String? nomeTourtoUltimaInseminacao;
   final String? brincoVacaAtual;
@@ -71,9 +76,12 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
 
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.outUidAnimaisAnimal =
-          await AnimaisProdutoresRecord.getDocumentOnce(
-              widget.uidAnimaisProdutores!);
+      // Mãe criada offline não tem doc no Firestore: pula a leitura remota.
+      if (widget.uidAnimaisProdutores != null) {
+        _model.outUidAnimaisAnimal =
+            await AnimaisProdutoresRecord.getDocumentOnce(
+                widget.uidAnimaisProdutores!);
+      }
     });
 
     _model.nomeTextController ??= TextEditingController();
@@ -156,11 +164,14 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     final animalRepo = AnimalRepository();
     final entity = widget.uidAnimaisProdutores != null
         ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
-        : null;
+        : (widget.uidAnimalOffline != null &&
+                widget.uidAnimalOffline!.isNotEmpty
+            ? animalRepo.getByUidAnimalOffline(widget.uidAnimalOffline!)
+            : null);
     if (entity != null) {
       dados['totalPartos'] = entity.totalPartos + 1;
       unawaited(animalRepo.update(entity, dados));
-    } else {
+    } else if (widget.uidAnimaisProdutores != null) {
       unawaited(widget.uidAnimaisProdutores!.update({
         ...createAnimaisProdutoresRecordData(
           dtUltimoParto: dtParto,
