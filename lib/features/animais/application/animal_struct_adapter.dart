@@ -24,7 +24,9 @@ AnimaisProdutoresStruct animalEntityToStruct(AnimalEntity e) {
         ? FirebaseFirestore.instance
             .doc('${e.parentPath}/animaisProdutores/${e.firestoreId}')
         : null,
-    uidAnimalOffline: e.firestoreId,
+    // Identidade local do animal criado offline (null/'' p/ animais já
+    // sincronizados, que usam a ref `uidAnimal`).
+    uidAnimalOffline: e.uidAnimalOffline,
     nomeAnimal: e.nomeAnimal,
     racaAnimal: e.racaAnimal,
     pesoAnimal: e.pesoAnimal,

@@ -22,6 +22,12 @@ class AcaoEntity implements SyncableEntity {
   /// Referência ao animal (path)
   String? uidAnimalAnimaisProdutoresPath;
 
+  /// Identidade local do animal quando a ação é feita sobre um animal criado
+  /// offline (ainda sem `firestoreId`/path). Permite religar a ação ao animal
+  /// após este sincronizar. Indexado para o lookup por uidAnimalOffline.
+  @Index()
+  String? uidAnimalOffline;
+
   String? nomeAnimal;
   String? acao;
   String? obsVisita;
@@ -57,6 +63,7 @@ class AcaoEntity implements SyncableEntity {
     this.firestoreId,
     this.parentPath,
     this.uidAnimalAnimaisProdutoresPath,
+    this.uidAnimalOffline,
     this.nomeAnimal,
     this.acao,
     this.obsVisita,

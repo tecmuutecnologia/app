@@ -798,7 +798,7 @@
     },
     {
       "id": "9:7589645042423953833",
-      "lastPropertyId": "22:7953928503360171684",
+      "lastPropertyId": "23:3432557841236651419",
       "name": "AcaoEntity",
       "properties": [
         {
@@ -913,6 +913,13 @@
           "id": "22:7953928503360171684",
           "name": "isDeleted",
           "type": 1
+        },
+        {
+          "id": "23:3432557841236651419",
+          "name": "uidAnimalOffline",
+          "indexId": "23:369470281308574824",
+          "type": 9,
+          "flags": 2048
         }
       ],
       "relations": []
@@ -1907,7 +1914,7 @@
     }
   ],
   "lastEntityId": "22:5299997838202207882",
-  "lastIndexId": "22:2324975574822149543",
+  "lastIndexId": "23:369470281308574824",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

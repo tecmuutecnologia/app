@@ -41,6 +41,19 @@ void main() {
     expect(s.uidAnimalOffline, '');
   });
 
+  test(
+      'animalEntityToStruct carrega o uidAnimalOffline do animal criado offline',
+      () {
+    final e = AnimalEntity(
+      uidAnimalOffline: 'offline_123',
+      nomeAnimal: 'Nova',
+      // firestoreId null => animal criado offline ainda não sincronizado
+    );
+    final s = animalEntityToStruct(e);
+    expect(s.uidAnimalOffline, 'offline_123');
+    expect(s.uidAnimal, isNull); // sem firestoreId, sem ref
+  });
+
   test('structToAnimalEntityOffline: struct -> entity com uid offline gerado',
       () {
     final s = AnimaisProdutoresStruct(

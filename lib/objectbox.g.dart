@@ -969,7 +969,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(9, 7589645042423953833),
     name: 'AcaoEntity',
-    lastPropertyId: const obx_int.IdUid(22, 7953928503360171684),
+    lastPropertyId: const obx_int.IdUid(23, 3432557841236651419),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -1104,6 +1104,13 @@ final _entities = <obx_int.ModelEntity>[
         name: 'isDeleted',
         type: 1,
         flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(23, 3432557841236651419),
+        name: 'uidAnimalOffline',
+        type: 9,
+        flags: 2048,
+        indexId: const obx_int.IdUid(23, 369470281308574824),
       ),
     ],
     relations: <obx_int.ModelRelation>[],
@@ -2307,7 +2314,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
     entities: _entities,
     lastEntityId: const obx_int.IdUid(22, 5299997838202207882),
-    lastIndexId: const obx_int.IdUid(22, 2324975574822149543),
+    lastIndexId: const obx_int.IdUid(23, 369470281308574824),
     lastRelationId: const obx_int.IdUid(0, 0),
     lastSequenceId: const obx_int.IdUid(0, 0),
     retiredEntityUids: const [],
@@ -3659,7 +3666,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final uidPropriedadePathOffset = object.uidPropriedadePath == null
             ? null
             : fbb.writeString(object.uidPropriedadePath!);
-        fbb.startTable(23);
+        final uidAnimalOfflineOffset = object.uidAnimalOffline == null
+            ? null
+            : fbb.writeString(object.uidAnimalOffline!);
+        fbb.startTable(24);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, firestoreIdOffset);
         fbb.addOffset(2, parentPathOffset);
@@ -3682,6 +3692,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addInt64(19, object.lastSynced?.millisecondsSinceEpoch);
         fbb.addBool(20, object.needsSync);
         fbb.addBool(21, object.isDeleted);
+        fbb.addOffset(22, uidAnimalOfflineOffset);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -3712,6 +3723,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final uidAnimalAnimaisProdutoresPathParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGetNullable(buffer, rootOffset, 10);
+        final uidAnimalOfflineParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 48);
         final nomeAnimalParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGetNullable(buffer, rootOffset, 12);
@@ -3776,6 +3790,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           firestoreId: firestoreIdParam,
           parentPath: parentPathParam,
           uidAnimalAnimaisProdutoresPath: uidAnimalAnimaisProdutoresPathParam,
+          uidAnimalOffline: uidAnimalOfflineParam,
           nomeAnimal: nomeAnimalParam,
           acao: acaoParam,
           obsVisita: obsVisitaParam,
@@ -6232,6 +6247,11 @@ class AcaoEntity_ {
   /// See [AcaoEntity.isDeleted].
   static final isDeleted = obx.QueryBooleanProperty<AcaoEntity>(
     _entities[8].properties[21],
+  );
+
+  /// See [AcaoEntity.uidAnimalOffline].
+  static final uidAnimalOffline = obx.QueryStringProperty<AcaoEntity>(
+    _entities[8].properties[22],
   );
 }
 
