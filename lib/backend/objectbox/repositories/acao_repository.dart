@@ -38,6 +38,26 @@ class AcaoRepository extends BaseSyncRepository<AcaoEntity> {
   List<AcaoEntity> getPendingSync() =>
       box.query(AcaoEntity_.needsSync.equals(true)).build().find();
 
+  /// Reanexa ao payload as referências (`DocumentReference`) que a entity pura
+  /// não constrói: `uidAnimalAnimaisProdutores` e `uidPropriedade`. Sem isso, as
+  /// ações sobem ao Firestore sem o vínculo com o animal/propriedade (reports e
+  /// segundo-device filtram por essas refs).
+  ///
+  /// Para animal já sincronizado usa o path guardado. Para animal criado offline
+  /// (sem path, só `uidAnimalOffline`) o vínculo é resolvido no Estágio 3.
+  @override
+  Map<String, dynamic> firestorePayloadFor(AcaoEntity entity) {
+    final data = entity.toFirestore();
+    if (entity.uidAnimalAnimaisProdutoresPath != null) {
+      data['uidAnimalAnimaisProdutores'] =
+          firestore.doc(entity.uidAnimalAnimaisProdutoresPath!);
+    }
+    if (entity.uidPropriedadePath != null) {
+      data['uidPropriedade'] = firestore.doc(entity.uidPropriedadePath!);
+    }
+    return data;
+  }
+
   /// Stream reativa das ações de um animal (path do documento pai).
   Stream<List<AcaoEntity>> watchByParentPath(String parentPath) => box
       .query(AcaoEntity_.parentPath.equals(parentPath))

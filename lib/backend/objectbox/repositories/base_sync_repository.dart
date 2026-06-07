@@ -130,6 +130,16 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
   String documentPathFor(E entity, String firestoreId) =>
       '${collectionPathFor(entity)}/$firestoreId';
 
+  /// Payload enviado ao Firestore para [entity]. Por padrão é
+  /// `entity.toFirestore()`; repositórios podem sobrescrever para adicionar
+  /// campos de referência (`DocumentReference`) que a entidade pura — sem acesso
+  /// ao Firestore — não consegue construir. O `QueuePayloadCodec` serializa
+  /// `DocumentReference` na fila offline.
+  ///
+  /// Público para que o `OfflineFirstSyncService` (que tem seu próprio laço de
+  /// sync por-entidade) use o mesmo payload e não perca as referências.
+  Map<String, dynamic> firestorePayloadFor(E entity) => entity.toFirestore();
+
   /// Cria a entidade no Firestore (ou enfileira se offline/erro).
   ///
   /// Pré-condição: [entity] já foi persistida localmente (tem `id` e
@@ -142,7 +152,7 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
     if (isOnline) {
       try {
         final docRef = _firestore.collection(collectionPath).doc();
-        await docRef.set(entity.toFirestore());
+        await docRef.set(firestorePayloadFor(entity));
 
         entity.firestoreId = docRef.id;
         entity.needsSync = false;
@@ -152,14 +162,14 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
       } catch (e, st) {
         debugPrint('❌ [$collectionName] erro ao criar no Firestore: $e');
         _queue('CREATE', '$collectionPath/${entity.id}',
-            data: entity.toFirestore());
+            data: firestorePayloadFor(entity));
         return Failure('Falha ao criar $collectionName (enfileirado)',
             error: e, stackTrace: st);
       }
     }
 
     _queue('CREATE', '$collectionPath/${entity.id}',
-        data: entity.toFirestore());
+        data: firestorePayloadFor(entity));
     return Success(entity);
   }
 
@@ -175,7 +185,7 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
 
     if (isOnline) {
       try {
-        await _firestore.doc(documentPath).update(entity.toFirestore());
+        await _firestore.doc(documentPath).update(firestorePayloadFor(entity));
         entity.needsSync = false;
         entity.lastSynced = DateTime.now();
         box.put(entity);
@@ -183,14 +193,14 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
       } catch (e, st) {
         debugPrint('❌ [$collectionName] erro ao atualizar no Firestore: $e');
         _queue('UPDATE', documentPath,
-            firestoreId: firestoreId, data: entity.toFirestore());
+            firestoreId: firestoreId, data: firestorePayloadFor(entity));
         return Failure('Falha ao atualizar $collectionName (enfileirado)',
             error: e, stackTrace: st);
       }
     }
 
     _queue('UPDATE', documentPath,
-        firestoreId: firestoreId, data: entity.toFirestore());
+        firestoreId: firestoreId, data: firestorePayloadFor(entity));
     return Success(entity);
   }
 

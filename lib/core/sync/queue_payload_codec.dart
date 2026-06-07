@@ -17,12 +17,15 @@ class QueuePayloadCodec {
   const QueuePayloadCodec._();
 
   static const String _dateKey = '__dt__';
+  static const String _refKey = '__ref__';
 
-  /// Serializa [data] (que pode conter `DateTime`/`Timestamp`) em JSON.
+  /// Serializa [data] (que pode conter `DateTime`/`Timestamp`/`DocumentReference`)
+  /// em JSON.
   static String encode(Map<String, dynamic> data) =>
       jsonEncode(data, toEncodable: _toEncodable);
 
-  /// Desserializa o JSON, reconstruindo datas como `DateTime`.
+  /// Desserializa o JSON, reconstruindo datas como `DateTime` e referências como
+  /// `DocumentReference`.
   static Map<String, dynamic> decode(String json) =>
       Map<String, dynamic>.from(_revive(jsonDecode(json)) as Map);
 
@@ -31,6 +34,7 @@ class QueuePayloadCodec {
     if (value is Timestamp) {
       return {_dateKey: value.toDate().toIso8601String()};
     }
+    if (value is DocumentReference) return {_refKey: value.path};
     return value; // tipos genuinamente não suportados ainda lançam (intencional)
   }
 
@@ -38,6 +42,9 @@ class QueuePayloadCodec {
     if (value is Map) {
       if (value.length == 1 && value[_dateKey] is String) {
         return DateTime.parse(value[_dateKey] as String);
+      }
+      if (value.length == 1 && value[_refKey] is String) {
+        return FirebaseFirestore.instance.doc(value[_refKey] as String);
       }
       return value.map((k, v) => MapEntry(k, _revive(v)));
     }

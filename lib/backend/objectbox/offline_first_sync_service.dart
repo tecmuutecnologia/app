@@ -654,6 +654,23 @@ class OfflineFirstSyncService {
     }
   }
 
+  /// Payload da ação para o Firestore, reanexando as referências
+  /// (`DocumentReference`) que a entity pura não constrói — `uidAnimalAnimaisProdutores`
+  /// e `uidPropriedade`. Mantém o laço por-entidade alinhado com
+  /// `AcaoRepository.firestorePayloadFor` (sem o qual as ações sincronizadas por
+  /// aqui perderiam o vínculo com o animal/propriedade).
+  Map<String, dynamic> _acaoPayload(AcaoEntity acao) {
+    final data = acao.toFirestore();
+    if (acao.uidAnimalAnimaisProdutoresPath != null) {
+      data['uidAnimalAnimaisProdutores'] =
+          _firestore.doc(acao.uidAnimalAnimaisProdutoresPath!);
+    }
+    if (acao.uidPropriedadePath != null) {
+      data['uidPropriedade'] = _firestore.doc(acao.uidPropriedadePath!);
+    }
+    return data;
+  }
+
   /// Sincroniza ações modificadas localmente
   Future<void> _syncModifiedAcoes() async {
     final modified = _objectBox.acaoBox
@@ -667,7 +684,7 @@ class OfflineFirstSyncService {
           final docRef = _firestore.doc(
             '${acao.parentPath}/acoes/${acao.firestoreId}',
           );
-          await docRef.update(acao.toFirestore());
+          await docRef.update(_acaoPayload(acao));
           acao.needsSync = false;
           acao.lastSynced = DateTime.now();
           _objectBox.acaoBox.put(acao);
@@ -675,7 +692,7 @@ class OfflineFirstSyncService {
           // Nova ação - criar no Firestore
           final collectionRef =
               _firestore.collection('${acao.parentPath}/acoes');
-          final docRef = await collectionRef.add(acao.toFirestore());
+          final docRef = await collectionRef.add(_acaoPayload(acao));
           acao.firestoreId = docRef.id;
           acao.needsSync = false;
           acao.lastSynced = DateTime.now();
