@@ -37,6 +37,7 @@ class NovaInseminacaoWidget extends StatefulWidget {
     required this.dtUltimaInseminacao,
     required this.brincoAnimal,
     required this.diasDg,
+    this.uidAnimalOffline,
   });
 
   final DocumentReference? uidPropriedade;
@@ -44,6 +45,11 @@ class NovaInseminacaoWidget extends StatefulWidget {
   final DocumentReference? uidTecnico;
   final String? emailPropriedade;
   final DocumentReference? uidAnimaisProdutores;
+
+  /// Identidade local do animal criado OFFLINE (ainda sem `firestoreId`/ref no
+  /// Firestore). Para esses, `uidAnimaisProdutores` é null; a ação guarda este
+  /// id e o vínculo é resolvido pela cascata quando o animal sincroniza.
+  final String? uidAnimalOffline;
   final String? grupoPredominante;
   final String? nomeAnimal;
   final bool? visitaPresencial;
@@ -141,6 +147,8 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
     final acao = AcaoEntity(
       parentPath: widget.uidTecnico!.path,
       uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
+      uidAnimalOffline:
+          widget.uidAnimaisProdutores == null ? widget.uidAnimalOffline : null,
       uidPropriedadePath: widget.uidPropriedade?.path,
       nomeAnimal: widget.nomeAnimal,
       acao: 'Inseminada',
@@ -169,7 +177,10 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
     final animalRepo = AnimalRepository();
     final entity = widget.uidAnimaisProdutores != null
         ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
-        : null;
+        : (widget.uidAnimalOffline != null &&
+                widget.uidAnimalOffline!.isNotEmpty
+            ? animalRepo.getByUidAnimalOffline(widget.uidAnimalOffline!)
+            : null);
     if (entity != null) {
       unawaited(animalRepo.update(entity, {
         ...dadosAnimal,
