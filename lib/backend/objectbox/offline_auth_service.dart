@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:crypto/crypto.dart';
+import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -277,11 +277,13 @@ class OfflineAuthService {
     }
   }
 
-  /// Gera token de sessão único
+  /// Gera token de sessão aleatório e imprevisível (256 bits via
+  /// `Random.secure()`). O antigo `sha256(timestamp)` era PREVISÍVEL: quem
+  /// soubesse o instante do login poderia reproduzir o token.
   static String _generateSessionToken() {
-    return sha256
-        .convert(utf8.encode('${DateTime.now().millisecondsSinceEpoch}'))
-        .toString();
+    final random = Random.secure();
+    final bytes = List<int>.generate(32, (_) => random.nextInt(256));
+    return base64Url.encode(bytes);
   }
 
   /// Obtém todas as sessões ativas (para debug)
