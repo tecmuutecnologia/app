@@ -137,14 +137,15 @@ AnimalEntity structToAnimalEntityOffline(
 }
 
 /// Cria um animal OFFLINE no ObjectBox (fonte única) e enfileira o push para o
-/// Firestore (`needsSync`). Substitui `FFAppState().addToAnimaisProdutoresOffline`.
+/// Firestore (`needsSync`). Substitui (drop-in 1-arg)
+/// `FFAppState().addToAnimaisProdutoresOffline(struct)`.
 ///
-/// [tecnicoPath] é o caminho do documento do técnico. Retorna o
-/// `uidAnimalOffline` gerado/usado, para identidade local nas ações.
-Future<String> criarAnimalOffline(
-  AnimaisProdutoresStruct s, {
-  required String tecnicoPath,
-}) async {
+/// O animal vive sob o técnico (`tecnico/<id>/animaisProdutores`). A referência
+/// da propriedade do struct é `tecnico/<id>/propriedades/<pid>` (propriedades é
+/// subcoleção de tecnico), logo o caminho do técnico é `parent.parent` dela.
+/// Retorna o `uidAnimalOffline` gerado/usado, para identidade local nas ações.
+Future<String> criarAnimalOffline(AnimaisProdutoresStruct s) async {
+  final tecnicoPath = s.uidTecnicoPropriedade?.parent.parent?.path ?? '';
   final entity = structToAnimalEntityOffline(s, parentPath: tecnicoPath);
   await AnimalRepository().add(entity);
   return entity.uidAnimalOffline!;

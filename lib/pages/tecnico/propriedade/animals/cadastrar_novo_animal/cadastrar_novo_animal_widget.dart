@@ -1,6 +1,7 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
 import '/backend/backend.dart';
+import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/constants/grupos_racas_constantes.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -4877,9 +4878,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                           null &&
                                                       _model.touroInseminacaoValue !=
                                                           '')) {
-                                                FFAppState()
-                                                    .addToAnimaisProdutoresOffline(
-                                                        AnimaisProdutoresStruct(
+                                                await criarAnimalOffline(
+                                                    AnimaisProdutoresStruct(
                                                   uidTecnicoPropriedade:
                                                       widget.uidPropriedade,
                                                   nomeAnimal: _model
@@ -5050,9 +5050,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                             null &&
                                                         _model.touroInseminacaoValue !=
                                                             '')) {
-                                                  FFAppState()
-                                                      .addToAnimaisProdutoresOffline(
-                                                          AnimaisProdutoresStruct(
+                                                  await criarAnimalOffline(
+                                                      AnimaisProdutoresStruct(
                                                     uidTecnicoPropriedade:
                                                         widget.uidPropriedade,
                                                     nomeAnimal: _model
@@ -5237,9 +5236,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                   'Seca') {
                                                 if (_model.grupoValue ==
                                                     'Vacas') {
-                                                  FFAppState()
-                                                      .addToAnimaisProdutoresOffline(
-                                                          AnimaisProdutoresStruct(
+                                                  await criarAnimalOffline(
+                                                      AnimaisProdutoresStruct(
                                                     uidTecnicoPropriedade:
                                                         widget.uidPropriedade,
                                                     nomeAnimal: _model
@@ -5432,9 +5430,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                               } else {
                                                 if (_model.statusAnimalValue ==
                                                     'Vazia') {
-                                                  FFAppState()
-                                                      .addToAnimaisProdutoresOffline(
-                                                          AnimaisProdutoresStruct(
+                                                  await criarAnimalOffline(
+                                                      AnimaisProdutoresStruct(
                                                     uidTecnicoPropriedade:
                                                         widget.uidPropriedade,
                                                     nomeAnimal: _model
@@ -5599,9 +5596,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                                 null &&
                                                             _model.touroInseminacaoValue !=
                                                                 '')) {
-                                                      FFAppState()
-                                                          .addToAnimaisProdutoresOffline(
-                                                              AnimaisProdutoresStruct(
+                                                      await criarAnimalOffline(
+                                                          AnimaisProdutoresStruct(
                                                         uidTecnicoPropriedade:
                                                             widget
                                                                 .uidPropriedade,
@@ -5831,9 +5827,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                                   null &&
                                                               _model.touroInseminacaoValue !=
                                                                   '')) {
-                                                        FFAppState()
-                                                            .addToAnimaisProdutoresOffline(
-                                                                AnimaisProdutoresStruct(
+                                                        await criarAnimalOffline(
+                                                            AnimaisProdutoresStruct(
                                                           uidTecnicoPropriedade:
                                                               widget
                                                                   .uidPropriedade,
@@ -6071,9 +6066,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                                                     null &&
                                                                 _model.touroInseminacaoValue !=
                                                                     '')) {
-                                                          FFAppState()
-                                                              .addToAnimaisProdutoresOffline(
-                                                                  AnimaisProdutoresStruct(
+                                                          await criarAnimalOffline(
+                                                              AnimaisProdutoresStruct(
                                                             uidTecnicoPropriedade:
                                                                 widget
                                                                     .uidPropriedade,
@@ -6349,9 +6343,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                           if ((_model.grupoValue == 'Sêmens') ||
                                               (_model.grupoValue == 'Touros')) {
                                             if (_model.grupoValue == 'Touros') {
-                                              FFAppState()
-                                                  .addToAnimaisProdutoresOffline(
-                                                      AnimaisProdutoresStruct(
+                                              await criarAnimalOffline(
+                                                  AnimaisProdutoresStruct(
                                                 uidTecnicoPropriedade:
                                                     widget.uidPropriedade,
                                                 nomeAnimal: _model
@@ -6491,9 +6484,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                             } else {
                                               if (_model.grupoValue ==
                                                   'Sêmens') {
-                                                FFAppState()
-                                                    .addToAnimaisProdutoresOffline(
-                                                        AnimaisProdutoresStruct(
+                                                await criarAnimalOffline(
+                                                    AnimaisProdutoresStruct(
                                                   uidTecnicoPropriedade:
                                                       widget.uidPropriedade,
                                                   nomeAnimal: _model
@@ -6639,9 +6631,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                               }
                                             }
                                           } else {
-                                            FFAppState()
-                                                .addToAnimaisProdutoresOffline(
-                                                    AnimaisProdutoresStruct(
+                                            await criarAnimalOffline(
+                                                AnimaisProdutoresStruct(
                                               uidTecnicoPropriedade:
                                                   widget.uidPropriedade,
                                               nomeAnimal: _model
