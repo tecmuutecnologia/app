@@ -1,5 +1,6 @@
 // ignore_for_file: unnecessary_null_comparison
 import '/backend/backend.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/backend/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -225,16 +226,16 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
                       final listOfflineExistenteItem =
                           listOfflineExistente[listOfflineExistenteIndex];
                       return Visibility(
-                        visible:
-                            (listOfflineExistenteItem.uidTecnicoPropriedade ==
-                                    widget.uidPropriedade) &&
-                                (listOfflineExistenteItem.status == 'Vazia') &&
-                                ((listOfflineExistenteItem.grupoAnimal ==
-                                        'Novilhas') ||
-                                    (listOfflineExistenteItem.grupoAnimal ==
-                                        'Vacas')) &&
-                                (listOfflineExistenteItem.dtInducaoLactacao ==
-                                    null),
+                        visible: (listOfflineExistenteItem
+                                    .uidTecnicoPropriedade ==
+                                widget.uidPropriedade) &&
+                            (ehVazia(listOfflineExistenteItem.status)) &&
+                            ((ehNovilha(
+                                    listOfflineExistenteItem.grupoAnimal)) ||
+                                (ehVaca(
+                                    listOfflineExistenteItem.grupoAnimal))) &&
+                            (listOfflineExistenteItem.dtInducaoLactacao ==
+                                null),
                         child: Align(
                           alignment: AlignmentDirectional(0.0, 0.0),
                           child: Padding(
@@ -341,14 +342,14 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
                                                   height: 50.0,
                                                   decoration: BoxDecoration(
                                                     color: () {
-                                                      if (listOfflineExistenteItem
-                                                              .grupoAnimal ==
-                                                          'Vacas') {
+                                                      if (ehVaca(
+                                                          listOfflineExistenteItem
+                                                              .grupoAnimal)) {
                                                         return Color(
                                                             0xFF048508);
-                                                      } else if (listOfflineExistenteItem
-                                                              .grupoAnimal ==
-                                                          'Novilhas') {
+                                                      } else if (ehNovilha(
+                                                          listOfflineExistenteItem
+                                                              .grupoAnimal)) {
                                                         return Color(
                                                             0xFFFF0076);
                                                       } else {
@@ -363,13 +364,13 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
                                                           0.0, 0.0),
                                                   child: Text(
                                                     () {
-                                                      if (listOfflineExistenteItem
-                                                              .grupoAnimal ==
-                                                          'Vacas') {
+                                                      if (ehVaca(
+                                                          listOfflineExistenteItem
+                                                              .grupoAnimal)) {
                                                         return 'VAC';
-                                                      } else if (listOfflineExistenteItem
-                                                              .grupoAnimal ==
-                                                          'Novilhas') {
+                                                      } else if (ehNovilha(
+                                                          listOfflineExistenteItem
+                                                              .grupoAnimal)) {
                                                         return 'NOV';
                                                       } else {
                                                         return 'N/C';
@@ -671,9 +672,9 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
                       return Visibility(
                         visible: (listViewOfflineItem.uidTecnicoPropriedade ==
                                 widget.uidPropriedade) &&
-                            (listViewOfflineItem.status == 'Vazia') &&
-                            ((listViewOfflineItem.grupoAnimal == 'Novilhas') ||
-                                (listViewOfflineItem.grupoAnimal == 'Vacas')) &&
+                            (ehVazia(listViewOfflineItem.status)) &&
+                            ((ehNovilha(listViewOfflineItem.grupoAnimal)) ||
+                                (ehVaca(listViewOfflineItem.grupoAnimal))) &&
                             (listViewOfflineItem.dtInducaoLactacao == null),
                         child: Align(
                           alignment: AlignmentDirectional(0.0, 0.0),
@@ -780,14 +781,14 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
                                                   height: 50.0,
                                                   decoration: BoxDecoration(
                                                     color: () {
-                                                      if (listViewOfflineItem
-                                                              .grupoAnimal ==
-                                                          'Vacas') {
+                                                      if (ehVaca(
+                                                          listViewOfflineItem
+                                                              .grupoAnimal)) {
                                                         return Color(
                                                             0xFF048508);
-                                                      } else if (listViewOfflineItem
-                                                              .grupoAnimal ==
-                                                          'Novilhas') {
+                                                      } else if (ehNovilha(
+                                                          listViewOfflineItem
+                                                              .grupoAnimal)) {
                                                         return Color(
                                                             0xFFFF0076);
                                                       } else {
@@ -802,13 +803,13 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
                                                           0.0, 0.0),
                                                   child: Text(
                                                     () {
-                                                      if (listViewOfflineItem
-                                                              .grupoAnimal ==
-                                                          'Vacas') {
+                                                      if (ehVaca(
+                                                          listViewOfflineItem
+                                                              .grupoAnimal)) {
                                                         return 'VAC';
-                                                      } else if (listViewOfflineItem
-                                                              .grupoAnimal ==
-                                                          'Novilhas') {
+                                                      } else if (ehNovilha(
+                                                          listViewOfflineItem
+                                                              .grupoAnimal)) {
                                                         return 'NOV';
                                                       } else {
                                                         return 'N/C';

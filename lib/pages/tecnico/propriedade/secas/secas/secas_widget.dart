@@ -397,14 +397,14 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                 decoration:
                                                                     BoxDecoration(
                                                                   color: () {
-                                                                    if (vacasExistenteOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Vacas') {
+                                                                    if (ehVaca(
+                                                                        vacasExistenteOfflineItem
+                                                                            .grupoAnimal)) {
                                                                       return Color(
                                                                           0xFF048508);
-                                                                    } else if (vacasExistenteOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas') {
+                                                                    } else if (ehNovilha(
+                                                                        vacasExistenteOfflineItem
+                                                                            .grupoAnimal)) {
                                                                       return Color(
                                                                           0xFFFF0076);
                                                                     } else {
@@ -421,13 +421,13 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                         0.0),
                                                                 child: Text(
                                                                   () {
-                                                                    if (vacasExistenteOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Vacas') {
+                                                                    if (ehVaca(
+                                                                        vacasExistenteOfflineItem
+                                                                            .grupoAnimal)) {
                                                                       return 'VAC';
-                                                                    } else if (vacasExistenteOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas') {
+                                                                    } else if (ehNovilha(
+                                                                        vacasExistenteOfflineItem
+                                                                            .grupoAnimal)) {
                                                                       return 'NOV';
                                                                     } else {
                                                                       return 'N/C';
@@ -1160,14 +1160,14 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                 decoration:
                                                                     BoxDecoration(
                                                                   color: () {
-                                                                    if (vacasSecasOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Vacas') {
+                                                                    if (ehVaca(
+                                                                        vacasSecasOfflineItem
+                                                                            .grupoAnimal)) {
                                                                       return Color(
                                                                           0xFF048508);
-                                                                    } else if (vacasSecasOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas') {
+                                                                    } else if (ehNovilha(
+                                                                        vacasSecasOfflineItem
+                                                                            .grupoAnimal)) {
                                                                       return Color(
                                                                           0xFFFF0076);
                                                                     } else {
@@ -1184,13 +1184,13 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                         0.0),
                                                                 child: Text(
                                                                   () {
-                                                                    if (vacasSecasOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Vacas') {
+                                                                    if (ehVaca(
+                                                                        vacasSecasOfflineItem
+                                                                            .grupoAnimal)) {
                                                                       return 'VAC';
-                                                                    } else if (vacasSecasOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas') {
+                                                                    } else if (ehNovilha(
+                                                                        vacasSecasOfflineItem
+                                                                            .grupoAnimal)) {
                                                                       return 'NOV';
                                                                     } else {
                                                                       return 'N/C';
@@ -1974,14 +1974,14 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                 decoration:
                                                                     BoxDecoration(
                                                                   color: () {
-                                                                    if (animaisExistentesOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Vacas') {
+                                                                    if (ehVaca(
+                                                                        animaisExistentesOfflineItem
+                                                                            .grupoAnimal)) {
                                                                       return Color(
                                                                           0xFF048508);
-                                                                    } else if (animaisExistentesOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas') {
+                                                                    } else if (ehNovilha(
+                                                                        animaisExistentesOfflineItem
+                                                                            .grupoAnimal)) {
                                                                       return Color(
                                                                           0xFFFF0076);
                                                                     } else {
@@ -1998,13 +1998,13 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                         0.0),
                                                                 child: Text(
                                                                   () {
-                                                                    if (animaisExistentesOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Vacas') {
+                                                                    if (ehVaca(
+                                                                        animaisExistentesOfflineItem
+                                                                            .grupoAnimal)) {
                                                                       return 'VAC';
-                                                                    } else if (animaisExistentesOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas') {
+                                                                    } else if (ehNovilha(
+                                                                        animaisExistentesOfflineItem
+                                                                            .grupoAnimal)) {
                                                                       return 'NOV';
                                                                     } else {
                                                                       return 'N/C';
@@ -2640,14 +2640,14 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                 decoration:
                                                                     BoxDecoration(
                                                                   color: () {
-                                                                    if (animaisProdutoresOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Vacas') {
+                                                                    if (ehVaca(
+                                                                        animaisProdutoresOfflineItem
+                                                                            .grupoAnimal)) {
                                                                       return Color(
                                                                           0xFF048508);
-                                                                    } else if (animaisProdutoresOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas') {
+                                                                    } else if (ehNovilha(
+                                                                        animaisProdutoresOfflineItem
+                                                                            .grupoAnimal)) {
                                                                       return Color(
                                                                           0xFFFF0076);
                                                                     } else {
@@ -2664,13 +2664,13 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                         0.0),
                                                                 child: Text(
                                                                   () {
-                                                                    if (animaisProdutoresOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Vacas') {
+                                                                    if (ehVaca(
+                                                                        animaisProdutoresOfflineItem
+                                                                            .grupoAnimal)) {
                                                                       return 'VAC';
-                                                                    } else if (animaisProdutoresOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas') {
+                                                                    } else if (ehNovilha(
+                                                                        animaisProdutoresOfflineItem
+                                                                            .grupoAnimal)) {
                                                                       return 'NOV';
                                                                     } else {
                                                                       return 'N/C';
@@ -3196,9 +3196,8 @@ class _SecasWidgetState extends State<SecasWidget>
                                         visible: (animaisExistenteOfflineItem
                                                     .uidTecnicoPropriedade ==
                                                 widget.uidPropriedade) &&
-                                            (animaisExistenteOfflineItem
-                                                    .status ==
-                                                'Vazia') &&
+                                            (ehVazia(animaisExistenteOfflineItem
+                                                .status)) &&
                                             (animaisExistenteOfflineItem
                                                     .dtInducaoLactacao !=
                                                 null),
@@ -3296,14 +3295,14 @@ class _SecasWidgetState extends State<SecasWidget>
                                                               decoration:
                                                                   BoxDecoration(
                                                                 color: () {
-                                                                  if (animaisExistenteOfflineItem
-                                                                          .grupoAnimal ==
-                                                                      'Vacas') {
+                                                                  if (ehVaca(
+                                                                      animaisExistenteOfflineItem
+                                                                          .grupoAnimal)) {
                                                                     return Color(
                                                                         0xFF048508);
-                                                                  } else if (animaisExistenteOfflineItem
-                                                                          .grupoAnimal ==
-                                                                      'Novilhas') {
+                                                                  } else if (ehNovilha(
+                                                                      animaisExistenteOfflineItem
+                                                                          .grupoAnimal)) {
                                                                     return Color(
                                                                         0xFFFF0076);
                                                                   } else {
@@ -3319,13 +3318,13 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                       0.0, 0.0),
                                                               child: Text(
                                                                 () {
-                                                                  if (animaisExistenteOfflineItem
-                                                                          .grupoAnimal ==
-                                                                      'Vacas') {
+                                                                  if (ehVaca(
+                                                                      animaisExistenteOfflineItem
+                                                                          .grupoAnimal)) {
                                                                     return 'VAC';
-                                                                  } else if (animaisExistenteOfflineItem
-                                                                          .grupoAnimal ==
-                                                                      'Novilhas') {
+                                                                  } else if (ehNovilha(
+                                                                      animaisExistenteOfflineItem
+                                                                          .grupoAnimal)) {
                                                                     return 'NOV';
                                                                   } else {
                                                                     return 'N/C';
@@ -3475,9 +3474,9 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                 if ((animaisExistenteOfflineItem
                                                                             .grupoAnimal ==
                                                                         'Novilha') ||
-                                                                    (animaisExistenteOfflineItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas')) {
+                                                                    (ehNovilha(
+                                                                        animaisExistenteOfflineItem
+                                                                            .grupoAnimal))) {
                                                                   _animaisExistentes[
                                                                               animaisExistenteOfflineIndex]
                                                                           .grupoAnimal =
@@ -3640,9 +3639,9 @@ class _SecasWidgetState extends State<SecasWidget>
                                         visible: (animaisProdutoresOfflineInducaoItem
                                                     .uidTecnicoPropriedade ==
                                                 widget.uidPropriedade) &&
-                                            (animaisProdutoresOfflineInducaoItem
-                                                    .status ==
-                                                'Vazia') &&
+                                            (ehVazia(
+                                                animaisProdutoresOfflineInducaoItem
+                                                    .status)) &&
                                             (animaisProdutoresOfflineInducaoItem
                                                     .dtInducaoLactacao !=
                                                 null),
@@ -3693,14 +3692,14 @@ class _SecasWidgetState extends State<SecasWidget>
                                                               decoration:
                                                                   BoxDecoration(
                                                                 color: () {
-                                                                  if (animaisProdutoresOfflineInducaoItem
-                                                                          .grupoAnimal ==
-                                                                      'Vacas') {
+                                                                  if (ehVaca(
+                                                                      animaisProdutoresOfflineInducaoItem
+                                                                          .grupoAnimal)) {
                                                                     return Color(
                                                                         0xFF048508);
-                                                                  } else if (animaisProdutoresOfflineInducaoItem
-                                                                          .grupoAnimal ==
-                                                                      'Novilhas') {
+                                                                  } else if (ehNovilha(
+                                                                      animaisProdutoresOfflineInducaoItem
+                                                                          .grupoAnimal)) {
                                                                     return Color(
                                                                         0xFFFF0076);
                                                                   } else {
@@ -3716,13 +3715,13 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                       0.0, 0.0),
                                                               child: Text(
                                                                 () {
-                                                                  if (animaisProdutoresOfflineInducaoItem
-                                                                          .grupoAnimal ==
-                                                                      'Vacas') {
+                                                                  if (ehVaca(
+                                                                      animaisProdutoresOfflineInducaoItem
+                                                                          .grupoAnimal)) {
                                                                     return 'VAC';
-                                                                  } else if (animaisProdutoresOfflineInducaoItem
-                                                                          .grupoAnimal ==
-                                                                      'Novilhas') {
+                                                                  } else if (ehNovilha(
+                                                                      animaisProdutoresOfflineInducaoItem
+                                                                          .grupoAnimal)) {
                                                                     return 'NOV';
                                                                   } else {
                                                                     return 'N/C';
@@ -3865,9 +3864,9 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                 if ((animaisProdutoresOfflineInducaoItem
                                                                             .grupoAnimal ==
                                                                         'Novilha') ||
-                                                                    (animaisProdutoresOfflineInducaoItem
-                                                                            .grupoAnimal ==
-                                                                        'Novilhas')) {
+                                                                    (ehNovilha(
+                                                                        animaisProdutoresOfflineInducaoItem
+                                                                            .grupoAnimal))) {
                                                                   FFAppState()
                                                                       .updateAnimaisProdutoresOfflineAtIndex(
                                                                     animaisProdutoresOfflineInducaoIndex,
@@ -4041,9 +4040,9 @@ class _SecasWidgetState extends State<SecasWidget>
                                         visible: (animaisExistentesOfflineDescarteItem
                                                     .uidTecnicoPropriedade ==
                                                 widget.uidPropriedade) &&
-                                            (animaisExistentesOfflineDescarteItem
-                                                    .status ==
-                                                'Descarte'),
+                                            (ehDescarte(
+                                                animaisExistentesOfflineDescarteItem
+                                                    .status)),
                                         child: Padding(
                                           padding:
                                               EdgeInsetsDirectional.fromSTEB(
@@ -4137,14 +4136,14 @@ class _SecasWidgetState extends State<SecasWidget>
                                                               decoration:
                                                                   BoxDecoration(
                                                                 color: () {
-                                                                  if (animaisExistentesOfflineDescarteItem
-                                                                          .grupoAnimal ==
-                                                                      'Vacas') {
+                                                                  if (ehVaca(
+                                                                      animaisExistentesOfflineDescarteItem
+                                                                          .grupoAnimal)) {
                                                                     return Color(
                                                                         0xFF048508);
-                                                                  } else if (animaisExistentesOfflineDescarteItem
-                                                                          .grupoAnimal ==
-                                                                      'Novilhas') {
+                                                                  } else if (ehNovilha(
+                                                                      animaisExistentesOfflineDescarteItem
+                                                                          .grupoAnimal)) {
                                                                     return Color(
                                                                         0xFFFF0076);
                                                                   } else {
@@ -4160,13 +4159,13 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                       0.0, 0.0),
                                                               child: Text(
                                                                 () {
-                                                                  if (animaisExistentesOfflineDescarteItem
-                                                                          .grupoAnimal ==
-                                                                      'Vacas') {
+                                                                  if (ehVaca(
+                                                                      animaisExistentesOfflineDescarteItem
+                                                                          .grupoAnimal)) {
                                                                     return 'VAC';
-                                                                  } else if (animaisExistentesOfflineDescarteItem
-                                                                          .grupoAnimal ==
-                                                                      'Novilhas') {
+                                                                  } else if (ehNovilha(
+                                                                      animaisExistentesOfflineDescarteItem
+                                                                          .grupoAnimal)) {
                                                                     return 'NOV';
                                                                   } else {
                                                                     return 'N/C';
@@ -4784,9 +4783,9 @@ class _SecasWidgetState extends State<SecasWidget>
                                         visible: (animaisProdutoresOfflineDescarteItem
                                                     .uidTecnicoPropriedade ==
                                                 widget.uidPropriedade) &&
-                                            (animaisProdutoresOfflineDescarteItem
-                                                    .status ==
-                                                'Descarte'),
+                                            (ehDescarte(
+                                                animaisProdutoresOfflineDescarteItem
+                                                    .status)),
                                         child: Padding(
                                           padding:
                                               EdgeInsetsDirectional.fromSTEB(
@@ -4833,14 +4832,14 @@ class _SecasWidgetState extends State<SecasWidget>
                                                               decoration:
                                                                   BoxDecoration(
                                                                 color: () {
-                                                                  if (animaisProdutoresOfflineDescarteItem
-                                                                          .grupoAnimal ==
-                                                                      'Vacas') {
+                                                                  if (ehVaca(
+                                                                      animaisProdutoresOfflineDescarteItem
+                                                                          .grupoAnimal)) {
                                                                     return Color(
                                                                         0xFF048508);
-                                                                  } else if (animaisProdutoresOfflineDescarteItem
-                                                                          .grupoAnimal ==
-                                                                      'Novilhas') {
+                                                                  } else if (ehNovilha(
+                                                                      animaisProdutoresOfflineDescarteItem
+                                                                          .grupoAnimal)) {
                                                                     return Color(
                                                                         0xFFFF0076);
                                                                   } else {
@@ -4856,13 +4855,13 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                       0.0, 0.0),
                                                               child: Text(
                                                                 () {
-                                                                  if (animaisProdutoresOfflineDescarteItem
-                                                                          .grupoAnimal ==
-                                                                      'Vacas') {
+                                                                  if (ehVaca(
+                                                                      animaisProdutoresOfflineDescarteItem
+                                                                          .grupoAnimal)) {
                                                                     return 'VAC';
-                                                                  } else if (animaisProdutoresOfflineDescarteItem
-                                                                          .grupoAnimal ==
-                                                                      'Novilhas') {
+                                                                  } else if (ehNovilha(
+                                                                      animaisProdutoresOfflineDescarteItem
+                                                                          .grupoAnimal)) {
                                                                     return 'NOV';
                                                                   } else {
                                                                     return 'N/C';

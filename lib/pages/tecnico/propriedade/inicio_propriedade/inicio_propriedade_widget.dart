@@ -1,6 +1,7 @@
 // ignore_for_file: unused_import, unused_local_variable
 
 import '/auth/firebase_auth/auth_util.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
@@ -928,32 +929,30 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                                                     _model.respostaNet!
                                                         ? inicioPropriedadeAnimaisProdutoresRecordList
                                                             .where((e) =>
-                                                                ((e.grupoAnimal == 'Vacas') ||
-                                                                    (e.grupoAnimal ==
-                                                                        'Novilhas')) &&
-                                                                ((e.status ==
-                                                                        'Vazia') ||
-                                                                    (e.status ==
-                                                                        'Inseminada') ||
-                                                                    (e.status ==
-                                                                        'Inseminada PP')))
+                                                                ((ehVaca(e.grupoAnimal)) ||
+                                                                    (ehNovilha(e
+                                                                        .grupoAnimal))) &&
+                                                                ((ehVazia(e.status)) ||
+                                                                    (ehInseminada(e
+                                                                        .status)) ||
+                                                                    (ehInseminadaPP(e
+                                                                        .status))))
                                                             .toList()
                                                             .length
                                                             .toString()
-                                                        : (inicioPropriedadeAnimaisProdutoresRecordList
-                                                                    .where((e) =>
-                                                                        ((e.grupoAnimal == 'Vacas') || (e.grupoAnimal == 'Novilhas')) &&
-                                                                        ((e.status == 'Vazia') ||
-                                                                            (e.status ==
-                                                                                'Inseminada') ||
-                                                                            (e.status ==
-                                                                                'Inseminada PP')))
-                                                                    .toList()
-                                                                    .length +
+                                                        : (inicioPropriedadeAnimaisProdutoresRecordList.where((e) => ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) && ((ehVazia(e.status)) || (ehInseminada(e.status)) || (ehInseminadaPP(e.status)))).toList().length +
                                                                 FFAppState()
                                                                     .animaisProdutoresOffline
                                                                     .where((e) =>
-                                                                        (e.uidTecnicoPropriedade == widget.uidPropriedade) && ((e.grupoAnimal == 'Vacas') || (e.grupoAnimal == 'Novilhas')) && ((e.status == 'Vazia') || (e.status == 'Inseminada') || (e.status == 'Inseminada PP')))
+                                                                        (e.uidTecnicoPropriedade ==
+                                                                            widget
+                                                                                .uidPropriedade) &&
+                                                                        ((ehVaca(e.grupoAnimal)) ||
+                                                                            (ehNovilha(e
+                                                                                .grupoAnimal))) &&
+                                                                        ((ehVazia(e.status)) ||
+                                                                            (ehInseminada(e.status)) ||
+                                                                            (ehInseminadaPP(e.status))))
                                                                     .toList()
                                                                     .length)
                                                             .toString(),
@@ -1124,14 +1123,14 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                                                       valueOrDefault<bool>(
                                                         (e.dtUltimaInseminacao !=
                                                                 '') &&
-                                                            ((e.grupoAnimal ==
-                                                                    'Vacas') ||
-                                                                (e.grupoAnimal ==
-                                                                    'Novilhas')) &&
-                                                            ((e.status ==
-                                                                    'Inseminada') ||
-                                                                (e.status ==
-                                                                    'Inseminada PP')) &&
+                                                            ((ehVaca(e
+                                                                    .grupoAnimal)) ||
+                                                                (ehNovilha(e
+                                                                    .grupoAnimal))) &&
+                                                            ((ehInseminada(e
+                                                                    .status)) ||
+                                                                (ehInseminadaPP(e
+                                                                    .status))) &&
                                                             (functions.converterStringParaData(
                                                                     e
                                                                         .dtUltimaInseminacao,
@@ -1331,11 +1330,10 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                                                   _model.respostaNet!
                                                       ? inicioPropriedadeAnimaisProdutoresRecordList
                                                           .where((e) =>
-                                                              (e
-                                                                      .status ==
-                                                                  'Prenha') &&
-                                                              (e.grupoAnimal ==
-                                                                  'Vacas'))
+                                                              (ehPrenha(
+                                                                  e.status)) &&
+                                                              (ehVaca(e
+                                                                  .grupoAnimal)))
                                                           .toList()
                                                           .length
                                                           .toString()
@@ -1344,10 +1342,10 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                                                                       (e.uidTecnicoPropriedade ==
                                                                           widget
                                                                               .uidPropriedade) &&
-                                                                      (e.grupoAnimal ==
-                                                                          'Vacas') &&
-                                                                      (e.status ==
-                                                                          'Prenha'))
+                                                                      (ehVaca(e
+                                                                          .grupoAnimal)) &&
+                                                                      (ehPrenha(e
+                                                                          .status)))
                                                                   .toList()
                                                                   .length +
                                                               FFAppState()
@@ -1356,10 +1354,10 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                                                                       (e.uidTecnicoPropriedade ==
                                                                           widget
                                                                               .uidPropriedade) &&
-                                                                      (e.grupoAnimal ==
-                                                                          'Vacas') &&
-                                                                      (e.status ==
-                                                                          'Prenha'))
+                                                                      (ehVaca(e
+                                                                          .grupoAnimal)) &&
+                                                                      (ehPrenha(
+                                                                          e.status)))
                                                                   .toList()
                                                                   .length)
                                                           .toString(),
@@ -1516,15 +1514,13 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                                             child: Text(
                                               inicioPropriedadeAnimaisProdutoresRecordList
                                                   .where((e) =>
-                                                      ((e.grupoAnimal ==
-                                                              'Vacas') &&
-                                                          (e.status ==
-                                                              'Seca')) ||
+                                                      ((ehVaca(
+                                                              e.grupoAnimal)) &&
+                                                          (ehSeca(e.status))) ||
                                                       (e.status ==
                                                           'Pré Parto') ||
-                                                      (e.status ==
-                                                          'Descarte') ||
-                                                      ((e.status == 'Vazia') &&
+                                                      (ehDescarte(e.status)) ||
+                                                      ((ehVazia(e.status)) &&
                                                           (e.dtInducaoLactacao !=
                                                               null)))
                                                   .toList()
@@ -1679,10 +1675,10 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                                               _model.respostaNet!
                                                   ? inicioPropriedadeAnimaisProdutoresRecordList
                                                       .where((e) =>
-                                                          (e.status == 'Vazia') &&
-                                                          ((e.grupoAnimal == 'Novilhas') ||
-                                                              (e.grupoAnimal ==
-                                                                  'Vacas')) &&
+                                                          (ehVazia(e.status)) &&
+                                                          ((ehNovilha(e.grupoAnimal)) ||
+                                                              (ehVaca(e
+                                                                  .grupoAnimal))) &&
                                                           (e.dtInducaoLactacao ==
                                                               null))
                                                       .toList()
@@ -1690,10 +1686,10 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                                                       .toString()
                                                   : (inicioPropriedadeAnimaisProdutoresRecordList
                                                               .where((e) =>
-                                                                  (e.status == 'Vazia') &&
-                                                                  ((e.grupoAnimal == 'Novilhas') ||
-                                                                      (e.grupoAnimal ==
-                                                                          'Vacas')) &&
+                                                                  (ehVazia(e.status)) &&
+                                                                  ((ehNovilha(e.grupoAnimal)) ||
+                                                                      (ehVaca(e
+                                                                          .grupoAnimal))) &&
                                                                   (e.dtInducaoLactacao ==
                                                                       null))
                                                               .toList()
@@ -1702,9 +1698,9 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                                                               .animaisProdutoresOffline
                                                               .where((e) =>
                                                                   (e.uidTecnicoPropriedade == widget.uidPropriedade) &&
-                                                                  ((e.grupoAnimal == 'Vacas') ||
-                                                                      (e.grupoAnimal == 'Novilhas')) &&
-                                                                  (e.status == 'Vazia') &&
+                                                                  ((ehVaca(e.grupoAnimal)) ||
+                                                                      (ehNovilha(e.grupoAnimal))) &&
+                                                                  (ehVazia(e.status)) &&
                                                                   (e.dtInducaoLactacao == null))
                                                               .toList()
                                                               .length)
@@ -1858,30 +1854,31 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                                               _model.respostaNet!
                                                   ? inicioPropriedadeAnimaisProdutoresRecordList
                                                       .where((e) =>
-                                                          (((e.grupoAnimal == 'Touros') && (e.liberaInseminacao == false)) ||
-                                                              ((e.grupoAnimal ==
-                                                                      'Novilhas') &&
-                                                                  (e.dtInducaoLactacao ==
-                                                                      null)) ||
-                                                              (e.grupoAnimal ==
-                                                                  'Bezerras') ||
-                                                              (e.grupoAnimal ==
-                                                                  'Bezerros')) &&
+                                                          (((e.grupoAnimal == 'Touros') && (e.liberaInseminacao == false)) || ((ehNovilha(e.grupoAnimal)) && (e.dtInducaoLactacao == null)) || (ehBezerras(e.grupoAnimal)) || (ehBezerros(e.grupoAnimal))) &&
                                                           ((e.status != 'Descarte') &&
                                                               (e.status !=
                                                                   'Pré Parto')))
                                                       .toList()
                                                       .length
                                                       .toString()
-                                                  : (inicioPropriedadeAnimaisProdutoresRecordList.where((e) => (((e.grupoAnimal == 'Touros') && (e.liberaInseminacao == false)) || ((e.grupoAnimal == 'Novilhas') && (e.dtInducaoLactacao == null)) || (e.grupoAnimal == 'Bezerras') || (e.grupoAnimal == 'Bezerros')) && ((e.status != 'Descarte') && (e.status != 'Pré Parto'))).toList().length +
+                                                  : (inicioPropriedadeAnimaisProdutoresRecordList
+                                                              .where((e) =>
+                                                                  (((e.grupoAnimal == 'Touros') && (e.liberaInseminacao == false)) || ((ehNovilha(e.grupoAnimal)) && (e.dtInducaoLactacao == null)) || (ehBezerras(e.grupoAnimal)) || (ehBezerros(e.grupoAnimal))) &&
+                                                                  ((e.status != 'Descarte') &&
+                                                                      (e.status !=
+                                                                          'Pré Parto')))
+                                                              .toList()
+                                                              .length +
                                                           FFAppState()
                                                               .animaisProdutoresOffline
                                                               .where((e) =>
-                                                                  (e.uidTecnicoPropriedade == widget.uidPropriedade) &&
+                                                                  (e.uidTecnicoPropriedade ==
+                                                                      widget
+                                                                          .uidPropriedade) &&
                                                                   (((e.grupoAnimal == 'Touros') && (e.liberaInseminacao == false)) ||
-                                                                      ((e.grupoAnimal == 'Novilhas') && (e.dtInducaoLactacao == null)) ||
-                                                                      (e.grupoAnimal == 'Bezerras') ||
-                                                                      (e.grupoAnimal == 'Bezerros')) &&
+                                                                      ((ehNovilha(e.grupoAnimal)) && (e.dtInducaoLactacao == null)) ||
+                                                                      (ehBezerras(e.grupoAnimal)) ||
+                                                                      (ehBezerros(e.grupoAnimal))) &&
                                                                   ((e.status != 'Descarte') && (e.status != 'Pré Parto')))
                                                               .toList()
                                                               .length)
@@ -2036,10 +2033,10 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                                             child: Text(
                                               inicioPropriedadeAnimaisProdutoresRecordList
                                                   .where((e) =>
-                                                      ((e.grupoAnimal ==
-                                                              'Novilhas') ||
-                                                          (e.grupoAnimal ==
-                                                              'Vacas')) &&
+                                                      ((ehNovilha(
+                                                              e.grupoAnimal)) ||
+                                                          (ehVaca(e
+                                                              .grupoAnimal))) &&
                                                       (e.status != 'Descarte'))
                                                   .toList()
                                                   .length

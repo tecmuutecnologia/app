@@ -1,4 +1,5 @@
 import '/backend/backend.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -147,7 +148,7 @@ class _ListaDiagnosticoGestacaoWidgetState
               final animaisDGMenos =
                   todosAnimais.where((a) => a.acao == 'DG-').toList();
               final animaisAbortos = todosAnimais
-                  .where((a) => a.acao == 'Aborto' && a.grupoAnimal == 'Vacas')
+                  .where((a) => a.acao == 'Aborto' && ehVaca(a.grupoAnimal))
                   .toList();
 
               // Ordenar por brinco numérico e depois por nome
@@ -313,9 +314,9 @@ class _ListaDiagnosticoGestacaoWidgetState
                 padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
                 child: Icon(
                   Icons.circle_sharp,
-                  color: animal.grupoAnimal == 'Vacas'
+                  color: ehVaca(animal.grupoAnimal)
                       ? Color(0xFF048508)
-                      : animal.grupoAnimal == 'Novilhas'
+                      : ehNovilha(animal.grupoAnimal)
                           ? Color(0xFFFF0076)
                           : FlutterFlowTheme.of(context).tertiary,
                   size: 10.0,

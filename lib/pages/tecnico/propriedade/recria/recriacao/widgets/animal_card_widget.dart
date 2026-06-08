@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '/domain/animais/classificacao_animal.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -128,12 +129,11 @@ class AnimalCardWidget extends StatelessWidget {
   }
 
   bool _shouldShowAnimal() {
-    final isValidGroup =
-        (animal.grupoAnimal == 'Touros' && !animal.liberaInseminacao) ||
-            (animal.grupoAnimal == 'Novilhas' &&
-                animal.dtInducaoLactacao == null) ||
-            animal.grupoAnimal == 'Bezerras' ||
-            animal.grupoAnimal == 'Bezerros';
+    final isValidGroup = (animal.grupoAnimal == 'Touros' &&
+            !animal.liberaInseminacao) ||
+        (ehNovilha(animal.grupoAnimal) && animal.dtInducaoLactacao == null) ||
+        ehBezerras(animal.grupoAnimal) ||
+        ehBezerros(animal.grupoAnimal);
 
     final isValidStatus =
         animal.status != 'Descarte' && animal.status != 'Pré Parto';
@@ -233,10 +233,10 @@ class AnimalCardWidget extends StatelessWidget {
                     ),
               ),
             ),
-            if (animal.grupoAnimal == 'Bezerros')
+            if (ehBezerros(animal.grupoAnimal))
               Icon(Icons.male,
                   color: FlutterFlowTheme.of(context).primary, size: 24.0),
-            if (animal.grupoAnimal == 'Bezerras')
+            if (ehBezerras(animal.grupoAnimal))
               const Icon(Icons.female, color: Color(0xFFD901A6), size: 24.0),
           ],
         ),
@@ -246,7 +246,7 @@ class AnimalCardWidget extends StatelessWidget {
 
   Widget _buildAnimalName(BuildContext context) {
     final isBezerra =
-        animal.grupoAnimal == 'Bezerras' || animal.grupoAnimal == 'Bezerros';
+        ehBezerras(animal.grupoAnimal) || ehBezerros(animal.grupoAnimal);
 
     String baseName;
     if (animal.nomeAnimal.isNotEmpty &&
@@ -369,10 +369,10 @@ class AnimalCardWidget extends StatelessWidget {
   Widget _buildActionButtons(BuildContext context) {
     if (animal.grupoAnimal == 'Touros') {
       return _buildTouroButtons(context);
-    } else if (animal.grupoAnimal == 'Bezerras' ||
-        animal.grupoAnimal == 'Bezerros') {
+    } else if (ehBezerras(animal.grupoAnimal) ||
+        ehBezerros(animal.grupoAnimal)) {
       return _buildBezerroButtons(context);
-    } else if (animal.grupoAnimal == 'Novilhas') {
+    } else if (ehNovilha(animal.grupoAnimal)) {
       return _buildNovilhaButtons(context);
     }
     return _buildDefaultButtons(context);
@@ -389,8 +389,7 @@ class AnimalCardWidget extends StatelessWidget {
           children: [
             _buildButton(context, 'Ação', Icons.add_alert,
                 ActionButtonColors.acao, () => _showExameGinecologico(context)),
-            if (animal.status == 'Inseminada' ||
-                animal.status == 'Inseminada PP')
+            if (ehInseminada(animal.status) || ehInseminadaPP(animal.status))
               _buildStatusCheck(context),
           ],
         ),

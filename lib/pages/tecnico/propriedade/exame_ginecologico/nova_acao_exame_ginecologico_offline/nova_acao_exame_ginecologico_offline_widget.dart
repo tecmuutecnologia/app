@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import, dead_code, unnecessary_null_in_if_null_operators, dead_null_aware_expression
 import '/backend/schema/structs/index.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/core/constants/tipo_acoes_constantes.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -614,8 +615,8 @@ class _NovaAcaoExameGinecologicoOfflineWidgetState
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        if ((widget.grupoAnimal == 'Novilhas') ||
-                            (widget.grupoAnimal == 'Vacas'))
+                        if ((ehNovilha(widget.grupoAnimal)) ||
+                            (ehVaca(widget.grupoAnimal)))
                           Align(
                             alignment: AlignmentDirectional(0.0, 0.05),
                             child: FFButtonWidget(

@@ -1,4 +1,5 @@
 import '/backend/backend.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -252,7 +253,7 @@ class _DesmameWidgetState extends State<DesmameWidget>
                           alignment: AlignmentDirectional(0.0, 0.05),
                           child: FFButtonWidget(
                             onPressed: () async {
-                              if (widget.grupoAnimal == 'Bezerras') {
+                              if (ehBezerras(widget.grupoAnimal)) {
                                 await widget.uidAnimaisProdutores!
                                     .update(createAnimaisProdutoresRecordData(
                                   grupoAnimal: 'Novilhas',

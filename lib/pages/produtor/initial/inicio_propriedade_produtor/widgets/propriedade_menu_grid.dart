@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 
 import '/backend/backend.dart';
@@ -134,20 +135,20 @@ class PropriedadeMenuGrid extends StatelessWidget {
     final appState = FFAppState();
     final onlineCount = animaisRecordList
         .where((e) =>
-            ((e.grupoAnimal == 'Vacas') || (e.grupoAnimal == 'Novilhas')) &&
-            ((e.status == 'Vazia') ||
-                (e.status == 'Inseminada') ||
-                (e.status == 'Inseminada PP')))
+            ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
+            ((ehVazia(e.status)) ||
+                (ehInseminada(e.status)) ||
+                (ehInseminadaPP(e.status))))
         .toList()
         .length;
 
     final offlineCount = appState.animaisProdutoresOffline
         .where((e) =>
             (e.uidTecnicoPropriedade == navigationParams.uidPropriedade) &&
-            ((e.grupoAnimal == 'Vacas') || (e.grupoAnimal == 'Novilhas')) &&
-            ((e.status == 'Vazia') ||
-                (e.status == 'Inseminada') ||
-                (e.status == 'Inseminada PP')))
+            ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
+            ((ehVazia(e.status)) ||
+                (ehInseminada(e.status)) ||
+                (ehInseminadaPP(e.status))))
         .toList()
         .length;
 
@@ -173,10 +174,8 @@ class PropriedadeMenuGrid extends StatelessWidget {
     final count = animaisRecordList
         .where((e) => valueOrDefault<bool>(
               (e.dtUltimaInseminacao != '') &&
-                  ((e.grupoAnimal == 'Vacas') ||
-                      (e.grupoAnimal == 'Novilhas')) &&
-                  ((e.status == 'Inseminada') ||
-                      (e.status == 'Inseminada PP')) &&
+                  ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
+                  ((ehInseminada(e.status)) || (ehInseminadaPP(e.status))) &&
                   (functions.converterStringParaData(
                           e.dtUltimaInseminacao, navigationParams.diasDg!) <=
                       functions.obterDataAtual()),
@@ -205,7 +204,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
     String getBadgeCount() {
       if (isOnline) {
         return animaisRecordList
-            .where((e) => (e.status == 'Prenha') && (e.grupoAnimal == 'Vacas'))
+            .where((e) => (ehPrenha(e.status)) && (ehVaca(e.grupoAnimal)))
             .toList()
             .length
             .toString();
@@ -213,16 +212,16 @@ class PropriedadeMenuGrid extends StatelessWidget {
         final existentesCount = animaisProdutoresExistentesObjectBox()
             .where((e) =>
                 (e.uidTecnicoPropriedade == navigationParams.uidPropriedade) &&
-                (e.grupoAnimal == 'Vacas') &&
-                (e.status == 'Prenha'))
+                (ehVaca(e.grupoAnimal)) &&
+                (ehPrenha(e.status)))
             .toList()
             .length;
 
         final offlineCount = appState.animaisProdutoresOffline
             .where((e) =>
                 (e.uidTecnicoPropriedade == navigationParams.uidPropriedade) &&
-                (e.grupoAnimal == 'Vacas') &&
-                (e.status == 'Prenha'))
+                (ehVaca(e.grupoAnimal)) &&
+                (ehPrenha(e.status)))
             .toList()
             .length;
 
@@ -246,10 +245,10 @@ class PropriedadeMenuGrid extends StatelessWidget {
   Widget _buildSecasCard(BuildContext context) {
     final count = animaisRecordList
         .where((e) =>
-            ((e.grupoAnimal == 'Vacas') && (e.status == 'Seca')) ||
+            ((ehVaca(e.grupoAnimal)) && (ehSeca(e.status))) ||
             (e.status == 'Pré Parto') ||
-            (e.status == 'Descarte') ||
-            ((e.status == 'Vazia') && (e.dtInducaoLactacao != null)))
+            (ehDescarte(e.status)) ||
+            ((ehVazia(e.status)) && (e.dtInducaoLactacao != null)))
         .toList()
         .length
         .toString();
@@ -273,8 +272,8 @@ class PropriedadeMenuGrid extends StatelessWidget {
     String getBadgeCount() {
       final onlineCount = animaisRecordList
           .where((e) =>
-              (e.status == 'Vazia') &&
-              ((e.grupoAnimal == 'Novilhas') || (e.grupoAnimal == 'Vacas')) &&
+              (ehVazia(e.status)) &&
+              ((ehNovilha(e.grupoAnimal)) || (ehVaca(e.grupoAnimal))) &&
               (e.dtInducaoLactacao == null))
           .toList()
           .length;
@@ -285,8 +284,8 @@ class PropriedadeMenuGrid extends StatelessWidget {
         final offlineCount = appState.animaisProdutoresOffline
             .where((e) =>
                 (e.uidTecnicoPropriedade == navigationParams.uidPropriedade) &&
-                ((e.grupoAnimal == 'Vacas') || (e.grupoAnimal == 'Novilhas')) &&
-                (e.status == 'Vazia') &&
+                ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
+                (ehVazia(e.status)) &&
                 (e.dtInducaoLactacao == null))
             .toList()
             .length;
@@ -316,10 +315,10 @@ class PropriedadeMenuGrid extends StatelessWidget {
           .where((e) =>
               (((e.grupoAnimal == 'Touros') &&
                       (e.liberaInseminacao == false)) ||
-                  ((e.grupoAnimal == 'Novilhas') &&
+                  ((ehNovilha(e.grupoAnimal)) &&
                       (e.dtInducaoLactacao == null)) ||
-                  (e.grupoAnimal == 'Bezerras') ||
-                  (e.grupoAnimal == 'Bezerros')) &&
+                  (ehBezerras(e.grupoAnimal)) ||
+                  (ehBezerros(e.grupoAnimal))) &&
               ((e.status != 'Descarte') && (e.status != 'Pré Parto')))
           .toList()
           .length;
@@ -332,10 +331,10 @@ class PropriedadeMenuGrid extends StatelessWidget {
                 (e.uidTecnicoPropriedade == navigationParams.uidPropriedade) &&
                 (((e.grupoAnimal == 'Touros') &&
                         (e.liberaInseminacao == false)) ||
-                    ((e.grupoAnimal == 'Novilhas') &&
+                    ((ehNovilha(e.grupoAnimal)) &&
                         (e.dtInducaoLactacao == null)) ||
-                    (e.grupoAnimal == 'Bezerras') ||
-                    (e.grupoAnimal == 'Bezerros')) &&
+                    (ehBezerras(e.grupoAnimal)) ||
+                    (ehBezerros(e.grupoAnimal))) &&
                 ((e.status != 'Descarte') && (e.status != 'Pré Parto')))
             .toList()
             .length;
@@ -360,7 +359,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
   Widget _buildListaCompletaCard(BuildContext context) {
     final count = animaisRecordList
         .where((e) =>
-            ((e.grupoAnimal == 'Novilhas') || (e.grupoAnimal == 'Vacas')) &&
+            ((ehNovilha(e.grupoAnimal)) || (ehVaca(e.grupoAnimal))) &&
             (e.status != 'Descarte'))
         .toList()
         .length

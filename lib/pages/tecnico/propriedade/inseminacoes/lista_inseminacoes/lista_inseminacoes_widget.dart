@@ -455,21 +455,21 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                 visible: (listaAnimaisOfflineExistenteItem
                                             .uidTecnicoPropriedade ==
                                         widget.uidPropriedade) &&
-                                    (((listaAnimaisOfflineExistenteItem
-                                                    .grupoAnimal ==
-                                                'Vacas') ||
-                                            (listaAnimaisOfflineExistenteItem
-                                                    .grupoAnimal ==
-                                                'Novilhas')) &&
-                                        ((listaAnimaisOfflineExistenteItem
-                                                    .status ==
-                                                'Vazia') ||
-                                            (listaAnimaisOfflineExistenteItem
-                                                    .status ==
-                                                'Inseminada') ||
-                                            (listaAnimaisOfflineExistenteItem
-                                                    .status ==
-                                                'Inseminada PP'))),
+                                    (((ehVaca(
+                                                listaAnimaisOfflineExistenteItem
+                                                    .grupoAnimal)) ||
+                                            (ehNovilha(
+                                                listaAnimaisOfflineExistenteItem
+                                                    .grupoAnimal))) &&
+                                        ((ehVazia(
+                                                listaAnimaisOfflineExistenteItem
+                                                    .status)) ||
+                                            (ehInseminada(
+                                                listaAnimaisOfflineExistenteItem
+                                                    .status)) ||
+                                            (ehInseminadaPP(
+                                                listaAnimaisOfflineExistenteItem
+                                                    .status)))),
                                 child: Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       16.0, 12.0, 16.0, 12.0),
@@ -564,14 +564,14 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                   height: 44.0,
                                                   decoration: BoxDecoration(
                                                     color: () {
-                                                      if (listaAnimaisOfflineExistenteItem
-                                                              .grupoAnimal ==
-                                                          'Vacas') {
+                                                      if (ehVaca(
+                                                          listaAnimaisOfflineExistenteItem
+                                                              .grupoAnimal)) {
                                                         return Color(
                                                             0xFF048508);
-                                                      } else if (listaAnimaisOfflineExistenteItem
-                                                              .grupoAnimal ==
-                                                          'Novilhas') {
+                                                      } else if (ehNovilha(
+                                                          listaAnimaisOfflineExistenteItem
+                                                              .grupoAnimal)) {
                                                         return Color(
                                                             0xFFFF0076);
                                                       } else {
@@ -586,13 +586,13 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                           0.0, 0.0),
                                                   child: Text(
                                                     () {
-                                                      if (listaAnimaisOfflineExistenteItem
-                                                              .grupoAnimal ==
-                                                          'Vacas') {
+                                                      if (ehVaca(
+                                                          listaAnimaisOfflineExistenteItem
+                                                              .grupoAnimal)) {
                                                         return 'VAC';
-                                                      } else if (listaAnimaisOfflineExistenteItem
-                                                              .grupoAnimal ==
-                                                          'Novilhas') {
+                                                      } else if (ehNovilha(
+                                                          listaAnimaisOfflineExistenteItem
+                                                              .grupoAnimal)) {
                                                         return 'NOV';
                                                       } else {
                                                         return 'N/C';
@@ -739,12 +739,12 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                 ),
                                                           ),
                                                         ),
-                                                      if ((listaAnimaisOfflineExistenteItem
-                                                                  .status ==
-                                                              'Inseminada') ||
-                                                          (listaAnimaisOfflineExistenteItem
-                                                                  .status ==
-                                                              'Inseminada PP'))
+                                                      if ((ehInseminada(
+                                                              listaAnimaisOfflineExistenteItem
+                                                                  .status)) ||
+                                                          (ehInseminadaPP(
+                                                              listaAnimaisOfflineExistenteItem
+                                                                  .status)))
                                                         Text(
                                                           'Inseminada',
                                                           style: FlutterFlowTheme
@@ -1078,17 +1078,18 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                 visible: (listaAnimaisOfflineItem
                                             .uidTecnicoPropriedade ==
                                         widget.uidPropriedade) &&
-                                    (((listaAnimaisOfflineItem.grupoAnimal ==
-                                                'Vacas') ||
-                                            (listaAnimaisOfflineItem
-                                                    .grupoAnimal ==
-                                                'Novilhas')) &&
-                                        ((listaAnimaisOfflineItem.status ==
-                                                'Vazia') ||
-                                            (listaAnimaisOfflineItem.status ==
-                                                'Inseminada') ||
-                                            (listaAnimaisOfflineItem.status ==
-                                                'Inseminada PP'))),
+                                    (((ehVaca(listaAnimaisOfflineItem
+                                                .grupoAnimal)) ||
+                                            (ehNovilha(listaAnimaisOfflineItem
+                                                .grupoAnimal))) &&
+                                        ((ehVazia(listaAnimaisOfflineItem
+                                                .status)) ||
+                                            (ehInseminada(
+                                                listaAnimaisOfflineItem
+                                                    .status)) ||
+                                            (ehInseminadaPP(
+                                                listaAnimaisOfflineItem
+                                                    .status)))),
                                 child: Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       16.0, 12.0, 16.0, 12.0),
@@ -1180,14 +1181,14 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                   height: 44.0,
                                                   decoration: BoxDecoration(
                                                     color: () {
-                                                      if (listaAnimaisOfflineItem
-                                                              .grupoAnimal ==
-                                                          'Vacas') {
+                                                      if (ehVaca(
+                                                          listaAnimaisOfflineItem
+                                                              .grupoAnimal)) {
                                                         return Color(
                                                             0xFF048508);
-                                                      } else if (listaAnimaisOfflineItem
-                                                              .grupoAnimal ==
-                                                          'Novilhas') {
+                                                      } else if (ehNovilha(
+                                                          listaAnimaisOfflineItem
+                                                              .grupoAnimal)) {
                                                         return Color(
                                                             0xFFFF0076);
                                                       } else {
@@ -1202,13 +1203,13 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                           0.0, 0.0),
                                                   child: Text(
                                                     () {
-                                                      if (listaAnimaisOfflineItem
-                                                              .grupoAnimal ==
-                                                          'Vacas') {
+                                                      if (ehVaca(
+                                                          listaAnimaisOfflineItem
+                                                              .grupoAnimal)) {
                                                         return 'VAC';
-                                                      } else if (listaAnimaisOfflineItem
-                                                              .grupoAnimal ==
-                                                          'Novilhas') {
+                                                      } else if (ehNovilha(
+                                                          listaAnimaisOfflineItem
+                                                              .grupoAnimal)) {
                                                         return 'NOV';
                                                       } else {
                                                         return 'N/C';
@@ -1355,12 +1356,12 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                 ),
                                                           ),
                                                         ),
-                                                      if ((listaAnimaisOfflineItem
-                                                                  .status ==
-                                                              'Inseminada') ||
-                                                          (listaAnimaisOfflineItem
-                                                                  .status ==
-                                                              'Inseminada PP'))
+                                                      if ((ehInseminada(
+                                                              listaAnimaisOfflineItem
+                                                                  .status)) ||
+                                                          (ehInseminadaPP(
+                                                              listaAnimaisOfflineItem
+                                                                  .status)))
                                                         Text(
                                                           'Inseminada',
                                                           style: FlutterFlowTheme
@@ -1825,14 +1826,14 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                     height: 44.0,
                                                     decoration: BoxDecoration(
                                                       color: () {
-                                                        if (listaAnimaisOfflineExistenteItem
-                                                                .grupoAnimal ==
-                                                            'Vacas') {
+                                                        if (ehVaca(
+                                                            listaAnimaisOfflineExistenteItem
+                                                                .grupoAnimal)) {
                                                           return Color(
                                                               0xFF048508);
-                                                        } else if (listaAnimaisOfflineExistenteItem
-                                                                .grupoAnimal ==
-                                                            'Novilhas') {
+                                                        } else if (ehNovilha(
+                                                            listaAnimaisOfflineExistenteItem
+                                                                .grupoAnimal)) {
                                                           return Color(
                                                               0xFFFF0076);
                                                         } else {
@@ -1847,13 +1848,13 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                             0.0, 0.0),
                                                     child: Text(
                                                       () {
-                                                        if (listaAnimaisOfflineExistenteItem
-                                                                .grupoAnimal ==
-                                                            'Vacas') {
+                                                        if (ehVaca(
+                                                            listaAnimaisOfflineExistenteItem
+                                                                .grupoAnimal)) {
                                                           return 'VAC';
-                                                        } else if (listaAnimaisOfflineExistenteItem
-                                                                .grupoAnimal ==
-                                                            'Novilhas') {
+                                                        } else if (ehNovilha(
+                                                            listaAnimaisOfflineExistenteItem
+                                                                .grupoAnimal)) {
                                                           return 'NOV';
                                                         } else {
                                                           return 'N/C';
@@ -2000,12 +2001,12 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                   ),
                                                             ),
                                                           ),
-                                                        if ((listaAnimaisOfflineExistenteItem
-                                                                    .status ==
-                                                                'Inseminada') ||
-                                                            (listaAnimaisOfflineExistenteItem
-                                                                    .status ==
-                                                                'Inseminada PP'))
+                                                        if ((ehInseminada(
+                                                                listaAnimaisOfflineExistenteItem
+                                                                    .status)) ||
+                                                            (ehInseminadaPP(
+                                                                listaAnimaisOfflineExistenteItem
+                                                                    .status)))
                                                           Text(
                                                             'Inseminada',
                                                             style: FlutterFlowTheme
@@ -2444,14 +2445,14 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                     height: 44.0,
                                                     decoration: BoxDecoration(
                                                       color: () {
-                                                        if (listaAnimaisOfflineItem
-                                                                .grupoAnimal ==
-                                                            'Vacas') {
+                                                        if (ehVaca(
+                                                            listaAnimaisOfflineItem
+                                                                .grupoAnimal)) {
                                                           return Color(
                                                               0xFF048508);
-                                                        } else if (listaAnimaisOfflineItem
-                                                                .grupoAnimal ==
-                                                            'Novilhas') {
+                                                        } else if (ehNovilha(
+                                                            listaAnimaisOfflineItem
+                                                                .grupoAnimal)) {
                                                           return Color(
                                                               0xFFFF0076);
                                                         } else {
@@ -2466,13 +2467,13 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                             0.0, 0.0),
                                                     child: Text(
                                                       () {
-                                                        if (listaAnimaisOfflineItem
-                                                                .grupoAnimal ==
-                                                            'Vacas') {
+                                                        if (ehVaca(
+                                                            listaAnimaisOfflineItem
+                                                                .grupoAnimal)) {
                                                           return 'VAC';
-                                                        } else if (listaAnimaisOfflineItem
-                                                                .grupoAnimal ==
-                                                            'Novilhas') {
+                                                        } else if (ehNovilha(
+                                                            listaAnimaisOfflineItem
+                                                                .grupoAnimal)) {
                                                           return 'NOV';
                                                         } else {
                                                           return 'N/C';
@@ -2619,12 +2620,12 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                                                   ),
                                                             ),
                                                           ),
-                                                        if ((listaAnimaisOfflineItem
-                                                                    .status ==
-                                                                'Inseminada') ||
-                                                            (listaAnimaisOfflineItem
-                                                                    .status ==
-                                                                'Inseminada PP'))
+                                                        if ((ehInseminada(
+                                                                listaAnimaisOfflineItem
+                                                                    .status)) ||
+                                                            (ehInseminadaPP(
+                                                                listaAnimaisOfflineItem
+                                                                    .status)))
                                                           Text(
                                                             'Inseminada',
                                                             style: FlutterFlowTheme

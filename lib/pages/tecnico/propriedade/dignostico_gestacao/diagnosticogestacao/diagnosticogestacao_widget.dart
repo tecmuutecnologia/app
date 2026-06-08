@@ -1,5 +1,6 @@
 // ignore_for_file: unnecessary_null_comparison
 import '/backend/backend.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/backend/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -235,12 +236,12 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                   widget.uidPropriedade) &&
                               (animaisExistentesItem.dtUltimaInseminacao !=
                                   '') &&
-                              ((animaisExistentesItem.grupoAnimal == 'Vacas') ||
-                                  (animaisExistentesItem.grupoAnimal ==
-                                      'Novilhas')) &&
-                              ((animaisExistentesItem.status == 'Inseminada') ||
-                                  (animaisExistentesItem.status ==
-                                      'Inseminada PP')) &&
+                              ((ehVaca(animaisExistentesItem.grupoAnimal)) ||
+                                  (ehNovilha(
+                                      animaisExistentesItem.grupoAnimal))) &&
+                              ((ehInseminada(animaisExistentesItem.status)) ||
+                                  (ehInseminadaPP(
+                                      animaisExistentesItem.status))) &&
                               (functions.converterStringParaData(
                                       animaisExistentesItem.dtUltimaInseminacao,
                                       widget.diasDg!) <=
@@ -334,13 +335,12 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                         height: 50.0,
                                         decoration: BoxDecoration(
                                           color: () {
-                                            if (animaisExistentesItem
-                                                    .grupoAnimal ==
-                                                'Vacas') {
+                                            if (ehVaca(animaisExistentesItem
+                                                .grupoAnimal)) {
                                               return Color(0xFF048508);
-                                            } else if (animaisExistentesItem
-                                                    .grupoAnimal ==
-                                                'Novilhas') {
+                                            } else if (ehNovilha(
+                                                animaisExistentesItem
+                                                    .grupoAnimal)) {
                                               return Color(0xFFFF0076);
                                             } else {
                                               return Color(0x00000000);
@@ -352,13 +352,12 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                             AlignmentDirectional(0.0, 0.0),
                                         child: Text(
                                           () {
-                                            if (animaisExistentesItem
-                                                    .grupoAnimal ==
-                                                'Vacas') {
+                                            if (ehVaca(animaisExistentesItem
+                                                .grupoAnimal)) {
                                               return 'VAC';
-                                            } else if (animaisExistentesItem
-                                                    .grupoAnimal ==
-                                                'Novilhas') {
+                                            } else if (ehNovilha(
+                                                animaisExistentesItem
+                                                    .grupoAnimal)) {
                                               return 'NOV';
                                             } else {
                                               return 'N/C';
@@ -1043,14 +1042,12 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                   widget.uidPropriedade) &&
                               (listAnimaisOfflineItem.dtUltimaInseminacao !=
                                   '') &&
-                              ((listAnimaisOfflineItem.grupoAnimal ==
-                                      'Vacas') ||
-                                  (listAnimaisOfflineItem.grupoAnimal ==
-                                      'Novilhas')) &&
-                              ((listAnimaisOfflineItem.status ==
-                                      'Inseminada') ||
-                                  (listAnimaisOfflineItem.status ==
-                                      'Inseminada PP')) &&
+                              ((ehVaca(listAnimaisOfflineItem.grupoAnimal)) ||
+                                  (ehNovilha(
+                                      listAnimaisOfflineItem.grupoAnimal))) &&
+                              ((ehInseminada(listAnimaisOfflineItem.status)) ||
+                                  (ehInseminadaPP(
+                                      listAnimaisOfflineItem.status))) &&
                               (functions.converterStringParaData(
                                       listAnimaisOfflineItem
                                           .dtUltimaInseminacao,
@@ -1106,13 +1103,12 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                         height: 50.0,
                                         decoration: BoxDecoration(
                                           color: () {
-                                            if (listAnimaisOfflineItem
-                                                    .grupoAnimal ==
-                                                'Vacas') {
+                                            if (ehVaca(listAnimaisOfflineItem
+                                                .grupoAnimal)) {
                                               return Color(0xFF048508);
-                                            } else if (listAnimaisOfflineItem
-                                                    .grupoAnimal ==
-                                                'Novilhas') {
+                                            } else if (ehNovilha(
+                                                listAnimaisOfflineItem
+                                                    .grupoAnimal)) {
                                               return Color(0xFFFF0076);
                                             } else {
                                               return Color(0x00000000);
@@ -1124,13 +1120,12 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                             AlignmentDirectional(0.0, 0.0),
                                         child: Text(
                                           () {
-                                            if (listAnimaisOfflineItem
-                                                    .grupoAnimal ==
-                                                'Vacas') {
+                                            if (ehVaca(listAnimaisOfflineItem
+                                                .grupoAnimal)) {
                                               return 'VAC';
-                                            } else if (listAnimaisOfflineItem
-                                                    .grupoAnimal ==
-                                                'Novilhas') {
+                                            } else if (ehNovilha(
+                                                listAnimaisOfflineItem
+                                                    .grupoAnimal)) {
                                               return 'NOV';
                                             } else {
                                               return 'N/C';

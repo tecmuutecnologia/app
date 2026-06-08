@@ -1,4 +1,5 @@
 import '/backend/backend.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/backend/objectbox/repositories/animal_repository.dart';
 import 'dart:async';
 import '/flutter_flow/flutter_flow_animations.dart';
@@ -334,7 +335,7 @@ class _DesmameWidgetState extends State<DesmameWidget>
   /// com o Firestore ao repositório. Funciona com ou sem conexão (usado tanto
   /// para o caso online quanto para o de animal existente offline).
   Future<void> _performOnlineDesmame() async {
-    final dados = widget.grupoAnimal == 'Bezerras'
+    final dados = ehBezerras(widget.grupoAnimal)
         ? <String, dynamic>{
             'grupoAnimal': 'Novilhas',
             'dtDesmame': getCurrentTimestamp,
@@ -353,7 +354,7 @@ class _DesmameWidgetState extends State<DesmameWidget>
       unawaited(animalRepo.update(entity, dados));
     } else if (widget.uidAnimaisProdutores != null) {
       unawaited(widget.uidAnimaisProdutores!.update(
-        widget.grupoAnimal == 'Bezerras'
+        ehBezerras(widget.grupoAnimal)
             ? createAnimaisProdutoresRecordData(
                 grupoAnimal: 'Novilhas',
                 dtDesmame: getCurrentTimestamp,
@@ -370,7 +371,7 @@ class _DesmameWidgetState extends State<DesmameWidget>
 
   /// Desmame offline para animais novos
   void _performOfflineNewDesmame() {
-    if (widget.grupoAnimal == 'Bezerras') {
+    if (ehBezerras(widget.grupoAnimal)) {
       FFAppState().updateAnimaisProdutoresOfflineAtIndex(
         widget.itemUidIndex!,
         (e) => e

@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison, dead_null_aware_expression
 
 import '/backend/backend.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -519,10 +520,10 @@ class _NovoRelatorioFinanceiroWidgetState
                                       text:
                                           vacasLactacaoAnimaisProdutoresRecordList
                                               .where((e) =>
-                                                  (e.status == 'Vazia') ||
-                                                  (e.status == 'Prenha') ||
-                                                  (e.status == 'Inseminada') ||
-                                                  (e.status == 'Inseminada PP'))
+                                                  (ehVazia(e.status)) ||
+                                                  (ehPrenha(e.status)) ||
+                                                  (ehInseminada(e.status)) ||
+                                                  (ehInseminadaPP(e.status)))
                                               .toList()
                                               .length
                                               .toString(),

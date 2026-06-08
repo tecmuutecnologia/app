@@ -1,4 +1,5 @@
 import '/backend/backend.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/flutter_flow/flutter_flow_charts.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -387,8 +388,8 @@ class _IndicesZootecnicosWidgetState extends State<IndicesZootecnicosWidget> {
                                                 animaisProdutoresRecord
                                                     .where(
                                                       'uidTecnicoPropriedade',
-                                                      isEqualTo: widget
-                                                          .uidPropriedade,
+                                                      isEqualTo:
+                                                          widget.uidPropriedade,
                                                     )
                                                     .where(
                                                       'grupoAnimal',
@@ -419,10 +420,10 @@ class _IndicesZootecnicosWidgetState extends State<IndicesZootecnicosWidget> {
                                         return Text(
                                           textAnimaisProdutoresRecordList
                                               .where((e) =>
-                                                  (e.status == 'Vazia') ||
-                                                  (e.status == 'Prenha') ||
-                                                  (e.status == 'Inseminada') ||
-                                                  (e.status == 'Inseminada PP'))
+                                                  (ehVazia(e.status)) ||
+                                                  (ehPrenha(e.status)) ||
+                                                  (ehInseminada(e.status)) ||
+                                                  (ehInseminadaPP(e.status)))
                                               .toList()
                                               .length
                                               .toString(),
@@ -538,8 +539,8 @@ class _IndicesZootecnicosWidgetState extends State<IndicesZootecnicosWidget> {
                                                 animaisProdutoresRecord
                                                     .where(
                                                       'uidTecnicoPropriedade',
-                                                      isEqualTo: widget
-                                                          .uidPropriedade,
+                                                      isEqualTo:
+                                                          widget.uidPropriedade,
                                                     )
                                                     .where(
                                                       'grupoAnimal',
@@ -574,9 +575,9 @@ class _IndicesZootecnicosWidgetState extends State<IndicesZootecnicosWidget> {
                                                     textAnimaisProdutoresRecordList
                                                         .where((e) =>
                                                             (e.dtUltimaInseminacao !=
-                                                                    '') &&
+                                                                '') &&
                                                             (e.dtUltimoParto !=
-                                                                    ''))
+                                                                ''))
                                                         .toList()
                                                         .map((e) =>
                                                             e.dtUltimoParto)
@@ -584,11 +585,12 @@ class _IndicesZootecnicosWidgetState extends State<IndicesZootecnicosWidget> {
                                                     textAnimaisProdutoresRecordList
                                                         .where((e) =>
                                                             (e.dtUltimaInseminacao !=
-                                                                    '') &&
+                                                                '') &&
                                                             (e.dtUltimoParto !=
-                                                                    ''))
+                                                                ''))
                                                         .toList()
-                                                        .map((e) => e.dtUltimaInseminacao)
+                                                        .map((e) => e
+                                                            .dtUltimaInseminacao)
                                                         .toList())
                                                 ?.toString(),
                                             '0',
@@ -749,9 +751,9 @@ class _IndicesZootecnicosWidgetState extends State<IndicesZootecnicosWidget> {
                                                   textAnimaisProdutoresRecordList
                                                       .where((e) =>
                                                           (e.dtUltimoPartoContingencia !=
-                                                                  '') &&
+                                                              '') &&
                                                           (e.dtPartoPrevisto !=
-                                                                  ''))
+                                                              ''))
                                                       .toList()
                                                       .map((e) => e
                                                           .dtUltimoPartoContingencia)
@@ -759,9 +761,9 @@ class _IndicesZootecnicosWidgetState extends State<IndicesZootecnicosWidget> {
                                                   textAnimaisProdutoresRecordList
                                                       .where((e) =>
                                                           (e.dtUltimoPartoContingencia !=
-                                                                  '') &&
+                                                              '') &&
                                                           (e.dtPartoPrevisto !=
-                                                                  ''))
+                                                              ''))
                                                       .toList()
                                                       .map((e) =>
                                                           e.dtPartoPrevisto)
@@ -1572,21 +1574,22 @@ class _IndicesZootecnicosWidgetState extends State<IndicesZootecnicosWidget> {
                                               values: functions.retornaReproducaoQuantidade(
                                                   chartAnimaisProdutoresRecordList
                                                       .where((e) =>
-                                                          ((e.status == 'Inseminada') ||
-                                                              (e.status ==
-                                                                  'Prenha') ||
-                                                              (e.status ==
-                                                                  'Vazia') ||
-                                                              (e.status ==
-                                                                  'Inseminada PP') ||
-                                                              (e.status ==
-                                                                  'Seca') ||
+                                                          ((ehInseminada(
+                                                                  e.status)) ||
+                                                              (ehPrenha(
+                                                                  e.status)) ||
+                                                              (ehVazia(
+                                                                  e.status)) ||
+                                                              (ehInseminadaPP(
+                                                                  e.status)) ||
+                                                              (ehSeca(
+                                                                  e.status)) ||
                                                               (e.status ==
                                                                   'Pré Parto')) &&
-                                                          ((e.grupoAnimal ==
-                                                                  'Vacas') ||
-                                                              (e.grupoAnimal ==
-                                                                  'Novilhas')))
+                                                          ((ehVaca(e
+                                                                  .grupoAnimal)) ||
+                                                              (ehNovilha(e
+                                                                  .grupoAnimal))))
                                                       .toList()
                                                       .map((e) => e.status)
                                                       .toList()),
@@ -1634,28 +1637,27 @@ class _IndicesZootecnicosWidgetState extends State<IndicesZootecnicosWidget> {
                                                 AlignmentDirectional(1.0, 1.0),
                                             child: FlutterFlowChartLegendWidget(
                                               entries: functions
-                                                  .retornaReproducaoComContagem(
-                                                      chartAnimaisProdutoresRecordList
-                                                          .where((e) =>
-                                                              ((e.status ==
-                                                                      'Inseminada') ||
-                                                                  (e.status ==
-                                                                      'Prenha') ||
-                                                                  (e.status ==
-                                                                      'Vazia') ||
-                                                                  (e.status ==
-                                                                      'Inseminada PP') ||
-                                                                  (e.status ==
-                                                                      'Seca') ||
-                                                                  (e.status ==
-                                                                      'Pré Parto')) &&
-                                                              ((e.grupoAnimal ==
-                                                                      'Vacas') ||
-                                                                  (e.grupoAnimal ==
-                                                                      'Novilhas')))
-                                                          .toList()
-                                                          .map((e) => e.status)
-                                                          .toList())
+                                                  .retornaReproducaoComContagem(chartAnimaisProdutoresRecordList
+                                                      .where((e) =>
+                                                          ((ehInseminada(
+                                                                  e.status)) ||
+                                                              (ehPrenha(
+                                                                  e.status)) ||
+                                                              (ehVazia(
+                                                                  e.status)) ||
+                                                              (ehInseminadaPP(
+                                                                  e.status)) ||
+                                                              (ehSeca(
+                                                                  e.status)) ||
+                                                              (e.status ==
+                                                                  'Pré Parto')) &&
+                                                          ((ehVaca(e
+                                                                  .grupoAnimal)) ||
+                                                              (ehNovilha(e
+                                                                  .grupoAnimal))))
+                                                      .toList()
+                                                      .map((e) => e.status)
+                                                      .toList())
                                                   .asMap()
                                                   .entries
                                                   .map(
@@ -1806,22 +1808,22 @@ class _IndicesZootecnicosWidgetState extends State<IndicesZootecnicosWidget> {
                                                 values: functions.retornaRebanhoProdutivoId(
                                                     chartAnimaisProdutoresRecordList
                                                         .where((e) =>
-                                                            ((e.status ==
-                                                                    'Inseminada') ||
-                                                                (e.status ==
-                                                                    'Inseminada PP') ||
-                                                                (e.status ==
-                                                                    'Vazia') ||
-                                                                (e.status ==
-                                                                    'Prenha') ||
+                                                            ((ehInseminada(e
+                                                                    .status)) ||
+                                                                (ehInseminadaPP(e
+                                                                    .status)) ||
+                                                                (ehVazia(e
+                                                                    .status)) ||
+                                                                (ehPrenha(e
+                                                                    .status)) ||
                                                                 (e.status ==
                                                                     'Pré Parto') ||
-                                                                (e.status ==
-                                                                    'Seca')) &&
-                                                            ((e.grupoAnimal ==
-                                                                    'Vacas') ||
-                                                                (e.grupoAnimal ==
-                                                                    'Novilhas')))
+                                                                (ehSeca(e
+                                                                    .status))) &&
+                                                            ((ehVaca(e
+                                                                    .grupoAnimal)) ||
+                                                                (ehNovilha(e
+                                                                    .grupoAnimal))))
                                                         .toList()
                                                         .map((e) => e.status)
                                                         .toList()),
@@ -1877,22 +1879,22 @@ class _IndicesZootecnicosWidgetState extends State<IndicesZootecnicosWidget> {
                                                 entries: functions
                                                     .retornaRebanhoProdutivoComContagem(chartAnimaisProdutoresRecordList
                                                         .where((e) =>
-                                                            ((e.status ==
-                                                                    'Inseminada') ||
-                                                                (e.status ==
-                                                                    'Inseminada PP') ||
-                                                                (e.status ==
-                                                                    'Vazia') ||
-                                                                (e.status ==
-                                                                    'Prenha') ||
+                                                            ((ehInseminada(e
+                                                                    .status)) ||
+                                                                (ehInseminadaPP(e
+                                                                    .status)) ||
+                                                                (ehVazia(e
+                                                                    .status)) ||
+                                                                (ehPrenha(e
+                                                                    .status)) ||
                                                                 (e.status ==
                                                                     'Pré Parto') ||
-                                                                (e.status ==
-                                                                    'Seca')) &&
-                                                            ((e.grupoAnimal ==
-                                                                    'Vacas') ||
-                                                                (e.grupoAnimal ==
-                                                                    'Novilhas')))
+                                                                (ehSeca(e
+                                                                    .status))) &&
+                                                            ((ehVaca(e
+                                                                    .grupoAnimal)) ||
+                                                                (ehNovilha(e
+                                                                    .grupoAnimal))))
                                                         .toList()
                                                         .map((e) => e.status)
                                                         .toList())

@@ -354,14 +354,14 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                                                   height: 50.0,
                                                   decoration: BoxDecoration(
                                                     color: () {
-                                                      if (animaisExistentesItem
-                                                              .grupoAnimal ==
-                                                          'Vacas') {
+                                                      if (ehVaca(
+                                                          animaisExistentesItem
+                                                              .grupoAnimal)) {
                                                         return Color(
                                                             0xFF048508);
-                                                      } else if (animaisExistentesItem
-                                                              .grupoAnimal ==
-                                                          'Novilhas') {
+                                                      } else if (ehNovilha(
+                                                          animaisExistentesItem
+                                                              .grupoAnimal)) {
                                                         return Color(
                                                             0xFFFF0076);
                                                       } else {
@@ -376,13 +376,13 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                                                           0.0, 0.0),
                                                   child: Text(
                                                     () {
-                                                      if (animaisExistentesItem
-                                                              .grupoAnimal ==
-                                                          'Vacas') {
+                                                      if (ehVaca(
+                                                          animaisExistentesItem
+                                                              .grupoAnimal)) {
                                                         return 'VAC';
-                                                      } else if (animaisExistentesItem
-                                                              .grupoAnimal ==
-                                                          'Novilhas') {
+                                                      } else if (ehNovilha(
+                                                          animaisExistentesItem
+                                                              .grupoAnimal)) {
                                                         return 'NOV';
                                                       } else {
                                                         return 'N/C';
@@ -1130,14 +1130,14 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                                                   height: 50.0,
                                                   decoration: BoxDecoration(
                                                     color: () {
-                                                      if (animaisOfflineItem
-                                                              .grupoAnimal ==
-                                                          'Vacas') {
+                                                      if (ehVaca(
+                                                          animaisOfflineItem
+                                                              .grupoAnimal)) {
                                                         return Color(
                                                             0xFF048508);
-                                                      } else if (animaisOfflineItem
-                                                              .grupoAnimal ==
-                                                          'Novilhas') {
+                                                      } else if (ehNovilha(
+                                                          animaisOfflineItem
+                                                              .grupoAnimal)) {
                                                         return Color(
                                                             0xFFFF0076);
                                                       } else {
@@ -1152,13 +1152,13 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                                                           0.0, 0.0),
                                                   child: Text(
                                                     () {
-                                                      if (animaisOfflineItem
-                                                              .grupoAnimal ==
-                                                          'Vacas') {
+                                                      if (ehVaca(
+                                                          animaisOfflineItem
+                                                              .grupoAnimal)) {
                                                         return 'VAC';
-                                                      } else if (animaisOfflineItem
-                                                              .grupoAnimal ==
-                                                          'Novilhas') {
+                                                      } else if (ehNovilha(
+                                                          animaisOfflineItem
+                                                              .grupoAnimal)) {
                                                         return 'NOV';
                                                       } else {
                                                         return 'N/C';

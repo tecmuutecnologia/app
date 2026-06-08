@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import '/backend/backend.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:collection/collection.dart';
@@ -184,13 +185,12 @@ class _ListaAnimaisTratamentosWidgetState
                                 return Icon(
                                   Icons.circle_sharp,
                                   color: () {
-                                    if (iconAnimaisProdutoresRecord
-                                            .grupoAnimal ==
-                                        'Vacas') {
+                                    if (ehVaca(iconAnimaisProdutoresRecord
+                                        .grupoAnimal)) {
                                       return Color(0xFF048508);
-                                    } else if (iconAnimaisProdutoresRecord
-                                            .grupoAnimal ==
-                                        'Novilhas') {
+                                    } else if (ehNovilha(
+                                        iconAnimaisProdutoresRecord
+                                            .grupoAnimal)) {
                                       return Color(0xFFFF0076);
                                     } else {
                                       return FlutterFlowTheme.of(context)
@@ -415,13 +415,12 @@ class _ListaAnimaisTratamentosWidgetState
                                 return Icon(
                                   Icons.circle_sharp,
                                   color: () {
-                                    if (iconAnimaisProdutoresRecord
-                                            .grupoAnimal ==
-                                        'Vacas') {
+                                    if (ehVaca(iconAnimaisProdutoresRecord
+                                        .grupoAnimal)) {
                                       return Color(0xFF048508);
-                                    } else if (iconAnimaisProdutoresRecord
-                                            .grupoAnimal ==
-                                        'Novilhas') {
+                                    } else if (ehNovilha(
+                                        iconAnimaisProdutoresRecord
+                                            .grupoAnimal)) {
                                       return Color(0xFFFF0076);
                                     } else {
                                       return FlutterFlowTheme.of(context)
