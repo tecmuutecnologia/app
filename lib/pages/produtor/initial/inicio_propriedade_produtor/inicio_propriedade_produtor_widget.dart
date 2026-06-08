@@ -6,7 +6,6 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/instant_timer.dart';
-import '/pages/tecnico/propriedade/sincronizacao/sincronizar/sincronizar_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
 
@@ -404,56 +403,7 @@ class _InicioPropriedadeProdutorWidgetState
   }
 
   Widget _buildSyncNowButton() {
-    return Builder(
-      builder: (context) => FFButtonWidget(
-        onPressed: () async {
-          await showDialog(
-            context: context,
-            builder: (dialogContext) {
-              return Dialog(
-                elevation: 0,
-                insetPadding: EdgeInsets.zero,
-                backgroundColor: Colors.transparent,
-                alignment: const AlignmentDirectional(0.0, 0.0)
-                    .resolve(Directionality.of(context)),
-                child: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(dialogContext).unfocus();
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  },
-                  child: SincronizarWidget(
-                    uidTecnico: widget.uidTecnico,
-                    uidPropriedade: widget.uidPropriedade,
-                  ),
-                ),
-              );
-            },
-          );
-        },
-        text: 'Sincronizar agora',
-        icon: const Icon(Icons.sync, size: 15.0),
-        options: FFButtonOptions(
-          height: 40.0,
-          padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-          iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-          color: FlutterFlowTheme.of(context).secondary,
-          textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                ),
-                color: Colors.white,
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-              ),
-          elevation: 3.0,
-          borderSide: const BorderSide(color: Colors.transparent, width: 1.0),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-      ),
-    );
+    return const SizedBox.shrink();
   }
 
   Widget _buildIgnoreAndDeleteButton(FFAppState appState) {

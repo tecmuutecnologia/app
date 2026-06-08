@@ -1171,24 +1171,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: AcoesFalhadasWidget.routeName,
-          path: AcoesFalhadasWidget.routePath,
-          builder: (context, params) => AcoesFalhadasWidget(
-            uidPropriedade: params.getParam(
-              'uidPropriedade',
-              ParamType.DocumentReference,
-              isList: false,
-              collectionNamePath: ['tecnico', 'propriedades'],
-            ),
-            uidTecnico: params.getParam(
-              'uidTecnico',
-              ParamType.DocumentReference,
-              isList: false,
-              collectionNamePath: ['tecnico'],
-            ),
-          ),
-        ),
-        FFRoute(
           name: ImportacaoAnimaisWidget.routeName,
           path: ImportacaoAnimaisWidget.routePath,
           builder: (context, params) => ImportacaoAnimaisWidget(
