@@ -3,6 +3,7 @@
 import '/backend/backend.dart';
 import '/backend/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/flutter_flow/flutter_flow_button_tabbar.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -325,11 +326,11 @@ class _SecasWidgetState extends State<SecasWidget>
                                         visible: (vacasExistenteOfflineItem
                                                     .uidTecnicoPropriedade ==
                                                 widget.uidPropriedade) &&
-                                            (vacasExistenteOfflineItem
-                                                    .grupoAnimal ==
-                                                'Vacas') &&
-                                            (vacasExistenteOfflineItem.status ==
-                                                'Seca') &&
+                                            ehVacaSeca(
+                                                vacasExistenteOfflineItem
+                                                    .grupoAnimal,
+                                                vacasExistenteOfflineItem
+                                                    .status) &&
                                             (dateTimeFormat(
                                                   "d/M/y",
                                                   vacasExistenteOfflineItem
@@ -1089,11 +1090,10 @@ class _SecasWidgetState extends State<SecasWidget>
                                         visible: (vacasSecasOfflineItem
                                                     .uidTecnicoPropriedade ==
                                                 widget.uidPropriedade) &&
-                                            (vacasSecasOfflineItem
-                                                    .grupoAnimal ==
-                                                'Vacas') &&
-                                            (vacasSecasOfflineItem.status ==
-                                                'Seca') &&
+                                            ehVacaSeca(
+                                                vacasSecasOfflineItem
+                                                    .grupoAnimal,
+                                                vacasSecasOfflineItem.status) &&
                                             (dateTimeFormat(
                                                   "d/M/y",
                                                   vacasSecasOfflineItem

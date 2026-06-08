@@ -61,6 +61,17 @@ void main() {
       }
     });
 
+    test('ehVacaSeca = Vacas && Seca', () {
+      expect(ehVacaSeca('Vacas', 'Seca'), true);
+      expect(ehVacaSeca('Novilhas', 'Seca'), false);
+      expect(ehVacaSeca('Vacas', 'Prenha'), false);
+      for (final g in ['Vacas', 'Novilhas', null]) {
+        for (final s in ['Seca', 'Prenha', null]) {
+          expect(ehVacaSeca(g, s), (g == 'Vacas') && (s == 'Seca'));
+        }
+      }
+    });
+
     test(
         'ehElegivelInseminacao = (Vacas|Novilhas) & (Vazia|Inseminada|Insem.PP)',
         () {

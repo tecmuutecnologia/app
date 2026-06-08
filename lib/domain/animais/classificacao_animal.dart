@@ -59,6 +59,11 @@ bool ehVacaOuNovilha(String? grupo) => ehVaca(grupo) || ehNovilha(grupo);
 bool ehVacaPrenha(String? grupo, String? status) =>
     ehVaca(grupo) && ehPrenha(status);
 
+/// Vaca seca — filtro da lista de **secas** (`secas`):
+/// `grupoAnimal == 'Vacas' && status == 'Seca'`.
+bool ehVacaSeca(String? grupo, String? status) =>
+    ehVaca(grupo) && ehSeca(status);
+
 /// Elegível para inseminação — filtro da lista de **inseminações**
 /// (`lista_inseminacoes`): é Vaca ou Novilha **e** está Vazia, Inseminada ou
 /// Inseminada PP.
