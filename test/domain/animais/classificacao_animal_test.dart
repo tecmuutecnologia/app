@@ -16,11 +16,14 @@ void main() {
       expect(ehInseminada('Inseminada'), true);
       expect(ehSeca('Seca'), true);
       expect(ehAborto('Aborto'), true);
+      expect(ehDescarte('Descarte'), true);
       expect(ehPreParto('Pré-parto'), true);
+      expect(
+          ehPreParto('Pré Parto'), true); // grafia com espaço (legado) também
       // negativos cruzados
       expect(ehVazia('Prenha'), false);
       expect(ehSeca(null), false);
-      expect(ehPreParto('Pre-parto'), false); // acento importa
+      expect(ehPreParto('Pre-parto'), false); // sem acento não casa
     });
   });
 

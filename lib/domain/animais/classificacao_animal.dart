@@ -21,13 +21,24 @@ const String kStatusInseminada = 'Inseminada';
 const String kStatusInseminadaPP = 'Inseminada PP';
 const String kStatusSeca = 'Seca';
 const String kStatusAborto = 'Aborto';
-const String kStatusPreParto = 'Pré-parto';
+const String kStatusDescarte = 'Descarte';
+
+/// ⚠️ INCONSISTÊNCIA DE DADOS no código legado: o "pré-parto" aparece com DUAS
+/// grafias diferentes — `'Pré-parto'` (hífen) em prenhas/secas e `'Pré Parto'`
+/// (espaço) em listacompleta. Como são strings distintas, um filtro escrito com
+/// uma NÃO casa registros gravados com a outra. Mantidas as duas aqui para
+/// expor o problema; o time deve unificar a grafia (gravação + filtros) e então
+/// remover a duplicata.
+const String kStatusPrePartoHifen = 'Pré-parto';
+const String kStatusPrePartoEspaco = 'Pré Parto';
 
 // ---------------------------------------------------------------------------
 // Grupos do animal
 // ---------------------------------------------------------------------------
 const String kGrupoVacas = 'Vacas';
 const String kGrupoNovilhas = 'Novilhas';
+const String kGrupoBezerros = 'Bezerros';
+const String kGrupoBezerras = 'Bezerras';
 
 // ---------------------------------------------------------------------------
 // Predicados de status
@@ -38,7 +49,12 @@ bool ehInseminada(String? status) => status == kStatusInseminada;
 bool ehInseminadaPP(String? status) => status == kStatusInseminadaPP;
 bool ehSeca(String? status) => status == kStatusSeca;
 bool ehAborto(String? status) => status == kStatusAborto;
-bool ehPreParto(String? status) => status == kStatusPreParto;
+bool ehDescarte(String? status) => status == kStatusDescarte;
+
+/// Robusto às duas grafias legadas (ver [kStatusPrePartoHifen] /
+/// [kStatusPrePartoEspaco]): casa "Pré-parto" E "Pré Parto".
+bool ehPreParto(String? status) =>
+    status == kStatusPrePartoHifen || status == kStatusPrePartoEspaco;
 
 // ---------------------------------------------------------------------------
 // Predicados de grupo
