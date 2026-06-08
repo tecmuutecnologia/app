@@ -61,6 +61,8 @@ bool ehPreParto(String? status) =>
 // ---------------------------------------------------------------------------
 bool ehVaca(String? grupo) => grupo == kGrupoVacas;
 bool ehNovilha(String? grupo) => grupo == kGrupoNovilhas;
+bool ehBezerros(String? grupo) => grupo == kGrupoBezerros;
+bool ehBezerras(String? grupo) => grupo == kGrupoBezerras;
 
 /// `true` se o animal é Vaca **ou** Novilha (as duas categorias reprodutivas que
 /// as telas de prenhas/secas/DG costumam considerar juntas).

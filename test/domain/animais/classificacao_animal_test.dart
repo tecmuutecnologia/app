@@ -35,6 +35,14 @@ void main() {
       expect(ehVaca(null), false);
     });
 
+    test('ehBezerros / ehBezerras', () {
+      expect(ehBezerros('Bezerros'), true);
+      expect(ehBezerras('Bezerras'), true);
+      expect(ehBezerros('Bezerras'), false);
+      expect(ehBezerras('Bezerros'), false);
+      expect(ehBezerros(null), false);
+    });
+
     test('ehVacaOuNovilha', () {
       expect(ehVacaOuNovilha('Vacas'), true);
       expect(ehVacaOuNovilha('Novilhas'), true);

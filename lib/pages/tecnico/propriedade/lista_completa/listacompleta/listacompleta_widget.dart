@@ -2,6 +2,7 @@
 
 import '/backend/backend.dart';
 import '/backend/objectbox/index.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -468,12 +469,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                 visible: (animaisProdutoresOfflineItem
                                             .uidTecnicoPropriedade ==
                                         widget.uidPropriedade) &&
-                                    ((animaisProdutoresOfflineItem
-                                                .grupoAnimal ==
-                                            'Novilhas') ||
-                                        (animaisProdutoresOfflineItem
-                                                .grupoAnimal ==
-                                            'Vacas')),
+                                    ((ehNovilha(animaisProdutoresOfflineItem
+                                            .grupoAnimal)) ||
+                                        (ehVaca(animaisProdutoresOfflineItem
+                                            .grupoAnimal))),
                                 child: FlipCard(
                                   fill: Fill.fillBack,
                                   direction: FlipDirection.VERTICAL,
@@ -521,14 +520,14 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                       height: 50.0,
                                                       decoration: BoxDecoration(
                                                         color: () {
-                                                          if (animaisProdutoresOfflineItem
-                                                                  .grupoAnimal ==
-                                                              'Vacas') {
+                                                          if (ehVaca(
+                                                              animaisProdutoresOfflineItem
+                                                                  .grupoAnimal)) {
                                                             return Color(
                                                                 0xFF048508);
-                                                          } else if (animaisProdutoresOfflineItem
-                                                                  .grupoAnimal ==
-                                                              'Novilhas') {
+                                                          } else if (ehNovilha(
+                                                              animaisProdutoresOfflineItem
+                                                                  .grupoAnimal)) {
                                                             return Color(
                                                                 0xFFFF0076);
                                                           } else {
@@ -543,13 +542,13 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                               0.0, 0.0),
                                                       child: Text(
                                                         () {
-                                                          if (animaisProdutoresOfflineItem
-                                                                  .grupoAnimal ==
-                                                              'Vacas') {
+                                                          if (ehVaca(
+                                                              animaisProdutoresOfflineItem
+                                                                  .grupoAnimal)) {
                                                             return 'VAC';
-                                                          } else if (animaisProdutoresOfflineItem
-                                                                  .grupoAnimal ==
-                                                              'Novilhas') {
+                                                          } else if (ehNovilha(
+                                                              animaisProdutoresOfflineItem
+                                                                  .grupoAnimal)) {
                                                             return 'NOV';
                                                           } else {
                                                             return 'N/C';
@@ -821,15 +820,14 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                     shrinkWrap: true,
                                     scrollDirection: Axis.vertical,
                                     children: [
-                                      if ((animaisProdutoresOfflineItem
-                                                  .status ==
-                                              'Vazia') &&
-                                          ((animaisProdutoresOfflineItem
-                                                      .grupoAnimal ==
-                                                  'Bezerras') ||
-                                              (animaisProdutoresOfflineItem
-                                                      .grupoAnimal ==
-                                                  'Bezerros')))
+                                      if ((ehVazia(animaisProdutoresOfflineItem
+                                              .status)) &&
+                                          ((ehBezerras(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal)) ||
+                                              (ehBezerros(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -1179,12 +1177,12 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                         ),
                                                       ),
                                                     ),
-                                                    if ((animaisProdutoresOfflineItem
-                                                                .status ==
-                                                            'Inseminada') ||
-                                                        (animaisProdutoresOfflineItem
-                                                                .status ==
-                                                            'Inseminada PP'))
+                                                    if ((ehInseminada(
+                                                            animaisProdutoresOfflineItem
+                                                                .status)) ||
+                                                        (ehInseminadaPP(
+                                                            animaisProdutoresOfflineItem
+                                                                .status)))
                                                       Padding(
                                                         padding:
                                                             EdgeInsetsDirectional
@@ -1207,15 +1205,14 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if ((animaisProdutoresOfflineItem
-                                                  .status ==
-                                              'Vazia') &&
-                                          ((animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if ((ehVazia(animaisProdutoresOfflineItem
+                                              .status)) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -1597,12 +1594,12 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                 .circular(8.0),
                                                       ),
                                                     ),
-                                                    if ((animaisProdutoresOfflineItem
-                                                                .status ==
-                                                            'Inseminada') ||
-                                                        (animaisProdutoresOfflineItem
-                                                                .status ==
-                                                            'Inseminada PP'))
+                                                    if ((ehInseminada(
+                                                            animaisProdutoresOfflineItem
+                                                                .status)) ||
+                                                        (ehInseminadaPP(
+                                                            animaisProdutoresOfflineItem
+                                                                .status)))
                                                       Padding(
                                                         padding:
                                                             EdgeInsetsDirectional
@@ -1628,12 +1625,12 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                       if ((animaisProdutoresOfflineItem
                                                   .status ==
                                               'Pré Parto') &&
-                                          ((animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                          ((!ehBezerras(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -2020,18 +2017,17 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if ((animaisProdutoresOfflineItem
-                                                  .status ==
-                                              'Prenha') &&
-                                          (animaisProdutoresOfflineItem
-                                                  .grupoAnimal ==
-                                              'Novilhas') &&
-                                          ((animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if ((ehPrenha(animaisProdutoresOfflineItem
+                                              .status)) &&
+                                          (ehNovilha(
+                                              animaisProdutoresOfflineItem
+                                                  .grupoAnimal)) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -2580,18 +2576,16 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if ((animaisProdutoresOfflineItem
-                                                  .status ==
-                                              'Seca') &&
-                                          (animaisProdutoresOfflineItem
-                                                  .grupoAnimal ==
-                                              'Vacas') &&
-                                          ((animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if ((ehSeca(animaisProdutoresOfflineItem
+                                              .status)) &&
+                                          (ehVaca(animaisProdutoresOfflineItem
+                                              .grupoAnimal)) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -3126,18 +3120,16 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if ((animaisProdutoresOfflineItem
-                                                  .status ==
-                                              'Prenha') &&
-                                          (animaisProdutoresOfflineItem
-                                                  .grupoAnimal ==
-                                              'Vacas') &&
-                                          ((animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if ((ehPrenha(animaisProdutoresOfflineItem
+                                              .status)) &&
+                                          (ehVaca(animaisProdutoresOfflineItem
+                                              .grupoAnimal)) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -3560,18 +3552,18 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if (((animaisProdutoresOfflineItem
-                                                      .status ==
-                                                  'Inseminada PP') ||
-                                              (animaisProdutoresOfflineItem
-                                                      .status ==
-                                                  'Inseminada')) &&
-                                          ((animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if (((ehInseminadaPP(
+                                                  animaisProdutoresOfflineItem
+                                                      .status)) ||
+                                              (ehInseminada(
+                                                  animaisProdutoresOfflineItem
+                                                      .status))) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -4084,12 +4076,12 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                 visible: (animaisProdutoresExistentesOfflineItem
                                             .uidTecnicoPropriedade ==
                                         widget.uidPropriedade) &&
-                                    ((animaisProdutoresExistentesOfflineItem
-                                                .grupoAnimal ==
-                                            'Novilhas') ||
-                                        (animaisProdutoresExistentesOfflineItem
-                                                .grupoAnimal ==
-                                            'Vacas')),
+                                    ((ehNovilha(
+                                            animaisProdutoresExistentesOfflineItem
+                                                .grupoAnimal)) ||
+                                        (ehVaca(
+                                            animaisProdutoresExistentesOfflineItem
+                                                .grupoAnimal))),
                                 child: FlipCard(
                                   fill: Fill.fillBack,
                                   direction: FlipDirection.VERTICAL,
@@ -4137,14 +4129,14 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                       height: 50.0,
                                                       decoration: BoxDecoration(
                                                         color: () {
-                                                          if (animaisProdutoresExistentesOfflineItem
-                                                                  .grupoAnimal ==
-                                                              'Vacas') {
+                                                          if (ehVaca(
+                                                              animaisProdutoresExistentesOfflineItem
+                                                                  .grupoAnimal)) {
                                                             return Color(
                                                                 0xFF048508);
-                                                          } else if (animaisProdutoresExistentesOfflineItem
-                                                                  .grupoAnimal ==
-                                                              'Novilhas') {
+                                                          } else if (ehNovilha(
+                                                              animaisProdutoresExistentesOfflineItem
+                                                                  .grupoAnimal)) {
                                                             return Color(
                                                                 0xFFFF0076);
                                                           } else {
@@ -4159,13 +4151,13 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                               0.0, 0.0),
                                                       child: Text(
                                                         () {
-                                                          if (animaisProdutoresExistentesOfflineItem
-                                                                  .grupoAnimal ==
-                                                              'Vacas') {
+                                                          if (ehVaca(
+                                                              animaisProdutoresExistentesOfflineItem
+                                                                  .grupoAnimal)) {
                                                             return 'VAC';
-                                                          } else if (animaisProdutoresExistentesOfflineItem
-                                                                  .grupoAnimal ==
-                                                              'Novilhas') {
+                                                          } else if (ehNovilha(
+                                                              animaisProdutoresExistentesOfflineItem
+                                                                  .grupoAnimal)) {
                                                             return 'NOV';
                                                           } else {
                                                             return 'N/C';
@@ -4265,9 +4257,9 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     .fontStyle,
                                                               ),
                                                     ),
-                                                    if (animaisProdutoresExistentesOfflineItem
-                                                            .status ==
-                                                        'Descarte')
+                                                    if (ehDescarte(
+                                                        animaisProdutoresExistentesOfflineItem
+                                                            .status))
                                                       Icon(
                                                         Icons
                                                             .delete_forever_rounded,
@@ -4448,15 +4440,15 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                     shrinkWrap: true,
                                     scrollDirection: Axis.vertical,
                                     children: [
-                                      if ((animaisProdutoresExistentesOfflineItem
-                                                  .status ==
-                                              'Vazia') &&
-                                          ((animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal ==
-                                                  'Bezerras') ||
-                                              (animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal ==
-                                                  'Bezerros')))
+                                      if ((ehVazia(
+                                              animaisProdutoresExistentesOfflineItem
+                                                  .status)) &&
+                                          ((ehBezerras(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal)) ||
+                                              (ehBezerros(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -4809,12 +4801,12 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                         ),
                                                       ),
                                                     ),
-                                                    if ((animaisProdutoresExistentesOfflineItem
-                                                                .status ==
-                                                            'Inseminada') ||
-                                                        (animaisProdutoresExistentesOfflineItem
-                                                                .status ==
-                                                            'Inseminada PP'))
+                                                    if ((ehInseminada(
+                                                            animaisProdutoresExistentesOfflineItem
+                                                                .status)) ||
+                                                        (ehInseminadaPP(
+                                                            animaisProdutoresExistentesOfflineItem
+                                                                .status)))
                                                       Padding(
                                                         padding:
                                                             EdgeInsetsDirectional
@@ -4837,15 +4829,15 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if ((animaisProdutoresExistentesOfflineItem
-                                                  .status ==
-                                              'Vazia') &&
-                                          ((animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if ((ehVazia(
+                                              animaisProdutoresExistentesOfflineItem
+                                                  .status)) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -5229,12 +5221,12 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                 .circular(8.0),
                                                       ),
                                                     ),
-                                                    if ((animaisProdutoresExistentesOfflineItem
-                                                                .status ==
-                                                            'Inseminada') ||
-                                                        (animaisProdutoresExistentesOfflineItem
-                                                                .status ==
-                                                            'Inseminada PP'))
+                                                    if ((ehInseminada(
+                                                            animaisProdutoresExistentesOfflineItem
+                                                                .status)) ||
+                                                        (ehInseminadaPP(
+                                                            animaisProdutoresExistentesOfflineItem
+                                                                .status)))
                                                       Padding(
                                                         padding:
                                                             EdgeInsetsDirectional
@@ -5260,12 +5252,12 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                       if ((animaisProdutoresExistentesOfflineItem
                                                   .status ==
                                               'Pré Parto') &&
-                                          ((animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                          ((!ehBezerras(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -5654,18 +5646,18 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if ((animaisProdutoresExistentesOfflineItem
-                                                  .status ==
-                                              'Prenha') &&
-                                          (animaisProdutoresExistentesOfflineItem
-                                                  .grupoAnimal ==
-                                              'Novilhas') &&
-                                          ((animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if ((ehPrenha(
+                                              animaisProdutoresExistentesOfflineItem
+                                                  .status)) &&
+                                          (ehNovilha(
+                                              animaisProdutoresExistentesOfflineItem
+                                                  .grupoAnimal)) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -6214,18 +6206,18 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if ((animaisProdutoresExistentesOfflineItem
-                                                  .status ==
-                                              'Seca') &&
-                                          (animaisProdutoresExistentesOfflineItem
-                                                  .grupoAnimal ==
-                                              'Vacas') &&
-                                          ((animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if ((ehSeca(
+                                              animaisProdutoresExistentesOfflineItem
+                                                  .status)) &&
+                                          (ehVaca(
+                                              animaisProdutoresExistentesOfflineItem
+                                                  .grupoAnimal)) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -6760,18 +6752,18 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if ((animaisProdutoresExistentesOfflineItem
-                                                  .status ==
-                                              'Prenha') &&
-                                          (animaisProdutoresExistentesOfflineItem
-                                                  .grupoAnimal ==
-                                              'Vacas') &&
-                                          ((animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if ((ehPrenha(
+                                              animaisProdutoresExistentesOfflineItem
+                                                  .status)) &&
+                                          (ehVaca(
+                                              animaisProdutoresExistentesOfflineItem
+                                                  .grupoAnimal)) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -7196,18 +7188,18 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if (((animaisProdutoresExistentesOfflineItem
-                                                      .status ==
-                                                  'Inseminada PP') ||
-                                              (animaisProdutoresExistentesOfflineItem
-                                                      .status ==
-                                                  'Inseminada')) &&
-                                          ((animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if (((ehInseminadaPP(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .status)) ||
+                                              (ehInseminada(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .status))) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -7747,12 +7739,10 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             .uidTecnicoPropriedade ==
                                         widget.uidPropriedade) &&
                                     matchesSearch &&
-                                    ((animaisProdutoresOfflineItem
-                                                .grupoAnimal ==
-                                            'Novilhas') ||
-                                        (animaisProdutoresOfflineItem
-                                                .grupoAnimal ==
-                                            'Vacas')),
+                                    ((ehNovilha(animaisProdutoresOfflineItem
+                                            .grupoAnimal)) ||
+                                        (ehVaca(animaisProdutoresOfflineItem
+                                            .grupoAnimal))),
                                 child: FlipCard(
                                   fill: Fill.fillBack,
                                   direction: FlipDirection.VERTICAL,
@@ -7800,14 +7790,14 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                       height: 50.0,
                                                       decoration: BoxDecoration(
                                                         color: () {
-                                                          if (animaisProdutoresOfflineItem
-                                                                  .grupoAnimal ==
-                                                              'Vacas') {
+                                                          if (ehVaca(
+                                                              animaisProdutoresOfflineItem
+                                                                  .grupoAnimal)) {
                                                             return Color(
                                                                 0xFF048508);
-                                                          } else if (animaisProdutoresOfflineItem
-                                                                  .grupoAnimal ==
-                                                              'Novilhas') {
+                                                          } else if (ehNovilha(
+                                                              animaisProdutoresOfflineItem
+                                                                  .grupoAnimal)) {
                                                             return Color(
                                                                 0xFFFF0076);
                                                           } else {
@@ -7822,13 +7812,13 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                               0.0, 0.0),
                                                       child: Text(
                                                         () {
-                                                          if (animaisProdutoresOfflineItem
-                                                                  .grupoAnimal ==
-                                                              'Vacas') {
+                                                          if (ehVaca(
+                                                              animaisProdutoresOfflineItem
+                                                                  .grupoAnimal)) {
                                                             return 'VAC';
-                                                          } else if (animaisProdutoresOfflineItem
-                                                                  .grupoAnimal ==
-                                                              'Novilhas') {
+                                                          } else if (ehNovilha(
+                                                              animaisProdutoresOfflineItem
+                                                                  .grupoAnimal)) {
                                                             return 'NOV';
                                                           } else {
                                                             return 'N/C';
@@ -8100,15 +8090,14 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                     shrinkWrap: true,
                                     scrollDirection: Axis.vertical,
                                     children: [
-                                      if ((animaisProdutoresOfflineItem
-                                                  .status ==
-                                              'Vazia') &&
-                                          ((animaisProdutoresOfflineItem
-                                                      .grupoAnimal ==
-                                                  'Bezerras') ||
-                                              (animaisProdutoresOfflineItem
-                                                      .grupoAnimal ==
-                                                  'Bezerros')))
+                                      if ((ehVazia(animaisProdutoresOfflineItem
+                                              .status)) &&
+                                          ((ehBezerras(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal)) ||
+                                              (ehBezerros(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -8458,12 +8447,12 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                         ),
                                                       ),
                                                     ),
-                                                    if ((animaisProdutoresOfflineItem
-                                                                .status ==
-                                                            'Inseminada') ||
-                                                        (animaisProdutoresOfflineItem
-                                                                .status ==
-                                                            'Inseminada PP'))
+                                                    if ((ehInseminada(
+                                                            animaisProdutoresOfflineItem
+                                                                .status)) ||
+                                                        (ehInseminadaPP(
+                                                            animaisProdutoresOfflineItem
+                                                                .status)))
                                                       Padding(
                                                         padding:
                                                             EdgeInsetsDirectional
@@ -8486,15 +8475,14 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if ((animaisProdutoresOfflineItem
-                                                  .status ==
-                                              'Vazia') &&
-                                          ((animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if ((ehVazia(animaisProdutoresOfflineItem
+                                              .status)) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -8876,12 +8864,12 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                 .circular(8.0),
                                                       ),
                                                     ),
-                                                    if ((animaisProdutoresOfflineItem
-                                                                .status ==
-                                                            'Inseminada') ||
-                                                        (animaisProdutoresOfflineItem
-                                                                .status ==
-                                                            'Inseminada PP'))
+                                                    if ((ehInseminada(
+                                                            animaisProdutoresOfflineItem
+                                                                .status)) ||
+                                                        (ehInseminadaPP(
+                                                            animaisProdutoresOfflineItem
+                                                                .status)))
                                                       Padding(
                                                         padding:
                                                             EdgeInsetsDirectional
@@ -8907,12 +8895,12 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                       if ((animaisProdutoresOfflineItem
                                                   .status ==
                                               'Pré Parto') &&
-                                          ((animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                          ((!ehBezerras(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -9299,18 +9287,17 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if ((animaisProdutoresOfflineItem
-                                                  .status ==
-                                              'Prenha') &&
-                                          (animaisProdutoresOfflineItem
-                                                  .grupoAnimal ==
-                                              'Novilhas') &&
-                                          ((animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if ((ehPrenha(animaisProdutoresOfflineItem
+                                              .status)) &&
+                                          (ehNovilha(
+                                              animaisProdutoresOfflineItem
+                                                  .grupoAnimal)) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -9859,18 +9846,16 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if ((animaisProdutoresOfflineItem
-                                                  .status ==
-                                              'Seca') &&
-                                          (animaisProdutoresOfflineItem
-                                                  .grupoAnimal ==
-                                              'Vacas') &&
-                                          ((animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if ((ehSeca(animaisProdutoresOfflineItem
+                                              .status)) &&
+                                          (ehVaca(animaisProdutoresOfflineItem
+                                              .grupoAnimal)) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -10405,18 +10390,16 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if ((animaisProdutoresOfflineItem
-                                                  .status ==
-                                              'Prenha') &&
-                                          (animaisProdutoresOfflineItem
-                                                  .grupoAnimal ==
-                                              'Vacas') &&
-                                          ((animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if ((ehPrenha(animaisProdutoresOfflineItem
+                                              .status)) &&
+                                          (ehVaca(animaisProdutoresOfflineItem
+                                              .grupoAnimal)) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -10839,18 +10822,18 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if (((animaisProdutoresOfflineItem
-                                                      .status ==
-                                                  'Inseminada PP') ||
-                                              (animaisProdutoresOfflineItem
-                                                      .status ==
-                                                  'Inseminada')) &&
-                                          ((animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if (((ehInseminadaPP(
+                                                  animaisProdutoresOfflineItem
+                                                      .status)) ||
+                                              (ehInseminada(
+                                                  animaisProdutoresOfflineItem
+                                                      .status))) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -11376,12 +11359,12 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             .uidTecnicoPropriedade ==
                                         widget.uidPropriedade) &&
                                     matchesSearch &&
-                                    ((animaisProdutoresExistentesOfflineItem
-                                                .grupoAnimal ==
-                                            'Novilhas') ||
-                                        (animaisProdutoresExistentesOfflineItem
-                                                .grupoAnimal ==
-                                            'Vacas')),
+                                    ((ehNovilha(
+                                            animaisProdutoresExistentesOfflineItem
+                                                .grupoAnimal)) ||
+                                        (ehVaca(
+                                            animaisProdutoresExistentesOfflineItem
+                                                .grupoAnimal))),
                                 child: FlipCard(
                                   fill: Fill.fillBack,
                                   direction: FlipDirection.VERTICAL,
@@ -11429,14 +11412,14 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                       height: 50.0,
                                                       decoration: BoxDecoration(
                                                         color: () {
-                                                          if (animaisProdutoresExistentesOfflineItem
-                                                                  .grupoAnimal ==
-                                                              'Vacas') {
+                                                          if (ehVaca(
+                                                              animaisProdutoresExistentesOfflineItem
+                                                                  .grupoAnimal)) {
                                                             return Color(
                                                                 0xFF048508);
-                                                          } else if (animaisProdutoresExistentesOfflineItem
-                                                                  .grupoAnimal ==
-                                                              'Novilhas') {
+                                                          } else if (ehNovilha(
+                                                              animaisProdutoresExistentesOfflineItem
+                                                                  .grupoAnimal)) {
                                                             return Color(
                                                                 0xFFFF0076);
                                                           } else {
@@ -11451,13 +11434,13 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                               0.0, 0.0),
                                                       child: Text(
                                                         () {
-                                                          if (animaisProdutoresExistentesOfflineItem
-                                                                  .grupoAnimal ==
-                                                              'Vacas') {
+                                                          if (ehVaca(
+                                                              animaisProdutoresExistentesOfflineItem
+                                                                  .grupoAnimal)) {
                                                             return 'VAC';
-                                                          } else if (animaisProdutoresExistentesOfflineItem
-                                                                  .grupoAnimal ==
-                                                              'Novilhas') {
+                                                          } else if (ehNovilha(
+                                                              animaisProdutoresExistentesOfflineItem
+                                                                  .grupoAnimal)) {
                                                             return 'NOV';
                                                           } else {
                                                             return 'N/C';
@@ -11557,9 +11540,9 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                     .fontStyle,
                                                               ),
                                                     ),
-                                                    if (animaisProdutoresExistentesOfflineItem
-                                                            .status ==
-                                                        'Descarte')
+                                                    if (ehDescarte(
+                                                        animaisProdutoresExistentesOfflineItem
+                                                            .status))
                                                       Icon(
                                                         Icons
                                                             .delete_forever_rounded,
@@ -11740,15 +11723,15 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                     shrinkWrap: true,
                                     scrollDirection: Axis.vertical,
                                     children: [
-                                      if ((animaisProdutoresExistentesOfflineItem
-                                                  .status ==
-                                              'Vazia') &&
-                                          ((animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal ==
-                                                  'Bezerras') ||
-                                              (animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal ==
-                                                  'Bezerros')))
+                                      if ((ehVazia(
+                                              animaisProdutoresExistentesOfflineItem
+                                                  .status)) &&
+                                          ((ehBezerras(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal)) ||
+                                              (ehBezerros(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -12101,12 +12084,12 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                         ),
                                                       ),
                                                     ),
-                                                    if ((animaisProdutoresExistentesOfflineItem
-                                                                .status ==
-                                                            'Inseminada') ||
-                                                        (animaisProdutoresExistentesOfflineItem
-                                                                .status ==
-                                                            'Inseminada PP'))
+                                                    if ((ehInseminada(
+                                                            animaisProdutoresExistentesOfflineItem
+                                                                .status)) ||
+                                                        (ehInseminadaPP(
+                                                            animaisProdutoresExistentesOfflineItem
+                                                                .status)))
                                                       Padding(
                                                         padding:
                                                             EdgeInsetsDirectional
@@ -12129,15 +12112,15 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if ((animaisProdutoresExistentesOfflineItem
-                                                  .status ==
-                                              'Vazia') &&
-                                          ((animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if ((ehVazia(
+                                              animaisProdutoresExistentesOfflineItem
+                                                  .status)) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -12521,12 +12504,12 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                                 .circular(8.0),
                                                       ),
                                                     ),
-                                                    if ((animaisProdutoresExistentesOfflineItem
-                                                                .status ==
-                                                            'Inseminada') ||
-                                                        (animaisProdutoresExistentesOfflineItem
-                                                                .status ==
-                                                            'Inseminada PP'))
+                                                    if ((ehInseminada(
+                                                            animaisProdutoresExistentesOfflineItem
+                                                                .status)) ||
+                                                        (ehInseminadaPP(
+                                                            animaisProdutoresExistentesOfflineItem
+                                                                .status)))
                                                       Padding(
                                                         padding:
                                                             EdgeInsetsDirectional
@@ -12552,12 +12535,12 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                       if ((animaisProdutoresExistentesOfflineItem
                                                   .status ==
                                               'Pré Parto') &&
-                                          ((animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                          ((!ehBezerras(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -12946,18 +12929,18 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if ((animaisProdutoresExistentesOfflineItem
-                                                  .status ==
-                                              'Prenha') &&
-                                          (animaisProdutoresExistentesOfflineItem
-                                                  .grupoAnimal ==
-                                              'Novilhas') &&
-                                          ((animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if ((ehPrenha(
+                                              animaisProdutoresExistentesOfflineItem
+                                                  .status)) &&
+                                          (ehNovilha(
+                                              animaisProdutoresExistentesOfflineItem
+                                                  .grupoAnimal)) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -13506,18 +13489,18 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if ((animaisProdutoresExistentesOfflineItem
-                                                  .status ==
-                                              'Seca') &&
-                                          (animaisProdutoresExistentesOfflineItem
-                                                  .grupoAnimal ==
-                                              'Vacas') &&
-                                          ((animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if ((ehSeca(
+                                              animaisProdutoresExistentesOfflineItem
+                                                  .status)) &&
+                                          (ehVaca(
+                                              animaisProdutoresExistentesOfflineItem
+                                                  .grupoAnimal)) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -14052,18 +14035,18 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if ((animaisProdutoresExistentesOfflineItem
-                                                  .status ==
-                                              'Prenha') &&
-                                          (animaisProdutoresExistentesOfflineItem
-                                                  .grupoAnimal ==
-                                              'Vacas') &&
-                                          ((animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if ((ehPrenha(
+                                              animaisProdutoresExistentesOfflineItem
+                                                  .status)) &&
+                                          (ehVaca(
+                                              animaisProdutoresExistentesOfflineItem
+                                                  .grupoAnimal)) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
@@ -14488,18 +14471,18 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                             ],
                                           ),
                                         ),
-                                      if (((animaisProdutoresExistentesOfflineItem
-                                                      .status ==
-                                                  'Inseminada PP') ||
-                                              (animaisProdutoresExistentesOfflineItem
-                                                      .status ==
-                                                  'Inseminada')) &&
-                                          ((animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerras') &&
-                                              (animaisProdutoresExistentesOfflineItem
-                                                      .grupoAnimal !=
-                                                  'Bezerros')))
+                                      if (((ehInseminadaPP(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .status)) ||
+                                              (ehInseminada(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .status))) &&
+                                          ((!ehBezerras(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal)) &&
+                                              (!ehBezerros(
+                                                  animaisProdutoresExistentesOfflineItem
+                                                      .grupoAnimal))))
                                         Container(
                                           width: 100.0,
                                           height: 100.0,
