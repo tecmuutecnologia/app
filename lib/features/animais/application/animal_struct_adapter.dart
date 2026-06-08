@@ -152,3 +152,28 @@ Future<String> criarAnimalOffline(AnimaisProdutoresStruct s) async {
   await AnimalRepository().add(entity);
   return entity.uidAnimalOffline!;
 }
+
+/// Migração única (legado → ObjectBox): move para o ObjectBox os animais que
+/// ainda estiverem no array persistido do mecanismo antigo
+/// (`FFAppState().animaisProdutoresOffline`), via [criarAnimalOffline].
+///
+/// Substitui o antigo `animaisProdutoresOffline = []` do fluxo de login, que
+/// DESCARTAVA esses animais silenciosamente (perda de dados de campo em quem
+/// criou animais offline antes desta migração). Idempotente: pula os que já
+/// existem no ObjectBox por `uidAnimalOffline`. Retorna quantos migrou.
+///
+/// O caller deve limpar o array APÓS o retorno normal (se lançar no meio, os já
+/// criados são pulados na próxima execução graças à idempotência).
+Future<int> migrarAnimaisOfflineLegado(
+    List<AnimaisProdutoresStruct> legado) async {
+  if (legado.isEmpty) return 0;
+  final repo = AnimalRepository();
+  var migrados = 0;
+  for (final s in List<AnimaisProdutoresStruct>.from(legado)) {
+    final uid = s.uidAnimalOffline;
+    if (uid.isNotEmpty && repo.getByUidAnimalOffline(uid) != null) continue;
+    await criarAnimalOffline(s);
+    migrados++;
+  }
+  return migrados;
+}

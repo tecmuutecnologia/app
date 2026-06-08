@@ -1,5 +1,6 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
+import '/features/animais/application/animal_struct_adapter.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/index.dart';
@@ -41,6 +42,9 @@ class _SyncTechnicianWidgetState extends State<SyncTechnicianWidget> {
         ),
         singleRecord: true,
       ).then((s) => s.firstOrNull);
+      // Migração legado→ObjectBox: drena os animais criados offline pelo
+      // mecanismo antigo ANTES de limpar o array (antes isto os descartava).
+      await migrarAnimaisOfflineLegado(FFAppState().animaisProdutoresOffline);
       FFAppState().animaisProdutoresOffline = [];
       FFAppState().animaisProdutoresEditados = [];
       FFAppState().animaisApagadosExistentesOffline = [];
