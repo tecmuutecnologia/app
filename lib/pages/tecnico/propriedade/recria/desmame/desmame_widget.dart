@@ -371,22 +371,26 @@ class _DesmameWidgetState extends State<DesmameWidget>
 
   /// Desmame offline para animais novos
   void _performOfflineNewDesmame() {
-    if (ehBezerras(widget.grupoAnimal)) {
-      FFAppState().updateAnimaisProdutoresOfflineAtIndex(
-        widget.itemUidIndex!,
-        (e) => e
-          ..grupoAnimal = 'Novilhas'
-          ..dtDesmame = getCurrentTimestamp
-          ..status = 'Vazia',
-      );
-    } else {
-      FFAppState().updateAnimaisProdutoresOfflineAtIndex(
-        widget.itemUidIndex!,
-        (e) => e
-          ..grupoAnimal = 'Touros'
-          ..dtDesmame = getCurrentTimestamp
-          ..liberaInseminacao = false,
-      );
+    // Animal criado offline: aplica o desmame no ObjectBox via AnimalRepository
+    // (localizado por uidAnimalOffline). Persiste e sincroniza ao reconectar —
+    // antes ia para o array animaisProdutoresOffline (órfão sem o sincronizar).
+    final dados = ehBezerras(widget.grupoAnimal)
+        ? <String, dynamic>{
+            'grupoAnimal': 'Novilhas',
+            'dtDesmame': getCurrentTimestamp,
+            'status': 'Vazia',
+          }
+        : <String, dynamic>{
+            'grupoAnimal': 'Touros',
+            'dtDesmame': getCurrentTimestamp,
+            'liberaInseminacao': false,
+          };
+    final animalRepo = AnimalRepository();
+    final entity = (widget.uidAnimalOffline ?? '').isNotEmpty
+        ? animalRepo.getByUidAnimalOffline(widget.uidAnimalOffline!)
+        : null;
+    if (entity != null) {
+      unawaited(animalRepo.update(entity, dados));
     }
     safeSetState(() {});
   }
