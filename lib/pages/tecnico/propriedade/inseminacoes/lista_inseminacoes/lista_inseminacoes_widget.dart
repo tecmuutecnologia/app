@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison, unused_import
 
 import '/backend/backend.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/backend/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
@@ -1711,21 +1712,23 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                   visible: (listaAnimaisOfflineExistenteItem
                                               .uidTecnicoPropriedade ==
                                           widget.uidPropriedade) &&
-                                      ((listaAnimaisOfflineExistenteItem.nomeAnimal.toLowerCase().contains(_model.searchListTextController.text.toLowerCase())) ||
-                                          (listaAnimaisOfflineExistenteItem.brincoAnimal
+                                      ((listaAnimaisOfflineExistenteItem
+                                              .nomeAnimal
+                                              .toLowerCase()
+                                              .contains(_model
+                                                  .searchListTextController.text
+                                                  .toLowerCase())) ||
+                                          (listaAnimaisOfflineExistenteItem
+                                              .brincoAnimal
                                               .toString()
                                               .contains(_model
                                                   .searchListTextController
                                                   .text))) &&
-                                      (((listaAnimaisOfflineExistenteItem.grupoAnimal == 'Vacas') ||
-                                              (listaAnimaisOfflineExistenteItem
-                                                      .grupoAnimal ==
-                                                  'Novilhas')) &&
-                                          ((listaAnimaisOfflineExistenteItem.status == 'Vazia') ||
-                                              (listaAnimaisOfflineExistenteItem.status ==
-                                                  'Inseminada') ||
-                                              (listaAnimaisOfflineExistenteItem.status ==
-                                                  'Inseminada PP'))),
+                                      ehElegivelInseminacao(
+                                          listaAnimaisOfflineExistenteItem
+                                              .grupoAnimal,
+                                          listaAnimaisOfflineExistenteItem
+                                              .status),
                                   child: Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         16.0, 12.0, 16.0, 12.0),
@@ -2332,7 +2335,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                     listaAnimaisOffline[
                                         listaAnimaisOfflineIndex];
                                 return Visibility(
-                                  visible: (listaAnimaisOfflineItem.uidTecnicoPropriedade ==
+                                  visible: (listaAnimaisOfflineItem
+                                              .uidTecnicoPropriedade ==
                                           widget.uidPropriedade) &&
                                       ((listaAnimaisOfflineItem.nomeAnimal
                                               .toLowerCase()
@@ -2344,12 +2348,9 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                               .contains(_model
                                                   .searchListTextController
                                                   .text))) &&
-                                      (((listaAnimaisOfflineItem.grupoAnimal == 'Vacas') ||
-                                              (listaAnimaisOfflineItem.grupoAnimal ==
-                                                  'Novilhas')) &&
-                                          ((listaAnimaisOfflineItem.status == 'Vazia') ||
-                                              (listaAnimaisOfflineItem.status == 'Inseminada') ||
-                                              (listaAnimaisOfflineItem.status == 'Inseminada PP'))),
+                                      ehElegivelInseminacao(
+                                          listaAnimaisOfflineItem.grupoAnimal,
+                                          listaAnimaisOfflineItem.status),
                                   child: Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         16.0, 12.0, 16.0, 12.0),

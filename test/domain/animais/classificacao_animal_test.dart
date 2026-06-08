@@ -60,5 +60,36 @@ void main() {
         }
       }
     });
+
+    test(
+        'ehElegivelInseminacao = (Vacas|Novilhas) & (Vazia|Inseminada|Insem.PP)',
+        () {
+      expect(ehElegivelInseminacao('Vacas', 'Vazia'), true);
+      expect(ehElegivelInseminacao('Novilhas', 'Inseminada'), true);
+      expect(ehElegivelInseminacao('Vacas', 'Inseminada PP'), true);
+      expect(ehElegivelInseminacao('Vacas', 'Prenha'), false);
+      expect(ehElegivelInseminacao('Touros', 'Vazia'), false);
+    });
+
+    test('ehElegivelInseminacao equivale ao inline original', () {
+      for (final g in ['Vacas', 'Novilhas', 'Touros', null]) {
+        for (final s in [
+          'Vazia',
+          'Inseminada',
+          'Inseminada PP',
+          'Prenha',
+          null
+        ]) {
+          expect(
+            ehElegivelInseminacao(g, s),
+            ((g == 'Vacas') || (g == 'Novilhas')) &&
+                ((s == 'Vazia') ||
+                    (s == 'Inseminada') ||
+                    (s == 'Inseminada PP')),
+            reason: 'grupo=$g status=$s',
+          );
+        }
+      }
+    });
   });
 }

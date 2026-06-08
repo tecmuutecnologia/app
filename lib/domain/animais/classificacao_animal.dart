@@ -18,6 +18,7 @@ library;
 const String kStatusPrenha = 'Prenha';
 const String kStatusVazia = 'Vazia';
 const String kStatusInseminada = 'Inseminada';
+const String kStatusInseminadaPP = 'Inseminada PP';
 const String kStatusSeca = 'Seca';
 const String kStatusAborto = 'Aborto';
 const String kStatusPreParto = 'Pré-parto';
@@ -34,6 +35,7 @@ const String kGrupoNovilhas = 'Novilhas';
 bool ehPrenha(String? status) => status == kStatusPrenha;
 bool ehVazia(String? status) => status == kStatusVazia;
 bool ehInseminada(String? status) => status == kStatusInseminada;
+bool ehInseminadaPP(String? status) => status == kStatusInseminadaPP;
 bool ehSeca(String? status) => status == kStatusSeca;
 bool ehAborto(String? status) => status == kStatusAborto;
 bool ehPreParto(String? status) => status == kStatusPreParto;
@@ -56,3 +58,10 @@ bool ehVacaOuNovilha(String? grupo) => ehVaca(grupo) || ehNovilha(grupo);
 /// `grupoAnimal == 'Vacas' && status == 'Prenha'`.
 bool ehVacaPrenha(String? grupo, String? status) =>
     ehVaca(grupo) && ehPrenha(status);
+
+/// Elegível para inseminação — filtro da lista de **inseminações**
+/// (`lista_inseminacoes`): é Vaca ou Novilha **e** está Vazia, Inseminada ou
+/// Inseminada PP.
+bool ehElegivelInseminacao(String? grupo, String? status) =>
+    ehVacaOuNovilha(grupo) &&
+    (ehVazia(status) || ehInseminada(status) || ehInseminadaPP(status));
