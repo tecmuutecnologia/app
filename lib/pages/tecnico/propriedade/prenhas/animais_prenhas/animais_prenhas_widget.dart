@@ -2,6 +2,7 @@
 
 import '/backend/backend.dart';
 import '/backend/objectbox/index.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -237,8 +238,8 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                       return Visibility(
                         visible: (animaisExistentesItem.uidTecnicoPropriedade ==
                                 widget.uidPropriedade) &&
-                            (animaisExistentesItem.grupoAnimal == 'Vacas') &&
-                            (animaisExistentesItem.status == 'Prenha') &&
+                            ehVacaPrenha(animaisExistentesItem.grupoAnimal,
+                                animaisExistentesItem.status) &&
                             (dateTimeFormat(
                                   "d/M/y",
                                   animaisExistentesItem
@@ -1013,8 +1014,8 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
                       return Visibility(
                         visible: (animaisOfflineItem.uidTecnicoPropriedade ==
                                 widget.uidPropriedade) &&
-                            (animaisOfflineItem.grupoAnimal == 'Vacas') &&
-                            (animaisOfflineItem.status == 'Prenha') &&
+                            ehVacaPrenha(animaisOfflineItem.grupoAnimal,
+                                animaisOfflineItem.status) &&
                             (dateTimeFormat(
                                   "d/M/y",
                                   animaisOfflineItem
