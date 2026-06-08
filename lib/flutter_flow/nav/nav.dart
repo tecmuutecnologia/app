@@ -1171,48 +1171,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: ProntuarioAnimalOfflineWidget.routeName,
-          path: ProntuarioAnimalOfflineWidget.routePath,
-          builder: (context, params) => ProntuarioAnimalOfflineWidget(
-            uidPropriedade: params.getParam(
-              'uidPropriedade',
-              ParamType.DocumentReference,
-              isList: false,
-              collectionNamePath: ['tecnico', 'propriedades'],
-            ),
-            nomePropriedade: params.getParam(
-              'nomePropriedade',
-              ParamType.String,
-            ),
-            uidTecnico: params.getParam(
-              'uidTecnico',
-              ParamType.DocumentReference,
-              isList: false,
-              collectionNamePath: ['tecnico'],
-            ),
-            emailPropriedade: params.getParam(
-              'emailPropriedade',
-              ParamType.String,
-            ),
-            grupoPredominante: params.getParam(
-              'grupoPredominante',
-              ParamType.String,
-            ),
-            visitaPresencial: params.getParam(
-              'visitaPresencial',
-              ParamType.bool,
-            ),
-            diasDg: params.getParam(
-              'diasDg',
-              ParamType.String,
-            ),
-            itemUidIndex: params.getParam(
-              'itemUidIndex',
-              ParamType.int,
-            ),
-          ),
-        ),
-        FFRoute(
           name: AcoesFalhadasWidget.routeName,
           path: AcoesFalhadasWidget.routePath,
           builder: (context, params) => AcoesFalhadasWidget(

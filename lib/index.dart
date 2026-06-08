@@ -77,8 +77,6 @@ export '/pages/tecnico/propriedade/financeiro/editar_relatorio_financeiro/editar
     show EditarRelatorioFinanceiroWidget;
 export '/pages/tecnico/propriedade/recria/recriacao/recriacao_widget.dart'
     show RecriacaoWidget;
-export '/pages/tecnico/propriedade/prontuario/prontuario_animal_offline/prontuario_animal_offline_widget.dart'
-    show ProntuarioAnimalOfflineWidget;
 export '/pages/tecnico/propriedade/sincronizacao/acoes_falhadas/acoes_falhadas_widget.dart'
     show AcoesFalhadasWidget;
 export '/pages/tecnico/propriedade/sincronizacao/importacao_animais/importacao_animais_widget.dart'
