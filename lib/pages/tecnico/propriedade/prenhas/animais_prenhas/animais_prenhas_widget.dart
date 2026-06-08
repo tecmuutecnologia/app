@@ -12,7 +12,6 @@ import '/flutter_flow/instant_timer.dart';
 import '/pages/tecnico/propriedade/animals/descarte_animal/descarte_animal_widget.dart';
 import '/pages/tecnico/propriedade/prenhas/registrar_secagem/registrar_secagem_widget.dart';
 import '/pages/tecnico/propriedade/prenhas/registro_aborto/registro_aborto_widget.dart';
-import '/pages/tecnico/propriedade/prenhas/registro_aborto_offline/registro_aborto_offline_widget.dart';
 import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;

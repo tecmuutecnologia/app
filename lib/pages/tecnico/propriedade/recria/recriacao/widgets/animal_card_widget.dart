@@ -21,13 +21,6 @@ import '/pages/tecnico/propriedade/secas/registrar_parto/registrar_parto_widget.
 import '/pages/tecnico/propriedade/secas/registrar_pre_parto/registrar_pre_parto_widget.dart';
 
 // Imports para bottom sheets offline (novos)
-import '/pages/tecnico/propriedade/dignostico_gestacao/dg_mais_offline/dg_mais_offline_widget.dart';
-import '/pages/tecnico/propriedade/dignostico_gestacao/dg_menos_offline/dg_menos_offline_widget.dart';
-import '/pages/tecnico/propriedade/exame_ginecologico/nova_acao_exame_ginecologico_offline/nova_acao_exame_ginecologico_offline_widget.dart';
-import '/pages/tecnico/propriedade/inseminacoes/nova_inseminacao_offline/nova_inseminacao_offline_widget.dart';
-import '/pages/tecnico/propriedade/prenhas/registro_aborto_offline/registro_aborto_offline_widget.dart';
-import '/pages/tecnico/propriedade/secas/registrar_parto_offline/registrar_parto_offline_widget.dart';
-import '/pages/tecnico/propriedade/secas/registrar_pre_parto_offline/registrar_pre_parto_offline_widget.dart';
 
 /// Cores constantes para botões de ação
 class ActionButtonColors {
@@ -699,34 +692,18 @@ class AnimalCardWidget extends StatelessWidget {
   }
 
   Widget _getExameGinecologicoWidget() {
-    if (isOnline || animal.isExistingOffline) {
-      return NovaAcaoExameGinecologicoWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg!,
-        uidAnimaisProdutores: animal.reference,
-        nomeAnimal: animal.nomeAnimal,
-        brincoAnimal: animal.brincoAnimal?.toString() ?? '',
-        grupoAnimal: animal.grupoAnimal,
-      );
-    } else {
-      return NovaAcaoExameGinecologicoOfflineWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg!,
-        uidAnimalOffline: animal.uidAnimalOffline ?? '',
-        nomeAnimal: animal.nomeAnimal,
-        brincoAnimal: animal.brincoAnimal?.toString() ?? '',
-        grupoAnimal: animal.grupoAnimal,
-        itemUidIndex: animal.itemIndex ?? 0,
-      );
-    }
+    return NovaAcaoExameGinecologicoWidget(
+      uidPropriedade: uidPropriedade!,
+      nomePropriedade: nomePropriedade!,
+      uidTecnico: uidTecnico!,
+      emailPropriedade: emailPropriedade!,
+      visitaPresencial: visitaPresencial!,
+      diasDg: diasDg!,
+      uidAnimaisProdutores: animal.reference,
+      nomeAnimal: animal.nomeAnimal,
+      brincoAnimal: animal.brincoAnimal?.toString() ?? '',
+      grupoAnimal: animal.grupoAnimal,
+    );
   }
 
   Widget _getDesmameWidget() {
@@ -759,123 +736,61 @@ class AnimalCardWidget extends StatelessWidget {
   }
 
   Widget _getInseminacaoWidget() {
-    if (isOnline || animal.isExistingOffline) {
-      return NovaInseminacaoWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        uidAnimaisProdutores: animal.reference,
-        grupoPredominante: animal.grupoAnimal,
-        nomeAnimal: animal.nomeAnimal,
-        visitaPresencial: visitaPresencial!,
-        dtUltimaInseminacao: animal.dtUltimaInseminacao ?? '',
-        brincoAnimal: animal.brincoAnimal?.toString() ?? '',
-        diasDg: diasDg!,
-      );
-    } else {
-      return NovaInseminacaoOfflineWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        uidAnimalOffline: animal.uidAnimalOffline ?? '',
-        grupoPredominante: animal.grupoAnimal,
-        nomeAnimal: animal.nomeAnimal,
-        visitaPresencial: visitaPresencial!,
-        dtUltimaInseminacao: animal.dtUltimaInseminacao ?? '',
-        brincoAnimal: animal.brincoAnimal?.toString() ?? '',
-        diasDg: diasDg ?? '',
-        itemUidIndex: animal.itemIndex ?? 0,
-      );
-    }
+    return NovaInseminacaoWidget(
+      uidPropriedade: uidPropriedade!,
+      nomePropriedade: nomePropriedade!,
+      uidTecnico: uidTecnico!,
+      emailPropriedade: emailPropriedade!,
+      uidAnimaisProdutores: animal.reference,
+      grupoPredominante: animal.grupoAnimal,
+      nomeAnimal: animal.nomeAnimal,
+      visitaPresencial: visitaPresencial!,
+      dtUltimaInseminacao: animal.dtUltimaInseminacao ?? '',
+      brincoAnimal: animal.brincoAnimal?.toString() ?? '',
+      diasDg: diasDg!,
+    );
   }
 
   Widget _getDgMaisWidget() {
-    if (isOnline || animal.isExistingOffline) {
-      return DgMaisWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg!,
-        uidAnimaisProdutores: animal.reference,
-        grupoPredominante: animal.grupoAnimal,
-        nomeAnimal: animal.nomeAnimal,
-      );
-    } else {
-      return DgMaisOfflineWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg ?? '',
-        uidAnimalOffline: animal.uidAnimalOffline ?? '',
-        grupoPredominante: animal.grupoAnimal,
-        nomeAnimal: animal.nomeAnimal,
-        itemUidIndex: animal.itemIndex ?? 0,
-      );
-    }
+    return DgMaisWidget(
+      uidPropriedade: uidPropriedade!,
+      nomePropriedade: nomePropriedade!,
+      uidTecnico: uidTecnico!,
+      emailPropriedade: emailPropriedade!,
+      visitaPresencial: visitaPresencial!,
+      diasDg: diasDg!,
+      uidAnimaisProdutores: animal.reference,
+      grupoPredominante: animal.grupoAnimal,
+      nomeAnimal: animal.nomeAnimal,
+    );
   }
 
   Widget _getDgMenosWidget() {
-    if (isOnline || animal.isExistingOffline) {
-      return DgMenosWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        uidAnimaisProdutores: animal.reference,
-        grupoPredominante: animal.grupoAnimal,
-        nomeAnimal: animal.nomeAnimal,
-      );
-    } else {
-      return DgMenosOfflineWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        uidAnimalOffline: animal.uidAnimalOffline ?? '',
-        grupoPredominante: animal.grupoAnimal,
-        nomeAnimal: animal.nomeAnimal,
-        itemUidIndex: animal.itemIndex ?? 0,
-      );
-    }
+    return DgMenosWidget(
+      uidPropriedade: uidPropriedade!,
+      nomePropriedade: nomePropriedade!,
+      uidTecnico: uidTecnico!,
+      emailPropriedade: emailPropriedade!,
+      visitaPresencial: visitaPresencial!,
+      uidAnimaisProdutores: animal.reference,
+      grupoPredominante: animal.grupoAnimal,
+      nomeAnimal: animal.nomeAnimal,
+    );
   }
 
   Widget _getPartoWidget() {
-    if (isOnline || animal.isExistingOffline) {
-      return RegistrarPartoWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg!,
-        uidAnimaisProdutores: animal.reference,
-        nomeVacaAtual: animal.nomeAnimal,
-        nomeTourtoUltimaInseminacao: animal.nomeTouroUltimaInseminacao ?? '',
-        brincoVacaAtual: animal.brincoAnimal?.toString() ?? '',
-      );
-    } else {
-      return RegistrarPartoOfflineWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg!,
-        uidAnimalOffline: animal.uidAnimalOffline ?? '',
-        nomeVacaAtual: animal.nomeAnimal,
-        nomeTourtoUltimaInseminacao: animal.nomeTouroUltimaInseminacao ?? '',
-        brincoVacaAtual: animal.brincoAnimal?.toString() ?? '',
-        itemUidIndex: animal.itemIndex ?? 0,
-      );
-    }
+    return RegistrarPartoWidget(
+      uidPropriedade: uidPropriedade!,
+      nomePropriedade: nomePropriedade!,
+      uidTecnico: uidTecnico!,
+      emailPropriedade: emailPropriedade!,
+      visitaPresencial: visitaPresencial!,
+      diasDg: diasDg!,
+      uidAnimaisProdutores: animal.reference,
+      nomeVacaAtual: animal.nomeAnimal,
+      nomeTourtoUltimaInseminacao: animal.nomeTouroUltimaInseminacao ?? '',
+      brincoVacaAtual: animal.brincoAnimal?.toString() ?? '',
+    );
   }
 
   Widget _getPrePartoWidget() {
@@ -884,62 +799,31 @@ class AnimalCardWidget extends StatelessWidget {
         ? functions.converteDataStringDate(dtPreParto)
         : null;
 
-    if (isOnline || animal.isExistingOffline) {
-      return RegistrarPrePartoWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg!,
-        uidAnimaisProdutores: animal.reference,
-        nomeAnimal: animal.nomeAnimal,
-        brincoAnimal: animal.brincoAnimalOrder?.toString() ?? '',
-        grupoAnimal: animal.grupoAnimal,
-        dtPrePartoPrevista: convertedDate,
-      );
-    } else {
-      return RegistrarPrePartoOfflineWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg!,
-        uidAnimalOffline: animal.uidAnimalOffline ?? '',
-        nomeAnimal: animal.nomeAnimal,
-        brincoAnimal: animal.brincoAnimalOrder?.toString() ?? '',
-        grupoAnimal: animal.grupoAnimal,
-        dtPrePartoPrevista: convertedDate,
-        itemUidIndex: animal.itemIndex ?? 0,
-      );
-    }
+    return RegistrarPrePartoWidget(
+      uidPropriedade: uidPropriedade!,
+      nomePropriedade: nomePropriedade!,
+      uidTecnico: uidTecnico!,
+      emailPropriedade: emailPropriedade!,
+      visitaPresencial: visitaPresencial!,
+      diasDg: diasDg!,
+      uidAnimaisProdutores: animal.reference,
+      nomeAnimal: animal.nomeAnimal,
+      brincoAnimal: animal.brincoAnimalOrder?.toString() ?? '',
+      grupoAnimal: animal.grupoAnimal,
+      dtPrePartoPrevista: convertedDate,
+    );
   }
 
   Widget _getAbortoWidget() {
-    if (isOnline || animal.isExistingOffline) {
-      return RegistroAbortoWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg!,
-        uidAnimaisProdutores: animal.reference,
-        nomeAnimal: animal.nomeAnimal,
-      );
-    } else {
-      return RegistroAbortoOfflineWidget(
-        uidPropriedade: uidPropriedade!,
-        nomePropriedade: nomePropriedade!,
-        uidTecnico: uidTecnico!,
-        emailPropriedade: emailPropriedade!,
-        visitaPresencial: visitaPresencial!,
-        diasDg: diasDg!,
-        uidAnimalOffline: animal.uidAnimalOffline ?? '',
-        nomeAnimal: animal.nomeAnimal,
-        itemUidIndex: animal.itemIndex ?? 0,
-      );
-    }
+    return RegistroAbortoWidget(
+      uidPropriedade: uidPropriedade!,
+      nomePropriedade: nomePropriedade!,
+      uidTecnico: uidTecnico!,
+      emailPropriedade: emailPropriedade!,
+      visitaPresencial: visitaPresencial!,
+      diasDg: diasDg!,
+      uidAnimaisProdutores: animal.reference,
+      nomeAnimal: animal.nomeAnimal,
+    );
   }
 }
