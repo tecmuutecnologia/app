@@ -2575,126 +2575,30 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                           'Vazia';
                                                                       safeSetState(
                                                                           () {});
-                                                                      FFAppState()
-                                                                          .addToAnimaisProdutoresEditados(
-                                                                              AnimaisProdutoresStruct(
-                                                                        uidTecnicoPropriedade: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.uidTecnicoPropriedade,
-                                                                        nomeAnimal: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.nomeAnimal,
-                                                                        racaAnimal: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.racaAnimal,
-                                                                        pesoAnimal: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.pesoAnimal,
-                                                                        dtNascimento: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtNascimento,
-                                                                        touro: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.touro,
-                                                                        vaca: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.vaca,
-                                                                        status:
-                                                                            'Vazia',
-                                                                        grupoAnimal: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.grupoAnimal,
-                                                                        dtUltimaInseminacao: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtUltimaInseminacao,
-                                                                        dtUltimoParto: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtUltimoParto,
-                                                                        liberaInseminacao: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.liberaInseminacao,
-                                                                        dtPartoPrevisto: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtPartoPrevisto,
-                                                                        dtSecPrevista: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtSecPrevista,
-                                                                        dtPrePartoPrevista: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtPrePartoPrevista,
-                                                                        dtPP: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtPP,
-                                                                        dtDgMais: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtDgMais,
-                                                                        dtDgMenos: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtDgMenos,
-                                                                        dtAborto: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtAborto,
-                                                                        dtSecagem: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtSecagem,
-                                                                        dtUltimoPP: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtUltimoPP,
-                                                                        nomeTouroUltimaInseminacao: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.nomeTouroUltimaInseminacao,
-                                                                        totalInseminacoes: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.totalInseminacoes,
-                                                                        totalPartos: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.totalPartos,
-                                                                        dtPreParto: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtPreParto,
-                                                                        motivoDescarteAnimal: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.motivoDescarteAnimal,
-                                                                        dtDescarteAnimal: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtDescarteAnimal,
-                                                                        dtUltimaAcao: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtUltimaAcao,
-                                                                        compararDtUltimaInseminacao: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.compararDtUltimaInseminacao,
-                                                                        nomeBrincoConcat: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.nomeBrincoConcat,
-                                                                        idGrupoAnimal: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.idGrupoAnimal,
-                                                                        dtUltimoPartoContingencia: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtUltimoPartoContingencia,
-                                                                        idStatusAnimal: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.idStatusAnimal,
-                                                                        dtInducaoLactacao: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtInducaoLactacao,
-                                                                        dtDesmame: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.dtDesmame,
-                                                                        brincoAnimal: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.brincoAnimal,
-                                                                        brincoAnimalOrder: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.brincoAnimalOrder,
-                                                                        uidAnimal: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.uidAnimal,
-                                                                        uidAnimalOffline: _animaisExistentes
-                                                                            .elementAtOrNull(animaisExistentesOfflineDescarteIndex)
-                                                                            ?.uidAnimalOffline,
-                                                                      ));
+                                                                      // Restaurar offline-first: aplica status 'Vazia' no animal via
+                                                                      // AnimalRepository (persiste no ObjectBox e sincroniza).
+                                                                      final restItem =
+                                                                          _animaisExistentes
+                                                                              .elementAtOrNull(animaisExistentesOfflineDescarteIndex);
+                                                                      final repoRest =
+                                                                          AnimalRepository();
+                                                                      final entRest = restItem?.uidAnimal !=
+                                                                              null
+                                                                          ? repoRest.getByFirestoreId(restItem!
+                                                                              .uidAnimal!
+                                                                              .id)
+                                                                          : ((restItem?.uidAnimalOffline ?? '').isNotEmpty
+                                                                              ? repoRest.getByUidAnimalOffline(restItem!.uidAnimalOffline)
+                                                                              : null);
+                                                                      if (entRest !=
+                                                                          null) {
+                                                                        await repoRest.update(
+                                                                            entRest,
+                                                                            {
+                                                                              'status': 'Vazia',
+                                                                              'idStatusAnimal': 2
+                                                                            });
+                                                                      }
                                                                       safeSetState(
                                                                           () {});
                                                                       Navigator.pop(
