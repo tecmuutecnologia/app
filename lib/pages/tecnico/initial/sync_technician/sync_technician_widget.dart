@@ -47,7 +47,6 @@ class _SyncTechnicianWidgetState extends State<SyncTechnicianWidget> {
       await migrarAnimaisOfflineLegado(FFAppState().animaisProdutoresOffline);
       FFAppState().animaisProdutoresOffline = [];
       FFAppState().animaisProdutoresEditados = [];
-      FFAppState().animaisApagadosExistentesOffline = [];
       FFAppState().acoesOffline = [];
       safeSetState(() {});
       if (_model.personverify != null) {

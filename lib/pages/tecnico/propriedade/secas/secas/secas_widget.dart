@@ -2827,16 +2827,24 @@ class _SecasWidgetState extends State<SecasWidget>
                                                                           ) ??
                                                                           false;
                                                                   if (confirmDialogResponse) {
-                                                                    FFAppState()
-                                                                        .addToAnimaisApagadosExistentesOffline(
-                                                                            AnimaisApagadosExistentesOfflineStruct(
-                                                                      uidAnimal:
-                                                                          animaisExistentesOfflineDescarteItem
-                                                                              .uidAnimal,
-                                                                      uidTecnicoPropriedade:
-                                                                          widget
-                                                                              .uidPropriedade,
-                                                                    ));
+                                                                    // Exclusão offline-first: soft delete no ObjectBox; o
+                                                                    // sync (online imediato ou fila ao reconectar) propaga.
+                                                                    final repoApagar =
+                                                                        AnimalRepository();
+                                                                    final entApagar = animaisExistentesOfflineDescarteItem.uidAnimal !=
+                                                                            null
+                                                                        ? repoApagar.getByFirestoreId(animaisExistentesOfflineDescarteItem
+                                                                            .uidAnimal!
+                                                                            .id)
+                                                                        : (animaisExistentesOfflineDescarteItem.uidAnimalOffline.isNotEmpty
+                                                                            ? repoApagar.getByUidAnimalOffline(animaisExistentesOfflineDescarteItem.uidAnimalOffline)
+                                                                            : null);
+                                                                    if (entApagar !=
+                                                                        null) {
+                                                                      await repoApagar
+                                                                          .softDelete(
+                                                                              entApagar);
+                                                                    }
                                                                     safeSetState(
                                                                         () {});
                                                                     _animaisExistentes

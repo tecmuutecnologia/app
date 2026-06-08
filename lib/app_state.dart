@@ -67,22 +67,6 @@ class FFAppState extends ChangeNotifier {
           _acoesOffline;
     });
     _safeInit(() {
-      _animaisApagadosExistentesOffline = prefs
-              .getStringList('ff_animaisApagadosExistentesOffline')
-              ?.map((x) {
-                try {
-                  return AnimaisApagadosExistentesOfflineStruct
-                      .fromSerializableMap(jsonDecode(x));
-                } catch (e) {
-                  print("Can't decode persisted data type. Error: $e.");
-                  return null;
-                }
-              })
-              .withoutNulls
-              .toList() ??
-          _animaisApagadosExistentesOffline;
-    });
-    _safeInit(() {
       _acoesPreferidas =
           prefs.getStringList('ff_acoesPreferidas') ?? _acoesPreferidas;
     });
@@ -234,56 +218,6 @@ class FFAppState extends ChangeNotifier {
     acoesOffline.insert(index, value);
     prefs.setStringList(
         'ff_acoesOffline', _acoesOffline.map((x) => x.serialize()).toList());
-  }
-
-  List<AnimaisApagadosExistentesOfflineStruct>
-      _animaisApagadosExistentesOffline = [];
-  List<AnimaisApagadosExistentesOfflineStruct>
-      get animaisApagadosExistentesOffline => _animaisApagadosExistentesOffline;
-  set animaisApagadosExistentesOffline(
-      List<AnimaisApagadosExistentesOfflineStruct> value) {
-    _animaisApagadosExistentesOffline = value;
-    prefs.setStringList('ff_animaisApagadosExistentesOffline',
-        value.map((x) => x.serialize()).toList());
-  }
-
-  void addToAnimaisApagadosExistentesOffline(
-      AnimaisApagadosExistentesOfflineStruct value) {
-    animaisApagadosExistentesOffline.add(value);
-    prefs.setStringList('ff_animaisApagadosExistentesOffline',
-        _animaisApagadosExistentesOffline.map((x) => x.serialize()).toList());
-  }
-
-  void removeFromAnimaisApagadosExistentesOffline(
-      AnimaisApagadosExistentesOfflineStruct value) {
-    animaisApagadosExistentesOffline.remove(value);
-    prefs.setStringList('ff_animaisApagadosExistentesOffline',
-        _animaisApagadosExistentesOffline.map((x) => x.serialize()).toList());
-  }
-
-  void removeAtIndexFromAnimaisApagadosExistentesOffline(int index) {
-    animaisApagadosExistentesOffline.removeAt(index);
-    prefs.setStringList('ff_animaisApagadosExistentesOffline',
-        _animaisApagadosExistentesOffline.map((x) => x.serialize()).toList());
-  }
-
-  void updateAnimaisApagadosExistentesOfflineAtIndex(
-    int index,
-    AnimaisApagadosExistentesOfflineStruct Function(
-            AnimaisApagadosExistentesOfflineStruct)
-        updateFn,
-  ) {
-    animaisApagadosExistentesOffline[index] =
-        updateFn(_animaisApagadosExistentesOffline[index]);
-    prefs.setStringList('ff_animaisApagadosExistentesOffline',
-        _animaisApagadosExistentesOffline.map((x) => x.serialize()).toList());
-  }
-
-  void insertAtIndexInAnimaisApagadosExistentesOffline(
-      int index, AnimaisApagadosExistentesOfflineStruct value) {
-    animaisApagadosExistentesOffline.insert(index, value);
-    prefs.setStringList('ff_animaisApagadosExistentesOffline',
-        _animaisApagadosExistentesOffline.map((x) => x.serialize()).toList());
   }
 
   List<String> _acoesPreferidas = [];
