@@ -12,6 +12,7 @@ import 'auth/firebase_auth/auth_util.dart';
 
 import 'backend/firebase/firebase_config.dart';
 import 'backend/objectbox/index.dart';
+import 'features/animais/application/animal_struct_adapter.dart';
 import 'core/connectivity/connectivity_service.dart';
 import 'features/shared/widgets/sync_status_banner.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -41,6 +42,19 @@ void main() async {
 
   final appState = FFAppState(); // Initialize FFAppState
   await appState.initializePersistedState();
+
+  // Migração legado->ObjectBox a cada startup (idempotente, não-bloqueante):
+  // garante que animais criados offline pelo mecanismo antigo (array persistido
+  // `animaisProdutoresOffline`) não fiquem presos nem sejam descartados,
+  // independente do caminho de login. Pré-requisito para remover as telas
+  // variantes `_offline`. Complementa a drenagem do sync_technician.
+  if (!kIsWeb && ObjectBoxService.isInitialized) {
+    final legado = appState.animaisProdutoresOffline;
+    if (legado.isNotEmpty) {
+      unawaited(migrarAnimaisOfflineLegado(legado)
+          .then((_) => appState.animaisProdutoresOffline = []));
+    }
+  }
 
   await initializeStripe();
   if (!kIsWeb) {
