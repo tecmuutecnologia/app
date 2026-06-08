@@ -41,6 +41,8 @@ void main() {
       expect(ehBezerros('Bezerras'), false);
       expect(ehBezerras('Bezerros'), false);
       expect(ehBezerros(null), false);
+      expect(ehTouros('Touros'), true);
+      expect(ehTouros('Vacas'), false);
     });
 
     test('ehVacaOuNovilha', () {

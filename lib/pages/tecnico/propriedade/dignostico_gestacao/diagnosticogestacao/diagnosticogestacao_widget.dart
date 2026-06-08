@@ -552,9 +552,9 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                                   0.0,
                                                                   0.0),
                                                       child: FFButtonWidget(
-                                                        onPressed: ((animaisExistentesItem
-                                                                        .status !=
-                                                                    'Inseminada PP') &&
+                                                        onPressed: ((!ehInseminadaPP(
+                                                                    animaisExistentesItem
+                                                                        .status)) &&
                                                                 (animaisExistentesItem
                                                                         .dtPP ==
                                                                     ''))
@@ -1320,9 +1320,9 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                                                                   0.0,
                                                                   0.0),
                                                       child: FFButtonWidget(
-                                                        onPressed: ((listAnimaisOfflineItem
-                                                                        .status !=
-                                                                    'Inseminada PP') &&
+                                                        onPressed: ((!ehInseminadaPP(
+                                                                    listAnimaisOfflineItem
+                                                                        .status)) &&
                                                                 (listAnimaisOfflineItem
                                                                         .dtPP ==
                                                                     ''))

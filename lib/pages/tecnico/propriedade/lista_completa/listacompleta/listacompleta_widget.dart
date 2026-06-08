@@ -3638,9 +3638,9 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     FFButtonWidget(
-                                                      onPressed: ((animaisProdutoresOfflineItem
-                                                                      .status !=
-                                                                  'Inseminada PP') &&
+                                                      onPressed: ((!ehInseminadaPP(
+                                                                  animaisProdutoresOfflineItem
+                                                                      .status)) &&
                                                               (animaisProdutoresOfflineItem
                                                                       .dtPP ==
                                                                   ''))
@@ -7274,9 +7274,9 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     FFButtonWidget(
-                                                      onPressed: ((animaisProdutoresExistentesOfflineItem
-                                                                      .status !=
-                                                                  'Inseminada PP') &&
+                                                      onPressed: ((!ehInseminadaPP(
+                                                                  animaisProdutoresExistentesOfflineItem
+                                                                      .status)) &&
                                                               (animaisProdutoresExistentesOfflineItem
                                                                       .dtPP ==
                                                                   ''))
@@ -10908,9 +10908,9 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     FFButtonWidget(
-                                                      onPressed: ((animaisProdutoresOfflineItem
-                                                                      .status !=
-                                                                  'Inseminada PP') &&
+                                                      onPressed: ((!ehInseminadaPP(
+                                                                  animaisProdutoresOfflineItem
+                                                                      .status)) &&
                                                               (animaisProdutoresOfflineItem
                                                                       .dtPP ==
                                                                   ''))
@@ -14557,9 +14557,9 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     FFButtonWidget(
-                                                      onPressed: ((animaisProdutoresExistentesOfflineItem
-                                                                      .status !=
-                                                                  'Inseminada PP') &&
+                                                      onPressed: ((!ehInseminadaPP(
+                                                                  animaisProdutoresExistentesOfflineItem
+                                                                      .status)) &&
                                                               (animaisProdutoresExistentesOfflineItem
                                                                       .dtPP ==
                                                                   ''))

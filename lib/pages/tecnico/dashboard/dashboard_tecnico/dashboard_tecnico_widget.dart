@@ -1,4 +1,5 @@
 import 'package:tecmuu/backend/objectbox/widgets/objectbox_debug_menu.dart';
+import '/domain/animais/classificacao_animal.dart';
 
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
@@ -326,7 +327,7 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
 
         final animaisAtivos = snapshot.data!
             .where(
-                (e) => (e.status != 'Descarte') && (e.grupoAnimal != 'Sêmens'))
+                (e) => (!ehDescarte(e.status)) && (e.grupoAnimal != 'Sêmens'))
             .toList()
             .length;
 

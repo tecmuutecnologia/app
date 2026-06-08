@@ -129,14 +129,14 @@ class AnimalCardWidget extends StatelessWidget {
   }
 
   bool _shouldShowAnimal() {
-    final isValidGroup = (animal.grupoAnimal == 'Touros' &&
+    final isValidGroup = (ehTouros(animal.grupoAnimal) &&
             !animal.liberaInseminacao) ||
         (ehNovilha(animal.grupoAnimal) && animal.dtInducaoLactacao == null) ||
         ehBezerras(animal.grupoAnimal) ||
         ehBezerros(animal.grupoAnimal);
 
     final isValidStatus =
-        animal.status != 'Descarte' && animal.status != 'Pré Parto';
+        !ehDescarte(animal.status) && animal.status != 'Pré Parto';
     return isValidGroup && isValidStatus;
   }
 
@@ -367,7 +367,7 @@ class AnimalCardWidget extends StatelessWidget {
   }
 
   Widget _buildActionButtons(BuildContext context) {
-    if (animal.grupoAnimal == 'Touros') {
+    if (ehTouros(animal.grupoAnimal)) {
       return _buildTouroButtons(context);
     } else if (ehBezerras(animal.grupoAnimal) ||
         ehBezerros(animal.grupoAnimal)) {

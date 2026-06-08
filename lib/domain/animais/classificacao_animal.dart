@@ -39,6 +39,13 @@ const String kGrupoVacas = 'Vacas';
 const String kGrupoNovilhas = 'Novilhas';
 const String kGrupoBezerros = 'Bezerros';
 const String kGrupoBezerras = 'Bezerras';
+const String kGrupoTouros = 'Touros';
+
+/// ⚠️ Mais inconsistências de dados legadas (NÃO unificadas aqui de propósito,
+/// para não mascarar o problema): "novilha" aparece como `'Novilhas'` (plural,
+/// canônico) e `'Novilha'` (singular) em alguns pontos; e "sêmen" aparece como
+/// `'Semêns'` (nas constantes de grupo) e `'Sêmens'` (em telas). O time deve
+/// unificar a gravação e os filtros.
 
 // ---------------------------------------------------------------------------
 // Predicados de status
@@ -63,6 +70,7 @@ bool ehVaca(String? grupo) => grupo == kGrupoVacas;
 bool ehNovilha(String? grupo) => grupo == kGrupoNovilhas;
 bool ehBezerros(String? grupo) => grupo == kGrupoBezerros;
 bool ehBezerras(String? grupo) => grupo == kGrupoBezerras;
+bool ehTouros(String? grupo) => grupo == kGrupoTouros;
 
 /// `true` se o animal é Vaca **ou** Novilha (as duas categorias reprodutivas que
 /// as telas de prenhas/secas/DG costumam considerar juntas).
