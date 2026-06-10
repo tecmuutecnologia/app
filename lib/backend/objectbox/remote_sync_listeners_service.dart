@@ -370,8 +370,7 @@ class RemoteSyncListenersService {
 
       if (existing != null) {
         // Tratamentos usam a chave snake_case 'last_modified' (Timestamp).
-        final remoteTimestamp =
-            (data['last_modified'] as Timestamp?)?.toDate();
+        final remoteTimestamp = (data['last_modified'] as Timestamp?)?.toDate();
 
         if (ConflictResolver.shouldApplyRemote(
           localHasPendingChanges: existing.needsSync,
@@ -429,6 +428,24 @@ class RemoteSyncListenersService {
     }
     _listeners.clear();
     debugPrint('🛑 Todos os listeners foram removidos');
+  }
+
+  /// Inicia os listeners de animais, ações e tratamentos para um técnico.
+  ///
+  /// [tecnicoPath] é o caminho do documento do técnico (`tecnico/<id>`) — é onde
+  /// vivem as subcoleções `animaisProdutores`, `acoes` e `tratamentos`. Os
+  /// métodos `listenToX` apenas fazem `ref.collection(<nome>)`, então passar o
+  /// path do técnico escuta o lugar correto. Idempotente: cada `listenToX` pula
+  /// se já houver listener para aquele path.
+  ///
+  /// Conflitos resolvidos por [ConflictResolver] (edição local pendente vence),
+  /// então mudanças remotas NÃO sobrescrevem edições offline ainda não enviadas.
+  void startAllListeners(String tecnicoPath) {
+    if (tecnicoPath.isEmpty) return;
+    listenToAnimalsChanges(tecnicoPath);
+    listenToAcoesChanges(tecnicoPath);
+    listenToTratamentosChanges(tecnicoPath);
+    debugPrint('👂 Listeners remotos iniciados para $tecnicoPath');
   }
 
   /// Retorna quantidade de listeners ativos

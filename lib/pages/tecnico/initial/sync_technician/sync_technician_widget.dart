@@ -1,5 +1,6 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
+import '/backend/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -55,6 +56,16 @@ class _SyncTechnicianWidgetState extends State<SyncTechnicianWidget> {
           ),
           singleRecord: true,
         ).then((s) => s.firstOrNull);
+
+        // Sincronização em tempo real Firestore->ObjectBox: reflete mudanças
+        // remotas (ex.: outro dispositivo) automaticamente. Conflitos resolvidos
+        // por ConflictResolver (edição local pendente vence). Só nativo.
+        if (ObjectBoxService.isInitialized && _model.uidTecnico != null) {
+          await RemoteSyncListenersService.initialize();
+          RemoteSyncListenersService.instance
+              .startAllListeners(_model.uidTecnico!.reference.path);
+        }
+
         await queryPropriedadesRecordOnce(
           parent: _model.uidTecnico?.reference,
         );
