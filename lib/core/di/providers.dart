@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../auth/auth_repository.dart';
 import '../connectivity/connectivity_service.dart';
 import '../../backend/objectbox/index.dart';
 
@@ -34,6 +36,20 @@ final syncStatusProvider = StreamProvider<SyncStatus>((ref) {
   }
   return OfflineFirstSyncService.instance.statusStream;
 });
+
+// ---------------------------------------------------------------------------
+// Autenticação (fonte de verdade reativa p/ a camada nova)
+// ---------------------------------------------------------------------------
+
+/// Leitura centralizada do estado de auth, em vez dos getters globais mutáveis.
+final authRepositoryProvider =
+    Provider<AuthRepository>((ref) => AuthRepository());
+
+/// Usuário autenticado, reativo (emite a cada login/logout). Telas novas devem
+/// observar este provider em vez de ler `currentUserUid`/`currentUser` globais.
+final currentUserProvider = StreamProvider<User?>(
+  (ref) => ref.watch(authRepositoryProvider).authStateChanges(),
+);
 
 // ---------------------------------------------------------------------------
 // Repositórios (subcoleção)
