@@ -61,4 +61,39 @@ void main() {
       expect(functions.calcularIntervaloMedioIndi('01/01/2026', ''), 0);
     });
   });
+
+  group('agregações de lista (rebanho/grupos)', () {
+    test('retornaStringEmLista: split por vírgula + trim; vazio -> []', () {
+      expect(functions.retornaStringEmLista('Vacas, Novilhas ,Touros'),
+          ['Vacas', 'Novilhas', 'Touros']);
+      expect(functions.retornaStringEmLista(''), <String>[]);
+    });
+
+    test('retornaGruposUnicos: únicos, ordem alfabética', () {
+      expect(functions.retornaGruposUnicos(['Vacas', 'Novilhas', 'Vacas']),
+          ['Novilhas', 'Vacas']);
+    });
+
+    test('retornaContagemGrupos: contagens (>0) na ordem canônica', () {
+      // ordem do mapa: Novilhas, Sêmens, Bezerras, Touros, Bezerros, Vacas
+      expect(functions.retornaContagemGrupos(['Vacas', 'Vacas', 'Novilhas']),
+          [1, 2]);
+      // grupo desconhecido é ignorado
+      expect(functions.retornaContagemGrupos(['Vacas', 'Inexistente']), [1]);
+    });
+
+    test('retornaGruposComContagem: "Grupo - N" ordenado', () {
+      expect(functions.retornaGruposComContagem(['Vacas', 'Vacas', 'Novilhas']),
+          ['Novilhas - 1', 'Vacas - 2']);
+    });
+  });
+
+  group('criarUidRandom', () {
+    test('20 chars alfanuméricos e razoavelmente único', () {
+      final id = functions.criarUidRandom();
+      expect(id.length, 20);
+      expect(RegExp(r'^[A-Za-z0-9]{20}$').hasMatch(id), true);
+      expect(functions.criarUidRandom() == functions.criarUidRandom(), false);
+    });
+  });
 }
