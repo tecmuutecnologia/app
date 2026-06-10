@@ -1,4 +1,5 @@
 import '/auth/firebase_auth/auth_util.dart';
+import '/backend/objectbox/offline_auth_service.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -550,6 +551,63 @@ class _LoginTechnicianWidgetState extends State<LoginTechnicianWidget>
                                             BorderRadius.circular(12.0),
                                       ),
                                     ),
+                                  ),
+
+                                  // Login offline por biometria/PIN: só aparece se
+                                  // há sessão salva no cofre e o aparelho suporta.
+                                  FutureBuilder<bool>(
+                                    future: OfflineAuthService.instance
+                                        .then((s) => s.podeUsarBiometria()),
+                                    builder: (context, snapBio) {
+                                      if (snapBio.data != true) {
+                                        return const SizedBox.shrink();
+                                      }
+                                      return Padding(
+                                        padding: const EdgeInsetsDirectional
+                                            .fromSTEB(0.0, 0.0, 0.0, 16.0),
+                                        child: FFButtonWidget(
+                                          onPressed: () async {
+                                            final service =
+                                                await OfflineAuthService
+                                                    .instance;
+                                            final session = await service
+                                                .loginOfflineComBiometria();
+                                            if (session != null &&
+                                                context.mounted) {
+                                              context.pushNamedAuth(
+                                                  SyncTechnicianWidget
+                                                      .routeName,
+                                                  context.mounted);
+                                            }
+                                          },
+                                          text: 'Entrar com biometria',
+                                          icon: const Icon(Icons.fingerprint,
+                                              size: 22.0),
+                                          options: FFButtonOptions(
+                                            width: double.infinity,
+                                            height: 44.0,
+                                            color: FlutterFlowTheme.of(context)
+                                                .secondaryBackground,
+                                            textStyle: FlutterFlowTheme.of(
+                                                    context)
+                                                .titleSmall
+                                                .override(
+                                                  font: GoogleFonts.readexPro(),
+                                                  color:
+                                                      const Color(0xFFF75E38),
+                                                  letterSpacing: 0.0,
+                                                ),
+                                            elevation: 0.0,
+                                            borderSide: const BorderSide(
+                                              color: Color(0xFFF75E38),
+                                              width: 1.5,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(12.0),
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
 
                                   // You will have to add an action on this rich text to go to your login page.
