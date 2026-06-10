@@ -101,12 +101,21 @@ Senha **nunca** é guardada: o verificador é **PBKDF2-HMAC-SHA256** salgado
   FlutterFlow são toleradas).
 - `flutter test`: verde.
 
-## Pendências conhecidas (precisam de device / sequência de release)
+## Sincronização em tempo real (ativa)
 
-- **Listeners remotos** (`RemoteSyncListenersService`) estão definidos mas
-  **nunca iniciados** — sync em tempo real inativa; só `performFullDownload`.
-- **Variantes `_offline`** (≈13) só podem ser removidas após a migração de dados
-  legados propagar (usuário abrir online 1×) + validação no device.
-- **Biometria/secure_storage/AuthRepository**: dependem de plataforma + device.
-- **listacompleta** (14.9k linhas): filtros variados + extração de componentes de
-  UI — fazer incremental com o app rodando.
+`RemoteSyncListenersService.startAllListeners(tecnicoPath)` é iniciado no login
+(`sync_technician`) e parado no logout. Escuta `animaisProdutores`/`acoes`/
+`tratamentos` sob o técnico e reflete mudanças remotas no ObjectBox, com
+conflitos resolvidos por [ConflictResolver]. Coexiste com `performFullDownload`
+(carga inicial) e o push offline-first.
+
+## Pendências conhecidas (precisam de device / time)
+
+- **Biometria/PIN + secure_storage** (auth offline): dependem de deps nativas
+  (`local_auth`/`flutter_secure_storage`) + config de plataforma + device. O
+  verificador de senha já é PBKDF2 e o `AuthRepository` (leitura de auth) existe.
+- **Extração de componentes de UI** das telas gigantes (`listacompleta` 7.7k,
+  `prontuario_animal`, `cadastrar_novo_animal`): refator sem mudança funcional,
+  mas verificável só com o app rodando.
+- **Segredos versionados** (`credentials.txt`, `key.properties`, `.p8`, `.jks`):
+  ação do time (ver `documentacao/SEGURANCA_SEGREDOS.md`).
