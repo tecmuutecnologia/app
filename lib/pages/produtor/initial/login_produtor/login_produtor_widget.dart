@@ -1,5 +1,6 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
+import '/backend/objectbox/offline_auth_service.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -155,6 +156,7 @@ class _LoginProdutorWidgetState extends State<LoginProdutorWidget>
             _buildEmailField(),
             _buildPasswordField(),
             _buildLoginButton(),
+            _buildBiometricButton(),
           ],
         ),
       ),
@@ -199,6 +201,35 @@ class _LoginProdutorWidgetState extends State<LoginProdutorWidget>
     );
   }
 
+  /// Botão de login por biometria/PIN — só aparece se há sessão salva no cofre
+  /// e o aparelho suporta biometria/PIN (offline-first).
+  Widget _buildBiometricButton() {
+    return FutureBuilder<bool>(
+      future: OfflineAuthService.instance.then((s) => s.podeUsarBiometria()),
+      builder: (context, snap) {
+        if (snap.data != true) return const SizedBox.shrink();
+        return Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
+          child: OutlinedButton.icon(
+            onPressed: _handleLoginBiometria,
+            icon: const Icon(Icons.fingerprint, color: Color(0xFFF75E38)),
+            label: const Text(
+              'Entrar com biometria',
+              style: TextStyle(color: Color(0xFFF75E38)),
+            ),
+            style: OutlinedButton.styleFrom(
+              minimumSize: const Size(double.infinity, 44),
+              side: const BorderSide(color: Color(0xFFF75E38), width: 1.5),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   /// Processa o login do usuário.
   Future<void> _handleLogin() async {
     GoRouter.of(context).prepareAuthEvent();
@@ -213,6 +244,19 @@ class _LoginProdutorWidgetState extends State<LoginProdutorWidget>
       return;
     }
 
+    await _afterLogin();
+  }
+
+  /// Login offline por biometria/PIN: reabre a sessão sem digitar a senha.
+  Future<void> _handleLoginBiometria() async {
+    final service = await OfflineAuthService.instance;
+    final session = await service.loginOfflineComBiometria();
+    if (session == null || !mounted) return;
+    await _afterLogin();
+  }
+
+  /// Carrega person/propriedade e navega — comum aos logins por senha e biometria.
+  Future<void> _afterLogin() async {
     // Busca dados do usuário logado
     _model.uidPersonLogged = await queryPersonRecordOnce(
       queryBuilder: (personRecord) => personRecord.where(
