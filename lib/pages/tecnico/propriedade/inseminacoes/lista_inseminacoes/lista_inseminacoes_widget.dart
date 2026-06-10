@@ -107,6 +107,882 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
     super.dispose();
   }
 
+  /// Card extraído do build (Fase 4).
+  Widget _buildCard2(
+      BuildContext context, AnimaisProdutoresStruct item, int index) {
+    return Visibility(
+      visible: (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
+          ((item.nomeAnimal.toLowerCase().contains(
+                  _model.searchListTextController.text.toLowerCase())) ||
+              (item.brincoAnimal
+                  .toString()
+                  .contains(_model.searchListTextController.text))) &&
+          ehElegivelInseminacao(item.grupoAnimal, item.status),
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+        child: InkWell(
+          splashColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          onTap: () async {
+            context.pushNamed(
+              ProntuarioAnimalWidget.routeName,
+              queryParameters: {
+                'uidPropriedade': serializeParam(
+                  widget.uidPropriedade,
+                  ParamType.DocumentReference,
+                ),
+                'nomePropriedade': serializeParam(
+                  widget.nomePropriedade,
+                  ParamType.String,
+                ),
+                'uidTecnico': serializeParam(
+                  widget.uidTecnico,
+                  ParamType.DocumentReference,
+                ),
+                'emailPropriedade': serializeParam(
+                  widget.emailPropriedade,
+                  ParamType.String,
+                ),
+                'uidAnimaisProdutores': serializeParam(
+                  item.uidAnimal,
+                  ParamType.DocumentReference,
+                ),
+                'grupoPredominante': serializeParam(
+                  item.grupoAnimal,
+                  ParamType.String,
+                ),
+                'visitaPresencial': serializeParam(
+                  widget.visitaPresencial,
+                  ParamType.bool,
+                ),
+                'diasDg': serializeParam(
+                  widget.diasDg,
+                  ParamType.String,
+                ),
+              }.withoutNulls,
+            );
+          },
+          onLongPress: () async {},
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Container(
+                width: 360.0,
+                height: 140.0,
+                decoration: BoxDecoration(
+                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 4.0,
+                      color: Color(0x33000000),
+                      offset: Offset(
+                        0.0,
+                        2.0,
+                      ),
+                    )
+                  ],
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10.0),
+                    bottomRight: Radius.circular(10.0),
+                    topLeft: Radius.circular(10.0),
+                    topRight: Radius.circular(10.0),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
+                      child: Container(
+                        width: 44.0,
+                        height: 44.0,
+                        decoration: BoxDecoration(
+                          color: () {
+                            if (ehVaca(item.grupoAnimal)) {
+                              return Color(0xFF048508);
+                            } else if (ehNovilha(item.grupoAnimal)) {
+                              return Color(0xFFFF0076);
+                            } else {
+                              return Color(0x00000000);
+                            }
+                          }(),
+                          shape: BoxShape.circle,
+                        ),
+                        alignment: AlignmentDirectional(0.0, 0.0),
+                        child: Text(
+                          () {
+                            if (ehVaca(item.grupoAnimal)) {
+                              return 'VAC';
+                            } else if (ehNovilha(item.grupoAnimal)) {
+                              return 'NOV';
+                            } else {
+                              return 'N/C';
+                            }
+                          }(),
+                          style:
+                              FlutterFlowTheme.of(context).titleMedium.override(
+                                    font: GoogleFonts.readexPro(
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .titleMedium
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .titleMedium
+                                          .fontStyle,
+                                    ),
+                                    color: Colors.white,
+                                    fontSize: 13.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .titleMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .titleMedium
+                                        .fontStyle,
+                                  ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding:
+                            EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              () {
+                                if ((item.nomeAnimal != '') &&
+                                    (item.brincoAnimal != null) &&
+                                    (item.brincoAnimal != -1)) {
+                                  return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
+                                } else if (item.nomeAnimal != '') {
+                                  return item.nomeAnimal;
+                                } else {
+                                  return item.brincoAnimal.toString();
+                                }
+                              }(),
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyLarge
+                                  .override(
+                                    font: GoogleFonts.readexPro(
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .bodyLarge
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .bodyLarge
+                                          .fontStyle,
+                                    ),
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .bodyLarge
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyLarge
+                                        .fontStyle,
+                                  ),
+                            ),
+                            if (item.dtUltimaInseminacao != '')
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 4.0, 0.0, 0.0),
+                                child: Text(
+                                  'Última insem.: ${item.dtUltimaInseminacao}',
+                                  style: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .override(
+                                        font: GoogleFonts.readexPro(
+                                          fontWeight:
+                                              FlutterFlowTheme.of(context)
+                                                  .labelMedium
+                                                  .fontWeight,
+                                          fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .labelMedium
+                                                  .fontStyle,
+                                        ),
+                                        letterSpacing: 0.0,
+                                        fontWeight: FlutterFlowTheme.of(context)
+                                            .labelMedium
+                                            .fontWeight,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .labelMedium
+                                            .fontStyle,
+                                      ),
+                                ),
+                              ),
+                            if ((ehInseminada(item.status)) ||
+                                (ehInseminadaPP(item.status)))
+                              Text(
+                                'Inseminada',
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .override(
+                                      font: GoogleFonts.readexPro(
+                                        fontWeight: FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .fontWeight,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .fontStyle,
+                                      ),
+                                      color: Color(0xFF048508),
+                                      fontSize: 11.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontStyle,
+                                    ),
+                              ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: FFButtonWidget(
+                                    onPressed: () async {
+                                      await showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        backgroundColor: Colors.transparent,
+                                        enableDrag: false,
+                                        context: context,
+                                        builder: (context) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              FocusScope.of(context).unfocus();
+                                              FocusManager.instance.primaryFocus
+                                                  ?.unfocus();
+                                            },
+                                            child: Padding(
+                                              padding: MediaQuery.viewInsetsOf(
+                                                  context),
+                                              child: RegistrarCioWidget(
+                                                uidPropriedade:
+                                                    widget.uidPropriedade!,
+                                                nomePropriedade:
+                                                    widget.nomePropriedade!,
+                                                uidTecnico: widget.uidTecnico!,
+                                                emailPropriedade:
+                                                    widget.emailPropriedade!,
+                                                uidAnimaisProdutores:
+                                                    item.uidAnimal,
+                                                uidAnimalOffline:
+                                                    item.uidAnimalOffline,
+                                                grupoPredominante:
+                                                    item.grupoAnimal,
+                                                nomeAnimal: item.nomeAnimal,
+                                                visitaPresencial:
+                                                    widget.visitaPresencial!,
+                                                brincoAnimal: item.brincoAnimal
+                                                    .toString(),
+                                                diasDg: widget.diasDg!,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ).then((value) => safeSetState(() {}));
+                                    },
+                                    text: 'Fez Cio',
+                                    icon: Icon(
+                                      Icons.repeat,
+                                      size: 15.0,
+                                    ),
+                                    options: FFButtonOptions(
+                                      height: 30.0,
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          10.0, 0.0, 10.0, 0.0),
+                                      iconPadding:
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              0.0, 0.0, 0.0, 0.0),
+                                      color: Color(0xFF1A03E9),
+                                      textStyle: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .override(
+                                            font: GoogleFonts.readexPro(
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .titleSmall
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .titleSmall
+                                                      .fontStyle,
+                                            ),
+                                            color: Colors.white,
+                                            fontSize: 12.0,
+                                            letterSpacing: 0.0,
+                                            fontWeight:
+                                                FlutterFlowTheme.of(context)
+                                                    .titleSmall
+                                                    .fontWeight,
+                                            fontStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .titleSmall
+                                                    .fontStyle,
+                                          ),
+                                      elevation: 3.0,
+                                      borderSide: BorderSide(
+                                        color: Colors.transparent,
+                                        width: 1.0,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 8.0),
+                                Expanded(
+                                  child: FFButtonWidget(
+                                    onPressed: () async {
+                                      await showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        backgroundColor: Colors.transparent,
+                                        enableDrag: false,
+                                        context: context,
+                                        builder: (context) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              FocusScope.of(context).unfocus();
+                                              FocusManager.instance.primaryFocus
+                                                  ?.unfocus();
+                                            },
+                                            child: Padding(
+                                              padding: MediaQuery.viewInsetsOf(
+                                                  context),
+                                              child: NovaInseminacaoWidget(
+                                                uidPropriedade:
+                                                    widget.uidPropriedade!,
+                                                nomePropriedade:
+                                                    widget.nomePropriedade!,
+                                                uidTecnico: widget.uidTecnico!,
+                                                emailPropriedade:
+                                                    widget.emailPropriedade!,
+                                                grupoPredominante:
+                                                    item.grupoAnimal,
+                                                nomeAnimal: item.nomeAnimal,
+                                                visitaPresencial:
+                                                    widget.visitaPresencial!,
+                                                dtUltimaInseminacao:
+                                                    item.dtUltimaInseminacao,
+                                                brincoAnimal: item.brincoAnimal
+                                                    .toString(),
+                                                diasDg: widget.diasDg!,
+                                                uidAnimaisProdutores:
+                                                    item.uidAnimal,
+                                                uidAnimalOffline:
+                                                    item.uidAnimalOffline,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ).then((value) => safeSetState(() {}));
+                                    },
+                                    text: 'Inseminar',
+                                    icon: Icon(
+                                      Icons.playlist_add,
+                                      size: 15.0,
+                                    ),
+                                    options: FFButtonOptions(
+                                      height: 30.0,
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          10.0, 0.0, 10.0, 0.0),
+                                      iconPadding:
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              0.0, 0.0, 0.0, 0.0),
+                                      color: Color(0xFF7E39EF),
+                                      textStyle: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .override(
+                                            font: GoogleFonts.readexPro(
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .titleSmall
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .titleSmall
+                                                      .fontStyle,
+                                            ),
+                                            color: Colors.white,
+                                            fontSize: 12.0,
+                                            letterSpacing: 0.0,
+                                            fontWeight:
+                                                FlutterFlowTheme.of(context)
+                                                    .titleSmall
+                                                    .fontWeight,
+                                            fontStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .titleSmall
+                                                    .fontStyle,
+                                          ),
+                                      elevation: 3.0,
+                                      borderSide: BorderSide(
+                                        color: Colors.transparent,
+                                        width: 1.0,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Card extraído do build (Fase 4).
+  Widget _buildCard1(
+      BuildContext context, AnimaisProdutoresStruct item, int index) {
+    return Visibility(
+      visible: (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
+          (((ehVaca(item.grupoAnimal)) || (ehNovilha(item.grupoAnimal))) &&
+              ((ehVazia(item.status)) ||
+                  (ehInseminada(item.status)) ||
+                  (ehInseminadaPP(item.status)))),
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+        child: InkWell(
+          splashColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          onTap: () async {
+            context.pushNamed(
+              ProntuarioAnimalWidget.routeName,
+              queryParameters: {
+                'uidPropriedade': serializeParam(
+                  widget.uidPropriedade,
+                  ParamType.DocumentReference,
+                ),
+                'nomePropriedade': serializeParam(
+                  widget.nomePropriedade,
+                  ParamType.String,
+                ),
+                'uidTecnico': serializeParam(
+                  widget.uidTecnico,
+                  ParamType.DocumentReference,
+                ),
+                'emailPropriedade': serializeParam(
+                  widget.emailPropriedade,
+                  ParamType.String,
+                ),
+                'uidAnimaisProdutores': serializeParam(
+                  item.uidAnimal,
+                  ParamType.DocumentReference,
+                ),
+                'grupoPredominante': serializeParam(
+                  item.grupoAnimal,
+                  ParamType.String,
+                ),
+                'visitaPresencial': serializeParam(
+                  widget.visitaPresencial,
+                  ParamType.bool,
+                ),
+                'diasDg': serializeParam(
+                  widget.diasDg,
+                  ParamType.String,
+                ),
+              }.withoutNulls,
+            );
+          },
+          onLongPress: () async {},
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Container(
+                width: 360.0,
+                height: 140.0,
+                decoration: BoxDecoration(
+                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 4.0,
+                      color: Color(0x33000000),
+                      offset: Offset(
+                        0.0,
+                        2.0,
+                      ),
+                    )
+                  ],
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10.0),
+                    bottomRight: Radius.circular(10.0),
+                    topLeft: Radius.circular(10.0),
+                    topRight: Radius.circular(10.0),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
+                      child: Container(
+                        width: 44.0,
+                        height: 44.0,
+                        decoration: BoxDecoration(
+                          color: () {
+                            if (ehVaca(item.grupoAnimal)) {
+                              return Color(0xFF048508);
+                            } else if (ehNovilha(item.grupoAnimal)) {
+                              return Color(0xFFFF0076);
+                            } else {
+                              return Color(0x00000000);
+                            }
+                          }(),
+                          shape: BoxShape.circle,
+                        ),
+                        alignment: AlignmentDirectional(0.0, 0.0),
+                        child: Text(
+                          () {
+                            if (ehVaca(item.grupoAnimal)) {
+                              return 'VAC';
+                            } else if (ehNovilha(item.grupoAnimal)) {
+                              return 'NOV';
+                            } else {
+                              return 'N/C';
+                            }
+                          }(),
+                          style:
+                              FlutterFlowTheme.of(context).titleMedium.override(
+                                    font: GoogleFonts.readexPro(
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .titleMedium
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .titleMedium
+                                          .fontStyle,
+                                    ),
+                                    color: Colors.white,
+                                    fontSize: 13.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .titleMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .titleMedium
+                                        .fontStyle,
+                                  ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding:
+                            EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              () {
+                                if ((item.nomeAnimal != '') &&
+                                    (item.brincoAnimal != null) &&
+                                    (item.brincoAnimal != -1)) {
+                                  return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
+                                } else if (item.nomeAnimal != '') {
+                                  return item.nomeAnimal;
+                                } else {
+                                  return item.brincoAnimal.toString();
+                                }
+                              }(),
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyLarge
+                                  .override(
+                                    font: GoogleFonts.readexPro(
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .bodyLarge
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .bodyLarge
+                                          .fontStyle,
+                                    ),
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .bodyLarge
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyLarge
+                                        .fontStyle,
+                                  ),
+                            ),
+                            if (item.dtUltimaInseminacao != '')
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 4.0, 0.0, 0.0),
+                                child: Text(
+                                  'Última insem.: ${item.dtUltimaInseminacao}',
+                                  style: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .override(
+                                        font: GoogleFonts.readexPro(
+                                          fontWeight:
+                                              FlutterFlowTheme.of(context)
+                                                  .labelMedium
+                                                  .fontWeight,
+                                          fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .labelMedium
+                                                  .fontStyle,
+                                        ),
+                                        letterSpacing: 0.0,
+                                        fontWeight: FlutterFlowTheme.of(context)
+                                            .labelMedium
+                                            .fontWeight,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .labelMedium
+                                            .fontStyle,
+                                      ),
+                                ),
+                              ),
+                            if ((ehInseminada(item.status)) ||
+                                (ehInseminadaPP(item.status)))
+                              Text(
+                                'Inseminada',
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .override(
+                                      font: GoogleFonts.readexPro(
+                                        fontWeight: FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .fontWeight,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .bodyMedium
+                                            .fontStyle,
+                                      ),
+                                      color: Color(0xFF048508),
+                                      fontSize: 11.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontStyle,
+                                    ),
+                              ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: FFButtonWidget(
+                                    onPressed: () async {
+                                      await showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        backgroundColor: Colors.transparent,
+                                        enableDrag: false,
+                                        context: context,
+                                        builder: (context) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              FocusScope.of(context).unfocus();
+                                              FocusManager.instance.primaryFocus
+                                                  ?.unfocus();
+                                            },
+                                            child: Padding(
+                                              padding: MediaQuery.viewInsetsOf(
+                                                  context),
+                                              child: RegistrarCioWidget(
+                                                uidPropriedade:
+                                                    widget.uidPropriedade!,
+                                                nomePropriedade:
+                                                    widget.nomePropriedade!,
+                                                uidTecnico: widget.uidTecnico!,
+                                                emailPropriedade:
+                                                    widget.emailPropriedade!,
+                                                uidAnimaisProdutores:
+                                                    item.uidAnimal,
+                                                uidAnimalOffline:
+                                                    item.uidAnimalOffline,
+                                                grupoPredominante:
+                                                    item.grupoAnimal,
+                                                nomeAnimal: item.nomeAnimal,
+                                                visitaPresencial:
+                                                    widget.visitaPresencial!,
+                                                brincoAnimal: item.brincoAnimal
+                                                    .toString(),
+                                                diasDg: widget.diasDg!,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ).then((value) => safeSetState(() {}));
+                                    },
+                                    text: 'Fez Cio',
+                                    icon: Icon(
+                                      Icons.repeat,
+                                      size: 15.0,
+                                    ),
+                                    options: FFButtonOptions(
+                                      height: 30.0,
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          10.0, 0.0, 10.0, 0.0),
+                                      iconPadding:
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              0.0, 0.0, 0.0, 0.0),
+                                      color: Color(0xFF1A03E9),
+                                      textStyle: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .override(
+                                            font: GoogleFonts.readexPro(
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .titleSmall
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .titleSmall
+                                                      .fontStyle,
+                                            ),
+                                            color: Colors.white,
+                                            fontSize: 12.0,
+                                            letterSpacing: 0.0,
+                                            fontWeight:
+                                                FlutterFlowTheme.of(context)
+                                                    .titleSmall
+                                                    .fontWeight,
+                                            fontStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .titleSmall
+                                                    .fontStyle,
+                                          ),
+                                      elevation: 3.0,
+                                      borderSide: BorderSide(
+                                        color: Colors.transparent,
+                                        width: 1.0,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 8.0),
+                                Expanded(
+                                  child: FFButtonWidget(
+                                    onPressed: () async {
+                                      await showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        backgroundColor: Colors.transparent,
+                                        enableDrag: false,
+                                        context: context,
+                                        builder: (context) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              FocusScope.of(context).unfocus();
+                                              FocusManager.instance.primaryFocus
+                                                  ?.unfocus();
+                                            },
+                                            child: Padding(
+                                              padding: MediaQuery.viewInsetsOf(
+                                                  context),
+                                              child: NovaInseminacaoWidget(
+                                                uidPropriedade:
+                                                    widget.uidPropriedade!,
+                                                nomePropriedade:
+                                                    widget.nomePropriedade!,
+                                                uidTecnico: widget.uidTecnico!,
+                                                emailPropriedade:
+                                                    widget.emailPropriedade!,
+                                                grupoPredominante:
+                                                    item.grupoAnimal,
+                                                nomeAnimal: item.nomeAnimal,
+                                                visitaPresencial:
+                                                    widget.visitaPresencial!,
+                                                dtUltimaInseminacao:
+                                                    item.dtUltimaInseminacao,
+                                                brincoAnimal: item.brincoAnimal
+                                                    .toString(),
+                                                diasDg: widget.diasDg!,
+                                                uidAnimaisProdutores:
+                                                    item.uidAnimal,
+                                                uidAnimalOffline:
+                                                    item.uidAnimalOffline,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ).then((value) => safeSetState(() {}));
+                                    },
+                                    text: 'Inseminar',
+                                    icon: Icon(
+                                      Icons.playlist_add,
+                                      size: 15.0,
+                                    ),
+                                    options: FFButtonOptions(
+                                      height: 30.0,
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          10.0, 0.0, 10.0, 0.0),
+                                      iconPadding:
+                                          EdgeInsetsDirectional.fromSTEB(
+                                              0.0, 0.0, 0.0, 0.0),
+                                      color: Color(0xFF7E39EF),
+                                      textStyle: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .override(
+                                            font: GoogleFonts.readexPro(
+                                              fontWeight:
+                                                  FlutterFlowTheme.of(context)
+                                                      .titleSmall
+                                                      .fontWeight,
+                                              fontStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .titleSmall
+                                                      .fontStyle,
+                                            ),
+                                            color: Colors.white,
+                                            fontSize: 12.0,
+                                            letterSpacing: 0.0,
+                                            fontWeight:
+                                                FlutterFlowTheme.of(context)
+                                                    .titleSmall
+                                                    .fontWeight,
+                                            fontStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .titleSmall
+                                                    .fontStyle,
+                                          ),
+                                      elevation: 3.0,
+                                      borderSide: BorderSide(
+                                        color: Colors.transparent,
+                                        width: 1.0,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // context.watch<FFAppState>();
@@ -451,610 +1327,10 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                               final listaAnimaisOfflineExistenteItem =
                                   listaAnimaisOfflineExistente[
                                       listaAnimaisOfflineExistenteIndex];
-                              return Visibility(
-                                visible: (listaAnimaisOfflineExistenteItem
-                                            .uidTecnicoPropriedade ==
-                                        widget.uidPropriedade) &&
-                                    (((ehVaca(
-                                                listaAnimaisOfflineExistenteItem
-                                                    .grupoAnimal)) ||
-                                            (ehNovilha(
-                                                listaAnimaisOfflineExistenteItem
-                                                    .grupoAnimal))) &&
-                                        ((ehVazia(
-                                                listaAnimaisOfflineExistenteItem
-                                                    .status)) ||
-                                            (ehInseminada(
-                                                listaAnimaisOfflineExistenteItem
-                                                    .status)) ||
-                                            (ehInseminadaPP(
-                                                listaAnimaisOfflineExistenteItem
-                                                    .status)))),
-                                child: Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      16.0, 12.0, 16.0, 12.0),
-                                  child: InkWell(
-                                    splashColor: Colors.transparent,
-                                    focusColor: Colors.transparent,
-                                    hoverColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    onTap: () async {
-                                      context.pushNamed(
-                                        ProntuarioAnimalWidget.routeName,
-                                        queryParameters: {
-                                          'uidPropriedade': serializeParam(
-                                            widget.uidPropriedade,
-                                            ParamType.DocumentReference,
-                                          ),
-                                          'nomePropriedade': serializeParam(
-                                            widget.nomePropriedade,
-                                            ParamType.String,
-                                          ),
-                                          'uidTecnico': serializeParam(
-                                            widget.uidTecnico,
-                                            ParamType.DocumentReference,
-                                          ),
-                                          'emailPropriedade': serializeParam(
-                                            widget.emailPropriedade,
-                                            ParamType.String,
-                                          ),
-                                          'uidAnimaisProdutores':
-                                              serializeParam(
-                                            listaAnimaisOfflineExistenteItem
-                                                .uidAnimal,
-                                            ParamType.DocumentReference,
-                                          ),
-                                          'grupoPredominante': serializeParam(
-                                            listaAnimaisOfflineExistenteItem
-                                                .grupoAnimal,
-                                            ParamType.String,
-                                          ),
-                                          'visitaPresencial': serializeParam(
-                                            widget.visitaPresencial,
-                                            ParamType.bool,
-                                          ),
-                                          'diasDg': serializeParam(
-                                            widget.diasDg,
-                                            ParamType.String,
-                                          ),
-                                        }.withoutNulls,
-                                      );
-                                    },
-                                    onLongPress: () async {},
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          width: 360.0,
-                                          height: 140.0,
-                                          decoration: BoxDecoration(
-                                            color: FlutterFlowTheme.of(context)
-                                                .secondaryBackground,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                blurRadius: 4.0,
-                                                color: Color(0x33000000),
-                                                offset: Offset(
-                                                  0.0,
-                                                  2.0,
-                                                ),
-                                              )
-                                            ],
-                                            borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(10.0),
-                                              bottomRight:
-                                                  Radius.circular(10.0),
-                                              topLeft: Radius.circular(10.0),
-                                              topRight: Radius.circular(10.0),
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsetsDirectional
-                                                    .fromSTEB(
-                                                        16.0, 0.0, 0.0, 0.0),
-                                                child: Container(
-                                                  width: 44.0,
-                                                  height: 44.0,
-                                                  decoration: BoxDecoration(
-                                                    color: () {
-                                                      if (ehVaca(
-                                                          listaAnimaisOfflineExistenteItem
-                                                              .grupoAnimal)) {
-                                                        return Color(
-                                                            0xFF048508);
-                                                      } else if (ehNovilha(
-                                                          listaAnimaisOfflineExistenteItem
-                                                              .grupoAnimal)) {
-                                                        return Color(
-                                                            0xFFFF0076);
-                                                      } else {
-                                                        return Color(
-                                                            0x00000000);
-                                                      }
-                                                    }(),
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                  alignment:
-                                                      AlignmentDirectional(
-                                                          0.0, 0.0),
-                                                  child: Text(
-                                                    () {
-                                                      if (ehVaca(
-                                                          listaAnimaisOfflineExistenteItem
-                                                              .grupoAnimal)) {
-                                                        return 'VAC';
-                                                      } else if (ehNovilha(
-                                                          listaAnimaisOfflineExistenteItem
-                                                              .grupoAnimal)) {
-                                                        return 'NOV';
-                                                      } else {
-                                                        return 'N/C';
-                                                      }
-                                                    }(),
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .titleMedium
-                                                        .override(
-                                                          font: GoogleFonts
-                                                              .readexPro(
-                                                            fontWeight:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .titleMedium
-                                                                    .fontWeight,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .titleMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          color: Colors.white,
-                                                          fontSize: 13.0,
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .titleMedium
-                                                                  .fontWeight,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .titleMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding: EdgeInsetsDirectional
-                                                      .fromSTEB(
-                                                          12.0, 0.0, 0.0, 0.0),
-                                                  child: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        () {
-                                                          if ((listaAnimaisOfflineExistenteItem
-                                                                      .nomeAnimal !=
-                                                                  '') &&
-                                                              (listaAnimaisOfflineExistenteItem
-                                                                      .brincoAnimal !=
-                                                                  null) &&
-                                                              (listaAnimaisOfflineExistenteItem
-                                                                      .brincoAnimal !=
-                                                                  -1)) {
-                                                            return '${listaAnimaisOfflineExistenteItem.nomeAnimal} - ${listaAnimaisOfflineExistenteItem.brincoAnimal.toString()}';
-                                                          } else if (listaAnimaisOfflineExistenteItem
-                                                                  .nomeAnimal !=
-                                                              '') {
-                                                            return listaAnimaisOfflineExistenteItem
-                                                                .nomeAnimal;
-                                                          } else {
-                                                            return listaAnimaisOfflineExistenteItem
-                                                                .brincoAnimal
-                                                                .toString();
-                                                          }
-                                                        }(),
-                                                        style:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyLarge
-                                                                .override(
-                                                                  font: GoogleFonts
-                                                                      .readexPro(
-                                                                    fontWeight: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .bodyLarge
-                                                                        .fontWeight,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .bodyLarge
-                                                                        .fontStyle,
-                                                                  ),
-                                                                  letterSpacing:
-                                                                      0.0,
-                                                                  fontWeight: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyLarge
-                                                                      .fontWeight,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyLarge
-                                                                      .fontStyle,
-                                                                ),
-                                                      ),
-                                                      if (listaAnimaisOfflineExistenteItem
-                                                              .dtUltimaInseminacao !=
-                                                          '')
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsetsDirectional
-                                                                  .fromSTEB(
-                                                                      0.0,
-                                                                      4.0,
-                                                                      0.0,
-                                                                      0.0),
-                                                          child: Text(
-                                                            'Última insem.: ${listaAnimaisOfflineExistenteItem.dtUltimaInseminacao}',
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .labelMedium
-                                                                .override(
-                                                                  font: GoogleFonts
-                                                                      .readexPro(
-                                                                    fontWeight: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .labelMedium
-                                                                        .fontWeight,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .labelMedium
-                                                                        .fontStyle,
-                                                                  ),
-                                                                  letterSpacing:
-                                                                      0.0,
-                                                                  fontWeight: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelMedium
-                                                                      .fontWeight,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .labelMedium
-                                                                      .fontStyle,
-                                                                ),
-                                                          ),
-                                                        ),
-                                                      if ((ehInseminada(
-                                                              listaAnimaisOfflineExistenteItem
-                                                                  .status)) ||
-                                                          (ehInseminadaPP(
-                                                              listaAnimaisOfflineExistenteItem
-                                                                  .status)))
-                                                        Text(
-                                                          'Inseminada',
-                                                          style: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .bodyMedium
-                                                              .override(
-                                                                font: GoogleFonts
-                                                                    .readexPro(
-                                                                  fontWeight: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyMedium
-                                                                      .fontWeight,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyMedium
-                                                                      .fontStyle,
-                                                                ),
-                                                                color: Color(
-                                                                    0xFF048508),
-                                                                fontSize: 11.0,
-                                                                letterSpacing:
-                                                                    0.0,
-                                                                fontWeight: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontWeight,
-                                                                fontStyle: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                              ),
-                                                        ),
-                                                      Row(
-                                                        children: [
-                                                          Expanded(
-                                                            child:
-                                                                FFButtonWidget(
-                                                              onPressed:
-                                                                  () async {
-                                                                await showModalBottomSheet(
-                                                                  isScrollControlled:
-                                                                      true,
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .transparent,
-                                                                  enableDrag:
-                                                                      false,
-                                                                  context:
-                                                                      context,
-                                                                  builder:
-                                                                      (context) {
-                                                                    return GestureDetector(
-                                                                      onTap:
-                                                                          () {
-                                                                        FocusScope.of(context)
-                                                                            .unfocus();
-                                                                        FocusManager
-                                                                            .instance
-                                                                            .primaryFocus
-                                                                            ?.unfocus();
-                                                                      },
-                                                                      child:
-                                                                          Padding(
-                                                                        padding:
-                                                                            MediaQuery.viewInsetsOf(context),
-                                                                        child:
-                                                                            RegistrarCioWidget(
-                                                                          uidPropriedade:
-                                                                              widget.uidPropriedade!,
-                                                                          nomePropriedade:
-                                                                              widget.nomePropriedade!,
-                                                                          uidTecnico:
-                                                                              widget.uidTecnico!,
-                                                                          emailPropriedade:
-                                                                              widget.emailPropriedade!,
-                                                                          uidAnimaisProdutores:
-                                                                              listaAnimaisOfflineExistenteItem.uidAnimal,
-                                                                          uidAnimalOffline:
-                                                                              listaAnimaisOfflineExistenteItem.uidAnimalOffline,
-                                                                          grupoPredominante:
-                                                                              listaAnimaisOfflineExistenteItem.grupoAnimal,
-                                                                          nomeAnimal:
-                                                                              listaAnimaisOfflineExistenteItem.nomeAnimal,
-                                                                          visitaPresencial:
-                                                                              widget.visitaPresencial!,
-                                                                          brincoAnimal: listaAnimaisOfflineExistenteItem
-                                                                              .brincoAnimal
-                                                                              .toString(),
-                                                                          diasDg:
-                                                                              widget.diasDg!,
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  },
-                                                                ).then((value) =>
-                                                                    safeSetState(
-                                                                        () {}));
-                                                              },
-                                                              text: 'Fez Cio',
-                                                              icon: Icon(
-                                                                Icons.repeat,
-                                                                size: 15.0,
-                                                              ),
-                                                              options:
-                                                                  FFButtonOptions(
-                                                                height: 30.0,
-                                                                padding: EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        10.0,
-                                                                        0.0,
-                                                                        10.0,
-                                                                        0.0),
-                                                                iconPadding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                color: Color(
-                                                                    0xFF1A03E9),
-                                                                textStyle: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .titleSmall
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .readexPro(
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          12.0,
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .fontStyle,
-                                                                    ),
-                                                                elevation: 3.0,
-                                                                borderSide:
-                                                                    BorderSide(
-                                                                  color: Colors
-                                                                      .transparent,
-                                                                  width: 1.0,
-                                                                ),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            8.0),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(width: 8.0),
-                                                          Expanded(
-                                                            child:
-                                                                FFButtonWidget(
-                                                              onPressed:
-                                                                  () async {
-                                                                await showModalBottomSheet(
-                                                                  isScrollControlled:
-                                                                      true,
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .transparent,
-                                                                  enableDrag:
-                                                                      false,
-                                                                  context:
-                                                                      context,
-                                                                  builder:
-                                                                      (context) {
-                                                                    return GestureDetector(
-                                                                      onTap:
-                                                                          () {
-                                                                        FocusScope.of(context)
-                                                                            .unfocus();
-                                                                        FocusManager
-                                                                            .instance
-                                                                            .primaryFocus
-                                                                            ?.unfocus();
-                                                                      },
-                                                                      child:
-                                                                          Padding(
-                                                                        padding:
-                                                                            MediaQuery.viewInsetsOf(context),
-                                                                        child:
-                                                                            NovaInseminacaoWidget(
-                                                                          uidPropriedade:
-                                                                              widget.uidPropriedade!,
-                                                                          nomePropriedade:
-                                                                              widget.nomePropriedade!,
-                                                                          uidTecnico:
-                                                                              widget.uidTecnico!,
-                                                                          emailPropriedade:
-                                                                              widget.emailPropriedade!,
-                                                                          grupoPredominante:
-                                                                              listaAnimaisOfflineExistenteItem.grupoAnimal,
-                                                                          nomeAnimal:
-                                                                              listaAnimaisOfflineExistenteItem.nomeAnimal,
-                                                                          visitaPresencial:
-                                                                              widget.visitaPresencial!,
-                                                                          dtUltimaInseminacao:
-                                                                              listaAnimaisOfflineExistenteItem.dtUltimaInseminacao,
-                                                                          brincoAnimal: listaAnimaisOfflineExistenteItem
-                                                                              .brincoAnimal
-                                                                              .toString(),
-                                                                          diasDg:
-                                                                              widget.diasDg!,
-                                                                          uidAnimaisProdutores:
-                                                                              listaAnimaisOfflineExistenteItem.uidAnimal,
-                                                                          uidAnimalOffline:
-                                                                              listaAnimaisOfflineExistenteItem.uidAnimalOffline,
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  },
-                                                                ).then((value) =>
-                                                                    safeSetState(
-                                                                        () {}));
-                                                              },
-                                                              text: 'Inseminar',
-                                                              icon: Icon(
-                                                                Icons
-                                                                    .playlist_add,
-                                                                size: 15.0,
-                                                              ),
-                                                              options:
-                                                                  FFButtonOptions(
-                                                                height: 30.0,
-                                                                padding: EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        10.0,
-                                                                        0.0,
-                                                                        10.0,
-                                                                        0.0),
-                                                                iconPadding:
-                                                                    EdgeInsetsDirectional
-                                                                        .fromSTEB(
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0,
-                                                                            0.0),
-                                                                color: Color(
-                                                                    0xFF7E39EF),
-                                                                textStyle: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .titleSmall
-                                                                    .override(
-                                                                      font: GoogleFonts
-                                                                          .readexPro(
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontStyle,
-                                                                      ),
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          12.0,
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .titleSmall
-                                                                          .fontStyle,
-                                                                    ),
-                                                                elevation: 3.0,
-                                                                borderSide:
-                                                                    BorderSide(
-                                                                  color: Colors
-                                                                      .transparent,
-                                                                  width: 1.0,
-                                                                ),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            8.0),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
+                              return _buildCard1(
+                                  context,
+                                  listaAnimaisOfflineExistenteItem,
+                                  listaAnimaisOfflineExistenteIndex);
                             },
                           );
                         },
@@ -1092,611 +1368,10 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                 final listaAnimaisOfflineExistenteItem =
                                     listaAnimaisOfflineExistente[
                                         listaAnimaisOfflineExistenteIndex];
-                                return Visibility(
-                                  visible: (listaAnimaisOfflineExistenteItem
-                                              .uidTecnicoPropriedade ==
-                                          widget.uidPropriedade) &&
-                                      ((listaAnimaisOfflineExistenteItem
-                                              .nomeAnimal
-                                              .toLowerCase()
-                                              .contains(_model
-                                                  .searchListTextController.text
-                                                  .toLowerCase())) ||
-                                          (listaAnimaisOfflineExistenteItem
-                                              .brincoAnimal
-                                              .toString()
-                                              .contains(_model
-                                                  .searchListTextController
-                                                  .text))) &&
-                                      ehElegivelInseminacao(
-                                          listaAnimaisOfflineExistenteItem
-                                              .grupoAnimal,
-                                          listaAnimaisOfflineExistenteItem
-                                              .status),
-                                  child: Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        16.0, 12.0, 16.0, 12.0),
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        context.pushNamed(
-                                          ProntuarioAnimalWidget.routeName,
-                                          queryParameters: {
-                                            'uidPropriedade': serializeParam(
-                                              widget.uidPropriedade,
-                                              ParamType.DocumentReference,
-                                            ),
-                                            'nomePropriedade': serializeParam(
-                                              widget.nomePropriedade,
-                                              ParamType.String,
-                                            ),
-                                            'uidTecnico': serializeParam(
-                                              widget.uidTecnico,
-                                              ParamType.DocumentReference,
-                                            ),
-                                            'emailPropriedade': serializeParam(
-                                              widget.emailPropriedade,
-                                              ParamType.String,
-                                            ),
-                                            'uidAnimaisProdutores':
-                                                serializeParam(
-                                              listaAnimaisOfflineExistenteItem
-                                                  .uidAnimal,
-                                              ParamType.DocumentReference,
-                                            ),
-                                            'grupoPredominante': serializeParam(
-                                              listaAnimaisOfflineExistenteItem
-                                                  .grupoAnimal,
-                                              ParamType.String,
-                                            ),
-                                            'visitaPresencial': serializeParam(
-                                              widget.visitaPresencial,
-                                              ParamType.bool,
-                                            ),
-                                            'diasDg': serializeParam(
-                                              widget.diasDg,
-                                              ParamType.String,
-                                            ),
-                                          }.withoutNulls,
-                                        );
-                                      },
-                                      onLongPress: () async {},
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Container(
-                                            width: 360.0,
-                                            height: 140.0,
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  FlutterFlowTheme.of(context)
-                                                      .secondaryBackground,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  blurRadius: 4.0,
-                                                  color: Color(0x33000000),
-                                                  offset: Offset(
-                                                    0.0,
-                                                    2.0,
-                                                  ),
-                                                )
-                                              ],
-                                              borderRadius: BorderRadius.only(
-                                                bottomLeft:
-                                                    Radius.circular(10.0),
-                                                bottomRight:
-                                                    Radius.circular(10.0),
-                                                topLeft: Radius.circular(10.0),
-                                                topRight: Radius.circular(10.0),
-                                              ),
-                                            ),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsetsDirectional
-                                                      .fromSTEB(
-                                                          16.0, 0.0, 0.0, 0.0),
-                                                  child: Container(
-                                                    width: 44.0,
-                                                    height: 44.0,
-                                                    decoration: BoxDecoration(
-                                                      color: () {
-                                                        if (ehVaca(
-                                                            listaAnimaisOfflineExistenteItem
-                                                                .grupoAnimal)) {
-                                                          return Color(
-                                                              0xFF048508);
-                                                        } else if (ehNovilha(
-                                                            listaAnimaisOfflineExistenteItem
-                                                                .grupoAnimal)) {
-                                                          return Color(
-                                                              0xFFFF0076);
-                                                        } else {
-                                                          return Color(
-                                                              0x00000000);
-                                                        }
-                                                      }(),
-                                                      shape: BoxShape.circle,
-                                                    ),
-                                                    alignment:
-                                                        AlignmentDirectional(
-                                                            0.0, 0.0),
-                                                    child: Text(
-                                                      () {
-                                                        if (ehVaca(
-                                                            listaAnimaisOfflineExistenteItem
-                                                                .grupoAnimal)) {
-                                                          return 'VAC';
-                                                        } else if (ehNovilha(
-                                                            listaAnimaisOfflineExistenteItem
-                                                                .grupoAnimal)) {
-                                                          return 'NOV';
-                                                        } else {
-                                                          return 'N/C';
-                                                        }
-                                                      }(),
-                                                      style: FlutterFlowTheme
-                                                              .of(context)
-                                                          .titleMedium
-                                                          .override(
-                                                            font: GoogleFonts
-                                                                .readexPro(
-                                                              fontWeight:
-                                                                  FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleMedium
-                                                                      .fontWeight,
-                                                              fontStyle:
-                                                                  FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleMedium
-                                                                      .fontStyle,
-                                                            ),
-                                                            color: Colors.white,
-                                                            fontSize: 13.0,
-                                                            letterSpacing: 0.0,
-                                                            fontWeight:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .titleMedium
-                                                                    .fontWeight,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .titleMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding:
-                                                        EdgeInsetsDirectional
-                                                            .fromSTEB(12.0, 0.0,
-                                                                0.0, 0.0),
-                                                    child: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.max,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          () {
-                                                            if ((listaAnimaisOfflineExistenteItem
-                                                                        .nomeAnimal !=
-                                                                    '') &&
-                                                                (listaAnimaisOfflineExistenteItem
-                                                                        .brincoAnimal !=
-                                                                    null) &&
-                                                                (listaAnimaisOfflineExistenteItem
-                                                                        .brincoAnimal !=
-                                                                    -1)) {
-                                                              return '${listaAnimaisOfflineExistenteItem.nomeAnimal} - ${listaAnimaisOfflineExistenteItem.brincoAnimal.toString()}';
-                                                            } else if (listaAnimaisOfflineExistenteItem
-                                                                    .nomeAnimal !=
-                                                                '') {
-                                                              return listaAnimaisOfflineExistenteItem
-                                                                  .nomeAnimal;
-                                                            } else {
-                                                              return listaAnimaisOfflineExistenteItem
-                                                                  .brincoAnimal
-                                                                  .toString();
-                                                            }
-                                                          }(),
-                                                          style: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .bodyLarge
-                                                              .override(
-                                                                font: GoogleFonts
-                                                                    .readexPro(
-                                                                  fontWeight: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyLarge
-                                                                      .fontWeight,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyLarge
-                                                                      .fontStyle,
-                                                                ),
-                                                                letterSpacing:
-                                                                    0.0,
-                                                                fontWeight: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyLarge
-                                                                    .fontWeight,
-                                                                fontStyle: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyLarge
-                                                                    .fontStyle,
-                                                              ),
-                                                        ),
-                                                        if (listaAnimaisOfflineExistenteItem
-                                                                .dtUltimaInseminacao !=
-                                                            '')
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        0.0,
-                                                                        4.0,
-                                                                        0.0,
-                                                                        0.0),
-                                                            child: Text(
-                                                              'Última insem.: ${listaAnimaisOfflineExistenteItem.dtUltimaInseminacao}',
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .labelMedium
-                                                                  .override(
-                                                                    font: GoogleFonts
-                                                                        .readexPro(
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .labelMedium
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .labelMedium
-                                                                          .fontStyle,
-                                                                    ),
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                    fontWeight: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .labelMedium
-                                                                        .fontWeight,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .labelMedium
-                                                                        .fontStyle,
-                                                                  ),
-                                                            ),
-                                                          ),
-                                                        if ((ehInseminada(
-                                                                listaAnimaisOfflineExistenteItem
-                                                                    .status)) ||
-                                                            (ehInseminadaPP(
-                                                                listaAnimaisOfflineExistenteItem
-                                                                    .status)))
-                                                          Text(
-                                                            'Inseminada',
-                                                            style: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .bodyMedium
-                                                                .override(
-                                                                  font: GoogleFonts
-                                                                      .readexPro(
-                                                                    fontWeight: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .bodyMedium
-                                                                        .fontWeight,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .bodyMedium
-                                                                        .fontStyle,
-                                                                  ),
-                                                                  color: Color(
-                                                                      0xFF048508),
-                                                                  fontSize:
-                                                                      11.0,
-                                                                  letterSpacing:
-                                                                      0.0,
-                                                                  fontWeight: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyMedium
-                                                                      .fontWeight,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .bodyMedium
-                                                                      .fontStyle,
-                                                                ),
-                                                          ),
-                                                        Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child:
-                                                                  FFButtonWidget(
-                                                                onPressed:
-                                                                    () async {
-                                                                  await showModalBottomSheet(
-                                                                    isScrollControlled:
-                                                                        true,
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .transparent,
-                                                                    enableDrag:
-                                                                        false,
-                                                                    context:
-                                                                        context,
-                                                                    builder:
-                                                                        (context) {
-                                                                      return GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          FocusScope.of(context)
-                                                                              .unfocus();
-                                                                          FocusManager
-                                                                              .instance
-                                                                              .primaryFocus
-                                                                              ?.unfocus();
-                                                                        },
-                                                                        child:
-                                                                            Padding(
-                                                                          padding:
-                                                                              MediaQuery.viewInsetsOf(context),
-                                                                          child:
-                                                                              RegistrarCioWidget(
-                                                                            uidPropriedade:
-                                                                                widget.uidPropriedade!,
-                                                                            nomePropriedade:
-                                                                                widget.nomePropriedade!,
-                                                                            uidTecnico:
-                                                                                widget.uidTecnico!,
-                                                                            emailPropriedade:
-                                                                                widget.emailPropriedade!,
-                                                                            uidAnimaisProdutores:
-                                                                                listaAnimaisOfflineExistenteItem.uidAnimal,
-                                                                            uidAnimalOffline:
-                                                                                listaAnimaisOfflineExistenteItem.uidAnimalOffline,
-                                                                            grupoPredominante:
-                                                                                listaAnimaisOfflineExistenteItem.grupoAnimal,
-                                                                            nomeAnimal:
-                                                                                listaAnimaisOfflineExistenteItem.nomeAnimal,
-                                                                            visitaPresencial:
-                                                                                widget.visitaPresencial!,
-                                                                            brincoAnimal:
-                                                                                listaAnimaisOfflineExistenteItem.brincoAnimal.toString(),
-                                                                            diasDg:
-                                                                                widget.diasDg!,
-                                                                          ),
-                                                                        ),
-                                                                      );
-                                                                    },
-                                                                  ).then((value) =>
-                                                                      safeSetState(
-                                                                          () {}));
-                                                                },
-                                                                text: 'Fez Cio',
-                                                                icon: Icon(
-                                                                  Icons.repeat,
-                                                                  size: 15.0,
-                                                                ),
-                                                                options:
-                                                                    FFButtonOptions(
-                                                                  height: 30.0,
-                                                                  padding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          10.0,
-                                                                          0.0,
-                                                                          10.0,
-                                                                          0.0),
-                                                                  iconPadding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                                  color: Color(
-                                                                      0xFF1A03E9),
-                                                                  textStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleSmall
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .titleSmall
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .titleSmall
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            12.0,
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontStyle,
-                                                                      ),
-                                                                  elevation:
-                                                                      3.0,
-                                                                  borderSide:
-                                                                      BorderSide(
-                                                                    color: Colors
-                                                                        .transparent,
-                                                                    width: 1.0,
-                                                                  ),
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              8.0),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                                width: 8.0),
-                                                            Expanded(
-                                                              child:
-                                                                  FFButtonWidget(
-                                                                onPressed:
-                                                                    () async {
-                                                                  await showModalBottomSheet(
-                                                                    isScrollControlled:
-                                                                        true,
-                                                                    backgroundColor:
-                                                                        Colors
-                                                                            .transparent,
-                                                                    enableDrag:
-                                                                        false,
-                                                                    context:
-                                                                        context,
-                                                                    builder:
-                                                                        (context) {
-                                                                      return GestureDetector(
-                                                                        onTap:
-                                                                            () {
-                                                                          FocusScope.of(context)
-                                                                              .unfocus();
-                                                                          FocusManager
-                                                                              .instance
-                                                                              .primaryFocus
-                                                                              ?.unfocus();
-                                                                        },
-                                                                        child:
-                                                                            Padding(
-                                                                          padding:
-                                                                              MediaQuery.viewInsetsOf(context),
-                                                                          child:
-                                                                              NovaInseminacaoWidget(
-                                                                            uidPropriedade:
-                                                                                widget.uidPropriedade!,
-                                                                            nomePropriedade:
-                                                                                widget.nomePropriedade!,
-                                                                            uidTecnico:
-                                                                                widget.uidTecnico!,
-                                                                            emailPropriedade:
-                                                                                widget.emailPropriedade!,
-                                                                            grupoPredominante:
-                                                                                listaAnimaisOfflineExistenteItem.grupoAnimal,
-                                                                            nomeAnimal:
-                                                                                listaAnimaisOfflineExistenteItem.nomeAnimal,
-                                                                            visitaPresencial:
-                                                                                widget.visitaPresencial!,
-                                                                            dtUltimaInseminacao:
-                                                                                listaAnimaisOfflineExistenteItem.dtUltimaInseminacao,
-                                                                            brincoAnimal:
-                                                                                listaAnimaisOfflineExistenteItem.brincoAnimal.toString(),
-                                                                            diasDg:
-                                                                                widget.diasDg!,
-                                                                            uidAnimaisProdutores:
-                                                                                listaAnimaisOfflineExistenteItem.uidAnimal,
-                                                                            uidAnimalOffline:
-                                                                                listaAnimaisOfflineExistenteItem.uidAnimalOffline,
-                                                                          ),
-                                                                        ),
-                                                                      );
-                                                                    },
-                                                                  ).then((value) =>
-                                                                      safeSetState(
-                                                                          () {}));
-                                                                },
-                                                                text:
-                                                                    'Inseminar',
-                                                                icon: Icon(
-                                                                  Icons
-                                                                      .playlist_add,
-                                                                  size: 15.0,
-                                                                ),
-                                                                options:
-                                                                    FFButtonOptions(
-                                                                  height: 30.0,
-                                                                  padding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          10.0,
-                                                                          0.0,
-                                                                          10.0,
-                                                                          0.0),
-                                                                  iconPadding: EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                                  color: Color(
-                                                                      0xFF7E39EF),
-                                                                  textStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .titleSmall
-                                                                      .override(
-                                                                        font: GoogleFonts
-                                                                            .readexPro(
-                                                                          fontWeight: FlutterFlowTheme.of(context)
-                                                                              .titleSmall
-                                                                              .fontWeight,
-                                                                          fontStyle: FlutterFlowTheme.of(context)
-                                                                              .titleSmall
-                                                                              .fontStyle,
-                                                                        ),
-                                                                        color: Colors
-                                                                            .white,
-                                                                        fontSize:
-                                                                            12.0,
-                                                                        letterSpacing:
-                                                                            0.0,
-                                                                        fontWeight: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontWeight,
-                                                                        fontStyle: FlutterFlowTheme.of(context)
-                                                                            .titleSmall
-                                                                            .fontStyle,
-                                                                      ),
-                                                                  elevation:
-                                                                      3.0,
-                                                                  borderSide:
-                                                                      BorderSide(
-                                                                    color: Colors
-                                                                        .transparent,
-                                                                    width: 1.0,
-                                                                  ),
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              8.0),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
+                                return _buildCard2(
+                                    context,
+                                    listaAnimaisOfflineExistenteItem,
+                                    listaAnimaisOfflineExistenteIndex);
                               },
                             );
                           },
