@@ -36,37 +36,6 @@ class FFAppState extends ChangeNotifier {
           _animaisProdutoresOffline;
     });
     _safeInit(() {
-      _animaisProdutoresEditados = prefs
-              .getStringList('ff_animaisProdutoresEditados')
-              ?.map((x) {
-                try {
-                  return AnimaisProdutoresStruct.fromSerializableMap(
-                      jsonDecode(x));
-                } catch (e) {
-                  print("Can't decode persisted data type. Error: $e.");
-                  return null;
-                }
-              })
-              .withoutNulls
-              .toList() ??
-          _animaisProdutoresEditados;
-    });
-    _safeInit(() {
-      _acoesOffline = prefs
-              .getStringList('ff_acoesOffline')
-              ?.map((x) {
-                try {
-                  return AcoesStruct.fromSerializableMap(jsonDecode(x));
-                } catch (e) {
-                  print("Can't decode persisted data type. Error: $e.");
-                  return null;
-                }
-              })
-              .withoutNulls
-              .toList() ??
-          _acoesOffline;
-    });
-    _safeInit(() {
       _acoesPreferidas =
           prefs.getStringList('ff_acoesPreferidas') ?? _acoesPreferidas;
     });
@@ -133,91 +102,6 @@ class FFAppState extends ChangeNotifier {
     animaisProdutoresOffline.insert(index, value);
     prefs.setStringList('ff_animaisProdutoresOffline',
         _animaisProdutoresOffline.map((x) => x.serialize()).toList());
-  }
-
-  List<AnimaisProdutoresStruct> _animaisProdutoresEditados = [];
-  List<AnimaisProdutoresStruct> get animaisProdutoresEditados =>
-      _animaisProdutoresEditados;
-  set animaisProdutoresEditados(List<AnimaisProdutoresStruct> value) {
-    _animaisProdutoresEditados = value;
-    prefs.setStringList('ff_animaisProdutoresEditados',
-        value.map((x) => x.serialize()).toList());
-  }
-
-  void addToAnimaisProdutoresEditados(AnimaisProdutoresStruct value) {
-    animaisProdutoresEditados.add(value);
-    prefs.setStringList('ff_animaisProdutoresEditados',
-        _animaisProdutoresEditados.map((x) => x.serialize()).toList());
-  }
-
-  void removeFromAnimaisProdutoresEditados(AnimaisProdutoresStruct value) {
-    animaisProdutoresEditados.remove(value);
-    prefs.setStringList('ff_animaisProdutoresEditados',
-        _animaisProdutoresEditados.map((x) => x.serialize()).toList());
-  }
-
-  void removeAtIndexFromAnimaisProdutoresEditados(int index) {
-    animaisProdutoresEditados.removeAt(index);
-    prefs.setStringList('ff_animaisProdutoresEditados',
-        _animaisProdutoresEditados.map((x) => x.serialize()).toList());
-  }
-
-  void updateAnimaisProdutoresEditadosAtIndex(
-    int index,
-    AnimaisProdutoresStruct Function(AnimaisProdutoresStruct) updateFn,
-  ) {
-    animaisProdutoresEditados[index] =
-        updateFn(_animaisProdutoresEditados[index]);
-    prefs.setStringList('ff_animaisProdutoresEditados',
-        _animaisProdutoresEditados.map((x) => x.serialize()).toList());
-  }
-
-  void insertAtIndexInAnimaisProdutoresEditados(
-      int index, AnimaisProdutoresStruct value) {
-    animaisProdutoresEditados.insert(index, value);
-    prefs.setStringList('ff_animaisProdutoresEditados',
-        _animaisProdutoresEditados.map((x) => x.serialize()).toList());
-  }
-
-  List<AcoesStruct> _acoesOffline = [];
-  List<AcoesStruct> get acoesOffline => _acoesOffline;
-  set acoesOffline(List<AcoesStruct> value) {
-    _acoesOffline = value;
-    prefs.setStringList(
-        'ff_acoesOffline', value.map((x) => x.serialize()).toList());
-  }
-
-  void addToAcoesOffline(AcoesStruct value) {
-    acoesOffline.add(value);
-    prefs.setStringList(
-        'ff_acoesOffline', _acoesOffline.map((x) => x.serialize()).toList());
-  }
-
-  void removeFromAcoesOffline(AcoesStruct value) {
-    acoesOffline.remove(value);
-    prefs.setStringList(
-        'ff_acoesOffline', _acoesOffline.map((x) => x.serialize()).toList());
-  }
-
-  void removeAtIndexFromAcoesOffline(int index) {
-    acoesOffline.removeAt(index);
-    prefs.setStringList(
-        'ff_acoesOffline', _acoesOffline.map((x) => x.serialize()).toList());
-  }
-
-  void updateAcoesOfflineAtIndex(
-    int index,
-    AcoesStruct Function(AcoesStruct) updateFn,
-  ) {
-    acoesOffline[index] = updateFn(_acoesOffline[index]);
-    prefs.setStringList(
-        'ff_acoesOffline', _acoesOffline.map((x) => x.serialize()).toList());
-  }
-
-  void insertAtIndexInAcoesOffline(int index, AcoesStruct value) {
-    acoesOffline.insert(index, value);
-    prefs.setStringList(
-        'ff_acoesOffline', _acoesOffline.map((x) => x.serialize()).toList());
   }
 
   List<String> _acoesPreferidas = [];

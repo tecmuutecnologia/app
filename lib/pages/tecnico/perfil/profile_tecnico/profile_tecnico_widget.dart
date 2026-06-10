@@ -1332,8 +1332,6 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
                     child: FFButtonWidget(
                       onPressed: () async {
                         FFAppState().animaisProdutoresOffline = [];
-                        FFAppState().animaisProdutoresEditados = [];
-                        FFAppState().acoesOffline = [];
                         safeSetState(() {});
                         GoRouter.of(context).prepareAuthEvent();
                         await authManager.signOut();

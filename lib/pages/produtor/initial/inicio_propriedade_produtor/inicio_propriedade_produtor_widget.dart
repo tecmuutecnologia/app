@@ -325,20 +325,15 @@ class _InicioPropriedadeProdutorWidgetState
       return SyncStatusBar(
         isOnline: false,
         offlineAnimaisCount: appState.animaisProdutoresOffline.length,
-        editedAnimaisCount: appState.animaisProdutoresEditados
-            .where((e) => e.uidTecnicoPropriedade == widget.uidPropriedade)
-            .toList()
-            .length,
-        offlineActionsCount: appState.acoesOffline.length,
+        editedAnimaisCount: 0,
+        offlineActionsCount: 0,
         uidTecnico: widget.uidTecnico,
         uidPropriedade: widget.uidPropriedade,
       );
     }
 
     // Com internet e tem dados para sincronizar
-    if (appState.animaisProdutoresOffline.isNotEmpty ||
-        appState.animaisProdutoresEditados.isNotEmpty ||
-        appState.acoesOffline.isNotEmpty) {
+    if (appState.animaisProdutoresOffline.isNotEmpty || false || false) {
       return _buildSyncRequiredSection(appState);
     }
 
@@ -375,17 +370,14 @@ class _InicioPropriedadeProdutorWidgetState
   }
 
   Widget _buildSyncMessage(FFAppState appState) {
-    final editedCount = appState.animaisProdutoresEditados
-        .where((e) => e.uidTecnicoPropriedade == widget.uidPropriedade)
-        .toList()
-        .length;
+    final editedCount = 0;
 
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 0.0, 0.0),
       child: Text(
         'Você tem ${appState.animaisProdutoresOffline.length} novos animais cadastrados, '
         '$editedCount animais modificados e '
-        '${appState.acoesOffline.length} novas ações feitas. '
+        '${0} novas ações feitas. '
         'Deseja sincronizá-los agora?',
         textAlign: TextAlign.center,
         style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -437,8 +429,6 @@ class _InicioPropriedadeProdutorWidgetState
 
           if (confirmDialogResponse) {
             appState.animaisProdutoresOffline = [];
-            appState.animaisProdutoresEditados = [];
-            appState.acoesOffline = [];
             safeSetState(() {});
           }
         },

@@ -46,8 +46,6 @@ class _SyncTechnicianWidgetState extends State<SyncTechnicianWidget> {
       // mecanismo antigo ANTES de limpar o array (antes isto os descartava).
       await migrarAnimaisOfflineLegado(FFAppState().animaisProdutoresOffline);
       FFAppState().animaisProdutoresOffline = [];
-      FFAppState().animaisProdutoresEditados = [];
-      FFAppState().acoesOffline = [];
       safeSetState(() {});
       if (_model.personverify != null) {
         _model.uidTecnico = await queryTecnicoRecordOnce(

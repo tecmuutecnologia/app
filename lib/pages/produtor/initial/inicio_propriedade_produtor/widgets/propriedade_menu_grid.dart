@@ -99,9 +99,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
 
     if (isOnline) {
       // Verifica se precisa sincronizar
-      if (appState.animaisProdutoresOffline.isEmpty &&
-          appState.animaisProdutoresEditados.isEmpty &&
-          appState.acoesOffline.isEmpty) {
+      if (appState.animaisProdutoresOffline.isEmpty && true && true) {
         context.pushNamed(
           ListaAnimaisWidget.routeName,
           queryParameters: navigationParams.toQueryParameters(),

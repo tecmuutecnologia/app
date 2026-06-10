@@ -715,11 +715,8 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                                               .animaisProdutoresOffline
                                               .length ==
                                           0) &&
-                                      (FFAppState()
-                                              .animaisProdutoresEditados
-                                              .length ==
-                                          0) &&
-                                      (FFAppState().acoesOffline.length == 0)) {
+                                      (true) &&
+                                      (true)) {
                                     context.pushNamed(
                                       ListaAnimaisWidget.routeName,
                                       queryParameters: {
