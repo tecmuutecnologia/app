@@ -88,6 +88,21 @@ void main() {
     });
   });
 
+  group('cálculos financeiros (relatório de leite)', () {
+    test('calcularLitrosLeiteMes = litros/dia * 30', () {
+      expect(functions.calcularLitrosLeiteMes('10'), 300);
+    });
+
+    test('calcularMediaProducaoPorVaca = litros / vacas (2 casas)', () {
+      expect(functions.calcularMediaProducaoPorVaca('100', '8'), 12.5);
+    });
+
+    test('calcularTotalRecebido formata R\$ com milhar e 2 casas', () {
+      expect(functions.calcularTotalRecebido('R\$ 2,00', '100'), 'R\$ 200,00');
+      expect(functions.calcularTotalRecebido('2,50', '1000'), 'R\$ 2.500,00');
+    });
+  });
+
   group('criarUidRandom', () {
     test('20 chars alfanuméricos e razoavelmente único', () {
       final id = functions.criarUidRandom();
