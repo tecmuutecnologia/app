@@ -405,6 +405,1865 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
     super.dispose();
   }
 
+  Widget _p1(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(24.0, 25.0, 0.0, 0.0),
+      child: Text(
+        'Menu de Ações',
+        textAlign: TextAlign.start,
+        style: FlutterFlowTheme.of(context).labelMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FontWeight.w600,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FontWeight.w600,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+      ),
+    );
+  }
+
+  Widget _p2(BuildContext context,
+      dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+      child: GridView(
+        padding: EdgeInsets.zero,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          crossAxisSpacing: 10.0,
+          mainAxisSpacing: 10.0,
+          childAspectRatio: 1.0,
+        ),
+        primary: false,
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        children: [
+          _p3(context),
+          _p4(context),
+          _p5(context),
+          _p6(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _p7(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _p8(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _p9(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _p10(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _p11(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _p12(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          if (_model.respostaNet ?? true)
+            Container(
+              width: MediaQuery.sizeOf(context).width * 0.3,
+              height: 120.0,
+              decoration: BoxDecoration(
+                color: FlutterFlowTheme.of(context).primaryBackground,
+                borderRadius: BorderRadius.circular(24.0),
+                border: Border.all(
+                  color: Color(0xFFEC3B5B),
+                ),
+              ),
+              child: InkWell(
+                splashColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onTap: () async {
+                  context.pushNamed(
+                    ReceituariosListaWidget.routeName,
+                    queryParameters: {
+                      'uidPropriedade': serializeParam(
+                        widget.uidPropriedade,
+                        ParamType.DocumentReference,
+                      ),
+                      'nomePropriedade': serializeParam(
+                        widget.nomePropriedade,
+                        ParamType.String,
+                      ),
+                      'uidTecnico': serializeParam(
+                        widget.uidTecnico,
+                        ParamType.DocumentReference,
+                      ),
+                      'emailPropriedade': serializeParam(
+                        widget.emailPropriedade,
+                        ParamType.String,
+                      ),
+                      'visitaPresencial': serializeParam(
+                        widget.visitaPresencial,
+                        ParamType.bool,
+                      ),
+                      'diasDg': serializeParam(
+                        widget.diasDg,
+                        ParamType.String,
+                      ),
+                    }.withoutNulls,
+                  );
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.summarize,
+                      color: Color(0xFFEC3B5B),
+                      size: 30.0,
+                    ),
+                    _p14(context),
+                  ],
+                ),
+              ),
+            ).animateOnPageLoad(
+                animationsMap['containerOnPageLoadAnimation11']!),
+          if (_model.respostaNet ?? true)
+            Container(
+              width: MediaQuery.sizeOf(context).width * 0.3,
+              height: 120.0,
+              decoration: BoxDecoration(
+                color: FlutterFlowTheme.of(context).primaryBackground,
+                borderRadius: BorderRadius.circular(24.0),
+                border: Border.all(
+                  color: Color(0xFFEC3B5B),
+                ),
+              ),
+              child: InkWell(
+                splashColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onTap: () async {
+                  context.pushNamed(
+                    ResumoRebanhoWidget.routeName,
+                    queryParameters: {
+                      'uidPropriedade': serializeParam(
+                        widget.uidPropriedade,
+                        ParamType.DocumentReference,
+                      ),
+                      'nomePropriedade': serializeParam(
+                        widget.nomePropriedade,
+                        ParamType.String,
+                      ),
+                      'uidTecnico': serializeParam(
+                        widget.uidTecnico,
+                        ParamType.DocumentReference,
+                      ),
+                      'emailPropriedade': serializeParam(
+                        widget.emailPropriedade,
+                        ParamType.String,
+                      ),
+                      'visitaPresencial': serializeParam(
+                        widget.visitaPresencial,
+                        ParamType.bool,
+                      ),
+                      'diasDg': serializeParam(
+                        widget.diasDg,
+                        ParamType.String,
+                      ),
+                    }.withoutNulls,
+                  );
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.summarize_outlined,
+                      color: Color(0xFFEC3B5B),
+                      size: 30.0,
+                    ),
+                    _p15(context),
+                  ],
+                ),
+              ),
+            ).animateOnPageLoad(
+                animationsMap['containerOnPageLoadAnimation12']!),
+          if (_model.respostaNet ?? true)
+            Container(
+              width: MediaQuery.sizeOf(context).width * 0.3,
+              height: 120.0,
+              decoration: BoxDecoration(
+                color: FlutterFlowTheme.of(context).primaryBackground,
+                borderRadius: BorderRadius.circular(24.0),
+                border: Border.all(
+                  color: Color(0xFFEC3B5B),
+                ),
+              ),
+              child: InkWell(
+                splashColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onTap: () async {
+                  context.pushNamed(
+                    CalendarioSanitarioWidget.routeName,
+                    queryParameters: {
+                      'uidPropriedade': serializeParam(
+                        widget.uidPropriedade,
+                        ParamType.DocumentReference,
+                      ),
+                      'nomePropriedade': serializeParam(
+                        widget.nomePropriedade,
+                        ParamType.String,
+                      ),
+                      'uidTecnico': serializeParam(
+                        widget.uidTecnico,
+                        ParamType.DocumentReference,
+                      ),
+                      'emailPropriedade': serializeParam(
+                        widget.emailPropriedade,
+                        ParamType.String,
+                      ),
+                      'visitaPresencial': serializeParam(
+                        widget.visitaPresencial,
+                        ParamType.bool,
+                      ),
+                      'diasDg': serializeParam(
+                        widget.diasDg,
+                        ParamType.String,
+                      ),
+                    }.withoutNulls,
+                  );
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.calendar_today,
+                      color: Color(0xFFEC3B5B),
+                      size: 28.0,
+                    ),
+                    _p16(context),
+                  ],
+                ),
+              ),
+            ).animateOnPageLoad(
+                animationsMap['containerOnPageLoadAnimation13']!),
+          _p13(context),
+          if (_model.respostaNet ?? true)
+            Container(
+              width: MediaQuery.sizeOf(context).width * 0.3,
+              height: 120.0,
+              decoration: BoxDecoration(
+                color: FlutterFlowTheme.of(context).primaryBackground,
+                borderRadius: BorderRadius.circular(24.0),
+                border: Border.all(
+                  color: Color(0xFFEC3B5B),
+                ),
+              ),
+              child: InkWell(
+                splashColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onTap: () async {
+                  context.pushNamed(
+                    RelatorioFinanceiroWidget.routeName,
+                    queryParameters: {
+                      'uidPropriedade': serializeParam(
+                        widget.uidPropriedade,
+                        ParamType.DocumentReference,
+                      ),
+                      'nomePropriedade': serializeParam(
+                        widget.nomePropriedade,
+                        ParamType.String,
+                      ),
+                      'uidTecnico': serializeParam(
+                        widget.uidTecnico,
+                        ParamType.DocumentReference,
+                      ),
+                      'emailPropriedade': serializeParam(
+                        widget.emailPropriedade,
+                        ParamType.String,
+                      ),
+                      'visitaPresencial': serializeParam(
+                        widget.visitaPresencial,
+                        ParamType.bool,
+                      ),
+                      'diasDg': serializeParam(
+                        widget.diasDg,
+                        ParamType.String,
+                      ),
+                    }.withoutNulls,
+                  );
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.attach_money_sharp,
+                      color: Color(0xFFEC3B5B),
+                      size: 30.0,
+                    ),
+                    Text(
+                      'Financeiro',
+                      textAlign: TextAlign.center,
+                      style: FlutterFlowTheme.of(context).labelMedium.override(
+                            font: GoogleFonts.readexPro(
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontStyle,
+                            ),
+                            color: Color(0xFF14181B),
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .labelMedium
+                                .fontStyle,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ).animateOnPageLoad(
+                animationsMap['containerOnPageLoadAnimation15']!),
+          if (responsiveVisibility(
+            context: context,
+            phone: false,
+            tablet: false,
+            tabletLandscape: false,
+            desktop: false,
+          ))
+            Container(
+              width: MediaQuery.sizeOf(context).width * 0.3,
+              height: 120.0,
+              decoration: BoxDecoration(
+                color: FlutterFlowTheme.of(context).primaryBackground,
+                borderRadius: BorderRadius.circular(24.0),
+                border: Border.all(
+                  color: Color(0xFFEC3B5B),
+                ),
+              ),
+              child: InkWell(
+                splashColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onTap: () async {},
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.fileImport,
+                      color: Color(0xFFEC3B5B),
+                      size: 22.0,
+                    ),
+                    Text(
+                      'Importar animais',
+                      textAlign: TextAlign.center,
+                      style: FlutterFlowTheme.of(context).labelMedium.override(
+                            font: GoogleFonts.readexPro(
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontStyle,
+                            ),
+                            color: Color(0xFF14181B),
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .labelMedium
+                                .fontStyle,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ).animateOnPageLoad(
+                animationsMap['containerOnPageLoadAnimation16']!),
+        ],
+      ),
+    );
+  }
+
+  Widget _p3(BuildContext context) {
+    return Container(
+      width: MediaQuery.sizeOf(context).width * 0.3,
+      height: 120.0,
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(
+          color: Color(0xFFEC3B5B),
+        ),
+      ),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () async {
+          context.pushNamed(DashboardTecnicoWidget.routeName);
+
+          FFAppState().clearAllAnimaisProdutorCache();
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.home,
+              color: Color(0xFFEC3B5B),
+              size: 22.0,
+            ),
+            Text(
+              'Início',
+              textAlign: TextAlign.center,
+              style: FlutterFlowTheme.of(context).labelMedium.override(
+                    font: GoogleFonts.readexPro(
+                      fontWeight: FontWeight.w600,
+                      fontStyle:
+                          FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                    ),
+                    color: Color(0xFF14181B),
+                    letterSpacing: 0.0,
+                    fontWeight: FontWeight.w600,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                  ),
+            ),
+          ],
+        ),
+      ),
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation1']!);
+  }
+
+  Widget _p4(BuildContext context) {
+    return Container(
+      width: MediaQuery.sizeOf(context).width * 0.3,
+      height: 120.0,
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(
+          color: Color(0xFFEC3B5B),
+        ),
+      ),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () async {
+          context.pushNamed(
+            ListaPropriedadeWidget.routeName,
+            queryParameters: {
+              'visitaPresencial': serializeParam(
+                false,
+                ParamType.bool,
+              ),
+            }.withoutNulls,
+          );
+
+          FFAppState().clearAllAnimaisProdutorCache();
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.supervisor_account_rounded,
+              color: Color(0xFFEC3B5B),
+              size: 32.0,
+            ),
+            Text(
+              'Trocar Produtor',
+              textAlign: TextAlign.center,
+              style: FlutterFlowTheme.of(context).labelMedium.override(
+                    font: GoogleFonts.readexPro(
+                      fontWeight: FontWeight.w600,
+                      fontStyle:
+                          FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                    ),
+                    color: Color(0xFF14181B),
+                    fontSize: 14.0,
+                    letterSpacing: 0.0,
+                    fontWeight: FontWeight.w600,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                  ),
+            ),
+          ],
+        ),
+      ),
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation2']!);
+  }
+
+  Widget _p5(BuildContext context) {
+    return Container(
+      width: MediaQuery.sizeOf(context).width * 0.3,
+      height: 120.0,
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(
+          color: Color(0xFFEC3B5B),
+        ),
+      ),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () async {
+          if (_model.respostaNet!) {
+            if ((FFAppState().animaisProdutoresOffline.length == 0) &&
+                (true) &&
+                (true)) {
+              context.pushNamed(
+                ListaAnimaisWidget.routeName,
+                queryParameters: {
+                  'uidPropriedade': serializeParam(
+                    widget.uidPropriedade,
+                    ParamType.DocumentReference,
+                  ),
+                  'nomePropriedade': serializeParam(
+                    widget.nomePropriedade,
+                    ParamType.String,
+                  ),
+                  'uidTecnico': serializeParam(
+                    widget.uidTecnico,
+                    ParamType.DocumentReference,
+                  ),
+                  'emailPropriedade': serializeParam(
+                    widget.emailPropriedade,
+                    ParamType.String,
+                  ),
+                  'visitaPresencial': serializeParam(
+                    widget.visitaPresencial,
+                    ParamType.bool,
+                  ),
+                  'diasDg': serializeParam(
+                    widget.diasDg,
+                    ParamType.String,
+                  ),
+                }.withoutNulls,
+              );
+
+              return;
+            } else {
+              await showDialog(
+                context: context,
+                builder: (alertDialogContext) {
+                  return AlertDialog(
+                    title: Text('Sincronize os dados primeiro!'),
+                    content: Text('Sincronize offline com o online.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(alertDialogContext),
+                        child: Text('Ok'),
+                      ),
+                    ],
+                  );
+                },
+              );
+              return;
+            }
+          } else {
+            context.pushNamed(
+              ListaAnimaisWidget.routeName,
+              queryParameters: {
+                'uidPropriedade': serializeParam(
+                  widget.uidPropriedade,
+                  ParamType.DocumentReference,
+                ),
+                'nomePropriedade': serializeParam(
+                  widget.nomePropriedade,
+                  ParamType.String,
+                ),
+                'uidTecnico': serializeParam(
+                  widget.uidTecnico,
+                  ParamType.DocumentReference,
+                ),
+                'emailPropriedade': serializeParam(
+                  widget.emailPropriedade,
+                  ParamType.String,
+                ),
+                'visitaPresencial': serializeParam(
+                  widget.visitaPresencial,
+                  ParamType.bool,
+                ),
+                'diasDg': serializeParam(
+                  widget.diasDg,
+                  ParamType.String,
+                ),
+              }.withoutNulls,
+            );
+
+            return;
+          }
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.format_list_numbered,
+              color: Color(0xFFEC3B5B),
+              size: 24.0,
+            ),
+            Text(
+              'Animais',
+              textAlign: TextAlign.center,
+              style: FlutterFlowTheme.of(context).labelMedium.override(
+                    font: GoogleFonts.readexPro(
+                      fontWeight: FontWeight.w600,
+                      fontStyle:
+                          FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                    ),
+                    color: FlutterFlowTheme.of(context).primaryText,
+                    letterSpacing: 0.0,
+                    fontWeight: FontWeight.w600,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                  ),
+            ),
+          ],
+        ),
+      ),
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation3']!);
+  }
+
+  Widget _p6(BuildContext context,
+      dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
+    return Container(
+      width: MediaQuery.sizeOf(context).width * 0.3,
+      height: 120.0,
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(
+          color: Color(0xFFEC3B5B),
+        ),
+      ),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () async {
+          context.pushNamed(
+            ListaInseminacoesWidget.routeName,
+            queryParameters: {
+              'uidPropriedade': serializeParam(
+                widget.uidPropriedade,
+                ParamType.DocumentReference,
+              ),
+              'nomePropriedade': serializeParam(
+                widget.nomePropriedade,
+                ParamType.String,
+              ),
+              'uidTecnico': serializeParam(
+                widget.uidTecnico,
+                ParamType.DocumentReference,
+              ),
+              'emailPropriedade': serializeParam(
+                widget.emailPropriedade,
+                ParamType.String,
+              ),
+              'visitaPresencial': serializeParam(
+                widget.visitaPresencial,
+                ParamType.bool,
+              ),
+              'diasDg': serializeParam(
+                widget.diasDg,
+                ParamType.String,
+              ),
+            }.withoutNulls,
+          );
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Align(
+              alignment: AlignmentDirectional(1.0, -1.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Align(
+                        alignment: AlignmentDirectional(1.0, -1.0),
+                        child: Card(
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          color:
+                              FlutterFlowTheme.of(context).secondaryBackground,
+                          elevation: 4.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                                5.0, 5.0, 5.0, 5.0),
+                            child: Text(
+                              _model.respostaNet!
+                                  ? inicioPropriedadeAnimaisProdutoresRecordList
+                                      .where((e) =>
+                                          ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
+                                          ((ehVazia(e.status)) ||
+                                              (ehInseminada(e.status)) ||
+                                              (ehInseminadaPP(e.status))))
+                                      .toList()
+                                      .length
+                                      .toString()
+                                  : (inicioPropriedadeAnimaisProdutoresRecordList
+                                              .where((e) =>
+                                                  ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
+                                                  ((ehVazia(e.status)) ||
+                                                      (ehInseminada(
+                                                          e.status)) ||
+                                                      (ehInseminadaPP(
+                                                          e.status))))
+                                              .toList()
+                                              .length +
+                                          FFAppState()
+                                              .animaisProdutoresOffline
+                                              .where((e) =>
+                                                  (e.uidTecnicoPropriedade ==
+                                                      widget.uidPropriedade) &&
+                                                  ((ehVaca(e.grupoAnimal)) ||
+                                                      (ehNovilha(
+                                                          e.grupoAnimal))) &&
+                                                  ((ehVazia(e.status)) ||
+                                                      (ehInseminada(e.status)) ||
+                                                      (ehInseminadaPP(e.status))))
+                                              .toList()
+                                              .length)
+                                      .toString(),
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .override(
+                                    font: GoogleFonts.readexPro(
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontStyle,
+                                    ),
+                                    color: Color(0xFFEC3B5B),
+                                    letterSpacing: 0.0,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
+                                  ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Align(
+              alignment: AlignmentDirectional(0.0, -1.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.vaccines,
+                        color: Color(0xFFEC3B5B),
+                        size: 22.0,
+                      ),
+                      Text(
+                        'Inseminações',
+                        textAlign: TextAlign.center,
+                        style: FlutterFlowTheme.of(context)
+                            .labelMedium
+                            .override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontStyle,
+                              ),
+                              color: FlutterFlowTheme.of(context).primaryText,
+                              letterSpacing: 0.0,
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontStyle,
+                            ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation4']!);
+  }
+
+  Widget _p7(BuildContext context,
+      dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
+    return Container(
+      width: MediaQuery.sizeOf(context).width * 0.3,
+      height: 120.0,
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(
+          color: Color(0xFFEC3B5B),
+        ),
+      ),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () async {
+          context.pushNamed(
+            DiagnosticogestacaoWidget.routeName,
+            queryParameters: {
+              'uidPropriedade': serializeParam(
+                widget.uidPropriedade,
+                ParamType.DocumentReference,
+              ),
+              'nomePropriedade': serializeParam(
+                widget.nomePropriedade,
+                ParamType.String,
+              ),
+              'uidTecnico': serializeParam(
+                widget.uidTecnico,
+                ParamType.DocumentReference,
+              ),
+              'emailPropriedade': serializeParam(
+                widget.emailPropriedade,
+                ParamType.String,
+              ),
+              'visitaPresencial': serializeParam(
+                widget.visitaPresencial,
+                ParamType.bool,
+              ),
+              'diasDg': serializeParam(
+                widget.diasDg,
+                ParamType.String,
+              ),
+            }.withoutNulls,
+          );
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Align(
+                  alignment: AlignmentDirectional(1.0, -1.0),
+                  child: Card(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                    elevation: 4.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(5.0, 5.0, 5.0, 5.0),
+                      child: Text(
+                        inicioPropriedadeAnimaisProdutoresRecordList
+                            .where((e) => valueOrDefault<bool>(
+                                  (e.dtUltimaInseminacao != '') &&
+                                      ((ehVaca(e.grupoAnimal)) ||
+                                          (ehNovilha(e.grupoAnimal))) &&
+                                      ((ehInseminada(e.status)) ||
+                                          (ehInseminadaPP(e.status))) &&
+                                      (functions.converterStringParaData(
+                                              e.dtUltimaInseminacao,
+                                              widget.diasDg!) <=
+                                          functions.obterDataAtual()),
+                                  true,
+                                ))
+                            .toList()
+                            .length
+                            .toString(),
+                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontStyle,
+                              ),
+                              color: Color(0xFFEC3B5B),
+                              letterSpacing: 0.0,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                            ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Icon(
+                      Icons.medical_information_outlined,
+                      color: Color(0xFFEC3B5B),
+                      size: 32.0,
+                    ),
+                    Text(
+                      'Diagnóstico\nGestação',
+                      textAlign: TextAlign.center,
+                      style: FlutterFlowTheme.of(context).labelMedium.override(
+                            font: GoogleFonts.readexPro(
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontStyle,
+                            ),
+                            color: FlutterFlowTheme.of(context).primaryText,
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .labelMedium
+                                .fontStyle,
+                          ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation5']!);
+  }
+
+  Widget _p8(BuildContext context,
+      dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
+    return Container(
+      width: MediaQuery.sizeOf(context).width * 0.3,
+      height: 120.0,
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(
+          color: Color(0xFFEC3B5B),
+        ),
+      ),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () async {
+          context.pushNamed(
+            AnimaisPrenhasWidget.routeName,
+            queryParameters: {
+              'uidPropriedade': serializeParam(
+                widget.uidPropriedade,
+                ParamType.DocumentReference,
+              ),
+              'nomePropriedade': serializeParam(
+                widget.nomePropriedade,
+                ParamType.String,
+              ),
+              'uidTecnico': serializeParam(
+                widget.uidTecnico,
+                ParamType.DocumentReference,
+              ),
+              'emailPropriedade': serializeParam(
+                widget.emailPropriedade,
+                ParamType.String,
+              ),
+              'visitaPresencial': serializeParam(
+                widget.visitaPresencial,
+                ParamType.bool,
+              ),
+              'diasDg': serializeParam(
+                widget.diasDg,
+                ParamType.String,
+              ),
+            }.withoutNulls,
+          );
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Align(
+                  alignment: AlignmentDirectional(1.0, -1.0),
+                  child: Card(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                    elevation: 4.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(5.0, 5.0, 5.0, 5.0),
+                      child: StreamBuilder<List<AnimaisProdutoresRecord>>(
+                        stream: queryAnimaisProdutoresRecord(
+                          parent: widget.uidTecnico,
+                          queryBuilder: (animaisProdutoresRecord) =>
+                              animaisProdutoresRecord.where(
+                            'uidTecnicoPropriedade',
+                            isEqualTo: widget.uidPropriedade,
+                          ),
+                        ),
+                        builder: (context, snapshot) {
+                          // Customize what your widget looks like when it's loading.
+                          if (!snapshot.hasData) {
+                            return Center(
+                              child: SizedBox(
+                                width: 50.0,
+                                height: 50.0,
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Color(0xFFF75E38),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                          List<AnimaisProdutoresRecord>
+                              textAnimaisProdutoresRecordList = snapshot.data!;
+
+                          return Text(
+                            _model.respostaNet!
+                                ? inicioPropriedadeAnimaisProdutoresRecordList
+                                    .where((e) =>
+                                        (ehPrenha(e.status)) &&
+                                        (ehVaca(e.grupoAnimal)))
+                                    .toList()
+                                    .length
+                                    .toString()
+                                : (animaisProdutoresExistentesObjectBox()
+                                            .where((e) =>
+                                                (e.uidTecnicoPropriedade ==
+                                                    widget.uidPropriedade) &&
+                                                (ehVaca(e.grupoAnimal)) &&
+                                                (ehPrenha(e.status)))
+                                            .toList()
+                                            .length +
+                                        FFAppState()
+                                            .animaisProdutoresOffline
+                                            .where((e) =>
+                                                (e.uidTecnicoPropriedade ==
+                                                    widget.uidPropriedade) &&
+                                                (ehVaca(e.grupoAnimal)) &&
+                                                (ehPrenha(e.status)))
+                                            .toList()
+                                            .length)
+                                    .toString(),
+                            style: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .override(
+                                  font: GoogleFonts.readexPro(
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
+                                  ),
+                                  color: Color(0xFFEC3B5B),
+                                  letterSpacing: 0.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontStyle,
+                                ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Icon(
+                      Icons.monitor_heart_outlined,
+                      color: Color(0xFFEC3B5B),
+                      size: 32.0,
+                    ),
+                    Text(
+                      'Vacas Prenhas',
+                      textAlign: TextAlign.center,
+                      style: FlutterFlowTheme.of(context).labelMedium.override(
+                            font: GoogleFonts.readexPro(
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontStyle,
+                            ),
+                            color: Color(0xFF14181B),
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .labelMedium
+                                .fontStyle,
+                          ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation6']!);
+  }
+
+  Widget _p9(BuildContext context,
+      dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
+    return Container(
+      width: MediaQuery.sizeOf(context).width * 0.3,
+      height: 120.0,
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(
+          color: Color(0xFFEC3B5B),
+        ),
+      ),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () async {
+          context.pushNamed(
+            SecasWidget.routeName,
+            queryParameters: {
+              'uidPropriedade': serializeParam(
+                widget.uidPropriedade,
+                ParamType.DocumentReference,
+              ),
+              'nomePropriedade': serializeParam(
+                widget.nomePropriedade,
+                ParamType.String,
+              ),
+              'uidTecnico': serializeParam(
+                widget.uidTecnico,
+                ParamType.DocumentReference,
+              ),
+              'emailPropriedade': serializeParam(
+                widget.emailPropriedade,
+                ParamType.String,
+              ),
+              'visitaPresencial': serializeParam(
+                widget.visitaPresencial,
+                ParamType.bool,
+              ),
+              'diasDg': serializeParam(
+                widget.diasDg,
+                ParamType.String,
+              ),
+            }.withoutNulls,
+          );
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Align(
+                  alignment: AlignmentDirectional(1.0, -1.0),
+                  child: Card(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                    elevation: 4.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(5.0, 5.0, 5.0, 5.0),
+                      child: Text(
+                        inicioPropriedadeAnimaisProdutoresRecordList
+                            .where((e) =>
+                                ((ehVaca(e.grupoAnimal)) &&
+                                    (ehSeca(e.status))) ||
+                                (e.status == 'Pré Parto') ||
+                                (ehDescarte(e.status)) ||
+                                ((ehVazia(e.status)) &&
+                                    (e.dtInducaoLactacao != null)))
+                            .toList()
+                            .length
+                            .toString(),
+                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontStyle,
+                              ),
+                              color: Color(0xFFEC3B5B),
+                              letterSpacing: 0.0,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                            ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Icon(
+                      Icons.alarm_add_sharp,
+                      color: Color(0xFFEC3B5B),
+                      size: 32.0,
+                    ),
+                    Text(
+                      'Secas',
+                      textAlign: TextAlign.center,
+                      style: FlutterFlowTheme.of(context).labelMedium.override(
+                            font: GoogleFonts.readexPro(
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontStyle,
+                            ),
+                            color: Color(0xFF14181B),
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .labelMedium
+                                .fontStyle,
+                          ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation7']!);
+  }
+
+  Widget _p10(BuildContext context,
+      dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
+    return Container(
+      width: MediaQuery.sizeOf(context).width * 0.3,
+      height: 120.0,
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(
+          color: Color(0xFFEC3B5B),
+        ),
+      ),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () async {
+          context.pushNamed(
+            ExameGinecologicoWidget.routeName,
+            queryParameters: {
+              'uidPropriedade': serializeParam(
+                widget.uidPropriedade,
+                ParamType.DocumentReference,
+              ),
+              'nomePropriedade': serializeParam(
+                widget.nomePropriedade,
+                ParamType.String,
+              ),
+              'uidTecnico': serializeParam(
+                widget.uidTecnico,
+                ParamType.DocumentReference,
+              ),
+              'emailPropriedade': serializeParam(
+                widget.emailPropriedade,
+                ParamType.String,
+              ),
+              'visitaPresencial': serializeParam(
+                widget.visitaPresencial,
+                ParamType.bool,
+              ),
+              'diasDg': serializeParam(
+                widget.diasDg,
+                ParamType.String,
+              ),
+            }.withoutNulls,
+          );
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Align(
+                  alignment: AlignmentDirectional(1.0, -1.0),
+                  child: Card(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                    elevation: 4.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(5.0, 5.0, 5.0, 5.0),
+                      child: Text(
+                        _model.respostaNet!
+                            ? inicioPropriedadeAnimaisProdutoresRecordList
+                                .where((e) =>
+                                    (ehVazia(e.status)) &&
+                                    ((ehNovilha(e.grupoAnimal)) ||
+                                        (ehVaca(e.grupoAnimal))) &&
+                                    (e.dtInducaoLactacao == null))
+                                .toList()
+                                .length
+                                .toString()
+                            : (inicioPropriedadeAnimaisProdutoresRecordList
+                                        .where((e) =>
+                                            (ehVazia(e.status)) &&
+                                            ((ehNovilha(e.grupoAnimal)) ||
+                                                (ehVaca(e.grupoAnimal))) &&
+                                            (e.dtInducaoLactacao == null))
+                                        .toList()
+                                        .length +
+                                    FFAppState()
+                                        .animaisProdutoresOffline
+                                        .where((e) =>
+                                            (e.uidTecnicoPropriedade ==
+                                                widget.uidPropriedade) &&
+                                            ((ehVaca(e.grupoAnimal)) ||
+                                                (ehNovilha(e.grupoAnimal))) &&
+                                            (ehVazia(e.status)) &&
+                                            (e.dtInducaoLactacao == null))
+                                        .toList()
+                                        .length)
+                                .toString(),
+                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontStyle,
+                              ),
+                              color: Color(0xFFEC3B5B),
+                              letterSpacing: 0.0,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                            ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Icon(
+                      Icons.medical_services,
+                      color: Color(0xFFEC3B5B),
+                      size: 32.0,
+                    ),
+                    Text(
+                      'Exame\nGinecológico',
+                      textAlign: TextAlign.center,
+                      style: FlutterFlowTheme.of(context).labelMedium.override(
+                            font: GoogleFonts.readexPro(
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontStyle,
+                            ),
+                            color: Color(0xFF14181B),
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .labelMedium
+                                .fontStyle,
+                          ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation8']!);
+  }
+
+  Widget _p11(BuildContext context,
+      dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
+    return Container(
+      width: MediaQuery.sizeOf(context).width * 0.3,
+      height: 120.0,
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(
+          color: Color(0xFFEC3B5B),
+        ),
+      ),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () async {
+          context.pushNamed(
+            RecriacaoWidget.routeName,
+            queryParameters: {
+              'uidPropriedade': serializeParam(
+                widget.uidPropriedade,
+                ParamType.DocumentReference,
+              ),
+              'nomePropriedade': serializeParam(
+                widget.nomePropriedade,
+                ParamType.String,
+              ),
+              'uidTecnico': serializeParam(
+                widget.uidTecnico,
+                ParamType.DocumentReference,
+              ),
+              'emailPropriedade': serializeParam(
+                widget.emailPropriedade,
+                ParamType.String,
+              ),
+              'visitaPresencial': serializeParam(
+                widget.visitaPresencial,
+                ParamType.bool,
+              ),
+              'diasDg': serializeParam(
+                widget.diasDg,
+                ParamType.String,
+              ),
+            }.withoutNulls,
+          );
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Align(
+                  alignment: AlignmentDirectional(1.0, -1.0),
+                  child: Card(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                    elevation: 4.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(5.0, 5.0, 5.0, 5.0),
+                      child: Text(
+                        _model.respostaNet!
+                            ? inicioPropriedadeAnimaisProdutoresRecordList
+                                .where((e) =>
+                                    (((ehTouros(e.grupoAnimal)) &&
+                                            (e.liberaInseminacao == false)) ||
+                                        ((ehNovilha(e.grupoAnimal)) &&
+                                            (e.dtInducaoLactacao == null)) ||
+                                        (ehBezerras(e.grupoAnimal)) ||
+                                        (ehBezerros(e.grupoAnimal))) &&
+                                    ((!ehDescarte(e.status)) &&
+                                        (e.status != 'Pré Parto')))
+                                .toList()
+                                .length
+                                .toString()
+                            : (inicioPropriedadeAnimaisProdutoresRecordList
+                                        .where((e) =>
+                                            (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) || ((ehNovilha(e.grupoAnimal)) && (e.dtInducaoLactacao == null)) || (ehBezerras(e.grupoAnimal)) || (ehBezerros(e.grupoAnimal))) &&
+                                            ((!ehDescarte(e.status)) &&
+                                                (e.status != 'Pré Parto')))
+                                        .toList()
+                                        .length +
+                                    FFAppState()
+                                        .animaisProdutoresOffline
+                                        .where((e) =>
+                                            (e.uidTecnicoPropriedade == widget.uidPropriedade) &&
+                                            (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) ||
+                                                ((ehNovilha(e.grupoAnimal)) &&
+                                                    (e.dtInducaoLactacao == null)) ||
+                                                (ehBezerras(e.grupoAnimal)) ||
+                                                (ehBezerros(e.grupoAnimal))) &&
+                                            ((!ehDescarte(e.status)) && (e.status != 'Pré Parto')))
+                                        .toList()
+                                        .length)
+                                .toString(),
+                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontStyle,
+                              ),
+                              color: Color(0xFFEC3B5B),
+                              letterSpacing: 0.0,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                            ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Icon(
+                      Icons.compare_arrows_sharp,
+                      color: Color(0xFFEC3B5B),
+                      size: 32.0,
+                    ),
+                    Text(
+                      'Recria',
+                      textAlign: TextAlign.center,
+                      style: FlutterFlowTheme.of(context).labelMedium.override(
+                            font: GoogleFonts.readexPro(
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontStyle,
+                            ),
+                            color: FlutterFlowTheme.of(context).primaryText,
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .labelMedium
+                                .fontStyle,
+                          ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation9']!);
+  }
+
+  Widget _p12(BuildContext context,
+      dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
+    return Container(
+      width: MediaQuery.sizeOf(context).width * 0.3,
+      height: 120.0,
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(
+          color: Color(0xFFEC3B5B),
+        ),
+      ),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () async {
+          context.pushNamed(
+            ListacompletaWidget.routeName,
+            queryParameters: {
+              'uidPropriedade': serializeParam(
+                widget.uidPropriedade,
+                ParamType.DocumentReference,
+              ),
+              'nomePropriedade': serializeParam(
+                widget.nomePropriedade,
+                ParamType.String,
+              ),
+              'uidTecnico': serializeParam(
+                widget.uidTecnico,
+                ParamType.DocumentReference,
+              ),
+              'emailPropriedade': serializeParam(
+                widget.emailPropriedade,
+                ParamType.String,
+              ),
+              'visitaPresencial': serializeParam(
+                widget.visitaPresencial,
+                ParamType.bool,
+              ),
+              'diasDg': serializeParam(
+                widget.diasDg,
+                ParamType.String,
+              ),
+            }.withoutNulls,
+          );
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Align(
+                  alignment: AlignmentDirectional(1.0, -1.0),
+                  child: Card(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                    elevation: 4.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(5.0, 5.0, 5.0, 5.0),
+                      child: Text(
+                        inicioPropriedadeAnimaisProdutoresRecordList
+                            .where((e) =>
+                                ((ehNovilha(e.grupoAnimal)) ||
+                                    (ehVaca(e.grupoAnimal))) &&
+                                (!ehDescarte(e.status)))
+                            .toList()
+                            .length
+                            .toString(),
+                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontStyle,
+                              ),
+                              color: Color(0xFFEC3B5B),
+                              letterSpacing: 0.0,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                            ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Icon(
+                      Icons.list_alt_sharp,
+                      color: Color(0xFFEC3B5B),
+                      size: 32.0,
+                    ),
+                    Text(
+                      'Lista completa',
+                      textAlign: TextAlign.center,
+                      style: FlutterFlowTheme.of(context).labelMedium.override(
+                            font: GoogleFonts.readexPro(
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontStyle,
+                            ),
+                            color: Color(0xFF14181B),
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .labelMedium
+                                .fontStyle,
+                          ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation10']!);
+  }
+
+  Widget _p13(BuildContext context) {
+    return Container(
+      width: MediaQuery.sizeOf(context).width * 0.3,
+      height: 120.0,
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(24.0),
+        border: Border.all(
+          color: Color(0xFFEC3B5B),
+        ),
+      ),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () async {
+          context.pushNamed(
+            IndicesZootecnicosWidget.routeName,
+            queryParameters: {
+              'uidPropriedade': serializeParam(
+                widget.uidPropriedade,
+                ParamType.DocumentReference,
+              ),
+              'nomePropriedade': serializeParam(
+                widget.nomePropriedade,
+                ParamType.String,
+              ),
+              'uidTecnico': serializeParam(
+                widget.uidTecnico,
+                ParamType.DocumentReference,
+              ),
+              'emailPropriedade': serializeParam(
+                widget.emailPropriedade,
+                ParamType.String,
+              ),
+              'visitaPresencial': serializeParam(
+                widget.visitaPresencial,
+                ParamType.bool,
+              ),
+              'diasDg': serializeParam(
+                widget.diasDg,
+                ParamType.String,
+              ),
+            }.withoutNulls,
+          );
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.folder_copy_outlined,
+              color: Color(0xFFEC3B5B),
+              size: 30.0,
+            ),
+            Text(
+              'Indíces Zootécnicos',
+              textAlign: TextAlign.center,
+              style: FlutterFlowTheme.of(context).labelMedium.override(
+                    font: GoogleFonts.readexPro(
+                      fontWeight: FontWeight.w600,
+                      fontStyle:
+                          FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                    ),
+                    color: Color(0xFF14181B),
+                    letterSpacing: 0.0,
+                    fontWeight: FontWeight.w600,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                  ),
+            ),
+          ],
+        ),
+      ),
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation14']!);
+  }
+
+  Widget _p14(BuildContext context) {
+    return Text(
+      'Receituário',
+      textAlign: TextAlign.center,
+      style: FlutterFlowTheme.of(context).labelMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FontWeight.w600,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+            color: Color(0xFF14181B),
+            letterSpacing: 0.0,
+            fontWeight: FontWeight.w600,
+            fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+          ),
+    );
+  }
+
+  Widget _p15(BuildContext context) {
+    return Text(
+      'Resumo Rebanho',
+      textAlign: TextAlign.center,
+      style: FlutterFlowTheme.of(context).labelMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FontWeight.w600,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+            color: Color(0xFF14181B),
+            letterSpacing: 0.0,
+            fontWeight: FontWeight.w600,
+            fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+          ),
+    );
+  }
+
+  Widget _p16(BuildContext context) {
+    return Text(
+      'Calendário Sanitário',
+      textAlign: TextAlign.center,
+      style: FlutterFlowTheme.of(context).labelMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FontWeight.w600,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+            color: Color(0xFF14181B),
+            letterSpacing: 0.0,
+            fontWeight: FontWeight.w600,
+            fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+          ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // context.watch<FFAppState>();
@@ -532,2064 +2391,8 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(24.0, 25.0, 0.0, 0.0),
-                      child: Text(
-                        'Menu de Ações',
-                        textAlign: TextAlign.start,
-                        style:
-                            FlutterFlowTheme.of(context).labelMedium.override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FontWeight.w600,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w600,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontStyle,
-                                ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(
-                          16.0, 12.0, 16.0, 12.0),
-                      child: GridView(
-                        padding: EdgeInsets.zero,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          crossAxisSpacing: 10.0,
-                          mainAxisSpacing: 10.0,
-                          childAspectRatio: 1.0,
-                        ),
-                        primary: false,
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        children: [
-                          Container(
-                            width: MediaQuery.sizeOf(context).width * 0.3,
-                            height: 120.0,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .primaryBackground,
-                              borderRadius: BorderRadius.circular(24.0),
-                              border: Border.all(
-                                color: Color(0xFFEC3B5B),
-                              ),
-                            ),
-                            child: InkWell(
-                              splashColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onTap: () async {
-                                context.pushNamed(
-                                    DashboardTecnicoWidget.routeName);
-
-                                FFAppState().clearAllAnimaisProdutorCache();
-                              },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.home,
-                                    color: Color(0xFFEC3B5B),
-                                    size: 22.0,
-                                  ),
-                                  Text(
-                                    'Início',
-                                    textAlign: TextAlign.center,
-                                    style: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .override(
-                                          font: GoogleFonts.readexPro(
-                                            fontWeight: FontWeight.w600,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                          color: Color(0xFF14181B),
-                                          letterSpacing: 0.0,
-                                          fontWeight: FontWeight.w600,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ).animateOnPageLoad(
-                              animationsMap['containerOnPageLoadAnimation1']!),
-                          Container(
-                            width: MediaQuery.sizeOf(context).width * 0.3,
-                            height: 120.0,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .primaryBackground,
-                              borderRadius: BorderRadius.circular(24.0),
-                              border: Border.all(
-                                color: Color(0xFFEC3B5B),
-                              ),
-                            ),
-                            child: InkWell(
-                              splashColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onTap: () async {
-                                context.pushNamed(
-                                  ListaPropriedadeWidget.routeName,
-                                  queryParameters: {
-                                    'visitaPresencial': serializeParam(
-                                      false,
-                                      ParamType.bool,
-                                    ),
-                                  }.withoutNulls,
-                                );
-
-                                FFAppState().clearAllAnimaisProdutorCache();
-                              },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.supervisor_account_rounded,
-                                    color: Color(0xFFEC3B5B),
-                                    size: 32.0,
-                                  ),
-                                  Text(
-                                    'Trocar Produtor',
-                                    textAlign: TextAlign.center,
-                                    style: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .override(
-                                          font: GoogleFonts.readexPro(
-                                            fontWeight: FontWeight.w600,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                          color: Color(0xFF14181B),
-                                          fontSize: 14.0,
-                                          letterSpacing: 0.0,
-                                          fontWeight: FontWeight.w600,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ).animateOnPageLoad(
-                              animationsMap['containerOnPageLoadAnimation2']!),
-                          Container(
-                            width: MediaQuery.sizeOf(context).width * 0.3,
-                            height: 120.0,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .primaryBackground,
-                              borderRadius: BorderRadius.circular(24.0),
-                              border: Border.all(
-                                color: Color(0xFFEC3B5B),
-                              ),
-                            ),
-                            child: InkWell(
-                              splashColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onTap: () async {
-                                if (_model.respostaNet!) {
-                                  if ((FFAppState()
-                                              .animaisProdutoresOffline
-                                              .length ==
-                                          0) &&
-                                      (true) &&
-                                      (true)) {
-                                    context.pushNamed(
-                                      ListaAnimaisWidget.routeName,
-                                      queryParameters: {
-                                        'uidPropriedade': serializeParam(
-                                          widget.uidPropriedade,
-                                          ParamType.DocumentReference,
-                                        ),
-                                        'nomePropriedade': serializeParam(
-                                          widget.nomePropriedade,
-                                          ParamType.String,
-                                        ),
-                                        'uidTecnico': serializeParam(
-                                          widget.uidTecnico,
-                                          ParamType.DocumentReference,
-                                        ),
-                                        'emailPropriedade': serializeParam(
-                                          widget.emailPropriedade,
-                                          ParamType.String,
-                                        ),
-                                        'visitaPresencial': serializeParam(
-                                          widget.visitaPresencial,
-                                          ParamType.bool,
-                                        ),
-                                        'diasDg': serializeParam(
-                                          widget.diasDg,
-                                          ParamType.String,
-                                        ),
-                                      }.withoutNulls,
-                                    );
-
-                                    return;
-                                  } else {
-                                    await showDialog(
-                                      context: context,
-                                      builder: (alertDialogContext) {
-                                        return AlertDialog(
-                                          title: Text(
-                                              'Sincronize os dados primeiro!'),
-                                          content: Text(
-                                              'Sincronize offline com o online.'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () => Navigator.pop(
-                                                  alertDialogContext),
-                                              child: Text('Ok'),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                    return;
-                                  }
-                                } else {
-                                  context.pushNamed(
-                                    ListaAnimaisWidget.routeName,
-                                    queryParameters: {
-                                      'uidPropriedade': serializeParam(
-                                        widget.uidPropriedade,
-                                        ParamType.DocumentReference,
-                                      ),
-                                      'nomePropriedade': serializeParam(
-                                        widget.nomePropriedade,
-                                        ParamType.String,
-                                      ),
-                                      'uidTecnico': serializeParam(
-                                        widget.uidTecnico,
-                                        ParamType.DocumentReference,
-                                      ),
-                                      'emailPropriedade': serializeParam(
-                                        widget.emailPropriedade,
-                                        ParamType.String,
-                                      ),
-                                      'visitaPresencial': serializeParam(
-                                        widget.visitaPresencial,
-                                        ParamType.bool,
-                                      ),
-                                      'diasDg': serializeParam(
-                                        widget.diasDg,
-                                        ParamType.String,
-                                      ),
-                                    }.withoutNulls,
-                                  );
-
-                                  return;
-                                }
-                              },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.format_list_numbered,
-                                    color: Color(0xFFEC3B5B),
-                                    size: 24.0,
-                                  ),
-                                  Text(
-                                    'Animais',
-                                    textAlign: TextAlign.center,
-                                    style: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .override(
-                                          font: GoogleFonts.readexPro(
-                                            fontWeight: FontWeight.w600,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                          color: FlutterFlowTheme.of(context)
-                                              .primaryText,
-                                          letterSpacing: 0.0,
-                                          fontWeight: FontWeight.w600,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ).animateOnPageLoad(
-                              animationsMap['containerOnPageLoadAnimation3']!),
-                          Container(
-                            width: MediaQuery.sizeOf(context).width * 0.3,
-                            height: 120.0,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .primaryBackground,
-                              borderRadius: BorderRadius.circular(24.0),
-                              border: Border.all(
-                                color: Color(0xFFEC3B5B),
-                              ),
-                            ),
-                            child: InkWell(
-                              splashColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onTap: () async {
-                                context.pushNamed(
-                                  ListaInseminacoesWidget.routeName,
-                                  queryParameters: {
-                                    'uidPropriedade': serializeParam(
-                                      widget.uidPropriedade,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'nomePropriedade': serializeParam(
-                                      widget.nomePropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'uidTecnico': serializeParam(
-                                      widget.uidTecnico,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'emailPropriedade': serializeParam(
-                                      widget.emailPropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'visitaPresencial': serializeParam(
-                                      widget.visitaPresencial,
-                                      ParamType.bool,
-                                    ),
-                                    'diasDg': serializeParam(
-                                      widget.diasDg,
-                                      ParamType.String,
-                                    ),
-                                  }.withoutNulls,
-                                );
-                              },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Align(
-                                    alignment: AlignmentDirectional(1.0, -1.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Align(
-                                              alignment: AlignmentDirectional(
-                                                  1.0, -1.0),
-                                              child: Card(
-                                                clipBehavior:
-                                                    Clip.antiAliasWithSaveLayer,
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondaryBackground,
-                                                elevation: 4.0,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          8.0),
-                                                ),
-                                                child: Padding(
-                                                  padding: EdgeInsetsDirectional
-                                                      .fromSTEB(
-                                                          5.0, 5.0, 5.0, 5.0),
-                                                  child: Text(
-                                                    _model.respostaNet!
-                                                        ? inicioPropriedadeAnimaisProdutoresRecordList
-                                                            .where((e) =>
-                                                                ((ehVaca(e.grupoAnimal)) ||
-                                                                    (ehNovilha(e
-                                                                        .grupoAnimal))) &&
-                                                                ((ehVazia(e.status)) ||
-                                                                    (ehInseminada(e
-                                                                        .status)) ||
-                                                                    (ehInseminadaPP(e
-                                                                        .status))))
-                                                            .toList()
-                                                            .length
-                                                            .toString()
-                                                        : (inicioPropriedadeAnimaisProdutoresRecordList.where((e) => ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) && ((ehVazia(e.status)) || (ehInseminada(e.status)) || (ehInseminadaPP(e.status)))).toList().length +
-                                                                FFAppState()
-                                                                    .animaisProdutoresOffline
-                                                                    .where((e) =>
-                                                                        (e.uidTecnicoPropriedade ==
-                                                                            widget
-                                                                                .uidPropriedade) &&
-                                                                        ((ehVaca(e.grupoAnimal)) ||
-                                                                            (ehNovilha(e
-                                                                                .grupoAnimal))) &&
-                                                                        ((ehVazia(e.status)) ||
-                                                                            (ehInseminada(e.status)) ||
-                                                                            (ehInseminadaPP(e.status))))
-                                                                    .toList()
-                                                                    .length)
-                                                            .toString(),
-                                                    style: FlutterFlowTheme.of(
-                                                            context)
-                                                        .bodyMedium
-                                                        .override(
-                                                          font: GoogleFonts
-                                                              .readexPro(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontStyle:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .fontStyle,
-                                                          ),
-                                                          color:
-                                                              Color(0xFFEC3B5B),
-                                                          letterSpacing: 0.0,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Align(
-                                    alignment: AlignmentDirectional(0.0, -1.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.vaccines,
-                                              color: Color(0xFFEC3B5B),
-                                              size: 22.0,
-                                            ),
-                                            Text(
-                                              'Inseminações',
-                                              textAlign: TextAlign.center,
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .labelMedium
-                                                  .override(
-                                                    font: GoogleFonts.readexPro(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .labelMedium
-                                                              .fontStyle,
-                                                    ),
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .primaryText,
-                                                    letterSpacing: 0.0,
-                                                    fontWeight: FontWeight.w600,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .labelMedium
-                                                            .fontStyle,
-                                                  ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ).animateOnPageLoad(
-                              animationsMap['containerOnPageLoadAnimation4']!),
-                          Container(
-                            width: MediaQuery.sizeOf(context).width * 0.3,
-                            height: 120.0,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .primaryBackground,
-                              borderRadius: BorderRadius.circular(24.0),
-                              border: Border.all(
-                                color: Color(0xFFEC3B5B),
-                              ),
-                            ),
-                            child: InkWell(
-                              splashColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onTap: () async {
-                                context.pushNamed(
-                                  DiagnosticogestacaoWidget.routeName,
-                                  queryParameters: {
-                                    'uidPropriedade': serializeParam(
-                                      widget.uidPropriedade,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'nomePropriedade': serializeParam(
-                                      widget.nomePropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'uidTecnico': serializeParam(
-                                      widget.uidTecnico,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'emailPropriedade': serializeParam(
-                                      widget.emailPropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'visitaPresencial': serializeParam(
-                                      widget.visitaPresencial,
-                                      ParamType.bool,
-                                    ),
-                                    'diasDg': serializeParam(
-                                      widget.diasDg,
-                                      ParamType.String,
-                                    ),
-                                  }.withoutNulls,
-                                );
-                              },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Align(
-                                        alignment:
-                                            AlignmentDirectional(1.0, -1.0),
-                                        child: Card(
-                                          clipBehavior:
-                                              Clip.antiAliasWithSaveLayer,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryBackground,
-                                          elevation: 4.0,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                          ),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    5.0, 5.0, 5.0, 5.0),
-                                            child: Text(
-                                              inicioPropriedadeAnimaisProdutoresRecordList
-                                                  .where((e) =>
-                                                      valueOrDefault<bool>(
-                                                        (e.dtUltimaInseminacao !=
-                                                                '') &&
-                                                            ((ehVaca(e
-                                                                    .grupoAnimal)) ||
-                                                                (ehNovilha(e
-                                                                    .grupoAnimal))) &&
-                                                            ((ehInseminada(e
-                                                                    .status)) ||
-                                                                (ehInseminadaPP(e
-                                                                    .status))) &&
-                                                            (functions.converterStringParaData(
-                                                                    e
-                                                                        .dtUltimaInseminacao,
-                                                                    widget
-                                                                        .diasDg!) <=
-                                                                functions
-                                                                    .obterDataAtual()),
-                                                        true,
-                                                      ))
-                                                  .toList()
-                                                  .length
-                                                  .toString(),
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .bodyMedium
-                                                  .override(
-                                                    font: GoogleFonts.readexPro(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium
-                                                              .fontStyle,
-                                                    ),
-                                                    color: Color(0xFFEC3B5B),
-                                                    letterSpacing: 0.0,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontStyle,
-                                                  ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Icon(
-                                            Icons.medical_information_outlined,
-                                            color: Color(0xFFEC3B5B),
-                                            size: 32.0,
-                                          ),
-                                          Text(
-                                            'Diagnóstico\nGestação',
-                                            textAlign: TextAlign.center,
-                                            style: FlutterFlowTheme.of(context)
-                                                .labelMedium
-                                                .override(
-                                                  font: GoogleFonts.readexPro(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .labelMedium
-                                                            .fontStyle,
-                                                  ),
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .primaryText,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .labelMedium
-                                                          .fontStyle,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ).animateOnPageLoad(
-                              animationsMap['containerOnPageLoadAnimation5']!),
-                          Container(
-                            width: MediaQuery.sizeOf(context).width * 0.3,
-                            height: 120.0,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .primaryBackground,
-                              borderRadius: BorderRadius.circular(24.0),
-                              border: Border.all(
-                                color: Color(0xFFEC3B5B),
-                              ),
-                            ),
-                            child: InkWell(
-                              splashColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onTap: () async {
-                                context.pushNamed(
-                                  AnimaisPrenhasWidget.routeName,
-                                  queryParameters: {
-                                    'uidPropriedade': serializeParam(
-                                      widget.uidPropriedade,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'nomePropriedade': serializeParam(
-                                      widget.nomePropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'uidTecnico': serializeParam(
-                                      widget.uidTecnico,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'emailPropriedade': serializeParam(
-                                      widget.emailPropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'visitaPresencial': serializeParam(
-                                      widget.visitaPresencial,
-                                      ParamType.bool,
-                                    ),
-                                    'diasDg': serializeParam(
-                                      widget.diasDg,
-                                      ParamType.String,
-                                    ),
-                                  }.withoutNulls,
-                                );
-                              },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Align(
-                                        alignment:
-                                            AlignmentDirectional(1.0, -1.0),
-                                        child: Card(
-                                          clipBehavior:
-                                              Clip.antiAliasWithSaveLayer,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryBackground,
-                                          elevation: 4.0,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                          ),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    5.0, 5.0, 5.0, 5.0),
-                                            child: StreamBuilder<
-                                                List<AnimaisProdutoresRecord>>(
-                                              stream:
-                                                  queryAnimaisProdutoresRecord(
-                                                parent: widget.uidTecnico,
-                                                queryBuilder:
-                                                    (animaisProdutoresRecord) =>
-                                                        animaisProdutoresRecord
-                                                            .where(
-                                                  'uidTecnicoPropriedade',
-                                                  isEqualTo:
-                                                      widget.uidPropriedade,
-                                                ),
-                                              ),
-                                              builder: (context, snapshot) {
-                                                // Customize what your widget looks like when it's loading.
-                                                if (!snapshot.hasData) {
-                                                  return Center(
-                                                    child: SizedBox(
-                                                      width: 50.0,
-                                                      height: 50.0,
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                        valueColor:
-                                                            AlwaysStoppedAnimation<
-                                                                Color>(
-                                                          Color(0xFFF75E38),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  );
-                                                }
-                                                List<AnimaisProdutoresRecord>
-                                                    textAnimaisProdutoresRecordList =
-                                                    snapshot.data!;
-
-                                                return Text(
-                                                  _model.respostaNet!
-                                                      ? inicioPropriedadeAnimaisProdutoresRecordList
-                                                          .where((e) =>
-                                                              (ehPrenha(
-                                                                  e.status)) &&
-                                                              (ehVaca(e
-                                                                  .grupoAnimal)))
-                                                          .toList()
-                                                          .length
-                                                          .toString()
-                                                      : (animaisProdutoresExistentesObjectBox()
-                                                                  .where((e) =>
-                                                                      (e.uidTecnicoPropriedade ==
-                                                                          widget
-                                                                              .uidPropriedade) &&
-                                                                      (ehVaca(e
-                                                                          .grupoAnimal)) &&
-                                                                      (ehPrenha(e
-                                                                          .status)))
-                                                                  .toList()
-                                                                  .length +
-                                                              FFAppState()
-                                                                  .animaisProdutoresOffline
-                                                                  .where((e) =>
-                                                                      (e.uidTecnicoPropriedade ==
-                                                                          widget
-                                                                              .uidPropriedade) &&
-                                                                      (ehVaca(e
-                                                                          .grupoAnimal)) &&
-                                                                      (ehPrenha(
-                                                                          e.status)))
-                                                                  .toList()
-                                                                  .length)
-                                                          .toString(),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        font: GoogleFonts
-                                                            .readexPro(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .bodyMedium
-                                                                  .fontStyle,
-                                                        ),
-                                                        color:
-                                                            Color(0xFFEC3B5B),
-                                                        letterSpacing: 0.0,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .bodyMedium
-                                                                .fontStyle,
-                                                      ),
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Icon(
-                                            Icons.monitor_heart_outlined,
-                                            color: Color(0xFFEC3B5B),
-                                            size: 32.0,
-                                          ),
-                                          Text(
-                                            'Vacas Prenhas',
-                                            textAlign: TextAlign.center,
-                                            style: FlutterFlowTheme.of(context)
-                                                .labelMedium
-                                                .override(
-                                                  font: GoogleFonts.readexPro(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .labelMedium
-                                                            .fontStyle,
-                                                  ),
-                                                  color: Color(0xFF14181B),
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .labelMedium
-                                                          .fontStyle,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ).animateOnPageLoad(
-                              animationsMap['containerOnPageLoadAnimation6']!),
-                          Container(
-                            width: MediaQuery.sizeOf(context).width * 0.3,
-                            height: 120.0,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .primaryBackground,
-                              borderRadius: BorderRadius.circular(24.0),
-                              border: Border.all(
-                                color: Color(0xFFEC3B5B),
-                              ),
-                            ),
-                            child: InkWell(
-                              splashColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onTap: () async {
-                                context.pushNamed(
-                                  SecasWidget.routeName,
-                                  queryParameters: {
-                                    'uidPropriedade': serializeParam(
-                                      widget.uidPropriedade,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'nomePropriedade': serializeParam(
-                                      widget.nomePropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'uidTecnico': serializeParam(
-                                      widget.uidTecnico,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'emailPropriedade': serializeParam(
-                                      widget.emailPropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'visitaPresencial': serializeParam(
-                                      widget.visitaPresencial,
-                                      ParamType.bool,
-                                    ),
-                                    'diasDg': serializeParam(
-                                      widget.diasDg,
-                                      ParamType.String,
-                                    ),
-                                  }.withoutNulls,
-                                );
-                              },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Align(
-                                        alignment:
-                                            AlignmentDirectional(1.0, -1.0),
-                                        child: Card(
-                                          clipBehavior:
-                                              Clip.antiAliasWithSaveLayer,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryBackground,
-                                          elevation: 4.0,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                          ),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    5.0, 5.0, 5.0, 5.0),
-                                            child: Text(
-                                              inicioPropriedadeAnimaisProdutoresRecordList
-                                                  .where((e) =>
-                                                      ((ehVaca(
-                                                              e.grupoAnimal)) &&
-                                                          (ehSeca(e.status))) ||
-                                                      (e.status ==
-                                                          'Pré Parto') ||
-                                                      (ehDescarte(e.status)) ||
-                                                      ((ehVazia(e.status)) &&
-                                                          (e.dtInducaoLactacao !=
-                                                              null)))
-                                                  .toList()
-                                                  .length
-                                                  .toString(),
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .bodyMedium
-                                                  .override(
-                                                    font: GoogleFonts.readexPro(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium
-                                                              .fontStyle,
-                                                    ),
-                                                    color: Color(0xFFEC3B5B),
-                                                    letterSpacing: 0.0,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontStyle,
-                                                  ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Icon(
-                                            Icons.alarm_add_sharp,
-                                            color: Color(0xFFEC3B5B),
-                                            size: 32.0,
-                                          ),
-                                          Text(
-                                            'Secas',
-                                            textAlign: TextAlign.center,
-                                            style: FlutterFlowTheme.of(context)
-                                                .labelMedium
-                                                .override(
-                                                  font: GoogleFonts.readexPro(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .labelMedium
-                                                            .fontStyle,
-                                                  ),
-                                                  color: Color(0xFF14181B),
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .labelMedium
-                                                          .fontStyle,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ).animateOnPageLoad(
-                              animationsMap['containerOnPageLoadAnimation7']!),
-                          Container(
-                            width: MediaQuery.sizeOf(context).width * 0.3,
-                            height: 120.0,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .primaryBackground,
-                              borderRadius: BorderRadius.circular(24.0),
-                              border: Border.all(
-                                color: Color(0xFFEC3B5B),
-                              ),
-                            ),
-                            child: InkWell(
-                              splashColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onTap: () async {
-                                context.pushNamed(
-                                  ExameGinecologicoWidget.routeName,
-                                  queryParameters: {
-                                    'uidPropriedade': serializeParam(
-                                      widget.uidPropriedade,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'nomePropriedade': serializeParam(
-                                      widget.nomePropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'uidTecnico': serializeParam(
-                                      widget.uidTecnico,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'emailPropriedade': serializeParam(
-                                      widget.emailPropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'visitaPresencial': serializeParam(
-                                      widget.visitaPresencial,
-                                      ParamType.bool,
-                                    ),
-                                    'diasDg': serializeParam(
-                                      widget.diasDg,
-                                      ParamType.String,
-                                    ),
-                                  }.withoutNulls,
-                                );
-                              },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Align(
-                                        alignment:
-                                            AlignmentDirectional(1.0, -1.0),
-                                        child: Card(
-                                          clipBehavior:
-                                              Clip.antiAliasWithSaveLayer,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryBackground,
-                                          elevation: 4.0,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                          ),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    5.0, 5.0, 5.0, 5.0),
-                                            child: Text(
-                                              _model.respostaNet!
-                                                  ? inicioPropriedadeAnimaisProdutoresRecordList
-                                                      .where((e) =>
-                                                          (ehVazia(e.status)) &&
-                                                          ((ehNovilha(e.grupoAnimal)) ||
-                                                              (ehVaca(e
-                                                                  .grupoAnimal))) &&
-                                                          (e.dtInducaoLactacao ==
-                                                              null))
-                                                      .toList()
-                                                      .length
-                                                      .toString()
-                                                  : (inicioPropriedadeAnimaisProdutoresRecordList
-                                                              .where((e) =>
-                                                                  (ehVazia(e.status)) &&
-                                                                  ((ehNovilha(e.grupoAnimal)) ||
-                                                                      (ehVaca(e
-                                                                          .grupoAnimal))) &&
-                                                                  (e.dtInducaoLactacao ==
-                                                                      null))
-                                                              .toList()
-                                                              .length +
-                                                          FFAppState()
-                                                              .animaisProdutoresOffline
-                                                              .where((e) =>
-                                                                  (e.uidTecnicoPropriedade == widget.uidPropriedade) &&
-                                                                  ((ehVaca(e.grupoAnimal)) ||
-                                                                      (ehNovilha(e.grupoAnimal))) &&
-                                                                  (ehVazia(e.status)) &&
-                                                                  (e.dtInducaoLactacao == null))
-                                                              .toList()
-                                                              .length)
-                                                      .toString(),
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .bodyMedium
-                                                  .override(
-                                                    font: GoogleFonts.readexPro(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium
-                                                              .fontStyle,
-                                                    ),
-                                                    color: Color(0xFFEC3B5B),
-                                                    letterSpacing: 0.0,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontStyle,
-                                                  ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Icon(
-                                            Icons.medical_services,
-                                            color: Color(0xFFEC3B5B),
-                                            size: 32.0,
-                                          ),
-                                          Text(
-                                            'Exame\nGinecológico',
-                                            textAlign: TextAlign.center,
-                                            style: FlutterFlowTheme.of(context)
-                                                .labelMedium
-                                                .override(
-                                                  font: GoogleFonts.readexPro(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .labelMedium
-                                                            .fontStyle,
-                                                  ),
-                                                  color: Color(0xFF14181B),
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .labelMedium
-                                                          .fontStyle,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ).animateOnPageLoad(
-                              animationsMap['containerOnPageLoadAnimation8']!),
-                          Container(
-                            width: MediaQuery.sizeOf(context).width * 0.3,
-                            height: 120.0,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .primaryBackground,
-                              borderRadius: BorderRadius.circular(24.0),
-                              border: Border.all(
-                                color: Color(0xFFEC3B5B),
-                              ),
-                            ),
-                            child: InkWell(
-                              splashColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onTap: () async {
-                                context.pushNamed(
-                                  RecriacaoWidget.routeName,
-                                  queryParameters: {
-                                    'uidPropriedade': serializeParam(
-                                      widget.uidPropriedade,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'nomePropriedade': serializeParam(
-                                      widget.nomePropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'uidTecnico': serializeParam(
-                                      widget.uidTecnico,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'emailPropriedade': serializeParam(
-                                      widget.emailPropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'visitaPresencial': serializeParam(
-                                      widget.visitaPresencial,
-                                      ParamType.bool,
-                                    ),
-                                    'diasDg': serializeParam(
-                                      widget.diasDg,
-                                      ParamType.String,
-                                    ),
-                                  }.withoutNulls,
-                                );
-                              },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Align(
-                                        alignment:
-                                            AlignmentDirectional(1.0, -1.0),
-                                        child: Card(
-                                          clipBehavior:
-                                              Clip.antiAliasWithSaveLayer,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryBackground,
-                                          elevation: 4.0,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                          ),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    5.0, 5.0, 5.0, 5.0),
-                                            child: Text(
-                                              _model.respostaNet!
-                                                  ? inicioPropriedadeAnimaisProdutoresRecordList
-                                                      .where((e) =>
-                                                          (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) ||
-                                                              ((ehNovilha(e.grupoAnimal)) &&
-                                                                  (e.dtInducaoLactacao ==
-                                                                      null)) ||
-                                                              (ehBezerras(e
-                                                                  .grupoAnimal)) ||
-                                                              (ehBezerros(e
-                                                                  .grupoAnimal))) &&
-                                                          ((!ehDescarte(e.status)) &&
-                                                              (e.status !=
-                                                                  'Pré Parto')))
-                                                      .toList()
-                                                      .length
-                                                      .toString()
-                                                  : (inicioPropriedadeAnimaisProdutoresRecordList.where((e) => (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) || ((ehNovilha(e.grupoAnimal)) && (e.dtInducaoLactacao == null)) || (ehBezerras(e.grupoAnimal)) || (ehBezerros(e.grupoAnimal))) && ((!ehDescarte(e.status)) && (e.status != 'Pré Parto'))).toList().length +
-                                                          FFAppState()
-                                                              .animaisProdutoresOffline
-                                                              .where((e) =>
-                                                                  (e.uidTecnicoPropriedade == widget.uidPropriedade) &&
-                                                                  (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) ||
-                                                                      ((ehNovilha(e.grupoAnimal)) && (e.dtInducaoLactacao == null)) ||
-                                                                      (ehBezerras(e.grupoAnimal)) ||
-                                                                      (ehBezerros(e.grupoAnimal))) &&
-                                                                  ((!ehDescarte(e.status)) && (e.status != 'Pré Parto')))
-                                                              .toList()
-                                                              .length)
-                                                      .toString(),
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .bodyMedium
-                                                  .override(
-                                                    font: GoogleFonts.readexPro(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium
-                                                              .fontStyle,
-                                                    ),
-                                                    color: Color(0xFFEC3B5B),
-                                                    letterSpacing: 0.0,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontStyle,
-                                                  ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Icon(
-                                            Icons.compare_arrows_sharp,
-                                            color: Color(0xFFEC3B5B),
-                                            size: 32.0,
-                                          ),
-                                          Text(
-                                            'Recria',
-                                            textAlign: TextAlign.center,
-                                            style: FlutterFlowTheme.of(context)
-                                                .labelMedium
-                                                .override(
-                                                  font: GoogleFonts.readexPro(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .labelMedium
-                                                            .fontStyle,
-                                                  ),
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .primaryText,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .labelMedium
-                                                          .fontStyle,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ).animateOnPageLoad(
-                              animationsMap['containerOnPageLoadAnimation9']!),
-                          Container(
-                            width: MediaQuery.sizeOf(context).width * 0.3,
-                            height: 120.0,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .primaryBackground,
-                              borderRadius: BorderRadius.circular(24.0),
-                              border: Border.all(
-                                color: Color(0xFFEC3B5B),
-                              ),
-                            ),
-                            child: InkWell(
-                              splashColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onTap: () async {
-                                context.pushNamed(
-                                  ListacompletaWidget.routeName,
-                                  queryParameters: {
-                                    'uidPropriedade': serializeParam(
-                                      widget.uidPropriedade,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'nomePropriedade': serializeParam(
-                                      widget.nomePropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'uidTecnico': serializeParam(
-                                      widget.uidTecnico,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'emailPropriedade': serializeParam(
-                                      widget.emailPropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'visitaPresencial': serializeParam(
-                                      widget.visitaPresencial,
-                                      ParamType.bool,
-                                    ),
-                                    'diasDg': serializeParam(
-                                      widget.diasDg,
-                                      ParamType.String,
-                                    ),
-                                  }.withoutNulls,
-                                );
-                              },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Align(
-                                        alignment:
-                                            AlignmentDirectional(1.0, -1.0),
-                                        child: Card(
-                                          clipBehavior:
-                                              Clip.antiAliasWithSaveLayer,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryBackground,
-                                          elevation: 4.0,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                          ),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    5.0, 5.0, 5.0, 5.0),
-                                            child: Text(
-                                              inicioPropriedadeAnimaisProdutoresRecordList
-                                                  .where((e) =>
-                                                      ((ehNovilha(
-                                                              e.grupoAnimal)) ||
-                                                          (ehVaca(e
-                                                              .grupoAnimal))) &&
-                                                      (!ehDescarte(e.status)))
-                                                  .toList()
-                                                  .length
-                                                  .toString(),
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .bodyMedium
-                                                  .override(
-                                                    font: GoogleFonts.readexPro(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium
-                                                              .fontStyle,
-                                                    ),
-                                                    color: Color(0xFFEC3B5B),
-                                                    letterSpacing: 0.0,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontStyle,
-                                                  ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Icon(
-                                            Icons.list_alt_sharp,
-                                            color: Color(0xFFEC3B5B),
-                                            size: 32.0,
-                                          ),
-                                          Text(
-                                            'Lista completa',
-                                            textAlign: TextAlign.center,
-                                            style: FlutterFlowTheme.of(context)
-                                                .labelMedium
-                                                .override(
-                                                  font: GoogleFonts.readexPro(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .labelMedium
-                                                            .fontStyle,
-                                                  ),
-                                                  color: Color(0xFF14181B),
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.w600,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .labelMedium
-                                                          .fontStyle,
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ).animateOnPageLoad(
-                              animationsMap['containerOnPageLoadAnimation10']!),
-                          if (_model.respostaNet ?? true)
-                            Container(
-                              width: MediaQuery.sizeOf(context).width * 0.3,
-                              height: 120.0,
-                              decoration: BoxDecoration(
-                                color: FlutterFlowTheme.of(context)
-                                    .primaryBackground,
-                                borderRadius: BorderRadius.circular(24.0),
-                                border: Border.all(
-                                  color: Color(0xFFEC3B5B),
-                                ),
-                              ),
-                              child: InkWell(
-                                splashColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () async {
-                                  context.pushNamed(
-                                    ReceituariosListaWidget.routeName,
-                                    queryParameters: {
-                                      'uidPropriedade': serializeParam(
-                                        widget.uidPropriedade,
-                                        ParamType.DocumentReference,
-                                      ),
-                                      'nomePropriedade': serializeParam(
-                                        widget.nomePropriedade,
-                                        ParamType.String,
-                                      ),
-                                      'uidTecnico': serializeParam(
-                                        widget.uidTecnico,
-                                        ParamType.DocumentReference,
-                                      ),
-                                      'emailPropriedade': serializeParam(
-                                        widget.emailPropriedade,
-                                        ParamType.String,
-                                      ),
-                                      'visitaPresencial': serializeParam(
-                                        widget.visitaPresencial,
-                                        ParamType.bool,
-                                      ),
-                                      'diasDg': serializeParam(
-                                        widget.diasDg,
-                                        ParamType.String,
-                                      ),
-                                    }.withoutNulls,
-                                  );
-                                },
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.summarize,
-                                      color: Color(0xFFEC3B5B),
-                                      size: 30.0,
-                                    ),
-                                    Text(
-                                      'Receituário',
-                                      textAlign: TextAlign.center,
-                                      style: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .override(
-                                            font: GoogleFonts.readexPro(
-                                              fontWeight: FontWeight.w600,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .labelMedium
-                                                      .fontStyle,
-                                            ),
-                                            color: Color(0xFF14181B),
-                                            letterSpacing: 0.0,
-                                            fontWeight: FontWeight.w600,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ).animateOnPageLoad(animationsMap[
-                                'containerOnPageLoadAnimation11']!),
-                          if (_model.respostaNet ?? true)
-                            Container(
-                              width: MediaQuery.sizeOf(context).width * 0.3,
-                              height: 120.0,
-                              decoration: BoxDecoration(
-                                color: FlutterFlowTheme.of(context)
-                                    .primaryBackground,
-                                borderRadius: BorderRadius.circular(24.0),
-                                border: Border.all(
-                                  color: Color(0xFFEC3B5B),
-                                ),
-                              ),
-                              child: InkWell(
-                                splashColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () async {
-                                  context.pushNamed(
-                                    ResumoRebanhoWidget.routeName,
-                                    queryParameters: {
-                                      'uidPropriedade': serializeParam(
-                                        widget.uidPropriedade,
-                                        ParamType.DocumentReference,
-                                      ),
-                                      'nomePropriedade': serializeParam(
-                                        widget.nomePropriedade,
-                                        ParamType.String,
-                                      ),
-                                      'uidTecnico': serializeParam(
-                                        widget.uidTecnico,
-                                        ParamType.DocumentReference,
-                                      ),
-                                      'emailPropriedade': serializeParam(
-                                        widget.emailPropriedade,
-                                        ParamType.String,
-                                      ),
-                                      'visitaPresencial': serializeParam(
-                                        widget.visitaPresencial,
-                                        ParamType.bool,
-                                      ),
-                                      'diasDg': serializeParam(
-                                        widget.diasDg,
-                                        ParamType.String,
-                                      ),
-                                    }.withoutNulls,
-                                  );
-                                },
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.summarize_outlined,
-                                      color: Color(0xFFEC3B5B),
-                                      size: 30.0,
-                                    ),
-                                    Text(
-                                      'Resumo Rebanho',
-                                      textAlign: TextAlign.center,
-                                      style: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .override(
-                                            font: GoogleFonts.readexPro(
-                                              fontWeight: FontWeight.w600,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .labelMedium
-                                                      .fontStyle,
-                                            ),
-                                            color: Color(0xFF14181B),
-                                            letterSpacing: 0.0,
-                                            fontWeight: FontWeight.w600,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ).animateOnPageLoad(animationsMap[
-                                'containerOnPageLoadAnimation12']!),
-                          if (_model.respostaNet ?? true)
-                            Container(
-                              width: MediaQuery.sizeOf(context).width * 0.3,
-                              height: 120.0,
-                              decoration: BoxDecoration(
-                                color: FlutterFlowTheme.of(context)
-                                    .primaryBackground,
-                                borderRadius: BorderRadius.circular(24.0),
-                                border: Border.all(
-                                  color: Color(0xFFEC3B5B),
-                                ),
-                              ),
-                              child: InkWell(
-                                splashColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () async {
-                                  context.pushNamed(
-                                    CalendarioSanitarioWidget.routeName,
-                                    queryParameters: {
-                                      'uidPropriedade': serializeParam(
-                                        widget.uidPropriedade,
-                                        ParamType.DocumentReference,
-                                      ),
-                                      'nomePropriedade': serializeParam(
-                                        widget.nomePropriedade,
-                                        ParamType.String,
-                                      ),
-                                      'uidTecnico': serializeParam(
-                                        widget.uidTecnico,
-                                        ParamType.DocumentReference,
-                                      ),
-                                      'emailPropriedade': serializeParam(
-                                        widget.emailPropriedade,
-                                        ParamType.String,
-                                      ),
-                                      'visitaPresencial': serializeParam(
-                                        widget.visitaPresencial,
-                                        ParamType.bool,
-                                      ),
-                                      'diasDg': serializeParam(
-                                        widget.diasDg,
-                                        ParamType.String,
-                                      ),
-                                    }.withoutNulls,
-                                  );
-                                },
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.calendar_today,
-                                      color: Color(0xFFEC3B5B),
-                                      size: 28.0,
-                                    ),
-                                    Text(
-                                      'Calendário Sanitário',
-                                      textAlign: TextAlign.center,
-                                      style: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .override(
-                                            font: GoogleFonts.readexPro(
-                                              fontWeight: FontWeight.w600,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .labelMedium
-                                                      .fontStyle,
-                                            ),
-                                            color: Color(0xFF14181B),
-                                            letterSpacing: 0.0,
-                                            fontWeight: FontWeight.w600,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ).animateOnPageLoad(animationsMap[
-                                'containerOnPageLoadAnimation13']!),
-                          Container(
-                            width: MediaQuery.sizeOf(context).width * 0.3,
-                            height: 120.0,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .primaryBackground,
-                              borderRadius: BorderRadius.circular(24.0),
-                              border: Border.all(
-                                color: Color(0xFFEC3B5B),
-                              ),
-                            ),
-                            child: InkWell(
-                              splashColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              onTap: () async {
-                                context.pushNamed(
-                                  IndicesZootecnicosWidget.routeName,
-                                  queryParameters: {
-                                    'uidPropriedade': serializeParam(
-                                      widget.uidPropriedade,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'nomePropriedade': serializeParam(
-                                      widget.nomePropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'uidTecnico': serializeParam(
-                                      widget.uidTecnico,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'emailPropriedade': serializeParam(
-                                      widget.emailPropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'visitaPresencial': serializeParam(
-                                      widget.visitaPresencial,
-                                      ParamType.bool,
-                                    ),
-                                    'diasDg': serializeParam(
-                                      widget.diasDg,
-                                      ParamType.String,
-                                    ),
-                                  }.withoutNulls,
-                                );
-                              },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.folder_copy_outlined,
-                                    color: Color(0xFFEC3B5B),
-                                    size: 30.0,
-                                  ),
-                                  Text(
-                                    'Indíces Zootécnicos',
-                                    textAlign: TextAlign.center,
-                                    style: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .override(
-                                          font: GoogleFonts.readexPro(
-                                            fontWeight: FontWeight.w600,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                          color: Color(0xFF14181B),
-                                          letterSpacing: 0.0,
-                                          fontWeight: FontWeight.w600,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ).animateOnPageLoad(
-                              animationsMap['containerOnPageLoadAnimation14']!),
-                          if (_model.respostaNet ?? true)
-                            Container(
-                              width: MediaQuery.sizeOf(context).width * 0.3,
-                              height: 120.0,
-                              decoration: BoxDecoration(
-                                color: FlutterFlowTheme.of(context)
-                                    .primaryBackground,
-                                borderRadius: BorderRadius.circular(24.0),
-                                border: Border.all(
-                                  color: Color(0xFFEC3B5B),
-                                ),
-                              ),
-                              child: InkWell(
-                                splashColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () async {
-                                  context.pushNamed(
-                                    RelatorioFinanceiroWidget.routeName,
-                                    queryParameters: {
-                                      'uidPropriedade': serializeParam(
-                                        widget.uidPropriedade,
-                                        ParamType.DocumentReference,
-                                      ),
-                                      'nomePropriedade': serializeParam(
-                                        widget.nomePropriedade,
-                                        ParamType.String,
-                                      ),
-                                      'uidTecnico': serializeParam(
-                                        widget.uidTecnico,
-                                        ParamType.DocumentReference,
-                                      ),
-                                      'emailPropriedade': serializeParam(
-                                        widget.emailPropriedade,
-                                        ParamType.String,
-                                      ),
-                                      'visitaPresencial': serializeParam(
-                                        widget.visitaPresencial,
-                                        ParamType.bool,
-                                      ),
-                                      'diasDg': serializeParam(
-                                        widget.diasDg,
-                                        ParamType.String,
-                                      ),
-                                    }.withoutNulls,
-                                  );
-                                },
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.attach_money_sharp,
-                                      color: Color(0xFFEC3B5B),
-                                      size: 30.0,
-                                    ),
-                                    Text(
-                                      'Financeiro',
-                                      textAlign: TextAlign.center,
-                                      style: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .override(
-                                            font: GoogleFonts.readexPro(
-                                              fontWeight: FontWeight.w600,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .labelMedium
-                                                      .fontStyle,
-                                            ),
-                                            color: Color(0xFF14181B),
-                                            letterSpacing: 0.0,
-                                            fontWeight: FontWeight.w600,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ).animateOnPageLoad(animationsMap[
-                                'containerOnPageLoadAnimation15']!),
-                          if (responsiveVisibility(
-                            context: context,
-                            phone: false,
-                            tablet: false,
-                            tabletLandscape: false,
-                            desktop: false,
-                          ))
-                            Container(
-                              width: MediaQuery.sizeOf(context).width * 0.3,
-                              height: 120.0,
-                              decoration: BoxDecoration(
-                                color: FlutterFlowTheme.of(context)
-                                    .primaryBackground,
-                                borderRadius: BorderRadius.circular(24.0),
-                                border: Border.all(
-                                  color: Color(0xFFEC3B5B),
-                                ),
-                              ),
-                              child: InkWell(
-                                splashColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () async {},
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    FaIcon(
-                                      FontAwesomeIcons.fileImport,
-                                      color: Color(0xFFEC3B5B),
-                                      size: 22.0,
-                                    ),
-                                    Text(
-                                      'Importar animais',
-                                      textAlign: TextAlign.center,
-                                      style: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .override(
-                                            font: GoogleFonts.readexPro(
-                                              fontWeight: FontWeight.w600,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .labelMedium
-                                                      .fontStyle,
-                                            ),
-                                            color: Color(0xFF14181B),
-                                            letterSpacing: 0.0,
-                                            fontWeight: FontWeight.w600,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ).animateOnPageLoad(animationsMap[
-                                'containerOnPageLoadAnimation16']!),
-                        ],
-                      ),
-                    ),
+                    _p1(context),
+                    _p2(context, inicioPropriedadeAnimaisProdutoresRecordList),
                     if (!valueOrDefault<bool>(
                       _model.respostaNet,
                       true,

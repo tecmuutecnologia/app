@@ -83,6 +83,808 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
     super.dispose();
   }
 
+  Widget _p1(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
+          child: FlutterFlowIconButton(
+            borderColor: Colors.transparent,
+            borderRadius: 30.0,
+            borderWidth: 1.0,
+            buttonSize: 50.0,
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              color: Colors.white,
+              size: 30.0,
+            ),
+            onPressed: () async {
+              context.pop();
+            },
+          ),
+        ),
+        Text(
+          'Editar  propriedade',
+          style: FlutterFlowTheme.of(context).headlineMedium.override(
+                font: GoogleFonts.outfit(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).headlineMedium.fontWeight,
+                  fontStyle:
+                      FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                ),
+                color: Colors.white,
+                fontSize: 20.0,
+                letterSpacing: 0.0,
+                fontWeight:
+                    FlutterFlowTheme.of(context).headlineMedium.fontWeight,
+                fontStyle:
+                    FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+              ),
+        ),
+      ],
+    );
+  }
+
+  Widget _p2(
+      BuildContext context, dynamic editarPropriedadePropriedadesRecord) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
+      child: TextFormField(
+        controller: _model.yourNameTextController ??= TextEditingController(
+          text: editarPropriedadePropriedadesRecord?.displayName,
+        ),
+        focusNode: _model.yourNameFocusNode,
+        textCapitalization: TextCapitalization.words,
+        obscureText: false,
+        decoration: InputDecoration(
+          labelText: 'Seu nome',
+          labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+          hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).alternate,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).primary,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).error,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).error,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          filled: true,
+          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          contentPadding: EdgeInsetsDirectional.fromSTEB(20.0, 24.0, 0.0, 24.0),
+        ),
+        style: FlutterFlowTheme.of(context).bodyMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+        validator: _model.yourNameTextControllerValidator.asValidator(context),
+        inputFormatters: [
+          if (!isAndroid && !isiOS)
+            TextInputFormatter.withFunction((oldValue, newValue) {
+              return TextEditingValue(
+                selection: newValue.selection,
+                text: newValue.text.toCapitalization(TextCapitalization.words),
+              );
+            }),
+        ],
+      ),
+    );
+  }
+
+  Widget _p3(
+      BuildContext context, dynamic editarPropriedadePropriedadesRecord) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
+      child: TextFormField(
+        controller: _model.cpfTextController ??= TextEditingController(
+          text: editarPropriedadePropriedadesRecord?.cpf,
+        ),
+        focusNode: _model.cpfFocusNode,
+        textCapitalization: TextCapitalization.none,
+        obscureText: false,
+        decoration: InputDecoration(
+          labelText: 'CPF',
+          labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+          hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).alternate,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).primary,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).error,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).error,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          filled: true,
+          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          contentPadding: EdgeInsetsDirectional.fromSTEB(20.0, 24.0, 0.0, 24.0),
+        ),
+        style: FlutterFlowTheme.of(context).bodyMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+        keyboardType: TextInputType.number,
+        validator: _model.cpfTextControllerValidator.asValidator(context),
+        inputFormatters: [_model.cpfMask],
+      ),
+    );
+  }
+
+  Widget _p4(
+      BuildContext context, dynamic editarPropriedadePropriedadesRecord) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
+      child: TextFormField(
+        controller: _model.celularTextController ??= TextEditingController(
+          text: editarPropriedadePropriedadesRecord?.phoneNumber,
+        ),
+        focusNode: _model.celularFocusNode,
+        textCapitalization: TextCapitalization.none,
+        obscureText: false,
+        decoration: InputDecoration(
+          labelText: 'Celular',
+          labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+          hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).alternate,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).primary,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).error,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).error,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          filled: true,
+          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          contentPadding: EdgeInsetsDirectional.fromSTEB(20.0, 24.0, 0.0, 24.0),
+        ),
+        style: FlutterFlowTheme.of(context).bodyMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+        keyboardType: TextInputType.number,
+        validator: _model.celularTextControllerValidator.asValidator(context),
+        inputFormatters: [_model.celularMask],
+      ),
+    );
+  }
+
+  Widget _p5(
+      BuildContext context, dynamic editarPropriedadePropriedadesRecord) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
+      child: TextFormField(
+        controller: _model.enderecoTextController ??= TextEditingController(
+          text: editarPropriedadePropriedadesRecord?.endereco,
+        ),
+        focusNode: _model.enderecoFocusNode,
+        textCapitalization: TextCapitalization.none,
+        obscureText: false,
+        decoration: InputDecoration(
+          labelText: 'Endereço',
+          labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+          hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).alternate,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).primary,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).error,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).error,
+              width: 2.0,
+            ),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          filled: true,
+          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          contentPadding: EdgeInsetsDirectional.fromSTEB(20.0, 24.0, 0.0, 24.0),
+        ),
+        style: FlutterFlowTheme.of(context).bodyMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+        validator: _model.enderecoTextControllerValidator.asValidator(context),
+        inputFormatters: [
+          if (!isAndroid && !isiOS)
+            TextInputFormatter.withFunction((oldValue, newValue) {
+              return TextEditingValue(
+                selection: newValue.selection,
+                text: newValue.text.toCapitalization(TextCapitalization.none),
+              );
+            }),
+        ],
+      ),
+    );
+  }
+
+  Widget _p6(
+      BuildContext context, dynamic editarPropriedadePropriedadesRecord) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
+      child: FlutterFlowDropDown<String>(
+        controller: _model.diasdgValueController ??=
+            FormFieldController<String>(
+          _model.diasdgValue ??=
+              editarPropriedadePropriedadesRecord?.diasParaDg,
+        ),
+        options: List<String>.from(['28', '30', '40', '21']),
+        optionLabels: ['28 Dias', '30 Dias', '40 Dias', '21 Dias'],
+        onChanged: (val) => safeSetState(() => _model.diasdgValue = val),
+        width: MediaQuery.sizeOf(context).width * 1.0,
+        height: 50.0,
+        textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+        hintText: 'Dias para Diagnóstico Gestação (DG)',
+        icon: Icon(
+          Icons.keyboard_arrow_down_rounded,
+          color: FlutterFlowTheme.of(context).secondaryText,
+          size: 24.0,
+        ),
+        fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+        elevation: 2.0,
+        borderColor: FlutterFlowTheme.of(context).alternate,
+        borderWidth: 2.0,
+        borderRadius: 8.0,
+        margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+        hidesUnderline: true,
+        isOverButton: true,
+        isSearchable: false,
+        isMultiSelect: false,
+      ),
+    );
+  }
+
+  Widget _p7(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
+      child: Container(
+        width: double.infinity,
+        child: TextFormField(
+          controller: _model.emailProdutorTextController,
+          focusNode: _model.emailProdutorFocusNode,
+          autofocus: false,
+          obscureText: false,
+          decoration: InputDecoration(
+            isDense: true,
+            labelText: 'E-mail',
+            labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                  font: GoogleFonts.readexPro(
+                    fontWeight:
+                        FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                  ),
+                  letterSpacing: 0.0,
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+            hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                  font: GoogleFonts.readexPro(
+                    fontWeight:
+                        FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                  ),
+                  letterSpacing: 0.0,
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: FlutterFlowTheme.of(context).alternate,
+                width: 2.0,
+              ),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: FlutterFlowTheme.of(context).primary,
+                width: 2.0,
+              ),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: FlutterFlowTheme.of(context).error,
+                width: 2.0,
+              ),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: FlutterFlowTheme.of(context).error,
+                width: 2.0,
+              ),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            filled: true,
+            fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+            contentPadding:
+                EdgeInsetsDirectional.fromSTEB(24.0, 24.0, 0.0, 24.0),
+          ),
+          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+              ),
+          keyboardType: TextInputType.emailAddress,
+          validator:
+              _model.emailProdutorTextControllerValidator.asValidator(context),
+        ),
+      ),
+    );
+  }
+
+  Widget _p8(
+      BuildContext context, dynamic editarPropriedadePropriedadesRecord) {
+    return Align(
+      alignment: AlignmentDirectional(0.0, 0.05),
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(20.0, 12.0, 20.0, 12.0),
+        child: FFButtonWidget(
+          onPressed: () async {
+            var confirmDialogResponse = await showDialog<bool>(
+                  context: context,
+                  builder: (alertDialogContext) {
+                    return AlertDialog(
+                      title: Text('Excluir Propriedade'),
+                      content: Text(
+                          'Tem certeza que deseja excluir essa propriedade? Ela será movida para a lixeira e poderá ser restaurada posteriormente.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () =>
+                              Navigator.pop(alertDialogContext, false),
+                          child: Text('Cancelar'),
+                        ),
+                        TextButton(
+                          onPressed: () =>
+                              Navigator.pop(alertDialogContext, true),
+                          child: Text('Excluir'),
+                        ),
+                      ],
+                    );
+                  },
+                ) ??
+                false;
+            if (!confirmDialogResponse) {
+              return;
+            }
+
+            await editarPropriedadePropriedadesRecord.reference
+                .update(createPropriedadesRecordData(
+              isDeleted: true,
+              deletedAt: DateTime.now(),
+            ));
+
+            await showDialog(
+              context: context,
+              builder: (alertDialogContext) {
+                return AlertDialog(
+                  title: Text('Sucesso!'),
+                  content: Text('Propriedade movida para a lixeira.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(alertDialogContext),
+                      child: Text('Ok'),
+                    ),
+                  ],
+                );
+              },
+            );
+
+            context.goNamed(
+              ListaPropriedadeWidget.routeName,
+              queryParameters: {
+                'visitaPresencial': serializeParam(
+                  widget.visitaPresencial,
+                  ParamType.bool,
+                ),
+              }.withoutNulls,
+            );
+          },
+          text: 'Excluir Propriedade',
+          icon: Icon(
+            Icons.delete_outline,
+            size: 15.0,
+          ),
+          options: FFButtonOptions(
+            width: double.infinity,
+            height: 50.0,
+            padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+            iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+            color: Color(0xFFEF4444),
+            textStyle: FlutterFlowTheme.of(context).titleMedium.override(
+                  font: GoogleFonts.readexPro(
+                    fontWeight:
+                        FlutterFlowTheme.of(context).titleMedium.fontWeight,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                  ),
+                  color: Colors.white,
+                  letterSpacing: 0.0,
+                  fontWeight:
+                      FlutterFlowTheme.of(context).titleMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                ),
+            elevation: 2.0,
+            borderSide: BorderSide(
+              color: Colors.transparent,
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _p9(
+      BuildContext context, dynamic editarPropriedadePropriedadesRecord) {
+    return Align(
+      alignment: AlignmentDirectional(0.0, 0.05),
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 15.0),
+        child: FFButtonWidget(
+          onPressed: () async {
+            if (_model.formKey.currentState == null ||
+                !_model.formKey.currentState!.validate()) {
+              return;
+            }
+            if (_model.diasdgValue == null) {
+              return;
+            }
+            if ((editarPropriedadePropriedadesRecord.displayName != '') &&
+                (editarPropriedadePropriedadesRecord.email != '') &&
+                (editarPropriedadePropriedadesRecord.cpf != '') &&
+                (editarPropriedadePropriedadesRecord.phoneNumber != '')) {
+              if (editarPropriedadePropriedadesRecord.diasParaDg !=
+                  _model.diasdgValue) {
+                var confirmDialogResponse = await showDialog<bool>(
+                      context: context,
+                      builder: (alertDialogContext) {
+                        return AlertDialog(
+                          title: Text('Importante!'),
+                          content: Text(
+                              'A nova quantidade de dias para DG, será válido apenas para novas ações.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () =>
+                                  Navigator.pop(alertDialogContext, false),
+                              child: Text('Cancelar'),
+                            ),
+                            TextButton(
+                              onPressed: () =>
+                                  Navigator.pop(alertDialogContext, true),
+                              child: Text('Confirmar'),
+                            ),
+                          ],
+                        );
+                      },
+                    ) ??
+                    false;
+                if (!confirmDialogResponse) {
+                  return;
+                }
+              }
+            } else {
+              await showDialog(
+                context: context,
+                builder: (alertDialogContext) {
+                  return AlertDialog(
+                    title: Text('Campos obrigatórios não preenchidos.'),
+                    content: Text('Preencha todos os campos obrigatórios.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(alertDialogContext),
+                        child: Text('Ok'),
+                      ),
+                    ],
+                  );
+                },
+              );
+              return;
+            }
+
+            await editarPropriedadePropriedadesRecord.reference
+                .update(createPropriedadesRecordData(
+              cpf: _model.cpfTextController.text,
+              endereco: _model.enderecoTextController.text,
+              displayName: _model.yourNameTextController.text,
+              phoneNumber: _model.celularTextController.text,
+              diasParaDg: _model.diasdgValue,
+            ));
+            await showDialog(
+              context: context,
+              builder: (alertDialogContext) {
+                return AlertDialog(
+                  title: Text('Sucesso!'),
+                  content: Text('Atualização realizada com sucesso.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(alertDialogContext),
+                      child: Text('Ok'),
+                    ),
+                  ],
+                );
+              },
+            );
+
+            context.goNamed(
+              ListaPropriedadeWidget.routeName,
+              queryParameters: {
+                'visitaPresencial': serializeParam(
+                  widget.visitaPresencial,
+                  ParamType.bool,
+                ),
+              }.withoutNulls,
+            );
+          },
+          text: 'Salvar e editar',
+          icon: Icon(
+            Icons.save,
+            size: 15.0,
+          ),
+          options: FFButtonOptions(
+            width: double.infinity,
+            height: 50.0,
+            padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
+            iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+            color: Color(0xFFEC3B5B),
+            textStyle: FlutterFlowTheme.of(context).titleMedium.override(
+                  font: GoogleFonts.readexPro(
+                    fontWeight:
+                        FlutterFlowTheme.of(context).titleMedium.fontWeight,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                  ),
+                  color: Colors.white,
+                  letterSpacing: 0.0,
+                  fontWeight:
+                      FlutterFlowTheme.of(context).titleMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                ),
+            elevation: 2.0,
+            borderSide: BorderSide(
+              color: Colors.transparent,
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _p10(BuildContext context) {
+    return Align(
+      alignment: AlignmentDirectional(0.0, 0.05),
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(20.0, 15.0, 20.0, 0.0),
+        child: FFButtonWidget(
+          onPressed: () async {
+            GoRouter.of(context).prepareAuthEvent();
+            await authManager.signOut();
+            GoRouter.of(context).clearRedirectLocation();
+
+            context.goNamedAuth(WelcomeWidget.routeName, context.mounted);
+          },
+          text: 'Logout',
+          icon: Icon(
+            Icons.logout,
+            size: 15.0,
+          ),
+          options: FFButtonOptions(
+            width: double.infinity,
+            height: 50.0,
+            padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+            iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+            color: Color(0xFF473BEC),
+            textStyle: FlutterFlowTheme.of(context).titleMedium.override(
+                  font: GoogleFonts.readexPro(
+                    fontWeight:
+                        FlutterFlowTheme.of(context).titleMedium.fontWeight,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                  ),
+                  color: Colors.white,
+                  letterSpacing: 0.0,
+                  fontWeight:
+                      FlutterFlowTheme.of(context).titleMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                ),
+            elevation: 2.0,
+            borderSide: BorderSide(
+              color: Colors.transparent,
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<PropriedadesRecord>>(
@@ -138,53 +940,7 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              12.0, 0.0, 0.0, 0.0),
-                          child: FlutterFlowIconButton(
-                            borderColor: Colors.transparent,
-                            borderRadius: 30.0,
-                            borderWidth: 1.0,
-                            buttonSize: 50.0,
-                            icon: Icon(
-                              Icons.arrow_back_rounded,
-                              color: Colors.white,
-                              size: 30.0,
-                            ),
-                            onPressed: () async {
-                              context.pop();
-                            },
-                          ),
-                        ),
-                        Text(
-                          'Editar  propriedade',
-                          style: FlutterFlowTheme.of(context)
-                              .headlineMedium
-                              .override(
-                                font: GoogleFonts.outfit(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .headlineMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .headlineMedium
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 20.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .headlineMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .headlineMedium
-                                    .fontStyle,
-                              ),
-                        ),
-                      ],
-                    ),
+                    _p1(context),
                   ],
                 ),
                 centerTitle: true,
@@ -202,617 +958,12 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(
-                          20.0, 20.0, 20.0, 16.0),
-                      child: TextFormField(
-                        controller: _model.yourNameTextController ??=
-                            TextEditingController(
-                          text:
-                              editarPropriedadePropriedadesRecord?.displayName,
-                        ),
-                        focusNode: _model.yourNameFocusNode,
-                        textCapitalization: TextCapitalization.words,
-                        obscureText: false,
-                        decoration: InputDecoration(
-                          labelText: 'Seu nome',
-                          labelStyle:
-                              FlutterFlowTheme.of(context).labelMedium.override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                          hintStyle:
-                              FlutterFlowTheme.of(context).labelMedium.override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).alternate,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).primary,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).error,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).error,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          filled: true,
-                          fillColor:
-                              FlutterFlowTheme.of(context).secondaryBackground,
-                          contentPadding: EdgeInsetsDirectional.fromSTEB(
-                              20.0, 24.0, 0.0, 24.0),
-                        ),
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.readexPro(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontStyle,
-                              ),
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                        validator: _model.yourNameTextControllerValidator
-                            .asValidator(context),
-                        inputFormatters: [
-                          if (!isAndroid && !isiOS)
-                            TextInputFormatter.withFunction(
-                                (oldValue, newValue) {
-                              return TextEditingValue(
-                                selection: newValue.selection,
-                                text: newValue.text
-                                    .toCapitalization(TextCapitalization.words),
-                              );
-                            }),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
-                      child: TextFormField(
-                        controller: _model.cpfTextController ??=
-                            TextEditingController(
-                          text: editarPropriedadePropriedadesRecord?.cpf,
-                        ),
-                        focusNode: _model.cpfFocusNode,
-                        textCapitalization: TextCapitalization.none,
-                        obscureText: false,
-                        decoration: InputDecoration(
-                          labelText: 'CPF',
-                          labelStyle:
-                              FlutterFlowTheme.of(context).labelMedium.override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                          hintStyle:
-                              FlutterFlowTheme.of(context).labelMedium.override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).alternate,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).primary,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).error,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).error,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          filled: true,
-                          fillColor:
-                              FlutterFlowTheme.of(context).secondaryBackground,
-                          contentPadding: EdgeInsetsDirectional.fromSTEB(
-                              20.0, 24.0, 0.0, 24.0),
-                        ),
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.readexPro(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontStyle,
-                              ),
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                        keyboardType: TextInputType.number,
-                        validator: _model.cpfTextControllerValidator
-                            .asValidator(context),
-                        inputFormatters: [_model.cpfMask],
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
-                      child: TextFormField(
-                        controller: _model.celularTextController ??=
-                            TextEditingController(
-                          text:
-                              editarPropriedadePropriedadesRecord?.phoneNumber,
-                        ),
-                        focusNode: _model.celularFocusNode,
-                        textCapitalization: TextCapitalization.none,
-                        obscureText: false,
-                        decoration: InputDecoration(
-                          labelText: 'Celular',
-                          labelStyle:
-                              FlutterFlowTheme.of(context).labelMedium.override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                          hintStyle:
-                              FlutterFlowTheme.of(context).labelMedium.override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).alternate,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).primary,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).error,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).error,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          filled: true,
-                          fillColor:
-                              FlutterFlowTheme.of(context).secondaryBackground,
-                          contentPadding: EdgeInsetsDirectional.fromSTEB(
-                              20.0, 24.0, 0.0, 24.0),
-                        ),
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.readexPro(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontStyle,
-                              ),
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                        keyboardType: TextInputType.number,
-                        validator: _model.celularTextControllerValidator
-                            .asValidator(context),
-                        inputFormatters: [_model.celularMask],
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
-                      child: TextFormField(
-                        controller: _model.enderecoTextController ??=
-                            TextEditingController(
-                          text: editarPropriedadePropriedadesRecord?.endereco,
-                        ),
-                        focusNode: _model.enderecoFocusNode,
-                        textCapitalization: TextCapitalization.none,
-                        obscureText: false,
-                        decoration: InputDecoration(
-                          labelText: 'Endereço',
-                          labelStyle:
-                              FlutterFlowTheme.of(context).labelMedium.override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                          hintStyle:
-                              FlutterFlowTheme.of(context).labelMedium.override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).alternate,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).primary,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).error,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: FlutterFlowTheme.of(context).error,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          filled: true,
-                          fillColor:
-                              FlutterFlowTheme.of(context).secondaryBackground,
-                          contentPadding: EdgeInsetsDirectional.fromSTEB(
-                              20.0, 24.0, 0.0, 24.0),
-                        ),
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.readexPro(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontStyle,
-                              ),
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                        validator: _model.enderecoTextControllerValidator
-                            .asValidator(context),
-                        inputFormatters: [
-                          if (!isAndroid && !isiOS)
-                            TextInputFormatter.withFunction(
-                                (oldValue, newValue) {
-                              return TextEditingValue(
-                                selection: newValue.selection,
-                                text: newValue.text
-                                    .toCapitalization(TextCapitalization.none),
-                              );
-                            }),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
-                      child: FlutterFlowDropDown<String>(
-                        controller: _model.diasdgValueController ??=
-                            FormFieldController<String>(
-                          _model.diasdgValue ??=
-                              editarPropriedadePropriedadesRecord?.diasParaDg,
-                        ),
-                        options: List<String>.from(['28', '30', '40', '21']),
-                        optionLabels: [
-                          '28 Dias',
-                          '30 Dias',
-                          '40 Dias',
-                          '21 Dias'
-                        ],
-                        onChanged: (val) =>
-                            safeSetState(() => _model.diasdgValue = val),
-                        width: MediaQuery.sizeOf(context).width * 1.0,
-                        height: 50.0,
-                        textStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
-                        hintText: 'Dias para Diagnóstico Gestação (DG)',
-                        icon: Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          color: FlutterFlowTheme.of(context).secondaryText,
-                          size: 24.0,
-                        ),
-                        fillColor:
-                            FlutterFlowTheme.of(context).secondaryBackground,
-                        elevation: 2.0,
-                        borderColor: FlutterFlowTheme.of(context).alternate,
-                        borderWidth: 2.0,
-                        borderRadius: 8.0,
-                        margin: EdgeInsetsDirectional.fromSTEB(
-                            16.0, 4.0, 16.0, 4.0),
-                        hidesUnderline: true,
-                        isOverButton: true,
-                        isSearchable: false,
-                        isMultiSelect: false,
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
-                      child: Container(
-                        width: double.infinity,
-                        child: TextFormField(
-                          controller: _model.emailProdutorTextController,
-                          focusNode: _model.emailProdutorFocusNode,
-                          autofocus: false,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            labelText: 'E-mail',
-                            labelStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontStyle,
-                                ),
-                            hintStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontStyle,
-                                ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).alternate,
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).primary,
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).error,
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: FlutterFlowTheme.of(context).error,
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            filled: true,
-                            fillColor: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                            contentPadding: EdgeInsetsDirectional.fromSTEB(
-                                24.0, 24.0, 0.0, 24.0),
-                          ),
-                          style:
-                              FlutterFlowTheme.of(context).bodyMedium.override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                          keyboardType: TextInputType.emailAddress,
-                          validator: _model.emailProdutorTextControllerValidator
-                              .asValidator(context),
-                        ),
-                      ),
-                    ),
+                    _p2(context, editarPropriedadePropriedadesRecord),
+                    _p3(context, editarPropriedadePropriedadesRecord),
+                    _p4(context, editarPropriedadePropriedadesRecord),
+                    _p5(context, editarPropriedadePropriedadesRecord),
+                    _p6(context, editarPropriedadePropriedadesRecord),
+                    _p7(context),
                     if (!editarPropriedadePropriedadesRecord!
                         .hasUidPersonProdutor())
                       Padding(
@@ -1062,283 +1213,8 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                           ),
                         ),
                       ),
-                    Align(
-                      alignment: AlignmentDirectional(0.0, 0.05),
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            20.0, 12.0, 20.0, 12.0),
-                        child: FFButtonWidget(
-                          onPressed: () async {
-                            var confirmDialogResponse =
-                                await showDialog<bool>(
-                                      context: context,
-                                      builder: (alertDialogContext) {
-                                        return AlertDialog(
-                                          title: Text('Excluir Propriedade'),
-                                          content: Text(
-                                              'Tem certeza que deseja excluir essa propriedade? Ela será movida para a lixeira e poderá ser restaurada posteriormente.'),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(
-                                                      alertDialogContext,
-                                                      false),
-                                              child: Text('Cancelar'),
-                                            ),
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.pop(
-                                                      alertDialogContext,
-                                                      true),
-                                              child: Text('Excluir'),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ) ??
-                                    false;
-                            if (!confirmDialogResponse) {
-                              return;
-                            }
-
-                            await editarPropriedadePropriedadesRecord.reference
-                                .update(createPropriedadesRecordData(
-                              isDeleted: true,
-                              deletedAt: DateTime.now(),
-                            ));
-
-                            await showDialog(
-                              context: context,
-                              builder: (alertDialogContext) {
-                                return AlertDialog(
-                                  title: Text('Sucesso!'),
-                                  content: Text(
-                                      'Propriedade movida para a lixeira.'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(alertDialogContext),
-                                      child: Text('Ok'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-
-                            context.goNamed(
-                              ListaPropriedadeWidget.routeName,
-                              queryParameters: {
-                                'visitaPresencial': serializeParam(
-                                  widget.visitaPresencial,
-                                  ParamType.bool,
-                                ),
-                              }.withoutNulls,
-                            );
-                          },
-                          text: 'Excluir Propriedade',
-                          icon: Icon(
-                            Icons.delete_outline,
-                            size: 15.0,
-                          ),
-                          options: FFButtonOptions(
-                            width: double.infinity,
-                            height: 50.0,
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 0.0),
-                            iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 0.0),
-                            color: Color(0xFFEF4444),
-                            textStyle: FlutterFlowTheme.of(context)
-                                .titleMedium
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .titleMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleMedium
-                                        .fontStyle,
-                                  ),
-                                  color: Colors.white,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleMedium
-                                      .fontStyle,
-                                ),
-                            elevation: 2.0,
-                            borderSide: BorderSide(
-                              color: Colors.transparent,
-                              width: 1.0,
-                            ),
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional(0.0, 0.05),
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            20.0, 0.0, 20.0, 15.0),
-                        child: FFButtonWidget(
-                          onPressed: () async {
-                            if (_model.formKey.currentState == null ||
-                                !_model.formKey.currentState!.validate()) {
-                              return;
-                            }
-                            if (_model.diasdgValue == null) {
-                              return;
-                            }
-                            if ((editarPropriedadePropriedadesRecord
-                                            .displayName !=
-                                        '') &&
-                                (editarPropriedadePropriedadesRecord
-                                            .email !=
-                                        '') &&
-                                (editarPropriedadePropriedadesRecord.cpf !=
-                                        '') &&
-                                (editarPropriedadePropriedadesRecord
-                                            .phoneNumber !=
-                                        '')) {
-                              if (editarPropriedadePropriedadesRecord
-                                      .diasParaDg !=
-                                  _model.diasdgValue) {
-                                var confirmDialogResponse =
-                                    await showDialog<bool>(
-                                          context: context,
-                                          builder: (alertDialogContext) {
-                                            return AlertDialog(
-                                              title: Text('Importante!'),
-                                              content: Text(
-                                                  'A nova quantidade de dias para DG, será válido apenas para novas ações.'),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(
-                                                          alertDialogContext,
-                                                          false),
-                                                  child: Text('Cancelar'),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.pop(
-                                                          alertDialogContext,
-                                                          true),
-                                                  child: Text('Confirmar'),
-                                                ),
-                                              ],
-                                            );
-                                          },
-                                        ) ??
-                                        false;
-                                if (!confirmDialogResponse) {
-                                  return;
-                                }
-                              }
-                            } else {
-                              await showDialog(
-                                context: context,
-                                builder: (alertDialogContext) {
-                                  return AlertDialog(
-                                    title: Text(
-                                        'Campos obrigatórios não preenchidos.'),
-                                    content: Text(
-                                        'Preencha todos os campos obrigatórios.'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(alertDialogContext),
-                                        child: Text('Ok'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                              return;
-                            }
-
-                            await editarPropriedadePropriedadesRecord.reference
-                                .update(createPropriedadesRecordData(
-                              cpf: _model.cpfTextController.text,
-                              endereco: _model.enderecoTextController.text,
-                              displayName: _model.yourNameTextController.text,
-                              phoneNumber: _model.celularTextController.text,
-                              diasParaDg: _model.diasdgValue,
-                            ));
-                            await showDialog(
-                              context: context,
-                              builder: (alertDialogContext) {
-                                return AlertDialog(
-                                  title: Text('Sucesso!'),
-                                  content: Text(
-                                      'Atualização realizada com sucesso.'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(alertDialogContext),
-                                      child: Text('Ok'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-
-                            context.goNamed(
-                              ListaPropriedadeWidget.routeName,
-                              queryParameters: {
-                                'visitaPresencial': serializeParam(
-                                  widget.visitaPresencial,
-                                  ParamType.bool,
-                                ),
-                              }.withoutNulls,
-                            );
-                          },
-                          text: 'Salvar e editar',
-                          icon: Icon(
-                            Icons.save,
-                            size: 15.0,
-                          ),
-                          options: FFButtonOptions(
-                            width: double.infinity,
-                            height: 50.0,
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 8.0),
-                            iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 0.0),
-                            color: Color(0xFFEC3B5B),
-                            textStyle: FlutterFlowTheme.of(context)
-                                .titleMedium
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .titleMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleMedium
-                                        .fontStyle,
-                                  ),
-                                  color: Colors.white,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleMedium
-                                      .fontStyle,
-                                ),
-                            elevation: 2.0,
-                            borderSide: BorderSide(
-                              color: Colors.transparent,
-                              width: 1.0,
-                            ),
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                        ),
-                      ),
-                    ),
+                    _p8(context, editarPropriedadePropriedadesRecord),
+                    _p9(context, editarPropriedadePropriedadesRecord),
                     if (!editarPropriedadePropriedadesRecord
                         .hasUidPersonProdutor())
                       Align(
@@ -1516,63 +1392,7 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                           ),
                         ),
                       ),
-                    Align(
-                      alignment: AlignmentDirectional(0.0, 0.05),
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            20.0, 15.0, 20.0, 0.0),
-                        child: FFButtonWidget(
-                          onPressed: () async {
-                            GoRouter.of(context).prepareAuthEvent();
-                            await authManager.signOut();
-                            GoRouter.of(context).clearRedirectLocation();
-
-                            context.goNamedAuth(
-                                WelcomeWidget.routeName, context.mounted);
-                          },
-                          text: 'Logout',
-                          icon: Icon(
-                            Icons.logout,
-                            size: 15.0,
-                          ),
-                          options: FFButtonOptions(
-                            width: double.infinity,
-                            height: 50.0,
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 0.0),
-                            iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 0.0),
-                            color: Color(0xFF473BEC),
-                            textStyle: FlutterFlowTheme.of(context)
-                                .titleMedium
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .titleMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleMedium
-                                        .fontStyle,
-                                  ),
-                                  color: Colors.white,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleMedium
-                                      .fontStyle,
-                                ),
-                            elevation: 2.0,
-                            borderSide: BorderSide(
-                              color: Colors.transparent,
-                              width: 1.0,
-                            ),
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                        ),
-                      ),
-                    ),
+                    _p10(context),
                   ],
                 ),
               ),

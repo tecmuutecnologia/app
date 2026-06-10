@@ -55,6 +55,77 @@ class _RelatorioFinanceiroWidgetState extends State<RelatorioFinanceiroWidget> {
     super.dispose();
   }
 
+  Widget _p1(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
+          child: FlutterFlowIconButton(
+            borderColor: Colors.transparent,
+            borderRadius: 30.0,
+            borderWidth: 1.0,
+            buttonSize: 50.0,
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              color: Colors.white,
+              size: 30.0,
+            ),
+            onPressed: () async {
+              context.pushNamed(
+                InicioPropriedadeWidget.routeName,
+                queryParameters: {
+                  'nomePropriedade': serializeParam(
+                    widget.nomePropriedade,
+                    ParamType.String,
+                  ),
+                  'uidPropriedade': serializeParam(
+                    widget.uidPropriedade,
+                    ParamType.DocumentReference,
+                  ),
+                  'uidTecnico': serializeParam(
+                    widget.uidTecnico,
+                    ParamType.DocumentReference,
+                  ),
+                  'emailPropriedade': serializeParam(
+                    widget.emailPropriedade,
+                    ParamType.String,
+                  ),
+                  'visitaPresencial': serializeParam(
+                    widget.visitaPresencial,
+                    ParamType.bool,
+                  ),
+                  'diasDg': serializeParam(
+                    widget.diasDg,
+                    ParamType.String,
+                  ),
+                }.withoutNulls,
+              );
+            },
+          ),
+        ),
+        Text(
+          'Relatório financeiro',
+          style: FlutterFlowTheme.of(context).headlineMedium.override(
+                font: GoogleFonts.outfit(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).headlineMedium.fontWeight,
+                  fontStyle:
+                      FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                ),
+                color: Colors.white,
+                fontSize: 22.0,
+                letterSpacing: 0.0,
+                fontWeight:
+                    FlutterFlowTheme.of(context).headlineMedium.fontWeight,
+                fontStyle:
+                    FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+              ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -77,81 +148,7 @@ class _RelatorioFinanceiroWidgetState extends State<RelatorioFinanceiroWidget> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Padding(
-                        padding:
-                            EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-                        child: FlutterFlowIconButton(
-                          borderColor: Colors.transparent,
-                          borderRadius: 30.0,
-                          borderWidth: 1.0,
-                          buttonSize: 50.0,
-                          icon: Icon(
-                            Icons.arrow_back_rounded,
-                            color: Colors.white,
-                            size: 30.0,
-                          ),
-                          onPressed: () async {
-                            context.pushNamed(
-                              InicioPropriedadeWidget.routeName,
-                              queryParameters: {
-                                'nomePropriedade': serializeParam(
-                                  widget.nomePropriedade,
-                                  ParamType.String,
-                                ),
-                                'uidPropriedade': serializeParam(
-                                  widget.uidPropriedade,
-                                  ParamType.DocumentReference,
-                                ),
-                                'uidTecnico': serializeParam(
-                                  widget.uidTecnico,
-                                  ParamType.DocumentReference,
-                                ),
-                                'emailPropriedade': serializeParam(
-                                  widget.emailPropriedade,
-                                  ParamType.String,
-                                ),
-                                'visitaPresencial': serializeParam(
-                                  widget.visitaPresencial,
-                                  ParamType.bool,
-                                ),
-                                'diasDg': serializeParam(
-                                  widget.diasDg,
-                                  ParamType.String,
-                                ),
-                              }.withoutNulls,
-                            );
-                          },
-                        ),
-                      ),
-                      Text(
-                        'Relatório financeiro',
-                        style: FlutterFlowTheme.of(context)
-                            .headlineMedium
-                            .override(
-                              font: GoogleFonts.outfit(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .headlineMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .headlineMedium
-                                    .fontStyle,
-                              ),
-                              color: Colors.white,
-                              fontSize: 22.0,
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .headlineMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .headlineMedium
-                                  .fontStyle,
-                            ),
-                      ),
-                    ],
-                  ),
+                  _p1(context),
                 ],
               ),
               centerTitle: true,

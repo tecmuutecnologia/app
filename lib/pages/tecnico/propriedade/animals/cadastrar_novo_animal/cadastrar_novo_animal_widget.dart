@@ -2764,6 +2764,1607 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
     if (_shouldSetState) safeSetState(() {});
   }
 
+  Widget _p1(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
+          child: FlutterFlowIconButton(
+            borderColor: Colors.transparent,
+            borderRadius: 30.0,
+            borderWidth: 1.0,
+            buttonSize: 50.0,
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              color: Colors.white,
+              size: 30.0,
+            ),
+            onPressed: () async {
+              context.goNamed(
+                ListaAnimaisWidget.routeName,
+                queryParameters: {
+                  'uidPropriedade': serializeParam(
+                    widget.uidPropriedade,
+                    ParamType.DocumentReference,
+                  ),
+                  'nomePropriedade': serializeParam(
+                    widget.nomePropriedade,
+                    ParamType.String,
+                  ),
+                  'uidTecnico': serializeParam(
+                    widget.uidTecnico,
+                    ParamType.DocumentReference,
+                  ),
+                  'emailPropriedade': serializeParam(
+                    widget.emailPropriedade,
+                    ParamType.String,
+                  ),
+                  'visitaPresencial': serializeParam(
+                    widget.visitaPresencial,
+                    ParamType.bool,
+                  ),
+                  'initialTabSelect': serializeParam(
+                    widget.initialTabSelect,
+                    ParamType.int,
+                  ),
+                  'diasDg': serializeParam(
+                    widget.diasDg,
+                    ParamType.String,
+                  ),
+                }.withoutNulls,
+              );
+            },
+          ),
+        ),
+        Text(
+          'Adicionar animal',
+          style: FlutterFlowTheme.of(context).headlineMedium.override(
+                font: GoogleFonts.outfit(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).headlineMedium.fontWeight,
+                  fontStyle:
+                      FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                ),
+                color: Colors.white,
+                fontSize: 22.0,
+                letterSpacing: 0.0,
+                fontWeight:
+                    FlutterFlowTheme.of(context).headlineMedium.fontWeight,
+                fontStyle:
+                    FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+              ),
+        ),
+      ],
+    );
+  }
+
+  Widget _p2(BuildContext context,
+      dynamic cadastrarNovoAnimalStatusAnimaisRecordList) {
+    return Form(
+      key: _model.formKey,
+      autovalidateMode: AutovalidateMode.always,
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              _p3(context),
+              _p4(context),
+              _p5(context),
+              _p6(context),
+              if (((widget.grupoPredominante == 'Sêmens') ||
+                      (widget.grupoPredominante == 'Touros')) ||
+                  ((_model.grupoValue == 'Touros') ||
+                      (_model.grupoValue == 'Sêmens')))
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _p11(context),
+                    _p12(context),
+                  ],
+                ),
+              if (_model.grupoValue != 'Sêmens')
+                TextFormField(
+                  controller: _model.pesoTextController,
+                  focusNode: _model.pesoFocusNode,
+                  autofocus: false,
+                  textCapitalization: TextCapitalization.none,
+                  obscureText: false,
+                  decoration: InputDecoration(
+                    labelText: 'Peso em KG',
+                    labelStyle:
+                        FlutterFlowTheme.of(context).labelMedium.override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontStyle,
+                              ),
+                              letterSpacing: 0.0,
+                              fontWeight: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontStyle,
+                            ),
+                    hintStyle:
+                        FlutterFlowTheme.of(context).labelMedium.override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontStyle,
+                              ),
+                              letterSpacing: 0.0,
+                              fontWeight: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontStyle,
+                            ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: FlutterFlowTheme.of(context).alternate,
+                        width: 2.0,
+                      ),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: FlutterFlowTheme.of(context).primary,
+                        width: 2.0,
+                      ),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: FlutterFlowTheme.of(context).error,
+                        width: 2.0,
+                      ),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: FlutterFlowTheme.of(context).error,
+                        width: 2.0,
+                      ),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    contentPadding:
+                        EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+                  ),
+                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                        font: GoogleFonts.readexPro(
+                          fontWeight: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                        ),
+                        letterSpacing: 0.0,
+                        fontWeight:
+                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                        fontStyle:
+                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                      ),
+                  maxLength: 5,
+                  maxLengthEnforcement: MaxLengthEnforcement.none,
+                  buildCounter: (context,
+                          {required currentLength,
+                          required isFocused,
+                          maxLength}) =>
+                      null,
+                  keyboardType: TextInputType.number,
+                  cursorColor: FlutterFlowTheme.of(context).primary,
+                  validator:
+                      _model.pesoTextControllerValidator.asValidator(context),
+                  inputFormatters: [
+                    if (!isAndroid && !isiOS)
+                      TextInputFormatter.withFunction((oldValue, newValue) {
+                        return TextEditingValue(
+                          selection: newValue.selection,
+                          text: newValue.text
+                              .toCapitalization(TextCapitalization.none),
+                        );
+                      }),
+                  ],
+                ),
+              _p7(context),
+              _p8(context),
+              _p9(context),
+              if (((_model.grupoValue == 'Vacas') ||
+                      (widget.grupoPredominante == 'Vacas')) &&
+                  (_model.statusAnimalValue != 'Seca'))
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    _p13(context),
+                    _p14(context),
+                  ],
+                ),
+              if (((_model.grupoValue == 'Vacas') ||
+                      (_model.grupoValue == 'Novilhas')) ||
+                  ((widget.grupoPredominante == 'Novilhas') ||
+                      (widget.grupoPredominante == 'Vacas')))
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    _p15(context),
+                    _p16(context),
+                  ],
+                ),
+              if (((_model.grupoValue == 'Vacas') ||
+                      (_model.grupoValue == 'Novilhas')) &&
+                  (_model.dataUltimaInseminacaoTextController.text != ''))
+                StreamBuilder<List<AnimaisProdutoresRecord>>(
+                  stream: _model.animaisLiberaoParaInseminar(
+                    requestFn: () => queryAnimaisProdutoresRecord(
+                      parent: widget.uidTecnico,
+                      queryBuilder: (animaisProdutoresRecord) =>
+                          animaisProdutoresRecord
+                              .where(
+                                'uidTecnicoPropriedade',
+                                isEqualTo: widget.uidPropriedade,
+                              )
+                              .where(
+                                'liberaInseminacao',
+                                isEqualTo: true,
+                              ),
+                    ),
+                  ),
+                  builder: (context, snapshot) {
+                    // Customize what your widget looks like when it's loading.
+                    if (!snapshot.hasData) {
+                      return Center(
+                        child: SizedBox(
+                          width: 50.0,
+                          height: 50.0,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Color(0xFFF75E38),
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    List<AnimaisProdutoresRecord>
+                        touroInseminacaoAnimaisProdutoresRecordList =
+                        snapshot.data!;
+
+                    return FlutterFlowDropDown<String>(
+                      controller: _model.touroInseminacaoValueController ??=
+                          FormFieldController<String>(null),
+                      options: functions.duasListasEmUma(
+                          touroInseminacaoAnimaisProdutoresRecordList
+                              .map((e) => e.nomeBrincoConcat)
+                              .toList(),
+                          FFAppState()
+                              .animaisProdutoresOffline
+                              .where((e) =>
+                                  (e.uidTecnicoPropriedade ==
+                                      widget.uidPropriedade) &&
+                                  (e.liberaInseminacao == true))
+                              .toList()
+                              .map((e) => e.nomeBrincoConcat)
+                              .toList())!,
+                      onChanged: (val) => safeSetState(
+                          () => _model.touroInseminacaoValue = val),
+                      width: double.infinity,
+                      height: 50.0,
+                      searchHintTextStyle:
+                          FlutterFlowTheme.of(context).labelMedium.override(
+                                font: GoogleFonts.readexPro(
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .fontStyle,
+                                ),
+                                letterSpacing: 0.0,
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontStyle,
+                              ),
+                      searchTextStyle:
+                          FlutterFlowTheme.of(context).bodyMedium.override(
+                                font: GoogleFonts.readexPro(
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontStyle,
+                                ),
+                                letterSpacing: 0.0,
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontStyle,
+                              ),
+                      textStyle:
+                          FlutterFlowTheme.of(context).bodyMedium.override(
+                                font: GoogleFonts.readexPro(
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .fontStyle,
+                                ),
+                                letterSpacing: 0.0,
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontStyle,
+                              ),
+                      hintText: 'Touro/sêmen inseminação',
+                      searchHintText: 'Digite para pesquisar...',
+                      icon: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: FlutterFlowTheme.of(context).secondaryText,
+                        size: 24.0,
+                      ),
+                      fillColor:
+                          FlutterFlowTheme.of(context).secondaryBackground,
+                      elevation: 2.0,
+                      borderColor: FlutterFlowTheme.of(context).alternate,
+                      borderWidth: 2.0,
+                      borderRadius: 8.0,
+                      margin:
+                          EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+                      hidesUnderline: true,
+                      isSearchable: true,
+                      isMultiSelect: false,
+                    );
+                  },
+                ),
+              if (((widget.grupoPredominante == 'Novilhas') ||
+                      (widget.grupoPredominante == 'Vacas')) ||
+                  ((_model.grupoValue == 'Vacas') ||
+                      (_model.grupoValue == 'Novilhas')))
+                FlutterFlowDropDown<String>(
+                  controller: _model.statusAnimalValueController ??=
+                      FormFieldController<String>(
+                    _model.statusAnimalValue ??= 'Vazia',
+                  ),
+                  options: () {
+                    if ((_model.dataUltimaInseminacaoTextController.text !=
+                            '') &&
+                        (_model.dataUltimoPartoTextController.text != '') &&
+                        (_model.datePicked2! > _model.datePicked3!)) {
+                      return cadastrarNovoAnimalStatusAnimaisRecordList
+                          .map((e) => e.descricao)
+                          .toList()
+                          .where((e) => e == 'Vazia')
+                          .toList();
+                    } else if ((_model
+                                .dataUltimaInseminacaoTextController.text !=
+                            '') &&
+                        (_model.dataUltimoPartoTextController.text != '') &&
+                        (_model.datePicked2! < _model.datePicked3!)) {
+                      return cadastrarNovoAnimalStatusAnimaisRecordList
+                          .map((e) => e.descricao)
+                          .toList()
+                          .where((e) =>
+                              (e == 'Inseminada') ||
+                              (e == 'Prenha') ||
+                              (e == 'Seca') ||
+                              (e == 'Inseminada PP') ||
+                              (e == 'Pré Parto'))
+                          .toList();
+                    } else if ((_model
+                                .dataUltimaInseminacaoTextController.text !=
+                            '') &&
+                        (_model.dataUltimoPartoTextController.text == '')) {
+                      return functions.retornaStringEmLista(_model.grupoValue ==
+                              'Novilhas'
+                          ? 'Inseminada, Inseminada PP, Prenha, Pré Parto'
+                          : 'Inseminada, Inseminada PP, Prenha, Seca, Pré Parto');
+                    } else if ((_model
+                                .dataUltimaInseminacaoTextController.text ==
+                            '') &&
+                        (_model.dataUltimoPartoTextController.text != '')) {
+                      return cadastrarNovoAnimalStatusAnimaisRecordList
+                          .map((e) => e.descricao)
+                          .toList()
+                          .where((e) => e == 'Vazia')
+                          .toList();
+                    } else {
+                      return functions.retornaStringEmLista('Vazia');
+                    }
+                  }(),
+                  onChanged: (val) =>
+                      safeSetState(() => _model.statusAnimalValue = val),
+                  width: double.infinity,
+                  height: 50.0,
+                  textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                        font: GoogleFonts.readexPro(
+                          fontWeight: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                        ),
+                        letterSpacing: 0.0,
+                        fontWeight:
+                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                        fontStyle:
+                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                      ),
+                  hintText: 'Status animal',
+                  icon: Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: FlutterFlowTheme.of(context).secondaryText,
+                    size: 24.0,
+                  ),
+                  fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                  elevation: 2.0,
+                  borderColor: FlutterFlowTheme.of(context).alternate,
+                  borderWidth: 2.0,
+                  borderRadius: 8.0,
+                  margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+                  hidesUnderline: true,
+                  isSearchable: false,
+                  isMultiSelect: false,
+                ),
+              _p10(context),
+            ].divide(SizedBox(height: 12.0)),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _p3(BuildContext context) {
+    return TextFormField(
+      controller: _model.nomeTextController,
+      focusNode: _model.nomeFocusNode,
+      autofocus: false,
+      obscureText: false,
+      decoration: InputDecoration(
+        labelText: 'Nome*',
+        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+        hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).alternate,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).primary,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).error,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).error,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        contentPadding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+      ),
+      style: FlutterFlowTheme.of(context).bodyMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+          ),
+      cursorColor: FlutterFlowTheme.of(context).primary,
+      validator: _model.nomeTextControllerValidator.asValidator(context),
+    );
+  }
+
+  Widget _p4(BuildContext context) {
+    return TextFormField(
+      controller: _model.brincoTextController,
+      focusNode: _model.brincoFocusNode,
+      autofocus: false,
+      obscureText: false,
+      decoration: InputDecoration(
+        labelText: 'Nº registro/brinco*',
+        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+        hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).alternate,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).primary,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).error,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).error,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        contentPadding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+      ),
+      style: FlutterFlowTheme.of(context).bodyMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+          ),
+      keyboardType: TextInputType.number,
+      cursorColor: FlutterFlowTheme.of(context).primary,
+      validator: _model.brincoTextControllerValidator.asValidator(context),
+    );
+  }
+
+  Widget _p5(BuildContext context) {
+    return StreamBuilder<List<RacasRecord>>(
+      stream: FFAppState().racasGeral(
+        requestFn: () => queryRacasRecord(),
+      ),
+      builder: (context, snapshot) {
+        // Customize what your widget looks like when it's loading.
+        if (!snapshot.hasData) {
+          return Center(
+            child: SizedBox(
+              width: 50.0,
+              height: 50.0,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Color(0xFFF75E38),
+                ),
+              ),
+            ),
+          );
+        }
+        List<RacasRecord> racaRacasRecordList = snapshot.data!;
+
+        return FlutterFlowDropDown<String>(
+          controller: _model.racaValueController ??=
+              FormFieldController<String>(
+            _model.racaValue ??= 'Holandesa',
+          ),
+          options: _model.respostaNet!
+              ? racaRacasRecordList.map((e) => e.descricao).toList()
+              : kRacasDescricoes.toList(),
+          onChanged: (val) => safeSetState(() => _model.racaValue = val),
+          width: double.infinity,
+          height: 50.0,
+          searchHintTextStyle: FlutterFlowTheme.of(context)
+              .labelMedium
+              .override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+          searchTextStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+              ),
+          textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+              ),
+          hintText: 'Raça predominante*',
+          searchHintText: 'Pesquise uma raça...',
+          icon: Icon(
+            Icons.keyboard_arrow_down_rounded,
+            color: FlutterFlowTheme.of(context).secondaryText,
+            size: 24.0,
+          ),
+          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          elevation: 2.0,
+          borderColor: FlutterFlowTheme.of(context).alternate,
+          borderWidth: 2.0,
+          borderRadius: 8.0,
+          margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+          hidesUnderline: true,
+          isOverButton: true,
+          isSearchable: true,
+          isMultiSelect: false,
+        );
+      },
+    );
+  }
+
+  Widget _p6(BuildContext context) {
+    return StreamBuilder<List<GrupoRecord>>(
+      stream: FFAppState().gruposGeral(
+        requestFn: () => queryGrupoRecord(),
+      ),
+      builder: (context, snapshot) {
+        // Customize what your widget looks like when it's loading.
+        if (!snapshot.hasData) {
+          return Center(
+            child: SizedBox(
+              width: 50.0,
+              height: 50.0,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Color(0xFFF75E38),
+                ),
+              ),
+            ),
+          );
+        }
+        List<GrupoRecord> grupoGrupoRecordList = snapshot.data!;
+
+        return FlutterFlowDropDown<String>(
+          controller: _model.grupoValueController ??=
+              FormFieldController<String>(
+            _model.grupoValue ??= widget.grupoPredominante,
+          ),
+          options: _model.respostaNet!
+              ? grupoGrupoRecordList.map((e) => e.descricao).toList()
+              : kGruposDescricoes.toList(),
+          onChanged: (val) => safeSetState(() => _model.grupoValue = val),
+          width: double.infinity,
+          height: 50.0,
+          textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+              ),
+          hintText: 'Grupo predominante*',
+          icon: Icon(
+            Icons.keyboard_arrow_down_rounded,
+            color: FlutterFlowTheme.of(context).secondaryText,
+            size: 24.0,
+          ),
+          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          elevation: 2.0,
+          borderColor: FlutterFlowTheme.of(context).alternate,
+          borderWidth: 2.0,
+          borderRadius: 8.0,
+          margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+          hidesUnderline: true,
+          isSearchable: false,
+          isMultiSelect: false,
+        );
+      },
+    );
+  }
+
+  Widget _p7(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Expanded(
+          child: Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
+            child: TextFormField(
+              controller: _model.dataNascimentoTextController,
+              focusNode: _model.dataNascimentoFocusNode,
+              onChanged: (_) => EasyDebounce.debounce(
+                '_model.dataNascimentoTextController',
+                Duration(milliseconds: 2000),
+                () => safeSetState(() {}),
+              ),
+              autofocus: false,
+              textCapitalization: TextCapitalization.none,
+              textInputAction: TextInputAction.next,
+              readOnly: true,
+              obscureText: false,
+              decoration: InputDecoration(
+                labelText: 'Data nascimento',
+                hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                      font: GoogleFonts.readexPro(
+                        fontWeight:
+                            FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                        fontStyle:
+                            FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                      ),
+                      letterSpacing: 0.0,
+                      fontWeight:
+                          FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                      fontStyle:
+                          FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                    ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: FlutterFlowTheme.of(context).alternate,
+                    width: 2.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: FlutterFlowTheme.of(context).primary,
+                    width: 2.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: FlutterFlowTheme.of(context).error,
+                    width: 2.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: FlutterFlowTheme.of(context).error,
+                    width: 2.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                contentPadding:
+                    EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+                suffixIcon: _model.dataNascimentoTextController!.text.isNotEmpty
+                    ? InkWell(
+                        onTap: () async {
+                          _model.dataNascimentoTextController?.clear();
+                          safeSetState(() {});
+                        },
+                        child: Icon(
+                          Icons.clear,
+                          size: 22.0,
+                        ),
+                      )
+                    : null,
+              ),
+              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                    font: GoogleFonts.readexPro(
+                      fontWeight:
+                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                      fontStyle:
+                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                    ),
+                    letterSpacing: 0.0,
+                    fontWeight:
+                        FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                  ),
+              maxLength: 10,
+              maxLengthEnforcement: MaxLengthEnforcement.enforced,
+              buildCounter: (context,
+                      {required currentLength,
+                      required isFocused,
+                      maxLength}) =>
+                  null,
+              keyboardType: TextInputType.datetime,
+              validator: _model.dataNascimentoTextControllerValidator
+                  .asValidator(context),
+              inputFormatters: [_model.dataNascimentoMask],
+            ),
+          ),
+        ),
+        InkWell(
+          splashColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          onTap: () async {
+            // calendarNascimento
+            await showModalBottomSheet<bool>(
+                context: context,
+                builder: (context) {
+                  final _datePicked1CupertinoTheme = CupertinoTheme.of(context);
+                  return ScrollConfiguration(
+                    behavior: const MaterialScrollBehavior().copyWith(
+                      dragDevices: {
+                        PointerDeviceKind.mouse,
+                        PointerDeviceKind.touch,
+                        PointerDeviceKind.stylus,
+                        PointerDeviceKind.unknown
+                      },
+                    ),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height / 3,
+                      width: MediaQuery.of(context).size.width,
+                      color: FlutterFlowTheme.of(context).secondaryBackground,
+                      child: CupertinoTheme(
+                        data: _datePicked1CupertinoTheme.copyWith(
+                          textTheme:
+                              _datePicked1CupertinoTheme.textTheme.copyWith(
+                            dateTimePickerTextStyle:
+                                FlutterFlowTheme.of(context)
+                                    .headlineMedium
+                                    .override(
+                                      font: GoogleFonts.outfit(
+                                        fontWeight: FlutterFlowTheme.of(context)
+                                            .headlineMedium
+                                            .fontWeight,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .headlineMedium
+                                            .fontStyle,
+                                      ),
+                                      color: FlutterFlowTheme.of(context)
+                                          .primaryText,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .headlineMedium
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .headlineMedium
+                                          .fontStyle,
+                                    ),
+                          ),
+                        ),
+                        child: CupertinoDatePicker(
+                          mode: CupertinoDatePickerMode.date,
+                          minimumDate: (DateTime.fromMicrosecondsSinceEpoch(
+                                  1577847600000000) ??
+                              DateTime(1900)),
+                          initialDateTime: DateTime.fromMicrosecondsSinceEpoch(
+                              1609470000000000),
+                          maximumDate: (getCurrentTimestamp ?? DateTime(2050)),
+                          backgroundColor:
+                              FlutterFlowTheme.of(context).secondaryBackground,
+                          use24hFormat: false,
+                          onDateTimeChanged: (newDateTime) => safeSetState(() {
+                            _model.datePicked1 = newDateTime;
+                          }),
+                        ),
+                      ),
+                    ),
+                  );
+                });
+            safeSetState(() {
+              _model.dataNascimentoTextController?.text = dateTimeFormat(
+                "dd/MM/yyyy",
+                _model.datePicked1,
+                locale: FFLocalizations.of(context).languageCode,
+              );
+              _model.dataNascimentoMask.updateMask(
+                newValue: TextEditingValue(
+                  text: _model.dataNascimentoTextController!.text,
+                ),
+              );
+            });
+          },
+          child: Icon(
+            Icons.calendar_month,
+            color: FlutterFlowTheme.of(context).secondaryText,
+            size: 24.0,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _p8(BuildContext context) {
+    return TextFormField(
+      controller: _model.touroPaiTextController,
+      focusNode: _model.touroPaiFocusNode,
+      autofocus: false,
+      obscureText: false,
+      decoration: InputDecoration(
+        labelText: 'Touro (Pai)',
+        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+        hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).alternate,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).primary,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).error,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).error,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        contentPadding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+      ),
+      style: FlutterFlowTheme.of(context).bodyMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+          ),
+      cursorColor: FlutterFlowTheme.of(context).primary,
+      validator: _model.touroPaiTextControllerValidator.asValidator(context),
+    );
+  }
+
+  Widget _p9(BuildContext context) {
+    return TextFormField(
+      controller: _model.vacaMaeTextController,
+      focusNode: _model.vacaMaeFocusNode,
+      autofocus: false,
+      obscureText: false,
+      decoration: InputDecoration(
+        labelText: 'Vaca (Mãe)',
+        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+        hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).alternate,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).primary,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).error,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).error,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        contentPadding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+      ),
+      style: FlutterFlowTheme.of(context).bodyMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+          ),
+      textAlign: TextAlign.start,
+      cursorColor: FlutterFlowTheme.of(context).primary,
+      validator: _model.vacaMaeTextControllerValidator.asValidator(context),
+    );
+  }
+
+  Widget _p10(BuildContext context) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 12.0),
+      child: FFButtonWidget(
+        onPressed: () async {
+          await _cadastrarAnimal(context);
+        },
+        text: 'Adicionar Novo',
+        icon: Icon(
+          Icons.save,
+          size: 15.0,
+        ),
+        options: FFButtonOptions(
+          width: double.infinity,
+          height: 48.0,
+          padding: EdgeInsets.all(0.0),
+          iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+          color: Color(0xFFEC3B5B),
+          textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                ),
+                color: Colors.white,
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+              ),
+          elevation: 4.0,
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.circular(60.0),
+        ),
+      ),
+    );
+  }
+
+  Widget _p11(BuildContext context) {
+    return Text(
+      'Liberar para inseminações:',
+      style: FlutterFlowTheme.of(context).bodyMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+          ),
+    );
+  }
+
+  Widget _p12(BuildContext context) {
+    return Switch.adaptive(
+      value: _model.switchValue!,
+      onChanged: (newValue) async {
+        safeSetState(() => _model.switchValue = newValue);
+      },
+      activeColor: FlutterFlowTheme.of(context).tertiary,
+      activeTrackColor: FlutterFlowTheme.of(context).alternate,
+      inactiveTrackColor: FlutterFlowTheme.of(context).alternate,
+      inactiveThumbColor: FlutterFlowTheme.of(context).secondaryText,
+    );
+  }
+
+  Widget _p13(BuildContext context) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
+        child: TextFormField(
+          controller: _model.dataUltimoPartoTextController,
+          focusNode: _model.dataUltimoPartoFocusNode,
+          onChanged: (_) => EasyDebounce.debounce(
+            '_model.dataUltimoPartoTextController',
+            Duration(milliseconds: 2000),
+            () => safeSetState(() {}),
+          ),
+          autofocus: false,
+          textCapitalization: TextCapitalization.none,
+          textInputAction: TextInputAction.next,
+          readOnly: true,
+          obscureText: false,
+          decoration: InputDecoration(
+            labelText: 'Último parto',
+            hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                  font: GoogleFonts.readexPro(
+                    fontWeight:
+                        FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                  ),
+                  letterSpacing: 0.0,
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: FlutterFlowTheme.of(context).alternate,
+                width: 2.0,
+              ),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: FlutterFlowTheme.of(context).primary,
+                width: 2.0,
+              ),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: FlutterFlowTheme.of(context).error,
+                width: 2.0,
+              ),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: FlutterFlowTheme.of(context).error,
+                width: 2.0,
+              ),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            contentPadding:
+                EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+            suffixIcon: _model.dataUltimoPartoTextController!.text.isNotEmpty
+                ? InkWell(
+                    onTap: () async {
+                      _model.dataUltimoPartoTextController?.clear();
+                      safeSetState(() {});
+                    },
+                    child: Icon(
+                      Icons.clear,
+                      size: 22.0,
+                    ),
+                  )
+                : null,
+          ),
+          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+              ),
+          maxLength: 10,
+          maxLengthEnforcement: MaxLengthEnforcement.enforced,
+          buildCounter: (context,
+                  {required currentLength, required isFocused, maxLength}) =>
+              null,
+          keyboardType: TextInputType.datetime,
+          validator: _model.dataUltimoPartoTextControllerValidator
+              .asValidator(context),
+          inputFormatters: [_model.dataUltimoPartoMask],
+        ),
+      ),
+    );
+  }
+
+  Widget _p14(BuildContext context) {
+    return InkWell(
+      splashColor: Colors.transparent,
+      focusColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      onTap: () async {
+        var _shouldSetState = false;
+        // calendarUltimoParto
+        await showModalBottomSheet<bool>(
+            context: context,
+            builder: (context) {
+              final _datePicked2CupertinoTheme = CupertinoTheme.of(context);
+              return ScrollConfiguration(
+                behavior: const MaterialScrollBehavior().copyWith(
+                  dragDevices: {
+                    PointerDeviceKind.mouse,
+                    PointerDeviceKind.touch,
+                    PointerDeviceKind.stylus,
+                    PointerDeviceKind.unknown
+                  },
+                ),
+                child: Container(
+                  height: MediaQuery.of(context).size.height / 3,
+                  width: MediaQuery.of(context).size.width,
+                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  child: CupertinoTheme(
+                    data: _datePicked2CupertinoTheme.copyWith(
+                      textTheme: _datePicked2CupertinoTheme.textTheme.copyWith(
+                        dateTimePickerTextStyle: FlutterFlowTheme.of(context)
+                            .headlineMedium
+                            .override(
+                              font: GoogleFonts.outfit(
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .headlineMedium
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .headlineMedium
+                                    .fontStyle,
+                              ),
+                              color: FlutterFlowTheme.of(context).primaryText,
+                              letterSpacing: 0.0,
+                              fontWeight: FlutterFlowTheme.of(context)
+                                  .headlineMedium
+                                  .fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .headlineMedium
+                                  .fontStyle,
+                            ),
+                      ),
+                    ),
+                    child: CupertinoDatePicker(
+                      mode: CupertinoDatePickerMode.date,
+                      minimumDate: DateTime(1900),
+                      initialDateTime: getCurrentTimestamp,
+                      maximumDate: (getCurrentTimestamp ?? DateTime(2050)),
+                      backgroundColor:
+                          FlutterFlowTheme.of(context).secondaryBackground,
+                      use24hFormat: false,
+                      onDateTimeChanged: (newDateTime) => safeSetState(() {
+                        _model.datePicked2 = newDateTime;
+                      }),
+                    ),
+                  ),
+                ),
+              );
+            });
+        safeSetState(() {
+          _model.dataUltimoPartoTextController?.text = dateTimeFormat(
+            "dd/MM/yyyy",
+            _model.datePicked2,
+            locale: FFLocalizations.of(context).languageCode,
+          );
+          _model.dataUltimoPartoMask.updateMask(
+            newValue: TextEditingValue(
+              text: _model.dataUltimoPartoTextController!.text,
+            ),
+          );
+        });
+        if (_model.datePicked2! > _model.datePicked3!) {
+          safeSetState(() {
+            _model.statusAnimalValueController?.value = 'Vazia';
+            _model.statusAnimalValue = 'Vazia';
+          });
+          if (_shouldSetState) safeSetState(() {});
+          return;
+        } else {
+          _model.outListaAnimais = await queryStatusAnimaisRecordOnce();
+          _shouldSetState = true;
+          safeSetState(() {
+            _model.statusAnimalValueController?.value =
+                (_model.outListaAnimais != null &&
+                        (_model.outListaAnimais)!.isNotEmpty)
+                    .toString();
+            _model.statusAnimalValue = (_model.outListaAnimais != null &&
+                    (_model.outListaAnimais)!.isNotEmpty)
+                .toString();
+          });
+          safeSetState(() {
+            _model.statusAnimalValueController?.value = 'Inseminada';
+            _model.statusAnimalValue = 'Inseminada';
+          });
+          if (_shouldSetState) safeSetState(() {});
+          return;
+        }
+
+        if (_shouldSetState) safeSetState(() {});
+      },
+      child: Icon(
+        Icons.calendar_month,
+        color: FlutterFlowTheme.of(context).secondaryText,
+        size: 24.0,
+      ),
+    );
+  }
+
+  Widget _p15(BuildContext context) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
+        child: TextFormField(
+          controller: _model.dataUltimaInseminacaoTextController,
+          focusNode: _model.dataUltimaInseminacaoFocusNode,
+          onChanged: (_) => EasyDebounce.debounce(
+            '_model.dataUltimaInseminacaoTextController',
+            Duration(milliseconds: 2000),
+            () => safeSetState(() {}),
+          ),
+          autofocus: false,
+          textCapitalization: TextCapitalization.none,
+          textInputAction: TextInputAction.next,
+          readOnly: true,
+          obscureText: false,
+          decoration: InputDecoration(
+            labelText: 'Última inseminação',
+            labelStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                  font: GoogleFonts.readexPro(
+                    fontWeight:
+                        FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                  ),
+                  letterSpacing: 0.0,
+                  fontWeight:
+                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                ),
+            hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                  font: GoogleFonts.readexPro(
+                    fontWeight:
+                        FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                  ),
+                  letterSpacing: 0.0,
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: FlutterFlowTheme.of(context).alternate,
+                width: 2.0,
+              ),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: FlutterFlowTheme.of(context).primary,
+                width: 2.0,
+              ),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: FlutterFlowTheme.of(context).error,
+                width: 2.0,
+              ),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: FlutterFlowTheme.of(context).error,
+                width: 2.0,
+              ),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            contentPadding:
+                EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+            suffixIcon:
+                _model.dataUltimaInseminacaoTextController!.text.isNotEmpty
+                    ? InkWell(
+                        onTap: () async {
+                          _model.dataUltimaInseminacaoTextController?.clear();
+                          safeSetState(() {});
+                        },
+                        child: Icon(
+                          Icons.clear,
+                          size: 22.0,
+                        ),
+                      )
+                    : null,
+          ),
+          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+              ),
+          maxLength: 10,
+          maxLengthEnforcement: MaxLengthEnforcement.enforced,
+          buildCounter: (context,
+                  {required currentLength, required isFocused, maxLength}) =>
+              null,
+          keyboardType: TextInputType.datetime,
+          validator: _model.dataUltimaInseminacaoTextControllerValidator
+              .asValidator(context),
+          inputFormatters: [_model.dataUltimaInseminacaoMask],
+        ),
+      ),
+    );
+  }
+
+  Widget _p16(BuildContext context) {
+    return InkWell(
+      splashColor: Colors.transparent,
+      focusColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      onTap: () async {
+        // calendarUltimoParto
+        await showModalBottomSheet<bool>(
+            context: context,
+            builder: (context) {
+              final _datePicked3CupertinoTheme = CupertinoTheme.of(context);
+              return ScrollConfiguration(
+                behavior: const MaterialScrollBehavior().copyWith(
+                  dragDevices: {
+                    PointerDeviceKind.mouse,
+                    PointerDeviceKind.touch,
+                    PointerDeviceKind.stylus,
+                    PointerDeviceKind.unknown
+                  },
+                ),
+                child: Container(
+                  height: MediaQuery.of(context).size.height / 3,
+                  width: MediaQuery.of(context).size.width,
+                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  child: CupertinoTheme(
+                    data: _datePicked3CupertinoTheme.copyWith(
+                      textTheme: _datePicked3CupertinoTheme.textTheme.copyWith(
+                        dateTimePickerTextStyle: FlutterFlowTheme.of(context)
+                            .headlineMedium
+                            .override(
+                              font: GoogleFonts.outfit(
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .headlineMedium
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .headlineMedium
+                                    .fontStyle,
+                              ),
+                              color: FlutterFlowTheme.of(context).primaryText,
+                              letterSpacing: 0.0,
+                              fontWeight: FlutterFlowTheme.of(context)
+                                  .headlineMedium
+                                  .fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .headlineMedium
+                                  .fontStyle,
+                            ),
+                      ),
+                    ),
+                    child: CupertinoDatePicker(
+                      mode: CupertinoDatePickerMode.date,
+                      minimumDate: DateTime(1900),
+                      initialDateTime: getCurrentTimestamp,
+                      maximumDate: (getCurrentTimestamp ?? DateTime(2050)),
+                      backgroundColor:
+                          FlutterFlowTheme.of(context).secondaryBackground,
+                      use24hFormat: false,
+                      onDateTimeChanged: (newDateTime) => safeSetState(() {
+                        _model.datePicked3 = newDateTime;
+                      }),
+                    ),
+                  ),
+                ),
+              );
+            });
+        safeSetState(() {
+          _model.dataUltimaInseminacaoTextController?.text = dateTimeFormat(
+            "dd/MM/yyyy",
+            _model.datePicked3,
+            locale: FFLocalizations.of(context).languageCode,
+          );
+          _model.dataUltimaInseminacaoMask.updateMask(
+            newValue: TextEditingValue(
+              text: _model.dataUltimaInseminacaoTextController!.text,
+            ),
+          );
+        });
+        if ((_model.dataUltimaInseminacaoTextController.text != '') &&
+            (_model.dataUltimoPartoTextController.text != '')) {
+          if (_model.datePicked2! > _model.datePicked3!) {
+            safeSetState(() {
+              _model.statusAnimalValueController?.value = 'Vazia';
+              _model.statusAnimalValue = 'Vazia';
+            });
+            return;
+          } else {
+            safeSetState(() {
+              _model.statusAnimalValueController?.value = 'Inseminada';
+              _model.statusAnimalValue = 'Inseminada';
+            });
+            return;
+          }
+        } else {
+          safeSetState(() {
+            _model.statusAnimalValueController?.value = 'Inseminada';
+            _model.statusAnimalValue = 'Inseminada';
+          });
+          return;
+        }
+      },
+      child: Icon(
+        Icons.calendar_month,
+        color: FlutterFlowTheme.of(context).secondaryText,
+        size: 24.0,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
@@ -2814,85 +4415,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                12.0, 0.0, 0.0, 0.0),
-                            child: FlutterFlowIconButton(
-                              borderColor: Colors.transparent,
-                              borderRadius: 30.0,
-                              borderWidth: 1.0,
-                              buttonSize: 50.0,
-                              icon: Icon(
-                                Icons.arrow_back_rounded,
-                                color: Colors.white,
-                                size: 30.0,
-                              ),
-                              onPressed: () async {
-                                context.goNamed(
-                                  ListaAnimaisWidget.routeName,
-                                  queryParameters: {
-                                    'uidPropriedade': serializeParam(
-                                      widget.uidPropriedade,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'nomePropriedade': serializeParam(
-                                      widget.nomePropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'uidTecnico': serializeParam(
-                                      widget.uidTecnico,
-                                      ParamType.DocumentReference,
-                                    ),
-                                    'emailPropriedade': serializeParam(
-                                      widget.emailPropriedade,
-                                      ParamType.String,
-                                    ),
-                                    'visitaPresencial': serializeParam(
-                                      widget.visitaPresencial,
-                                      ParamType.bool,
-                                    ),
-                                    'initialTabSelect': serializeParam(
-                                      widget.initialTabSelect,
-                                      ParamType.int,
-                                    ),
-                                    'diasDg': serializeParam(
-                                      widget.diasDg,
-                                      ParamType.String,
-                                    ),
-                                  }.withoutNulls,
-                                );
-                              },
-                            ),
-                          ),
-                          Text(
-                            'Adicionar animal',
-                            style: FlutterFlowTheme.of(context)
-                                .headlineMedium
-                                .override(
-                                  font: GoogleFonts.outfit(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .headlineMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .headlineMedium
-                                        .fontStyle,
-                                  ),
-                                  color: Colors.white,
-                                  fontSize: 22.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .headlineMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .headlineMedium
-                                      .fontStyle,
-                                ),
-                          ),
-                        ],
-                      ),
+                      _p1(context),
                     ],
                   ),
                   centerTitle: true,
@@ -2910,2240 +4433,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Form(
-                        key: _model.formKey,
-                        autovalidateMode: AutovalidateMode.always,
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              0.0, 16.0, 0.0, 0.0),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                TextFormField(
-                                  controller: _model.nomeTextController,
-                                  focusNode: _model.nomeFocusNode,
-                                  autofocus: false,
-                                  obscureText: false,
-                                  decoration: InputDecoration(
-                                    labelText: 'Nome*',
-                                    labelStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .override(
-                                          font: GoogleFonts.readexPro(
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                          letterSpacing: 0.0,
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                    hintStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .override(
-                                          font: GoogleFonts.readexPro(
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                          letterSpacing: 0.0,
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .alternate,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .primary,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color:
-                                            FlutterFlowTheme.of(context).error,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color:
-                                            FlutterFlowTheme.of(context).error,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    contentPadding:
-                                        EdgeInsetsDirectional.fromSTEB(
-                                            16.0, 12.0, 16.0, 12.0),
-                                  ),
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        font: GoogleFonts.readexPro(
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                        letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                  cursorColor:
-                                      FlutterFlowTheme.of(context).primary,
-                                  validator: _model.nomeTextControllerValidator
-                                      .asValidator(context),
-                                ),
-                                TextFormField(
-                                  controller: _model.brincoTextController,
-                                  focusNode: _model.brincoFocusNode,
-                                  autofocus: false,
-                                  obscureText: false,
-                                  decoration: InputDecoration(
-                                    labelText: 'Nº registro/brinco*',
-                                    labelStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .override(
-                                          font: GoogleFonts.readexPro(
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                          letterSpacing: 0.0,
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                    hintStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .override(
-                                          font: GoogleFonts.readexPro(
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                          letterSpacing: 0.0,
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .alternate,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .primary,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color:
-                                            FlutterFlowTheme.of(context).error,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color:
-                                            FlutterFlowTheme.of(context).error,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    contentPadding:
-                                        EdgeInsetsDirectional.fromSTEB(
-                                            16.0, 12.0, 16.0, 12.0),
-                                  ),
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        font: GoogleFonts.readexPro(
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                        letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                  keyboardType: TextInputType.number,
-                                  cursorColor:
-                                      FlutterFlowTheme.of(context).primary,
-                                  validator: _model
-                                      .brincoTextControllerValidator
-                                      .asValidator(context),
-                                ),
-                                StreamBuilder<List<RacasRecord>>(
-                                  stream: FFAppState().racasGeral(
-                                    requestFn: () => queryRacasRecord(),
-                                  ),
-                                  builder: (context, snapshot) {
-                                    // Customize what your widget looks like when it's loading.
-                                    if (!snapshot.hasData) {
-                                      return Center(
-                                        child: SizedBox(
-                                          width: 50.0,
-                                          height: 50.0,
-                                          child: CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                              Color(0xFFF75E38),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                    List<RacasRecord> racaRacasRecordList =
-                                        snapshot.data!;
-
-                                    return FlutterFlowDropDown<String>(
-                                      controller: _model.racaValueController ??=
-                                          FormFieldController<String>(
-                                        _model.racaValue ??= 'Holandesa',
-                                      ),
-                                      options: _model.respostaNet!
-                                          ? racaRacasRecordList
-                                              .map((e) => e.descricao)
-                                              .toList()
-                                          : kRacasDescricoes.toList(),
-                                      onChanged: (val) => safeSetState(
-                                          () => _model.racaValue = val),
-                                      width: double.infinity,
-                                      height: 50.0,
-                                      searchHintTextStyle: FlutterFlowTheme.of(
-                                              context)
-                                          .labelMedium
-                                          .override(
-                                            font: GoogleFonts.readexPro(
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .labelMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .labelMedium
-                                                      .fontStyle,
-                                            ),
-                                            letterSpacing: 0.0,
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                      searchTextStyle: FlutterFlowTheme.of(
-                                              context)
-                                          .bodyMedium
-                                          .override(
-                                            font: GoogleFonts.readexPro(
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
-                                            letterSpacing: 0.0,
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                          ),
-                                      textStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .override(
-                                            font: GoogleFonts.readexPro(
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
-                                            letterSpacing: 0.0,
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                          ),
-                                      hintText: 'Raça predominante*',
-                                      searchHintText: 'Pesquise uma raça...',
-                                      icon: Icon(
-                                        Icons.keyboard_arrow_down_rounded,
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
-                                        size: 24.0,
-                                      ),
-                                      fillColor: FlutterFlowTheme.of(context)
-                                          .secondaryBackground,
-                                      elevation: 2.0,
-                                      borderColor: FlutterFlowTheme.of(context)
-                                          .alternate,
-                                      borderWidth: 2.0,
-                                      borderRadius: 8.0,
-                                      margin: EdgeInsetsDirectional.fromSTEB(
-                                          16.0, 4.0, 16.0, 4.0),
-                                      hidesUnderline: true,
-                                      isOverButton: true,
-                                      isSearchable: true,
-                                      isMultiSelect: false,
-                                    );
-                                  },
-                                ),
-                                StreamBuilder<List<GrupoRecord>>(
-                                  stream: FFAppState().gruposGeral(
-                                    requestFn: () => queryGrupoRecord(),
-                                  ),
-                                  builder: (context, snapshot) {
-                                    // Customize what your widget looks like when it's loading.
-                                    if (!snapshot.hasData) {
-                                      return Center(
-                                        child: SizedBox(
-                                          width: 50.0,
-                                          height: 50.0,
-                                          child: CircularProgressIndicator(
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                              Color(0xFFF75E38),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }
-                                    List<GrupoRecord> grupoGrupoRecordList =
-                                        snapshot.data!;
-
-                                    return FlutterFlowDropDown<String>(
-                                      controller:
-                                          _model.grupoValueController ??=
-                                              FormFieldController<String>(
-                                        _model.grupoValue ??=
-                                            widget.grupoPredominante,
-                                      ),
-                                      options: _model.respostaNet!
-                                          ? grupoGrupoRecordList
-                                              .map((e) => e.descricao)
-                                              .toList()
-                                          : kGruposDescricoes.toList(),
-                                      onChanged: (val) => safeSetState(
-                                          () => _model.grupoValue = val),
-                                      width: double.infinity,
-                                      height: 50.0,
-                                      textStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .override(
-                                            font: GoogleFonts.readexPro(
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
-                                            letterSpacing: 0.0,
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                          ),
-                                      hintText: 'Grupo predominante*',
-                                      icon: Icon(
-                                        Icons.keyboard_arrow_down_rounded,
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
-                                        size: 24.0,
-                                      ),
-                                      fillColor: FlutterFlowTheme.of(context)
-                                          .secondaryBackground,
-                                      elevation: 2.0,
-                                      borderColor: FlutterFlowTheme.of(context)
-                                          .alternate,
-                                      borderWidth: 2.0,
-                                      borderRadius: 8.0,
-                                      margin: EdgeInsetsDirectional.fromSTEB(
-                                          16.0, 4.0, 16.0, 4.0),
-                                      hidesUnderline: true,
-                                      isSearchable: false,
-                                      isMultiSelect: false,
-                                    );
-                                  },
-                                ),
-                                if (((widget.grupoPredominante == 'Sêmens') ||
-                                        (widget.grupoPredominante ==
-                                            'Touros')) ||
-                                    ((_model.grupoValue == 'Touros') ||
-                                        (_model.grupoValue == 'Sêmens')))
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Liberar para inseminações:',
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                              font: GoogleFonts.readexPro(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
-                                      ),
-                                      Switch.adaptive(
-                                        value: _model.switchValue!,
-                                        onChanged: (newValue) async {
-                                          safeSetState(() =>
-                                              _model.switchValue = newValue);
-                                        },
-                                        activeColor:
-                                            FlutterFlowTheme.of(context)
-                                                .tertiary,
-                                        activeTrackColor:
-                                            FlutterFlowTheme.of(context)
-                                                .alternate,
-                                        inactiveTrackColor:
-                                            FlutterFlowTheme.of(context)
-                                                .alternate,
-                                        inactiveThumbColor:
-                                            FlutterFlowTheme.of(context)
-                                                .secondaryText,
-                                      ),
-                                    ],
-                                  ),
-                                if (_model.grupoValue != 'Sêmens')
-                                  TextFormField(
-                                    controller: _model.pesoTextController,
-                                    focusNode: _model.pesoFocusNode,
-                                    autofocus: false,
-                                    textCapitalization: TextCapitalization.none,
-                                    obscureText: false,
-                                    decoration: InputDecoration(
-                                      labelText: 'Peso em KG',
-                                      labelStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .override(
-                                            font: GoogleFonts.readexPro(
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .labelMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .labelMedium
-                                                      .fontStyle,
-                                            ),
-                                            letterSpacing: 0.0,
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                      hintStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .override(
-                                            font: GoogleFonts.readexPro(
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .labelMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .labelMedium
-                                                      .fontStyle,
-                                            ),
-                                            letterSpacing: 0.0,
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .alternate,
-                                          width: 2.0,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                      ),
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .primary,
-                                          width: 2.0,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                      ),
-                                      errorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .error,
-                                          width: 2.0,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                      ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                          color: FlutterFlowTheme.of(context)
-                                              .error,
-                                          width: 2.0,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                      ),
-                                      contentPadding:
-                                          EdgeInsetsDirectional.fromSTEB(
-                                              16.0, 12.0, 16.0, 12.0),
-                                    ),
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          font: GoogleFonts.readexPro(
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                          ),
-                                          letterSpacing: 0.0,
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                    maxLength: 5,
-                                    maxLengthEnforcement:
-                                        MaxLengthEnforcement.none,
-                                    buildCounter: (context,
-                                            {required currentLength,
-                                            required isFocused,
-                                            maxLength}) =>
-                                        null,
-                                    keyboardType: TextInputType.number,
-                                    cursorColor:
-                                        FlutterFlowTheme.of(context).primary,
-                                    validator: _model
-                                        .pesoTextControllerValidator
-                                        .asValidator(context),
-                                    inputFormatters: [
-                                      if (!isAndroid && !isiOS)
-                                        TextInputFormatter.withFunction(
-                                            (oldValue, newValue) {
-                                          return TextEditingValue(
-                                            selection: newValue.selection,
-                                            text: newValue.text
-                                                .toCapitalization(
-                                                    TextCapitalization.none),
-                                          );
-                                        }),
-                                    ],
-                                  ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Expanded(
-                                      child: Padding(
-                                        padding: EdgeInsetsDirectional.fromSTEB(
-                                            0.0, 0.0, 8.0, 0.0),
-                                        child: TextFormField(
-                                          controller: _model
-                                              .dataNascimentoTextController,
-                                          focusNode:
-                                              _model.dataNascimentoFocusNode,
-                                          onChanged: (_) =>
-                                              EasyDebounce.debounce(
-                                            '_model.dataNascimentoTextController',
-                                            Duration(milliseconds: 2000),
-                                            () => safeSetState(() {}),
-                                          ),
-                                          autofocus: false,
-                                          textCapitalization:
-                                              TextCapitalization.none,
-                                          textInputAction: TextInputAction.next,
-                                          readOnly: true,
-                                          obscureText: false,
-                                          decoration: InputDecoration(
-                                            labelText: 'Data nascimento',
-                                            hintStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .override(
-                                                      font:
-                                                          GoogleFonts.readexPro(
-                                                        fontWeight:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .labelMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .labelMedium
-                                                                .fontStyle,
-                                                      ),
-                                                      letterSpacing: 0.0,
-                                                      fontWeight:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .labelMedium
-                                                              .fontWeight,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .labelMedium
-                                                              .fontStyle,
-                                                    ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .alternate,
-                                                width: 2.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .primary,
-                                                width: 2.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                            errorBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .error,
-                                                width: 2.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                            focusedErrorBorder:
-                                                OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .error,
-                                                width: 2.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                            contentPadding:
-                                                EdgeInsetsDirectional.fromSTEB(
-                                                    16.0, 12.0, 16.0, 12.0),
-                                            suffixIcon: _model
-                                                    .dataNascimentoTextController!
-                                                    .text
-                                                    .isNotEmpty
-                                                ? InkWell(
-                                                    onTap: () async {
-                                                      _model
-                                                          .dataNascimentoTextController
-                                                          ?.clear();
-                                                      safeSetState(() {});
-                                                    },
-                                                    child: Icon(
-                                                      Icons.clear,
-                                                      size: 22.0,
-                                                    ),
-                                                  )
-                                                : null,
-                                          ),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                font: GoogleFonts.readexPro(
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
-                                                letterSpacing: 0.0,
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                          maxLength: 10,
-                                          maxLengthEnforcement:
-                                              MaxLengthEnforcement.enforced,
-                                          buildCounter: (context,
-                                                  {required currentLength,
-                                                  required isFocused,
-                                                  maxLength}) =>
-                                              null,
-                                          keyboardType: TextInputType.datetime,
-                                          validator: _model
-                                              .dataNascimentoTextControllerValidator
-                                              .asValidator(context),
-                                          inputFormatters: [
-                                            _model.dataNascimentoMask
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    InkWell(
-                                      splashColor: Colors.transparent,
-                                      focusColor: Colors.transparent,
-                                      hoverColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      onTap: () async {
-                                        // calendarNascimento
-                                        await showModalBottomSheet<bool>(
-                                            context: context,
-                                            builder: (context) {
-                                              final _datePicked1CupertinoTheme =
-                                                  CupertinoTheme.of(context);
-                                              return ScrollConfiguration(
-                                                behavior:
-                                                    const MaterialScrollBehavior()
-                                                        .copyWith(
-                                                  dragDevices: {
-                                                    PointerDeviceKind.mouse,
-                                                    PointerDeviceKind.touch,
-                                                    PointerDeviceKind.stylus,
-                                                    PointerDeviceKind.unknown
-                                                  },
-                                                ),
-                                                child: Container(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height /
-                                                      3,
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .secondaryBackground,
-                                                  child: CupertinoTheme(
-                                                    data:
-                                                        _datePicked1CupertinoTheme
-                                                            .copyWith(
-                                                      textTheme:
-                                                          _datePicked1CupertinoTheme
-                                                              .textTheme
-                                                              .copyWith(
-                                                        dateTimePickerTextStyle:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .headlineMedium
-                                                                .override(
-                                                                  font: GoogleFonts
-                                                                      .outfit(
-                                                                    fontWeight: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .headlineMedium
-                                                                        .fontWeight,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .headlineMedium
-                                                                        .fontStyle,
-                                                                  ),
-                                                                  color: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .primaryText,
-                                                                  letterSpacing:
-                                                                      0.0,
-                                                                  fontWeight: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .headlineMedium
-                                                                      .fontWeight,
-                                                                  fontStyle: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .headlineMedium
-                                                                      .fontStyle,
-                                                                ),
-                                                      ),
-                                                    ),
-                                                    child: CupertinoDatePicker(
-                                                      mode:
-                                                          CupertinoDatePickerMode
-                                                              .date,
-                                                      minimumDate: (DateTime
-                                                              .fromMicrosecondsSinceEpoch(
-                                                                  1577847600000000) ??
-                                                          DateTime(1900)),
-                                                      initialDateTime: DateTime
-                                                          .fromMicrosecondsSinceEpoch(
-                                                              1609470000000000),
-                                                      maximumDate:
-                                                          (getCurrentTimestamp ??
-                                                              DateTime(2050)),
-                                                      backgroundColor:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .secondaryBackground,
-                                                      use24hFormat: false,
-                                                      onDateTimeChanged:
-                                                          (newDateTime) =>
-                                                              safeSetState(() {
-                                                        _model.datePicked1 =
-                                                            newDateTime;
-                                                      }),
-                                                    ),
-                                                  ),
-                                                ),
-                                              );
-                                            });
-                                        safeSetState(() {
-                                          _model.dataNascimentoTextController
-                                              ?.text = dateTimeFormat(
-                                            "dd/MM/yyyy",
-                                            _model.datePicked1,
-                                            locale: FFLocalizations.of(context)
-                                                .languageCode,
-                                          );
-                                          _model.dataNascimentoMask.updateMask(
-                                            newValue: TextEditingValue(
-                                              text: _model
-                                                  .dataNascimentoTextController!
-                                                  .text,
-                                            ),
-                                          );
-                                        });
-                                      },
-                                      child: Icon(
-                                        Icons.calendar_month,
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
-                                        size: 24.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                TextFormField(
-                                  controller: _model.touroPaiTextController,
-                                  focusNode: _model.touroPaiFocusNode,
-                                  autofocus: false,
-                                  obscureText: false,
-                                  decoration: InputDecoration(
-                                    labelText: 'Touro (Pai)',
-                                    labelStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .override(
-                                          font: GoogleFonts.readexPro(
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                          letterSpacing: 0.0,
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                    hintStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .override(
-                                          font: GoogleFonts.readexPro(
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                          letterSpacing: 0.0,
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .alternate,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .primary,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color:
-                                            FlutterFlowTheme.of(context).error,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color:
-                                            FlutterFlowTheme.of(context).error,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    contentPadding:
-                                        EdgeInsetsDirectional.fromSTEB(
-                                            16.0, 12.0, 16.0, 12.0),
-                                  ),
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        font: GoogleFonts.readexPro(
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                        letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                  cursorColor:
-                                      FlutterFlowTheme.of(context).primary,
-                                  validator: _model
-                                      .touroPaiTextControllerValidator
-                                      .asValidator(context),
-                                ),
-                                TextFormField(
-                                  controller: _model.vacaMaeTextController,
-                                  focusNode: _model.vacaMaeFocusNode,
-                                  autofocus: false,
-                                  obscureText: false,
-                                  decoration: InputDecoration(
-                                    labelText: 'Vaca (Mãe)',
-                                    labelStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .override(
-                                          font: GoogleFonts.readexPro(
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                          letterSpacing: 0.0,
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                    hintStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .override(
-                                          font: GoogleFonts.readexPro(
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .fontStyle,
-                                          ),
-                                          letterSpacing: 0.0,
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .alternate,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: FlutterFlowTheme.of(context)
-                                            .primary,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    errorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color:
-                                            FlutterFlowTheme.of(context).error,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    focusedErrorBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color:
-                                            FlutterFlowTheme.of(context).error,
-                                        width: 2.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12.0),
-                                    ),
-                                    contentPadding:
-                                        EdgeInsetsDirectional.fromSTEB(
-                                            16.0, 12.0, 16.0, 12.0),
-                                  ),
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        font: GoogleFonts.readexPro(
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                        letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                  textAlign: TextAlign.start,
-                                  cursorColor:
-                                      FlutterFlowTheme.of(context).primary,
-                                  validator: _model
-                                      .vacaMaeTextControllerValidator
-                                      .asValidator(context),
-                                ),
-                                if (((_model.grupoValue == 'Vacas') ||
-                                        (widget.grupoPredominante ==
-                                            'Vacas')) &&
-                                    (_model.statusAnimalValue != 'Seca'))
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  0.0, 0.0, 8.0, 0.0),
-                                          child: TextFormField(
-                                            controller: _model
-                                                .dataUltimoPartoTextController,
-                                            focusNode:
-                                                _model.dataUltimoPartoFocusNode,
-                                            onChanged: (_) =>
-                                                EasyDebounce.debounce(
-                                              '_model.dataUltimoPartoTextController',
-                                              Duration(milliseconds: 2000),
-                                              () => safeSetState(() {}),
-                                            ),
-                                            autofocus: false,
-                                            textCapitalization:
-                                                TextCapitalization.none,
-                                            textInputAction:
-                                                TextInputAction.next,
-                                            readOnly: true,
-                                            obscureText: false,
-                                            decoration: InputDecoration(
-                                              labelText: 'Último parto',
-                                              hintStyle: FlutterFlowTheme.of(
-                                                      context)
-                                                  .labelMedium
-                                                  .override(
-                                                    font: GoogleFonts.readexPro(
-                                                      fontWeight:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .labelMedium
-                                                              .fontWeight,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .labelMedium
-                                                              .fontStyle,
-                                                    ),
-                                                    letterSpacing: 0.0,
-                                                    fontWeight:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .labelMedium
-                                                            .fontWeight,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .labelMedium
-                                                            .fontStyle,
-                                                  ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .alternate,
-                                                  width: 2.0,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(8.0),
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .primary,
-                                                  width: 2.0,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(8.0),
-                                              ),
-                                              errorBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .error,
-                                                  width: 2.0,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(8.0),
-                                              ),
-                                              focusedErrorBorder:
-                                                  OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .error,
-                                                  width: 2.0,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(8.0),
-                                              ),
-                                              contentPadding:
-                                                  EdgeInsetsDirectional
-                                                      .fromSTEB(16.0, 12.0,
-                                                          16.0, 12.0),
-                                              suffixIcon: _model
-                                                      .dataUltimoPartoTextController!
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? InkWell(
-                                                      onTap: () async {
-                                                        _model
-                                                            .dataUltimoPartoTextController
-                                                            ?.clear();
-                                                        safeSetState(() {});
-                                                      },
-                                                      child: Icon(
-                                                        Icons.clear,
-                                                        size: 22.0,
-                                                      ),
-                                                    )
-                                                  : null,
-                                            ),
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  font: GoogleFonts.readexPro(
-                                                    fontWeight:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontWeight,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontStyle,
-                                                  ),
-                                                  letterSpacing: 0.0,
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
-                                            maxLength: 10,
-                                            maxLengthEnforcement:
-                                                MaxLengthEnforcement.enforced,
-                                            buildCounter: (context,
-                                                    {required currentLength,
-                                                    required isFocused,
-                                                    maxLength}) =>
-                                                null,
-                                            keyboardType:
-                                                TextInputType.datetime,
-                                            validator: _model
-                                                .dataUltimoPartoTextControllerValidator
-                                                .asValidator(context),
-                                            inputFormatters: [
-                                              _model.dataUltimoPartoMask
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      InkWell(
-                                        splashColor: Colors.transparent,
-                                        focusColor: Colors.transparent,
-                                        hoverColor: Colors.transparent,
-                                        highlightColor: Colors.transparent,
-                                        onTap: () async {
-                                          var _shouldSetState = false;
-                                          // calendarUltimoParto
-                                          await showModalBottomSheet<bool>(
-                                              context: context,
-                                              builder: (context) {
-                                                final _datePicked2CupertinoTheme =
-                                                    CupertinoTheme.of(context);
-                                                return ScrollConfiguration(
-                                                  behavior:
-                                                      const MaterialScrollBehavior()
-                                                          .copyWith(
-                                                    dragDevices: {
-                                                      PointerDeviceKind.mouse,
-                                                      PointerDeviceKind.touch,
-                                                      PointerDeviceKind.stylus,
-                                                      PointerDeviceKind.unknown
-                                                    },
-                                                  ),
-                                                  child: Container(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height /
-                                                            3,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .secondaryBackground,
-                                                    child: CupertinoTheme(
-                                                      data:
-                                                          _datePicked2CupertinoTheme
-                                                              .copyWith(
-                                                        textTheme:
-                                                            _datePicked2CupertinoTheme
-                                                                .textTheme
-                                                                .copyWith(
-                                                          dateTimePickerTextStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .headlineMedium
-                                                                  .override(
-                                                                    font: GoogleFonts
-                                                                        .outfit(
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .headlineMedium
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .headlineMedium
-                                                                          .fontStyle,
-                                                                    ),
-                                                                    color: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .primaryText,
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                    fontWeight: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .headlineMedium
-                                                                        .fontWeight,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .headlineMedium
-                                                                        .fontStyle,
-                                                                  ),
-                                                        ),
-                                                      ),
-                                                      child:
-                                                          CupertinoDatePicker(
-                                                        mode:
-                                                            CupertinoDatePickerMode
-                                                                .date,
-                                                        minimumDate:
-                                                            DateTime(1900),
-                                                        initialDateTime:
-                                                            getCurrentTimestamp,
-                                                        maximumDate:
-                                                            (getCurrentTimestamp ??
-                                                                DateTime(2050)),
-                                                        backgroundColor:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .secondaryBackground,
-                                                        use24hFormat: false,
-                                                        onDateTimeChanged:
-                                                            (newDateTime) =>
-                                                                safeSetState(
-                                                                    () {
-                                                          _model.datePicked2 =
-                                                              newDateTime;
-                                                        }),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                );
-                                              });
-                                          safeSetState(() {
-                                            _model.dataUltimoPartoTextController
-                                                ?.text = dateTimeFormat(
-                                              "dd/MM/yyyy",
-                                              _model.datePicked2,
-                                              locale:
-                                                  FFLocalizations.of(context)
-                                                      .languageCode,
-                                            );
-                                            _model.dataUltimoPartoMask
-                                                .updateMask(
-                                              newValue: TextEditingValue(
-                                                text: _model
-                                                    .dataUltimoPartoTextController!
-                                                    .text,
-                                              ),
-                                            );
-                                          });
-                                          if (_model.datePicked2! >
-                                              _model.datePicked3!) {
-                                            safeSetState(() {
-                                              _model.statusAnimalValueController
-                                                  ?.value = 'Vazia';
-                                              _model.statusAnimalValue =
-                                                  'Vazia';
-                                            });
-                                            if (_shouldSetState)
-                                              safeSetState(() {});
-                                            return;
-                                          } else {
-                                            _model.outListaAnimais =
-                                                await queryStatusAnimaisRecordOnce();
-                                            _shouldSetState = true;
-                                            safeSetState(() {
-                                              _model.statusAnimalValueController
-                                                  ?.value = (_model
-                                                              .outListaAnimais !=
-                                                          null &&
-                                                      (_model.outListaAnimais)!
-                                                          .isNotEmpty)
-                                                  .toString();
-                                              _model.statusAnimalValue = (_model
-                                                              .outListaAnimais !=
-                                                          null &&
-                                                      (_model.outListaAnimais)!
-                                                          .isNotEmpty)
-                                                  .toString();
-                                            });
-                                            safeSetState(() {
-                                              _model.statusAnimalValueController
-                                                  ?.value = 'Inseminada';
-                                              _model.statusAnimalValue =
-                                                  'Inseminada';
-                                            });
-                                            if (_shouldSetState)
-                                              safeSetState(() {});
-                                            return;
-                                          }
-
-                                          if (_shouldSetState)
-                                            safeSetState(() {});
-                                        },
-                                        child: Icon(
-                                          Icons.calendar_month,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          size: 24.0,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                if (((_model.grupoValue == 'Vacas') ||
-                                        (_model.grupoValue == 'Novilhas')) ||
-                                    ((widget.grupoPredominante == 'Novilhas') ||
-                                        (widget.grupoPredominante == 'Vacas')))
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                  0.0, 0.0, 8.0, 0.0),
-                                          child: TextFormField(
-                                            controller: _model
-                                                .dataUltimaInseminacaoTextController,
-                                            focusNode: _model
-                                                .dataUltimaInseminacaoFocusNode,
-                                            onChanged: (_) =>
-                                                EasyDebounce.debounce(
-                                              '_model.dataUltimaInseminacaoTextController',
-                                              Duration(milliseconds: 2000),
-                                              () => safeSetState(() {}),
-                                            ),
-                                            autofocus: false,
-                                            textCapitalization:
-                                                TextCapitalization.none,
-                                            textInputAction:
-                                                TextInputAction.next,
-                                            readOnly: true,
-                                            obscureText: false,
-                                            decoration: InputDecoration(
-                                              labelText: 'Última inseminação',
-                                              labelStyle: FlutterFlowTheme.of(
-                                                      context)
-                                                  .bodyMedium
-                                                  .override(
-                                                    font: GoogleFonts.readexPro(
-                                                      fontWeight:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium
-                                                              .fontWeight,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .bodyMedium
-                                                              .fontStyle,
-                                                    ),
-                                                    letterSpacing: 0.0,
-                                                    fontWeight:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontWeight,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontStyle,
-                                                  ),
-                                              hintStyle: FlutterFlowTheme.of(
-                                                      context)
-                                                  .labelMedium
-                                                  .override(
-                                                    font: GoogleFonts.readexPro(
-                                                      fontWeight:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .labelMedium
-                                                              .fontWeight,
-                                                      fontStyle:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .labelMedium
-                                                              .fontStyle,
-                                                    ),
-                                                    letterSpacing: 0.0,
-                                                    fontWeight:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .labelMedium
-                                                            .fontWeight,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .labelMedium
-                                                            .fontStyle,
-                                                  ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .alternate,
-                                                  width: 2.0,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(8.0),
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .primary,
-                                                  width: 2.0,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(8.0),
-                                              ),
-                                              errorBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .error,
-                                                  width: 2.0,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(8.0),
-                                              ),
-                                              focusedErrorBorder:
-                                                  OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .error,
-                                                  width: 2.0,
-                                                ),
-                                                borderRadius:
-                                                    BorderRadius.circular(8.0),
-                                              ),
-                                              contentPadding:
-                                                  EdgeInsetsDirectional
-                                                      .fromSTEB(16.0, 12.0,
-                                                          16.0, 12.0),
-                                              suffixIcon: _model
-                                                      .dataUltimaInseminacaoTextController!
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? InkWell(
-                                                      onTap: () async {
-                                                        _model
-                                                            .dataUltimaInseminacaoTextController
-                                                            ?.clear();
-                                                        safeSetState(() {});
-                                                      },
-                                                      child: Icon(
-                                                        Icons.clear,
-                                                        size: 22.0,
-                                                      ),
-                                                    )
-                                                  : null,
-                                            ),
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  font: GoogleFonts.readexPro(
-                                                    fontWeight:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontWeight,
-                                                    fontStyle:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .bodyMedium
-                                                            .fontStyle,
-                                                  ),
-                                                  letterSpacing: 0.0,
-                                                  fontWeight:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontWeight,
-                                                  fontStyle:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .bodyMedium
-                                                          .fontStyle,
-                                                ),
-                                            maxLength: 10,
-                                            maxLengthEnforcement:
-                                                MaxLengthEnforcement.enforced,
-                                            buildCounter: (context,
-                                                    {required currentLength,
-                                                    required isFocused,
-                                                    maxLength}) =>
-                                                null,
-                                            keyboardType:
-                                                TextInputType.datetime,
-                                            validator: _model
-                                                .dataUltimaInseminacaoTextControllerValidator
-                                                .asValidator(context),
-                                            inputFormatters: [
-                                              _model.dataUltimaInseminacaoMask
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      InkWell(
-                                        splashColor: Colors.transparent,
-                                        focusColor: Colors.transparent,
-                                        hoverColor: Colors.transparent,
-                                        highlightColor: Colors.transparent,
-                                        onTap: () async {
-                                          // calendarUltimoParto
-                                          await showModalBottomSheet<bool>(
-                                              context: context,
-                                              builder: (context) {
-                                                final _datePicked3CupertinoTheme =
-                                                    CupertinoTheme.of(context);
-                                                return ScrollConfiguration(
-                                                  behavior:
-                                                      const MaterialScrollBehavior()
-                                                          .copyWith(
-                                                    dragDevices: {
-                                                      PointerDeviceKind.mouse,
-                                                      PointerDeviceKind.touch,
-                                                      PointerDeviceKind.stylus,
-                                                      PointerDeviceKind.unknown
-                                                    },
-                                                  ),
-                                                  child: Container(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height /
-                                                            3,
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .secondaryBackground,
-                                                    child: CupertinoTheme(
-                                                      data:
-                                                          _datePicked3CupertinoTheme
-                                                              .copyWith(
-                                                        textTheme:
-                                                            _datePicked3CupertinoTheme
-                                                                .textTheme
-                                                                .copyWith(
-                                                          dateTimePickerTextStyle:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .headlineMedium
-                                                                  .override(
-                                                                    font: GoogleFonts
-                                                                        .outfit(
-                                                                      fontWeight: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .headlineMedium
-                                                                          .fontWeight,
-                                                                      fontStyle: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .headlineMedium
-                                                                          .fontStyle,
-                                                                    ),
-                                                                    color: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .primaryText,
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                    fontWeight: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .headlineMedium
-                                                                        .fontWeight,
-                                                                    fontStyle: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .headlineMedium
-                                                                        .fontStyle,
-                                                                  ),
-                                                        ),
-                                                      ),
-                                                      child:
-                                                          CupertinoDatePicker(
-                                                        mode:
-                                                            CupertinoDatePickerMode
-                                                                .date,
-                                                        minimumDate:
-                                                            DateTime(1900),
-                                                        initialDateTime:
-                                                            getCurrentTimestamp,
-                                                        maximumDate:
-                                                            (getCurrentTimestamp ??
-                                                                DateTime(2050)),
-                                                        backgroundColor:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .secondaryBackground,
-                                                        use24hFormat: false,
-                                                        onDateTimeChanged:
-                                                            (newDateTime) =>
-                                                                safeSetState(
-                                                                    () {
-                                                          _model.datePicked3 =
-                                                              newDateTime;
-                                                        }),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                );
-                                              });
-                                          safeSetState(() {
-                                            _model
-                                                .dataUltimaInseminacaoTextController
-                                                ?.text = dateTimeFormat(
-                                              "dd/MM/yyyy",
-                                              _model.datePicked3,
-                                              locale:
-                                                  FFLocalizations.of(context)
-                                                      .languageCode,
-                                            );
-                                            _model.dataUltimaInseminacaoMask
-                                                .updateMask(
-                                              newValue: TextEditingValue(
-                                                text: _model
-                                                    .dataUltimaInseminacaoTextController!
-                                                    .text,
-                                              ),
-                                            );
-                                          });
-                                          if ((_model.dataUltimaInseminacaoTextController
-                                                      .text !=
-                                                  '') &&
-                                              (_model.dataUltimoPartoTextController
-                                                      .text !=
-                                                  '')) {
-                                            if (_model.datePicked2! >
-                                                _model.datePicked3!) {
-                                              safeSetState(() {
-                                                _model
-                                                    .statusAnimalValueController
-                                                    ?.value = 'Vazia';
-                                                _model.statusAnimalValue =
-                                                    'Vazia';
-                                              });
-                                              return;
-                                            } else {
-                                              safeSetState(() {
-                                                _model
-                                                    .statusAnimalValueController
-                                                    ?.value = 'Inseminada';
-                                                _model.statusAnimalValue =
-                                                    'Inseminada';
-                                              });
-                                              return;
-                                            }
-                                          } else {
-                                            safeSetState(() {
-                                              _model.statusAnimalValueController
-                                                  ?.value = 'Inseminada';
-                                              _model.statusAnimalValue =
-                                                  'Inseminada';
-                                            });
-                                            return;
-                                          }
-                                        },
-                                        child: Icon(
-                                          Icons.calendar_month,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          size: 24.0,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                if (((_model.grupoValue == 'Vacas') ||
-                                        (_model.grupoValue == 'Novilhas')) &&
-                                    (_model.dataUltimaInseminacaoTextController
-                                            .text !=
-                                        ''))
-                                  StreamBuilder<List<AnimaisProdutoresRecord>>(
-                                    stream: _model.animaisLiberaoParaInseminar(
-                                      requestFn: () =>
-                                          queryAnimaisProdutoresRecord(
-                                        parent: widget.uidTecnico,
-                                        queryBuilder:
-                                            (animaisProdutoresRecord) =>
-                                                animaisProdutoresRecord
-                                                    .where(
-                                                      'uidTecnicoPropriedade',
-                                                      isEqualTo:
-                                                          widget.uidPropriedade,
-                                                    )
-                                                    .where(
-                                                      'liberaInseminacao',
-                                                      isEqualTo: true,
-                                                    ),
-                                      ),
-                                    ),
-                                    builder: (context, snapshot) {
-                                      // Customize what your widget looks like when it's loading.
-                                      if (!snapshot.hasData) {
-                                        return Center(
-                                          child: SizedBox(
-                                            width: 50.0,
-                                            height: 50.0,
-                                            child: CircularProgressIndicator(
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                Color(0xFFF75E38),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                      List<AnimaisProdutoresRecord>
-                                          touroInseminacaoAnimaisProdutoresRecordList =
-                                          snapshot.data!;
-
-                                      return FlutterFlowDropDown<String>(
-                                        controller: _model
-                                                .touroInseminacaoValueController ??=
-                                            FormFieldController<String>(null),
-                                        options: functions.duasListasEmUma(
-                                            touroInseminacaoAnimaisProdutoresRecordList
-                                                .map((e) => e.nomeBrincoConcat)
-                                                .toList(),
-                                            FFAppState()
-                                                .animaisProdutoresOffline
-                                                .where((e) =>
-                                                    (e.uidTecnicoPropriedade ==
-                                                        widget
-                                                            .uidPropriedade) &&
-                                                    (e.liberaInseminacao ==
-                                                        true))
-                                                .toList()
-                                                .map((e) => e.nomeBrincoConcat)
-                                                .toList())!,
-                                        onChanged: (val) => safeSetState(() =>
-                                            _model.touroInseminacaoValue = val),
-                                        width: double.infinity,
-                                        height: 50.0,
-                                        searchHintTextStyle: FlutterFlowTheme
-                                                .of(context)
-                                            .labelMedium
-                                            .override(
-                                              font: GoogleFonts.readexPro(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .labelMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .labelMedium
-                                                        .fontStyle,
-                                              ),
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .labelMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .labelMedium
-                                                      .fontStyle,
-                                            ),
-                                        searchTextStyle: FlutterFlowTheme.of(
-                                                context)
-                                            .bodyMedium
-                                            .override(
-                                              font: GoogleFonts.readexPro(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
-                                        textStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                              font: GoogleFonts.readexPro(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                              ),
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .fontStyle,
-                                            ),
-                                        hintText: 'Touro/sêmen inseminação',
-                                        searchHintText:
-                                            'Digite para pesquisar...',
-                                        icon: Icon(
-                                          Icons.keyboard_arrow_down_rounded,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          size: 24.0,
-                                        ),
-                                        fillColor: FlutterFlowTheme.of(context)
-                                            .secondaryBackground,
-                                        elevation: 2.0,
-                                        borderColor:
-                                            FlutterFlowTheme.of(context)
-                                                .alternate,
-                                        borderWidth: 2.0,
-                                        borderRadius: 8.0,
-                                        margin: EdgeInsetsDirectional.fromSTEB(
-                                            16.0, 4.0, 16.0, 4.0),
-                                        hidesUnderline: true,
-                                        isSearchable: true,
-                                        isMultiSelect: false,
-                                      );
-                                    },
-                                  ),
-                                if (((widget.grupoPredominante == 'Novilhas') ||
-                                        (widget.grupoPredominante ==
-                                            'Vacas')) ||
-                                    ((_model.grupoValue == 'Vacas') ||
-                                        (_model.grupoValue == 'Novilhas')))
-                                  FlutterFlowDropDown<String>(
-                                    controller:
-                                        _model.statusAnimalValueController ??=
-                                            FormFieldController<String>(
-                                      _model.statusAnimalValue ??= 'Vazia',
-                                    ),
-                                    options: () {
-                                      if ((_model.dataUltimaInseminacaoTextController
-                                                  .text !=
-                                              '') &&
-                                          (_model.dataUltimoPartoTextController.text !=
-                                              '') &&
-                                          (_model.datePicked2! >
-                                              _model.datePicked3!)) {
-                                        return cadastrarNovoAnimalStatusAnimaisRecordList
-                                            .map((e) => e.descricao)
-                                            .toList()
-                                            .where((e) => e == 'Vazia')
-                                            .toList();
-                                      } else if ((_model
-                                                  .dataUltimaInseminacaoTextController
-                                                  .text !=
-                                              '') &&
-                                          (_model.dataUltimoPartoTextController
-                                                  .text !=
-                                              '') &&
-                                          (_model.datePicked2! <
-                                              _model.datePicked3!)) {
-                                        return cadastrarNovoAnimalStatusAnimaisRecordList
-                                            .map((e) => e.descricao)
-                                            .toList()
-                                            .where((e) =>
-                                                (e == 'Inseminada') ||
-                                                (e == 'Prenha') ||
-                                                (e == 'Seca') ||
-                                                (e == 'Inseminada PP') ||
-                                                (e == 'Pré Parto'))
-                                            .toList();
-                                      } else if ((_model
-                                                  .dataUltimaInseminacaoTextController
-                                                  .text !=
-                                              '') &&
-                                          (_model.dataUltimoPartoTextController
-                                                  .text ==
-                                              '')) {
-                                        return functions.retornaStringEmLista(_model
-                                                    .grupoValue ==
-                                                'Novilhas'
-                                            ? 'Inseminada, Inseminada PP, Prenha, Pré Parto'
-                                            : 'Inseminada, Inseminada PP, Prenha, Seca, Pré Parto');
-                                      } else if ((_model
-                                                  .dataUltimaInseminacaoTextController
-                                                  .text ==
-                                              '') &&
-                                          (_model.dataUltimoPartoTextController
-                                                  .text !=
-                                              '')) {
-                                        return cadastrarNovoAnimalStatusAnimaisRecordList
-                                            .map((e) => e.descricao)
-                                            .toList()
-                                            .where((e) => e == 'Vazia')
-                                            .toList();
-                                      } else {
-                                        return functions
-                                            .retornaStringEmLista('Vazia');
-                                      }
-                                    }(),
-                                    onChanged: (val) => safeSetState(
-                                        () => _model.statusAnimalValue = val),
-                                    width: double.infinity,
-                                    height: 50.0,
-                                    textStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          font: GoogleFonts.readexPro(
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .bodyMedium
-                                                    .fontStyle,
-                                          ),
-                                          letterSpacing: 0.0,
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                    hintText: 'Status animal',
-                                    icon: Icon(
-                                      Icons.keyboard_arrow_down_rounded,
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      size: 24.0,
-                                    ),
-                                    fillColor: FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
-                                    elevation: 2.0,
-                                    borderColor:
-                                        FlutterFlowTheme.of(context).alternate,
-                                    borderWidth: 2.0,
-                                    borderRadius: 8.0,
-                                    margin: EdgeInsetsDirectional.fromSTEB(
-                                        16.0, 4.0, 16.0, 4.0),
-                                    hidesUnderline: true,
-                                    isSearchable: false,
-                                    isMultiSelect: false,
-                                  ),
-                                Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 24.0, 0.0, 12.0),
-                                  child: FFButtonWidget(
-                                    onPressed: () async {
-                                      await _cadastrarAnimal(context);
-                                    },
-                                    text: 'Adicionar Novo',
-                                    icon: Icon(
-                                      Icons.save,
-                                      size: 15.0,
-                                    ),
-                                    options: FFButtonOptions(
-                                      width: double.infinity,
-                                      height: 48.0,
-                                      padding: EdgeInsets.all(0.0),
-                                      iconPadding:
-                                          EdgeInsetsDirectional.fromSTEB(
-                                              0.0, 0.0, 0.0, 0.0),
-                                      color: Color(0xFFEC3B5B),
-                                      textStyle: FlutterFlowTheme.of(context)
-                                          .titleSmall
-                                          .override(
-                                            font: GoogleFonts.readexPro(
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .titleSmall
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .titleSmall
-                                                      .fontStyle,
-                                            ),
-                                            color: Colors.white,
-                                            letterSpacing: 0.0,
-                                            fontWeight:
-                                                FlutterFlowTheme.of(context)
-                                                    .titleSmall
-                                                    .fontWeight,
-                                            fontStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .titleSmall
-                                                    .fontStyle,
-                                          ),
-                                      elevation: 4.0,
-                                      borderSide: BorderSide(
-                                        color: Colors.transparent,
-                                        width: 1.0,
-                                      ),
-                                      borderRadius: BorderRadius.circular(60.0),
-                                    ),
-                                  ),
-                                ),
-                              ].divide(SizedBox(height: 12.0)),
-                            ),
-                          ),
-                        ),
-                      ),
+                      _p2(context, cadastrarNovoAnimalStatusAnimaisRecordList),
                     ],
                   ),
                 ),
