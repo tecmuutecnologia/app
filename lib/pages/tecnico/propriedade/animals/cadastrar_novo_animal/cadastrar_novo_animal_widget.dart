@@ -125,6 +125,2645 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
     super.dispose();
   }
 
+  /// Cadastra o(s) animal(is) (offline-first). Extraído do onPressed do
+  /// botão de salvar (Fase 4): eram ~4000 linhas inline.
+  Future<void> _cadastrarAnimal(BuildContext context) async {
+    var _shouldSetState = false;
+    if (_model.respostaNet!) {
+      if (FFAppState().animaisProdutoresOffline.length == 0) {
+        if (_model.formKey.currentState == null ||
+            !_model.formKey.currentState!.validate()) {
+          return;
+        }
+        if (_model.racaValue == null) {
+          return;
+        }
+        if (_model.grupoValue == null) {
+          return;
+        }
+        _model.outListaAnimaisVerificaNome =
+            await queryAnimaisProdutoresRecordOnce(
+          parent: widget.uidTecnico,
+          queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
+              .where(
+                'uidTecnicoPropriedade',
+                isEqualTo: widget.uidPropriedade,
+              )
+              .where(
+                'nomeAnimal',
+                isEqualTo: _model.nomeTextController.text,
+              ),
+        );
+        _shouldSetState = true;
+        _model.outListaAnimaisVerificaBrinco =
+            await queryAnimaisProdutoresRecordOnce(
+          parent: widget.uidTecnico,
+          queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
+              .where(
+                'uidTecnicoPropriedade',
+                isEqualTo: widget.uidPropriedade,
+              )
+              .where(
+                'brincoAnimal',
+                isEqualTo: int.tryParse(_model.brincoTextController.text),
+              ),
+        );
+        _shouldSetState = true;
+        if ((_model.outListaAnimaisVerificaNome!.length > 0) &&
+            (_model.outListaAnimaisVerificaBrinco!.length > 0)) {
+          await showDialog(
+            context: context,
+            builder: (alertDialogContext) {
+              return AlertDialog(
+                title: Text('Nome ou brinco já existe.'),
+                content: Text('Digite outro nome ou brinco.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(alertDialogContext),
+                    child: Text('Ok'),
+                  ),
+                ],
+              );
+            },
+          );
+          if (_shouldSetState) safeSetState(() {});
+          return;
+        }
+        if ((_model.nomeTextController.text != '') ||
+            (_model.brincoTextController.text != '')) {
+          if (_model.dataUltimaInseminacaoTextController.text != '') {
+            if (!(_model.touroInseminacaoValue != null &&
+                _model.touroInseminacaoValue != '')) {
+              await showDialog(
+                context: context,
+                builder: (alertDialogContext) {
+                  return AlertDialog(
+                    title: Text('Touro inseminação não selecionado.'),
+                    content: Text('Selecione o touro usado.'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(alertDialogContext),
+                        child: Text('Ok'),
+                      ),
+                    ],
+                  );
+                },
+              );
+              if (_shouldSetState) safeSetState(() {});
+              return;
+            }
+          }
+        } else {
+          await showDialog(
+            context: context,
+            builder: (alertDialogContext) {
+              return AlertDialog(
+                title: Text('Nome ou brinco obrigatório.'),
+                content: Text('Preencha ao menos um dos campos.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(alertDialogContext),
+                    child: Text('Ok'),
+                  ),
+                ],
+              );
+            },
+          );
+          if (_shouldSetState) safeSetState(() {});
+          return;
+        }
+
+        if ((_model.grupoValue == 'Vacas') ||
+            (_model.grupoValue == 'Novilhas')) {
+          if (_model.statusAnimalValue != null &&
+              _model.statusAnimalValue != '') {
+            if (_model.statusAnimalValue == 'Inseminada') {
+              if ((_model.dataUltimaInseminacaoTextController.text != '') &&
+                  (_model.dataUltimoPartoTextController.text == '') &&
+                  (_model.touroInseminacaoValue != null &&
+                      _model.touroInseminacaoValue != '')) {
+                await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
+                    .set(createAnimaisProdutoresRecordData(
+                  uidTecnicoPropriedade: widget.uidPropriedade,
+                  nomeAnimal: _model.nomeTextController.text,
+                  brincoAnimal: _model.brincoTextController.text != ''
+                      ? int.tryParse(_model.brincoTextController.text)
+                      : -1,
+                  racaAnimal: _model.racaValue,
+                  pesoAnimal: _model.pesoTextController.text,
+                  dtNascimento: _model.dataNascimentoTextController.text,
+                  touro: _model.touroPaiTextController.text,
+                  vaca: _model.vacaMaeTextController.text,
+                  status: _model.statusAnimalValue,
+                  dtUltimaInseminacao:
+                      _model.dataUltimaInseminacaoTextController.text,
+                  grupoAnimal: _model.grupoValue,
+                  nomeTouroUltimaInseminacao: _model.touroInseminacaoValue,
+                  dtPartoPrevisto: functions.somarDataParto(
+                      _model.dataUltimaInseminacaoTextController.text),
+                  dtSecPrevista: functions.somarDataSecagem(
+                      _model.dataUltimaInseminacaoTextController.text),
+                  dtPrePartoPrevista: functions.somarDataPreParto(
+                      _model.dataUltimaInseminacaoTextController.text),
+                  totalInseminacoes: 1,
+                  compararDtUltimaInseminacao:
+                      functions.converterDataUltimaInseminacao(
+                          _model.dataUltimaInseminacaoTextController.text),
+                  nomeBrincoConcat: () {
+                    if ((_model.nomeTextController.text != '') &&
+                        (_model.brincoTextController.text != '') &&
+                        (_model.brincoTextController.text != '-1')) {
+                      return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                    } else if (_model.nomeTextController.text != '') {
+                      return _model.nomeTextController.text;
+                    } else {
+                      return _model.brincoTextController.text;
+                    }
+                  }(),
+                  idStatusAnimal: 3,
+                  brincoAnimalOrder: _model.brincoTextController.text != ''
+                      ? int.tryParse(_model.brincoTextController.text)
+                      : 999999,
+                ));
+
+                await widget.uidTecnico!.update({
+                  ...mapToFirestore(
+                    {
+                      'quantidadeAnimaisCadastrados': FieldValue.increment(1),
+                      'restanteLimiteAnimais': FieldValue.increment(-(1)),
+                    },
+                  ),
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Animal cadastrado com sucesso!',
+                      style: TextStyle(
+                        color: FlutterFlowTheme.of(context).primaryText,
+                      ),
+                    ),
+                    duration: Duration(milliseconds: 4000),
+                    backgroundColor: FlutterFlowTheme.of(context).secondary,
+                  ),
+                );
+                if (Navigator.of(context).canPop()) {
+                  context.pop();
+                }
+                context.pushNamed(
+                  ListaAnimaisWidget.routeName,
+                  queryParameters: {
+                    'uidPropriedade': serializeParam(
+                      widget.uidPropriedade,
+                      ParamType.DocumentReference,
+                    ),
+                    'nomePropriedade': serializeParam(
+                      widget.nomePropriedade,
+                      ParamType.String,
+                    ),
+                    'uidTecnico': serializeParam(
+                      widget.uidTecnico,
+                      ParamType.DocumentReference,
+                    ),
+                    'emailPropriedade': serializeParam(
+                      widget.emailPropriedade,
+                      ParamType.String,
+                    ),
+                    'visitaPresencial': serializeParam(
+                      widget.visitaPresencial,
+                      ParamType.bool,
+                    ),
+                    'initialTabSelect': serializeParam(
+                      widget.initialTabSelect,
+                      ParamType.int,
+                    ),
+                    'diasDg': serializeParam(
+                      widget.diasDg,
+                      ParamType.String,
+                    ),
+                    'tabBarOpenSelected': serializeParam(
+                      0,
+                      ParamType.int,
+                    ),
+                  }.withoutNulls,
+                );
+
+                if (_shouldSetState) safeSetState(() {});
+                return;
+              } else {
+                if ((_model.dataUltimoPartoTextController.text != '') &&
+                    (_model.dataUltimaInseminacaoTextController.text != '') &&
+                    (_model.touroInseminacaoValue != null &&
+                        _model.touroInseminacaoValue != '')) {
+                  await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
+                      .set(createAnimaisProdutoresRecordData(
+                    uidTecnicoPropriedade: widget.uidPropriedade,
+                    nomeAnimal: _model.nomeTextController.text,
+                    brincoAnimal: _model.brincoTextController.text != ''
+                        ? int.tryParse(_model.brincoTextController.text)
+                        : -1,
+                    racaAnimal: _model.racaValue,
+                    pesoAnimal: _model.pesoTextController.text,
+                    dtNascimento: _model.dataNascimentoTextController.text,
+                    touro: _model.touroPaiTextController.text,
+                    vaca: _model.vacaMaeTextController.text,
+                    status: _model.statusAnimalValue,
+                    dtUltimaInseminacao:
+                        _model.dataUltimaInseminacaoTextController.text,
+                    dtUltimoParto: _model.dataUltimoPartoTextController.text,
+                    grupoAnimal: _model.grupoValue,
+                    nomeTouroUltimaInseminacao: _model.touroInseminacaoValue,
+                    dtPartoPrevisto: functions.somarDataParto(
+                        _model.dataUltimaInseminacaoTextController.text),
+                    dtSecPrevista: functions.somarDataSecagem(
+                        _model.dataUltimaInseminacaoTextController.text),
+                    dtPrePartoPrevista: functions.somarDataPreParto(
+                        _model.dataUltimaInseminacaoTextController.text),
+                    totalInseminacoes: 1,
+                    totalPartos: 1,
+                    compararDtUltimaInseminacao:
+                        functions.converterDataUltimaInseminacao(
+                            _model.dataUltimaInseminacaoTextController.text),
+                    nomeBrincoConcat: () {
+                      if ((_model.nomeTextController.text != '') &&
+                          (_model.brincoTextController.text != '') &&
+                          (_model.brincoTextController.text != '-1')) {
+                        return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                      } else if (_model.nomeTextController.text != '') {
+                        return _model.nomeTextController.text;
+                      } else {
+                        return _model.brincoTextController.text;
+                      }
+                    }(),
+                    idStatusAnimal: 3,
+                    dtUltimoPartoContingencia:
+                        _model.dataUltimoPartoTextController.text,
+                    brincoAnimalOrder: _model.brincoTextController.text != ''
+                        ? int.tryParse(_model.brincoTextController.text)
+                        : 999999,
+                  ));
+
+                  await widget.uidTecnico!.update({
+                    ...mapToFirestore(
+                      {
+                        'quantidadeAnimaisCadastrados': FieldValue.increment(1),
+                        'restanteLimiteAnimais': FieldValue.increment(-(1)),
+                      },
+                    ),
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Animal cadastrado com sucesso!',
+                        style: TextStyle(
+                          color: FlutterFlowTheme.of(context).primaryText,
+                        ),
+                      ),
+                      duration: Duration(milliseconds: 4000),
+                      backgroundColor: FlutterFlowTheme.of(context).secondary,
+                    ),
+                  );
+                  if (Navigator.of(context).canPop()) {
+                    context.pop();
+                  }
+                  context.pushNamed(
+                    ListaAnimaisWidget.routeName,
+                    queryParameters: {
+                      'uidPropriedade': serializeParam(
+                        widget.uidPropriedade,
+                        ParamType.DocumentReference,
+                      ),
+                      'nomePropriedade': serializeParam(
+                        widget.nomePropriedade,
+                        ParamType.String,
+                      ),
+                      'uidTecnico': serializeParam(
+                        widget.uidTecnico,
+                        ParamType.DocumentReference,
+                      ),
+                      'emailPropriedade': serializeParam(
+                        widget.emailPropriedade,
+                        ParamType.String,
+                      ),
+                      'visitaPresencial': serializeParam(
+                        widget.visitaPresencial,
+                        ParamType.bool,
+                      ),
+                      'initialTabSelect': serializeParam(
+                        widget.initialTabSelect,
+                        ParamType.int,
+                      ),
+                      'diasDg': serializeParam(
+                        widget.diasDg,
+                        ParamType.String,
+                      ),
+                      'tabBarOpenSelected': serializeParam(
+                        0,
+                        ParamType.int,
+                      ),
+                    }.withoutNulls,
+                  );
+
+                  if (_shouldSetState) safeSetState(() {});
+                  return;
+                } else {
+                  if (_shouldSetState) safeSetState(() {});
+                  return;
+                }
+              }
+            } else {
+              if (_model.statusAnimalValue == 'Seca') {
+                if (_model.grupoValue == 'Vacas') {
+                  await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
+                      .set(createAnimaisProdutoresRecordData(
+                    uidTecnicoPropriedade: widget.uidPropriedade,
+                    nomeAnimal: _model.nomeTextController.text,
+                    brincoAnimal: _model.brincoTextController.text != ''
+                        ? int.tryParse(_model.brincoTextController.text)
+                        : -1,
+                    racaAnimal: _model.racaValue,
+                    pesoAnimal: _model.pesoTextController.text,
+                    dtNascimento: _model.dataNascimentoTextController.text,
+                    touro: _model.touroPaiTextController.text,
+                    vaca: _model.vacaMaeTextController.text,
+                    status: _model.statusAnimalValue,
+                    dtUltimaInseminacao:
+                        _model.dataUltimaInseminacaoTextController.text,
+                    grupoAnimal: _model.grupoValue,
+                    dtPartoPrevisto: functions.somarDataParto(
+                        _model.dataUltimaInseminacaoTextController.text),
+                    dtSecPrevista: functions.somarDataSecagem(
+                        _model.dataUltimaInseminacaoTextController.text),
+                    dtPrePartoPrevista: functions.somarDataPreParto(
+                        _model.dataUltimaInseminacaoTextController.text),
+                    nomeTouroUltimaInseminacao: _model.touroInseminacaoValue,
+                    compararDtUltimaInseminacao:
+                        functions.converterDataUltimaInseminacao(
+                            _model.dataUltimaInseminacaoTextController.text),
+                    nomeBrincoConcat: () {
+                      if ((_model.nomeTextController.text != '') &&
+                          (_model.brincoTextController.text != '') &&
+                          (_model.brincoTextController.text != '-1')) {
+                        return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                      } else if (_model.nomeTextController.text != '') {
+                        return _model.nomeTextController.text;
+                      } else {
+                        return _model.brincoTextController.text;
+                      }
+                    }(),
+                    idStatusAnimal: 4,
+                    brincoAnimalOrder: _model.brincoTextController.text != ''
+                        ? int.tryParse(_model.brincoTextController.text)
+                        : 999999,
+                  ));
+
+                  await widget.uidTecnico!.update({
+                    ...mapToFirestore(
+                      {
+                        'quantidadeAnimaisCadastrados': FieldValue.increment(1),
+                        'restanteLimiteAnimais': FieldValue.increment(-(1)),
+                      },
+                    ),
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Animal cadastrado com sucesso!',
+                        style: TextStyle(
+                          color: FlutterFlowTheme.of(context).primaryText,
+                        ),
+                      ),
+                      duration: Duration(milliseconds: 4000),
+                      backgroundColor: FlutterFlowTheme.of(context).secondary,
+                    ),
+                  );
+                  if (Navigator.of(context).canPop()) {
+                    context.pop();
+                  }
+                  context.pushNamed(
+                    ListaAnimaisWidget.routeName,
+                    queryParameters: {
+                      'uidPropriedade': serializeParam(
+                        widget.uidPropriedade,
+                        ParamType.DocumentReference,
+                      ),
+                      'nomePropriedade': serializeParam(
+                        widget.nomePropriedade,
+                        ParamType.String,
+                      ),
+                      'uidTecnico': serializeParam(
+                        widget.uidTecnico,
+                        ParamType.DocumentReference,
+                      ),
+                      'emailPropriedade': serializeParam(
+                        widget.emailPropriedade,
+                        ParamType.String,
+                      ),
+                      'visitaPresencial': serializeParam(
+                        widget.visitaPresencial,
+                        ParamType.bool,
+                      ),
+                      'initialTabSelect': serializeParam(
+                        widget.initialTabSelect,
+                        ParamType.int,
+                      ),
+                      'diasDg': serializeParam(
+                        widget.diasDg,
+                        ParamType.String,
+                      ),
+                      'tabBarOpenSelected': serializeParam(
+                        0,
+                        ParamType.int,
+                      ),
+                    }.withoutNulls,
+                  );
+
+                  if (_shouldSetState) safeSetState(() {});
+                  return;
+                } else {
+                  await showDialog(
+                    context: context,
+                    builder: (alertDialogContext) {
+                      return AlertDialog(
+                        title: Text(
+                            'O status de \"Seca\" é permitido somente em vacas.'),
+                        content: Text('Atualize o status.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(alertDialogContext),
+                            child: Text('Ok'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  if (_shouldSetState) safeSetState(() {});
+                  return;
+                }
+              } else {
+                if (_model.statusAnimalValue == 'Vazia') {
+                  await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
+                      .set(createAnimaisProdutoresRecordData(
+                    uidTecnicoPropriedade: widget.uidPropriedade,
+                    nomeAnimal: _model.nomeTextController.text,
+                    brincoAnimal: _model.brincoTextController.text != ''
+                        ? int.tryParse(_model.brincoTextController.text)
+                        : -1,
+                    racaAnimal: _model.racaValue,
+                    pesoAnimal: _model.pesoTextController.text,
+                    dtNascimento: _model.dataNascimentoTextController.text,
+                    touro: _model.touroPaiTextController.text,
+                    vaca: _model.vacaMaeTextController.text,
+                    status: _model.statusAnimalValue,
+                    grupoAnimal: _model.grupoValue,
+                    dtUltimoParto: _model.dataUltimoPartoTextController.text,
+                    totalPartos:
+                        _model.dataUltimoPartoTextController.text != '' ? 1 : 0,
+                    nomeBrincoConcat: () {
+                      if ((_model.nomeTextController.text != '') &&
+                          (_model.brincoTextController.text != '') &&
+                          (_model.brincoTextController.text != '-1')) {
+                        return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                      } else if (_model.nomeTextController.text != '') {
+                        return _model.nomeTextController.text;
+                      } else {
+                        return _model.brincoTextController.text;
+                      }
+                    }(),
+                    idStatusAnimal: 2,
+                    dtUltimoPartoContingencia:
+                        _model.dataUltimoPartoTextController.text,
+                    brincoAnimalOrder: _model.brincoTextController.text != ''
+                        ? int.tryParse(_model.brincoTextController.text)
+                        : 999999,
+                  ));
+
+                  await widget.uidTecnico!.update({
+                    ...mapToFirestore(
+                      {
+                        'quantidadeAnimaisCadastrados': FieldValue.increment(1),
+                        'restanteLimiteAnimais': FieldValue.increment(-(1)),
+                      },
+                    ),
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Animal cadastrado com sucesso!',
+                        style: TextStyle(
+                          color: FlutterFlowTheme.of(context).primaryText,
+                        ),
+                      ),
+                      duration: Duration(milliseconds: 4000),
+                      backgroundColor: FlutterFlowTheme.of(context).secondary,
+                    ),
+                  );
+                  if (Navigator.of(context).canPop()) {
+                    context.pop();
+                  }
+                  context.pushNamed(
+                    ListaAnimaisWidget.routeName,
+                    queryParameters: {
+                      'uidPropriedade': serializeParam(
+                        widget.uidPropriedade,
+                        ParamType.DocumentReference,
+                      ),
+                      'nomePropriedade': serializeParam(
+                        widget.nomePropriedade,
+                        ParamType.String,
+                      ),
+                      'uidTecnico': serializeParam(
+                        widget.uidTecnico,
+                        ParamType.DocumentReference,
+                      ),
+                      'emailPropriedade': serializeParam(
+                        widget.emailPropriedade,
+                        ParamType.String,
+                      ),
+                      'visitaPresencial': serializeParam(
+                        widget.visitaPresencial,
+                        ParamType.bool,
+                      ),
+                      'initialTabSelect': serializeParam(
+                        widget.initialTabSelect,
+                        ParamType.int,
+                      ),
+                      'diasDg': serializeParam(
+                        widget.diasDg,
+                        ParamType.String,
+                      ),
+                      'tabBarOpenSelected': serializeParam(
+                        0,
+                        ParamType.int,
+                      ),
+                    }.withoutNulls,
+                  );
+
+                  if (_shouldSetState) safeSetState(() {});
+                  return;
+                } else {
+                  if (_model.statusAnimalValue == 'Prenha') {
+                    if ((_model.dataUltimaInseminacaoTextController.text !=
+                            '') &&
+                        (_model.touroInseminacaoValue != null &&
+                            _model.touroInseminacaoValue != '')) {
+                      await AnimaisProdutoresRecord.createDoc(
+                              widget.uidTecnico!)
+                          .set(createAnimaisProdutoresRecordData(
+                        uidTecnicoPropriedade: widget.uidPropriedade,
+                        nomeAnimal: _model.nomeTextController.text,
+                        brincoAnimal: _model.brincoTextController.text != ''
+                            ? int.tryParse(_model.brincoTextController.text)
+                            : -1,
+                        racaAnimal: _model.racaValue,
+                        pesoAnimal: _model.pesoTextController.text,
+                        dtNascimento: _model.dataNascimentoTextController.text,
+                        touro: _model.touroPaiTextController.text,
+                        vaca: _model.vacaMaeTextController.text,
+                        status: _model.statusAnimalValue,
+                        dtUltimaInseminacao:
+                            _model.dataUltimaInseminacaoTextController.text,
+                        grupoAnimal: _model.grupoValue,
+                        nomeTouroUltimaInseminacao:
+                            _model.touroInseminacaoValue,
+                        dtPartoPrevisto: functions.somarDataParto(
+                            _model.dataUltimaInseminacaoTextController.text),
+                        dtSecPrevista: functions.somarDataSecagem(
+                            _model.dataUltimaInseminacaoTextController.text),
+                        dtPrePartoPrevista: functions.somarDataPreParto(
+                            _model.dataUltimaInseminacaoTextController.text),
+                        totalInseminacoes: 1,
+                        dtDgMais: dateTimeFormat(
+                          "dd/MM/yyyy",
+                          getCurrentTimestamp,
+                          locale: FFLocalizations.of(context).languageCode,
+                        ),
+                        dtUltimoParto:
+                            _model.dataUltimoPartoTextController.text,
+                        compararDtUltimaInseminacao:
+                            functions.converterDataUltimaInseminacao(_model
+                                .dataUltimaInseminacaoTextController.text),
+                        nomeBrincoConcat: () {
+                          if ((_model.nomeTextController.text != '') &&
+                              (_model.brincoTextController.text != '') &&
+                              (_model.brincoTextController.text != '-1')) {
+                            return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                          } else if (_model.nomeTextController.text != '') {
+                            return _model.nomeTextController.text;
+                          } else {
+                            return _model.brincoTextController.text;
+                          }
+                        }(),
+                        idStatusAnimal: 6,
+                        dtUltimoPartoContingencia:
+                            _model.dataUltimoPartoTextController.text,
+                        brincoAnimalOrder:
+                            _model.brincoTextController.text != ''
+                                ? int.tryParse(_model.brincoTextController.text)
+                                : 999999,
+                      ));
+
+                      await widget.uidTecnico!.update({
+                        ...mapToFirestore(
+                          {
+                            'quantidadeAnimaisCadastrados':
+                                FieldValue.increment(1),
+                            'restanteLimiteAnimais': FieldValue.increment(-(1)),
+                          },
+                        ),
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Animal cadastrado com sucesso!',
+                            style: TextStyle(
+                              color: FlutterFlowTheme.of(context).primaryText,
+                            ),
+                          ),
+                          duration: Duration(milliseconds: 4000),
+                          backgroundColor:
+                              FlutterFlowTheme.of(context).secondary,
+                        ),
+                      );
+                      if (Navigator.of(context).canPop()) {
+                        context.pop();
+                      }
+                      context.pushNamed(
+                        ListaAnimaisWidget.routeName,
+                        queryParameters: {
+                          'uidPropriedade': serializeParam(
+                            widget.uidPropriedade,
+                            ParamType.DocumentReference,
+                          ),
+                          'nomePropriedade': serializeParam(
+                            widget.nomePropriedade,
+                            ParamType.String,
+                          ),
+                          'uidTecnico': serializeParam(
+                            widget.uidTecnico,
+                            ParamType.DocumentReference,
+                          ),
+                          'emailPropriedade': serializeParam(
+                            widget.emailPropriedade,
+                            ParamType.String,
+                          ),
+                          'visitaPresencial': serializeParam(
+                            widget.visitaPresencial,
+                            ParamType.bool,
+                          ),
+                          'initialTabSelect': serializeParam(
+                            widget.initialTabSelect,
+                            ParamType.int,
+                          ),
+                          'diasDg': serializeParam(
+                            widget.diasDg,
+                            ParamType.String,
+                          ),
+                          'tabBarOpenSelected': serializeParam(
+                            0,
+                            ParamType.int,
+                          ),
+                        }.withoutNulls,
+                      );
+
+                      if (_shouldSetState) safeSetState(() {});
+                      return;
+                    } else {
+                      await showDialog(
+                        context: context,
+                        builder: (alertDialogContext) {
+                          return AlertDialog(
+                            title: Text(
+                                'Data última inseminação vazia ou Touro inseminação não selecionado.'),
+                            content: Text('Preencha os campos obrigatórios.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(alertDialogContext),
+                                child: Text('Ok'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      if (_shouldSetState) safeSetState(() {});
+                      return;
+                    }
+                  } else {
+                    if (_model.statusAnimalValue == 'Inseminada PP') {
+                      if ((_model.dataUltimaInseminacaoTextController.text !=
+                              '') &&
+                          (_model.touroInseminacaoValue != null &&
+                              _model.touroInseminacaoValue != '')) {
+                        await AnimaisProdutoresRecord.createDoc(
+                                widget.uidTecnico!)
+                            .set(createAnimaisProdutoresRecordData(
+                          uidTecnicoPropriedade: widget.uidPropriedade,
+                          nomeAnimal: _model.nomeTextController.text,
+                          brincoAnimal: _model.brincoTextController.text != ''
+                              ? int.tryParse(_model.brincoTextController.text)
+                              : -1,
+                          racaAnimal: _model.racaValue,
+                          pesoAnimal: _model.pesoTextController.text,
+                          dtNascimento:
+                              _model.dataNascimentoTextController.text,
+                          touro: _model.touroPaiTextController.text,
+                          vaca: _model.vacaMaeTextController.text,
+                          status: _model.statusAnimalValue,
+                          dtUltimaInseminacao:
+                              _model.dataUltimaInseminacaoTextController.text,
+                          grupoAnimal: _model.grupoValue,
+                          nomeTouroUltimaInseminacao:
+                              _model.touroInseminacaoValue,
+                          dtPartoPrevisto: functions.somarDataParto(
+                              _model.dataUltimaInseminacaoTextController.text),
+                          dtSecPrevista: functions.somarDataSecagem(
+                              _model.dataUltimaInseminacaoTextController.text),
+                          dtPrePartoPrevista: functions.somarDataPreParto(
+                              _model.dataUltimaInseminacaoTextController.text),
+                          totalInseminacoes: 1,
+                          dtPP: dateTimeFormat(
+                            "dd/MM/yyyy",
+                            getCurrentTimestamp,
+                            locale: FFLocalizations.of(context).languageCode,
+                          ),
+                          dtUltimoPP: dateTimeFormat(
+                            "dd/MM/yyyy",
+                            getCurrentTimestamp,
+                            locale: FFLocalizations.of(context).languageCode,
+                          ),
+                          dtUltimoParto:
+                              _model.dataUltimoPartoTextController.text,
+                          compararDtUltimaInseminacao:
+                              functions.converterDataUltimaInseminacao(_model
+                                  .dataUltimaInseminacaoTextController.text),
+                          nomeBrincoConcat: () {
+                            if ((_model.nomeTextController.text != '') &&
+                                (_model.brincoTextController.text != '') &&
+                                (_model.brincoTextController.text != '-1')) {
+                              return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                            } else if (_model.nomeTextController.text != '') {
+                              return _model.nomeTextController.text;
+                            } else {
+                              return _model.brincoTextController.text;
+                            }
+                          }(),
+                          idStatusAnimal: 1,
+                          dtUltimoPartoContingencia:
+                              _model.dataUltimoPartoTextController.text,
+                          brincoAnimalOrder: _model.brincoTextController.text !=
+                                  ''
+                              ? int.tryParse(_model.brincoTextController.text)
+                              : 999999,
+                        ));
+
+                        await widget.uidTecnico!.update({
+                          ...mapToFirestore(
+                            {
+                              'quantidadeAnimaisCadastrados':
+                                  FieldValue.increment(1),
+                              'restanteLimiteAnimais':
+                                  FieldValue.increment(-(1)),
+                            },
+                          ),
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Animal cadastrado com sucesso!',
+                              style: TextStyle(
+                                color: FlutterFlowTheme.of(context).primaryText,
+                              ),
+                            ),
+                            duration: Duration(milliseconds: 4000),
+                            backgroundColor:
+                                FlutterFlowTheme.of(context).secondary,
+                          ),
+                        );
+                        if (Navigator.of(context).canPop()) {
+                          context.pop();
+                        }
+                        context.pushNamed(
+                          ListaAnimaisWidget.routeName,
+                          queryParameters: {
+                            'uidPropriedade': serializeParam(
+                              widget.uidPropriedade,
+                              ParamType.DocumentReference,
+                            ),
+                            'nomePropriedade': serializeParam(
+                              widget.nomePropriedade,
+                              ParamType.String,
+                            ),
+                            'uidTecnico': serializeParam(
+                              widget.uidTecnico,
+                              ParamType.DocumentReference,
+                            ),
+                            'emailPropriedade': serializeParam(
+                              widget.emailPropriedade,
+                              ParamType.String,
+                            ),
+                            'visitaPresencial': serializeParam(
+                              widget.visitaPresencial,
+                              ParamType.bool,
+                            ),
+                            'initialTabSelect': serializeParam(
+                              widget.initialTabSelect,
+                              ParamType.int,
+                            ),
+                            'diasDg': serializeParam(
+                              widget.diasDg,
+                              ParamType.String,
+                            ),
+                            'tabBarOpenSelected': serializeParam(
+                              0,
+                              ParamType.int,
+                            ),
+                          }.withoutNulls,
+                        );
+
+                        if (_shouldSetState) safeSetState(() {});
+                        return;
+                      } else {
+                        await showDialog(
+                          context: context,
+                          builder: (alertDialogContext) {
+                            return AlertDialog(
+                              title: Text(
+                                  'Data última inseminação vazia ou Touro inseminação não selecionado.'),
+                              content: Text('Preencha os campos obrigatórios.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(alertDialogContext),
+                                  child: Text('Ok'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                        if (_shouldSetState) safeSetState(() {});
+                        return;
+                      }
+                    } else {
+                      if (_model.statusAnimalValue == 'Pré Parto') {
+                        if ((_model.dataUltimaInseminacaoTextController.text !=
+                                '') &&
+                            (_model.touroInseminacaoValue != null &&
+                                _model.touroInseminacaoValue != '')) {
+                          await AnimaisProdutoresRecord.createDoc(
+                                  widget.uidTecnico!)
+                              .set(createAnimaisProdutoresRecordData(
+                            uidTecnicoPropriedade: widget.uidPropriedade,
+                            nomeAnimal: _model.nomeTextController.text,
+                            brincoAnimal: _model.brincoTextController.text != ''
+                                ? int.tryParse(_model.brincoTextController.text)
+                                : -1,
+                            racaAnimal: _model.racaValue,
+                            pesoAnimal: _model.pesoTextController.text,
+                            dtNascimento:
+                                _model.dataNascimentoTextController.text,
+                            touro: _model.touroPaiTextController.text,
+                            vaca: _model.vacaMaeTextController.text,
+                            status: _model.statusAnimalValue,
+                            dtUltimaInseminacao:
+                                _model.dataUltimaInseminacaoTextController.text,
+                            grupoAnimal: _model.grupoValue,
+                            nomeTouroUltimaInseminacao:
+                                _model.touroInseminacaoValue,
+                            dtPartoPrevisto: functions.somarDataParto(_model
+                                .dataUltimaInseminacaoTextController.text),
+                            dtSecPrevista: functions.somarDataSecagem(_model
+                                .dataUltimaInseminacaoTextController.text),
+                            dtPrePartoPrevista: functions.somarDataPreParto(
+                                _model
+                                    .dataUltimaInseminacaoTextController.text),
+                            totalInseminacoes: 1,
+                            dtPP: dateTimeFormat(
+                              "dd/MM/yyyy",
+                              getCurrentTimestamp,
+                              locale: FFLocalizations.of(context).languageCode,
+                            ),
+                            dtUltimoPP: dateTimeFormat(
+                              "dd/MM/yyyy",
+                              getCurrentTimestamp,
+                              locale: FFLocalizations.of(context).languageCode,
+                            ),
+                            dtUltimoParto:
+                                _model.dataUltimoPartoTextController.text,
+                            compararDtUltimaInseminacao:
+                                functions.converterDataUltimaInseminacao(_model
+                                    .dataUltimaInseminacaoTextController.text),
+                            nomeBrincoConcat: () {
+                              if ((_model.nomeTextController.text != '') &&
+                                  (_model.brincoTextController.text != '') &&
+                                  (_model.brincoTextController.text != '-1')) {
+                                return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                              } else if (_model.nomeTextController.text != '') {
+                                return _model.nomeTextController.text;
+                              } else {
+                                return _model.brincoTextController.text;
+                              }
+                            }(),
+                            idStatusAnimal: 5,
+                            dtUltimoPartoContingencia:
+                                _model.dataUltimoPartoTextController.text,
+                            brincoAnimalOrder: _model
+                                        .brincoTextController.text !=
+                                    ''
+                                ? int.tryParse(_model.brincoTextController.text)
+                                : 999999,
+                          ));
+
+                          await widget.uidTecnico!.update({
+                            ...mapToFirestore(
+                              {
+                                'quantidadeAnimaisCadastrados':
+                                    FieldValue.increment(1),
+                                'restanteLimiteAnimais':
+                                    FieldValue.increment(-(1)),
+                              },
+                            ),
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Animal cadastrado com sucesso!',
+                                style: TextStyle(
+                                  color:
+                                      FlutterFlowTheme.of(context).primaryText,
+                                ),
+                              ),
+                              duration: Duration(milliseconds: 4000),
+                              backgroundColor:
+                                  FlutterFlowTheme.of(context).secondary,
+                            ),
+                          );
+                          if (Navigator.of(context).canPop()) {
+                            context.pop();
+                          }
+                          context.pushNamed(
+                            ListaAnimaisWidget.routeName,
+                            queryParameters: {
+                              'uidPropriedade': serializeParam(
+                                widget.uidPropriedade,
+                                ParamType.DocumentReference,
+                              ),
+                              'nomePropriedade': serializeParam(
+                                widget.nomePropriedade,
+                                ParamType.String,
+                              ),
+                              'uidTecnico': serializeParam(
+                                widget.uidTecnico,
+                                ParamType.DocumentReference,
+                              ),
+                              'emailPropriedade': serializeParam(
+                                widget.emailPropriedade,
+                                ParamType.String,
+                              ),
+                              'visitaPresencial': serializeParam(
+                                widget.visitaPresencial,
+                                ParamType.bool,
+                              ),
+                              'initialTabSelect': serializeParam(
+                                widget.initialTabSelect,
+                                ParamType.int,
+                              ),
+                              'diasDg': serializeParam(
+                                widget.diasDg,
+                                ParamType.String,
+                              ),
+                              'tabBarOpenSelected': serializeParam(
+                                0,
+                                ParamType.int,
+                              ),
+                            }.withoutNulls,
+                          );
+
+                          if (_shouldSetState) safeSetState(() {});
+                          return;
+                        } else {
+                          await showDialog(
+                            context: context,
+                            builder: (alertDialogContext) {
+                              return AlertDialog(
+                                title: Text(
+                                    'Data última inseminação vazia ou Touro inseminação não selecionado.'),
+                                content:
+                                    Text('Preencha os campos obrigatórios.'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(alertDialogContext),
+                                    child: Text('Ok'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                          if (_shouldSetState) safeSetState(() {});
+                          return;
+                        }
+                      } else {
+                        if (_shouldSetState) safeSetState(() {});
+                        return;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          } else {
+            await showDialog(
+              context: context,
+              builder: (alertDialogContext) {
+                return AlertDialog(
+                  title: Text('Status é obrigatório.'),
+                  content: Text('Selecione ao menos um status.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(alertDialogContext),
+                      child: Text('Ok'),
+                    ),
+                  ],
+                );
+              },
+            );
+            if (_shouldSetState) safeSetState(() {});
+            return;
+          }
+        } else {
+          if ((_model.grupoValue == 'Sêmens') ||
+              (_model.grupoValue == 'Touros')) {
+            if (_model.grupoValue == 'Touros') {
+              await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
+                  .set(createAnimaisProdutoresRecordData(
+                uidTecnicoPropriedade: widget.uidPropriedade,
+                nomeAnimal: _model.nomeTextController.text,
+                brincoAnimal: _model.brincoTextController.text != ''
+                    ? int.tryParse(_model.brincoTextController.text)
+                    : -1,
+                racaAnimal: _model.racaValue,
+                pesoAnimal: _model.pesoTextController.text,
+                dtNascimento: _model.dataNascimentoTextController.text,
+                touro: _model.touroPaiTextController.text,
+                vaca: _model.vacaMaeTextController.text,
+                grupoAnimal: _model.grupoValue,
+                liberaInseminacao: () {
+                  if (_model.grupoValue == 'Touros') {
+                    return _model.switchValue;
+                  } else if (_model.grupoValue == 'Sêmens') {
+                    return _model.switchValue;
+                  } else {
+                    return true;
+                  }
+                }(),
+                status: '',
+                nomeBrincoConcat: () {
+                  if ((_model.nomeTextController.text != '') &&
+                      (_model.brincoTextController.text != '') &&
+                      (_model.brincoTextController.text != '-1')) {
+                    return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                  } else if (_model.nomeTextController.text != '') {
+                    return _model.nomeTextController.text;
+                  } else {
+                    return _model.brincoTextController.text;
+                  }
+                }(),
+                brincoAnimalOrder: _model.brincoTextController.text != ''
+                    ? int.tryParse(_model.brincoTextController.text)
+                    : 999999,
+              ));
+
+              await widget.uidTecnico!.update({
+                ...mapToFirestore(
+                  {
+                    'quantidadeAnimaisCadastrados': FieldValue.increment(1),
+                    'restanteLimiteAnimais': FieldValue.increment(-(1)),
+                  },
+                ),
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Animal cadastrado com sucesso!',
+                    style: TextStyle(
+                      color: FlutterFlowTheme.of(context).primaryText,
+                    ),
+                  ),
+                  duration: Duration(milliseconds: 4000),
+                  backgroundColor: FlutterFlowTheme.of(context).secondary,
+                ),
+              );
+              if (Navigator.of(context).canPop()) {
+                context.pop();
+              }
+              context.pushNamed(
+                ListaAnimaisWidget.routeName,
+                queryParameters: {
+                  'uidPropriedade': serializeParam(
+                    widget.uidPropriedade,
+                    ParamType.DocumentReference,
+                  ),
+                  'nomePropriedade': serializeParam(
+                    widget.nomePropriedade,
+                    ParamType.String,
+                  ),
+                  'uidTecnico': serializeParam(
+                    widget.uidTecnico,
+                    ParamType.DocumentReference,
+                  ),
+                  'emailPropriedade': serializeParam(
+                    widget.emailPropriedade,
+                    ParamType.String,
+                  ),
+                  'visitaPresencial': serializeParam(
+                    widget.visitaPresencial,
+                    ParamType.bool,
+                  ),
+                  'initialTabSelect': serializeParam(
+                    widget.initialTabSelect,
+                    ParamType.int,
+                  ),
+                  'diasDg': serializeParam(
+                    widget.diasDg,
+                    ParamType.String,
+                  ),
+                }.withoutNulls,
+              );
+
+              if (_shouldSetState) safeSetState(() {});
+              return;
+            } else {
+              if (_model.grupoValue == 'Sêmens') {
+                await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
+                    .set(createAnimaisProdutoresRecordData(
+                  uidTecnicoPropriedade: widget.uidPropriedade,
+                  nomeAnimal: _model.nomeTextController.text,
+                  brincoAnimal: _model.brincoTextController.text != ''
+                      ? int.tryParse(_model.brincoTextController.text)
+                      : -1,
+                  racaAnimal: _model.racaValue,
+                  dtNascimento: _model.dataNascimentoTextController.text,
+                  touro: _model.touroPaiTextController.text,
+                  grupoAnimal: _model.grupoValue,
+                  liberaInseminacao: () {
+                    if (_model.grupoValue == 'Touros') {
+                      return _model.switchValue;
+                    } else if (_model.grupoValue == 'Sêmens') {
+                      return _model.switchValue;
+                    } else {
+                      return true;
+                    }
+                  }(),
+                  status: '',
+                  nomeBrincoConcat: () {
+                    if ((_model.nomeTextController.text != '') &&
+                        (_model.brincoTextController.text != '') &&
+                        (_model.brincoTextController.text != '-1')) {
+                      return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                    } else if (_model.nomeTextController.text != '') {
+                      return _model.nomeTextController.text;
+                    } else {
+                      return _model.brincoTextController.text;
+                    }
+                  }(),
+                  brincoAnimalOrder: _model.brincoTextController.text != ''
+                      ? int.tryParse(_model.brincoTextController.text)
+                      : 999999,
+                ));
+
+                await widget.uidTecnico!.update({
+                  ...mapToFirestore(
+                    {
+                      'quantidadeAnimaisCadastrados': FieldValue.increment(1),
+                      'restanteLimiteAnimais': FieldValue.increment(-(1)),
+                    },
+                  ),
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Animal cadastrado com sucesso!',
+                      style: TextStyle(
+                        color: FlutterFlowTheme.of(context).primaryText,
+                      ),
+                    ),
+                    duration: Duration(milliseconds: 4000),
+                    backgroundColor: FlutterFlowTheme.of(context).secondary,
+                  ),
+                );
+                if (Navigator.of(context).canPop()) {
+                  context.pop();
+                }
+                context.pushNamed(
+                  ListaAnimaisWidget.routeName,
+                  queryParameters: {
+                    'uidPropriedade': serializeParam(
+                      widget.uidPropriedade,
+                      ParamType.DocumentReference,
+                    ),
+                    'nomePropriedade': serializeParam(
+                      widget.nomePropriedade,
+                      ParamType.String,
+                    ),
+                    'uidTecnico': serializeParam(
+                      widget.uidTecnico,
+                      ParamType.DocumentReference,
+                    ),
+                    'emailPropriedade': serializeParam(
+                      widget.emailPropriedade,
+                      ParamType.String,
+                    ),
+                    'visitaPresencial': serializeParam(
+                      widget.visitaPresencial,
+                      ParamType.bool,
+                    ),
+                    'initialTabSelect': serializeParam(
+                      widget.initialTabSelect,
+                      ParamType.int,
+                    ),
+                    'diasDg': serializeParam(
+                      widget.diasDg,
+                      ParamType.String,
+                    ),
+                  }.withoutNulls,
+                );
+
+                if (_shouldSetState) safeSetState(() {});
+                return;
+              } else {
+                if (_shouldSetState) safeSetState(() {});
+                return;
+              }
+            }
+          } else {
+            await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
+                .set(createAnimaisProdutoresRecordData(
+              uidTecnicoPropriedade: widget.uidPropriedade,
+              nomeAnimal: _model.nomeTextController.text,
+              brincoAnimal: _model.brincoTextController.text != ''
+                  ? int.tryParse(_model.brincoTextController.text)
+                  : -1,
+              racaAnimal: _model.racaValue,
+              pesoAnimal: _model.pesoTextController.text,
+              dtNascimento: _model.dataNascimentoTextController.text,
+              touro: _model.touroPaiTextController.text,
+              vaca: _model.vacaMaeTextController.text,
+              grupoAnimal: _model.grupoValue,
+              status: '',
+              nomeBrincoConcat: () {
+                if ((_model.nomeTextController.text != '') &&
+                    (_model.brincoTextController.text != '') &&
+                    (_model.brincoTextController.text != '-1')) {
+                  return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                } else if (_model.nomeTextController.text != '') {
+                  return _model.nomeTextController.text;
+                } else {
+                  return _model.brincoTextController.text;
+                }
+              }(),
+              brincoAnimalOrder: _model.brincoTextController.text != ''
+                  ? int.tryParse(_model.brincoTextController.text)
+                  : 999999,
+            ));
+
+            await widget.uidTecnico!.update({
+              ...mapToFirestore(
+                {
+                  'quantidadeAnimaisCadastrados': FieldValue.increment(1),
+                  'restanteLimiteAnimais': FieldValue.increment(-(1)),
+                },
+              ),
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Animal cadastrado com sucesso!',
+                  style: TextStyle(
+                    color: FlutterFlowTheme.of(context).primaryText,
+                  ),
+                ),
+                duration: Duration(milliseconds: 4000),
+                backgroundColor: FlutterFlowTheme.of(context).secondary,
+              ),
+            );
+            if (Navigator.of(context).canPop()) {
+              context.pop();
+            }
+            context.pushNamed(
+              ListaAnimaisWidget.routeName,
+              queryParameters: {
+                'uidPropriedade': serializeParam(
+                  widget.uidPropriedade,
+                  ParamType.DocumentReference,
+                ),
+                'nomePropriedade': serializeParam(
+                  widget.nomePropriedade,
+                  ParamType.String,
+                ),
+                'uidTecnico': serializeParam(
+                  widget.uidTecnico,
+                  ParamType.DocumentReference,
+                ),
+                'emailPropriedade': serializeParam(
+                  widget.emailPropriedade,
+                  ParamType.String,
+                ),
+                'visitaPresencial': serializeParam(
+                  widget.visitaPresencial,
+                  ParamType.bool,
+                ),
+                'initialTabSelect': serializeParam(
+                  widget.initialTabSelect,
+                  ParamType.int,
+                ),
+                'diasDg': serializeParam(
+                  widget.diasDg,
+                  ParamType.String,
+                ),
+              }.withoutNulls,
+            );
+
+            if (_shouldSetState) safeSetState(() {});
+            return;
+          }
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Sincronize os dados primeiro.',
+              style: TextStyle(
+                color: FlutterFlowTheme.of(context).primaryText,
+              ),
+            ),
+            duration: Duration(milliseconds: 4000),
+            backgroundColor: Color(0xFFCC4038),
+          ),
+        );
+        if (_shouldSetState) safeSetState(() {});
+        return;
+      }
+    } else {
+      if (_model.formKey.currentState == null ||
+          !_model.formKey.currentState!.validate()) {
+        return;
+      }
+      if (_model.racaValue == null) {
+        return;
+      }
+      if (_model.grupoValue == null) {
+        return;
+      }
+      _model.outListaAnimaisVerificaNomeOff =
+          await queryAnimaisProdutoresRecordOnce(
+        parent: widget.uidTecnico,
+        queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
+            .where(
+              'uidTecnicoPropriedade',
+              isEqualTo: widget.uidPropriedade,
+            )
+            .where(
+              'nomeAnimal',
+              isEqualTo: _model.nomeTextController.text,
+            ),
+      );
+      _shouldSetState = true;
+      _model.outListaAnimaisVerificaBrincoOff =
+          await queryAnimaisProdutoresRecordOnce(
+        parent: widget.uidTecnico,
+        queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
+            .where(
+              'uidTecnicoPropriedade',
+              isEqualTo: widget.uidPropriedade,
+            )
+            .where(
+              'brincoAnimal',
+              isEqualTo: int.tryParse(_model.brincoTextController.text),
+            ),
+      );
+      _shouldSetState = true;
+      if ((_model.outListaAnimaisVerificaNomeOff!.length > 0) &&
+          (_model.outListaAnimaisVerificaBrincoOff!.length > 0)) {
+        await showDialog(
+          context: context,
+          builder: (alertDialogContext) {
+            return AlertDialog(
+              title: Text('Nome ou brinco já existe.'),
+              content: Text('Digite outro nome ou brinco.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(alertDialogContext),
+                  child: Text('Ok'),
+                ),
+              ],
+            );
+          },
+        );
+        if (_shouldSetState) safeSetState(() {});
+        return;
+      }
+      if ((_model.nomeTextController.text != '') ||
+          (_model.brincoTextController.text != '')) {
+        if (_model.dataUltimaInseminacaoTextController.text != '') {
+          if (!(_model.touroInseminacaoValue != null &&
+              _model.touroInseminacaoValue != '')) {
+            await showDialog(
+              context: context,
+              builder: (alertDialogContext) {
+                return AlertDialog(
+                  title: Text('Touro inseminação não selecionado.'),
+                  content: Text('Selecione o touro usado.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(alertDialogContext),
+                      child: Text('Ok'),
+                    ),
+                  ],
+                );
+              },
+            );
+            if (_shouldSetState) safeSetState(() {});
+            return;
+          }
+        }
+      } else {
+        await showDialog(
+          context: context,
+          builder: (alertDialogContext) {
+            return AlertDialog(
+              title: Text('Nome ou brinco obrigatório.'),
+              content: Text('Preencha ao menos um dos campos.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(alertDialogContext),
+                  child: Text('Ok'),
+                ),
+              ],
+            );
+          },
+        );
+        if (_shouldSetState) safeSetState(() {});
+        return;
+      }
+
+      if ((_model.grupoValue == 'Vacas') || (_model.grupoValue == 'Novilhas')) {
+        if (_model.statusAnimalValue != null &&
+            _model.statusAnimalValue != '') {
+          if (_model.statusAnimalValue == 'Inseminada') {
+            if ((_model.dataUltimaInseminacaoTextController.text != '') &&
+                (_model.dataUltimoPartoTextController.text == '') &&
+                (_model.touroInseminacaoValue != null &&
+                    _model.touroInseminacaoValue != '')) {
+              await criarAnimalOffline(AnimaisProdutoresStruct(
+                uidTecnicoPropriedade: widget.uidPropriedade,
+                nomeAnimal: _model.nomeTextController.text,
+                racaAnimal: _model.racaValue,
+                pesoAnimal: _model.pesoTextController.text,
+                dtNascimento: _model.dataNascimentoTextController.text,
+                touro: _model.touroPaiTextController.text,
+                vaca: _model.vacaMaeTextController.text,
+                status: _model.statusAnimalValue,
+                grupoAnimal: _model.grupoValue,
+                dtUltimaInseminacao:
+                    _model.dataUltimaInseminacaoTextController.text,
+                brincoAnimalOrder: _model.brincoTextController.text != ''
+                    ? int.tryParse(_model.brincoTextController.text)
+                    : 999999,
+                brincoAnimal: _model.brincoTextController.text != ''
+                    ? int.tryParse(_model.brincoTextController.text)
+                    : -1,
+                nomeTouroUltimaInseminacao: _model.touroInseminacaoValue,
+                dtPartoPrevisto: functions.somarDataParto(
+                    _model.dataUltimaInseminacaoTextController.text),
+                dtSecPrevista: functions.somarDataSecagem(
+                    _model.dataUltimaInseminacaoTextController.text),
+                dtPrePartoPrevista: functions.somarDataPreParto(
+                    _model.dataUltimaInseminacaoTextController.text),
+                totalInseminacoes: 1,
+                compararDtUltimaInseminacao:
+                    functions.converterDataUltimaInseminacao(
+                        _model.dataUltimaInseminacaoTextController.text),
+                nomeBrincoConcat: () {
+                  if ((_model.nomeTextController.text != '') &&
+                      (_model.brincoTextController.text != '') &&
+                      (_model.brincoTextController.text != '-1')) {
+                    return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                  } else if (_model.nomeTextController.text != '') {
+                    return _model.nomeTextController.text;
+                  } else {
+                    return _model.brincoTextController.text;
+                  }
+                }(),
+                idStatusAnimal: 3,
+                uidAnimalOffline: functions.criarUidRandom(),
+              ));
+              safeSetState(() {});
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Animal cadastrado com sucesso!',
+                    style: TextStyle(
+                      color: FlutterFlowTheme.of(context).primaryText,
+                    ),
+                  ),
+                  duration: Duration(milliseconds: 4000),
+                  backgroundColor: FlutterFlowTheme.of(context).secondary,
+                ),
+              );
+              if (Navigator.of(context).canPop()) {
+                context.pop();
+              }
+              context.pushNamed(
+                ListaAnimaisWidget.routeName,
+                queryParameters: {
+                  'uidPropriedade': serializeParam(
+                    widget.uidPropriedade,
+                    ParamType.DocumentReference,
+                  ),
+                  'nomePropriedade': serializeParam(
+                    widget.nomePropriedade,
+                    ParamType.String,
+                  ),
+                  'uidTecnico': serializeParam(
+                    widget.uidTecnico,
+                    ParamType.DocumentReference,
+                  ),
+                  'emailPropriedade': serializeParam(
+                    widget.emailPropriedade,
+                    ParamType.String,
+                  ),
+                  'visitaPresencial': serializeParam(
+                    widget.visitaPresencial,
+                    ParamType.bool,
+                  ),
+                  'initialTabSelect': serializeParam(
+                    widget.initialTabSelect,
+                    ParamType.int,
+                  ),
+                  'diasDg': serializeParam(
+                    widget.diasDg,
+                    ParamType.String,
+                  ),
+                  'tabBarOpenSelected': serializeParam(
+                    0,
+                    ParamType.int,
+                  ),
+                }.withoutNulls,
+              );
+
+              if (_shouldSetState) safeSetState(() {});
+              return;
+            } else {
+              if ((_model.dataUltimoPartoTextController.text != '') &&
+                  (_model.dataUltimaInseminacaoTextController.text != '') &&
+                  (_model.touroInseminacaoValue != null &&
+                      _model.touroInseminacaoValue != '')) {
+                await criarAnimalOffline(AnimaisProdutoresStruct(
+                  uidTecnicoPropriedade: widget.uidPropriedade,
+                  nomeAnimal: _model.nomeTextController.text,
+                  racaAnimal: _model.racaValue,
+                  pesoAnimal: _model.pesoTextController.text,
+                  dtNascimento: _model.dataNascimentoTextController.text,
+                  touro: _model.touroPaiTextController.text,
+                  vaca: _model.vacaMaeTextController.text,
+                  grupoAnimal: _model.grupoValue,
+                  brincoAnimalOrder: _model.brincoTextController.text != ''
+                      ? int.tryParse(_model.brincoTextController.text)
+                      : 999999,
+                  brincoAnimal: _model.brincoTextController.text != ''
+                      ? int.tryParse(_model.brincoTextController.text)
+                      : -1,
+                  nomeBrincoConcat: () {
+                    if ((_model.nomeTextController.text != '') &&
+                        (_model.brincoTextController.text != '') &&
+                        (_model.brincoTextController.text != '-1')) {
+                      return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                    } else if (_model.nomeTextController.text != '') {
+                      return _model.nomeTextController.text;
+                    } else {
+                      return _model.brincoTextController.text;
+                    }
+                  }(),
+                  status: _model.statusAnimalValue,
+                  dtUltimaInseminacao:
+                      _model.dataUltimaInseminacaoTextController.text,
+                  dtUltimoParto: _model.dataUltimoPartoTextController.text,
+                  nomeTouroUltimaInseminacao: _model.touroInseminacaoValue,
+                  dtPartoPrevisto: functions.somarDataParto(
+                      _model.dataUltimaInseminacaoTextController.text),
+                  dtSecPrevista: functions.somarDataSecagem(
+                      _model.dataUltimaInseminacaoTextController.text),
+                  dtPrePartoPrevista: functions.somarDataPreParto(
+                      _model.dataUltimaInseminacaoTextController.text),
+                  totalInseminacoes: 1,
+                  totalPartos: 1,
+                  compararDtUltimaInseminacao:
+                      functions.converterDataUltimaInseminacao(
+                          _model.dataUltimaInseminacaoTextController.text),
+                  idStatusAnimal: 3,
+                  dtUltimoPartoContingencia:
+                      _model.dataUltimoPartoTextController.text,
+                  uidAnimalOffline: functions.criarUidRandom(),
+                ));
+                safeSetState(() {});
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Animal cadastrado com sucesso!',
+                      style: TextStyle(
+                        color: FlutterFlowTheme.of(context).primaryText,
+                      ),
+                    ),
+                    duration: Duration(milliseconds: 4000),
+                    backgroundColor: FlutterFlowTheme.of(context).secondary,
+                  ),
+                );
+                if (Navigator.of(context).canPop()) {
+                  context.pop();
+                }
+                context.pushNamed(
+                  ListaAnimaisWidget.routeName,
+                  queryParameters: {
+                    'uidPropriedade': serializeParam(
+                      widget.uidPropriedade,
+                      ParamType.DocumentReference,
+                    ),
+                    'nomePropriedade': serializeParam(
+                      widget.nomePropriedade,
+                      ParamType.String,
+                    ),
+                    'uidTecnico': serializeParam(
+                      widget.uidTecnico,
+                      ParamType.DocumentReference,
+                    ),
+                    'emailPropriedade': serializeParam(
+                      widget.emailPropriedade,
+                      ParamType.String,
+                    ),
+                    'visitaPresencial': serializeParam(
+                      widget.visitaPresencial,
+                      ParamType.bool,
+                    ),
+                    'initialTabSelect': serializeParam(
+                      widget.initialTabSelect,
+                      ParamType.int,
+                    ),
+                    'diasDg': serializeParam(
+                      widget.diasDg,
+                      ParamType.String,
+                    ),
+                    'tabBarOpenSelected': serializeParam(
+                      0,
+                      ParamType.int,
+                    ),
+                  }.withoutNulls,
+                );
+
+                if (_shouldSetState) safeSetState(() {});
+                return;
+              } else {
+                if (_shouldSetState) safeSetState(() {});
+                return;
+              }
+            }
+          } else {
+            if (_model.statusAnimalValue == 'Seca') {
+              if (_model.grupoValue == 'Vacas') {
+                await criarAnimalOffline(AnimaisProdutoresStruct(
+                  uidTecnicoPropriedade: widget.uidPropriedade,
+                  nomeAnimal: _model.nomeTextController.text,
+                  racaAnimal: _model.racaValue,
+                  pesoAnimal: _model.pesoTextController.text,
+                  dtNascimento: _model.dataNascimentoTextController.text,
+                  touro: _model.touroPaiTextController.text,
+                  vaca: _model.vacaMaeTextController.text,
+                  grupoAnimal: _model.grupoValue,
+                  brincoAnimalOrder: _model.brincoTextController.text != ''
+                      ? int.tryParse(_model.brincoTextController.text)
+                      : 999999,
+                  brincoAnimal: _model.brincoTextController.text != ''
+                      ? int.tryParse(_model.brincoTextController.text)
+                      : -1,
+                  nomeBrincoConcat: () {
+                    if ((_model.nomeTextController.text != '') &&
+                        (_model.brincoTextController.text != '') &&
+                        (_model.brincoTextController.text != '-1')) {
+                      return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                    } else if (_model.nomeTextController.text != '') {
+                      return _model.nomeTextController.text;
+                    } else {
+                      return _model.brincoTextController.text;
+                    }
+                  }(),
+                  status: _model.statusAnimalValue,
+                  dtUltimaInseminacao:
+                      _model.dataUltimaInseminacaoTextController.text,
+                  dtPartoPrevisto: functions.somarDataParto(
+                      _model.dataUltimaInseminacaoTextController.text),
+                  dtSecPrevista: functions.somarDataSecagem(
+                      _model.dataUltimaInseminacaoTextController.text),
+                  dtPrePartoPrevista: functions.somarDataPreParto(
+                      _model.dataUltimaInseminacaoTextController.text),
+                  nomeTouroUltimaInseminacao: _model.touroInseminacaoValue,
+                  compararDtUltimaInseminacao:
+                      functions.converterDataUltimaInseminacao(
+                          _model.dataUltimaInseminacaoTextController.text),
+                  idStatusAnimal: 4,
+                  uidAnimalOffline: functions.criarUidRandom(),
+                ));
+                safeSetState(() {});
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Animal cadastrado com sucesso!',
+                      style: TextStyle(
+                        color: FlutterFlowTheme.of(context).primaryText,
+                      ),
+                    ),
+                    duration: Duration(milliseconds: 4000),
+                    backgroundColor: FlutterFlowTheme.of(context).secondary,
+                  ),
+                );
+                if (Navigator.of(context).canPop()) {
+                  context.pop();
+                }
+                context.pushNamed(
+                  ListaAnimaisWidget.routeName,
+                  queryParameters: {
+                    'uidPropriedade': serializeParam(
+                      widget.uidPropriedade,
+                      ParamType.DocumentReference,
+                    ),
+                    'nomePropriedade': serializeParam(
+                      widget.nomePropriedade,
+                      ParamType.String,
+                    ),
+                    'uidTecnico': serializeParam(
+                      widget.uidTecnico,
+                      ParamType.DocumentReference,
+                    ),
+                    'emailPropriedade': serializeParam(
+                      widget.emailPropriedade,
+                      ParamType.String,
+                    ),
+                    'visitaPresencial': serializeParam(
+                      widget.visitaPresencial,
+                      ParamType.bool,
+                    ),
+                    'initialTabSelect': serializeParam(
+                      widget.initialTabSelect,
+                      ParamType.int,
+                    ),
+                    'diasDg': serializeParam(
+                      widget.diasDg,
+                      ParamType.String,
+                    ),
+                    'tabBarOpenSelected': serializeParam(
+                      0,
+                      ParamType.int,
+                    ),
+                  }.withoutNulls,
+                );
+
+                if (_shouldSetState) safeSetState(() {});
+                return;
+              } else {
+                await showDialog(
+                  context: context,
+                  builder: (alertDialogContext) {
+                    return AlertDialog(
+                      title: Text(
+                          'O status de \"Seca\" é permitido somente em vacas.'),
+                      content: Text('Atualize o status.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(alertDialogContext),
+                          child: Text('Ok'),
+                        ),
+                      ],
+                    );
+                  },
+                );
+                if (_shouldSetState) safeSetState(() {});
+                return;
+              }
+            } else {
+              if (_model.statusAnimalValue == 'Vazia') {
+                await criarAnimalOffline(AnimaisProdutoresStruct(
+                  uidTecnicoPropriedade: widget.uidPropriedade,
+                  nomeAnimal: _model.nomeTextController.text,
+                  racaAnimal: _model.racaValue,
+                  pesoAnimal: _model.pesoTextController.text,
+                  dtNascimento: _model.dataNascimentoTextController.text,
+                  touro: _model.touroPaiTextController.text,
+                  vaca: _model.vacaMaeTextController.text,
+                  grupoAnimal: _model.grupoValue,
+                  brincoAnimalOrder: _model.brincoTextController.text != ''
+                      ? int.tryParse(_model.brincoTextController.text)
+                      : 999999,
+                  brincoAnimal: _model.brincoTextController.text != ''
+                      ? int.tryParse(_model.brincoTextController.text)
+                      : -1,
+                  nomeBrincoConcat: () {
+                    if ((_model.nomeTextController.text != '') &&
+                        (_model.brincoTextController.text != '') &&
+                        (_model.brincoTextController.text != '-1')) {
+                      return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                    } else if (_model.nomeTextController.text != '') {
+                      return _model.nomeTextController.text;
+                    } else {
+                      return _model.brincoTextController.text;
+                    }
+                  }(),
+                  dtUltimoParto: _model.dataUltimoPartoTextController.text,
+                  status: _model.statusAnimalValue,
+                  totalPartos:
+                      _model.dataUltimoPartoTextController.text != '' ? 1 : 0,
+                  idStatusAnimal: 2,
+                  dtUltimoPartoContingencia:
+                      _model.dataUltimoPartoTextController.text,
+                  uidAnimalOffline: functions.criarUidRandom(),
+                ));
+                safeSetState(() {});
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Animal cadastrado com sucesso!',
+                      style: TextStyle(
+                        color: FlutterFlowTheme.of(context).primaryText,
+                      ),
+                    ),
+                    duration: Duration(milliseconds: 4000),
+                    backgroundColor: FlutterFlowTheme.of(context).secondary,
+                  ),
+                );
+                if (Navigator.of(context).canPop()) {
+                  context.pop();
+                }
+                context.pushNamed(
+                  ListaAnimaisWidget.routeName,
+                  queryParameters: {
+                    'uidPropriedade': serializeParam(
+                      widget.uidPropriedade,
+                      ParamType.DocumentReference,
+                    ),
+                    'nomePropriedade': serializeParam(
+                      widget.nomePropriedade,
+                      ParamType.String,
+                    ),
+                    'uidTecnico': serializeParam(
+                      widget.uidTecnico,
+                      ParamType.DocumentReference,
+                    ),
+                    'emailPropriedade': serializeParam(
+                      widget.emailPropriedade,
+                      ParamType.String,
+                    ),
+                    'visitaPresencial': serializeParam(
+                      widget.visitaPresencial,
+                      ParamType.bool,
+                    ),
+                    'initialTabSelect': serializeParam(
+                      widget.initialTabSelect,
+                      ParamType.int,
+                    ),
+                    'diasDg': serializeParam(
+                      widget.diasDg,
+                      ParamType.String,
+                    ),
+                    'tabBarOpenSelected': serializeParam(
+                      0,
+                      ParamType.int,
+                    ),
+                  }.withoutNulls,
+                );
+
+                if (_shouldSetState) safeSetState(() {});
+                return;
+              } else {
+                if (_model.statusAnimalValue == 'Prenha') {
+                  if ((_model.dataUltimaInseminacaoTextController.text != '') &&
+                      (_model.touroInseminacaoValue != null &&
+                          _model.touroInseminacaoValue != '')) {
+                    await criarAnimalOffline(AnimaisProdutoresStruct(
+                      uidTecnicoPropriedade: widget.uidPropriedade,
+                      nomeAnimal: _model.nomeTextController.text,
+                      racaAnimal: _model.racaValue,
+                      pesoAnimal: _model.pesoTextController.text,
+                      dtNascimento: _model.dataNascimentoTextController.text,
+                      touro: _model.touroPaiTextController.text,
+                      vaca: _model.vacaMaeTextController.text,
+                      grupoAnimal: _model.grupoValue,
+                      brincoAnimalOrder: _model.brincoTextController.text != ''
+                          ? int.tryParse(_model.brincoTextController.text)
+                          : 999999,
+                      brincoAnimal: _model.brincoTextController.text != ''
+                          ? int.tryParse(_model.brincoTextController.text)
+                          : -1,
+                      nomeBrincoConcat: () {
+                        if ((_model.nomeTextController.text != '') &&
+                            (_model.brincoTextController.text != '') &&
+                            (_model.brincoTextController.text != '-1')) {
+                          return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                        } else if (_model.nomeTextController.text != '') {
+                          return _model.nomeTextController.text;
+                        } else {
+                          return _model.brincoTextController.text;
+                        }
+                      }(),
+                      status: _model.statusAnimalValue,
+                      dtUltimaInseminacao:
+                          _model.dataUltimaInseminacaoTextController.text,
+                      nomeTouroUltimaInseminacao: _model.touroInseminacaoValue,
+                      dtPartoPrevisto: functions.somarDataParto(
+                          _model.dataUltimaInseminacaoTextController.text),
+                      dtSecPrevista: functions.somarDataSecagem(
+                          _model.dataUltimaInseminacaoTextController.text),
+                      dtPrePartoPrevista: functions.somarDataPreParto(
+                          _model.dataUltimaInseminacaoTextController.text),
+                      totalInseminacoes: 1,
+                      dtDgMais: dateTimeFormat(
+                        "dd/MM/yyyy",
+                        getCurrentTimestamp,
+                        locale: FFLocalizations.of(context).languageCode,
+                      ),
+                      dtUltimoParto: _model.dataUltimoPartoTextController.text,
+                      compararDtUltimaInseminacao:
+                          functions.converterDataUltimaInseminacao(
+                              _model.dataUltimaInseminacaoTextController.text),
+                      idStatusAnimal: 6,
+                      dtUltimoPartoContingencia:
+                          _model.dataUltimoPartoTextController.text,
+                      uidAnimalOffline: functions.criarUidRandom(),
+                    ));
+                    safeSetState(() {});
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Animal cadastrado com sucesso!',
+                          style: TextStyle(
+                            color: FlutterFlowTheme.of(context).primaryText,
+                          ),
+                        ),
+                        duration: Duration(milliseconds: 4000),
+                        backgroundColor: FlutterFlowTheme.of(context).secondary,
+                      ),
+                    );
+                    if (Navigator.of(context).canPop()) {
+                      context.pop();
+                    }
+                    context.pushNamed(
+                      ListaAnimaisWidget.routeName,
+                      queryParameters: {
+                        'uidPropriedade': serializeParam(
+                          widget.uidPropriedade,
+                          ParamType.DocumentReference,
+                        ),
+                        'nomePropriedade': serializeParam(
+                          widget.nomePropriedade,
+                          ParamType.String,
+                        ),
+                        'uidTecnico': serializeParam(
+                          widget.uidTecnico,
+                          ParamType.DocumentReference,
+                        ),
+                        'emailPropriedade': serializeParam(
+                          widget.emailPropriedade,
+                          ParamType.String,
+                        ),
+                        'visitaPresencial': serializeParam(
+                          widget.visitaPresencial,
+                          ParamType.bool,
+                        ),
+                        'initialTabSelect': serializeParam(
+                          widget.initialTabSelect,
+                          ParamType.int,
+                        ),
+                        'diasDg': serializeParam(
+                          widget.diasDg,
+                          ParamType.String,
+                        ),
+                        'tabBarOpenSelected': serializeParam(
+                          0,
+                          ParamType.int,
+                        ),
+                      }.withoutNulls,
+                    );
+
+                    if (_shouldSetState) safeSetState(() {});
+                    return;
+                  } else {
+                    await showDialog(
+                      context: context,
+                      builder: (alertDialogContext) {
+                        return AlertDialog(
+                          title: Text(
+                              'Data última inseminação vazia ou Touro inseminação não selecionado.'),
+                          content: Text('Preencha os campos obrigatórios.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () =>
+                                  Navigator.pop(alertDialogContext),
+                              child: Text('Ok'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                    if (_shouldSetState) safeSetState(() {});
+                    return;
+                  }
+                } else {
+                  if (_model.statusAnimalValue == 'Inseminada PP') {
+                    if ((_model.dataUltimaInseminacaoTextController.text !=
+                            '') &&
+                        (_model.touroInseminacaoValue != null &&
+                            _model.touroInseminacaoValue != '')) {
+                      await criarAnimalOffline(AnimaisProdutoresStruct(
+                        uidTecnicoPropriedade: widget.uidPropriedade,
+                        nomeAnimal: _model.nomeTextController.text,
+                        racaAnimal: _model.racaValue,
+                        pesoAnimal: _model.pesoTextController.text,
+                        dtNascimento: _model.dataNascimentoTextController.text,
+                        touro: _model.touroPaiTextController.text,
+                        vaca: _model.vacaMaeTextController.text,
+                        grupoAnimal: _model.grupoValue,
+                        brincoAnimalOrder:
+                            _model.brincoTextController.text != ''
+                                ? int.tryParse(_model.brincoTextController.text)
+                                : 999999,
+                        brincoAnimal: _model.brincoTextController.text != ''
+                            ? int.tryParse(_model.brincoTextController.text)
+                            : -1,
+                        nomeBrincoConcat: () {
+                          if ((_model.nomeTextController.text != '') &&
+                              (_model.brincoTextController.text != '') &&
+                              (_model.brincoTextController.text != '-1')) {
+                            return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                          } else if (_model.nomeTextController.text != '') {
+                            return _model.nomeTextController.text;
+                          } else {
+                            return _model.brincoTextController.text;
+                          }
+                        }(),
+                        status: _model.statusAnimalValue,
+                        dtUltimaInseminacao:
+                            _model.dataUltimaInseminacaoTextController.text,
+                        nomeTouroUltimaInseminacao:
+                            _model.touroInseminacaoValue,
+                        dtPartoPrevisto: functions.somarDataParto(
+                            _model.dataUltimaInseminacaoTextController.text),
+                        dtSecPrevista: functions.somarDataSecagem(
+                            _model.dataUltimaInseminacaoTextController.text),
+                        dtPrePartoPrevista: functions.somarDataPreParto(
+                            _model.dataUltimaInseminacaoTextController.text),
+                        totalInseminacoes: 1,
+                        dtPP: dateTimeFormat(
+                          "dd/MM/yyyy",
+                          getCurrentTimestamp,
+                          locale: FFLocalizations.of(context).languageCode,
+                        ),
+                        dtUltimoPP: dateTimeFormat(
+                          "dd/MM/yyyy",
+                          getCurrentTimestamp,
+                          locale: FFLocalizations.of(context).languageCode,
+                        ),
+                        dtUltimoParto:
+                            _model.dataUltimoPartoTextController.text,
+                        compararDtUltimaInseminacao:
+                            functions.converterDataUltimaInseminacao(_model
+                                .dataUltimaInseminacaoTextController.text),
+                        idStatusAnimal: 1,
+                        dtUltimoPartoContingencia:
+                            _model.dataUltimoPartoTextController.text,
+                        uidAnimalOffline: functions.criarUidRandom(),
+                      ));
+                      safeSetState(() {});
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Animal cadastrado com sucesso!',
+                            style: TextStyle(
+                              color: FlutterFlowTheme.of(context).primaryText,
+                            ),
+                          ),
+                          duration: Duration(milliseconds: 4000),
+                          backgroundColor:
+                              FlutterFlowTheme.of(context).secondary,
+                        ),
+                      );
+                      if (Navigator.of(context).canPop()) {
+                        context.pop();
+                      }
+                      context.pushNamed(
+                        ListaAnimaisWidget.routeName,
+                        queryParameters: {
+                          'uidPropriedade': serializeParam(
+                            widget.uidPropriedade,
+                            ParamType.DocumentReference,
+                          ),
+                          'nomePropriedade': serializeParam(
+                            widget.nomePropriedade,
+                            ParamType.String,
+                          ),
+                          'uidTecnico': serializeParam(
+                            widget.uidTecnico,
+                            ParamType.DocumentReference,
+                          ),
+                          'emailPropriedade': serializeParam(
+                            widget.emailPropriedade,
+                            ParamType.String,
+                          ),
+                          'visitaPresencial': serializeParam(
+                            widget.visitaPresencial,
+                            ParamType.bool,
+                          ),
+                          'initialTabSelect': serializeParam(
+                            widget.initialTabSelect,
+                            ParamType.int,
+                          ),
+                          'diasDg': serializeParam(
+                            widget.diasDg,
+                            ParamType.String,
+                          ),
+                          'tabBarOpenSelected': serializeParam(
+                            0,
+                            ParamType.int,
+                          ),
+                        }.withoutNulls,
+                      );
+
+                      if (_shouldSetState) safeSetState(() {});
+                      return;
+                    } else {
+                      await showDialog(
+                        context: context,
+                        builder: (alertDialogContext) {
+                          return AlertDialog(
+                            title: Text(
+                                'Data última inseminação vazia ou Touro inseminação não selecionado.'),
+                            content: Text('Preencha os campos obrigatórios.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(alertDialogContext),
+                                child: Text('Ok'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      if (_shouldSetState) safeSetState(() {});
+                      return;
+                    }
+                  } else {
+                    if (_model.statusAnimalValue == 'Pré Parto') {
+                      if ((_model.dataUltimaInseminacaoTextController.text !=
+                              '') &&
+                          (_model.touroInseminacaoValue != null &&
+                              _model.touroInseminacaoValue != '')) {
+                        await criarAnimalOffline(AnimaisProdutoresStruct(
+                          uidTecnicoPropriedade: widget.uidPropriedade,
+                          nomeAnimal: _model.nomeTextController.text,
+                          racaAnimal: _model.racaValue,
+                          pesoAnimal: _model.pesoTextController.text,
+                          dtNascimento:
+                              _model.dataNascimentoTextController.text,
+                          touro: _model.touroPaiTextController.text,
+                          vaca: _model.vacaMaeTextController.text,
+                          grupoAnimal: _model.grupoValue,
+                          brincoAnimalOrder: _model.brincoTextController.text !=
+                                  ''
+                              ? int.tryParse(_model.brincoTextController.text)
+                              : 999999,
+                          brincoAnimal: _model.brincoTextController.text != ''
+                              ? int.tryParse(_model.brincoTextController.text)
+                              : -1,
+                          nomeBrincoConcat: () {
+                            if ((_model.nomeTextController.text != '') &&
+                                (_model.brincoTextController.text != '') &&
+                                (_model.brincoTextController.text != '-1')) {
+                              return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                            } else if (_model.nomeTextController.text != '') {
+                              return _model.nomeTextController.text;
+                            } else {
+                              return _model.brincoTextController.text;
+                            }
+                          }(),
+                          status: _model.statusAnimalValue,
+                          dtUltimaInseminacao:
+                              _model.dataUltimaInseminacaoTextController.text,
+                          nomeTouroUltimaInseminacao:
+                              _model.touroInseminacaoValue,
+                          dtPartoPrevisto: functions.somarDataParto(
+                              _model.dataUltimaInseminacaoTextController.text),
+                          dtSecPrevista: functions.somarDataSecagem(
+                              _model.dataUltimaInseminacaoTextController.text),
+                          dtPrePartoPrevista: functions.somarDataPreParto(
+                              _model.dataUltimaInseminacaoTextController.text),
+                          totalInseminacoes: 1,
+                          dtPP: dateTimeFormat(
+                            "dd/MM/yyyy",
+                            getCurrentTimestamp,
+                            locale: FFLocalizations.of(context).languageCode,
+                          ),
+                          dtUltimoPP: dateTimeFormat(
+                            "dd/MM/yyyy",
+                            getCurrentTimestamp,
+                            locale: FFLocalizations.of(context).languageCode,
+                          ),
+                          dtUltimoParto:
+                              _model.dataUltimoPartoTextController.text,
+                          compararDtUltimaInseminacao:
+                              functions.converterDataUltimaInseminacao(_model
+                                  .dataUltimaInseminacaoTextController.text),
+                          idStatusAnimal: 5,
+                          dtUltimoPartoContingencia:
+                              _model.dataUltimoPartoTextController.text,
+                          uidAnimalOffline: functions.criarUidRandom(),
+                        ));
+                        safeSetState(() {});
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Animal cadastrado com sucesso!',
+                              style: TextStyle(
+                                color: FlutterFlowTheme.of(context).primaryText,
+                              ),
+                            ),
+                            duration: Duration(milliseconds: 4000),
+                            backgroundColor:
+                                FlutterFlowTheme.of(context).secondary,
+                          ),
+                        );
+                        if (Navigator.of(context).canPop()) {
+                          context.pop();
+                        }
+                        context.pushNamed(
+                          ListaAnimaisWidget.routeName,
+                          queryParameters: {
+                            'uidPropriedade': serializeParam(
+                              widget.uidPropriedade,
+                              ParamType.DocumentReference,
+                            ),
+                            'nomePropriedade': serializeParam(
+                              widget.nomePropriedade,
+                              ParamType.String,
+                            ),
+                            'uidTecnico': serializeParam(
+                              widget.uidTecnico,
+                              ParamType.DocumentReference,
+                            ),
+                            'emailPropriedade': serializeParam(
+                              widget.emailPropriedade,
+                              ParamType.String,
+                            ),
+                            'visitaPresencial': serializeParam(
+                              widget.visitaPresencial,
+                              ParamType.bool,
+                            ),
+                            'initialTabSelect': serializeParam(
+                              widget.initialTabSelect,
+                              ParamType.int,
+                            ),
+                            'diasDg': serializeParam(
+                              widget.diasDg,
+                              ParamType.String,
+                            ),
+                            'tabBarOpenSelected': serializeParam(
+                              0,
+                              ParamType.int,
+                            ),
+                          }.withoutNulls,
+                        );
+
+                        if (_shouldSetState) safeSetState(() {});
+                        return;
+                      } else {
+                        await showDialog(
+                          context: context,
+                          builder: (alertDialogContext) {
+                            return AlertDialog(
+                              title: Text(
+                                  'Data última inseminação vazia ou Touro inseminação não selecionado.'),
+                              content: Text('Preencha os campos obrigatórios.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(alertDialogContext),
+                                  child: Text('Ok'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                        if (_shouldSetState) safeSetState(() {});
+                        return;
+                      }
+                    } else {
+                      if (_shouldSetState) safeSetState(() {});
+                      return;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        } else {
+          await showDialog(
+            context: context,
+            builder: (alertDialogContext) {
+              return AlertDialog(
+                title: Text('Status é obrigatório.'),
+                content: Text('Selecione ao menos um status.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(alertDialogContext),
+                    child: Text('Ok'),
+                  ),
+                ],
+              );
+            },
+          );
+          if (_shouldSetState) safeSetState(() {});
+          return;
+        }
+      } else {
+        if ((_model.grupoValue == 'Sêmens') ||
+            (_model.grupoValue == 'Touros')) {
+          if (_model.grupoValue == 'Touros') {
+            await criarAnimalOffline(AnimaisProdutoresStruct(
+              uidTecnicoPropriedade: widget.uidPropriedade,
+              nomeAnimal: _model.nomeTextController.text,
+              racaAnimal: _model.racaValue,
+              pesoAnimal: _model.pesoTextController.text,
+              dtNascimento: _model.dataNascimentoTextController.text,
+              touro: _model.touroPaiTextController.text,
+              vaca: _model.vacaMaeTextController.text,
+              grupoAnimal: _model.grupoValue,
+              brincoAnimalOrder: _model.brincoTextController.text != ''
+                  ? int.tryParse(_model.brincoTextController.text)
+                  : 999999,
+              brincoAnimal: _model.brincoTextController.text != ''
+                  ? int.tryParse(_model.brincoTextController.text)
+                  : -1,
+              nomeBrincoConcat: () {
+                if ((_model.nomeTextController.text != '') &&
+                    (_model.brincoTextController.text != '') &&
+                    (_model.brincoTextController.text != '-1')) {
+                  return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                } else if (_model.nomeTextController.text != '') {
+                  return _model.nomeTextController.text;
+                } else {
+                  return _model.brincoTextController.text;
+                }
+              }(),
+              liberaInseminacao: () {
+                if (_model.grupoValue == 'Touros') {
+                  return _model.switchValue;
+                } else if (_model.grupoValue == 'Sêmens') {
+                  return _model.switchValue;
+                } else {
+                  return true;
+                }
+              }(),
+              uidAnimalOffline: functions.criarUidRandom(),
+            ));
+            safeSetState(() {});
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Animal cadastrado com sucesso!',
+                  style: TextStyle(
+                    color: FlutterFlowTheme.of(context).primaryText,
+                  ),
+                ),
+                duration: Duration(milliseconds: 4000),
+                backgroundColor: FlutterFlowTheme.of(context).secondary,
+              ),
+            );
+            if (Navigator.of(context).canPop()) {
+              context.pop();
+            }
+            context.pushNamed(
+              ListaAnimaisWidget.routeName,
+              queryParameters: {
+                'uidPropriedade': serializeParam(
+                  widget.uidPropriedade,
+                  ParamType.DocumentReference,
+                ),
+                'nomePropriedade': serializeParam(
+                  widget.nomePropriedade,
+                  ParamType.String,
+                ),
+                'uidTecnico': serializeParam(
+                  widget.uidTecnico,
+                  ParamType.DocumentReference,
+                ),
+                'emailPropriedade': serializeParam(
+                  widget.emailPropriedade,
+                  ParamType.String,
+                ),
+                'visitaPresencial': serializeParam(
+                  widget.visitaPresencial,
+                  ParamType.bool,
+                ),
+                'initialTabSelect': serializeParam(
+                  widget.initialTabSelect,
+                  ParamType.int,
+                ),
+                'diasDg': serializeParam(
+                  widget.diasDg,
+                  ParamType.String,
+                ),
+              }.withoutNulls,
+            );
+
+            if (_shouldSetState) safeSetState(() {});
+            return;
+          } else {
+            if (_model.grupoValue == 'Sêmens') {
+              await criarAnimalOffline(AnimaisProdutoresStruct(
+                uidTecnicoPropriedade: widget.uidPropriedade,
+                nomeAnimal: _model.nomeTextController.text,
+                racaAnimal: _model.racaValue,
+                pesoAnimal: _model.pesoTextController.text,
+                dtNascimento: _model.dataNascimentoTextController.text,
+                touro: _model.touroPaiTextController.text,
+                grupoAnimal: _model.grupoValue,
+                brincoAnimalOrder: _model.brincoTextController.text != ''
+                    ? int.tryParse(_model.brincoTextController.text)
+                    : 999999,
+                brincoAnimal: _model.brincoTextController.text != ''
+                    ? int.tryParse(_model.brincoTextController.text)
+                    : -1,
+                nomeBrincoConcat: () {
+                  if ((_model.nomeTextController.text != '') &&
+                      (_model.brincoTextController.text != '') &&
+                      (_model.brincoTextController.text != '-1')) {
+                    return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+                  } else if (_model.nomeTextController.text != '') {
+                    return _model.nomeTextController.text;
+                  } else {
+                    return _model.brincoTextController.text;
+                  }
+                }(),
+                liberaInseminacao: () {
+                  if (_model.grupoValue == 'Touros') {
+                    return _model.switchValue;
+                  } else if (_model.grupoValue == 'Sêmens') {
+                    return _model.switchValue;
+                  } else {
+                    return true;
+                  }
+                }(),
+                uidAnimalOffline: functions.criarUidRandom(),
+              ));
+              safeSetState(() {});
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Animal cadastrado com sucesso!',
+                    style: TextStyle(
+                      color: FlutterFlowTheme.of(context).primaryText,
+                    ),
+                  ),
+                  duration: Duration(milliseconds: 4000),
+                  backgroundColor: FlutterFlowTheme.of(context).secondary,
+                ),
+              );
+              if (Navigator.of(context).canPop()) {
+                context.pop();
+              }
+              context.pushNamed(
+                ListaAnimaisWidget.routeName,
+                queryParameters: {
+                  'uidPropriedade': serializeParam(
+                    widget.uidPropriedade,
+                    ParamType.DocumentReference,
+                  ),
+                  'nomePropriedade': serializeParam(
+                    widget.nomePropriedade,
+                    ParamType.String,
+                  ),
+                  'uidTecnico': serializeParam(
+                    widget.uidTecnico,
+                    ParamType.DocumentReference,
+                  ),
+                  'emailPropriedade': serializeParam(
+                    widget.emailPropriedade,
+                    ParamType.String,
+                  ),
+                  'visitaPresencial': serializeParam(
+                    widget.visitaPresencial,
+                    ParamType.bool,
+                  ),
+                  'initialTabSelect': serializeParam(
+                    widget.initialTabSelect,
+                    ParamType.int,
+                  ),
+                  'diasDg': serializeParam(
+                    widget.diasDg,
+                    ParamType.String,
+                  ),
+                }.withoutNulls,
+              );
+
+              if (_shouldSetState) safeSetState(() {});
+              return;
+            } else {
+              if (_shouldSetState) safeSetState(() {});
+              return;
+            }
+          }
+        } else {
+          await criarAnimalOffline(AnimaisProdutoresStruct(
+            uidTecnicoPropriedade: widget.uidPropriedade,
+            nomeAnimal: _model.nomeTextController.text,
+            racaAnimal: _model.racaValue,
+            pesoAnimal: _model.pesoTextController.text,
+            dtNascimento: _model.dataNascimentoTextController.text,
+            touro: _model.touroPaiTextController.text,
+            vaca: _model.vacaMaeTextController.text,
+            grupoAnimal: _model.grupoValue,
+            brincoAnimalOrder: _model.brincoTextController.text != ''
+                ? int.tryParse(_model.brincoTextController.text)
+                : 999999,
+            brincoAnimal: _model.brincoTextController.text != ''
+                ? int.tryParse(_model.brincoTextController.text)
+                : -1,
+            nomeBrincoConcat: () {
+              if ((_model.nomeTextController.text != '') &&
+                  (_model.brincoTextController.text != '') &&
+                  (_model.brincoTextController.text != '-1')) {
+                return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
+              } else if (_model.nomeTextController.text != '') {
+                return _model.nomeTextController.text;
+              } else {
+                return _model.brincoTextController.text;
+              }
+            }(),
+            uidAnimalOffline: functions.criarUidRandom(),
+          ));
+          safeSetState(() {});
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Animal cadastrado com sucesso!',
+                style: TextStyle(
+                  color: FlutterFlowTheme.of(context).primaryText,
+                ),
+              ),
+              duration: Duration(milliseconds: 4000),
+              backgroundColor: FlutterFlowTheme.of(context).secondary,
+            ),
+          );
+          if (Navigator.of(context).canPop()) {
+            context.pop();
+          }
+          context.pushNamed(
+            ListaAnimaisWidget.routeName,
+            queryParameters: {
+              'uidPropriedade': serializeParam(
+                widget.uidPropriedade,
+                ParamType.DocumentReference,
+              ),
+              'nomePropriedade': serializeParam(
+                widget.nomePropriedade,
+                ParamType.String,
+              ),
+              'uidTecnico': serializeParam(
+                widget.uidTecnico,
+                ParamType.DocumentReference,
+              ),
+              'emailPropriedade': serializeParam(
+                widget.emailPropriedade,
+                ParamType.String,
+              ),
+              'visitaPresencial': serializeParam(
+                widget.visitaPresencial,
+                ParamType.bool,
+              ),
+              'initialTabSelect': serializeParam(
+                widget.initialTabSelect,
+                ParamType.int,
+              ),
+              'diasDg': serializeParam(
+                widget.diasDg,
+                ParamType.String,
+              ),
+            }.withoutNulls,
+          );
+
+          if (_shouldSetState) safeSetState(() {});
+          return;
+        }
+      }
+    }
+
+    if (_shouldSetState) safeSetState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
@@ -2452,4314 +5091,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                                       0.0, 24.0, 0.0, 12.0),
                                   child: FFButtonWidget(
                                     onPressed: () async {
-                                      var _shouldSetState = false;
-                                      if (_model.respostaNet!) {
-                                        if (FFAppState()
-                                                .animaisProdutoresOffline
-                                                .length ==
-                                            0) {
-                                          if (_model.formKey.currentState ==
-                                                  null ||
-                                              !_model.formKey.currentState!
-                                                  .validate()) {
-                                            return;
-                                          }
-                                          if (_model.racaValue == null) {
-                                            return;
-                                          }
-                                          if (_model.grupoValue == null) {
-                                            return;
-                                          }
-                                          _model.outListaAnimaisVerificaNome =
-                                              await queryAnimaisProdutoresRecordOnce(
-                                            parent: widget.uidTecnico,
-                                            queryBuilder:
-                                                (animaisProdutoresRecord) =>
-                                                    animaisProdutoresRecord
-                                                        .where(
-                                                          'uidTecnicoPropriedade',
-                                                          isEqualTo: widget
-                                                              .uidPropriedade,
-                                                        )
-                                                        .where(
-                                                          'nomeAnimal',
-                                                          isEqualTo: _model
-                                                              .nomeTextController
-                                                              .text,
-                                                        ),
-                                          );
-                                          _shouldSetState = true;
-                                          _model.outListaAnimaisVerificaBrinco =
-                                              await queryAnimaisProdutoresRecordOnce(
-                                            parent: widget.uidTecnico,
-                                            queryBuilder:
-                                                (animaisProdutoresRecord) =>
-                                                    animaisProdutoresRecord
-                                                        .where(
-                                                          'uidTecnicoPropriedade',
-                                                          isEqualTo: widget
-                                                              .uidPropriedade,
-                                                        )
-                                                        .where(
-                                                          'brincoAnimal',
-                                                          isEqualTo: int
-                                                              .tryParse(_model
-                                                                  .brincoTextController
-                                                                  .text),
-                                                        ),
-                                          );
-                                          _shouldSetState = true;
-                                          if ((_model.outListaAnimaisVerificaNome!
-                                                      .length >
-                                                  0) &&
-                                              (_model.outListaAnimaisVerificaBrinco!
-                                                      .length >
-                                                  0)) {
-                                            await showDialog(
-                                              context: context,
-                                              builder: (alertDialogContext) {
-                                                return AlertDialog(
-                                                  title: Text(
-                                                      'Nome ou brinco já existe.'),
-                                                  content: Text(
-                                                      'Digite outro nome ou brinco.'),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () =>
-                                                          Navigator.pop(
-                                                              alertDialogContext),
-                                                      child: Text('Ok'),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                            if (_shouldSetState)
-                                              safeSetState(() {});
-                                            return;
-                                          }
-                                          if ((_model.nomeTextController.text !=
-                                                  '') ||
-                                              (_model.brincoTextController
-                                                      .text !=
-                                                  '')) {
-                                            if (_model
-                                                    .dataUltimaInseminacaoTextController
-                                                    .text !=
-                                                '') {
-                                              if (!(_model.touroInseminacaoValue !=
-                                                      null &&
-                                                  _model.touroInseminacaoValue !=
-                                                      '')) {
-                                                await showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (alertDialogContext) {
-                                                    return AlertDialog(
-                                                      title: Text(
-                                                          'Touro inseminação não selecionado.'),
-                                                      content: Text(
-                                                          'Selecione o touro usado.'),
-                                                      actions: [
-                                                        TextButton(
-                                                          onPressed: () =>
-                                                              Navigator.pop(
-                                                                  alertDialogContext),
-                                                          child: Text('Ok'),
-                                                        ),
-                                                      ],
-                                                    );
-                                                  },
-                                                );
-                                                if (_shouldSetState)
-                                                  safeSetState(() {});
-                                                return;
-                                              }
-                                            }
-                                          } else {
-                                            await showDialog(
-                                              context: context,
-                                              builder: (alertDialogContext) {
-                                                return AlertDialog(
-                                                  title: Text(
-                                                      'Nome ou brinco obrigatório.'),
-                                                  content: Text(
-                                                      'Preencha ao menos um dos campos.'),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () =>
-                                                          Navigator.pop(
-                                                              alertDialogContext),
-                                                      child: Text('Ok'),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                            if (_shouldSetState)
-                                              safeSetState(() {});
-                                            return;
-                                          }
-
-                                          if ((_model.grupoValue == 'Vacas') ||
-                                              (_model.grupoValue ==
-                                                  'Novilhas')) {
-                                            if (_model.statusAnimalValue !=
-                                                    null &&
-                                                _model.statusAnimalValue !=
-                                                    '') {
-                                              if (_model.statusAnimalValue ==
-                                                  'Inseminada') {
-                                                if ((_model.dataUltimaInseminacaoTextController.text != '') &&
-                                                    (_model.dataUltimoPartoTextController
-                                                            .text ==
-                                                        '') &&
-                                                    (_model.touroInseminacaoValue !=
-                                                            null &&
-                                                        _model.touroInseminacaoValue !=
-                                                            '')) {
-                                                  await AnimaisProdutoresRecord
-                                                          .createDoc(widget
-                                                              .uidTecnico!)
-                                                      .set(
-                                                          createAnimaisProdutoresRecordData(
-                                                    uidTecnicoPropriedade:
-                                                        widget.uidPropriedade,
-                                                    nomeAnimal: _model
-                                                        .nomeTextController
-                                                        .text,
-                                                    brincoAnimal: _model
-                                                                .brincoTextController
-                                                                .text !=
-                                                            ''
-                                                        ? int.tryParse(_model
-                                                            .brincoTextController
-                                                            .text)
-                                                        : -1,
-                                                    racaAnimal:
-                                                        _model.racaValue,
-                                                    pesoAnimal: _model
-                                                        .pesoTextController
-                                                        .text,
-                                                    dtNascimento: _model
-                                                        .dataNascimentoTextController
-                                                        .text,
-                                                    touro: _model
-                                                        .touroPaiTextController
-                                                        .text,
-                                                    vaca: _model
-                                                        .vacaMaeTextController
-                                                        .text,
-                                                    status: _model
-                                                        .statusAnimalValue,
-                                                    dtUltimaInseminacao: _model
-                                                        .dataUltimaInseminacaoTextController
-                                                        .text,
-                                                    grupoAnimal:
-                                                        _model.grupoValue,
-                                                    nomeTouroUltimaInseminacao:
-                                                        _model
-                                                            .touroInseminacaoValue,
-                                                    dtPartoPrevisto: functions
-                                                        .somarDataParto(_model
-                                                            .dataUltimaInseminacaoTextController
-                                                            .text),
-                                                    dtSecPrevista: functions
-                                                        .somarDataSecagem(_model
-                                                            .dataUltimaInseminacaoTextController
-                                                            .text),
-                                                    dtPrePartoPrevista: functions
-                                                        .somarDataPreParto(_model
-                                                            .dataUltimaInseminacaoTextController
-                                                            .text),
-                                                    totalInseminacoes: 1,
-                                                    compararDtUltimaInseminacao:
-                                                        functions
-                                                            .converterDataUltimaInseminacao(
-                                                                _model
-                                                                    .dataUltimaInseminacaoTextController
-                                                                    .text),
-                                                    nomeBrincoConcat: () {
-                                                      if ((_model.nomeTextController.text != '') &&
-                                                          (_model.brincoTextController
-                                                                  .text !=
-                                                              '') &&
-                                                          (_model.brincoTextController
-                                                                  .text !=
-                                                              '-1')) {
-                                                        return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                      } else if (_model
-                                                              .nomeTextController
-                                                              .text !=
-                                                          '') {
-                                                        return _model
-                                                            .nomeTextController
-                                                            .text;
-                                                      } else {
-                                                        return _model
-                                                            .brincoTextController
-                                                            .text;
-                                                      }
-                                                    }(),
-                                                    idStatusAnimal: 3,
-                                                    brincoAnimalOrder: _model
-                                                                .brincoTextController
-                                                                .text !=
-                                                            ''
-                                                        ? int.tryParse(_model
-                                                            .brincoTextController
-                                                            .text)
-                                                        : 999999,
-                                                  ));
-
-                                                  await widget.uidTecnico!
-                                                      .update({
-                                                    ...mapToFirestore(
-                                                      {
-                                                        'quantidadeAnimaisCadastrados':
-                                                            FieldValue
-                                                                .increment(1),
-                                                        'restanteLimiteAnimais':
-                                                            FieldValue
-                                                                .increment(
-                                                                    -(1)),
-                                                      },
-                                                    ),
-                                                  });
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                      content: Text(
-                                                        'Animal cadastrado com sucesso!',
-                                                        style: TextStyle(
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .primaryText,
-                                                        ),
-                                                      ),
-                                                      duration: Duration(
-                                                          milliseconds: 4000),
-                                                      backgroundColor:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .secondary,
-                                                    ),
-                                                  );
-                                                  if (Navigator.of(context)
-                                                      .canPop()) {
-                                                    context.pop();
-                                                  }
-                                                  context.pushNamed(
-                                                    ListaAnimaisWidget
-                                                        .routeName,
-                                                    queryParameters: {
-                                                      'uidPropriedade':
-                                                          serializeParam(
-                                                        widget.uidPropriedade,
-                                                        ParamType
-                                                            .DocumentReference,
-                                                      ),
-                                                      'nomePropriedade':
-                                                          serializeParam(
-                                                        widget.nomePropriedade,
-                                                        ParamType.String,
-                                                      ),
-                                                      'uidTecnico':
-                                                          serializeParam(
-                                                        widget.uidTecnico,
-                                                        ParamType
-                                                            .DocumentReference,
-                                                      ),
-                                                      'emailPropriedade':
-                                                          serializeParam(
-                                                        widget.emailPropriedade,
-                                                        ParamType.String,
-                                                      ),
-                                                      'visitaPresencial':
-                                                          serializeParam(
-                                                        widget.visitaPresencial,
-                                                        ParamType.bool,
-                                                      ),
-                                                      'initialTabSelect':
-                                                          serializeParam(
-                                                        widget.initialTabSelect,
-                                                        ParamType.int,
-                                                      ),
-                                                      'diasDg': serializeParam(
-                                                        widget.diasDg,
-                                                        ParamType.String,
-                                                      ),
-                                                      'tabBarOpenSelected':
-                                                          serializeParam(
-                                                        0,
-                                                        ParamType.int,
-                                                      ),
-                                                    }.withoutNulls,
-                                                  );
-
-                                                  if (_shouldSetState)
-                                                    safeSetState(() {});
-                                                  return;
-                                                } else {
-                                                  if ((_model.dataUltimoPartoTextController.text != '') &&
-                                                      (_model.dataUltimaInseminacaoTextController
-                                                              .text !=
-                                                          '') &&
-                                                      (_model.touroInseminacaoValue !=
-                                                              null &&
-                                                          _model.touroInseminacaoValue !=
-                                                              '')) {
-                                                    await AnimaisProdutoresRecord
-                                                            .createDoc(widget
-                                                                .uidTecnico!)
-                                                        .set(
-                                                            createAnimaisProdutoresRecordData(
-                                                      uidTecnicoPropriedade:
-                                                          widget.uidPropriedade,
-                                                      nomeAnimal: _model
-                                                          .nomeTextController
-                                                          .text,
-                                                      brincoAnimal: _model
-                                                                  .brincoTextController
-                                                                  .text !=
-                                                              ''
-                                                          ? int.tryParse(_model
-                                                              .brincoTextController
-                                                              .text)
-                                                          : -1,
-                                                      racaAnimal:
-                                                          _model.racaValue,
-                                                      pesoAnimal: _model
-                                                          .pesoTextController
-                                                          .text,
-                                                      dtNascimento: _model
-                                                          .dataNascimentoTextController
-                                                          .text,
-                                                      touro: _model
-                                                          .touroPaiTextController
-                                                          .text,
-                                                      vaca: _model
-                                                          .vacaMaeTextController
-                                                          .text,
-                                                      status: _model
-                                                          .statusAnimalValue,
-                                                      dtUltimaInseminacao: _model
-                                                          .dataUltimaInseminacaoTextController
-                                                          .text,
-                                                      dtUltimoParto: _model
-                                                          .dataUltimoPartoTextController
-                                                          .text,
-                                                      grupoAnimal:
-                                                          _model.grupoValue,
-                                                      nomeTouroUltimaInseminacao:
-                                                          _model
-                                                              .touroInseminacaoValue,
-                                                      dtPartoPrevisto: functions
-                                                          .somarDataParto(_model
-                                                              .dataUltimaInseminacaoTextController
-                                                              .text),
-                                                      dtSecPrevista: functions
-                                                          .somarDataSecagem(_model
-                                                              .dataUltimaInseminacaoTextController
-                                                              .text),
-                                                      dtPrePartoPrevista: functions
-                                                          .somarDataPreParto(_model
-                                                              .dataUltimaInseminacaoTextController
-                                                              .text),
-                                                      totalInseminacoes: 1,
-                                                      totalPartos: 1,
-                                                      compararDtUltimaInseminacao:
-                                                          functions
-                                                              .converterDataUltimaInseminacao(
-                                                                  _model
-                                                                      .dataUltimaInseminacaoTextController
-                                                                      .text),
-                                                      nomeBrincoConcat: () {
-                                                        if ((_model.nomeTextController.text != '') &&
-                                                            (_model.brincoTextController
-                                                                    .text !=
-                                                                '') &&
-                                                            (_model.brincoTextController
-                                                                    .text !=
-                                                                '-1')) {
-                                                          return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                        } else if (_model
-                                                                .nomeTextController
-                                                                .text !=
-                                                            '') {
-                                                          return _model
-                                                              .nomeTextController
-                                                              .text;
-                                                        } else {
-                                                          return _model
-                                                              .brincoTextController
-                                                              .text;
-                                                        }
-                                                      }(),
-                                                      idStatusAnimal: 3,
-                                                      dtUltimoPartoContingencia:
-                                                          _model
-                                                              .dataUltimoPartoTextController
-                                                              .text,
-                                                      brincoAnimalOrder: _model
-                                                                  .brincoTextController
-                                                                  .text !=
-                                                              ''
-                                                          ? int.tryParse(_model
-                                                              .brincoTextController
-                                                              .text)
-                                                          : 999999,
-                                                    ));
-
-                                                    await widget.uidTecnico!
-                                                        .update({
-                                                      ...mapToFirestore(
-                                                        {
-                                                          'quantidadeAnimaisCadastrados':
-                                                              FieldValue
-                                                                  .increment(1),
-                                                          'restanteLimiteAnimais':
-                                                              FieldValue
-                                                                  .increment(
-                                                                      -(1)),
-                                                        },
-                                                      ),
-                                                    });
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(
-                                                          'Animal cadastrado com sucesso!',
-                                                          style: TextStyle(
-                                                            color: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .primaryText,
-                                                          ),
-                                                        ),
-                                                        duration: Duration(
-                                                            milliseconds: 4000),
-                                                        backgroundColor:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .secondary,
-                                                      ),
-                                                    );
-                                                    if (Navigator.of(context)
-                                                        .canPop()) {
-                                                      context.pop();
-                                                    }
-                                                    context.pushNamed(
-                                                      ListaAnimaisWidget
-                                                          .routeName,
-                                                      queryParameters: {
-                                                        'uidPropriedade':
-                                                            serializeParam(
-                                                          widget.uidPropriedade,
-                                                          ParamType
-                                                              .DocumentReference,
-                                                        ),
-                                                        'nomePropriedade':
-                                                            serializeParam(
-                                                          widget
-                                                              .nomePropriedade,
-                                                          ParamType.String,
-                                                        ),
-                                                        'uidTecnico':
-                                                            serializeParam(
-                                                          widget.uidTecnico,
-                                                          ParamType
-                                                              .DocumentReference,
-                                                        ),
-                                                        'emailPropriedade':
-                                                            serializeParam(
-                                                          widget
-                                                              .emailPropriedade,
-                                                          ParamType.String,
-                                                        ),
-                                                        'visitaPresencial':
-                                                            serializeParam(
-                                                          widget
-                                                              .visitaPresencial,
-                                                          ParamType.bool,
-                                                        ),
-                                                        'initialTabSelect':
-                                                            serializeParam(
-                                                          widget
-                                                              .initialTabSelect,
-                                                          ParamType.int,
-                                                        ),
-                                                        'diasDg':
-                                                            serializeParam(
-                                                          widget.diasDg,
-                                                          ParamType.String,
-                                                        ),
-                                                        'tabBarOpenSelected':
-                                                            serializeParam(
-                                                          0,
-                                                          ParamType.int,
-                                                        ),
-                                                      }.withoutNulls,
-                                                    );
-
-                                                    if (_shouldSetState)
-                                                      safeSetState(() {});
-                                                    return;
-                                                  } else {
-                                                    if (_shouldSetState)
-                                                      safeSetState(() {});
-                                                    return;
-                                                  }
-                                                }
-                                              } else {
-                                                if (_model.statusAnimalValue ==
-                                                    'Seca') {
-                                                  if (_model.grupoValue ==
-                                                      'Vacas') {
-                                                    await AnimaisProdutoresRecord
-                                                            .createDoc(widget
-                                                                .uidTecnico!)
-                                                        .set(
-                                                            createAnimaisProdutoresRecordData(
-                                                      uidTecnicoPropriedade:
-                                                          widget.uidPropriedade,
-                                                      nomeAnimal: _model
-                                                          .nomeTextController
-                                                          .text,
-                                                      brincoAnimal: _model
-                                                                  .brincoTextController
-                                                                  .text !=
-                                                              ''
-                                                          ? int.tryParse(_model
-                                                              .brincoTextController
-                                                              .text)
-                                                          : -1,
-                                                      racaAnimal:
-                                                          _model.racaValue,
-                                                      pesoAnimal: _model
-                                                          .pesoTextController
-                                                          .text,
-                                                      dtNascimento: _model
-                                                          .dataNascimentoTextController
-                                                          .text,
-                                                      touro: _model
-                                                          .touroPaiTextController
-                                                          .text,
-                                                      vaca: _model
-                                                          .vacaMaeTextController
-                                                          .text,
-                                                      status: _model
-                                                          .statusAnimalValue,
-                                                      dtUltimaInseminacao: _model
-                                                          .dataUltimaInseminacaoTextController
-                                                          .text,
-                                                      grupoAnimal:
-                                                          _model.grupoValue,
-                                                      dtPartoPrevisto: functions
-                                                          .somarDataParto(_model
-                                                              .dataUltimaInseminacaoTextController
-                                                              .text),
-                                                      dtSecPrevista: functions
-                                                          .somarDataSecagem(_model
-                                                              .dataUltimaInseminacaoTextController
-                                                              .text),
-                                                      dtPrePartoPrevista: functions
-                                                          .somarDataPreParto(_model
-                                                              .dataUltimaInseminacaoTextController
-                                                              .text),
-                                                      nomeTouroUltimaInseminacao:
-                                                          _model
-                                                              .touroInseminacaoValue,
-                                                      compararDtUltimaInseminacao:
-                                                          functions
-                                                              .converterDataUltimaInseminacao(
-                                                                  _model
-                                                                      .dataUltimaInseminacaoTextController
-                                                                      .text),
-                                                      nomeBrincoConcat: () {
-                                                        if ((_model.nomeTextController.text != '') &&
-                                                            (_model.brincoTextController
-                                                                    .text !=
-                                                                '') &&
-                                                            (_model.brincoTextController
-                                                                    .text !=
-                                                                '-1')) {
-                                                          return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                        } else if (_model
-                                                                .nomeTextController
-                                                                .text !=
-                                                            '') {
-                                                          return _model
-                                                              .nomeTextController
-                                                              .text;
-                                                        } else {
-                                                          return _model
-                                                              .brincoTextController
-                                                              .text;
-                                                        }
-                                                      }(),
-                                                      idStatusAnimal: 4,
-                                                      brincoAnimalOrder: _model
-                                                                  .brincoTextController
-                                                                  .text !=
-                                                              ''
-                                                          ? int.tryParse(_model
-                                                              .brincoTextController
-                                                              .text)
-                                                          : 999999,
-                                                    ));
-
-                                                    await widget.uidTecnico!
-                                                        .update({
-                                                      ...mapToFirestore(
-                                                        {
-                                                          'quantidadeAnimaisCadastrados':
-                                                              FieldValue
-                                                                  .increment(1),
-                                                          'restanteLimiteAnimais':
-                                                              FieldValue
-                                                                  .increment(
-                                                                      -(1)),
-                                                        },
-                                                      ),
-                                                    });
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(
-                                                          'Animal cadastrado com sucesso!',
-                                                          style: TextStyle(
-                                                            color: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .primaryText,
-                                                          ),
-                                                        ),
-                                                        duration: Duration(
-                                                            milliseconds: 4000),
-                                                        backgroundColor:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .secondary,
-                                                      ),
-                                                    );
-                                                    if (Navigator.of(context)
-                                                        .canPop()) {
-                                                      context.pop();
-                                                    }
-                                                    context.pushNamed(
-                                                      ListaAnimaisWidget
-                                                          .routeName,
-                                                      queryParameters: {
-                                                        'uidPropriedade':
-                                                            serializeParam(
-                                                          widget.uidPropriedade,
-                                                          ParamType
-                                                              .DocumentReference,
-                                                        ),
-                                                        'nomePropriedade':
-                                                            serializeParam(
-                                                          widget
-                                                              .nomePropriedade,
-                                                          ParamType.String,
-                                                        ),
-                                                        'uidTecnico':
-                                                            serializeParam(
-                                                          widget.uidTecnico,
-                                                          ParamType
-                                                              .DocumentReference,
-                                                        ),
-                                                        'emailPropriedade':
-                                                            serializeParam(
-                                                          widget
-                                                              .emailPropriedade,
-                                                          ParamType.String,
-                                                        ),
-                                                        'visitaPresencial':
-                                                            serializeParam(
-                                                          widget
-                                                              .visitaPresencial,
-                                                          ParamType.bool,
-                                                        ),
-                                                        'initialTabSelect':
-                                                            serializeParam(
-                                                          widget
-                                                              .initialTabSelect,
-                                                          ParamType.int,
-                                                        ),
-                                                        'diasDg':
-                                                            serializeParam(
-                                                          widget.diasDg,
-                                                          ParamType.String,
-                                                        ),
-                                                        'tabBarOpenSelected':
-                                                            serializeParam(
-                                                          0,
-                                                          ParamType.int,
-                                                        ),
-                                                      }.withoutNulls,
-                                                    );
-
-                                                    if (_shouldSetState)
-                                                      safeSetState(() {});
-                                                    return;
-                                                  } else {
-                                                    await showDialog(
-                                                      context: context,
-                                                      builder:
-                                                          (alertDialogContext) {
-                                                        return AlertDialog(
-                                                          title: Text(
-                                                              'O status de \"Seca\" é permitido somente em vacas.'),
-                                                          content: Text(
-                                                              'Atualize o status.'),
-                                                          actions: [
-                                                            TextButton(
-                                                              onPressed: () =>
-                                                                  Navigator.pop(
-                                                                      alertDialogContext),
-                                                              child: Text('Ok'),
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                    );
-                                                    if (_shouldSetState)
-                                                      safeSetState(() {});
-                                                    return;
-                                                  }
-                                                } else {
-                                                  if (_model
-                                                          .statusAnimalValue ==
-                                                      'Vazia') {
-                                                    await AnimaisProdutoresRecord
-                                                            .createDoc(widget
-                                                                .uidTecnico!)
-                                                        .set(
-                                                            createAnimaisProdutoresRecordData(
-                                                      uidTecnicoPropriedade:
-                                                          widget.uidPropriedade,
-                                                      nomeAnimal: _model
-                                                          .nomeTextController
-                                                          .text,
-                                                      brincoAnimal: _model
-                                                                  .brincoTextController
-                                                                  .text !=
-                                                              ''
-                                                          ? int.tryParse(_model
-                                                              .brincoTextController
-                                                              .text)
-                                                          : -1,
-                                                      racaAnimal:
-                                                          _model.racaValue,
-                                                      pesoAnimal: _model
-                                                          .pesoTextController
-                                                          .text,
-                                                      dtNascimento: _model
-                                                          .dataNascimentoTextController
-                                                          .text,
-                                                      touro: _model
-                                                          .touroPaiTextController
-                                                          .text,
-                                                      vaca: _model
-                                                          .vacaMaeTextController
-                                                          .text,
-                                                      status: _model
-                                                          .statusAnimalValue,
-                                                      grupoAnimal:
-                                                          _model.grupoValue,
-                                                      dtUltimoParto: _model
-                                                          .dataUltimoPartoTextController
-                                                          .text,
-                                                      totalPartos:
-                                                          _model.dataUltimoPartoTextController
-                                                                      .text !=
-                                                                  ''
-                                                              ? 1
-                                                              : 0,
-                                                      nomeBrincoConcat: () {
-                                                        if ((_model.nomeTextController.text != '') &&
-                                                            (_model.brincoTextController
-                                                                    .text !=
-                                                                '') &&
-                                                            (_model.brincoTextController
-                                                                    .text !=
-                                                                '-1')) {
-                                                          return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                        } else if (_model
-                                                                .nomeTextController
-                                                                .text !=
-                                                            '') {
-                                                          return _model
-                                                              .nomeTextController
-                                                              .text;
-                                                        } else {
-                                                          return _model
-                                                              .brincoTextController
-                                                              .text;
-                                                        }
-                                                      }(),
-                                                      idStatusAnimal: 2,
-                                                      dtUltimoPartoContingencia:
-                                                          _model
-                                                              .dataUltimoPartoTextController
-                                                              .text,
-                                                      brincoAnimalOrder: _model
-                                                                  .brincoTextController
-                                                                  .text !=
-                                                              ''
-                                                          ? int.tryParse(_model
-                                                              .brincoTextController
-                                                              .text)
-                                                          : 999999,
-                                                    ));
-
-                                                    await widget.uidTecnico!
-                                                        .update({
-                                                      ...mapToFirestore(
-                                                        {
-                                                          'quantidadeAnimaisCadastrados':
-                                                              FieldValue
-                                                                  .increment(1),
-                                                          'restanteLimiteAnimais':
-                                                              FieldValue
-                                                                  .increment(
-                                                                      -(1)),
-                                                        },
-                                                      ),
-                                                    });
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(
-                                                          'Animal cadastrado com sucesso!',
-                                                          style: TextStyle(
-                                                            color: FlutterFlowTheme
-                                                                    .of(context)
-                                                                .primaryText,
-                                                          ),
-                                                        ),
-                                                        duration: Duration(
-                                                            milliseconds: 4000),
-                                                        backgroundColor:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .secondary,
-                                                      ),
-                                                    );
-                                                    if (Navigator.of(context)
-                                                        .canPop()) {
-                                                      context.pop();
-                                                    }
-                                                    context.pushNamed(
-                                                      ListaAnimaisWidget
-                                                          .routeName,
-                                                      queryParameters: {
-                                                        'uidPropriedade':
-                                                            serializeParam(
-                                                          widget.uidPropriedade,
-                                                          ParamType
-                                                              .DocumentReference,
-                                                        ),
-                                                        'nomePropriedade':
-                                                            serializeParam(
-                                                          widget
-                                                              .nomePropriedade,
-                                                          ParamType.String,
-                                                        ),
-                                                        'uidTecnico':
-                                                            serializeParam(
-                                                          widget.uidTecnico,
-                                                          ParamType
-                                                              .DocumentReference,
-                                                        ),
-                                                        'emailPropriedade':
-                                                            serializeParam(
-                                                          widget
-                                                              .emailPropriedade,
-                                                          ParamType.String,
-                                                        ),
-                                                        'visitaPresencial':
-                                                            serializeParam(
-                                                          widget
-                                                              .visitaPresencial,
-                                                          ParamType.bool,
-                                                        ),
-                                                        'initialTabSelect':
-                                                            serializeParam(
-                                                          widget
-                                                              .initialTabSelect,
-                                                          ParamType.int,
-                                                        ),
-                                                        'diasDg':
-                                                            serializeParam(
-                                                          widget.diasDg,
-                                                          ParamType.String,
-                                                        ),
-                                                        'tabBarOpenSelected':
-                                                            serializeParam(
-                                                          0,
-                                                          ParamType.int,
-                                                        ),
-                                                      }.withoutNulls,
-                                                    );
-
-                                                    if (_shouldSetState)
-                                                      safeSetState(() {});
-                                                    return;
-                                                  } else {
-                                                    if (_model
-                                                            .statusAnimalValue ==
-                                                        'Prenha') {
-                                                      if ((_model.dataUltimaInseminacaoTextController
-                                                                  .text !=
-                                                              '') &&
-                                                          (_model.touroInseminacaoValue !=
-                                                                  null &&
-                                                              _model.touroInseminacaoValue !=
-                                                                  '')) {
-                                                        await AnimaisProdutoresRecord
-                                                                .createDoc(widget
-                                                                    .uidTecnico!)
-                                                            .set(
-                                                                createAnimaisProdutoresRecordData(
-                                                          uidTecnicoPropriedade:
-                                                              widget
-                                                                  .uidPropriedade,
-                                                          nomeAnimal: _model
-                                                              .nomeTextController
-                                                              .text,
-                                                          brincoAnimal: _model
-                                                                      .brincoTextController
-                                                                      .text !=
-                                                                  ''
-                                                              ? int.tryParse(_model
-                                                                  .brincoTextController
-                                                                  .text)
-                                                              : -1,
-                                                          racaAnimal:
-                                                              _model.racaValue,
-                                                          pesoAnimal: _model
-                                                              .pesoTextController
-                                                              .text,
-                                                          dtNascimento: _model
-                                                              .dataNascimentoTextController
-                                                              .text,
-                                                          touro: _model
-                                                              .touroPaiTextController
-                                                              .text,
-                                                          vaca: _model
-                                                              .vacaMaeTextController
-                                                              .text,
-                                                          status: _model
-                                                              .statusAnimalValue,
-                                                          dtUltimaInseminacao:
-                                                              _model
-                                                                  .dataUltimaInseminacaoTextController
-                                                                  .text,
-                                                          grupoAnimal:
-                                                              _model.grupoValue,
-                                                          nomeTouroUltimaInseminacao:
-                                                              _model
-                                                                  .touroInseminacaoValue,
-                                                          dtPartoPrevisto: functions
-                                                              .somarDataParto(_model
-                                                                  .dataUltimaInseminacaoTextController
-                                                                  .text),
-                                                          dtSecPrevista: functions
-                                                              .somarDataSecagem(
-                                                                  _model
-                                                                      .dataUltimaInseminacaoTextController
-                                                                      .text),
-                                                          dtPrePartoPrevista: functions
-                                                              .somarDataPreParto(
-                                                                  _model
-                                                                      .dataUltimaInseminacaoTextController
-                                                                      .text),
-                                                          totalInseminacoes: 1,
-                                                          dtDgMais:
-                                                              dateTimeFormat(
-                                                            "dd/MM/yyyy",
-                                                            getCurrentTimestamp,
-                                                            locale: FFLocalizations
-                                                                    .of(context)
-                                                                .languageCode,
-                                                          ),
-                                                          dtUltimoParto: _model
-                                                              .dataUltimoPartoTextController
-                                                              .text,
-                                                          compararDtUltimaInseminacao:
-                                                              functions.converterDataUltimaInseminacao(
-                                                                  _model
-                                                                      .dataUltimaInseminacaoTextController
-                                                                      .text),
-                                                          nomeBrincoConcat: () {
-                                                            if ((_model.nomeTextController.text != '') &&
-                                                                (_model.brincoTextController
-                                                                        .text !=
-                                                                    '') &&
-                                                                (_model.brincoTextController
-                                                                        .text !=
-                                                                    '-1')) {
-                                                              return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                            } else if (_model
-                                                                    .nomeTextController
-                                                                    .text !=
-                                                                '') {
-                                                              return _model
-                                                                  .nomeTextController
-                                                                  .text;
-                                                            } else {
-                                                              return _model
-                                                                  .brincoTextController
-                                                                  .text;
-                                                            }
-                                                          }(),
-                                                          idStatusAnimal: 6,
-                                                          dtUltimoPartoContingencia:
-                                                              _model
-                                                                  .dataUltimoPartoTextController
-                                                                  .text,
-                                                          brincoAnimalOrder: _model
-                                                                      .brincoTextController
-                                                                      .text !=
-                                                                  ''
-                                                              ? int.tryParse(_model
-                                                                  .brincoTextController
-                                                                  .text)
-                                                              : 999999,
-                                                        ));
-
-                                                        await widget.uidTecnico!
-                                                            .update({
-                                                          ...mapToFirestore(
-                                                            {
-                                                              'quantidadeAnimaisCadastrados':
-                                                                  FieldValue
-                                                                      .increment(
-                                                                          1),
-                                                              'restanteLimiteAnimais':
-                                                                  FieldValue
-                                                                      .increment(
-                                                                          -(1)),
-                                                            },
-                                                          ),
-                                                        });
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                          SnackBar(
-                                                            content: Text(
-                                                              'Animal cadastrado com sucesso!',
-                                                              style: TextStyle(
-                                                                color: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .primaryText,
-                                                              ),
-                                                            ),
-                                                            duration: Duration(
-                                                                milliseconds:
-                                                                    4000),
-                                                            backgroundColor:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .secondary,
-                                                          ),
-                                                        );
-                                                        if (Navigator.of(
-                                                                context)
-                                                            .canPop()) {
-                                                          context.pop();
-                                                        }
-                                                        context.pushNamed(
-                                                          ListaAnimaisWidget
-                                                              .routeName,
-                                                          queryParameters: {
-                                                            'uidPropriedade':
-                                                                serializeParam(
-                                                              widget
-                                                                  .uidPropriedade,
-                                                              ParamType
-                                                                  .DocumentReference,
-                                                            ),
-                                                            'nomePropriedade':
-                                                                serializeParam(
-                                                              widget
-                                                                  .nomePropriedade,
-                                                              ParamType.String,
-                                                            ),
-                                                            'uidTecnico':
-                                                                serializeParam(
-                                                              widget.uidTecnico,
-                                                              ParamType
-                                                                  .DocumentReference,
-                                                            ),
-                                                            'emailPropriedade':
-                                                                serializeParam(
-                                                              widget
-                                                                  .emailPropriedade,
-                                                              ParamType.String,
-                                                            ),
-                                                            'visitaPresencial':
-                                                                serializeParam(
-                                                              widget
-                                                                  .visitaPresencial,
-                                                              ParamType.bool,
-                                                            ),
-                                                            'initialTabSelect':
-                                                                serializeParam(
-                                                              widget
-                                                                  .initialTabSelect,
-                                                              ParamType.int,
-                                                            ),
-                                                            'diasDg':
-                                                                serializeParam(
-                                                              widget.diasDg,
-                                                              ParamType.String,
-                                                            ),
-                                                            'tabBarOpenSelected':
-                                                                serializeParam(
-                                                              0,
-                                                              ParamType.int,
-                                                            ),
-                                                          }.withoutNulls,
-                                                        );
-
-                                                        if (_shouldSetState)
-                                                          safeSetState(() {});
-                                                        return;
-                                                      } else {
-                                                        await showDialog(
-                                                          context: context,
-                                                          builder:
-                                                              (alertDialogContext) {
-                                                            return AlertDialog(
-                                                              title: Text(
-                                                                  'Data última inseminação vazia ou Touro inseminação não selecionado.'),
-                                                              content: Text(
-                                                                  'Preencha os campos obrigatórios.'),
-                                                              actions: [
-                                                                TextButton(
-                                                                  onPressed: () =>
-                                                                      Navigator.pop(
-                                                                          alertDialogContext),
-                                                                  child: Text(
-                                                                      'Ok'),
-                                                                ),
-                                                              ],
-                                                            );
-                                                          },
-                                                        );
-                                                        if (_shouldSetState)
-                                                          safeSetState(() {});
-                                                        return;
-                                                      }
-                                                    } else {
-                                                      if (_model
-                                                              .statusAnimalValue ==
-                                                          'Inseminada PP') {
-                                                        if ((_model.dataUltimaInseminacaoTextController
-                                                                    .text !=
-                                                                '') &&
-                                                            (_model.touroInseminacaoValue !=
-                                                                    null &&
-                                                                _model.touroInseminacaoValue !=
-                                                                    '')) {
-                                                          await AnimaisProdutoresRecord
-                                                                  .createDoc(widget
-                                                                      .uidTecnico!)
-                                                              .set(
-                                                                  createAnimaisProdutoresRecordData(
-                                                            uidTecnicoPropriedade:
-                                                                widget
-                                                                    .uidPropriedade,
-                                                            nomeAnimal: _model
-                                                                .nomeTextController
-                                                                .text,
-                                                            brincoAnimal: _model
-                                                                        .brincoTextController
-                                                                        .text !=
-                                                                    ''
-                                                                ? int.tryParse(
-                                                                    _model
-                                                                        .brincoTextController
-                                                                        .text)
-                                                                : -1,
-                                                            racaAnimal: _model
-                                                                .racaValue,
-                                                            pesoAnimal: _model
-                                                                .pesoTextController
-                                                                .text,
-                                                            dtNascimento: _model
-                                                                .dataNascimentoTextController
-                                                                .text,
-                                                            touro: _model
-                                                                .touroPaiTextController
-                                                                .text,
-                                                            vaca: _model
-                                                                .vacaMaeTextController
-                                                                .text,
-                                                            status: _model
-                                                                .statusAnimalValue,
-                                                            dtUltimaInseminacao:
-                                                                _model
-                                                                    .dataUltimaInseminacaoTextController
-                                                                    .text,
-                                                            grupoAnimal: _model
-                                                                .grupoValue,
-                                                            nomeTouroUltimaInseminacao:
-                                                                _model
-                                                                    .touroInseminacaoValue,
-                                                            dtPartoPrevisto: functions
-                                                                .somarDataParto(
-                                                                    _model
-                                                                        .dataUltimaInseminacaoTextController
-                                                                        .text),
-                                                            dtSecPrevista: functions
-                                                                .somarDataSecagem(
-                                                                    _model
-                                                                        .dataUltimaInseminacaoTextController
-                                                                        .text),
-                                                            dtPrePartoPrevista:
-                                                                functions.somarDataPreParto(
-                                                                    _model
-                                                                        .dataUltimaInseminacaoTextController
-                                                                        .text),
-                                                            totalInseminacoes:
-                                                                1,
-                                                            dtPP:
-                                                                dateTimeFormat(
-                                                              "dd/MM/yyyy",
-                                                              getCurrentTimestamp,
-                                                              locale: FFLocalizations
-                                                                      .of(context)
-                                                                  .languageCode,
-                                                            ),
-                                                            dtUltimoPP:
-                                                                dateTimeFormat(
-                                                              "dd/MM/yyyy",
-                                                              getCurrentTimestamp,
-                                                              locale: FFLocalizations
-                                                                      .of(context)
-                                                                  .languageCode,
-                                                            ),
-                                                            dtUltimoParto: _model
-                                                                .dataUltimoPartoTextController
-                                                                .text,
-                                                            compararDtUltimaInseminacao:
-                                                                functions.converterDataUltimaInseminacao(
-                                                                    _model
-                                                                        .dataUltimaInseminacaoTextController
-                                                                        .text),
-                                                            nomeBrincoConcat:
-                                                                () {
-                                                              if ((_model.nomeTextController.text != '') &&
-                                                                  (_model.brincoTextController
-                                                                          .text !=
-                                                                      '') &&
-                                                                  (_model.brincoTextController
-                                                                          .text !=
-                                                                      '-1')) {
-                                                                return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                              } else if (_model
-                                                                      .nomeTextController
-                                                                      .text !=
-                                                                  '') {
-                                                                return _model
-                                                                    .nomeTextController
-                                                                    .text;
-                                                              } else {
-                                                                return _model
-                                                                    .brincoTextController
-                                                                    .text;
-                                                              }
-                                                            }(),
-                                                            idStatusAnimal: 1,
-                                                            dtUltimoPartoContingencia:
-                                                                _model
-                                                                    .dataUltimoPartoTextController
-                                                                    .text,
-                                                            brincoAnimalOrder: _model
-                                                                        .brincoTextController
-                                                                        .text !=
-                                                                    ''
-                                                                ? int.tryParse(
-                                                                    _model
-                                                                        .brincoTextController
-                                                                        .text)
-                                                                : 999999,
-                                                          ));
-
-                                                          await widget
-                                                              .uidTecnico!
-                                                              .update({
-                                                            ...mapToFirestore(
-                                                              {
-                                                                'quantidadeAnimaisCadastrados':
-                                                                    FieldValue
-                                                                        .increment(
-                                                                            1),
-                                                                'restanteLimiteAnimais':
-                                                                    FieldValue
-                                                                        .increment(
-                                                                            -(1)),
-                                                              },
-                                                            ),
-                                                          });
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
-                                                            SnackBar(
-                                                              content: Text(
-                                                                'Animal cadastrado com sucesso!',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .primaryText,
-                                                                ),
-                                                              ),
-                                                              duration: Duration(
-                                                                  milliseconds:
-                                                                      4000),
-                                                              backgroundColor:
-                                                                  FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .secondary,
-                                                            ),
-                                                          );
-                                                          if (Navigator.of(
-                                                                  context)
-                                                              .canPop()) {
-                                                            context.pop();
-                                                          }
-                                                          context.pushNamed(
-                                                            ListaAnimaisWidget
-                                                                .routeName,
-                                                            queryParameters: {
-                                                              'uidPropriedade':
-                                                                  serializeParam(
-                                                                widget
-                                                                    .uidPropriedade,
-                                                                ParamType
-                                                                    .DocumentReference,
-                                                              ),
-                                                              'nomePropriedade':
-                                                                  serializeParam(
-                                                                widget
-                                                                    .nomePropriedade,
-                                                                ParamType
-                                                                    .String,
-                                                              ),
-                                                              'uidTecnico':
-                                                                  serializeParam(
-                                                                widget
-                                                                    .uidTecnico,
-                                                                ParamType
-                                                                    .DocumentReference,
-                                                              ),
-                                                              'emailPropriedade':
-                                                                  serializeParam(
-                                                                widget
-                                                                    .emailPropriedade,
-                                                                ParamType
-                                                                    .String,
-                                                              ),
-                                                              'visitaPresencial':
-                                                                  serializeParam(
-                                                                widget
-                                                                    .visitaPresencial,
-                                                                ParamType.bool,
-                                                              ),
-                                                              'initialTabSelect':
-                                                                  serializeParam(
-                                                                widget
-                                                                    .initialTabSelect,
-                                                                ParamType.int,
-                                                              ),
-                                                              'diasDg':
-                                                                  serializeParam(
-                                                                widget.diasDg,
-                                                                ParamType
-                                                                    .String,
-                                                              ),
-                                                              'tabBarOpenSelected':
-                                                                  serializeParam(
-                                                                0,
-                                                                ParamType.int,
-                                                              ),
-                                                            }.withoutNulls,
-                                                          );
-
-                                                          if (_shouldSetState)
-                                                            safeSetState(() {});
-                                                          return;
-                                                        } else {
-                                                          await showDialog(
-                                                            context: context,
-                                                            builder:
-                                                                (alertDialogContext) {
-                                                              return AlertDialog(
-                                                                title: Text(
-                                                                    'Data última inseminação vazia ou Touro inseminação não selecionado.'),
-                                                                content: Text(
-                                                                    'Preencha os campos obrigatórios.'),
-                                                                actions: [
-                                                                  TextButton(
-                                                                    onPressed: () =>
-                                                                        Navigator.pop(
-                                                                            alertDialogContext),
-                                                                    child: Text(
-                                                                        'Ok'),
-                                                                  ),
-                                                                ],
-                                                              );
-                                                            },
-                                                          );
-                                                          if (_shouldSetState)
-                                                            safeSetState(() {});
-                                                          return;
-                                                        }
-                                                      } else {
-                                                        if (_model
-                                                                .statusAnimalValue ==
-                                                            'Pré Parto') {
-                                                          if ((_model.dataUltimaInseminacaoTextController
-                                                                      .text !=
-                                                                  '') &&
-                                                              (_model.touroInseminacaoValue !=
-                                                                      null &&
-                                                                  _model.touroInseminacaoValue !=
-                                                                      '')) {
-                                                            await AnimaisProdutoresRecord
-                                                                    .createDoc(
-                                                                        widget
-                                                                            .uidTecnico!)
-                                                                .set(
-                                                                    createAnimaisProdutoresRecordData(
-                                                              uidTecnicoPropriedade:
-                                                                  widget
-                                                                      .uidPropriedade,
-                                                              nomeAnimal: _model
-                                                                  .nomeTextController
-                                                                  .text,
-                                                              brincoAnimal: _model
-                                                                          .brincoTextController
-                                                                          .text !=
-                                                                      ''
-                                                                  ? int.tryParse(
-                                                                      _model
-                                                                          .brincoTextController
-                                                                          .text)
-                                                                  : -1,
-                                                              racaAnimal: _model
-                                                                  .racaValue,
-                                                              pesoAnimal: _model
-                                                                  .pesoTextController
-                                                                  .text,
-                                                              dtNascimento: _model
-                                                                  .dataNascimentoTextController
-                                                                  .text,
-                                                              touro: _model
-                                                                  .touroPaiTextController
-                                                                  .text,
-                                                              vaca: _model
-                                                                  .vacaMaeTextController
-                                                                  .text,
-                                                              status: _model
-                                                                  .statusAnimalValue,
-                                                              dtUltimaInseminacao:
-                                                                  _model
-                                                                      .dataUltimaInseminacaoTextController
-                                                                      .text,
-                                                              grupoAnimal: _model
-                                                                  .grupoValue,
-                                                              nomeTouroUltimaInseminacao:
-                                                                  _model
-                                                                      .touroInseminacaoValue,
-                                                              dtPartoPrevisto: functions
-                                                                  .somarDataParto(
-                                                                      _model
-                                                                          .dataUltimaInseminacaoTextController
-                                                                          .text),
-                                                              dtSecPrevista: functions
-                                                                  .somarDataSecagem(
-                                                                      _model
-                                                                          .dataUltimaInseminacaoTextController
-                                                                          .text),
-                                                              dtPrePartoPrevista:
-                                                                  functions.somarDataPreParto(
-                                                                      _model
-                                                                          .dataUltimaInseminacaoTextController
-                                                                          .text),
-                                                              totalInseminacoes:
-                                                                  1,
-                                                              dtPP:
-                                                                  dateTimeFormat(
-                                                                "dd/MM/yyyy",
-                                                                getCurrentTimestamp,
-                                                                locale: FFLocalizations.of(
-                                                                        context)
-                                                                    .languageCode,
-                                                              ),
-                                                              dtUltimoPP:
-                                                                  dateTimeFormat(
-                                                                "dd/MM/yyyy",
-                                                                getCurrentTimestamp,
-                                                                locale: FFLocalizations.of(
-                                                                        context)
-                                                                    .languageCode,
-                                                              ),
-                                                              dtUltimoParto: _model
-                                                                  .dataUltimoPartoTextController
-                                                                  .text,
-                                                              compararDtUltimaInseminacao:
-                                                                  functions.converterDataUltimaInseminacao(
-                                                                      _model
-                                                                          .dataUltimaInseminacaoTextController
-                                                                          .text),
-                                                              nomeBrincoConcat:
-                                                                  () {
-                                                                if ((_model.nomeTextController.text != '') &&
-                                                                    (_model.brincoTextController
-                                                                            .text !=
-                                                                        '') &&
-                                                                    (_model.brincoTextController
-                                                                            .text !=
-                                                                        '-1')) {
-                                                                  return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                                } else if (_model
-                                                                        .nomeTextController
-                                                                        .text !=
-                                                                    '') {
-                                                                  return _model
-                                                                      .nomeTextController
-                                                                      .text;
-                                                                } else {
-                                                                  return _model
-                                                                      .brincoTextController
-                                                                      .text;
-                                                                }
-                                                              }(),
-                                                              idStatusAnimal: 5,
-                                                              dtUltimoPartoContingencia:
-                                                                  _model
-                                                                      .dataUltimoPartoTextController
-                                                                      .text,
-                                                              brincoAnimalOrder: _model
-                                                                          .brincoTextController
-                                                                          .text !=
-                                                                      ''
-                                                                  ? int.tryParse(
-                                                                      _model
-                                                                          .brincoTextController
-                                                                          .text)
-                                                                  : 999999,
-                                                            ));
-
-                                                            await widget
-                                                                .uidTecnico!
-                                                                .update({
-                                                              ...mapToFirestore(
-                                                                {
-                                                                  'quantidadeAnimaisCadastrados':
-                                                                      FieldValue
-                                                                          .increment(
-                                                                              1),
-                                                                  'restanteLimiteAnimais':
-                                                                      FieldValue
-                                                                          .increment(
-                                                                              -(1)),
-                                                                },
-                                                              ),
-                                                            });
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              SnackBar(
-                                                                content: Text(
-                                                                  'Animal cadastrado com sucesso!',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .primaryText,
-                                                                  ),
-                                                                ),
-                                                                duration: Duration(
-                                                                    milliseconds:
-                                                                        4000),
-                                                                backgroundColor:
-                                                                    FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .secondary,
-                                                              ),
-                                                            );
-                                                            if (Navigator.of(
-                                                                    context)
-                                                                .canPop()) {
-                                                              context.pop();
-                                                            }
-                                                            context.pushNamed(
-                                                              ListaAnimaisWidget
-                                                                  .routeName,
-                                                              queryParameters: {
-                                                                'uidPropriedade':
-                                                                    serializeParam(
-                                                                  widget
-                                                                      .uidPropriedade,
-                                                                  ParamType
-                                                                      .DocumentReference,
-                                                                ),
-                                                                'nomePropriedade':
-                                                                    serializeParam(
-                                                                  widget
-                                                                      .nomePropriedade,
-                                                                  ParamType
-                                                                      .String,
-                                                                ),
-                                                                'uidTecnico':
-                                                                    serializeParam(
-                                                                  widget
-                                                                      .uidTecnico,
-                                                                  ParamType
-                                                                      .DocumentReference,
-                                                                ),
-                                                                'emailPropriedade':
-                                                                    serializeParam(
-                                                                  widget
-                                                                      .emailPropriedade,
-                                                                  ParamType
-                                                                      .String,
-                                                                ),
-                                                                'visitaPresencial':
-                                                                    serializeParam(
-                                                                  widget
-                                                                      .visitaPresencial,
-                                                                  ParamType
-                                                                      .bool,
-                                                                ),
-                                                                'initialTabSelect':
-                                                                    serializeParam(
-                                                                  widget
-                                                                      .initialTabSelect,
-                                                                  ParamType.int,
-                                                                ),
-                                                                'diasDg':
-                                                                    serializeParam(
-                                                                  widget.diasDg,
-                                                                  ParamType
-                                                                      .String,
-                                                                ),
-                                                                'tabBarOpenSelected':
-                                                                    serializeParam(
-                                                                  0,
-                                                                  ParamType.int,
-                                                                ),
-                                                              }.withoutNulls,
-                                                            );
-
-                                                            if (_shouldSetState)
-                                                              safeSetState(
-                                                                  () {});
-                                                            return;
-                                                          } else {
-                                                            await showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (alertDialogContext) {
-                                                                return AlertDialog(
-                                                                  title: Text(
-                                                                      'Data última inseminação vazia ou Touro inseminação não selecionado.'),
-                                                                  content: Text(
-                                                                      'Preencha os campos obrigatórios.'),
-                                                                  actions: [
-                                                                    TextButton(
-                                                                      onPressed:
-                                                                          () =>
-                                                                              Navigator.pop(alertDialogContext),
-                                                                      child: Text(
-                                                                          'Ok'),
-                                                                    ),
-                                                                  ],
-                                                                );
-                                                              },
-                                                            );
-                                                            if (_shouldSetState)
-                                                              safeSetState(
-                                                                  () {});
-                                                            return;
-                                                          }
-                                                        } else {
-                                                          if (_shouldSetState)
-                                                            safeSetState(() {});
-                                                          return;
-                                                        }
-                                                      }
-                                                    }
-                                                  }
-                                                }
-                                              }
-                                            } else {
-                                              await showDialog(
-                                                context: context,
-                                                builder: (alertDialogContext) {
-                                                  return AlertDialog(
-                                                    title: Text(
-                                                        'Status é obrigatório.'),
-                                                    content: Text(
-                                                        'Selecione ao menos um status.'),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () =>
-                                                            Navigator.pop(
-                                                                alertDialogContext),
-                                                        child: Text('Ok'),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              );
-                                              if (_shouldSetState)
-                                                safeSetState(() {});
-                                              return;
-                                            }
-                                          } else {
-                                            if ((_model.grupoValue ==
-                                                    'Sêmens') ||
-                                                (_model.grupoValue ==
-                                                    'Touros')) {
-                                              if (_model.grupoValue ==
-                                                  'Touros') {
-                                                await AnimaisProdutoresRecord
-                                                        .createDoc(
-                                                            widget.uidTecnico!)
-                                                    .set(
-                                                        createAnimaisProdutoresRecordData(
-                                                  uidTecnicoPropriedade:
-                                                      widget.uidPropriedade,
-                                                  nomeAnimal: _model
-                                                      .nomeTextController.text,
-                                                  brincoAnimal: _model
-                                                              .brincoTextController
-                                                              .text !=
-                                                          ''
-                                                      ? int.tryParse(_model
-                                                          .brincoTextController
-                                                          .text)
-                                                      : -1,
-                                                  racaAnimal: _model.racaValue,
-                                                  pesoAnimal: _model
-                                                      .pesoTextController.text,
-                                                  dtNascimento: _model
-                                                      .dataNascimentoTextController
-                                                      .text,
-                                                  touro: _model
-                                                      .touroPaiTextController
-                                                      .text,
-                                                  vaca: _model
-                                                      .vacaMaeTextController
-                                                      .text,
-                                                  grupoAnimal:
-                                                      _model.grupoValue,
-                                                  liberaInseminacao: () {
-                                                    if (_model.grupoValue ==
-                                                        'Touros') {
-                                                      return _model.switchValue;
-                                                    } else if (_model
-                                                            .grupoValue ==
-                                                        'Sêmens') {
-                                                      return _model.switchValue;
-                                                    } else {
-                                                      return true;
-                                                    }
-                                                  }(),
-                                                  status: '',
-                                                  nomeBrincoConcat: () {
-                                                    if ((_model.nomeTextController.text != '') &&
-                                                        (_model.brincoTextController
-                                                                .text !=
-                                                            '') &&
-                                                        (_model.brincoTextController
-                                                                .text !=
-                                                            '-1')) {
-                                                      return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                    } else if (_model
-                                                            .nomeTextController
-                                                            .text !=
-                                                        '') {
-                                                      return _model
-                                                          .nomeTextController
-                                                          .text;
-                                                    } else {
-                                                      return _model
-                                                          .brincoTextController
-                                                          .text;
-                                                    }
-                                                  }(),
-                                                  brincoAnimalOrder: _model
-                                                              .brincoTextController
-                                                              .text !=
-                                                          ''
-                                                      ? int.tryParse(_model
-                                                          .brincoTextController
-                                                          .text)
-                                                      : 999999,
-                                                ));
-
-                                                await widget.uidTecnico!
-                                                    .update({
-                                                  ...mapToFirestore(
-                                                    {
-                                                      'quantidadeAnimaisCadastrados':
-                                                          FieldValue.increment(
-                                                              1),
-                                                      'restanteLimiteAnimais':
-                                                          FieldValue.increment(
-                                                              -(1)),
-                                                    },
-                                                  ),
-                                                });
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(
-                                                      'Animal cadastrado com sucesso!',
-                                                      style: TextStyle(
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .primaryText,
-                                                      ),
-                                                    ),
-                                                    duration: Duration(
-                                                        milliseconds: 4000),
-                                                    backgroundColor:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .secondary,
-                                                  ),
-                                                );
-                                                if (Navigator.of(context)
-                                                    .canPop()) {
-                                                  context.pop();
-                                                }
-                                                context.pushNamed(
-                                                  ListaAnimaisWidget.routeName,
-                                                  queryParameters: {
-                                                    'uidPropriedade':
-                                                        serializeParam(
-                                                      widget.uidPropriedade,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'nomePropriedade':
-                                                        serializeParam(
-                                                      widget.nomePropriedade,
-                                                      ParamType.String,
-                                                    ),
-                                                    'uidTecnico':
-                                                        serializeParam(
-                                                      widget.uidTecnico,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'emailPropriedade':
-                                                        serializeParam(
-                                                      widget.emailPropriedade,
-                                                      ParamType.String,
-                                                    ),
-                                                    'visitaPresencial':
-                                                        serializeParam(
-                                                      widget.visitaPresencial,
-                                                      ParamType.bool,
-                                                    ),
-                                                    'initialTabSelect':
-                                                        serializeParam(
-                                                      widget.initialTabSelect,
-                                                      ParamType.int,
-                                                    ),
-                                                    'diasDg': serializeParam(
-                                                      widget.diasDg,
-                                                      ParamType.String,
-                                                    ),
-                                                  }.withoutNulls,
-                                                );
-
-                                                if (_shouldSetState)
-                                                  safeSetState(() {});
-                                                return;
-                                              } else {
-                                                if (_model.grupoValue ==
-                                                    'Sêmens') {
-                                                  await AnimaisProdutoresRecord
-                                                          .createDoc(widget
-                                                              .uidTecnico!)
-                                                      .set(
-                                                          createAnimaisProdutoresRecordData(
-                                                    uidTecnicoPropriedade:
-                                                        widget.uidPropriedade,
-                                                    nomeAnimal: _model
-                                                        .nomeTextController
-                                                        .text,
-                                                    brincoAnimal: _model
-                                                                .brincoTextController
-                                                                .text !=
-                                                            ''
-                                                        ? int.tryParse(_model
-                                                            .brincoTextController
-                                                            .text)
-                                                        : -1,
-                                                    racaAnimal:
-                                                        _model.racaValue,
-                                                    dtNascimento: _model
-                                                        .dataNascimentoTextController
-                                                        .text,
-                                                    touro: _model
-                                                        .touroPaiTextController
-                                                        .text,
-                                                    grupoAnimal:
-                                                        _model.grupoValue,
-                                                    liberaInseminacao: () {
-                                                      if (_model.grupoValue ==
-                                                          'Touros') {
-                                                        return _model
-                                                            .switchValue;
-                                                      } else if (_model
-                                                              .grupoValue ==
-                                                          'Sêmens') {
-                                                        return _model
-                                                            .switchValue;
-                                                      } else {
-                                                        return true;
-                                                      }
-                                                    }(),
-                                                    status: '',
-                                                    nomeBrincoConcat: () {
-                                                      if ((_model.nomeTextController.text != '') &&
-                                                          (_model.brincoTextController
-                                                                  .text !=
-                                                              '') &&
-                                                          (_model.brincoTextController
-                                                                  .text !=
-                                                              '-1')) {
-                                                        return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                      } else if (_model
-                                                              .nomeTextController
-                                                              .text !=
-                                                          '') {
-                                                        return _model
-                                                            .nomeTextController
-                                                            .text;
-                                                      } else {
-                                                        return _model
-                                                            .brincoTextController
-                                                            .text;
-                                                      }
-                                                    }(),
-                                                    brincoAnimalOrder: _model
-                                                                .brincoTextController
-                                                                .text !=
-                                                            ''
-                                                        ? int.tryParse(_model
-                                                            .brincoTextController
-                                                            .text)
-                                                        : 999999,
-                                                  ));
-
-                                                  await widget.uidTecnico!
-                                                      .update({
-                                                    ...mapToFirestore(
-                                                      {
-                                                        'quantidadeAnimaisCadastrados':
-                                                            FieldValue
-                                                                .increment(1),
-                                                        'restanteLimiteAnimais':
-                                                            FieldValue
-                                                                .increment(
-                                                                    -(1)),
-                                                      },
-                                                    ),
-                                                  });
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                      content: Text(
-                                                        'Animal cadastrado com sucesso!',
-                                                        style: TextStyle(
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .primaryText,
-                                                        ),
-                                                      ),
-                                                      duration: Duration(
-                                                          milliseconds: 4000),
-                                                      backgroundColor:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .secondary,
-                                                    ),
-                                                  );
-                                                  if (Navigator.of(context)
-                                                      .canPop()) {
-                                                    context.pop();
-                                                  }
-                                                  context.pushNamed(
-                                                    ListaAnimaisWidget
-                                                        .routeName,
-                                                    queryParameters: {
-                                                      'uidPropriedade':
-                                                          serializeParam(
-                                                        widget.uidPropriedade,
-                                                        ParamType
-                                                            .DocumentReference,
-                                                      ),
-                                                      'nomePropriedade':
-                                                          serializeParam(
-                                                        widget.nomePropriedade,
-                                                        ParamType.String,
-                                                      ),
-                                                      'uidTecnico':
-                                                          serializeParam(
-                                                        widget.uidTecnico,
-                                                        ParamType
-                                                            .DocumentReference,
-                                                      ),
-                                                      'emailPropriedade':
-                                                          serializeParam(
-                                                        widget.emailPropriedade,
-                                                        ParamType.String,
-                                                      ),
-                                                      'visitaPresencial':
-                                                          serializeParam(
-                                                        widget.visitaPresencial,
-                                                        ParamType.bool,
-                                                      ),
-                                                      'initialTabSelect':
-                                                          serializeParam(
-                                                        widget.initialTabSelect,
-                                                        ParamType.int,
-                                                      ),
-                                                      'diasDg': serializeParam(
-                                                        widget.diasDg,
-                                                        ParamType.String,
-                                                      ),
-                                                    }.withoutNulls,
-                                                  );
-
-                                                  if (_shouldSetState)
-                                                    safeSetState(() {});
-                                                  return;
-                                                } else {
-                                                  if (_shouldSetState)
-                                                    safeSetState(() {});
-                                                  return;
-                                                }
-                                              }
-                                            } else {
-                                              await AnimaisProdutoresRecord
-                                                      .createDoc(
-                                                          widget.uidTecnico!)
-                                                  .set(
-                                                      createAnimaisProdutoresRecordData(
-                                                uidTecnicoPropriedade:
-                                                    widget.uidPropriedade,
-                                                nomeAnimal: _model
-                                                    .nomeTextController.text,
-                                                brincoAnimal: _model
-                                                            .brincoTextController
-                                                            .text !=
-                                                        ''
-                                                    ? int.tryParse(_model
-                                                        .brincoTextController
-                                                        .text)
-                                                    : -1,
-                                                racaAnimal: _model.racaValue,
-                                                pesoAnimal: _model
-                                                    .pesoTextController.text,
-                                                dtNascimento: _model
-                                                    .dataNascimentoTextController
-                                                    .text,
-                                                touro: _model
-                                                    .touroPaiTextController
-                                                    .text,
-                                                vaca: _model
-                                                    .vacaMaeTextController.text,
-                                                grupoAnimal: _model.grupoValue,
-                                                status: '',
-                                                nomeBrincoConcat: () {
-                                                  if ((_model.nomeTextController.text != '') &&
-                                                      (_model.brincoTextController
-                                                              .text !=
-                                                          '') &&
-                                                      (_model.brincoTextController
-                                                              .text !=
-                                                          '-1')) {
-                                                    return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                  } else if (_model
-                                                          .nomeTextController
-                                                          .text !=
-                                                      '') {
-                                                    return _model
-                                                        .nomeTextController
-                                                        .text;
-                                                  } else {
-                                                    return _model
-                                                        .brincoTextController
-                                                        .text;
-                                                  }
-                                                }(),
-                                                brincoAnimalOrder: _model
-                                                            .brincoTextController
-                                                            .text !=
-                                                        ''
-                                                    ? int.tryParse(_model
-                                                        .brincoTextController
-                                                        .text)
-                                                    : 999999,
-                                              ));
-
-                                              await widget.uidTecnico!.update({
-                                                ...mapToFirestore(
-                                                  {
-                                                    'quantidadeAnimaisCadastrados':
-                                                        FieldValue.increment(1),
-                                                    'restanteLimiteAnimais':
-                                                        FieldValue.increment(
-                                                            -(1)),
-                                                  },
-                                                ),
-                                              });
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                    'Animal cadastrado com sucesso!',
-                                                    style: TextStyle(
-                                                      color:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .primaryText,
-                                                    ),
-                                                  ),
-                                                  duration: Duration(
-                                                      milliseconds: 4000),
-                                                  backgroundColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .secondary,
-                                                ),
-                                              );
-                                              if (Navigator.of(context)
-                                                  .canPop()) {
-                                                context.pop();
-                                              }
-                                              context.pushNamed(
-                                                ListaAnimaisWidget.routeName,
-                                                queryParameters: {
-                                                  'uidPropriedade':
-                                                      serializeParam(
-                                                    widget.uidPropriedade,
-                                                    ParamType.DocumentReference,
-                                                  ),
-                                                  'nomePropriedade':
-                                                      serializeParam(
-                                                    widget.nomePropriedade,
-                                                    ParamType.String,
-                                                  ),
-                                                  'uidTecnico': serializeParam(
-                                                    widget.uidTecnico,
-                                                    ParamType.DocumentReference,
-                                                  ),
-                                                  'emailPropriedade':
-                                                      serializeParam(
-                                                    widget.emailPropriedade,
-                                                    ParamType.String,
-                                                  ),
-                                                  'visitaPresencial':
-                                                      serializeParam(
-                                                    widget.visitaPresencial,
-                                                    ParamType.bool,
-                                                  ),
-                                                  'initialTabSelect':
-                                                      serializeParam(
-                                                    widget.initialTabSelect,
-                                                    ParamType.int,
-                                                  ),
-                                                  'diasDg': serializeParam(
-                                                    widget.diasDg,
-                                                    ParamType.String,
-                                                  ),
-                                                }.withoutNulls,
-                                              );
-
-                                              if (_shouldSetState)
-                                                safeSetState(() {});
-                                              return;
-                                            }
-                                          }
-                                        } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Sincronize os dados primeiro.',
-                                                style: TextStyle(
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .primaryText,
-                                                ),
-                                              ),
-                                              duration:
-                                                  Duration(milliseconds: 4000),
-                                              backgroundColor:
-                                                  Color(0xFFCC4038),
-                                            ),
-                                          );
-                                          if (_shouldSetState)
-                                            safeSetState(() {});
-                                          return;
-                                        }
-                                      } else {
-                                        if (_model.formKey.currentState ==
-                                                null ||
-                                            !_model.formKey.currentState!
-                                                .validate()) {
-                                          return;
-                                        }
-                                        if (_model.racaValue == null) {
-                                          return;
-                                        }
-                                        if (_model.grupoValue == null) {
-                                          return;
-                                        }
-                                        _model.outListaAnimaisVerificaNomeOff =
-                                            await queryAnimaisProdutoresRecordOnce(
-                                          parent: widget.uidTecnico,
-                                          queryBuilder:
-                                              (animaisProdutoresRecord) =>
-                                                  animaisProdutoresRecord
-                                                      .where(
-                                                        'uidTecnicoPropriedade',
-                                                        isEqualTo: widget
-                                                            .uidPropriedade,
-                                                      )
-                                                      .where(
-                                                        'nomeAnimal',
-                                                        isEqualTo: _model
-                                                            .nomeTextController
-                                                            .text,
-                                                      ),
-                                        );
-                                        _shouldSetState = true;
-                                        _model.outListaAnimaisVerificaBrincoOff =
-                                            await queryAnimaisProdutoresRecordOnce(
-                                          parent: widget.uidTecnico,
-                                          queryBuilder:
-                                              (animaisProdutoresRecord) =>
-                                                  animaisProdutoresRecord
-                                                      .where(
-                                                        'uidTecnicoPropriedade',
-                                                        isEqualTo: widget
-                                                            .uidPropriedade,
-                                                      )
-                                                      .where(
-                                                        'brincoAnimal',
-                                                        isEqualTo: int.tryParse(
-                                                            _model
-                                                                .brincoTextController
-                                                                .text),
-                                                      ),
-                                        );
-                                        _shouldSetState = true;
-                                        if ((_model.outListaAnimaisVerificaNomeOff!
-                                                    .length >
-                                                0) &&
-                                            (_model.outListaAnimaisVerificaBrincoOff!
-                                                    .length >
-                                                0)) {
-                                          await showDialog(
-                                            context: context,
-                                            builder: (alertDialogContext) {
-                                              return AlertDialog(
-                                                title: Text(
-                                                    'Nome ou brinco já existe.'),
-                                                content: Text(
-                                                    'Digite outro nome ou brinco.'),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(
-                                                            alertDialogContext),
-                                                    child: Text('Ok'),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                          if (_shouldSetState)
-                                            safeSetState(() {});
-                                          return;
-                                        }
-                                        if ((_model.nomeTextController.text !=
-                                                '') ||
-                                            (_model.brincoTextController.text !=
-                                                '')) {
-                                          if (_model
-                                                  .dataUltimaInseminacaoTextController
-                                                  .text !=
-                                              '') {
-                                            if (!(_model.touroInseminacaoValue !=
-                                                    null &&
-                                                _model.touroInseminacaoValue !=
-                                                    '')) {
-                                              await showDialog(
-                                                context: context,
-                                                builder: (alertDialogContext) {
-                                                  return AlertDialog(
-                                                    title: Text(
-                                                        'Touro inseminação não selecionado.'),
-                                                    content: Text(
-                                                        'Selecione o touro usado.'),
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () =>
-                                                            Navigator.pop(
-                                                                alertDialogContext),
-                                                        child: Text('Ok'),
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              );
-                                              if (_shouldSetState)
-                                                safeSetState(() {});
-                                              return;
-                                            }
-                                          }
-                                        } else {
-                                          await showDialog(
-                                            context: context,
-                                            builder: (alertDialogContext) {
-                                              return AlertDialog(
-                                                title: Text(
-                                                    'Nome ou brinco obrigatório.'),
-                                                content: Text(
-                                                    'Preencha ao menos um dos campos.'),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () =>
-                                                        Navigator.pop(
-                                                            alertDialogContext),
-                                                    child: Text('Ok'),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                          if (_shouldSetState)
-                                            safeSetState(() {});
-                                          return;
-                                        }
-
-                                        if ((_model.grupoValue == 'Vacas') ||
-                                            (_model.grupoValue == 'Novilhas')) {
-                                          if (_model.statusAnimalValue !=
-                                                  null &&
-                                              _model.statusAnimalValue != '') {
-                                            if (_model.statusAnimalValue ==
-                                                'Inseminada') {
-                                              if ((_model.dataUltimaInseminacaoTextController.text != '') &&
-                                                  (_model.dataUltimoPartoTextController
-                                                          .text ==
-                                                      '') &&
-                                                  (_model.touroInseminacaoValue !=
-                                                          null &&
-                                                      _model.touroInseminacaoValue !=
-                                                          '')) {
-                                                await criarAnimalOffline(
-                                                    AnimaisProdutoresStruct(
-                                                  uidTecnicoPropriedade:
-                                                      widget.uidPropriedade,
-                                                  nomeAnimal: _model
-                                                      .nomeTextController.text,
-                                                  racaAnimal: _model.racaValue,
-                                                  pesoAnimal: _model
-                                                      .pesoTextController.text,
-                                                  dtNascimento: _model
-                                                      .dataNascimentoTextController
-                                                      .text,
-                                                  touro: _model
-                                                      .touroPaiTextController
-                                                      .text,
-                                                  vaca: _model
-                                                      .vacaMaeTextController
-                                                      .text,
-                                                  status:
-                                                      _model.statusAnimalValue,
-                                                  grupoAnimal:
-                                                      _model.grupoValue,
-                                                  dtUltimaInseminacao: _model
-                                                      .dataUltimaInseminacaoTextController
-                                                      .text,
-                                                  brincoAnimalOrder: _model
-                                                              .brincoTextController
-                                                              .text !=
-                                                          ''
-                                                      ? int.tryParse(_model
-                                                          .brincoTextController
-                                                          .text)
-                                                      : 999999,
-                                                  brincoAnimal: _model
-                                                              .brincoTextController
-                                                              .text !=
-                                                          ''
-                                                      ? int.tryParse(_model
-                                                          .brincoTextController
-                                                          .text)
-                                                      : -1,
-                                                  nomeTouroUltimaInseminacao:
-                                                      _model
-                                                          .touroInseminacaoValue,
-                                                  dtPartoPrevisto: functions
-                                                      .somarDataParto(_model
-                                                          .dataUltimaInseminacaoTextController
-                                                          .text),
-                                                  dtSecPrevista: functions
-                                                      .somarDataSecagem(_model
-                                                          .dataUltimaInseminacaoTextController
-                                                          .text),
-                                                  dtPrePartoPrevista: functions
-                                                      .somarDataPreParto(_model
-                                                          .dataUltimaInseminacaoTextController
-                                                          .text),
-                                                  totalInseminacoes: 1,
-                                                  compararDtUltimaInseminacao: functions
-                                                      .converterDataUltimaInseminacao(
-                                                          _model
-                                                              .dataUltimaInseminacaoTextController
-                                                              .text),
-                                                  nomeBrincoConcat: () {
-                                                    if ((_model.nomeTextController.text != '') &&
-                                                        (_model.brincoTextController
-                                                                .text !=
-                                                            '') &&
-                                                        (_model.brincoTextController
-                                                                .text !=
-                                                            '-1')) {
-                                                      return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                    } else if (_model
-                                                            .nomeTextController
-                                                            .text !=
-                                                        '') {
-                                                      return _model
-                                                          .nomeTextController
-                                                          .text;
-                                                    } else {
-                                                      return _model
-                                                          .brincoTextController
-                                                          .text;
-                                                    }
-                                                  }(),
-                                                  idStatusAnimal: 3,
-                                                  uidAnimalOffline: functions
-                                                      .criarUidRandom(),
-                                                ));
-                                                safeSetState(() {});
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(
-                                                      'Animal cadastrado com sucesso!',
-                                                      style: TextStyle(
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .primaryText,
-                                                      ),
-                                                    ),
-                                                    duration: Duration(
-                                                        milliseconds: 4000),
-                                                    backgroundColor:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .secondary,
-                                                  ),
-                                                );
-                                                if (Navigator.of(context)
-                                                    .canPop()) {
-                                                  context.pop();
-                                                }
-                                                context.pushNamed(
-                                                  ListaAnimaisWidget.routeName,
-                                                  queryParameters: {
-                                                    'uidPropriedade':
-                                                        serializeParam(
-                                                      widget.uidPropriedade,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'nomePropriedade':
-                                                        serializeParam(
-                                                      widget.nomePropriedade,
-                                                      ParamType.String,
-                                                    ),
-                                                    'uidTecnico':
-                                                        serializeParam(
-                                                      widget.uidTecnico,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'emailPropriedade':
-                                                        serializeParam(
-                                                      widget.emailPropriedade,
-                                                      ParamType.String,
-                                                    ),
-                                                    'visitaPresencial':
-                                                        serializeParam(
-                                                      widget.visitaPresencial,
-                                                      ParamType.bool,
-                                                    ),
-                                                    'initialTabSelect':
-                                                        serializeParam(
-                                                      widget.initialTabSelect,
-                                                      ParamType.int,
-                                                    ),
-                                                    'diasDg': serializeParam(
-                                                      widget.diasDg,
-                                                      ParamType.String,
-                                                    ),
-                                                    'tabBarOpenSelected':
-                                                        serializeParam(
-                                                      0,
-                                                      ParamType.int,
-                                                    ),
-                                                  }.withoutNulls,
-                                                );
-
-                                                if (_shouldSetState)
-                                                  safeSetState(() {});
-                                                return;
-                                              } else {
-                                                if ((_model.dataUltimoPartoTextController.text != '') &&
-                                                    (_model.dataUltimaInseminacaoTextController
-                                                            .text !=
-                                                        '') &&
-                                                    (_model.touroInseminacaoValue !=
-                                                            null &&
-                                                        _model.touroInseminacaoValue !=
-                                                            '')) {
-                                                  await criarAnimalOffline(
-                                                      AnimaisProdutoresStruct(
-                                                    uidTecnicoPropriedade:
-                                                        widget.uidPropriedade,
-                                                    nomeAnimal: _model
-                                                        .nomeTextController
-                                                        .text,
-                                                    racaAnimal:
-                                                        _model.racaValue,
-                                                    pesoAnimal: _model
-                                                        .pesoTextController
-                                                        .text,
-                                                    dtNascimento: _model
-                                                        .dataNascimentoTextController
-                                                        .text,
-                                                    touro: _model
-                                                        .touroPaiTextController
-                                                        .text,
-                                                    vaca: _model
-                                                        .vacaMaeTextController
-                                                        .text,
-                                                    grupoAnimal:
-                                                        _model.grupoValue,
-                                                    brincoAnimalOrder: _model
-                                                                .brincoTextController
-                                                                .text !=
-                                                            ''
-                                                        ? int.tryParse(_model
-                                                            .brincoTextController
-                                                            .text)
-                                                        : 999999,
-                                                    brincoAnimal: _model
-                                                                .brincoTextController
-                                                                .text !=
-                                                            ''
-                                                        ? int.tryParse(_model
-                                                            .brincoTextController
-                                                            .text)
-                                                        : -1,
-                                                    nomeBrincoConcat: () {
-                                                      if ((_model.nomeTextController.text != '') &&
-                                                          (_model.brincoTextController
-                                                                  .text !=
-                                                              '') &&
-                                                          (_model.brincoTextController
-                                                                  .text !=
-                                                              '-1')) {
-                                                        return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                      } else if (_model
-                                                              .nomeTextController
-                                                              .text !=
-                                                          '') {
-                                                        return _model
-                                                            .nomeTextController
-                                                            .text;
-                                                      } else {
-                                                        return _model
-                                                            .brincoTextController
-                                                            .text;
-                                                      }
-                                                    }(),
-                                                    status: _model
-                                                        .statusAnimalValue,
-                                                    dtUltimaInseminacao: _model
-                                                        .dataUltimaInseminacaoTextController
-                                                        .text,
-                                                    dtUltimoParto: _model
-                                                        .dataUltimoPartoTextController
-                                                        .text,
-                                                    nomeTouroUltimaInseminacao:
-                                                        _model
-                                                            .touroInseminacaoValue,
-                                                    dtPartoPrevisto: functions
-                                                        .somarDataParto(_model
-                                                            .dataUltimaInseminacaoTextController
-                                                            .text),
-                                                    dtSecPrevista: functions
-                                                        .somarDataSecagem(_model
-                                                            .dataUltimaInseminacaoTextController
-                                                            .text),
-                                                    dtPrePartoPrevista: functions
-                                                        .somarDataPreParto(_model
-                                                            .dataUltimaInseminacaoTextController
-                                                            .text),
-                                                    totalInseminacoes: 1,
-                                                    totalPartos: 1,
-                                                    compararDtUltimaInseminacao:
-                                                        functions
-                                                            .converterDataUltimaInseminacao(
-                                                                _model
-                                                                    .dataUltimaInseminacaoTextController
-                                                                    .text),
-                                                    idStatusAnimal: 3,
-                                                    dtUltimoPartoContingencia:
-                                                        _model
-                                                            .dataUltimoPartoTextController
-                                                            .text,
-                                                    uidAnimalOffline: functions
-                                                        .criarUidRandom(),
-                                                  ));
-                                                  safeSetState(() {});
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                      content: Text(
-                                                        'Animal cadastrado com sucesso!',
-                                                        style: TextStyle(
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .primaryText,
-                                                        ),
-                                                      ),
-                                                      duration: Duration(
-                                                          milliseconds: 4000),
-                                                      backgroundColor:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .secondary,
-                                                    ),
-                                                  );
-                                                  if (Navigator.of(context)
-                                                      .canPop()) {
-                                                    context.pop();
-                                                  }
-                                                  context.pushNamed(
-                                                    ListaAnimaisWidget
-                                                        .routeName,
-                                                    queryParameters: {
-                                                      'uidPropriedade':
-                                                          serializeParam(
-                                                        widget.uidPropriedade,
-                                                        ParamType
-                                                            .DocumentReference,
-                                                      ),
-                                                      'nomePropriedade':
-                                                          serializeParam(
-                                                        widget.nomePropriedade,
-                                                        ParamType.String,
-                                                      ),
-                                                      'uidTecnico':
-                                                          serializeParam(
-                                                        widget.uidTecnico,
-                                                        ParamType
-                                                            .DocumentReference,
-                                                      ),
-                                                      'emailPropriedade':
-                                                          serializeParam(
-                                                        widget.emailPropriedade,
-                                                        ParamType.String,
-                                                      ),
-                                                      'visitaPresencial':
-                                                          serializeParam(
-                                                        widget.visitaPresencial,
-                                                        ParamType.bool,
-                                                      ),
-                                                      'initialTabSelect':
-                                                          serializeParam(
-                                                        widget.initialTabSelect,
-                                                        ParamType.int,
-                                                      ),
-                                                      'diasDg': serializeParam(
-                                                        widget.diasDg,
-                                                        ParamType.String,
-                                                      ),
-                                                      'tabBarOpenSelected':
-                                                          serializeParam(
-                                                        0,
-                                                        ParamType.int,
-                                                      ),
-                                                    }.withoutNulls,
-                                                  );
-
-                                                  if (_shouldSetState)
-                                                    safeSetState(() {});
-                                                  return;
-                                                } else {
-                                                  if (_shouldSetState)
-                                                    safeSetState(() {});
-                                                  return;
-                                                }
-                                              }
-                                            } else {
-                                              if (_model.statusAnimalValue ==
-                                                  'Seca') {
-                                                if (_model.grupoValue ==
-                                                    'Vacas') {
-                                                  await criarAnimalOffline(
-                                                      AnimaisProdutoresStruct(
-                                                    uidTecnicoPropriedade:
-                                                        widget.uidPropriedade,
-                                                    nomeAnimal: _model
-                                                        .nomeTextController
-                                                        .text,
-                                                    racaAnimal:
-                                                        _model.racaValue,
-                                                    pesoAnimal: _model
-                                                        .pesoTextController
-                                                        .text,
-                                                    dtNascimento: _model
-                                                        .dataNascimentoTextController
-                                                        .text,
-                                                    touro: _model
-                                                        .touroPaiTextController
-                                                        .text,
-                                                    vaca: _model
-                                                        .vacaMaeTextController
-                                                        .text,
-                                                    grupoAnimal:
-                                                        _model.grupoValue,
-                                                    brincoAnimalOrder: _model
-                                                                .brincoTextController
-                                                                .text !=
-                                                            ''
-                                                        ? int.tryParse(_model
-                                                            .brincoTextController
-                                                            .text)
-                                                        : 999999,
-                                                    brincoAnimal: _model
-                                                                .brincoTextController
-                                                                .text !=
-                                                            ''
-                                                        ? int.tryParse(_model
-                                                            .brincoTextController
-                                                            .text)
-                                                        : -1,
-                                                    nomeBrincoConcat: () {
-                                                      if ((_model.nomeTextController.text != '') &&
-                                                          (_model.brincoTextController
-                                                                  .text !=
-                                                              '') &&
-                                                          (_model.brincoTextController
-                                                                  .text !=
-                                                              '-1')) {
-                                                        return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                      } else if (_model
-                                                              .nomeTextController
-                                                              .text !=
-                                                          '') {
-                                                        return _model
-                                                            .nomeTextController
-                                                            .text;
-                                                      } else {
-                                                        return _model
-                                                            .brincoTextController
-                                                            .text;
-                                                      }
-                                                    }(),
-                                                    status: _model
-                                                        .statusAnimalValue,
-                                                    dtUltimaInseminacao: _model
-                                                        .dataUltimaInseminacaoTextController
-                                                        .text,
-                                                    dtPartoPrevisto: functions
-                                                        .somarDataParto(_model
-                                                            .dataUltimaInseminacaoTextController
-                                                            .text),
-                                                    dtSecPrevista: functions
-                                                        .somarDataSecagem(_model
-                                                            .dataUltimaInseminacaoTextController
-                                                            .text),
-                                                    dtPrePartoPrevista: functions
-                                                        .somarDataPreParto(_model
-                                                            .dataUltimaInseminacaoTextController
-                                                            .text),
-                                                    nomeTouroUltimaInseminacao:
-                                                        _model
-                                                            .touroInseminacaoValue,
-                                                    compararDtUltimaInseminacao:
-                                                        functions
-                                                            .converterDataUltimaInseminacao(
-                                                                _model
-                                                                    .dataUltimaInseminacaoTextController
-                                                                    .text),
-                                                    idStatusAnimal: 4,
-                                                    uidAnimalOffline: functions
-                                                        .criarUidRandom(),
-                                                  ));
-                                                  safeSetState(() {});
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                      content: Text(
-                                                        'Animal cadastrado com sucesso!',
-                                                        style: TextStyle(
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .primaryText,
-                                                        ),
-                                                      ),
-                                                      duration: Duration(
-                                                          milliseconds: 4000),
-                                                      backgroundColor:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .secondary,
-                                                    ),
-                                                  );
-                                                  if (Navigator.of(context)
-                                                      .canPop()) {
-                                                    context.pop();
-                                                  }
-                                                  context.pushNamed(
-                                                    ListaAnimaisWidget
-                                                        .routeName,
-                                                    queryParameters: {
-                                                      'uidPropriedade':
-                                                          serializeParam(
-                                                        widget.uidPropriedade,
-                                                        ParamType
-                                                            .DocumentReference,
-                                                      ),
-                                                      'nomePropriedade':
-                                                          serializeParam(
-                                                        widget.nomePropriedade,
-                                                        ParamType.String,
-                                                      ),
-                                                      'uidTecnico':
-                                                          serializeParam(
-                                                        widget.uidTecnico,
-                                                        ParamType
-                                                            .DocumentReference,
-                                                      ),
-                                                      'emailPropriedade':
-                                                          serializeParam(
-                                                        widget.emailPropriedade,
-                                                        ParamType.String,
-                                                      ),
-                                                      'visitaPresencial':
-                                                          serializeParam(
-                                                        widget.visitaPresencial,
-                                                        ParamType.bool,
-                                                      ),
-                                                      'initialTabSelect':
-                                                          serializeParam(
-                                                        widget.initialTabSelect,
-                                                        ParamType.int,
-                                                      ),
-                                                      'diasDg': serializeParam(
-                                                        widget.diasDg,
-                                                        ParamType.String,
-                                                      ),
-                                                      'tabBarOpenSelected':
-                                                          serializeParam(
-                                                        0,
-                                                        ParamType.int,
-                                                      ),
-                                                    }.withoutNulls,
-                                                  );
-
-                                                  if (_shouldSetState)
-                                                    safeSetState(() {});
-                                                  return;
-                                                } else {
-                                                  await showDialog(
-                                                    context: context,
-                                                    builder:
-                                                        (alertDialogContext) {
-                                                      return AlertDialog(
-                                                        title: Text(
-                                                            'O status de \"Seca\" é permitido somente em vacas.'),
-                                                        content: Text(
-                                                            'Atualize o status.'),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: () =>
-                                                                Navigator.pop(
-                                                                    alertDialogContext),
-                                                            child: Text('Ok'),
-                                                          ),
-                                                        ],
-                                                      );
-                                                    },
-                                                  );
-                                                  if (_shouldSetState)
-                                                    safeSetState(() {});
-                                                  return;
-                                                }
-                                              } else {
-                                                if (_model.statusAnimalValue ==
-                                                    'Vazia') {
-                                                  await criarAnimalOffline(
-                                                      AnimaisProdutoresStruct(
-                                                    uidTecnicoPropriedade:
-                                                        widget.uidPropriedade,
-                                                    nomeAnimal: _model
-                                                        .nomeTextController
-                                                        .text,
-                                                    racaAnimal:
-                                                        _model.racaValue,
-                                                    pesoAnimal: _model
-                                                        .pesoTextController
-                                                        .text,
-                                                    dtNascimento: _model
-                                                        .dataNascimentoTextController
-                                                        .text,
-                                                    touro: _model
-                                                        .touroPaiTextController
-                                                        .text,
-                                                    vaca: _model
-                                                        .vacaMaeTextController
-                                                        .text,
-                                                    grupoAnimal:
-                                                        _model.grupoValue,
-                                                    brincoAnimalOrder: _model
-                                                                .brincoTextController
-                                                                .text !=
-                                                            ''
-                                                        ? int.tryParse(_model
-                                                            .brincoTextController
-                                                            .text)
-                                                        : 999999,
-                                                    brincoAnimal: _model
-                                                                .brincoTextController
-                                                                .text !=
-                                                            ''
-                                                        ? int.tryParse(_model
-                                                            .brincoTextController
-                                                            .text)
-                                                        : -1,
-                                                    nomeBrincoConcat: () {
-                                                      if ((_model.nomeTextController.text != '') &&
-                                                          (_model.brincoTextController
-                                                                  .text !=
-                                                              '') &&
-                                                          (_model.brincoTextController
-                                                                  .text !=
-                                                              '-1')) {
-                                                        return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                      } else if (_model
-                                                              .nomeTextController
-                                                              .text !=
-                                                          '') {
-                                                        return _model
-                                                            .nomeTextController
-                                                            .text;
-                                                      } else {
-                                                        return _model
-                                                            .brincoTextController
-                                                            .text;
-                                                      }
-                                                    }(),
-                                                    dtUltimoParto: _model
-                                                        .dataUltimoPartoTextController
-                                                        .text,
-                                                    status: _model
-                                                        .statusAnimalValue,
-                                                    totalPartos:
-                                                        _model.dataUltimoPartoTextController
-                                                                    .text !=
-                                                                ''
-                                                            ? 1
-                                                            : 0,
-                                                    idStatusAnimal: 2,
-                                                    dtUltimoPartoContingencia:
-                                                        _model
-                                                            .dataUltimoPartoTextController
-                                                            .text,
-                                                    uidAnimalOffline: functions
-                                                        .criarUidRandom(),
-                                                  ));
-                                                  safeSetState(() {});
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                      content: Text(
-                                                        'Animal cadastrado com sucesso!',
-                                                        style: TextStyle(
-                                                          color: FlutterFlowTheme
-                                                                  .of(context)
-                                                              .primaryText,
-                                                        ),
-                                                      ),
-                                                      duration: Duration(
-                                                          milliseconds: 4000),
-                                                      backgroundColor:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .secondary,
-                                                    ),
-                                                  );
-                                                  if (Navigator.of(context)
-                                                      .canPop()) {
-                                                    context.pop();
-                                                  }
-                                                  context.pushNamed(
-                                                    ListaAnimaisWidget
-                                                        .routeName,
-                                                    queryParameters: {
-                                                      'uidPropriedade':
-                                                          serializeParam(
-                                                        widget.uidPropriedade,
-                                                        ParamType
-                                                            .DocumentReference,
-                                                      ),
-                                                      'nomePropriedade':
-                                                          serializeParam(
-                                                        widget.nomePropriedade,
-                                                        ParamType.String,
-                                                      ),
-                                                      'uidTecnico':
-                                                          serializeParam(
-                                                        widget.uidTecnico,
-                                                        ParamType
-                                                            .DocumentReference,
-                                                      ),
-                                                      'emailPropriedade':
-                                                          serializeParam(
-                                                        widget.emailPropriedade,
-                                                        ParamType.String,
-                                                      ),
-                                                      'visitaPresencial':
-                                                          serializeParam(
-                                                        widget.visitaPresencial,
-                                                        ParamType.bool,
-                                                      ),
-                                                      'initialTabSelect':
-                                                          serializeParam(
-                                                        widget.initialTabSelect,
-                                                        ParamType.int,
-                                                      ),
-                                                      'diasDg': serializeParam(
-                                                        widget.diasDg,
-                                                        ParamType.String,
-                                                      ),
-                                                      'tabBarOpenSelected':
-                                                          serializeParam(
-                                                        0,
-                                                        ParamType.int,
-                                                      ),
-                                                    }.withoutNulls,
-                                                  );
-
-                                                  if (_shouldSetState)
-                                                    safeSetState(() {});
-                                                  return;
-                                                } else {
-                                                  if (_model
-                                                          .statusAnimalValue ==
-                                                      'Prenha') {
-                                                    if ((_model.dataUltimaInseminacaoTextController
-                                                                .text !=
-                                                            '') &&
-                                                        (_model.touroInseminacaoValue !=
-                                                                null &&
-                                                            _model.touroInseminacaoValue !=
-                                                                '')) {
-                                                      await criarAnimalOffline(
-                                                          AnimaisProdutoresStruct(
-                                                        uidTecnicoPropriedade:
-                                                            widget
-                                                                .uidPropriedade,
-                                                        nomeAnimal: _model
-                                                            .nomeTextController
-                                                            .text,
-                                                        racaAnimal:
-                                                            _model.racaValue,
-                                                        pesoAnimal: _model
-                                                            .pesoTextController
-                                                            .text,
-                                                        dtNascimento: _model
-                                                            .dataNascimentoTextController
-                                                            .text,
-                                                        touro: _model
-                                                            .touroPaiTextController
-                                                            .text,
-                                                        vaca: _model
-                                                            .vacaMaeTextController
-                                                            .text,
-                                                        grupoAnimal:
-                                                            _model.grupoValue,
-                                                        brincoAnimalOrder: _model
-                                                                    .brincoTextController
-                                                                    .text !=
-                                                                ''
-                                                            ? int.tryParse(_model
-                                                                .brincoTextController
-                                                                .text)
-                                                            : 999999,
-                                                        brincoAnimal: _model
-                                                                    .brincoTextController
-                                                                    .text !=
-                                                                ''
-                                                            ? int.tryParse(_model
-                                                                .brincoTextController
-                                                                .text)
-                                                            : -1,
-                                                        nomeBrincoConcat: () {
-                                                          if ((_model.nomeTextController.text != '') &&
-                                                              (_model.brincoTextController
-                                                                      .text !=
-                                                                  '') &&
-                                                              (_model.brincoTextController
-                                                                      .text !=
-                                                                  '-1')) {
-                                                            return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                          } else if (_model
-                                                                  .nomeTextController
-                                                                  .text !=
-                                                              '') {
-                                                            return _model
-                                                                .nomeTextController
-                                                                .text;
-                                                          } else {
-                                                            return _model
-                                                                .brincoTextController
-                                                                .text;
-                                                          }
-                                                        }(),
-                                                        status: _model
-                                                            .statusAnimalValue,
-                                                        dtUltimaInseminacao: _model
-                                                            .dataUltimaInseminacaoTextController
-                                                            .text,
-                                                        nomeTouroUltimaInseminacao:
-                                                            _model
-                                                                .touroInseminacaoValue,
-                                                        dtPartoPrevisto: functions
-                                                            .somarDataParto(_model
-                                                                .dataUltimaInseminacaoTextController
-                                                                .text),
-                                                        dtSecPrevista: functions
-                                                            .somarDataSecagem(_model
-                                                                .dataUltimaInseminacaoTextController
-                                                                .text),
-                                                        dtPrePartoPrevista: functions
-                                                            .somarDataPreParto(
-                                                                _model
-                                                                    .dataUltimaInseminacaoTextController
-                                                                    .text),
-                                                        totalInseminacoes: 1,
-                                                        dtDgMais:
-                                                            dateTimeFormat(
-                                                          "dd/MM/yyyy",
-                                                          getCurrentTimestamp,
-                                                          locale:
-                                                              FFLocalizations.of(
-                                                                      context)
-                                                                  .languageCode,
-                                                        ),
-                                                        dtUltimoParto: _model
-                                                            .dataUltimoPartoTextController
-                                                            .text,
-                                                        compararDtUltimaInseminacao:
-                                                            functions
-                                                                .converterDataUltimaInseminacao(
-                                                                    _model
-                                                                        .dataUltimaInseminacaoTextController
-                                                                        .text),
-                                                        idStatusAnimal: 6,
-                                                        dtUltimoPartoContingencia:
-                                                            _model
-                                                                .dataUltimoPartoTextController
-                                                                .text,
-                                                        uidAnimalOffline:
-                                                            functions
-                                                                .criarUidRandom(),
-                                                      ));
-                                                      safeSetState(() {});
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(
-                                                        SnackBar(
-                                                          content: Text(
-                                                            'Animal cadastrado com sucesso!',
-                                                            style: TextStyle(
-                                                              color: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .primaryText,
-                                                            ),
-                                                          ),
-                                                          duration: Duration(
-                                                              milliseconds:
-                                                                  4000),
-                                                          backgroundColor:
-                                                              FlutterFlowTheme.of(
-                                                                      context)
-                                                                  .secondary,
-                                                        ),
-                                                      );
-                                                      if (Navigator.of(context)
-                                                          .canPop()) {
-                                                        context.pop();
-                                                      }
-                                                      context.pushNamed(
-                                                        ListaAnimaisWidget
-                                                            .routeName,
-                                                        queryParameters: {
-                                                          'uidPropriedade':
-                                                              serializeParam(
-                                                            widget
-                                                                .uidPropriedade,
-                                                            ParamType
-                                                                .DocumentReference,
-                                                          ),
-                                                          'nomePropriedade':
-                                                              serializeParam(
-                                                            widget
-                                                                .nomePropriedade,
-                                                            ParamType.String,
-                                                          ),
-                                                          'uidTecnico':
-                                                              serializeParam(
-                                                            widget.uidTecnico,
-                                                            ParamType
-                                                                .DocumentReference,
-                                                          ),
-                                                          'emailPropriedade':
-                                                              serializeParam(
-                                                            widget
-                                                                .emailPropriedade,
-                                                            ParamType.String,
-                                                          ),
-                                                          'visitaPresencial':
-                                                              serializeParam(
-                                                            widget
-                                                                .visitaPresencial,
-                                                            ParamType.bool,
-                                                          ),
-                                                          'initialTabSelect':
-                                                              serializeParam(
-                                                            widget
-                                                                .initialTabSelect,
-                                                            ParamType.int,
-                                                          ),
-                                                          'diasDg':
-                                                              serializeParam(
-                                                            widget.diasDg,
-                                                            ParamType.String,
-                                                          ),
-                                                          'tabBarOpenSelected':
-                                                              serializeParam(
-                                                            0,
-                                                            ParamType.int,
-                                                          ),
-                                                        }.withoutNulls,
-                                                      );
-
-                                                      if (_shouldSetState)
-                                                        safeSetState(() {});
-                                                      return;
-                                                    } else {
-                                                      await showDialog(
-                                                        context: context,
-                                                        builder:
-                                                            (alertDialogContext) {
-                                                          return AlertDialog(
-                                                            title: Text(
-                                                                'Data última inseminação vazia ou Touro inseminação não selecionado.'),
-                                                            content: Text(
-                                                                'Preencha os campos obrigatórios.'),
-                                                            actions: [
-                                                              TextButton(
-                                                                onPressed: () =>
-                                                                    Navigator.pop(
-                                                                        alertDialogContext),
-                                                                child:
-                                                                    Text('Ok'),
-                                                              ),
-                                                            ],
-                                                          );
-                                                        },
-                                                      );
-                                                      if (_shouldSetState)
-                                                        safeSetState(() {});
-                                                      return;
-                                                    }
-                                                  } else {
-                                                    if (_model
-                                                            .statusAnimalValue ==
-                                                        'Inseminada PP') {
-                                                      if ((_model.dataUltimaInseminacaoTextController
-                                                                  .text !=
-                                                              '') &&
-                                                          (_model.touroInseminacaoValue !=
-                                                                  null &&
-                                                              _model.touroInseminacaoValue !=
-                                                                  '')) {
-                                                        await criarAnimalOffline(
-                                                            AnimaisProdutoresStruct(
-                                                          uidTecnicoPropriedade:
-                                                              widget
-                                                                  .uidPropriedade,
-                                                          nomeAnimal: _model
-                                                              .nomeTextController
-                                                              .text,
-                                                          racaAnimal:
-                                                              _model.racaValue,
-                                                          pesoAnimal: _model
-                                                              .pesoTextController
-                                                              .text,
-                                                          dtNascimento: _model
-                                                              .dataNascimentoTextController
-                                                              .text,
-                                                          touro: _model
-                                                              .touroPaiTextController
-                                                              .text,
-                                                          vaca: _model
-                                                              .vacaMaeTextController
-                                                              .text,
-                                                          grupoAnimal:
-                                                              _model.grupoValue,
-                                                          brincoAnimalOrder: _model
-                                                                      .brincoTextController
-                                                                      .text !=
-                                                                  ''
-                                                              ? int.tryParse(_model
-                                                                  .brincoTextController
-                                                                  .text)
-                                                              : 999999,
-                                                          brincoAnimal: _model
-                                                                      .brincoTextController
-                                                                      .text !=
-                                                                  ''
-                                                              ? int.tryParse(_model
-                                                                  .brincoTextController
-                                                                  .text)
-                                                              : -1,
-                                                          nomeBrincoConcat: () {
-                                                            if ((_model.nomeTextController.text != '') &&
-                                                                (_model.brincoTextController
-                                                                        .text !=
-                                                                    '') &&
-                                                                (_model.brincoTextController
-                                                                        .text !=
-                                                                    '-1')) {
-                                                              return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                            } else if (_model
-                                                                    .nomeTextController
-                                                                    .text !=
-                                                                '') {
-                                                              return _model
-                                                                  .nomeTextController
-                                                                  .text;
-                                                            } else {
-                                                              return _model
-                                                                  .brincoTextController
-                                                                  .text;
-                                                            }
-                                                          }(),
-                                                          status: _model
-                                                              .statusAnimalValue,
-                                                          dtUltimaInseminacao:
-                                                              _model
-                                                                  .dataUltimaInseminacaoTextController
-                                                                  .text,
-                                                          nomeTouroUltimaInseminacao:
-                                                              _model
-                                                                  .touroInseminacaoValue,
-                                                          dtPartoPrevisto: functions
-                                                              .somarDataParto(_model
-                                                                  .dataUltimaInseminacaoTextController
-                                                                  .text),
-                                                          dtSecPrevista: functions
-                                                              .somarDataSecagem(
-                                                                  _model
-                                                                      .dataUltimaInseminacaoTextController
-                                                                      .text),
-                                                          dtPrePartoPrevista: functions
-                                                              .somarDataPreParto(
-                                                                  _model
-                                                                      .dataUltimaInseminacaoTextController
-                                                                      .text),
-                                                          totalInseminacoes: 1,
-                                                          dtPP: dateTimeFormat(
-                                                            "dd/MM/yyyy",
-                                                            getCurrentTimestamp,
-                                                            locale: FFLocalizations
-                                                                    .of(context)
-                                                                .languageCode,
-                                                          ),
-                                                          dtUltimoPP:
-                                                              dateTimeFormat(
-                                                            "dd/MM/yyyy",
-                                                            getCurrentTimestamp,
-                                                            locale: FFLocalizations
-                                                                    .of(context)
-                                                                .languageCode,
-                                                          ),
-                                                          dtUltimoParto: _model
-                                                              .dataUltimoPartoTextController
-                                                              .text,
-                                                          compararDtUltimaInseminacao:
-                                                              functions.converterDataUltimaInseminacao(
-                                                                  _model
-                                                                      .dataUltimaInseminacaoTextController
-                                                                      .text),
-                                                          idStatusAnimal: 1,
-                                                          dtUltimoPartoContingencia:
-                                                              _model
-                                                                  .dataUltimoPartoTextController
-                                                                  .text,
-                                                          uidAnimalOffline:
-                                                              functions
-                                                                  .criarUidRandom(),
-                                                        ));
-                                                        safeSetState(() {});
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                          SnackBar(
-                                                            content: Text(
-                                                              'Animal cadastrado com sucesso!',
-                                                              style: TextStyle(
-                                                                color: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .primaryText,
-                                                              ),
-                                                            ),
-                                                            duration: Duration(
-                                                                milliseconds:
-                                                                    4000),
-                                                            backgroundColor:
-                                                                FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .secondary,
-                                                          ),
-                                                        );
-                                                        if (Navigator.of(
-                                                                context)
-                                                            .canPop()) {
-                                                          context.pop();
-                                                        }
-                                                        context.pushNamed(
-                                                          ListaAnimaisWidget
-                                                              .routeName,
-                                                          queryParameters: {
-                                                            'uidPropriedade':
-                                                                serializeParam(
-                                                              widget
-                                                                  .uidPropriedade,
-                                                              ParamType
-                                                                  .DocumentReference,
-                                                            ),
-                                                            'nomePropriedade':
-                                                                serializeParam(
-                                                              widget
-                                                                  .nomePropriedade,
-                                                              ParamType.String,
-                                                            ),
-                                                            'uidTecnico':
-                                                                serializeParam(
-                                                              widget.uidTecnico,
-                                                              ParamType
-                                                                  .DocumentReference,
-                                                            ),
-                                                            'emailPropriedade':
-                                                                serializeParam(
-                                                              widget
-                                                                  .emailPropriedade,
-                                                              ParamType.String,
-                                                            ),
-                                                            'visitaPresencial':
-                                                                serializeParam(
-                                                              widget
-                                                                  .visitaPresencial,
-                                                              ParamType.bool,
-                                                            ),
-                                                            'initialTabSelect':
-                                                                serializeParam(
-                                                              widget
-                                                                  .initialTabSelect,
-                                                              ParamType.int,
-                                                            ),
-                                                            'diasDg':
-                                                                serializeParam(
-                                                              widget.diasDg,
-                                                              ParamType.String,
-                                                            ),
-                                                            'tabBarOpenSelected':
-                                                                serializeParam(
-                                                              0,
-                                                              ParamType.int,
-                                                            ),
-                                                          }.withoutNulls,
-                                                        );
-
-                                                        if (_shouldSetState)
-                                                          safeSetState(() {});
-                                                        return;
-                                                      } else {
-                                                        await showDialog(
-                                                          context: context,
-                                                          builder:
-                                                              (alertDialogContext) {
-                                                            return AlertDialog(
-                                                              title: Text(
-                                                                  'Data última inseminação vazia ou Touro inseminação não selecionado.'),
-                                                              content: Text(
-                                                                  'Preencha os campos obrigatórios.'),
-                                                              actions: [
-                                                                TextButton(
-                                                                  onPressed: () =>
-                                                                      Navigator.pop(
-                                                                          alertDialogContext),
-                                                                  child: Text(
-                                                                      'Ok'),
-                                                                ),
-                                                              ],
-                                                            );
-                                                          },
-                                                        );
-                                                        if (_shouldSetState)
-                                                          safeSetState(() {});
-                                                        return;
-                                                      }
-                                                    } else {
-                                                      if (_model
-                                                              .statusAnimalValue ==
-                                                          'Pré Parto') {
-                                                        if ((_model.dataUltimaInseminacaoTextController
-                                                                    .text !=
-                                                                '') &&
-                                                            (_model.touroInseminacaoValue !=
-                                                                    null &&
-                                                                _model.touroInseminacaoValue !=
-                                                                    '')) {
-                                                          await criarAnimalOffline(
-                                                              AnimaisProdutoresStruct(
-                                                            uidTecnicoPropriedade:
-                                                                widget
-                                                                    .uidPropriedade,
-                                                            nomeAnimal: _model
-                                                                .nomeTextController
-                                                                .text,
-                                                            racaAnimal: _model
-                                                                .racaValue,
-                                                            pesoAnimal: _model
-                                                                .pesoTextController
-                                                                .text,
-                                                            dtNascimento: _model
-                                                                .dataNascimentoTextController
-                                                                .text,
-                                                            touro: _model
-                                                                .touroPaiTextController
-                                                                .text,
-                                                            vaca: _model
-                                                                .vacaMaeTextController
-                                                                .text,
-                                                            grupoAnimal: _model
-                                                                .grupoValue,
-                                                            brincoAnimalOrder: _model
-                                                                        .brincoTextController
-                                                                        .text !=
-                                                                    ''
-                                                                ? int.tryParse(
-                                                                    _model
-                                                                        .brincoTextController
-                                                                        .text)
-                                                                : 999999,
-                                                            brincoAnimal: _model
-                                                                        .brincoTextController
-                                                                        .text !=
-                                                                    ''
-                                                                ? int.tryParse(
-                                                                    _model
-                                                                        .brincoTextController
-                                                                        .text)
-                                                                : -1,
-                                                            nomeBrincoConcat:
-                                                                () {
-                                                              if ((_model.nomeTextController.text != '') &&
-                                                                  (_model.brincoTextController
-                                                                          .text !=
-                                                                      '') &&
-                                                                  (_model.brincoTextController
-                                                                          .text !=
-                                                                      '-1')) {
-                                                                return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                              } else if (_model
-                                                                      .nomeTextController
-                                                                      .text !=
-                                                                  '') {
-                                                                return _model
-                                                                    .nomeTextController
-                                                                    .text;
-                                                              } else {
-                                                                return _model
-                                                                    .brincoTextController
-                                                                    .text;
-                                                              }
-                                                            }(),
-                                                            status: _model
-                                                                .statusAnimalValue,
-                                                            dtUltimaInseminacao:
-                                                                _model
-                                                                    .dataUltimaInseminacaoTextController
-                                                                    .text,
-                                                            nomeTouroUltimaInseminacao:
-                                                                _model
-                                                                    .touroInseminacaoValue,
-                                                            dtPartoPrevisto: functions
-                                                                .somarDataParto(
-                                                                    _model
-                                                                        .dataUltimaInseminacaoTextController
-                                                                        .text),
-                                                            dtSecPrevista: functions
-                                                                .somarDataSecagem(
-                                                                    _model
-                                                                        .dataUltimaInseminacaoTextController
-                                                                        .text),
-                                                            dtPrePartoPrevista:
-                                                                functions.somarDataPreParto(
-                                                                    _model
-                                                                        .dataUltimaInseminacaoTextController
-                                                                        .text),
-                                                            totalInseminacoes:
-                                                                1,
-                                                            dtPP:
-                                                                dateTimeFormat(
-                                                              "dd/MM/yyyy",
-                                                              getCurrentTimestamp,
-                                                              locale: FFLocalizations
-                                                                      .of(context)
-                                                                  .languageCode,
-                                                            ),
-                                                            dtUltimoPP:
-                                                                dateTimeFormat(
-                                                              "dd/MM/yyyy",
-                                                              getCurrentTimestamp,
-                                                              locale: FFLocalizations
-                                                                      .of(context)
-                                                                  .languageCode,
-                                                            ),
-                                                            dtUltimoParto: _model
-                                                                .dataUltimoPartoTextController
-                                                                .text,
-                                                            compararDtUltimaInseminacao:
-                                                                functions.converterDataUltimaInseminacao(
-                                                                    _model
-                                                                        .dataUltimaInseminacaoTextController
-                                                                        .text),
-                                                            idStatusAnimal: 5,
-                                                            dtUltimoPartoContingencia:
-                                                                _model
-                                                                    .dataUltimoPartoTextController
-                                                                    .text,
-                                                            uidAnimalOffline:
-                                                                functions
-                                                                    .criarUidRandom(),
-                                                          ));
-                                                          safeSetState(() {});
-                                                          ScaffoldMessenger.of(
-                                                                  context)
-                                                              .showSnackBar(
-                                                            SnackBar(
-                                                              content: Text(
-                                                                'Animal cadastrado com sucesso!',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .primaryText,
-                                                                ),
-                                                              ),
-                                                              duration: Duration(
-                                                                  milliseconds:
-                                                                      4000),
-                                                              backgroundColor:
-                                                                  FlutterFlowTheme.of(
-                                                                          context)
-                                                                      .secondary,
-                                                            ),
-                                                          );
-                                                          if (Navigator.of(
-                                                                  context)
-                                                              .canPop()) {
-                                                            context.pop();
-                                                          }
-                                                          context.pushNamed(
-                                                            ListaAnimaisWidget
-                                                                .routeName,
-                                                            queryParameters: {
-                                                              'uidPropriedade':
-                                                                  serializeParam(
-                                                                widget
-                                                                    .uidPropriedade,
-                                                                ParamType
-                                                                    .DocumentReference,
-                                                              ),
-                                                              'nomePropriedade':
-                                                                  serializeParam(
-                                                                widget
-                                                                    .nomePropriedade,
-                                                                ParamType
-                                                                    .String,
-                                                              ),
-                                                              'uidTecnico':
-                                                                  serializeParam(
-                                                                widget
-                                                                    .uidTecnico,
-                                                                ParamType
-                                                                    .DocumentReference,
-                                                              ),
-                                                              'emailPropriedade':
-                                                                  serializeParam(
-                                                                widget
-                                                                    .emailPropriedade,
-                                                                ParamType
-                                                                    .String,
-                                                              ),
-                                                              'visitaPresencial':
-                                                                  serializeParam(
-                                                                widget
-                                                                    .visitaPresencial,
-                                                                ParamType.bool,
-                                                              ),
-                                                              'initialTabSelect':
-                                                                  serializeParam(
-                                                                widget
-                                                                    .initialTabSelect,
-                                                                ParamType.int,
-                                                              ),
-                                                              'diasDg':
-                                                                  serializeParam(
-                                                                widget.diasDg,
-                                                                ParamType
-                                                                    .String,
-                                                              ),
-                                                              'tabBarOpenSelected':
-                                                                  serializeParam(
-                                                                0,
-                                                                ParamType.int,
-                                                              ),
-                                                            }.withoutNulls,
-                                                          );
-
-                                                          if (_shouldSetState)
-                                                            safeSetState(() {});
-                                                          return;
-                                                        } else {
-                                                          await showDialog(
-                                                            context: context,
-                                                            builder:
-                                                                (alertDialogContext) {
-                                                              return AlertDialog(
-                                                                title: Text(
-                                                                    'Data última inseminação vazia ou Touro inseminação não selecionado.'),
-                                                                content: Text(
-                                                                    'Preencha os campos obrigatórios.'),
-                                                                actions: [
-                                                                  TextButton(
-                                                                    onPressed: () =>
-                                                                        Navigator.pop(
-                                                                            alertDialogContext),
-                                                                    child: Text(
-                                                                        'Ok'),
-                                                                  ),
-                                                                ],
-                                                              );
-                                                            },
-                                                          );
-                                                          if (_shouldSetState)
-                                                            safeSetState(() {});
-                                                          return;
-                                                        }
-                                                      } else {
-                                                        if (_shouldSetState)
-                                                          safeSetState(() {});
-                                                        return;
-                                                      }
-                                                    }
-                                                  }
-                                                }
-                                              }
-                                            }
-                                          } else {
-                                            await showDialog(
-                                              context: context,
-                                              builder: (alertDialogContext) {
-                                                return AlertDialog(
-                                                  title: Text(
-                                                      'Status é obrigatório.'),
-                                                  content: Text(
-                                                      'Selecione ao menos um status.'),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () =>
-                                                          Navigator.pop(
-                                                              alertDialogContext),
-                                                      child: Text('Ok'),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                            if (_shouldSetState)
-                                              safeSetState(() {});
-                                            return;
-                                          }
-                                        } else {
-                                          if ((_model.grupoValue == 'Sêmens') ||
-                                              (_model.grupoValue == 'Touros')) {
-                                            if (_model.grupoValue == 'Touros') {
-                                              await criarAnimalOffline(
-                                                  AnimaisProdutoresStruct(
-                                                uidTecnicoPropriedade:
-                                                    widget.uidPropriedade,
-                                                nomeAnimal: _model
-                                                    .nomeTextController.text,
-                                                racaAnimal: _model.racaValue,
-                                                pesoAnimal: _model
-                                                    .pesoTextController.text,
-                                                dtNascimento: _model
-                                                    .dataNascimentoTextController
-                                                    .text,
-                                                touro: _model
-                                                    .touroPaiTextController
-                                                    .text,
-                                                vaca: _model
-                                                    .vacaMaeTextController.text,
-                                                grupoAnimal: _model.grupoValue,
-                                                brincoAnimalOrder: _model
-                                                            .brincoTextController
-                                                            .text !=
-                                                        ''
-                                                    ? int.tryParse(_model
-                                                        .brincoTextController
-                                                        .text)
-                                                    : 999999,
-                                                brincoAnimal: _model
-                                                            .brincoTextController
-                                                            .text !=
-                                                        ''
-                                                    ? int.tryParse(_model
-                                                        .brincoTextController
-                                                        .text)
-                                                    : -1,
-                                                nomeBrincoConcat: () {
-                                                  if ((_model.nomeTextController.text != '') &&
-                                                      (_model.brincoTextController
-                                                              .text !=
-                                                          '') &&
-                                                      (_model.brincoTextController
-                                                              .text !=
-                                                          '-1')) {
-                                                    return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                  } else if (_model
-                                                          .nomeTextController
-                                                          .text !=
-                                                      '') {
-                                                    return _model
-                                                        .nomeTextController
-                                                        .text;
-                                                  } else {
-                                                    return _model
-                                                        .brincoTextController
-                                                        .text;
-                                                  }
-                                                }(),
-                                                liberaInseminacao: () {
-                                                  if (_model.grupoValue ==
-                                                      'Touros') {
-                                                    return _model.switchValue;
-                                                  } else if (_model
-                                                          .grupoValue ==
-                                                      'Sêmens') {
-                                                    return _model.switchValue;
-                                                  } else {
-                                                    return true;
-                                                  }
-                                                }(),
-                                                uidAnimalOffline:
-                                                    functions.criarUidRandom(),
-                                              ));
-                                              safeSetState(() {});
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                    'Animal cadastrado com sucesso!',
-                                                    style: TextStyle(
-                                                      color:
-                                                          FlutterFlowTheme.of(
-                                                                  context)
-                                                              .primaryText,
-                                                    ),
-                                                  ),
-                                                  duration: Duration(
-                                                      milliseconds: 4000),
-                                                  backgroundColor:
-                                                      FlutterFlowTheme.of(
-                                                              context)
-                                                          .secondary,
-                                                ),
-                                              );
-                                              if (Navigator.of(context)
-                                                  .canPop()) {
-                                                context.pop();
-                                              }
-                                              context.pushNamed(
-                                                ListaAnimaisWidget.routeName,
-                                                queryParameters: {
-                                                  'uidPropriedade':
-                                                      serializeParam(
-                                                    widget.uidPropriedade,
-                                                    ParamType.DocumentReference,
-                                                  ),
-                                                  'nomePropriedade':
-                                                      serializeParam(
-                                                    widget.nomePropriedade,
-                                                    ParamType.String,
-                                                  ),
-                                                  'uidTecnico': serializeParam(
-                                                    widget.uidTecnico,
-                                                    ParamType.DocumentReference,
-                                                  ),
-                                                  'emailPropriedade':
-                                                      serializeParam(
-                                                    widget.emailPropriedade,
-                                                    ParamType.String,
-                                                  ),
-                                                  'visitaPresencial':
-                                                      serializeParam(
-                                                    widget.visitaPresencial,
-                                                    ParamType.bool,
-                                                  ),
-                                                  'initialTabSelect':
-                                                      serializeParam(
-                                                    widget.initialTabSelect,
-                                                    ParamType.int,
-                                                  ),
-                                                  'diasDg': serializeParam(
-                                                    widget.diasDg,
-                                                    ParamType.String,
-                                                  ),
-                                                }.withoutNulls,
-                                              );
-
-                                              if (_shouldSetState)
-                                                safeSetState(() {});
-                                              return;
-                                            } else {
-                                              if (_model.grupoValue ==
-                                                  'Sêmens') {
-                                                await criarAnimalOffline(
-                                                    AnimaisProdutoresStruct(
-                                                  uidTecnicoPropriedade:
-                                                      widget.uidPropriedade,
-                                                  nomeAnimal: _model
-                                                      .nomeTextController.text,
-                                                  racaAnimal: _model.racaValue,
-                                                  pesoAnimal: _model
-                                                      .pesoTextController.text,
-                                                  dtNascimento: _model
-                                                      .dataNascimentoTextController
-                                                      .text,
-                                                  touro: _model
-                                                      .touroPaiTextController
-                                                      .text,
-                                                  grupoAnimal:
-                                                      _model.grupoValue,
-                                                  brincoAnimalOrder: _model
-                                                              .brincoTextController
-                                                              .text !=
-                                                          ''
-                                                      ? int.tryParse(_model
-                                                          .brincoTextController
-                                                          .text)
-                                                      : 999999,
-                                                  brincoAnimal: _model
-                                                              .brincoTextController
-                                                              .text !=
-                                                          ''
-                                                      ? int.tryParse(_model
-                                                          .brincoTextController
-                                                          .text)
-                                                      : -1,
-                                                  nomeBrincoConcat: () {
-                                                    if ((_model.nomeTextController.text != '') &&
-                                                        (_model.brincoTextController
-                                                                .text !=
-                                                            '') &&
-                                                        (_model.brincoTextController
-                                                                .text !=
-                                                            '-1')) {
-                                                      return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                    } else if (_model
-                                                            .nomeTextController
-                                                            .text !=
-                                                        '') {
-                                                      return _model
-                                                          .nomeTextController
-                                                          .text;
-                                                    } else {
-                                                      return _model
-                                                          .brincoTextController
-                                                          .text;
-                                                    }
-                                                  }(),
-                                                  liberaInseminacao: () {
-                                                    if (_model.grupoValue ==
-                                                        'Touros') {
-                                                      return _model.switchValue;
-                                                    } else if (_model
-                                                            .grupoValue ==
-                                                        'Sêmens') {
-                                                      return _model.switchValue;
-                                                    } else {
-                                                      return true;
-                                                    }
-                                                  }(),
-                                                  uidAnimalOffline: functions
-                                                      .criarUidRandom(),
-                                                ));
-                                                safeSetState(() {});
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(
-                                                      'Animal cadastrado com sucesso!',
-                                                      style: TextStyle(
-                                                        color:
-                                                            FlutterFlowTheme.of(
-                                                                    context)
-                                                                .primaryText,
-                                                      ),
-                                                    ),
-                                                    duration: Duration(
-                                                        milliseconds: 4000),
-                                                    backgroundColor:
-                                                        FlutterFlowTheme.of(
-                                                                context)
-                                                            .secondary,
-                                                  ),
-                                                );
-                                                if (Navigator.of(context)
-                                                    .canPop()) {
-                                                  context.pop();
-                                                }
-                                                context.pushNamed(
-                                                  ListaAnimaisWidget.routeName,
-                                                  queryParameters: {
-                                                    'uidPropriedade':
-                                                        serializeParam(
-                                                      widget.uidPropriedade,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'nomePropriedade':
-                                                        serializeParam(
-                                                      widget.nomePropriedade,
-                                                      ParamType.String,
-                                                    ),
-                                                    'uidTecnico':
-                                                        serializeParam(
-                                                      widget.uidTecnico,
-                                                      ParamType
-                                                          .DocumentReference,
-                                                    ),
-                                                    'emailPropriedade':
-                                                        serializeParam(
-                                                      widget.emailPropriedade,
-                                                      ParamType.String,
-                                                    ),
-                                                    'visitaPresencial':
-                                                        serializeParam(
-                                                      widget.visitaPresencial,
-                                                      ParamType.bool,
-                                                    ),
-                                                    'initialTabSelect':
-                                                        serializeParam(
-                                                      widget.initialTabSelect,
-                                                      ParamType.int,
-                                                    ),
-                                                    'diasDg': serializeParam(
-                                                      widget.diasDg,
-                                                      ParamType.String,
-                                                    ),
-                                                  }.withoutNulls,
-                                                );
-
-                                                if (_shouldSetState)
-                                                  safeSetState(() {});
-                                                return;
-                                              } else {
-                                                if (_shouldSetState)
-                                                  safeSetState(() {});
-                                                return;
-                                              }
-                                            }
-                                          } else {
-                                            await criarAnimalOffline(
-                                                AnimaisProdutoresStruct(
-                                              uidTecnicoPropriedade:
-                                                  widget.uidPropriedade,
-                                              nomeAnimal: _model
-                                                  .nomeTextController.text,
-                                              racaAnimal: _model.racaValue,
-                                              pesoAnimal: _model
-                                                  .pesoTextController.text,
-                                              dtNascimento: _model
-                                                  .dataNascimentoTextController
-                                                  .text,
-                                              touro: _model
-                                                  .touroPaiTextController.text,
-                                              vaca: _model
-                                                  .vacaMaeTextController.text,
-                                              grupoAnimal: _model.grupoValue,
-                                              brincoAnimalOrder: _model
-                                                          .brincoTextController
-                                                          .text !=
-                                                      ''
-                                                  ? int.tryParse(_model
-                                                      .brincoTextController
-                                                      .text)
-                                                  : 999999,
-                                              brincoAnimal: _model
-                                                          .brincoTextController
-                                                          .text !=
-                                                      ''
-                                                  ? int.tryParse(_model
-                                                      .brincoTextController
-                                                      .text)
-                                                  : -1,
-                                              nomeBrincoConcat: () {
-                                                if ((_model.nomeTextController
-                                                            .text !=
-                                                        '') &&
-                                                    (_model.brincoTextController
-                                                            .text !=
-                                                        '') &&
-                                                    (_model.brincoTextController
-                                                            .text !=
-                                                        '-1')) {
-                                                  return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                                                } else if (_model
-                                                        .nomeTextController
-                                                        .text !=
-                                                    '') {
-                                                  return _model
-                                                      .nomeTextController.text;
-                                                } else {
-                                                  return _model
-                                                      .brincoTextController
-                                                      .text;
-                                                }
-                                              }(),
-                                              uidAnimalOffline:
-                                                  functions.criarUidRandom(),
-                                            ));
-                                            safeSetState(() {});
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  'Animal cadastrado com sucesso!',
-                                                  style: TextStyle(
-                                                    color: FlutterFlowTheme.of(
-                                                            context)
-                                                        .primaryText,
-                                                  ),
-                                                ),
-                                                duration: Duration(
-                                                    milliseconds: 4000),
-                                                backgroundColor:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondary,
-                                              ),
-                                            );
-                                            if (Navigator.of(context)
-                                                .canPop()) {
-                                              context.pop();
-                                            }
-                                            context.pushNamed(
-                                              ListaAnimaisWidget.routeName,
-                                              queryParameters: {
-                                                'uidPropriedade':
-                                                    serializeParam(
-                                                  widget.uidPropriedade,
-                                                  ParamType.DocumentReference,
-                                                ),
-                                                'nomePropriedade':
-                                                    serializeParam(
-                                                  widget.nomePropriedade,
-                                                  ParamType.String,
-                                                ),
-                                                'uidTecnico': serializeParam(
-                                                  widget.uidTecnico,
-                                                  ParamType.DocumentReference,
-                                                ),
-                                                'emailPropriedade':
-                                                    serializeParam(
-                                                  widget.emailPropriedade,
-                                                  ParamType.String,
-                                                ),
-                                                'visitaPresencial':
-                                                    serializeParam(
-                                                  widget.visitaPresencial,
-                                                  ParamType.bool,
-                                                ),
-                                                'initialTabSelect':
-                                                    serializeParam(
-                                                  widget.initialTabSelect,
-                                                  ParamType.int,
-                                                ),
-                                                'diasDg': serializeParam(
-                                                  widget.diasDg,
-                                                  ParamType.String,
-                                                ),
-                                              }.withoutNulls,
-                                            );
-
-                                            if (_shouldSetState)
-                                              safeSetState(() {});
-                                            return;
-                                          }
-                                        }
-                                      }
-
-                                      if (_shouldSetState) safeSetState(() {});
+                                      await _cadastrarAnimal(context);
                                     },
                                     text: 'Adicionar Novo',
                                     icon: Icon(
