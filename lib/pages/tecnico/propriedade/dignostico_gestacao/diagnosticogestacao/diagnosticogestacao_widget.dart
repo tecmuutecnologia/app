@@ -190,497 +190,8 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      width: 50.0,
-                      height: 50.0,
-                      decoration: BoxDecoration(
-                        color: () {
-                          if (ehVaca(item.grupoAnimal)) {
-                            return Color(0xFF048508);
-                          } else if (ehNovilha(item.grupoAnimal)) {
-                            return Color(0xFFFF0076);
-                          } else {
-                            return Color(0x00000000);
-                          }
-                        }(),
-                        shape: BoxShape.circle,
-                      ),
-                      alignment: AlignmentDirectional(0.0, 0.0),
-                      child: Text(
-                        () {
-                          if (ehVaca(item.grupoAnimal)) {
-                            return 'VAC';
-                          } else if (ehNovilha(item.grupoAnimal)) {
-                            return 'NOV';
-                          } else {
-                            return 'N/C';
-                          }
-                        }(),
-                        style:
-                            FlutterFlowTheme.of(context).titleMedium.override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .titleMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleMedium
-                                        .fontStyle,
-                                  ),
-                                  color: Colors.white,
-                                  fontSize: 13.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleMedium
-                                      .fontStyle,
-                                ),
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Text(
-                                () {
-                                  if ((item.nomeAnimal != '') &&
-                                      (item.brincoAnimal != null) &&
-                                      (item.brincoAnimal != -1)) {
-                                    return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
-                                  } else if (item.nomeAnimal != '') {
-                                    return item.nomeAnimal;
-                                  } else {
-                                    return item.brincoAnimal.toString();
-                                  }
-                                }(),
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyLarge
-                                    .override(
-                                      font: GoogleFonts.readexPro(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyLarge
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyLarge
-                                          .fontStyle,
-                                    ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Text(
-                                'Touro: ${item.nomeTouroUltimaInseminacao}',
-                                style: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .override(
-                                      font: GoogleFonts.readexPro(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .labelMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .labelMedium
-                                            .fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Text(
-                                'Inseminada em: ${item.dtUltimaInseminacao}',
-                                style: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .override(
-                                      font: GoogleFonts.readexPro(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .labelMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .labelMedium
-                                            .fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 4.0, 0.0, 0.0),
-                                    child: FFButtonWidget(
-                                      onPressed: ((!ehInseminadaPP(
-                                                  item.status)) &&
-                                              (item.dtPP == ''))
-                                          ? null
-                                          : () async {
-                                              await showModalBottomSheet(
-                                                isScrollControlled: true,
-                                                backgroundColor:
-                                                    Colors.transparent,
-                                                enableDrag: false,
-                                                context: context,
-                                                builder: (context) {
-                                                  return GestureDetector(
-                                                    onTap: () {
-                                                      FocusScope.of(context)
-                                                          .unfocus();
-                                                      FocusManager
-                                                          .instance.primaryFocus
-                                                          ?.unfocus();
-                                                    },
-                                                    child: Padding(
-                                                      padding: MediaQuery
-                                                          .viewInsetsOf(
-                                                              context),
-                                                      child: DgMaisWidget(
-                                                        uidPropriedade: widget
-                                                            .uidPropriedade!,
-                                                        nomePropriedade: widget
-                                                            .nomePropriedade!,
-                                                        uidTecnico:
-                                                            widget.uidTecnico!,
-                                                        emailPropriedade: widget
-                                                            .emailPropriedade!,
-                                                        uidAnimaisProdutores:
-                                                            item.uidAnimal,
-                                                        uidAnimalOffline: item
-                                                            .uidAnimalOffline,
-                                                        grupoPredominante:
-                                                            item.grupoAnimal,
-                                                        nomeAnimal:
-                                                            item.nomeAnimal,
-                                                        visitaPresencial: widget
-                                                            .visitaPresencial!,
-                                                        diasDg: widget.diasDg!,
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ).then((value) =>
-                                                  safeSetState(() {}));
-                                            },
-                                      text: 'DG +',
-                                      icon: Icon(
-                                        Icons.check_circle,
-                                        size: 15.0,
-                                      ),
-                                      options: FFButtonOptions(
-                                        width: 80.0,
-                                        height: 40.0,
-                                        padding: EdgeInsets.all(0.0),
-                                        iconPadding:
-                                            EdgeInsetsDirectional.fromSTEB(
-                                                0.0, 0.0, 0.0, 0.0),
-                                        color: Color(0xFF048508),
-                                        textStyle: FlutterFlowTheme.of(context)
-                                            .titleSmall
-                                            .override(
-                                              font: GoogleFonts.readexPro(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .titleSmall
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .titleSmall
-                                                        .fontStyle,
-                                              ),
-                                              color: Colors.white,
-                                              fontSize: 12.0,
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .titleSmall
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .titleSmall
-                                                      .fontStyle,
-                                            ),
-                                        elevation: 3.0,
-                                        borderSide: BorderSide(
-                                          color: Colors.transparent,
-                                          width: 1.0,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                        disabledColor:
-                                            FlutterFlowTheme.of(context)
-                                                .primaryBackground,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        5.0, 0.0, 0.0, 0.0),
-                                    child: FFButtonWidget(
-                                      onPressed: () async {
-                                        await showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          backgroundColor: Colors.transparent,
-                                          enableDrag: false,
-                                          context: context,
-                                          builder: (context) {
-                                            return GestureDetector(
-                                              onTap: () {
-                                                FocusScope.of(context)
-                                                    .unfocus();
-                                                FocusManager
-                                                    .instance.primaryFocus
-                                                    ?.unfocus();
-                                              },
-                                              child: Padding(
-                                                padding:
-                                                    MediaQuery.viewInsetsOf(
-                                                        context),
-                                                child: ConfirmaPpWidget(
-                                                  uidPropriedade:
-                                                      widget.uidPropriedade!,
-                                                  nomePropriedade:
-                                                      widget.nomePropriedade!,
-                                                  uidTecnico:
-                                                      widget.uidTecnico!,
-                                                  emailPropriedade:
-                                                      widget.emailPropriedade!,
-                                                  uidAnimaisProdutores:
-                                                      item.uidAnimal,
-                                                  uidAnimalOffline:
-                                                      item.uidAnimalOffline,
-                                                  grupoPredominante:
-                                                      item.grupoAnimal,
-                                                  nomeAnimal: item.nomeAnimal,
-                                                  visitaPresencial:
-                                                      widget.visitaPresencial!,
-                                                  diasDg: widget.diasDg!,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ).then((value) => safeSetState(() {}));
-                                      },
-                                      text: 'PP',
-                                      icon: Icon(
-                                        Icons.notifications,
-                                        size: 15.0,
-                                      ),
-                                      options: FFButtonOptions(
-                                        width: 80.0,
-                                        height: 40.0,
-                                        padding: EdgeInsets.all(0.0),
-                                        iconPadding:
-                                            EdgeInsetsDirectional.fromSTEB(
-                                                0.0, 0.0, 0.0, 0.0),
-                                        color: Color(0xFF1A03E9),
-                                        textStyle: FlutterFlowTheme.of(context)
-                                            .titleSmall
-                                            .override(
-                                              font: GoogleFonts.readexPro(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .titleSmall
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .titleSmall
-                                                        .fontStyle,
-                                              ),
-                                              color: Colors.white,
-                                              fontSize: 12.0,
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .titleSmall
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .titleSmall
-                                                      .fontStyle,
-                                            ),
-                                        elevation: 4.0,
-                                        borderSide: BorderSide(
-                                          color: Colors.transparent,
-                                          width: 1.0,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        5.0, 4.0, 0.0, 0.0),
-                                    child: FFButtonWidget(
-                                      onPressed: () async {
-                                        await showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          backgroundColor: Colors.transparent,
-                                          enableDrag: false,
-                                          context: context,
-                                          builder: (context) {
-                                            return GestureDetector(
-                                              onTap: () {
-                                                FocusScope.of(context)
-                                                    .unfocus();
-                                                FocusManager
-                                                    .instance.primaryFocus
-                                                    ?.unfocus();
-                                              },
-                                              child: Padding(
-                                                padding:
-                                                    MediaQuery.viewInsetsOf(
-                                                        context),
-                                                child: DgMenosWidget(
-                                                  uidPropriedade:
-                                                      widget.uidPropriedade!,
-                                                  nomePropriedade:
-                                                      widget.nomePropriedade!,
-                                                  uidTecnico:
-                                                      widget.uidTecnico!,
-                                                  emailPropriedade:
-                                                      widget.emailPropriedade!,
-                                                  uidAnimaisProdutores:
-                                                      item.uidAnimal,
-                                                  uidAnimalOffline:
-                                                      item.uidAnimalOffline,
-                                                  grupoPredominante:
-                                                      item.grupoAnimal,
-                                                  nomeAnimal: item.nomeAnimal,
-                                                  visitaPresencial:
-                                                      widget.visitaPresencial!,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ).then((value) => safeSetState(() {}));
-                                      },
-                                      text: 'DG -',
-                                      icon: Icon(
-                                        Icons.cancel_rounded,
-                                        size: 15.0,
-                                      ),
-                                      options: FFButtonOptions(
-                                        width: 80.0,
-                                        height: 40.0,
-                                        padding: EdgeInsets.all(0.0),
-                                        iconPadding:
-                                            EdgeInsetsDirectional.fromSTEB(
-                                                0.0, 0.0, 0.0, 0.0),
-                                        color: Color(0xFFAE0303),
-                                        textStyle: FlutterFlowTheme.of(context)
-                                            .titleSmall
-                                            .override(
-                                              font: GoogleFonts.readexPro(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .titleSmall
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .titleSmall
-                                                        .fontStyle,
-                                              ),
-                                              color: Colors.white,
-                                              fontSize: 12.0,
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .titleSmall
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .titleSmall
-                                                      .fontStyle,
-                                            ),
-                                        elevation: 3.0,
-                                        borderSide: BorderSide(
-                                          color: Colors.transparent,
-                                          width: 1.0,
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  if ((item.dtUltimoPP != '') &&
-                                      functions.verificaDataIgualAtualString(
-                                          item.dtUltimoPP))
-                                    FlutterFlowIconButton(
-                                      borderColor: Colors.transparent,
-                                      borderRadius: 0.0,
-                                      borderWidth: 0.0,
-                                      buttonSize: 40.0,
-                                      icon: Icon(
-                                        Icons.check_circle,
-                                        color: Color(0xFF048508),
-                                        size: 30.0,
-                                      ),
-                                      onPressed: () {
-                                        print('IconButton pressed ...');
-                                      },
-                                    ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                    _part1(context, item, index),
+                    _part2(context, item, index)
                   ],
                 ),
               ),
@@ -688,6 +199,398 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _part1(BuildContext context, AnimaisProdutoresStruct item, int index) {
+    return Container(
+      width: 50.0,
+      height: 50.0,
+      decoration: BoxDecoration(
+        color: () {
+          if (ehVaca(item.grupoAnimal)) {
+            return Color(0xFF048508);
+          } else if (ehNovilha(item.grupoAnimal)) {
+            return Color(0xFFFF0076);
+          } else {
+            return Color(0x00000000);
+          }
+        }(),
+        shape: BoxShape.circle,
+      ),
+      alignment: AlignmentDirectional(0.0, 0.0),
+      child: Text(
+        () {
+          if (ehVaca(item.grupoAnimal)) {
+            return 'VAC';
+          } else if (ehNovilha(item.grupoAnimal)) {
+            return 'NOV';
+          } else {
+            return 'N/C';
+          }
+        }(),
+        style: FlutterFlowTheme.of(context).titleMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+              ),
+              color: Colors.white,
+              fontSize: 13.0,
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+            ),
+      ),
+    );
+  }
+
+  Widget _part2(BuildContext context, AnimaisProdutoresStruct item, int index) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _part3(context, item, index),
+          _part4(context, item, index),
+          _part5(context, item, index),
+          _part6(context, item, index)
+        ],
+      ),
+    );
+  }
+
+  Widget _part3(BuildContext context, AnimaisProdutoresStruct item, int index) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Text(
+          () {
+            if ((item.nomeAnimal != '') &&
+                (item.brincoAnimal != null) &&
+                (item.brincoAnimal != -1)) {
+              return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
+            } else if (item.nomeAnimal != '') {
+              return item.nomeAnimal;
+            } else {
+              return item.brincoAnimal.toString();
+            }
+          }(),
+          style: FlutterFlowTheme.of(context).bodyLarge.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+              ),
+        ),
+      ],
+    );
+  }
+
+  Widget _part4(BuildContext context, AnimaisProdutoresStruct item, int index) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Text(
+          'Touro: ${item.nomeTouroUltimaInseminacao}',
+          style: FlutterFlowTheme.of(context).labelMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+        ),
+      ],
+    );
+  }
+
+  Widget _part5(BuildContext context, AnimaisProdutoresStruct item, int index) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Text(
+          'Inseminada em: ${item.dtUltimaInseminacao}',
+          style: FlutterFlowTheme.of(context).labelMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+        ),
+      ],
+    );
+  }
+
+  Widget _part6(BuildContext context, AnimaisProdutoresStruct item, int index) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
+              child: FFButtonWidget(
+                onPressed: ((!ehInseminadaPP(item.status)) && (item.dtPP == ''))
+                    ? null
+                    : () async {
+                        await showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          enableDrag: false,
+                          context: context,
+                          builder: (context) {
+                            return GestureDetector(
+                              onTap: () {
+                                FocusScope.of(context).unfocus();
+                                FocusManager.instance.primaryFocus?.unfocus();
+                              },
+                              child: Padding(
+                                padding: MediaQuery.viewInsetsOf(context),
+                                child: DgMaisWidget(
+                                  uidPropriedade: widget.uidPropriedade!,
+                                  nomePropriedade: widget.nomePropriedade!,
+                                  uidTecnico: widget.uidTecnico!,
+                                  emailPropriedade: widget.emailPropriedade!,
+                                  uidAnimaisProdutores: item.uidAnimal,
+                                  uidAnimalOffline: item.uidAnimalOffline,
+                                  grupoPredominante: item.grupoAnimal,
+                                  nomeAnimal: item.nomeAnimal,
+                                  visitaPresencial: widget.visitaPresencial!,
+                                  diasDg: widget.diasDg!,
+                                ),
+                              ),
+                            );
+                          },
+                        ).then((value) => safeSetState(() {}));
+                      },
+                text: 'DG +',
+                icon: Icon(
+                  Icons.check_circle,
+                  size: 15.0,
+                ),
+                options: FFButtonOptions(
+                  width: 80.0,
+                  height: 40.0,
+                  padding: EdgeInsets.all(0.0),
+                  iconPadding:
+                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                  color: Color(0xFF048508),
+                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                        font: GoogleFonts.readexPro(
+                          fontWeight: FlutterFlowTheme.of(context)
+                              .titleSmall
+                              .fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                        ),
+                        color: Colors.white,
+                        fontSize: 12.0,
+                        letterSpacing: 0.0,
+                        fontWeight:
+                            FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                        fontStyle:
+                            FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                      ),
+                  elevation: 3.0,
+                  borderSide: BorderSide(
+                    color: Colors.transparent,
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                  disabledColor: FlutterFlowTheme.of(context).primaryBackground,
+                ),
+              ),
+            ),
+          ],
+        ),
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 0.0, 0.0),
+              child: FFButtonWidget(
+                onPressed: () async {
+                  await showModalBottomSheet(
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    enableDrag: false,
+                    context: context,
+                    builder: (context) {
+                      return GestureDetector(
+                        onTap: () {
+                          FocusScope.of(context).unfocus();
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        },
+                        child: Padding(
+                          padding: MediaQuery.viewInsetsOf(context),
+                          child: ConfirmaPpWidget(
+                            uidPropriedade: widget.uidPropriedade!,
+                            nomePropriedade: widget.nomePropriedade!,
+                            uidTecnico: widget.uidTecnico!,
+                            emailPropriedade: widget.emailPropriedade!,
+                            uidAnimaisProdutores: item.uidAnimal,
+                            uidAnimalOffline: item.uidAnimalOffline,
+                            grupoPredominante: item.grupoAnimal,
+                            nomeAnimal: item.nomeAnimal,
+                            visitaPresencial: widget.visitaPresencial!,
+                            diasDg: widget.diasDg!,
+                          ),
+                        ),
+                      );
+                    },
+                  ).then((value) => safeSetState(() {}));
+                },
+                text: 'PP',
+                icon: Icon(
+                  Icons.notifications,
+                  size: 15.0,
+                ),
+                options: FFButtonOptions(
+                  width: 80.0,
+                  height: 40.0,
+                  padding: EdgeInsets.all(0.0),
+                  iconPadding:
+                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                  color: Color(0xFF1A03E9),
+                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                        font: GoogleFonts.readexPro(
+                          fontWeight: FlutterFlowTheme.of(context)
+                              .titleSmall
+                              .fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                        ),
+                        color: Colors.white,
+                        fontSize: 12.0,
+                        letterSpacing: 0.0,
+                        fontWeight:
+                            FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                        fontStyle:
+                            FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                      ),
+                  elevation: 4.0,
+                  borderSide: BorderSide(
+                    color: Colors.transparent,
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+            ),
+          ],
+        ),
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(5.0, 4.0, 0.0, 0.0),
+              child: FFButtonWidget(
+                onPressed: () async {
+                  await showModalBottomSheet(
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    enableDrag: false,
+                    context: context,
+                    builder: (context) {
+                      return GestureDetector(
+                        onTap: () {
+                          FocusScope.of(context).unfocus();
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        },
+                        child: Padding(
+                          padding: MediaQuery.viewInsetsOf(context),
+                          child: DgMenosWidget(
+                            uidPropriedade: widget.uidPropriedade!,
+                            nomePropriedade: widget.nomePropriedade!,
+                            uidTecnico: widget.uidTecnico!,
+                            emailPropriedade: widget.emailPropriedade!,
+                            uidAnimaisProdutores: item.uidAnimal,
+                            uidAnimalOffline: item.uidAnimalOffline,
+                            grupoPredominante: item.grupoAnimal,
+                            nomeAnimal: item.nomeAnimal,
+                            visitaPresencial: widget.visitaPresencial!,
+                          ),
+                        ),
+                      );
+                    },
+                  ).then((value) => safeSetState(() {}));
+                },
+                text: 'DG -',
+                icon: Icon(
+                  Icons.cancel_rounded,
+                  size: 15.0,
+                ),
+                options: FFButtonOptions(
+                  width: 80.0,
+                  height: 40.0,
+                  padding: EdgeInsets.all(0.0),
+                  iconPadding:
+                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                  color: Color(0xFFAE0303),
+                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                        font: GoogleFonts.readexPro(
+                          fontWeight: FlutterFlowTheme.of(context)
+                              .titleSmall
+                              .fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                        ),
+                        color: Colors.white,
+                        fontSize: 12.0,
+                        letterSpacing: 0.0,
+                        fontWeight:
+                            FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                        fontStyle:
+                            FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                      ),
+                  elevation: 3.0,
+                  borderSide: BorderSide(
+                    color: Colors.transparent,
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+            ),
+          ],
+        ),
+        Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if ((item.dtUltimoPP != '') &&
+                functions.verificaDataIgualAtualString(item.dtUltimoPP))
+              FlutterFlowIconButton(
+                borderColor: Colors.transparent,
+                borderRadius: 0.0,
+                borderWidth: 0.0,
+                buttonSize: 40.0,
+                icon: Icon(
+                  Icons.check_circle,
+                  color: Color(0xFF048508),
+                  size: 30.0,
+                ),
+                onPressed: () {
+                  print('IconButton pressed ...');
+                },
+              ),
+          ],
+        ),
+      ],
     );
   }
 
