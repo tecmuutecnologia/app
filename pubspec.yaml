@@ -151,6 +151,11 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
 
+  # Auth offline-first segura (Fase 2): token de sessão em armazenamento seguro
+  # do SO (Keychain/Keystore) + biometria/PIN para reabrir a sessão offline.
+  flutter_secure_storage: ^9.2.2
+  local_auth: ^2.3.0
+
 dependency_overrides:
   http: 1.4.0
   intl: 0.20.2

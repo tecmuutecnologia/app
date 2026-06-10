@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../core/security/password_hasher.dart';
+import '../../core/security/secure_session_store.dart';
+import '../../core/security/biometric_service.dart';
 import '../../objectbox.g.dart';
 import 'objectbox_service.dart';
 import 'entities/user_session_entity.dart';
@@ -14,6 +16,8 @@ import 'entities/user_session_entity.dart';
 class OfflineAuthService {
   static OfflineAuthService? _instance;
   final ObjectBoxService _objectBox;
+  final SecureSessionStore _secureStore = SecureSessionStore();
+  final BiometricService _biometric = BiometricService();
 
   OfflineAuthService._(this._objectBox);
 
@@ -124,6 +128,10 @@ class OfflineAuthService {
       final id = box.put(session);
       session.id = id;
 
+      // Guarda o token no armazenamento seguro do SO (Keychain/Keystore) para
+      // permitir reabertura por biometria. A senha NUNCA é guardada.
+      await _secureStore.save(email: email, token: session.sessionToken);
+
       debugPrint('✅ Sessão criada com ID: $id para ${firebaseUser.email}');
       return session;
     } catch (e) {
@@ -195,6 +203,29 @@ class OfflineAuthService {
       debugPrint('❌ Erro ao buscar sessão: $e');
       return null;
     }
+  }
+
+  /// `true` se há sessão salva no cofre E o aparelho tem biometria/PIN. A UI usa
+  /// isto para decidir se mostra o botão "Entrar com biometria".
+  Future<bool> podeUsarBiometria() async =>
+      (await _secureStore.hasSession()) && (await _biometric.isAvailable());
+
+  /// Reabre a sessão offline por biometria/PIN, sem digitar a senha. Retorna a
+  /// sessão local ativa do email salvo se a autenticação local for confirmada;
+  /// `null` se não há sessão salva, a biometria falha ou a sessão expirou.
+  Future<UserSessionEntity?> loginOfflineComBiometria() async {
+    final email = await _secureStore.readEmail();
+    if (email == null || email.isEmpty) return null;
+    if (!await _biometric.isAvailable()) return null;
+    if (!await _biometric.authenticate()) return null;
+
+    final session = await getActiveSession(email);
+    if (session != null) {
+      session.recordSuccessfulLogin();
+      _objectBox.userSessionBox.put(session);
+      debugPrint('✅ Login offline por biometria: $email');
+    }
+    return session;
   }
 
   /// Marca sessão como necessitando sincronização com Firebase
@@ -271,6 +302,7 @@ class OfflineAuthService {
     try {
       final box = _objectBox.userSessionBox;
       box.removeAll();
+      await _secureStore.clear();
       debugPrint('🗑️ Todas as sessões foram removidas');
     } catch (e) {
       debugPrint('❌ Erro ao limpar sessões: $e');
