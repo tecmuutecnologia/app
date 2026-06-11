@@ -1038,7 +1038,7 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
           await authManager.signOut();
           GoRouter.of(context).clearRedirectLocation();
 
-          context.goNamedAuth(WelcomeWidget.routeName, context.mounted);
+          context.goNamedAuth(WelcomePage.routeName, context.mounted);
         },
         text: 'Sair da plataforma (logout)',
         icon: Icon(

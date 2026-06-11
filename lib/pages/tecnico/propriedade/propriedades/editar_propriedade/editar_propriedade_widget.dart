@@ -847,7 +847,7 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
             await authManager.signOut();
             GoRouter.of(context).clearRedirectLocation();
 
-            context.goNamedAuth(WelcomeWidget.routeName, context.mounted);
+            context.goNamedAuth(WelcomePage.routeName, context.mounted);
           },
           text: 'Logout',
           icon: Icon(

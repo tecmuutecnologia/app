@@ -1,40 +1,37 @@
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/index.dart';
+import 'welcome_page.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart'
     as smooth_page_indicator;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'tutorial_model.dart';
-export 'tutorial_model.dart';
 
-class TutorialWidget extends StatefulWidget {
-  const TutorialWidget({super.key});
+class TutorialPage extends StatefulWidget {
+  const TutorialPage({super.key});
 
   static String routeName = 'tutorial';
   static String routePath = '/tutorial';
 
   @override
-  State<TutorialWidget> createState() => _TutorialWidgetState();
+  State<TutorialPage> createState() => _TutorialPageState();
 }
 
-class _TutorialWidgetState extends State<TutorialWidget> {
-  late TutorialModel _model;
-
+class _TutorialPageState extends State<TutorialPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  PageController? _pageViewController;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => TutorialModel());
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.dispose();
+    _pageViewController?.dispose();
 
     super.dispose();
   }
@@ -66,7 +63,7 @@ class _TutorialWidgetState extends State<TutorialWidget> {
                           padding: EdgeInsetsDirectional.fromSTEB(
                               0.0, 0.0, 0.0, 40.0),
                           child: PageView(
-                            controller: _model.pageViewController ??=
+                            controller: _pageViewController ??=
                                 PageController(initialPage: 0),
                             scrollDirection: Axis.horizontal,
                             children: [
@@ -310,7 +307,7 @@ class _TutorialWidgetState extends State<TutorialWidget> {
                                   ),
                                   FFButtonWidget(
                                     onPressed: () async {
-                                      context.goNamed(WelcomeWidget.routeName);
+                                      context.goNamed(WelcomePage.routeName);
                                     },
                                     text: 'Comece a usar',
                                     options: FFButtonOptions(
@@ -365,12 +362,12 @@ class _TutorialWidgetState extends State<TutorialWidget> {
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 16.0, 0.0, 0.0, 16.0),
                             child: smooth_page_indicator.SmoothPageIndicator(
-                              controller: _model.pageViewController ??=
+                              controller: _pageViewController ??=
                                   PageController(initialPage: 0),
                               count: 3,
                               axisDirection: Axis.horizontal,
                               onDotClicked: (i) async {
-                                await _model.pageViewController!.animateToPage(
+                                await _pageViewController!.animateToPage(
                                   i,
                                   duration: Duration(milliseconds: 500),
                                   curve: Curves.ease,

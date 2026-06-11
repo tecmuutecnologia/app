@@ -1,5 +1,6 @@
 // Export pages
-export '/pages/welcome/welcome/welcome_widget.dart' show WelcomeWidget;
+export '/features/onboarding/presentation/pages/welcome_page.dart'
+    show WelcomePage;
 export '/features/auth/presentation/pages/login_technician_page.dart'
     show LoginTechnicianPage;
 export '/pages/tecnico/initial/create_account_technician/create_account_technician_widget.dart'
@@ -42,7 +43,8 @@ export '/pages/tecnico/perfil/completar_perfil_tecnico/completar_perfil_tecnico_
     show CompletarPerfilTecnicoWidget;
 export '/pages/produtor/initial/login_produtor/login_produtor_widget.dart'
     show LoginProdutorWidget;
-export '/pages/welcome/tutorial/tutorial_widget.dart' show TutorialWidget;
+export '/features/onboarding/presentation/pages/tutorial_page.dart'
+    show TutorialPage;
 export '/pages/tecnico/perfil/profile_tecnico/profile_tecnico_widget.dart'
     show ProfileTecnicoWidget;
 export '/pages/tecnico/plano/subscription_plan_tecnico/subscription_plan_tecnico_widget.dart'
@@ -81,5 +83,5 @@ export '/pages/tecnico/propriedade/sincronizacao/importacao_animais/importacao_a
     show ImportacaoAnimaisWidget;
 export '/pages/produtor/initial/inicio_propriedade_produtor/inicio_propriedade_produtor_widget.dart'
     show InicioPropriedadeProdutorWidget;
-export '/pages/welcome/verifica_tipo_login/verifica_tipo_login_widget.dart'
-    show VerificaTipoLoginWidget;
+export '/features/onboarding/presentation/pages/verifica_tipo_login_page.dart'
+    show VerificaTipoLoginPage;

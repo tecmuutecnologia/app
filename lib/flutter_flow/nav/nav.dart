@@ -77,20 +77,20 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       refreshListenable: appStateNotifier,
       navigatorKey: appNavigatorKey,
       errorBuilder: (context, state) => appStateNotifier.loggedIn
-          ? VerificaTipoLoginWidget()
-          : WelcomeWidget(),
+          ? VerificaTipoLoginPage()
+          : WelcomePage(),
       routes: [
         FFRoute(
           name: '_initialize',
           path: '/',
           builder: (context, _) => appStateNotifier.loggedIn
-              ? VerificaTipoLoginWidget()
-              : WelcomeWidget(),
+              ? VerificaTipoLoginPage()
+              : WelcomePage(),
         ),
         FFRoute(
-          name: WelcomeWidget.routeName,
-          path: WelcomeWidget.routePath,
-          builder: (context, params) => WelcomeWidget(),
+          name: WelcomePage.routeName,
+          path: WelcomePage.routePath,
+          builder: (context, params) => WelcomePage(),
         ),
         FFRoute(
           name: LoginTechnicianPage.routeName,
@@ -604,9 +604,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => LoginProdutorWidget(),
         ),
         FFRoute(
-          name: TutorialWidget.routeName,
-          path: TutorialWidget.routePath,
-          builder: (context, params) => TutorialWidget(),
+          name: TutorialPage.routeName,
+          path: TutorialPage.routePath,
+          builder: (context, params) => TutorialPage(),
         ),
         FFRoute(
           name: ProfileTecnicoWidget.routeName,
@@ -1239,9 +1239,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: VerificaTipoLoginWidget.routeName,
-          path: VerificaTipoLoginWidget.routePath,
-          builder: (context, params) => VerificaTipoLoginWidget(),
+          name: VerificaTipoLoginPage.routeName,
+          path: VerificaTipoLoginPage.routePath,
+          builder: (context, params) => VerificaTipoLoginPage(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
