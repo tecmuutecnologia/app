@@ -3,7 +3,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/features/auth/presentation/pages/login_technician_page.dart';
-import '/pages/produtor/initial/login_produtor/login_produtor_widget.dart';
+import '/features/produtor/presentation/pages/login_produtor_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -278,7 +278,7 @@ class _WelcomePageState extends State<WelcomePage>
                         child: FFButtonWidget(
                           onPressed: () async {
                             context.pushNamed(
-                              LoginProdutorWidget.routeName,
+                              LoginProdutorPage.routeName,
                               extra: <String, dynamic>{
                                 kTransitionInfoKey: TransitionInfo(
                                   hasTransition: true,

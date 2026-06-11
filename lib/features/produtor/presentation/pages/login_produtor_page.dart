@@ -4,17 +4,14 @@ import '/backend/objectbox/offline_auth_service.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/index.dart';
+import '/pages/produtor/initial/inicio_propriedade_produtor/inicio_propriedade_produtor_widget.dart';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import 'login_produtor_model.dart';
-export 'login_produtor_model.dart';
-
 // Importa os widgets refatorados
-import 'widgets/widgets.dart';
+import '../widgets/widgets.dart';
 
 /// Tela de login do produtor.
 ///
@@ -26,27 +23,32 @@ import 'widgets/widgets.dart';
 /// - [EmailTextField]: Campo de email
 /// - [PasswordTextField]: Campo de senha com toggle
 /// - [LoginButton]: Botão de login estilizado
-class LoginProdutorWidget extends StatefulWidget {
-  const LoginProdutorWidget({super.key});
+class LoginProdutorPage extends StatefulWidget {
+  const LoginProdutorPage({super.key});
 
   static String routeName = 'loginProdutor';
   static String routePath = '/loginProdutor';
 
   @override
-  State<LoginProdutorWidget> createState() => _LoginProdutorWidgetState();
+  State<LoginProdutorPage> createState() => _LoginProdutorPageState();
 }
 
-class _LoginProdutorWidgetState extends State<LoginProdutorWidget>
+class _LoginProdutorPageState extends State<LoginProdutorPage>
     with TickerProviderStateMixin {
-  late LoginProdutorModel _model;
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final animationsMap = <String, AnimationInfo>{};
+
+  late final TextEditingController _emailController;
+  late final FocusNode _emailFocusNode;
+  late final TextEditingController _passwordController;
+  late final FocusNode _passwordFocusNode;
+  bool _passwordVisibility = false;
+  final String? Function(BuildContext, String?)? _emailValidator = null;
+  final String? Function(BuildContext, String?)? _passwordValidator = null;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => LoginProdutorModel());
 
     _initializeTextControllers();
     _setupAnimations();
@@ -56,11 +58,10 @@ class _LoginProdutorWidgetState extends State<LoginProdutorWidget>
 
   /// Inicializa os controladores de texto.
   void _initializeTextControllers() {
-    _model.emailAddressTextController ??= TextEditingController();
-    _model.emailAddressFocusNode ??= FocusNode();
-
-    _model.passwordTextController ??= TextEditingController();
-    _model.passwordFocusNode ??= FocusNode();
+    _emailController = TextEditingController();
+    _emailFocusNode = FocusNode();
+    _passwordController = TextEditingController();
+    _passwordFocusNode = FocusNode();
   }
 
   /// Configura as animações da página.
@@ -105,7 +106,10 @@ class _LoginProdutorWidgetState extends State<LoginProdutorWidget>
 
   @override
   void dispose() {
-    _model.dispose();
+    _emailFocusNode.dispose();
+    _emailController.dispose();
+    _passwordFocusNode.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -168,9 +172,9 @@ class _LoginProdutorWidgetState extends State<LoginProdutorWidget>
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: EmailTextField(
-        controller: _model.emailAddressTextController!,
-        focusNode: _model.emailAddressFocusNode!,
-        validator: _model.emailAddressTextControllerValidator,
+        controller: _emailController,
+        focusNode: _emailFocusNode,
+        validator: _emailValidator,
       ),
     );
   }
@@ -180,13 +184,13 @@ class _LoginProdutorWidgetState extends State<LoginProdutorWidget>
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: PasswordTextField(
-        controller: _model.passwordTextController!,
-        focusNode: _model.passwordFocusNode!,
-        isVisible: _model.passwordVisibility,
+        controller: _passwordController,
+        focusNode: _passwordFocusNode,
+        isVisible: _passwordVisibility,
         onToggleVisibility: () => safeSetState(
-          () => _model.passwordVisibility = !_model.passwordVisibility,
+          () => _passwordVisibility = !_passwordVisibility,
         ),
-        validator: _model.passwordTextControllerValidator,
+        validator: _passwordValidator,
       ),
     );
   }
@@ -236,8 +240,8 @@ class _LoginProdutorWidgetState extends State<LoginProdutorWidget>
 
     final user = await authManager.signInWithEmail(
       context,
-      _model.emailAddressTextController!.text,
-      _model.passwordTextController!.text,
+      _emailController.text,
+      _passwordController.text,
     );
 
     if (user == null) {
@@ -258,7 +262,7 @@ class _LoginProdutorWidgetState extends State<LoginProdutorWidget>
   /// Carrega person/propriedade e navega — comum aos logins por senha e biometria.
   Future<void> _afterLogin() async {
     // Busca dados do usuário logado
-    _model.uidPersonLogged = await queryPersonRecordOnce(
+    final uidPersonLogged = await queryPersonRecordOnce(
       queryBuilder: (personRecord) => personRecord.where(
         'uid',
         isEqualTo: currentUserUid,
@@ -267,40 +271,40 @@ class _LoginProdutorWidgetState extends State<LoginProdutorWidget>
     ).then((s) => s.firstOrNull);
 
     // Busca dados da propriedade
-    _model.outUidPropriedade = await queryPropriedadesRecordOnce(
+    final outUidPropriedade = await queryPropriedadesRecordOnce(
       queryBuilder: (propriedadesRecord) => propriedadesRecord.where(
         'uidPersonProdutor',
-        isEqualTo: _model.uidPersonLogged?.reference,
+        isEqualTo: uidPersonLogged?.reference,
       ),
       singleRecord: true,
     ).then((s) => s.firstOrNull);
 
     // Navega para a tela principal
-    _navigateToHome();
+    _navigateToHome(outUidPropriedade);
 
     safeSetState(() {});
   }
 
   /// Navega para a tela inicial da propriedade.
-  void _navigateToHome() {
+  void _navigateToHome(PropriedadesRecord? outUidPropriedade) {
     context.goNamedAuth(
       InicioPropriedadeProdutorWidget.routeName,
       context.mounted,
       queryParameters: {
         'nomePropriedade': serializeParam(
-          _model.outUidPropriedade?.displayName,
+          outUidPropriedade?.displayName,
           ParamType.String,
         ),
         'uidPropriedade': serializeParam(
-          _model.outUidPropriedade?.reference,
+          outUidPropriedade?.reference,
           ParamType.DocumentReference,
         ),
         'uidTecnico': serializeParam(
-          _model.outUidPropriedade?.parentReference,
+          outUidPropriedade?.parentReference,
           ParamType.DocumentReference,
         ),
         'emailPropriedade': serializeParam(
-          _model.outUidPropriedade?.email,
+          outUidPropriedade?.email,
           ParamType.String,
         ),
         'visitaPresencial': serializeParam(
@@ -308,7 +312,7 @@ class _LoginProdutorWidgetState extends State<LoginProdutorWidget>
           ParamType.bool,
         ),
         'diasDg': serializeParam(
-          _model.outUidPropriedade?.diasParaDg,
+          outUidPropriedade?.diasParaDg,
           ParamType.String,
         ),
       }.withoutNulls,

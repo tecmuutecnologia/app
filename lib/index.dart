@@ -41,8 +41,8 @@ export '/pages/tecnico/propriedade/indices_zootecnicos/indices_zootecnicos/indic
     show IndicesZootecnicosWidget;
 export '/pages/tecnico/perfil/completar_perfil_tecnico/completar_perfil_tecnico_widget.dart'
     show CompletarPerfilTecnicoWidget;
-export '/pages/produtor/initial/login_produtor/login_produtor_widget.dart'
-    show LoginProdutorWidget;
+export '/features/produtor/presentation/pages/login_produtor_page.dart'
+    show LoginProdutorPage;
 export '/features/onboarding/presentation/pages/tutorial_page.dart'
     show TutorialPage;
 export '/pages/tecnico/perfil/profile_tecnico/profile_tecnico_widget.dart'
