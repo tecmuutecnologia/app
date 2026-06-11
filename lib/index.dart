@@ -3,8 +3,8 @@ export '/features/onboarding/presentation/pages/welcome_page.dart'
     show WelcomePage;
 export '/features/auth/presentation/pages/login_technician_page.dart'
     show LoginTechnicianPage;
-export '/pages/tecnico/initial/create_account_technician/create_account_technician_widget.dart'
-    show CreateAccountTechnicianWidget;
+export '/features/auth/presentation/pages/create_account_technician_page.dart'
+    show CreateAccountTechnicianPage;
 export '/pages/tecnico/dashboard/dashboard_tecnico/dashboard_tecnico_widget.dart'
     show DashboardTecnicoWidget;
 export '/pages/tecnico/propriedade/propriedades/lista_propriedade/lista_propriedade_widget.dart'

@@ -10,7 +10,7 @@ import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/pages/tecnico/initial/create_account_technician/create_account_technician_widget.dart';
+import '/features/auth/presentation/pages/create_account_technician_page.dart';
 import '/pages/tecnico/initial/sync_technician/sync_technician_widget.dart';
 import '../controllers/login_technician_controller.dart';
 
@@ -498,7 +498,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
         hoverColor: Colors.transparent,
         highlightColor: Colors.transparent,
         onTap: () async {
-          context.pushNamed(CreateAccountTechnicianWidget.routeName);
+          context.pushNamed(CreateAccountTechnicianPage.routeName);
         },
         child: RichText(
           textScaler: MediaQuery.of(context).textScaler,
@@ -525,7 +525,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
                 mouseCursor: SystemMouseCursors.click,
                 recognizer: TapGestureRecognizer()
                   ..onTap = () async {
-                    context.pushNamed(CreateAccountTechnicianWidget.routeName);
+                    context.pushNamed(CreateAccountTechnicianPage.routeName);
                   },
               )
             ],

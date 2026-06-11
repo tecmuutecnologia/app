@@ -3,50 +3,58 @@ import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/index.dart';
+import '/features/auth/presentation/pages/login_technician_page.dart';
+import '/pages/tecnico/perfil/completar_perfil_tecnico/completar_perfil_tecnico_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'create_account_technician_model.dart';
-export 'create_account_technician_model.dart';
 
-class CreateAccountTechnicianWidget extends StatefulWidget {
-  const CreateAccountTechnicianWidget({super.key});
+class CreateAccountTechnicianPage extends StatefulWidget {
+  const CreateAccountTechnicianPage({super.key});
 
   static String routeName = 'createAccountTechnician';
   static String routePath = '/createAccountTechnician';
 
   @override
-  State<CreateAccountTechnicianWidget> createState() =>
-      _CreateAccountTechnicianWidgetState();
+  State<CreateAccountTechnicianPage> createState() =>
+      _CreateAccountTechnicianPageState();
 }
 
-class _CreateAccountTechnicianWidgetState
-    extends State<CreateAccountTechnicianWidget> {
-  late CreateAccountTechnicianModel _model;
-
+class _CreateAccountTechnicianPageState
+    extends State<CreateAccountTechnicianPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  late final TextEditingController _emailController;
+  late final FocusNode _emailFocusNode;
+  late final TextEditingController _passwordController;
+  late final FocusNode _passwordFocusNode;
+  late final TextEditingController _confirmPasswordController;
+  late final FocusNode _confirmPasswordFocusNode;
+  bool _passwordVisibility = false;
+  bool _confirmPasswordVisibility = false;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => CreateAccountTechnicianModel());
 
-    _model.emailAddressTextController ??= TextEditingController();
-    _model.emailAddressFocusNode ??= FocusNode();
-
-    _model.passwordTextController ??= TextEditingController();
-    _model.passwordFocusNode ??= FocusNode();
-
-    _model.confirmPasswordTextController ??= TextEditingController();
-    _model.confirmPasswordFocusNode ??= FocusNode();
+    _emailController = TextEditingController();
+    _emailFocusNode = FocusNode();
+    _passwordController = TextEditingController();
+    _passwordFocusNode = FocusNode();
+    _confirmPasswordController = TextEditingController();
+    _confirmPasswordFocusNode = FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.dispose();
+    _emailFocusNode.dispose();
+    _emailController.dispose();
+    _passwordFocusNode.dispose();
+    _passwordController.dispose();
+    _confirmPasswordFocusNode.dispose();
+    _confirmPasswordController.dispose();
 
     super.dispose();
   }
@@ -166,8 +174,8 @@ class _CreateAccountTechnicianWidgetState
       child: Container(
         width: double.infinity,
         child: TextFormField(
-          controller: _model.emailAddressTextController,
-          focusNode: _model.emailAddressFocusNode,
+          controller: _emailController,
+          focusNode: _emailFocusNode,
           autofocus: true,
           autofillHints: [AutofillHints.email],
           obscureText: false,
@@ -230,8 +238,6 @@ class _CreateAccountTechnicianWidgetState
                 fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
               ),
           keyboardType: TextInputType.emailAddress,
-          validator:
-              _model.emailAddressTextControllerValidator.asValidator(context),
         ),
       ),
     );
@@ -243,11 +249,11 @@ class _CreateAccountTechnicianWidgetState
       child: Container(
         width: double.infinity,
         child: TextFormField(
-          controller: _model.passwordTextController,
-          focusNode: _model.passwordFocusNode,
+          controller: _passwordController,
+          focusNode: _passwordFocusNode,
           autofocus: true,
           autofillHints: [AutofillHints.password],
-          obscureText: !_model.passwordVisibility,
+          obscureText: !_passwordVisibility,
           decoration: InputDecoration(
             labelText: 'Senha',
             labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
@@ -295,11 +301,11 @@ class _CreateAccountTechnicianWidgetState
             contentPadding: EdgeInsets.all(24.0),
             suffixIcon: InkWell(
               onTap: () => safeSetState(
-                () => _model.passwordVisibility = !_model.passwordVisibility,
+                () => _passwordVisibility = !_passwordVisibility,
               ),
               focusNode: FocusNode(skipTraversal: true),
               child: Icon(
-                _model.passwordVisibility
+                _passwordVisibility
                     ? Icons.visibility_outlined
                     : Icons.visibility_off_outlined,
                 color: FlutterFlowTheme.of(context).secondaryText,
@@ -316,8 +322,6 @@ class _CreateAccountTechnicianWidgetState
                 fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
                 fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
               ),
-          validator:
-              _model.passwordTextControllerValidator.asValidator(context),
         ),
       ),
     );
@@ -329,11 +333,11 @@ class _CreateAccountTechnicianWidgetState
       child: Container(
         width: double.infinity,
         child: TextFormField(
-          controller: _model.confirmPasswordTextController,
-          focusNode: _model.confirmPasswordFocusNode,
+          controller: _confirmPasswordController,
+          focusNode: _confirmPasswordFocusNode,
           autofocus: true,
           autofillHints: [AutofillHints.password],
-          obscureText: !_model.confirmPasswordVisibility,
+          obscureText: !_confirmPasswordVisibility,
           decoration: InputDecoration(
             labelText: 'Confirme sua senha',
             labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
@@ -381,12 +385,11 @@ class _CreateAccountTechnicianWidgetState
             contentPadding: EdgeInsets.all(24.0),
             suffixIcon: InkWell(
               onTap: () => safeSetState(
-                () => _model.confirmPasswordVisibility =
-                    !_model.confirmPasswordVisibility,
+                () => _confirmPasswordVisibility = !_confirmPasswordVisibility,
               ),
               focusNode: FocusNode(skipTraversal: true),
               child: Icon(
-                _model.confirmPasswordVisibility
+                _confirmPasswordVisibility
                     ? Icons.visibility_outlined
                     : Icons.visibility_off_outlined,
                 color: FlutterFlowTheme.of(context).secondaryText,
@@ -403,8 +406,6 @@ class _CreateAccountTechnicianWidgetState
                 fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
                 fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
               ),
-          validator: _model.confirmPasswordTextControllerValidator
-              .asValidator(context),
         ),
       ),
     );
@@ -418,8 +419,7 @@ class _CreateAccountTechnicianWidgetState
         child: FFButtonWidget(
           onPressed: () async {
             GoRouter.of(context).prepareAuthEvent();
-            if (_model.passwordTextController.text !=
-                _model.confirmPasswordTextController.text) {
+            if (_passwordController.text != _confirmPasswordController.text) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
@@ -432,8 +432,8 @@ class _CreateAccountTechnicianWidgetState
 
             final user = await authManager.createAccountWithEmail(
               context,
-              _model.emailAddressTextController.text,
-              _model.passwordTextController.text,
+              _emailController.text,
+              _passwordController.text,
             );
             if (user == null) {
               return;

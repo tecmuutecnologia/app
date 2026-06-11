@@ -45,7 +45,9 @@ dados já é offline-first; a migração agora move a **apresentação** do padr
    `extends ConsumerStatefulWidget` (ou `ConsumerWidget`).
 2. Controllers/`FocusNode`/validators de `TextField` → `State` da page (ciclo de vida de UI).
    Remover `createModel`/`_model.` e o `export '..._model.dart'`.
-3. Estado de view/negócio (o que estava no `FlutterFlowModel` ou lia `FFAppState`) →
+3. **Estado efêmero de UI** (visibilidade de senha, índice de aba, toggles locais) fica no
+   `State` com `setState` — `ConsumerStatefulWidget` só é necessário quando a tela usa `ref`.
+   **Estado de negócio/app** (o que estava no `FlutterFlowModel` com lógica ou lia `FFAppState`) →
    `presentation/controllers/x_controller.dart`: `XController extends Notifier<XState>`
    (estado imutável + `copyWith`), consumido via `ref.watch`/`ref.read`. Escritas passam pelos
    repositórios offline-first — nunca Firestore/`currentUserUid` direto.
