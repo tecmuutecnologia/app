@@ -1092,9 +1092,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: ApagarContaWidget.routeName,
-          path: ApagarContaWidget.routePath,
-          builder: (context, params) => ApagarContaWidget(),
+          name: ApagarContaPage.routeName,
+          path: ApagarContaPage.routePath,
+          builder: (context, params) => ApagarContaPage(),
         ),
         FFRoute(
           name: EditarRelatorioFinanceiroWidget.routeName,

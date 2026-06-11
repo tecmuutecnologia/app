@@ -73,8 +73,8 @@ export '/pages/tecnico/propriedade/financeiro/novo_relatorio_financeiro/novo_rel
     show NovoRelatorioFinanceiroWidget;
 export '/pages/tecnico/propriedade/lista_completa/listacompleta/listacompleta_widget.dart'
     show ListacompletaWidget;
-export '/pages/tecnico/perfil/apagar_conta/apagar_conta_widget.dart'
-    show ApagarContaWidget;
+export '/features/perfil/presentation/pages/apagar_conta_page.dart'
+    show ApagarContaPage;
 export '/pages/tecnico/propriedade/financeiro/editar_relatorio_financeiro/editar_relatorio_financeiro_widget.dart'
     show EditarRelatorioFinanceiroWidget;
 export '/pages/tecnico/propriedade/recria/recriacao/recriacao_widget.dart'

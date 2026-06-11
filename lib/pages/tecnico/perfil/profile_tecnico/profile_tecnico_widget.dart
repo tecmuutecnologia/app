@@ -996,7 +996,7 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
               ) ??
               false;
           if (confirmDialogResponse) {
-            context.pushNamed(ApagarContaWidget.routeName);
+            context.pushNamed(ApagarContaPage.routeName);
 
             return;
           } else {

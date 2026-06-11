@@ -4,40 +4,28 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/index.dart';
+import '/features/auth/presentation/pages/login_technician_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'apagar_conta_model.dart';
-export 'apagar_conta_model.dart';
 
-class ApagarContaWidget extends StatefulWidget {
-  const ApagarContaWidget({super.key});
+class ApagarContaPage extends StatefulWidget {
+  const ApagarContaPage({super.key});
 
   static String routeName = 'apagarConta';
   static String routePath = '/apagarConta';
 
   @override
-  State<ApagarContaWidget> createState() => _ApagarContaWidgetState();
+  State<ApagarContaPage> createState() => _ApagarContaPageState();
 }
 
-class _ApagarContaWidgetState extends State<ApagarContaWidget> {
-  late ApagarContaModel _model;
-
+class _ApagarContaPageState extends State<ApagarContaPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ApagarContaModel());
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
   }
 
   @override
