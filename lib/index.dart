@@ -1,7 +1,7 @@
 // Export pages
 export '/pages/welcome/welcome/welcome_widget.dart' show WelcomeWidget;
-export '/pages/tecnico/initial/login_technician/login_technician_widget.dart'
-    show LoginTechnicianWidget;
+export '/features/auth/presentation/pages/login_technician_page.dart'
+    show LoginTechnicianPage;
 export '/pages/tecnico/initial/create_account_technician/create_account_technician_widget.dart'
     show CreateAccountTechnicianWidget;
 export '/pages/tecnico/dashboard/dashboard_tecnico/dashboard_tecnico_widget.dart'

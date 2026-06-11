@@ -27,10 +27,32 @@ backend/objectbox/
   offline_first_sync_service.dart   o "SyncEngine" (download + push + fila)
   remote_sync_listeners_service.dart  listeners Firestore->ObjectBox (HOJE INATIVO)
 domain/          regras puras testáveis (ex.: animais/classificacao_animal.dart)
-features/        adaptadores/lógica por feature (ex.: animal_struct_adapter)
-pages/           telas FlutterFlow legadas (vão sendo esvaziadas)
-flutter_flow/    utilitários gerados (mantidos)
+features/        feature-first: <feature>/presentation/{pages,widgets,controllers},
+                 application/, domain/, data/
+pages/           telas FlutterFlow legadas (vão sendo migradas p/ features/)
+flutter_flow/    utilitários gerados (mantidos durante a migração)
 ```
+
+## Migração da UI (FlutterFlow → feature-first)
+
+Programa **incremental por feature** (ver plano completo no histórico). A camada de
+dados já é offline-first; a migração agora move a **apresentação** do padrão FlutterFlow
+(`pages/<área>/<tela>/<tela>_widget.dart` + `_model.dart` extends `FlutterFlowModel`) para
+`features/<feature>/presentation/`. Cada tela compila e passa no gate isoladamente.
+
+**Receita por tela** (referência-ouro: `features/auth/presentation/` — login do técnico):
+1. `X_widget.dart` → `features/<f>/presentation/pages/x_page.dart`; classe `XWidget`→`XPage`
+   `extends ConsumerStatefulWidget` (ou `ConsumerWidget`).
+2. Controllers/`FocusNode`/validators de `TextField` → `State` da page (ciclo de vida de UI).
+   Remover `createModel`/`_model.` e o `export '..._model.dart'`.
+3. Estado de view/negócio (o que estava no `FlutterFlowModel` ou lia `FFAppState`) →
+   `presentation/controllers/x_controller.dart`: `XController extends Notifier<XState>`
+   (estado imutável + `copyWith`), consumido via `ref.watch`/`ref.read`. Escritas passam pelos
+   repositórios offline-first — nunca Firestore/`currentUserUid` direto.
+4. Imports: **sem** `import '/index.dart'`; referenciar telas/route names por import direto.
+   Tema/i18n via `flutter_flow_util.dart` (relocação p/ `core/ui` vem na fase de app-shell).
+5. Atualizar a rota (`flutter_flow/nav/nav.dart` hoje) e a entrada do `index.dart`; deletar
+   `X_model.dart` e a pasta antiga.
 
 ## Repositórios (`BaseSyncRepository<E>`)
 

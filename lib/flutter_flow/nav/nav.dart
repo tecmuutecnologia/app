@@ -93,9 +93,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => WelcomeWidget(),
         ),
         FFRoute(
-          name: LoginTechnicianWidget.routeName,
-          path: LoginTechnicianWidget.routePath,
-          builder: (context, params) => LoginTechnicianWidget(),
+          name: LoginTechnicianPage.routeName,
+          path: LoginTechnicianPage.routePath,
+          builder: (context, params) => LoginTechnicianPage(),
         ),
         FFRoute(
           name: CreateAccountTechnicianWidget.routeName,

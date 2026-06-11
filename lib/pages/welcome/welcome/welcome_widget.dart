@@ -231,7 +231,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget>
                         child: FFButtonWidget(
                           onPressed: () async {
                             context.pushNamed(
-                              LoginTechnicianWidget.routeName,
+                              LoginTechnicianPage.routeName,
                               extra: <String, dynamic>{
                                 kTransitionInfoKey: TransitionInfo(
                                   hasTransition: true,

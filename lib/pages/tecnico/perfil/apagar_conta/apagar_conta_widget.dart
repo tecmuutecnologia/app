@@ -316,7 +316,7 @@ class _ApagarContaWidgetState extends State<ApagarContaWidget> {
                           GoRouter.of(context).clearRedirectLocation();
 
                           context.pushNamedAuth(
-                              LoginTechnicianWidget.routeName, context.mounted);
+                              LoginTechnicianPage.routeName, context.mounted);
 
                           return;
                         } else {

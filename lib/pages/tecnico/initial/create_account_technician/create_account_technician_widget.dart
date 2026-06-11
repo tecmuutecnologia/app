@@ -492,7 +492,7 @@ class _CreateAccountTechnicianWidgetState
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
           onTap: () async {
-            context.pushNamed(LoginTechnicianWidget.routeName);
+            context.pushNamed(LoginTechnicianPage.routeName);
           },
           child: RichText(
             textScaler: MediaQuery.of(context).textScaler,
@@ -523,7 +523,7 @@ class _CreateAccountTechnicianWidgetState
                         context.pop();
                       }
                       context.pushNamed(
-                        LoginTechnicianWidget.routeName,
+                        LoginTechnicianPage.routeName,
                         extra: <String, dynamic>{
                           kTransitionInfoKey: TransitionInfo(
                             hasTransition: true,

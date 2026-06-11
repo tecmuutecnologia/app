@@ -1,45 +1,56 @@
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/objectbox/offline_auth_service.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/index.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'login_technician_model.dart';
-export 'login_technician_model.dart';
+import '/pages/tecnico/initial/create_account_technician/create_account_technician_widget.dart';
+import '/pages/tecnico/initial/sync_technician/sync_technician_widget.dart';
+import '../controllers/login_technician_controller.dart';
 
-class LoginTechnicianWidget extends StatefulWidget {
-  const LoginTechnicianWidget({super.key});
+/// Tela de login do técnico.
+///
+/// **Receita-ouro** da migração FlutterFlow→Flutter (feature-first):
+/// - `ConsumerStatefulWidget` (acesso a `ref` para o Riverpod);
+/// - controllers/focus de `TextField` vivem no `State` (ciclo de vida de UI);
+/// - estado de view (visibilidade da senha) no
+///   [LoginTechnicianController]/[LoginTechnicianState];
+/// - sem `createModel`/`FlutterFlowModel` e sem `import '/index.dart'`.
+class LoginTechnicianPage extends ConsumerStatefulWidget {
+  const LoginTechnicianPage({super.key});
 
   static String routeName = 'loginTechnician';
   static String routePath = '/loginTechnician';
 
   @override
-  State<LoginTechnicianWidget> createState() => _LoginTechnicianWidgetState();
+  ConsumerState<LoginTechnicianPage> createState() =>
+      _LoginTechnicianPageState();
 }
 
-class _LoginTechnicianWidgetState extends State<LoginTechnicianWidget>
+class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
     with TickerProviderStateMixin {
-  late LoginTechnicianModel _model;
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   final animationsMap = <String, AnimationInfo>{};
 
+  late final TextEditingController _emailController;
+  late final FocusNode _emailFocusNode;
+  late final TextEditingController _passwordController;
+  late final FocusNode _passwordFocusNode;
+
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => LoginTechnicianModel());
-
-    _model.emailAddressTextController ??= TextEditingController();
-    _model.emailAddressFocusNode ??= FocusNode();
-
-    _model.passwordTextController ??= TextEditingController();
-    _model.passwordFocusNode ??= FocusNode();
+    _emailController = TextEditingController();
+    _emailFocusNode = FocusNode();
+    _passwordController = TextEditingController();
+    _passwordFocusNode = FocusNode();
 
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
@@ -83,8 +94,10 @@ class _LoginTechnicianWidgetState extends State<LoginTechnicianWidget>
 
   @override
   void dispose() {
-    _model.dispose();
-
+    _emailController.dispose();
+    _emailFocusNode.dispose();
+    _passwordController.dispose();
+    _passwordFocusNode.dispose();
     super.dispose();
   }
 
@@ -233,8 +246,8 @@ class _LoginTechnicianWidgetState extends State<LoginTechnicianWidget>
       child: Container(
         width: double.infinity,
         child: TextFormField(
-          controller: _model.emailAddressTextController,
-          focusNode: _model.emailAddressFocusNode,
+          controller: _emailController,
+          focusNode: _emailFocusNode,
           autofocus: true,
           autofillHints: [AutofillHints.email],
           obscureText: false,
@@ -293,24 +306,24 @@ class _LoginTechnicianWidgetState extends State<LoginTechnicianWidget>
                 fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
               ),
           keyboardType: TextInputType.emailAddress,
-          validator:
-              _model.emailAddressTextControllerValidator.asValidator(context),
         ),
       ),
     );
   }
 
   Widget _p7(BuildContext context) {
+    final passwordVisibility =
+        ref.watch(loginTechnicianControllerProvider).passwordVisibility;
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: Container(
         width: double.infinity,
         child: TextFormField(
-          controller: _model.passwordTextController,
-          focusNode: _model.passwordFocusNode,
+          controller: _passwordController,
+          focusNode: _passwordFocusNode,
           autofocus: true,
           autofillHints: [AutofillHints.password],
-          obscureText: !_model.passwordVisibility,
+          obscureText: !passwordVisibility,
           decoration: InputDecoration(
             labelText: 'Senha',
             labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
@@ -356,12 +369,12 @@ class _LoginTechnicianWidgetState extends State<LoginTechnicianWidget>
             filled: true,
             fillColor: FlutterFlowTheme.of(context).primaryBackground,
             suffixIcon: InkWell(
-              onTap: () => safeSetState(
-                () => _model.passwordVisibility = !_model.passwordVisibility,
-              ),
+              onTap: () => ref
+                  .read(loginTechnicianControllerProvider.notifier)
+                  .togglePasswordVisibility(),
               focusNode: FocusNode(skipTraversal: true),
               child: Icon(
-                _model.passwordVisibility
+                passwordVisibility
                     ? Icons.visibility_outlined
                     : Icons.visibility_off_outlined,
                 color: FlutterFlowTheme.of(context).secondaryText,
@@ -378,8 +391,6 @@ class _LoginTechnicianWidgetState extends State<LoginTechnicianWidget>
                 fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
                 fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
               ),
-          validator:
-              _model.passwordTextControllerValidator.asValidator(context),
         ),
       ),
     );
@@ -394,8 +405,8 @@ class _LoginTechnicianWidgetState extends State<LoginTechnicianWidget>
 
           final user = await authManager.signInWithEmail(
             context,
-            _model.emailAddressTextController.text,
-            _model.passwordTextController.text,
+            _emailController.text,
+            _passwordController.text,
           );
           if (user == null) {
             return;
