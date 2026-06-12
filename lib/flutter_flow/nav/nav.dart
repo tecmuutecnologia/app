@@ -448,9 +448,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => SyncTechnicianWidget(),
         ),
         FFRoute(
-          name: ReceituariosListaWidget.routeName,
-          path: ReceituariosListaWidget.routePath,
-          builder: (context, params) => ReceituariosListaWidget(
+          name: ReceituariosListaPage.routeName,
+          path: ReceituariosListaPage.routePath,
+          builder: (context, params) => ReceituariosListaPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,

@@ -31,8 +31,8 @@ export '/pages/tecnico/propriedade/secas/secas/secas_widget.dart'
     show SecasWidget;
 export '/pages/tecnico/initial/sync_technician/sync_technician_widget.dart'
     show SyncTechnicianWidget;
-export '/pages/tecnico/propriedade/receituario/receituarios_lista/receituarios_lista_widget.dart'
-    show ReceituariosListaWidget;
+export '/features/receituario/presentation/pages/receituarios_lista_page.dart'
+    show ReceituariosListaPage;
 export '/pages/tecnico/propriedade/receituario/resumo_visita_atual/resumo_visita_atual_widget.dart'
     show ResumoVisitaAtualWidget;
 export '/pages/tecnico/propriedade/resumo_rebanho/resumo_rebanho/resumo_rebanho_widget.dart'

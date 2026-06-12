@@ -88,7 +88,7 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
             ),
             onPressed: () async {
               context.goNamed(
-                ReceituariosListaWidget.routeName,
+                ReceituariosListaPage.routeName,
                 queryParameters: {
                   'uidPropriedade': serializeParam(
                     widget.uidPropriedade,
@@ -518,7 +518,7 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
             );
 
             context.goNamed(
-              ReceituariosListaWidget.routeName,
+              ReceituariosListaPage.routeName,
               queryParameters: {
                 'uidPropriedade': serializeParam(
                   widget.uidPropriedade,
@@ -650,7 +650,7 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
             );
 
             context.goNamed(
-              ReceituariosListaWidget.routeName,
+              ReceituariosListaPage.routeName,
               queryParameters: {
                 'uidPropriedade': serializeParam(
                   widget.uidPropriedade,

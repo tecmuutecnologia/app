@@ -382,7 +382,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
       iconSize: 30.0,
       onTap: () {
         context.pushNamed(
-          ReceituariosListaWidget.routeName,
+          ReceituariosListaPage.routeName,
           queryParameters: navigationParams.toQueryParameters(),
         );
       },

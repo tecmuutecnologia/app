@@ -2,14 +2,13 @@ import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/index.dart';
+import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
+import '/pages/tecnico/propriedade/receituario/resumo_visita_atual/resumo_visita_atual_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'receituarios_lista_model.dart';
-export 'receituarios_lista_model.dart';
 
-class ReceituariosListaWidget extends StatefulWidget {
-  const ReceituariosListaWidget({
+class ReceituariosListaPage extends StatefulWidget {
+  const ReceituariosListaPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -30,28 +29,17 @@ class ReceituariosListaWidget extends StatefulWidget {
   static String routePath = '/receituariosLista';
 
   @override
-  State<ReceituariosListaWidget> createState() =>
-      _ReceituariosListaWidgetState();
+  State<ReceituariosListaPage> createState() => _ReceituariosListaPageState();
 }
 
-class _ReceituariosListaWidgetState extends State<ReceituariosListaWidget> {
-  late ReceituariosListaModel _model;
-
+class _ReceituariosListaPageState extends State<ReceituariosListaPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ReceituariosListaModel());
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
   }
 
   Widget _p1(BuildContext context) {
