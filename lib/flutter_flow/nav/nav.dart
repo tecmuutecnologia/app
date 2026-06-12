@@ -594,9 +594,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: CompletarPerfilTecnicoWidget.routeName,
-          path: CompletarPerfilTecnicoWidget.routePath,
-          builder: (context, params) => CompletarPerfilTecnicoWidget(),
+          name: CompletarPerfilTecnicoPage.routeName,
+          path: CompletarPerfilTecnicoPage.routePath,
+          builder: (context, params) => CompletarPerfilTecnicoPage(),
         ),
         FFRoute(
           name: LoginProdutorPage.routeName,

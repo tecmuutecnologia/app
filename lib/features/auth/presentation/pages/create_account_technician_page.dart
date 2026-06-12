@@ -4,7 +4,7 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/features/auth/presentation/pages/login_technician_page.dart';
-import '/pages/tecnico/perfil/completar_perfil_tecnico/completar_perfil_tecnico_widget.dart';
+import '/features/perfil/presentation/pages/completar_perfil_tecnico_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -446,7 +446,7 @@ class _CreateAccountTechnicianPageState
                 ));
 
             context.goNamedAuth(
-                CompletarPerfilTecnicoWidget.routeName, context.mounted);
+                CompletarPerfilTecnicoPage.routeName, context.mounted);
           },
           text: 'Criar conta',
           options: FFButtonOptions(

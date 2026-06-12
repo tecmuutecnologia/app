@@ -106,7 +106,7 @@ class _SyncTechnicianWidgetState extends State<SyncTechnicianWidget> {
         );
 
         if (!mounted) return;
-        context.goNamed(CompletarPerfilTecnicoWidget.routeName);
+        context.goNamed(CompletarPerfilTecnicoPage.routeName);
 
         return;
       }

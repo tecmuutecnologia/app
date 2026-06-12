@@ -3,69 +3,179 @@ import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/index.dart';
+import '/pages/tecnico/initial/sync_technician/sync_technician_widget.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'completar_perfil_tecnico_model.dart';
-export 'completar_perfil_tecnico_model.dart';
 
-class CompletarPerfilTecnicoWidget extends StatefulWidget {
-  const CompletarPerfilTecnicoWidget({super.key});
+class CompletarPerfilTecnicoPage extends StatefulWidget {
+  const CompletarPerfilTecnicoPage({super.key});
 
   static String routeName = 'completarPerfilTecnico';
   static String routePath = '/completarPerfilTecnico';
 
   @override
-  State<CompletarPerfilTecnicoWidget> createState() =>
-      _CompletarPerfilTecnicoWidgetState();
+  State<CompletarPerfilTecnicoPage> createState() =>
+      _CompletarPerfilTecnicoPageState();
 }
 
-class _CompletarPerfilTecnicoWidgetState
-    extends State<CompletarPerfilTecnicoWidget> {
-  late CompletarPerfilTecnicoModel _model;
-
+class _CompletarPerfilTecnicoPageState
+    extends State<CompletarPerfilTecnicoPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final _formKey = GlobalKey<FormState>();
+
+  FocusNode? _nomeFocusNode;
+  TextEditingController? _nomeTextController;
+  FocusNode? _empresaFocusNode;
+  TextEditingController? _empresaTextController;
+  final String? Function(BuildContext, String?)?
+      _empresaTextControllerValidator = null;
+  FocusNode? _cpfFocusNode;
+  TextEditingController? _cpfTextController;
+  late MaskTextInputFormatter _cpfMask;
+  FocusNode? _dtnascimentoFocusNode;
+  TextEditingController? _dtnascimentoTextController;
+  late MaskTextInputFormatter _dtnascimentoMask;
+  FocusNode? _celularFocusNode;
+  TextEditingController? _celularTextController;
+  late MaskTextInputFormatter _celularMask;
+  FocusNode? _cidadeufFocusNode;
+  TextEditingController? _cidadeufTextController;
+  FocusNode? _enderecoFocusNode;
+  TextEditingController? _enderecoTextController;
+  FocusNode? _bairroFocusNode;
+  TextEditingController? _bairroTextController;
+
+  // Outputs de query/criação (antes no FlutterFlowModel).
+  PersonRecord? _outUidPersonExists;
+  TecnicoRecord? _outUidTecnico;
+  AssinaturaTecnicoRecord? _outAssinaturaTecnico;
+
+  String? _nomeTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 5) {
+      return 'Mínimo 5 caracteres.';
+    }
+    return null;
+  }
+
+  String? _cpfTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 14) {
+      return 'Mínimo 14 caracteres.';
+    }
+    return null;
+  }
+
+  String? _dtnascimentoTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 10) {
+      return 'Mínimo 10 caracteres.';
+    }
+    return null;
+  }
+
+  String? _celularTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 15) {
+      return 'Mínimo 15 caracteres.';
+    }
+    return null;
+  }
+
+  String? _cidadeufTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 10) {
+      return 'Mínimo 10 caracteres.';
+    }
+    return null;
+  }
+
+  String? _enderecoTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 3) {
+      return 'Mínimo 3 caracteres.';
+    }
+    return null;
+  }
+
+  String? _bairroTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 3) {
+      return 'Mínimo 3 caracteres.';
+    }
+    return null;
+  }
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => CompletarPerfilTecnicoModel());
 
-    _model.nomeTextController ??= TextEditingController();
-    _model.nomeFocusNode ??= FocusNode();
+    _nomeTextController ??= TextEditingController();
+    _nomeFocusNode ??= FocusNode();
 
-    _model.empresaTextController ??= TextEditingController();
-    _model.empresaFocusNode ??= FocusNode();
+    _empresaTextController ??= TextEditingController();
+    _empresaFocusNode ??= FocusNode();
 
-    _model.cpfTextController ??= TextEditingController();
-    _model.cpfFocusNode ??= FocusNode();
+    _cpfTextController ??= TextEditingController();
+    _cpfFocusNode ??= FocusNode();
+    _cpfMask = MaskTextInputFormatter(mask: '###.###.###-##');
 
-    _model.cpfMask = MaskTextInputFormatter(mask: '###.###.###-##');
-    _model.dtnascimentoTextController ??= TextEditingController();
-    _model.dtnascimentoFocusNode ??= FocusNode();
+    _dtnascimentoTextController ??= TextEditingController();
+    _dtnascimentoFocusNode ??= FocusNode();
+    _dtnascimentoMask = MaskTextInputFormatter(mask: '##/##/####');
 
-    _model.dtnascimentoMask = MaskTextInputFormatter(mask: '##/##/####');
-    _model.celularTextController ??= TextEditingController();
-    _model.celularFocusNode ??= FocusNode();
+    _celularTextController ??= TextEditingController();
+    _celularFocusNode ??= FocusNode();
+    _celularMask = MaskTextInputFormatter(mask: '(##) #####-####');
 
-    _model.celularMask = MaskTextInputFormatter(mask: '(##) #####-####');
-    _model.cidadeufTextController ??= TextEditingController();
-    _model.cidadeufFocusNode ??= FocusNode();
+    _cidadeufTextController ??= TextEditingController();
+    _cidadeufFocusNode ??= FocusNode();
 
-    _model.enderecoTextController ??= TextEditingController();
-    _model.enderecoFocusNode ??= FocusNode();
+    _enderecoTextController ??= TextEditingController();
+    _enderecoFocusNode ??= FocusNode();
 
-    _model.bairroTextController ??= TextEditingController();
-    _model.bairroFocusNode ??= FocusNode();
+    _bairroTextController ??= TextEditingController();
+    _bairroFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.dispose();
+    _nomeFocusNode?.dispose();
+    _nomeTextController?.dispose();
+    _empresaFocusNode?.dispose();
+    _empresaTextController?.dispose();
+    _cpfFocusNode?.dispose();
+    _cpfTextController?.dispose();
+    _dtnascimentoFocusNode?.dispose();
+    _dtnascimentoTextController?.dispose();
+    _celularFocusNode?.dispose();
+    _celularTextController?.dispose();
+    _cidadeufFocusNode?.dispose();
+    _cidadeufTextController?.dispose();
+    _enderecoFocusNode?.dispose();
+    _enderecoTextController?.dispose();
+    _bairroFocusNode?.dispose();
+    _bairroTextController?.dispose();
 
     super.dispose();
   }
@@ -95,7 +205,7 @@ class _CompletarPerfilTecnicoWidgetState
 
   Widget _p2(BuildContext context, dynamic completarPerfilTecnicoPersonRecord) {
     return Form(
-      key: _model.formKey,
+      key: _formKey,
       autovalidateMode: AutovalidateMode.always,
       child: Padding(
         padding: EdgeInsets.all(12.0),
@@ -173,8 +283,8 @@ class _CompletarPerfilTecnicoWidgetState
       child: Container(
         width: double.infinity,
         child: TextFormField(
-          controller: _model.nomeTextController,
-          focusNode: _model.nomeFocusNode,
+          controller: _nomeTextController,
+          focusNode: _nomeFocusNode,
           autofocus: true,
           obscureText: false,
           decoration: InputDecoration(
@@ -251,7 +361,7 @@ class _CompletarPerfilTecnicoWidgetState
           buildCounter: (context,
                   {required currentLength, required isFocused, maxLength}) =>
               null,
-          validator: _model.nomeTextControllerValidator.asValidator(context),
+          validator: _nomeTextControllerValidator.asValidator(context),
         ),
       ),
     );
@@ -263,8 +373,8 @@ class _CompletarPerfilTecnicoWidgetState
       child: Container(
         width: double.infinity,
         child: TextFormField(
-          controller: _model.empresaTextController,
-          focusNode: _model.empresaFocusNode,
+          controller: _empresaTextController,
+          focusNode: _empresaFocusNode,
           autofocus: true,
           obscureText: false,
           decoration: InputDecoration(
@@ -341,7 +451,7 @@ class _CompletarPerfilTecnicoWidgetState
           buildCounter: (context,
                   {required currentLength, required isFocused, maxLength}) =>
               null,
-          validator: _model.empresaTextControllerValidator.asValidator(context),
+          validator: _empresaTextControllerValidator.asValidator(context),
         ),
       ),
     );
@@ -353,8 +463,8 @@ class _CompletarPerfilTecnicoWidgetState
       child: Container(
         width: double.infinity,
         child: TextFormField(
-          controller: _model.cpfTextController,
-          focusNode: _model.cpfFocusNode,
+          controller: _cpfTextController,
+          focusNode: _cpfFocusNode,
           autofocus: true,
           textCapitalization: TextCapitalization.none,
           obscureText: false,
@@ -435,8 +545,8 @@ class _CompletarPerfilTecnicoWidgetState
                   {required currentLength, required isFocused, maxLength}) =>
               null,
           keyboardType: TextInputType.number,
-          validator: _model.cpfTextControllerValidator.asValidator(context),
-          inputFormatters: [_model.cpfMask],
+          validator: _cpfTextControllerValidator.asValidator(context),
+          inputFormatters: [_cpfMask],
         ),
       ),
     );
@@ -448,8 +558,8 @@ class _CompletarPerfilTecnicoWidgetState
       child: Container(
         width: double.infinity,
         child: TextFormField(
-          controller: _model.dtnascimentoTextController,
-          focusNode: _model.dtnascimentoFocusNode,
+          controller: _dtnascimentoTextController,
+          focusNode: _dtnascimentoFocusNode,
           autofocus: true,
           textCapitalization: TextCapitalization.none,
           obscureText: false,
@@ -530,9 +640,8 @@ class _CompletarPerfilTecnicoWidgetState
                   {required currentLength, required isFocused, maxLength}) =>
               null,
           keyboardType: TextInputType.number,
-          validator:
-              _model.dtnascimentoTextControllerValidator.asValidator(context),
-          inputFormatters: [_model.dtnascimentoMask],
+          validator: _dtnascimentoTextControllerValidator.asValidator(context),
+          inputFormatters: [_dtnascimentoMask],
         ),
       ),
     );
@@ -544,8 +653,8 @@ class _CompletarPerfilTecnicoWidgetState
       child: Container(
         width: double.infinity,
         child: TextFormField(
-          controller: _model.celularTextController,
-          focusNode: _model.celularFocusNode,
+          controller: _celularTextController,
+          focusNode: _celularFocusNode,
           autofocus: true,
           textCapitalization: TextCapitalization.none,
           obscureText: false,
@@ -626,8 +735,8 @@ class _CompletarPerfilTecnicoWidgetState
                   {required currentLength, required isFocused, maxLength}) =>
               null,
           keyboardType: TextInputType.number,
-          validator: _model.celularTextControllerValidator.asValidator(context),
-          inputFormatters: [_model.celularMask],
+          validator: _celularTextControllerValidator.asValidator(context),
+          inputFormatters: [_celularMask],
         ),
       ),
     );
@@ -639,8 +748,8 @@ class _CompletarPerfilTecnicoWidgetState
       child: Container(
         width: double.infinity,
         child: TextFormField(
-          controller: _model.cidadeufTextController,
-          focusNode: _model.cidadeufFocusNode,
+          controller: _cidadeufTextController,
+          focusNode: _cidadeufFocusNode,
           autofocus: true,
           obscureText: false,
           decoration: InputDecoration(
@@ -717,8 +826,7 @@ class _CompletarPerfilTecnicoWidgetState
           buildCounter: (context,
                   {required currentLength, required isFocused, maxLength}) =>
               null,
-          validator:
-              _model.cidadeufTextControllerValidator.asValidator(context),
+          validator: _cidadeufTextControllerValidator.asValidator(context),
         ),
       ),
     );
@@ -730,8 +838,8 @@ class _CompletarPerfilTecnicoWidgetState
       child: Container(
         width: double.infinity,
         child: TextFormField(
-          controller: _model.enderecoTextController,
-          focusNode: _model.enderecoFocusNode,
+          controller: _enderecoTextController,
+          focusNode: _enderecoFocusNode,
           autofocus: true,
           obscureText: false,
           decoration: InputDecoration(
@@ -808,8 +916,7 @@ class _CompletarPerfilTecnicoWidgetState
           buildCounter: (context,
                   {required currentLength, required isFocused, maxLength}) =>
               null,
-          validator:
-              _model.enderecoTextControllerValidator.asValidator(context),
+          validator: _enderecoTextControllerValidator.asValidator(context),
         ),
       ),
     );
@@ -821,8 +928,8 @@ class _CompletarPerfilTecnicoWidgetState
       child: Container(
         width: double.infinity,
         child: TextFormField(
-          controller: _model.bairroTextController,
-          focusNode: _model.bairroFocusNode,
+          controller: _bairroTextController,
+          focusNode: _bairroFocusNode,
           autofocus: true,
           obscureText: false,
           decoration: InputDecoration(
@@ -899,7 +1006,7 @@ class _CompletarPerfilTecnicoWidgetState
           buildCounter: (context,
                   {required currentLength, required isFocused, maxLength}) =>
               null,
-          validator: _model.bairroTextControllerValidator.asValidator(context),
+          validator: _bairroTextControllerValidator.asValidator(context),
         ),
       ),
     );
@@ -948,19 +1055,19 @@ class _CompletarPerfilTecnicoWidgetState
             return FFButtonWidget(
               onPressed: () async {
                 var _shouldSetState = false;
-                if (_model.formKey.currentState == null ||
-                    !_model.formKey.currentState!.validate()) {
+                if (_formKey.currentState == null ||
+                    !_formKey.currentState!.validate()) {
                   return;
                 }
-                _model.outUidPersonExists = await queryPersonRecordOnce(
+                _outUidPersonExists = await queryPersonRecordOnce(
                   queryBuilder: (personRecord) => personRecord.where(
                     'cpf',
-                    isEqualTo: _model.cpfTextController.text,
+                    isEqualTo: _cpfTextController.text,
                   ),
                   singleRecord: true,
                 ).then((s) => s.firstOrNull);
                 _shouldSetState = true;
-                if (_model.outUidPersonExists != null) {
+                if (_outUidPersonExists != null) {
                   await showDialog(
                     context: context,
                     builder: (alertDialogContext) {
@@ -982,14 +1089,14 @@ class _CompletarPerfilTecnicoWidgetState
 
                 await completarPerfilTecnicoPersonRecord!.reference
                     .update(createPersonRecordData(
-                  dtNascimento: _model.dtnascimentoTextController.text,
-                  cpf: _model.cpfTextController.text,
-                  endereco: _model.enderecoTextController.text,
-                  cidade: _model.cidadeufTextController.text,
-                  bairro: _model.bairroTextController.text,
-                  displayName: _model.nomeTextController.text,
-                  phoneNumber: _model.celularTextController.text,
-                  empresa: _model.empresaTextController.text,
+                  dtNascimento: _dtnascimentoTextController.text,
+                  cpf: _cpfTextController.text,
+                  endereco: _enderecoTextController.text,
+                  cidade: _cidadeufTextController.text,
+                  bairro: _bairroTextController.text,
+                  displayName: _nomeTextController.text,
+                  phoneNumber: _celularTextController.text,
+                  empresa: _empresaTextController.text,
                 ));
 
                 var tecnicoRecordReference = TecnicoRecord.collection.doc();
@@ -1003,7 +1110,7 @@ class _CompletarPerfilTecnicoWidgetState
                   quantidadeAnimaisCadastrados: 0,
                   restanteLimiteAnimais: 50,
                 ));
-                _model.outUidTecnico = TecnicoRecord.getDocumentFromData(
+                _outUidTecnico = TecnicoRecord.getDocumentFromData(
                     createTecnicoRecordData(
                       uidPerson:
                           completarPerfilTecnicoPersonRecord.reference.id,
@@ -1022,15 +1129,15 @@ class _CompletarPerfilTecnicoWidgetState
                     AssinaturaTecnicoRecord.collection.doc();
                 await assinaturaTecnicoRecordReference
                     .set(createAssinaturaTecnicoRecordData(
-                  idTecnico: _model.outUidTecnico?.reference,
+                  idTecnico: _outUidTecnico?.reference,
                   idPlano: btnAvancarPlanosTecnicosRecord?.reference,
                   dtAssinatura: getCurrentTimestamp,
                   dtExpiracao: getCurrentTimestamp,
                 ));
-                _model.outAssinaturaTecnico =
+                _outAssinaturaTecnico =
                     AssinaturaTecnicoRecord.getDocumentFromData(
                         createAssinaturaTecnicoRecordData(
-                          idTecnico: _model.outUidTecnico?.reference,
+                          idTecnico: _outUidTecnico?.reference,
                           idPlano: btnAvancarPlanosTecnicosRecord?.reference,
                           dtAssinatura: getCurrentTimestamp,
                           dtExpiracao: getCurrentTimestamp,
@@ -1044,8 +1151,7 @@ class _CompletarPerfilTecnicoWidgetState
                       tipoPlano: '30',
                       dtAssinatura: getCurrentTimestamp,
                       dtExpiracao: getCurrentTimestamp,
-                      idAssinaturaTecnico:
-                          _model.outAssinaturaTecnico?.reference,
+                      idAssinaturaTecnico: _outAssinaturaTecnico?.reference,
                       nomePlano: 'Plano Start',
                     ));
 

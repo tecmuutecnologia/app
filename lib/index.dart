@@ -39,8 +39,8 @@ export '/pages/tecnico/propriedade/resumo_rebanho/resumo_rebanho/resumo_rebanho_
     show ResumoRebanhoWidget;
 export '/pages/tecnico/propriedade/indices_zootecnicos/indices_zootecnicos/indices_zootecnicos_widget.dart'
     show IndicesZootecnicosWidget;
-export '/pages/tecnico/perfil/completar_perfil_tecnico/completar_perfil_tecnico_widget.dart'
-    show CompletarPerfilTecnicoWidget;
+export '/features/perfil/presentation/pages/completar_perfil_tecnico_page.dart'
+    show CompletarPerfilTecnicoPage;
 export '/features/produtor/presentation/pages/login_produtor_page.dart'
     show LoginProdutorPage;
 export '/features/onboarding/presentation/pages/tutorial_page.dart'
