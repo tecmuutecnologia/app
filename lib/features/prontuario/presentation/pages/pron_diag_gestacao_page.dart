@@ -5,11 +5,9 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'pron_cios_model.dart';
-export 'pron_cios_model.dart';
 
-class PronCiosWidget extends StatefulWidget {
-  const PronCiosWidget({
+class PronDiagGestacaoPage extends StatefulWidget {
+  const PronDiagGestacaoPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -28,31 +26,21 @@ class PronCiosWidget extends StatefulWidget {
   final String? grupoPredominante;
   final bool? visitaPresencial;
 
-  static String routeName = 'pronCios';
-  static String routePath = '/pronCios';
+  static String routeName = 'pronDiagGestacao';
+  static String routePath = '/pronDiagGestacao';
 
   @override
-  State<PronCiosWidget> createState() => _PronCiosWidgetState();
+  State<PronDiagGestacaoPage> createState() => _PronDiagGestacaoPageState();
 }
 
-class _PronCiosWidgetState extends State<PronCiosWidget> {
-  late PronCiosModel _model;
-
+class _PronDiagGestacaoPageState extends State<PronDiagGestacaoPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => PronCiosModel());
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
   }
 
   Widget _p1(BuildContext context) {
@@ -77,7 +65,7 @@ class _PronCiosWidgetState extends State<PronCiosWidget> {
           ),
         ),
         Text(
-          'Cios',
+          'Diagnótisco de gestação',
           style: FlutterFlowTheme.of(context).headlineMedium.override(
                 font: GoogleFonts.outfit(
                   fontWeight:
@@ -99,52 +87,47 @@ class _PronCiosWidgetState extends State<PronCiosWidget> {
   }
 
   Widget _p2(BuildContext context) {
-    return Container(
-      width: 500.0,
-      constraints: BoxConstraints(
-        maxWidth: 570.0,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(0.0),
-        border: Border.all(
-          color: Color(0xFFE5E7EB),
-          width: 0.0,
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(12.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(5.0, 15.0, 5.0, 5.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FFButtonWidget(
-                          onPressed: () {
-                            print('Button pressed ...');
-                          },
-                          text: 'CIOS',
-                          options: FFButtonOptions(
-                            height: 40.0,
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                24.0, 0.0, 24.0, 0.0),
-                            iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 0.0),
-                            color: FlutterFlowTheme.of(context).primary,
-                            textStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .override(
-                                  font: GoogleFonts.readexPro(
+    return Padding(
+      padding: EdgeInsets.all(12.0),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(5.0, 15.0, 5.0, 5.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FFButtonWidget(
+                        onPressed: () {
+                          print('Button pressed ...');
+                        },
+                        text: 'DIAG. DE GESTAÇÕES',
+                        options: FFButtonOptions(
+                          height: 40.0,
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              24.0, 0.0, 24.0, 0.0),
+                          iconPadding: EdgeInsetsDirectional.fromSTEB(
+                              0.0, 0.0, 0.0, 0.0),
+                          color: Color(0xFFAD00EE),
+                          textStyle:
+                              FlutterFlowTheme.of(context).titleSmall.override(
+                                    font: GoogleFonts.readexPro(
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .fontStyle,
+                                    ),
+                                    color: Colors.white,
+                                    letterSpacing: 0.0,
                                     fontWeight: FlutterFlowTheme.of(context)
                                         .titleSmall
                                         .fontWeight,
@@ -152,69 +135,60 @@ class _PronCiosWidgetState extends State<PronCiosWidget> {
                                         .titleSmall
                                         .fontStyle,
                                   ),
-                                  color: Colors.white,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                            elevation: 3.0,
-                            borderSide: BorderSide(
-                              color: Colors.transparent,
-                              width: 1.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
+                          elevation: 3.0,
+                          borderSide: BorderSide(
+                            color: Colors.transparent,
+                            width: 1.0,
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              StreamBuilder<List<AcoesRecord>>(
-                stream: queryAcoesRecord(
-                  parent: widget.uidTecnico,
-                  queryBuilder: (acoesRecord) => acoesRecord
-                      .where(
-                        'uidAnimalAnimaisProdutores',
-                        isEqualTo: widget.uidAnimaisProdutores,
-                      )
-                      .where(
-                        'acao',
-                        isEqualTo: 'Cio',
-                      )
-                      .orderBy('dataDaAcao', descending: true),
-                  limit: 3,
-                ),
-                builder: (context, snapshot) {
-                  // Customize what your widget looks like when it's loading.
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: SizedBox(
-                        width: 50.0,
-                        height: 50.0,
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Color(0xFFF75E38),
-                          ),
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
                       ),
-                    );
-                  }
-                  List<AcoesRecord> listViewAcoesRecordList = snapshot.data!;
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            StreamBuilder<List<AcoesRecord>>(
+              stream: queryAcoesRecord(
+                parent: widget.uidTecnico,
+                queryBuilder: (acoesRecord) => acoesRecord
+                    .where(
+                      'uidAnimalAnimaisProdutores',
+                      isEqualTo: widget.uidAnimaisProdutores,
+                    )
+                    .orderBy('dataDaAcao', descending: true),
+                limit: 3,
+              ),
+              builder: (context, snapshot) {
+                // Customize what your widget looks like when it's loading.
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: SizedBox(
+                      width: 50.0,
+                      height: 50.0,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Color(0xFFF75E38),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                List<AcoesRecord> listViewAcoesRecordList = snapshot.data!;
 
-                  return ListView.builder(
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    itemCount: listViewAcoesRecordList.length,
-                    itemBuilder: (context, listViewIndex) {
-                      final listViewAcoesRecord =
-                          listViewAcoesRecordList[listViewIndex];
-                      return Card(
+                return ListView.builder(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: listViewAcoesRecordList.length,
+                  itemBuilder: (context, listViewIndex) {
+                    final listViewAcoesRecord =
+                        listViewAcoesRecordList[listViewIndex];
+                    return Visibility(
+                      visible: (listViewAcoesRecord.acao == 'PP') ||
+                          (listViewAcoesRecord.acao == 'DG+') ||
+                          (listViewAcoesRecord.acao == 'DG-'),
+                      child: Card(
                         clipBehavior: Clip.antiAliasWithSaveLayer,
                         color: FlutterFlowTheme.of(context).secondaryBackground,
                         elevation: 3.0,
@@ -255,8 +229,7 @@ class _PronCiosWidgetState extends State<PronCiosWidget> {
                                           width: 50.0,
                                           height: 50.0,
                                           decoration: BoxDecoration(
-                                            color: FlutterFlowTheme.of(context)
-                                                .primary,
+                                            color: Color(0xFFAD00EE),
                                             borderRadius: BorderRadius.only(
                                               bottomLeft:
                                                   Radius.circular(100.0),
@@ -294,7 +267,7 @@ class _PronCiosWidgetState extends State<PronCiosWidget> {
                                               EdgeInsetsDirectional.fromSTEB(
                                                   5.0, 0.0, 0.0, 0.0),
                                           child: Text(
-                                            'Fez Cio',
+                                            listViewAcoesRecord.acao,
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyLarge
                                                 .override(
@@ -416,13 +389,13 @@ class _PronCiosWidgetState extends State<PronCiosWidget> {
                             ),
                           ),
                         ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ],
         ),
       ),
     );

@@ -722,9 +722,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: PronInseminacoesWidget.routeName,
-          path: PronInseminacoesWidget.routePath,
-          builder: (context, params) => PronInseminacoesWidget(
+          name: PronInseminacoesPage.routeName,
+          path: PronInseminacoesPage.routePath,
+          builder: (context, params) => PronInseminacoesPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,
@@ -762,9 +762,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: PronAcoesWidget.routeName,
-          path: PronAcoesWidget.routePath,
-          builder: (context, params) => PronAcoesWidget(
+          name: PronAcoesPage.routeName,
+          path: PronAcoesPage.routePath,
+          builder: (context, params) => PronAcoesPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,
@@ -802,9 +802,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: PronAbortosWidget.routeName,
-          path: PronAbortosWidget.routePath,
-          builder: (context, params) => PronAbortosWidget(
+          name: PronAbortosPage.routeName,
+          path: PronAbortosPage.routePath,
+          builder: (context, params) => PronAbortosPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,
@@ -842,9 +842,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: PronDiagGestacaoWidget.routeName,
-          path: PronDiagGestacaoWidget.routePath,
-          builder: (context, params) => PronDiagGestacaoWidget(
+          name: PronDiagGestacaoPage.routeName,
+          path: PronDiagGestacaoPage.routePath,
+          builder: (context, params) => PronDiagGestacaoPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,
@@ -882,9 +882,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: PronCiosWidget.routeName,
-          path: PronCiosWidget.routePath,
-          builder: (context, params) => PronCiosWidget(
+          name: PronCiosPage.routeName,
+          path: PronCiosPage.routePath,
+          builder: (context, params) => PronCiosPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,

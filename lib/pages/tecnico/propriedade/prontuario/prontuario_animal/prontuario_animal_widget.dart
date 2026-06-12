@@ -1909,7 +1909,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
             highlightColor: Colors.transparent,
             onTap: () async {
               context.pushNamed(
-                PronInseminacoesWidget.routeName,
+                PronInseminacoesPage.routeName,
                 queryParameters: {
                   'uidPropriedade': serializeParam(
                     widget.uidPropriedade,
@@ -2079,7 +2079,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
             highlightColor: Colors.transparent,
             onTap: () async {
               context.pushNamed(
-                PronAcoesWidget.routeName,
+                PronAcoesPage.routeName,
                 queryParameters: {
                   'uidPropriedade': serializeParam(
                     widget.uidPropriedade,
@@ -2247,7 +2247,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
             highlightColor: Colors.transparent,
             onTap: () async {
               context.pushNamed(
-                PronAbortosWidget.routeName,
+                PronAbortosPage.routeName,
                 queryParameters: {
                   'uidPropriedade': serializeParam(
                     widget.uidPropriedade,
@@ -2415,7 +2415,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
             highlightColor: Colors.transparent,
             onTap: () async {
               context.pushNamed(
-                PronDiagGestacaoWidget.routeName,
+                PronDiagGestacaoPage.routeName,
                 queryParameters: {
                   'uidPropriedade': serializeParam(
                     widget.uidPropriedade,
@@ -2583,7 +2583,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
             highlightColor: Colors.transparent,
             onTap: () async {
               context.pushNamed(
-                PronCiosWidget.routeName,
+                PronCiosPage.routeName,
                 queryParameters: {
                   'uidPropriedade': serializeParam(
                     widget.uidPropriedade,
@@ -2754,7 +2754,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
             highlightColor: Colors.transparent,
             onTap: () async {
               context.pushNamed(
-                PronCiosWidget.routeName,
+                PronCiosPage.routeName,
                 queryParameters: {
                   'uidPropriedade': serializeParam(
                     widget.uidPropriedade,
@@ -2909,7 +2909,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
             highlightColor: Colors.transparent,
             onTap: () async {
               context.pushNamed(
-                PronCiosWidget.routeName,
+                PronCiosPage.routeName,
                 queryParameters: {
                   'uidPropriedade': serializeParam(
                     widget.uidPropriedade,
@@ -3064,7 +3064,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
             highlightColor: Colors.transparent,
             onTap: () async {
               context.pushNamed(
-                PronCiosWidget.routeName,
+                PronCiosPage.routeName,
                 queryParameters: {
                   'uidPropriedade': serializeParam(
                     widget.uidPropriedade,

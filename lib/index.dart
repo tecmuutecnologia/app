@@ -53,16 +53,16 @@ export '/pages/tecnico/propriedade/prontuario/prontuario_animal/prontuario_anima
     show ProntuarioAnimalWidget;
 export '/pages/tecnico/propriedade/animals/editar_animal/editar_animal_widget.dart'
     show EditarAnimalWidget;
-export '/pages/tecnico/propriedade/prontuario/pron_inseminacoes/pron_inseminacoes_widget.dart'
-    show PronInseminacoesWidget;
-export '/pages/tecnico/propriedade/prontuario/pron_acoes/pron_acoes_widget.dart'
-    show PronAcoesWidget;
-export '/pages/tecnico/propriedade/prontuario/pron_abortos/pron_abortos_widget.dart'
-    show PronAbortosWidget;
-export '/pages/tecnico/propriedade/prontuario/pron_diag_gestacao/pron_diag_gestacao_widget.dart'
-    show PronDiagGestacaoWidget;
-export '/pages/tecnico/propriedade/prontuario/pron_cios/pron_cios_widget.dart'
-    show PronCiosWidget;
+export '/features/prontuario/presentation/pages/pron_inseminacoes_page.dart'
+    show PronInseminacoesPage;
+export '/features/prontuario/presentation/pages/pron_acoes_page.dart'
+    show PronAcoesPage;
+export '/features/prontuario/presentation/pages/pron_abortos_page.dart'
+    show PronAbortosPage;
+export '/features/prontuario/presentation/pages/pron_diag_gestacao_page.dart'
+    show PronDiagGestacaoPage;
+export '/features/prontuario/presentation/pages/pron_cios_page.dart'
+    show PronCiosPage;
 export '/pages/tecnico/propriedade/dignostico_gestacao/diagnosticogestacao/diagnosticogestacao_widget.dart'
     show DiagnosticogestacaoWidget;
 export '/pages/tecnico/propriedade/calendario_sanitario/calendario_sanitario/calendario_sanitario_widget.dart'

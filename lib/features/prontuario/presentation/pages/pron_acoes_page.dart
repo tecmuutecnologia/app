@@ -6,11 +6,9 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'pron_acoes_model.dart';
-export 'pron_acoes_model.dart';
 
-class PronAcoesWidget extends StatefulWidget {
-  const PronAcoesWidget({
+class PronAcoesPage extends StatefulWidget {
+  const PronAcoesPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -33,27 +31,17 @@ class PronAcoesWidget extends StatefulWidget {
   static String routePath = '/pronAcoes';
 
   @override
-  State<PronAcoesWidget> createState() => _PronAcoesWidgetState();
+  State<PronAcoesPage> createState() => _PronAcoesPageState();
 }
 
-class _PronAcoesWidgetState extends State<PronAcoesWidget> {
-  late PronAcoesModel _model;
-
+class _PronAcoesPageState extends State<PronAcoesPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => PronAcoesModel());
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
   }
 
   Widget _p1(BuildContext context) {
