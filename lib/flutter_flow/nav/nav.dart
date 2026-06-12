@@ -609,9 +609,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => TutorialPage(),
         ),
         FFRoute(
-          name: ProfileTecnicoWidget.routeName,
-          path: ProfileTecnicoWidget.routePath,
-          builder: (context, params) => ProfileTecnicoWidget(),
+          name: ProfileTecnicoPage.routeName,
+          path: ProfileTecnicoPage.routePath,
+          builder: (context, params) => ProfileTecnicoPage(),
         ),
         FFRoute(
           name: SubscriptionPlanTecnicoWidget.routeName,

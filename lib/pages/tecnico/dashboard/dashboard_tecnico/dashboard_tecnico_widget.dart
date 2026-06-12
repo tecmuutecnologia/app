@@ -244,7 +244,7 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
               size: 30.0,
             ),
             onPressed: () {
-              context.pushNamed(ProfileTecnicoWidget.routeName);
+              context.pushNamed(ProfileTecnicoPage.routeName);
             },
           ),
         ),

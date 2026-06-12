@@ -5,57 +5,78 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/index.dart';
+import '/features/onboarding/presentation/pages/welcome_page.dart';
+import '/features/perfil/presentation/pages/apagar_conta_page.dart';
+import '/pages/tecnico/dashboard/dashboard_tecnico/dashboard_tecnico_widget.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'profile_tecnico_model.dart';
-export 'profile_tecnico_model.dart';
 
-class ProfileTecnicoWidget extends StatefulWidget {
-  const ProfileTecnicoWidget({super.key});
+class ProfileTecnicoPage extends StatefulWidget {
+  const ProfileTecnicoPage({super.key});
 
   static String routeName = 'profileTecnico';
   static String routePath = '/profileTecnico';
 
   @override
-  State<ProfileTecnicoWidget> createState() => _ProfileTecnicoWidgetState();
+  State<ProfileTecnicoPage> createState() => _ProfileTecnicoPageState();
 }
 
-class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
-  late ProfileTecnicoModel _model;
-
+class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  FocusNode? _yourNameFocusNode;
+  TextEditingController? _yourNameTextController;
+  FocusNode? _empresaFocusNode;
+  TextEditingController? _empresaTextController;
+  FocusNode? _dtFocusNode;
+  TextEditingController? _dtTextController;
+  late MaskTextInputFormatter _dtMask;
+  FocusNode? _celularFocusNode;
+  TextEditingController? _celularTextController;
+  late MaskTextInputFormatter _celularMask;
+  FocusNode? _enderecoFocusNode;
+  TextEditingController? _enderecoTextController;
+  FocusNode? _bairroFocusNode;
+  TextEditingController? _bairroTextController;
+
+  // Outputs de query (antes no FlutterFlowModel).
+  ProdutorRecord? _uidProdutor;
+  AssinaturaProdutorRecord? _uidAssinaturaProdutor;
+  AssinaturaAtivaProdutorRecord? _uidAssinaturaAtivaProdutor;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ProfileTecnicoModel());
 
-    _model.yourNameFocusNode ??= FocusNode();
-
-    _model.empresaFocusNode ??= FocusNode();
-
-    _model.dtFocusNode ??= FocusNode();
-
-    _model.dtMask = MaskTextInputFormatter(mask: '##/##/####');
-
-    _model.celularFocusNode ??= FocusNode();
-
-    _model.celularMask = MaskTextInputFormatter(mask: '(##) #####-####');
-
-    _model.enderecoFocusNode ??= FocusNode();
-
-    _model.bairroFocusNode ??= FocusNode();
+    _yourNameFocusNode ??= FocusNode();
+    _empresaFocusNode ??= FocusNode();
+    _dtFocusNode ??= FocusNode();
+    _dtMask = MaskTextInputFormatter(mask: '##/##/####');
+    _celularFocusNode ??= FocusNode();
+    _celularMask = MaskTextInputFormatter(mask: '(##) #####-####');
+    _enderecoFocusNode ??= FocusNode();
+    _bairroFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.dispose();
+    _yourNameFocusNode?.dispose();
+    _yourNameTextController?.dispose();
+    _empresaFocusNode?.dispose();
+    _empresaTextController?.dispose();
+    _dtFocusNode?.dispose();
+    _dtTextController?.dispose();
+    _celularFocusNode?.dispose();
+    _celularTextController?.dispose();
+    _enderecoFocusNode?.dispose();
+    _enderecoTextController?.dispose();
+    _bairroFocusNode?.dispose();
+    _bairroTextController?.dispose();
 
     super.dispose();
   }
@@ -107,10 +128,10 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
-        controller: _model.yourNameTextController ??= TextEditingController(
+        controller: _yourNameTextController ??= TextEditingController(
           text: profileTecnicoPersonRecord?.displayName,
         ),
-        focusNode: _model.yourNameFocusNode,
+        focusNode: _yourNameFocusNode,
         textCapitalization: TextCapitalization.none,
         obscureText: false,
         decoration: InputDecoration(
@@ -180,7 +201,6 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
         buildCounter: (context,
                 {required currentLength, required isFocused, maxLength}) =>
             null,
-        validator: _model.yourNameTextControllerValidator.asValidator(context),
         inputFormatters: [
           if (!isAndroid && !isiOS)
             TextInputFormatter.withFunction((oldValue, newValue) {
@@ -198,10 +218,10 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
-        controller: _model.empresaTextController ??= TextEditingController(
+        controller: _empresaTextController ??= TextEditingController(
           text: profileTecnicoPersonRecord?.empresa,
         ),
-        focusNode: _model.empresaFocusNode,
+        focusNode: _empresaFocusNode,
         textCapitalization: TextCapitalization.none,
         obscureText: false,
         decoration: InputDecoration(
@@ -271,7 +291,6 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
         buildCounter: (context,
                 {required currentLength, required isFocused, maxLength}) =>
             null,
-        validator: _model.empresaTextControllerValidator.asValidator(context),
         inputFormatters: [
           if (!isAndroid && !isiOS)
             TextInputFormatter.withFunction((oldValue, newValue) {
@@ -289,10 +308,10 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
-        controller: _model.dtTextController ??= TextEditingController(
+        controller: _dtTextController ??= TextEditingController(
           text: profileTecnicoPersonRecord?.dtNascimento,
         ),
-        focusNode: _model.dtFocusNode,
+        focusNode: _dtFocusNode,
         textCapitalization: TextCapitalization.none,
         obscureText: false,
         decoration: InputDecoration(
@@ -364,8 +383,7 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
                 {required currentLength, required isFocused, maxLength}) =>
             null,
         keyboardType: TextInputType.number,
-        validator: _model.dtTextControllerValidator.asValidator(context),
-        inputFormatters: [_model.dtMask],
+        inputFormatters: [_dtMask],
       ),
     );
   }
@@ -374,10 +392,10 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
-        controller: _model.celularTextController ??= TextEditingController(
+        controller: _celularTextController ??= TextEditingController(
           text: profileTecnicoPersonRecord?.phoneNumber,
         ),
-        focusNode: _model.celularFocusNode,
+        focusNode: _celularFocusNode,
         textCapitalization: TextCapitalization.none,
         obscureText: false,
         decoration: InputDecoration(
@@ -449,8 +467,7 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
                 {required currentLength, required isFocused, maxLength}) =>
             null,
         keyboardType: TextInputType.number,
-        validator: _model.celularTextControllerValidator.asValidator(context),
-        inputFormatters: [_model.celularMask],
+        inputFormatters: [_celularMask],
       ),
     );
   }
@@ -459,10 +476,10 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
-        controller: _model.enderecoTextController ??= TextEditingController(
+        controller: _enderecoTextController ??= TextEditingController(
           text: profileTecnicoPersonRecord?.endereco,
         ),
-        focusNode: _model.enderecoFocusNode,
+        focusNode: _enderecoFocusNode,
         textCapitalization: TextCapitalization.none,
         obscureText: false,
         decoration: InputDecoration(
@@ -532,7 +549,6 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
         buildCounter: (context,
                 {required currentLength, required isFocused, maxLength}) =>
             null,
-        validator: _model.enderecoTextControllerValidator.asValidator(context),
         inputFormatters: [
           if (!isAndroid && !isiOS)
             TextInputFormatter.withFunction((oldValue, newValue) {
@@ -550,10 +566,10 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
-        controller: _model.bairroTextController ??= TextEditingController(
+        controller: _bairroTextController ??= TextEditingController(
           text: profileTecnicoPersonRecord?.bairro,
         ),
-        focusNode: _model.bairroFocusNode,
+        focusNode: _bairroFocusNode,
         textCapitalization: TextCapitalization.none,
         obscureText: false,
         decoration: InputDecoration(
@@ -623,7 +639,6 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
         buildCounter: (context,
                 {required currentLength, required isFocused, maxLength}) =>
             null,
-        validator: _model.bairroTextControllerValidator.asValidator(context),
         inputFormatters: [
           if (!isAndroid && !isiOS)
             TextInputFormatter.withFunction((oldValue, newValue) {
@@ -647,12 +662,12 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
             if (profileTecnicoPersonRecord?.uid == currentUserUid) {
               await profileTecnicoPersonRecord!.reference
                   .update(createPersonRecordData(
-                dtNascimento: _model.dtTextController.text,
-                endereco: _model.enderecoTextController.text,
-                bairro: _model.bairroTextController.text,
-                phoneNumber: _model.celularTextController.text,
-                displayName: _model.yourNameTextController.text,
-                empresa: _model.empresaTextController.text,
+                dtNascimento: _dtTextController.text,
+                endereco: _enderecoTextController.text,
+                bairro: _bairroTextController.text,
+                phoneNumber: _celularTextController.text,
+                displayName: _yourNameTextController.text,
+                empresa: _empresaTextController.text,
               ));
             } else {
               await showDialog(
@@ -775,7 +790,7 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
                                     hoverColor: Colors.transparent,
                                     highlightColor: Colors.transparent,
                                     onTap: () async {
-                                      _model.uidProdutor =
+                                      _uidProdutor =
                                           await queryProdutorRecordOnce(
                                         queryBuilder: (produtorRecord) =>
                                             produtorRecord.where(
@@ -785,26 +800,25 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
                                         ),
                                         singleRecord: true,
                                       ).then((s) => s.firstOrNull);
-                                      _model.uidAssinaturaProdutor =
+                                      _uidAssinaturaProdutor =
                                           await queryAssinaturaProdutorRecordOnce(
                                         queryBuilder:
                                             (assinaturaProdutorRecord) =>
                                                 assinaturaProdutorRecord.where(
                                           'idProdutor',
-                                          isEqualTo:
-                                              _model.uidProdutor?.reference,
+                                          isEqualTo: _uidProdutor?.reference,
                                         ),
                                         singleRecord: true,
                                       ).then((s) => s.firstOrNull);
-                                      _model.uidAssinaturaAtivaProdutor =
+                                      _uidAssinaturaAtivaProdutor =
                                           await queryAssinaturaAtivaProdutorRecordOnce(
                                         queryBuilder:
                                             (assinaturaAtivaProdutorRecord) =>
                                                 assinaturaAtivaProdutorRecord
                                                     .where(
                                           'idAssinaturaProdutor',
-                                          isEqualTo: _model
-                                              .uidAssinaturaProdutor?.reference,
+                                          isEqualTo:
+                                              _uidAssinaturaProdutor?.reference,
                                         ),
                                         singleRecord: true,
                                       ).then((s) => s.firstOrNull);
@@ -813,8 +827,7 @@ class _ProfileTecnicoWidgetState extends State<ProfileTecnicoWidget> {
                                     },
                                     child: Text(
                                       valueOrDefault<String>(
-                                        _model.uidAssinaturaAtivaProdutor
-                                            ?.nomePlano,
+                                        _uidAssinaturaAtivaProdutor?.nomePlano,
                                         'Plano grátis',
                                       ),
                                       style: FlutterFlowTheme.of(context)
