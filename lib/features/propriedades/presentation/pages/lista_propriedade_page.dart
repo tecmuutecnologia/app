@@ -5,14 +5,16 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/index.dart';
+import '/features/propriedades/presentation/pages/propriedades_excluidas_page.dart';
+import '/pages/tecnico/dashboard/dashboard_tecnico/dashboard_tecnico_widget.dart';
+import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
+import '/pages/tecnico/propriedade/propriedades/editar_propriedade/editar_propriedade_widget.dart';
+import '/pages/tecnico/propriedade/propriedades/nova_propriedade/nova_propriedade_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'lista_propriedade_model.dart';
-export 'lista_propriedade_model.dart';
 
-class ListaPropriedadeWidget extends StatefulWidget {
-  const ListaPropriedadeWidget({
+class ListaPropriedadePage extends StatefulWidget {
+  const ListaPropriedadePage({
     super.key,
     required this.visitaPresencial,
   });
@@ -23,25 +25,25 @@ class ListaPropriedadeWidget extends StatefulWidget {
   static String routePath = '/listaPropriedade';
 
   @override
-  State<ListaPropriedadeWidget> createState() => _ListaPropriedadeWidgetState();
+  State<ListaPropriedadePage> createState() => _ListaPropriedadePageState();
 }
 
-class _ListaPropriedadeWidgetState extends State<ListaPropriedadeWidget> {
-  late ListaPropriedadeModel _model;
+class _ListaPropriedadePageState extends State<ListaPropriedadePage> {
+  late TextEditingController _searchController;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ListaPropriedadeModel());
+    _searchController = TextEditingController();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.dispose();
+    _searchController.dispose();
 
     super.dispose();
   }
@@ -93,7 +95,7 @@ class _ListaPropriedadeWidgetState extends State<ListaPropriedadeWidget> {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
       child: TextFormField(
-        controller: _model.searchController,
+        controller: _searchController,
         onChanged: (_) => safeSetState(() {}),
         obscureText: false,
         decoration: InputDecoration(
@@ -152,10 +154,10 @@ class _ListaPropriedadeWidgetState extends State<ListaPropriedadeWidget> {
             Icons.search,
             color: FlutterFlowTheme.of(context).secondaryText,
           ),
-          suffixIcon: _model.searchController!.text.isNotEmpty
+          suffixIcon: _searchController.text.isNotEmpty
               ? InkWell(
                   onTap: () => safeSetState(() {
-                    _model.searchController?.clear();
+                    _searchController?.clear();
                   }),
                   child: Icon(
                     Icons.clear,
@@ -175,7 +177,7 @@ class _ListaPropriedadeWidgetState extends State<ListaPropriedadeWidget> {
               fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
             ),
         maxLines: 1,
-        validator: _model.searchController == null ? null : (value) => null,
+        validator: _searchController == null ? null : (value) => null,
       ),
     );
   }
@@ -371,7 +373,7 @@ class _ListaPropriedadeWidgetState extends State<ListaPropriedadeWidget> {
                 .toList();
 
             // Filter properties based on search query
-            final searchQuery = _model.searchController.text.toLowerCase();
+            final searchQuery = _searchController.text.toLowerCase();
             if (searchQuery.isNotEmpty) {
               listViewPropriedadesRecordList = listViewPropriedadesRecordList
                   .where((property) =>

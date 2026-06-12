@@ -7,8 +7,8 @@ export '/features/auth/presentation/pages/create_account_technician_page.dart'
     show CreateAccountTechnicianPage;
 export '/pages/tecnico/dashboard/dashboard_tecnico/dashboard_tecnico_widget.dart'
     show DashboardTecnicoWidget;
-export '/pages/tecnico/propriedade/propriedades/lista_propriedade/lista_propriedade_widget.dart'
-    show ListaPropriedadeWidget;
+export '/features/propriedades/presentation/pages/lista_propriedade_page.dart'
+    show ListaPropriedadePage;
 export '/pages/tecnico/propriedade/propriedades/nova_propriedade/nova_propriedade_widget.dart'
     show NovaPropriedadeWidget;
 export '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart'

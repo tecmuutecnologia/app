@@ -109,9 +109,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => DashboardTecnicoWidget(),
         ),
         FFRoute(
-          name: ListaPropriedadeWidget.routeName,
-          path: ListaPropriedadeWidget.routePath,
-          builder: (context, params) => ListaPropriedadeWidget(
+          name: ListaPropriedadePage.routeName,
+          path: ListaPropriedadePage.routePath,
+          builder: (context, params) => ListaPropriedadePage(
             visitaPresencial: params.getParam(
               'visitaPresencial',
               ParamType.bool,

@@ -654,7 +654,7 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
             );
 
             context.goNamed(
-              ListaPropriedadeWidget.routeName,
+              ListaPropriedadePage.routeName,
               queryParameters: {
                 'visitaPresencial': serializeParam(
                   widget.visitaPresencial,
@@ -791,7 +791,7 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
             );
 
             context.goNamed(
-              ListaPropriedadeWidget.routeName,
+              ListaPropriedadePage.routeName,
               queryParameters: {
                 'visitaPresencial': serializeParam(
                   widget.visitaPresencial,

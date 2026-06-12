@@ -407,7 +407,7 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
       text: 'Iniciar visita propriedade',
       onPressed: () {
         context.pushNamed(
-          ListaPropriedadeWidget.routeName,
+          ListaPropriedadePage.routeName,
           queryParameters: {
             'visitaPresencial': serializeParam(true, ParamType.bool),
           }.withoutNulls,

@@ -445,7 +445,7 @@ class _ConfirmarSenhaWidgetState extends State<ConfirmarSenhaWidget>
                   );
 
                   context.goNamedAuth(
-                    ListaPropriedadeWidget.routeName,
+                    ListaPropriedadePage.routeName,
                     context.mounted,
                     queryParameters: {
                       'visitaPresencial': serializeParam(
