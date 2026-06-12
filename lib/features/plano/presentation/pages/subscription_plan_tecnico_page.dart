@@ -6,15 +6,13 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
-import '/index.dart';
+import '/pages/tecnico/dashboard/dashboard_tecnico/dashboard_tecnico_widget.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'subscription_plan_tecnico_model.dart';
-export 'subscription_plan_tecnico_model.dart';
 
-class SubscriptionPlanTecnicoWidget extends StatefulWidget {
-  const SubscriptionPlanTecnicoWidget({
+class SubscriptionPlanTecnicoPage extends StatefulWidget {
+  const SubscriptionPlanTecnicoPage({
     super.key,
     required this.uidTecnico,
     required this.email,
@@ -27,29 +25,35 @@ class SubscriptionPlanTecnicoWidget extends StatefulWidget {
   static String routePath = '/subscriptionPlanTecnico';
 
   @override
-  State<SubscriptionPlanTecnicoWidget> createState() =>
-      _SubscriptionPlanTecnicoWidgetState();
+  State<SubscriptionPlanTecnicoPage> createState() =>
+      _SubscriptionPlanTecnicoPageState();
 }
 
-class _SubscriptionPlanTecnicoWidgetState
-    extends State<SubscriptionPlanTecnicoWidget> {
-  late SubscriptionPlanTecnicoModel _model;
-
+class _SubscriptionPlanTecnicoPageState
+    extends State<SubscriptionPlanTecnicoPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  int? _dropDownValue1;
+  FormFieldController<int>? _dropDownValueController1;
+  double? _dropDownValue2;
+  FormFieldController<double>? _dropDownValueController2;
+
+  // Outputs de query/ação (antes no FlutterFlowModel).
+  AssinaturaTecnicoRecord? _outUidAssinaturaTecnico;
+  AssinaturaAtivaTecnicoRecord? _outUidAssinaturaAtiva;
+  PlanosTecnicosRecord? _outUidPlanoFree;
+  AssinaturaTecnicoRecord? _outUidNovoPlano;
+  String? _outUidPayment;
+  PlanosTecnicosRecord? _outUidPlanoEscolhido;
+  AssinaturaTecnicoRecord? _outUidAssinaturaPlanoStripe;
+  AssinaturaAtivaTecnicoRecord? _outUidAssinaturaAtivaStripe;
+  AssinaturaTecnicoRecord? _outUidNovoPlanoPago;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => SubscriptionPlanTecnicoModel());
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
   }
 
   Widget _p1(BuildContext context) {
@@ -178,13 +182,12 @@ class _SubscriptionPlanTecnicoWidgetState
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: FlutterFlowDropDown<int>(
-        controller: _model.dropDownValueController1 ??=
-            FormFieldController<int>(
-          _model.dropDownValue1 ??= 30,
+        controller: _dropDownValueController1 ??= FormFieldController<int>(
+          _dropDownValue1 ??= 30,
         ),
         options: List<int>.from([30, 180, 365]),
         optionLabels: ['Mensal', 'Semestral (10% off)', 'Anual (20% off)'],
-        onChanged: (val) => safeSetState(() => _model.dropDownValue1 = val),
+        onChanged: (val) => safeSetState(() => _dropDownValue1 = val),
         width: double.infinity,
         height: 60.0,
         textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -217,9 +220,8 @@ class _SubscriptionPlanTecnicoWidgetState
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: FlutterFlowDropDown<double>(
-        controller: _model.dropDownValueController2 ??=
-            FormFieldController<double>(
-          _model.dropDownValue2 ??= 0.0,
+        controller: _dropDownValueController2 ??= FormFieldController<double>(
+          _dropDownValue2 ??= 0.0,
         ),
         options: List<double>.from(
             subscriptionPlanTecnicoPlanosTecnicosRecordList
@@ -228,7 +230,7 @@ class _SubscriptionPlanTecnicoWidgetState
         optionLabels: subscriptionPlanTecnicoPlanosTecnicosRecordList
             .map((e) => e.nome)
             .toList(),
-        onChanged: (val) => safeSetState(() => _model.dropDownValue2 = val),
+        onChanged: (val) => safeSetState(() => _dropDownValue2 = val),
         width: double.infinity,
         height: 60.0,
         textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -295,22 +297,22 @@ class _SubscriptionPlanTecnicoWidgetState
                 Text(
                   valueOrDefault<String>(
                     () {
-                      if (_model.dropDownValue1 == 180) {
+                      if (_dropDownValue1 == 180) {
                         return formatNumber(
-                          (((_model.dropDownValue2!) * 6) -
-                              (((_model.dropDownValue2!) * 6) * 0.1)),
+                          (((_dropDownValue2!) * 6) -
+                              (((_dropDownValue2!) * 6) * 0.1)),
                           formatType: FormatType.decimal,
                           decimalType: DecimalType.commaDecimal,
                         );
-                      } else if (_model.dropDownValue1 == 365) {
+                      } else if (_dropDownValue1 == 365) {
                         return formatNumber(
-                          (((_model.dropDownValue2!) * 12) -
-                              (((_model.dropDownValue2!) * 12) * 0.2)),
+                          (((_dropDownValue2!) * 12) -
+                              (((_dropDownValue2!) * 12) * 0.2)),
                           formatType: FormatType.decimal,
                           decimalType: DecimalType.commaDecimal,
                         );
                       } else {
-                        return _model.dropDownValue2?.toString();
+                        return _dropDownValue2?.toString();
                       }
                     }(),
                     'Grátis',
@@ -344,9 +346,8 @@ class _SubscriptionPlanTecnicoWidgetState
     return FFButtonWidget(
       onPressed: () async {
         var _shouldSetState = false;
-        if (_model.dropDownValue2 == 0.0) {
-          _model.outUidAssinaturaTecnico =
-              await queryAssinaturaTecnicoRecordOnce(
+        if (_dropDownValue2 == 0.0) {
+          _outUidAssinaturaTecnico = await queryAssinaturaTecnicoRecordOnce(
             queryBuilder: (assinaturaTecnicoRecord) =>
                 assinaturaTecnicoRecord.where(
               'idTecnico',
@@ -355,17 +356,16 @@ class _SubscriptionPlanTecnicoWidgetState
             singleRecord: true,
           ).then((s) => s.firstOrNull);
           _shouldSetState = true;
-          _model.outUidAssinaturaAtiva =
-              await queryAssinaturaAtivaTecnicoRecordOnce(
+          _outUidAssinaturaAtiva = await queryAssinaturaAtivaTecnicoRecordOnce(
             queryBuilder: (assinaturaAtivaTecnicoRecord) =>
                 assinaturaAtivaTecnicoRecord.where(
               'idAssinaturaTecnico',
-              isEqualTo: _model.outUidAssinaturaTecnico?.reference,
+              isEqualTo: _outUidAssinaturaTecnico?.reference,
             ),
             singleRecord: true,
           ).then((s) => s.firstOrNull);
           _shouldSetState = true;
-          _model.outUidPlanoFree = await queryPlanosTecnicosRecordOnce(
+          _outUidPlanoFree = await queryPlanosTecnicosRecordOnce(
             queryBuilder: (planosTecnicosRecord) => planosTecnicosRecord.where(
               'nome',
               isEqualTo: 'Start',
@@ -381,26 +381,26 @@ class _SubscriptionPlanTecnicoWidgetState
             dtAssinatura: getCurrentTimestamp,
             tipoPlano: 'Plano gratuito',
             dtExpiracao: getCurrentTimestamp,
-            idPlano: _model.outUidPlanoFree?.reference,
+            idPlano: _outUidPlanoFree?.reference,
             idTecnico: widget.uidTecnico,
           ));
-          _model.outUidNovoPlano = AssinaturaTecnicoRecord.getDocumentFromData(
+          _outUidNovoPlano = AssinaturaTecnicoRecord.getDocumentFromData(
               createAssinaturaTecnicoRecordData(
                 dtAssinatura: getCurrentTimestamp,
                 tipoPlano: 'Plano gratuito',
                 dtExpiracao: getCurrentTimestamp,
-                idPlano: _model.outUidPlanoFree?.reference,
+                idPlano: _outUidPlanoFree?.reference,
                 idTecnico: widget.uidTecnico,
               ),
               assinaturaTecnicoRecordReference1);
           _shouldSetState = true;
 
-          await _model.outUidAssinaturaAtiva!.reference
+          await _outUidAssinaturaAtiva!.reference
               .update(createAssinaturaAtivaTecnicoRecordData(
             dtAssinatura: getCurrentTimestamp,
             dtExpiracao: getCurrentTimestamp,
             tipoPlano: '30',
-            idAssinaturaTecnico: _model.outUidNovoPlano?.reference,
+            idAssinaturaTecnico: _outUidNovoPlano?.reference,
           ));
           await showDialog(
             context: context,
@@ -426,16 +426,16 @@ class _SubscriptionPlanTecnicoWidgetState
         final paymentResponse = await processStripePayment(
           context,
           amount: () {
-            if (_model.dropDownValue1 == 180) {
-              return ((((_model.dropDownValue2!) * 6) -
-                      (((_model.dropDownValue2!) * 6) * 0.1)))
+            if (_dropDownValue1 == 180) {
+              return ((((_dropDownValue2!) * 6) -
+                      (((_dropDownValue2!) * 6) * 0.1)))
                   .round();
-            } else if (_model.dropDownValue1 == 365) {
-              return ((((_model.dropDownValue2!) * 12) -
-                      (((_model.dropDownValue2!) * 12) * 0.2)))
+            } else if (_dropDownValue1 == 365) {
+              return ((((_dropDownValue2!) * 12) -
+                      (((_dropDownValue2!) * 12) * 0.2)))
                   .round();
             } else {
-              return _model.dropDownValue2!.round();
+              return _dropDownValue2!.round();
             }
           }(),
           currency: 'BRL',
@@ -451,20 +451,19 @@ class _SubscriptionPlanTecnicoWidgetState
             'Pagamento não concluído. [Erro]: Por favor, tente novamente.',
           );
         }
-        _model.outUidPayment = paymentResponse.paymentId ?? '';
+        _outUidPayment = paymentResponse.paymentId ?? '';
 
         _shouldSetState = true;
-        if (_model.outUidPayment != '0') {
-          _model.outUidPlanoEscolhido = await queryPlanosTecnicosRecordOnce(
+        if (_outUidPayment != '0') {
+          _outUidPlanoEscolhido = await queryPlanosTecnicosRecordOnce(
             queryBuilder: (planosTecnicosRecord) => planosTecnicosRecord.where(
               'preco',
-              isEqualTo: _model.dropDownValue2,
+              isEqualTo: _dropDownValue2,
             ),
             singleRecord: true,
           ).then((s) => s.firstOrNull);
           _shouldSetState = true;
-          _model.outUidAssinaturaPlanoStripe =
-              await queryAssinaturaTecnicoRecordOnce(
+          _outUidAssinaturaPlanoStripe = await queryAssinaturaTecnicoRecordOnce(
             queryBuilder: (assinaturaTecnicoRecord) =>
                 assinaturaTecnicoRecord.where(
               'idTecnico',
@@ -473,12 +472,12 @@ class _SubscriptionPlanTecnicoWidgetState
             singleRecord: true,
           ).then((s) => s.firstOrNull);
           _shouldSetState = true;
-          _model.outUidAssinaturaAtivaStripe =
+          _outUidAssinaturaAtivaStripe =
               await queryAssinaturaAtivaTecnicoRecordOnce(
             queryBuilder: (assinaturaAtivaTecnicoRecord) =>
                 assinaturaAtivaTecnicoRecord.where(
               'idAssinaturaTecnico',
-              isEqualTo: _model.outUidAssinaturaPlanoStripe?.reference,
+              isEqualTo: _outUidAssinaturaPlanoStripe?.reference,
             ),
             singleRecord: true,
           ).then((s) => s.firstOrNull);
@@ -488,31 +487,30 @@ class _SubscriptionPlanTecnicoWidgetState
               AssinaturaTecnicoRecord.collection.doc();
           await assinaturaTecnicoRecordReference2
               .set(createAssinaturaTecnicoRecordData(
-            idPlano: _model.outUidPlanoEscolhido?.reference,
+            idPlano: _outUidPlanoEscolhido?.reference,
             dtAssinatura: getCurrentTimestamp,
-            tipoPlano: _model.dropDownValue1?.toString(),
+            tipoPlano: _dropDownValue1?.toString(),
             dtExpiracao: getCurrentTimestamp,
             idTecnico: widget.uidTecnico,
           ));
-          _model.outUidNovoPlanoPago =
-              AssinaturaTecnicoRecord.getDocumentFromData(
-                  createAssinaturaTecnicoRecordData(
-                    idPlano: _model.outUidPlanoEscolhido?.reference,
-                    dtAssinatura: getCurrentTimestamp,
-                    tipoPlano: _model.dropDownValue1?.toString(),
-                    dtExpiracao: getCurrentTimestamp,
-                    idTecnico: widget.uidTecnico,
-                  ),
-                  assinaturaTecnicoRecordReference2);
+          _outUidNovoPlanoPago = AssinaturaTecnicoRecord.getDocumentFromData(
+              createAssinaturaTecnicoRecordData(
+                idPlano: _outUidPlanoEscolhido?.reference,
+                dtAssinatura: getCurrentTimestamp,
+                tipoPlano: _dropDownValue1?.toString(),
+                dtExpiracao: getCurrentTimestamp,
+                idTecnico: widget.uidTecnico,
+              ),
+              assinaturaTecnicoRecordReference2);
           _shouldSetState = true;
 
-          await _model.outUidAssinaturaAtivaStripe!.reference
+          await _outUidAssinaturaAtivaStripe!.reference
               .update(createAssinaturaAtivaTecnicoRecordData(
-            tipoPlano: _model.dropDownValue1?.toString(),
+            tipoPlano: _dropDownValue1?.toString(),
             dtAssinatura: getCurrentTimestamp,
             dtExpiracao: getCurrentTimestamp,
-            nomePlano: _model.outUidPlanoEscolhido?.nome,
-            idAssinaturaTecnico: _model.outUidNovoPlanoPago?.reference,
+            nomePlano: _outUidPlanoEscolhido?.nome,
+            idAssinaturaTecnico: _outUidNovoPlanoPago?.reference,
           ));
           await showDialog(
             context: context,

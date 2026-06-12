@@ -429,7 +429,7 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
             buttonText: 'Atualizar',
             onPressed: () {
               context.pushNamed(
-                SubscriptionPlanTecnicoWidget.routeName,
+                SubscriptionPlanTecnicoPage.routeName,
                 queryParameters: {
                   'uidTecnico': serializeParam(
                     tecnicoRecord.reference,

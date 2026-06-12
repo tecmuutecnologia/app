@@ -614,9 +614,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => ProfileTecnicoPage(),
         ),
         FFRoute(
-          name: SubscriptionPlanTecnicoWidget.routeName,
-          path: SubscriptionPlanTecnicoWidget.routePath,
-          builder: (context, params) => SubscriptionPlanTecnicoWidget(
+          name: SubscriptionPlanTecnicoPage.routeName,
+          path: SubscriptionPlanTecnicoPage.routePath,
+          builder: (context, params) => SubscriptionPlanTecnicoPage(
             uidTecnico: params.getParam(
               'uidTecnico',
               ParamType.DocumentReference,

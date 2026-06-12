@@ -47,8 +47,8 @@ export '/features/onboarding/presentation/pages/tutorial_page.dart'
     show TutorialPage;
 export '/features/perfil/presentation/pages/profile_tecnico_page.dart'
     show ProfileTecnicoPage;
-export '/pages/tecnico/plano/subscription_plan_tecnico/subscription_plan_tecnico_widget.dart'
-    show SubscriptionPlanTecnicoWidget;
+export '/features/plano/presentation/pages/subscription_plan_tecnico_page.dart'
+    show SubscriptionPlanTecnicoPage;
 export '/pages/tecnico/propriedade/prontuario/prontuario_animal/prontuario_animal_widget.dart'
     show ProntuarioAnimalWidget;
 export '/pages/tecnico/propriedade/animals/editar_animal/editar_animal_widget.dart'
