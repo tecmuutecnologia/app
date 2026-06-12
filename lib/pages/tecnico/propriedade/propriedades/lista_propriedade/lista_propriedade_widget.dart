@@ -202,7 +202,7 @@ class _ListaPropriedadeWidgetState extends State<ListaPropriedadeWidget> {
             child: FFButtonWidget(
               onPressed: () async {
                 context.pushNamed(
-                  PropriedadesExcluiasWidget.routeName,
+                  PropriedadesExcluiasPage.routeName,
                   queryParameters: {
                     'visitaPresencial': serializeParam(
                       widget.visitaPresencial,

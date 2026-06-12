@@ -5,14 +5,11 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'propriedades_excluidas_model.dart';
-export 'propriedades_excluidas_model.dart';
 
-class PropriedadesExcluiasWidget extends StatefulWidget {
-  const PropriedadesExcluiasWidget({
+class PropriedadesExcluiasPage extends StatefulWidget {
+  const PropriedadesExcluiasPage({
     super.key,
     required this.visitaPresencial,
     required this.uidTecnico,
@@ -25,31 +22,32 @@ class PropriedadesExcluiasWidget extends StatefulWidget {
   static String routePath = '/propriedadesExcluidas';
 
   @override
-  State<PropriedadesExcluiasWidget> createState() =>
-      _PropriedadesExcluiasWidgetState();
+  State<PropriedadesExcluiasPage> createState() =>
+      _PropriedadesExcluiasPageState();
 }
 
-class _PropriedadesExcluiasWidgetState
-    extends State<PropriedadesExcluiasWidget> {
-  late PropriedadesExcluiasModel _model;
+class _PropriedadesExcluiasPageState extends State<PropriedadesExcluiasPage> {
   final Set<String> _restoredPropertyIds = <String>{};
+
+  FocusNode? _searchFocusNode;
+  TextEditingController? _searchController;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => PropriedadesExcluiasModel());
 
-    _model.searchController ??= TextEditingController();
-    _model.searchFocusNode ??= FocusNode();
+    _searchController ??= TextEditingController();
+    _searchFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.dispose();
+    _searchFocusNode?.dispose();
+    _searchController?.dispose();
 
     super.dispose();
   }
@@ -101,7 +99,7 @@ class _PropriedadesExcluiasWidgetState
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
       child: TextFormField(
-        controller: _model.searchController,
+        controller: _searchController,
         onChanged: (_) => safeSetState(() {}),
         obscureText: false,
         decoration: InputDecoration(
@@ -160,10 +158,10 @@ class _PropriedadesExcluiasWidgetState
             Icons.search,
             color: FlutterFlowTheme.of(context).secondaryText,
           ),
-          suffixIcon: _model.searchController!.text.isNotEmpty
+          suffixIcon: _searchController!.text.isNotEmpty
               ? InkWell(
                   onTap: () => safeSetState(() {
-                    _model.searchController?.clear();
+                    _searchController?.clear();
                   }),
                   child: Icon(
                     Icons.clear,
@@ -183,7 +181,7 @@ class _PropriedadesExcluiasWidgetState
               fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
             ),
         maxLines: 1,
-        validator: _model.searchController == null ? null : (value) => null,
+        validator: _searchController == null ? null : (value) => null,
       ),
     );
   }
@@ -262,7 +260,7 @@ class _PropriedadesExcluiasWidgetState
                     .toList();
 
             // Filter properties based on search query
-            final searchQuery = _model.searchController.text.toLowerCase();
+            final searchQuery = _searchController.text.toLowerCase();
             if (searchQuery.isNotEmpty) {
               listViewPropriedadesRecordList = listViewPropriedadesRecordList
                   .where((property) =>

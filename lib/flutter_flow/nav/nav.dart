@@ -207,9 +207,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: PropriedadesExcluiasWidget.routeName,
-          path: PropriedadesExcluiasWidget.routePath,
-          builder: (context, params) => PropriedadesExcluiasWidget(
+          name: PropriedadesExcluiasPage.routeName,
+          path: PropriedadesExcluiasPage.routePath,
+          builder: (context, params) => PropriedadesExcluiasPage(
             visitaPresencial: params.getParam(
               'visitaPresencial',
               ParamType.bool,
