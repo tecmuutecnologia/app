@@ -77,8 +77,8 @@ export '/features/perfil/presentation/pages/apagar_conta_page.dart'
     show ApagarContaPage;
 export '/pages/tecnico/propriedade/financeiro/editar_relatorio_financeiro/editar_relatorio_financeiro_widget.dart'
     show EditarRelatorioFinanceiroWidget;
-export '/pages/tecnico/propriedade/recria/recriacao/recriacao_widget.dart'
-    show RecriacaoWidget;
+export '/features/recria/presentation/pages/recriacao_page.dart'
+    show RecriacaoPage;
 export '/pages/tecnico/propriedade/sincronizacao/importacao_animais/importacao_animais_widget.dart'
     show ImportacaoAnimaisWidget;
 export '/pages/produtor/initial/inicio_propriedade_produtor/inicio_propriedade_produtor_widget.dart'

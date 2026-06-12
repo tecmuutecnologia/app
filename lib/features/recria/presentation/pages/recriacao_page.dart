@@ -6,22 +6,19 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/form_field_controller.dart';
 import '/flutter_flow/instant_timer.dart';
 import '/custom_code/actions/index.dart' as actions;
-import '/index.dart';
+import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'recriacao_model.dart';
-import 'widgets/animal_list_widget.dart';
+import '../widgets/animal_list_widget.dart';
 
-export 'recriacao_model.dart';
-
-/// Widget principal da tela de Recriação///
-/// Esta tela exibe a lista de animais em recriação (Bezerros, Bezerras, Touros, Novilhas)
+/// Página principal da tela de Recriação.
+/// Exibe a lista de animais em recriação (Bezerros, Bezerras, Touros, Novilhas)
 /// com suporte para modo online e offline.
-class RecriacaoWidget extends StatefulWidget {
-  const RecriacaoWidget({
+class RecriacaoPage extends StatefulWidget {
+  const RecriacaoPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -42,16 +39,24 @@ class RecriacaoWidget extends StatefulWidget {
   static String routePath = '/recriacao';
 
   @override
-  State<RecriacaoWidget> createState() => _RecriacaoWidgetState();
+  State<RecriacaoPage> createState() => _RecriacaoPageState();
 }
 
-class _RecriacaoWidgetState extends State<RecriacaoWidget> {
-  late RecriacaoModel _model;
+class _RecriacaoPageState extends State<RecriacaoPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   /// Direção da ordenação da lista (antes em FFAppState.ordenacaoQuery, que era
   /// global e não-persistido, usado só nesta tela). Local: false = descendente.
   bool _ordenacaoQuery = false;
+
+  // Estado de view (antes no RecriacaoModel/FlutterFlowModel).
+  InstantTimer? _instantTimer;
+  bool? _respostaNet = true;
+  FormFieldController<List<String>>? _choiceChipsValueController;
+  String? get _choiceChipsValue =>
+      _choiceChipsValueController?.value?.firstOrNull;
+  set _choiceChipsValue(String? val) =>
+      _choiceChipsValueController?.value = val != null ? [val] : [];
 
   // Constantes de cores
   static const Color _appBarColorOnline = Color(0xFFF75E38);
@@ -60,7 +65,6 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => RecriacaoModel());
 
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       _setupInternetChecker();
@@ -70,13 +74,13 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
   }
 
   void _setupInternetChecker() {
-    _model.instantTimer = InstantTimer.periodic(
+    _instantTimer = InstantTimer.periodic(
       duration: const Duration(seconds: 5),
       callback: (timer) async {
-        _model.respostaNet = await actions.checkInternetConnection();
+        _respostaNet = await actions.checkInternetConnection();
         safeSetState(() {});
 
-        if (_model.respostaNet!) {
+        if (_respostaNet!) {
           safeSetState(() {});
         } else {
           // Offline: notificação passiva via SyncStatusBanner (app-wide);
@@ -89,7 +93,7 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
 
   @override
   void dispose() {
-    _model.dispose();
+    _instantTimer?.cancel();
     super.dispose();
   }
 
@@ -112,7 +116,7 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
-    final isOnline = _model.respostaNet ?? true;
+    final isOnline = _respostaNet ?? true;
 
     return PreferredSize(
       preferredSize: const Size.fromHeight(100.0),
@@ -196,7 +200,7 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
   }
 
   Widget _buildFilterSection(BuildContext context) {
-    final isNovilhasSelected = _model.choiceChipsValue == 'Novilhas';
+    final isNovilhasSelected = _choiceChipsValue == 'Novilhas';
     final isAscending = _ordenacaoQuery;
 
     return Column(
@@ -242,7 +246,7 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
         ChipData('Todos'),
       ],
       onChanged: (val) =>
-          safeSetState(() => _model.choiceChipsValue = val?.firstOrNull),
+          safeSetState(() => _choiceChipsValue = val?.firstOrNull),
       selectedChipStyle: ChipStyle(
         backgroundColor: FlutterFlowTheme.of(context).tertiary,
         textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -270,9 +274,9 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
       chipSpacing: 12.0,
       rowSpacing: 12.0,
       multiselect: false,
-      initialized: _model.choiceChipsValue != null,
+      initialized: _choiceChipsValue != null,
       alignment: WrapAlignment.center,
-      controller: _model.choiceChipsValueController ??=
+      controller: _choiceChipsValueController ??=
           FormFieldController<List<String>>(['Todos']),
       wrapped: true,
     );
@@ -300,7 +304,7 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
   }
 
   Widget _buildAnimalList(BuildContext context) {
-    final isOnline = _model.respostaNet ?? true;
+    final isOnline = _respostaNet ?? true;
 
     return ListView(
       padding: EdgeInsets.zero,
@@ -315,7 +319,7 @@ class _RecriacaoWidgetState extends State<RecriacaoWidget> {
           emailPropriedade: widget.emailPropriedade,
           visitaPresencial: widget.visitaPresencial,
           diasDg: widget.diasDg,
-          filterCategory: _model.choiceChipsValue,
+          filterCategory: _choiceChipsValue,
           isOnline: isOnline,
           ascending: _ordenacaoQuery,
         ),

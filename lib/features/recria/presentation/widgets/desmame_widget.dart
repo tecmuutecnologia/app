@@ -10,8 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'desmame_model.dart';
-export 'desmame_model.dart';
 
 /// Modo de operação do widget de desmame
 enum DesmameMode {
@@ -65,20 +63,11 @@ class DesmameWidget extends StatefulWidget {
 
 class _DesmameWidgetState extends State<DesmameWidget>
     with TickerProviderStateMixin {
-  late DesmameModel _model;
-
   final animationsMap = <String, AnimationInfo>{};
-
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => DesmameModel());
 
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
@@ -110,12 +99,6 @@ class _DesmameWidgetState extends State<DesmameWidget>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _model.maybeDispose();
-    super.dispose();
   }
 
   @override

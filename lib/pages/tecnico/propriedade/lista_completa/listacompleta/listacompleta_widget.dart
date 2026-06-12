@@ -16,7 +16,7 @@ import '/pages/tecnico/propriedade/exame_ginecologico/nova_acao_exame_ginecologi
 import '/pages/tecnico/propriedade/inseminacoes/nova_inseminacao/nova_inseminacao_widget.dart';
 import '/pages/tecnico/propriedade/prenhas/registrar_secagem/registrar_secagem_widget.dart';
 import '/pages/tecnico/propriedade/prenhas/registro_aborto/registro_aborto_widget.dart';
-import '/pages/tecnico/propriedade/recria/desmame/desmame_widget.dart';
+import '/features/recria/presentation/widgets/desmame_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_parto/registrar_parto_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_pre_parto/registrar_pre_parto_widget.dart';
 import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';

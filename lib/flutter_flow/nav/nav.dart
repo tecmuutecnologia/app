@@ -1137,9 +1137,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: RecriacaoWidget.routeName,
-          path: RecriacaoWidget.routePath,
-          builder: (context, params) => RecriacaoWidget(
+          name: RecriacaoPage.routeName,
+          path: RecriacaoPage.routePath,
+          builder: (context, params) => RecriacaoPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,
