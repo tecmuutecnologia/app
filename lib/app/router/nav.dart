@@ -955,9 +955,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: CalendarioSanitarioWidget.routeName,
-          path: CalendarioSanitarioWidget.routePath,
-          builder: (context, params) => CalendarioSanitarioWidget(
+          name: CalendarioSanitarioPage.routeName,
+          path: CalendarioSanitarioPage.routePath,
+          builder: (context, params) => CalendarioSanitarioPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,

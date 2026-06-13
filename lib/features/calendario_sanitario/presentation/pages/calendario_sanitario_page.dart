@@ -7,14 +7,12 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/pages/tecnico/propriedade/calendario_sanitario/selecao_animal_calendario/selecao_animal_calendario_widget.dart';
-import '/index.dart';
+import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'calendario_sanitario_model.dart';
-export 'calendario_sanitario_model.dart';
 
-class CalendarioSanitarioWidget extends StatefulWidget {
-  const CalendarioSanitarioWidget({
+class CalendarioSanitarioPage extends StatefulWidget {
+  const CalendarioSanitarioPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -35,28 +33,25 @@ class CalendarioSanitarioWidget extends StatefulWidget {
   static String routePath = '/calendarioSanitario';
 
   @override
-  State<CalendarioSanitarioWidget> createState() =>
-      _CalendarioSanitarioWidgetState();
+  State<CalendarioSanitarioPage> createState() =>
+      _CalendarioSanitarioPageState();
 }
 
-class _CalendarioSanitarioWidgetState extends State<CalendarioSanitarioWidget> {
-  late CalendarioSanitarioModel _model;
+class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
+  DateTimeRange? _calendarSelectedDay;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => CalendarioSanitarioModel());
+
+    _calendarSelectedDay = DateTimeRange(
+      start: DateTime.now().startOfDay,
+      end: DateTime.now().endOfDay,
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _model.dispose();
-
-    super.dispose();
   }
 
   Widget _p1(BuildContext context) {
@@ -168,7 +163,7 @@ class _CalendarioSanitarioWidgetState extends State<CalendarioSanitarioWidget> {
             initialDate: getCurrentTimestamp,
             rowHeight: 45.0,
             onChange: (DateTimeRange? newSelectedDate) {
-              safeSetState(() => _model.calendarSelectedDay = newSelectedDate);
+              safeSetState(() => _calendarSelectedDay = newSelectedDate);
             },
             titleStyle: FlutterFlowTheme.of(context).headlineSmall.override(
                   font: GoogleFonts.outfit(
@@ -314,7 +309,7 @@ class _CalendarioSanitarioWidgetState extends State<CalendarioSanitarioWidget> {
                 'dtAcao',
                 isEqualTo: dateTimeFormat(
                   "dd/MM/yyyy",
-                  _model.calendarSelectedDay?.start,
+                  _calendarSelectedDay?.start,
                   locale: FFLocalizations.of(context).languageCode,
                 ),
               ),

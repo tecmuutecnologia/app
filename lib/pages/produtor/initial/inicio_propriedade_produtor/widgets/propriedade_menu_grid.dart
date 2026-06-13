@@ -410,7 +410,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
       iconSize: 28.0,
       onTap: () {
         context.pushNamed(
-          CalendarioSanitarioWidget.routeName,
+          CalendarioSanitarioPage.routeName,
           queryParameters: navigationParams.toQueryParameters(),
         );
       },
