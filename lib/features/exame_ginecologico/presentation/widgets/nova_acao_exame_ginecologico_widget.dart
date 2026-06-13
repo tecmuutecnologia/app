@@ -11,8 +11,9 @@ import '/core/ui/flutter_flow_animations.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
-import '/pages/tecnico/propriedade/exame_ginecologico/induzir_lactacao/induzir_lactacao_widget.dart';
-import '/pages/tecnico/propriedade/exame_ginecologico/nova_acao_exame_ginecologico/acoes_dropdown_custom.dart';
+import '/core/ui/form_field_controller.dart';
+import 'induzir_lactacao_widget.dart';
+import 'acoes_dropdown_custom.dart';
 import 'dart:ui';
 import '/core/ui/custom_functions.dart' as functions;
 import 'package:collection/collection.dart';
@@ -24,8 +25,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
-import 'nova_acao_exame_ginecologico_model.dart';
-export 'nova_acao_exame_ginecologico_model.dart';
 
 class NovaAcaoExameGinecologicoWidget extends StatefulWidget {
   const NovaAcaoExameGinecologicoWidget({
@@ -67,27 +66,37 @@ class NovaAcaoExameGinecologicoWidget extends StatefulWidget {
 class _NovaAcaoExameGinecologicoWidgetState
     extends State<NovaAcaoExameGinecologicoWidget>
     with TickerProviderStateMixin {
-  late NovaAcaoExameGinecologicoModel _model;
-
   final animationsMap = <String, AnimationInfo>{};
 
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
+  String? _acoesDispoValue;
+  FocusNode? _dtAcaoFocusNode;
+  TextEditingController? _dtAcaoTextController;
+  late MaskTextInputFormatter _dtAcaoMask;
+  final String? Function(BuildContext, String?)?
+      _dtAcaoTextControllerValidator = null;
+  DateTime? _datePicked;
+  FocusNode? _obsInfoFocusNode;
+  TextEditingController? _obsInfoTextController;
+  final String? Function(BuildContext, String?)?
+      _obsInfoTextControllerValidator = null;
+
+  // Outputs de query/criação (antes no FlutterFlowModel).
+  AcoesRecord? _uidAcaoLancada;
+  ResumoDaVisitaRecord? _outUidResumoDaVisita;
+  RecomendacoesRecord? _outUidRecomendacoes;
+  ResumoDaVisitaRecord? _outNewUidResumoDaVisita;
+  RecomendacoesRecord? _outUidRecomendacoes2;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => NovaAcaoExameGinecologicoModel());
 
-    _model.dtAcaoTextController ??= TextEditingController();
-    _model.dtAcaoFocusNode ??= FocusNode();
+    _dtAcaoTextController ??= TextEditingController();
+    _dtAcaoFocusNode ??= FocusNode();
 
-    _model.dtAcaoMask = MaskTextInputFormatter(mask: '##/##/####');
-    _model.obsInfoTextController ??= TextEditingController();
-    _model.obsInfoFocusNode ??= FocusNode();
+    _dtAcaoMask = MaskTextInputFormatter(mask: '##/##/####');
+    _obsInfoTextController ??= TextEditingController();
+    _obsInfoFocusNode ??= FocusNode();
 
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
@@ -119,7 +128,7 @@ class _NovaAcaoExameGinecologicoWidgetState
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {
-          _model.dtAcaoTextController?.text = dateTimeFormat(
+          _dtAcaoTextController?.text = dateTimeFormat(
             "dd/MM/yyyy",
             getCurrentTimestamp,
             locale: FFLocalizations.of(context).languageCode,
@@ -129,7 +138,10 @@ class _NovaAcaoExameGinecologicoWidgetState
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _dtAcaoFocusNode?.dispose();
+    _dtAcaoTextController?.dispose();
+    _obsInfoFocusNode?.dispose();
+    _obsInfoTextController?.dispose();
 
     super.dispose();
   }
@@ -146,9 +158,9 @@ class _NovaAcaoExameGinecologicoWidgetState
           widget.uidAnimaisProdutores == null ? widget.uidAnimalOffline : null,
       uidPropriedadePath: widget.uidPropriedade?.path,
       nomeAnimal: widget.nomeAnimal,
-      acao: _model.acoesDispoValue,
-      obsVisita: _model.obsInfoTextController.text,
-      dataVisita: _model.dtAcaoTextController.text,
+      acao: _acoesDispoValue,
+      obsVisita: _obsInfoTextController.text,
+      dataVisita: _dtAcaoTextController.text,
       dataDaAcao: getCurrentTimestamp,
     );
     unawaited(AcaoRepository().add(acao));
@@ -380,9 +392,8 @@ class _NovaAcaoExameGinecologicoWidgetState
             child: FFButtonWidget(
               onPressed: () async {
                 var _shouldSetState = false;
-                if (!((_model.acoesDispoValue != null &&
-                        _model.acoesDispoValue != '') &&
-                    (_model.dtAcaoTextController.text != ''))) {
+                if (!((_acoesDispoValue != null && _acoesDispoValue != '') &&
+                    (_dtAcaoTextController.text != ''))) {
                   await showDialog(
                     context: context,
                     builder: (alertDialogContext) {
@@ -410,8 +421,7 @@ class _NovaAcaoExameGinecologicoWidgetState
                 // Bookkeeping de visita/tratamento/recomendação roda
                 // só online (offline a antiga variante também omite).
                 if (ConnectivityService.instance.isOnline) {
-                  _model.outUidResumoDaVisita =
-                      await queryResumoDaVisitaRecordOnce(
+                  _outUidResumoDaVisita = await queryResumoDaVisitaRecordOnce(
                     queryBuilder: (resumoDaVisitaRecord) => resumoDaVisitaRecord
                         .where(
                           'uidPropriedade',
@@ -432,45 +442,43 @@ class _NovaAcaoExameGinecologicoWidgetState
                     singleRecord: true,
                   ).then((s) => s.firstOrNull);
                   _shouldSetState = true;
-                  if (_model.outUidResumoDaVisita != null) {
+                  if (_outUidResumoDaVisita != null) {
                     await TratamentosRecord.createDoc(
-                            _model.outUidResumoDaVisita!.reference)
+                            _outUidResumoDaVisita!.reference)
                         .set(createTratamentosRecordData(
                       uidAnimal: widget.uidAnimaisProdutores,
-                      tipoAcao: _model.acoesDispoValue,
-                      uidResumoDaVisita: _model.outUidResumoDaVisita?.reference,
-                      observacaoAcao: _model.obsInfoTextController.text,
+                      tipoAcao: _acoesDispoValue,
+                      uidResumoDaVisita: _outUidResumoDaVisita?.reference,
+                      observacaoAcao: _obsInfoTextController.text,
                       brincoAnimal: widget.brincoAnimal,
                       nomeAnimal: widget.nomeAnimal,
                       grupoAnimal: widget.grupoAnimal,
-                      uidAcaoLancada: _model.uidAcaoLancada?.reference,
+                      uidAcaoLancada: _uidAcaoLancada?.reference,
                       brincoAnimalOrder:
                           functions.converterStringToInt(widget.brincoAnimal!),
                     ));
-                    _model.outUidRecomendacoes =
-                        await queryRecomendacoesRecordOnce(
-                      parent: _model.outUidResumoDaVisita?.reference,
+                    _outUidRecomendacoes = await queryRecomendacoesRecordOnce(
+                      parent: _outUidResumoDaVisita?.reference,
                       queryBuilder: (recomendacoesRecord) => recomendacoesRecord
                           .where(
                             'uidResumoDaVisita',
-                            isEqualTo: _model.outUidResumoDaVisita?.reference,
+                            isEqualTo: _outUidResumoDaVisita?.reference,
                           )
                           .where(
                             'tituloRecomendacao',
-                            isEqualTo: _model.acoesDispoValue,
+                            isEqualTo: _acoesDispoValue,
                           ),
                       singleRecord: true,
                     ).then((s) => s.firstOrNull);
                     _shouldSetState = true;
-                    if (_model.outUidRecomendacoes?.reference == null) {
+                    if (_outUidRecomendacoes?.reference == null) {
                       await RecomendacoesRecord.createDoc(
-                              _model.outUidResumoDaVisita!.reference)
+                              _outUidResumoDaVisita!.reference)
                           .set(createRecomendacoesRecordData(
-                        tituloRecomendacao: _model.acoesDispoValue,
-                        descricaoRecomendacao: functions
-                            .gerarDescricaoProtocolo(_model.acoesDispoValue),
-                        uidResumoDaVisita:
-                            _model.outUidResumoDaVisita?.reference,
+                        tituloRecomendacao: _acoesDispoValue,
+                        descricaoRecomendacao:
+                            functions.gerarDescricaoProtocolo(_acoesDispoValue),
+                        uidResumoDaVisita: _outUidResumoDaVisita?.reference,
                       ));
                       Navigator.pop(context);
                       if (_shouldSetState) safeSetState(() {});
@@ -494,7 +502,7 @@ class _NovaAcaoExameGinecologicoWidgetState
                         locale: FFLocalizations.of(context).languageCode,
                       ),
                     ));
-                    _model.outNewUidResumoDaVisita =
+                    _outNewUidResumoDaVisita =
                         ResumoDaVisitaRecord.getDocumentFromData(
                             createResumoDaVisitaRecordData(
                               uidPropriedade: widget.uidPropriedade,
@@ -510,52 +518,47 @@ class _NovaAcaoExameGinecologicoWidgetState
                             resumoDaVisitaRecordReference);
                     _shouldSetState = true;
 
-                    await _model.outNewUidResumoDaVisita!.reference
+                    await _outNewUidResumoDaVisita!.reference
                         .update(createResumoDaVisitaRecordData(
-                      uidResumoDaVisita:
-                          _model.outNewUidResumoDaVisita?.reference,
+                      uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
                     ));
 
                     await TratamentosRecord.createDoc(
-                            _model.outNewUidResumoDaVisita!.reference)
+                            _outNewUidResumoDaVisita!.reference)
                         .set(createTratamentosRecordData(
                       uidAnimal: widget.uidAnimaisProdutores,
-                      tipoAcao: _model.acoesDispoValue,
-                      uidResumoDaVisita:
-                          _model.outNewUidResumoDaVisita?.reference,
-                      observacaoAcao: _model.obsInfoTextController.text,
+                      tipoAcao: _acoesDispoValue,
+                      uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
+                      observacaoAcao: _obsInfoTextController.text,
                       brincoAnimal: widget.brincoAnimal,
                       nomeAnimal: widget.nomeAnimal,
                       grupoAnimal: widget.grupoAnimal,
-                      uidAcaoLancada: _model.uidAcaoLancada?.reference,
+                      uidAcaoLancada: _uidAcaoLancada?.reference,
                       brincoAnimalOrder:
                           functions.converterStringToInt(widget.brincoAnimal!),
                     ));
-                    _model.outUidRecomendacoes2 =
-                        await queryRecomendacoesRecordOnce(
-                      parent: _model.outNewUidResumoDaVisita?.reference,
+                    _outUidRecomendacoes2 = await queryRecomendacoesRecordOnce(
+                      parent: _outNewUidResumoDaVisita?.reference,
                       queryBuilder: (recomendacoesRecord) => recomendacoesRecord
                           .where(
                             'uidResumoDaVisita',
-                            isEqualTo:
-                                _model.outNewUidResumoDaVisita?.reference,
+                            isEqualTo: _outNewUidResumoDaVisita?.reference,
                           )
                           .where(
                             'tituloRecomendacao',
-                            isEqualTo: _model.acoesDispoValue,
+                            isEqualTo: _acoesDispoValue,
                           ),
                       singleRecord: true,
                     ).then((s) => s.firstOrNull);
                     _shouldSetState = true;
-                    if (_model.outUidRecomendacoes2?.reference == null) {
+                    if (_outUidRecomendacoes2?.reference == null) {
                       await RecomendacoesRecord.createDoc(
-                              _model.outNewUidResumoDaVisita!.reference)
+                              _outNewUidResumoDaVisita!.reference)
                           .set(createRecomendacoesRecordData(
-                        tituloRecomendacao: _model.acoesDispoValue,
-                        descricaoRecomendacao: functions
-                            .gerarDescricaoProtocolo(_model.acoesDispoValue),
-                        uidResumoDaVisita:
-                            _model.outNewUidResumoDaVisita?.reference,
+                        tituloRecomendacao: _acoesDispoValue,
+                        descricaoRecomendacao:
+                            functions.gerarDescricaoProtocolo(_acoesDispoValue),
+                        uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
                       ));
                       Navigator.pop(context);
                       if (_shouldSetState) safeSetState(() {});
@@ -620,8 +623,8 @@ class _NovaAcaoExameGinecologicoWidgetState
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: AcoesDropdownCustom(
         opcoes: kTipoAcoesDescricoes.toList(),
-        valueSelected: _model.acoesDispoValue,
-        onChanged: (val) => safeSetState(() => _model.acoesDispoValue = val),
+        valueSelected: _acoesDispoValue,
+        onChanged: (val) => safeSetState(() => _acoesDispoValue = val),
         onToggleFavorite: (acao) {
           if (FFAppState().isAcaoPreferida(acao)) {
             FFAppState().removeFromAcoesPreferidas(acao);
@@ -645,10 +648,10 @@ class _NovaAcaoExameGinecologicoWidgetState
             child: Padding(
               padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
               child: TextFormField(
-                controller: _model.dtAcaoTextController,
-                focusNode: _model.dtAcaoFocusNode,
+                controller: _dtAcaoTextController,
+                focusNode: _dtAcaoFocusNode,
                 onChanged: (_) => EasyDebounce.debounce(
-                  '_model.dtAcaoTextController',
+                  '_dtAcaoTextController',
                   Duration(milliseconds: 2000),
                   () => safeSetState(() {}),
                 ),
@@ -718,10 +721,10 @@ class _NovaAcaoExameGinecologicoWidgetState
                   ),
                   contentPadding:
                       EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-                  suffixIcon: _model.dtAcaoTextController!.text.isNotEmpty
+                  suffixIcon: _dtAcaoTextController!.text.isNotEmpty
                       ? InkWell(
                           onTap: () async {
-                            _model.dtAcaoTextController?.clear();
+                            _dtAcaoTextController?.clear();
                             safeSetState(() {});
                           },
                           child: Icon(
@@ -752,9 +755,8 @@ class _NovaAcaoExameGinecologicoWidgetState
                         maxLength}) =>
                     null,
                 keyboardType: TextInputType.datetime,
-                validator:
-                    _model.dtAcaoTextControllerValidator.asValidator(context),
-                inputFormatters: [_model.dtAcaoMask],
+                validator: _dtAcaoTextControllerValidator.asValidator(context),
+                inputFormatters: [_dtAcaoMask],
               ),
             ),
           ),
@@ -824,7 +826,7 @@ class _NovaAcaoExameGinecologicoWidgetState
                             use24hFormat: false,
                             onDateTimeChanged: (newDateTime) =>
                                 safeSetState(() {
-                              _model.datePicked = newDateTime;
+                              _datePicked = newDateTime;
                             }),
                           ),
                         ),
@@ -832,14 +834,14 @@ class _NovaAcaoExameGinecologicoWidgetState
                     );
                   });
               safeSetState(() {
-                _model.dtAcaoTextController?.text = dateTimeFormat(
+                _dtAcaoTextController?.text = dateTimeFormat(
                   "dd/MM/yyyy",
-                  _model.datePicked,
+                  _datePicked,
                   locale: FFLocalizations.of(context).languageCode,
                 );
-                _model.dtAcaoMask.updateMask(
+                _dtAcaoMask.updateMask(
                   newValue: TextEditingValue(
-                    text: _model.dtAcaoTextController!.text,
+                    text: _dtAcaoTextController!.text,
                   ),
                 );
               });
@@ -859,8 +861,8 @@ class _NovaAcaoExameGinecologicoWidgetState
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: TextFormField(
-        controller: _model.obsInfoTextController,
-        focusNode: _model.obsInfoFocusNode,
+        controller: _obsInfoTextController,
+        focusNode: _obsInfoFocusNode,
         autofocus: false,
         obscureText: false,
         decoration: InputDecoration(
@@ -928,7 +930,7 @@ class _NovaAcaoExameGinecologicoWidgetState
               fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
             ),
         cursorColor: FlutterFlowTheme.of(context).primary,
-        validator: _model.obsInfoTextControllerValidator.asValidator(context),
+        validator: _obsInfoTextControllerValidator.asValidator(context),
       ),
     );
   }

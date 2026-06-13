@@ -340,9 +340,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: ExameGinecologicoWidget.routeName,
-          path: ExameGinecologicoWidget.routePath,
-          builder: (context, params) => ExameGinecologicoWidget(
+          name: ExameGinecologicoPage.routeName,
+          path: ExameGinecologicoPage.routePath,
+          builder: (context, params) => ExameGinecologicoPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,

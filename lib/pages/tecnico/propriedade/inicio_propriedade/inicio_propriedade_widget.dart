@@ -1695,7 +1695,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
         highlightColor: Colors.transparent,
         onTap: () async {
           context.pushNamed(
-            ExameGinecologicoWidget.routeName,
+            ExameGinecologicoPage.routeName,
             queryParameters: {
               'uidPropriedade': serializeParam(
                 widget.uidPropriedade,

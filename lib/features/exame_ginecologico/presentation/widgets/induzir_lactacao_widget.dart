@@ -10,8 +10,6 @@ import '/core/ui/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'induzir_lactacao_model.dart';
-export 'induzir_lactacao_model.dart';
 
 class InduzirLactacaoWidget extends StatefulWidget {
   const InduzirLactacaoWidget({
@@ -49,20 +47,11 @@ class InduzirLactacaoWidget extends StatefulWidget {
 
 class _InduzirLactacaoWidgetState extends State<InduzirLactacaoWidget>
     with TickerProviderStateMixin {
-  late InduzirLactacaoModel _model;
-
   final animationsMap = <String, AnimationInfo>{};
-
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => InduzirLactacaoModel());
 
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
@@ -94,13 +83,6 @@ class _InduzirLactacaoWidgetState extends State<InduzirLactacaoWidget>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _model.maybeDispose();
-
-    super.dispose();
   }
 
   /// Induz a lactação de forma offline-first: grava a ação 'Indução de Lactação'

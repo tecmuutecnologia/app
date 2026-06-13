@@ -12,7 +12,7 @@ import '/core/ui/instant_timer.dart';
 import '/features/diagnostico_gestacao/presentation/widgets/confirma_pp_widget.dart';
 import '/features/diagnostico_gestacao/presentation/widgets/dg_mais_widget.dart';
 import '/features/diagnostico_gestacao/presentation/widgets/dg_menos_widget.dart';
-import '/pages/tecnico/propriedade/exame_ginecologico/nova_acao_exame_ginecologico/nova_acao_exame_ginecologico_widget.dart';
+import '/features/exame_ginecologico/presentation/widgets/nova_acao_exame_ginecologico_widget.dart';
 import '/features/inseminacoes/presentation/widgets/nova_inseminacao_widget.dart';
 import '/features/prenhas/presentation/widgets/registrar_secagem_widget.dart';
 import '/features/prenhas/presentation/widgets/registro_aborto_widget.dart';

@@ -8,19 +8,18 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
-import '/pages/tecnico/propriedade/exame_ginecologico/nova_acao_exame_ginecologico/nova_acao_exame_ginecologico_widget.dart';
+import '../widgets/nova_acao_exame_ginecologico_widget.dart';
+import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
+import '/pages/tecnico/propriedade/prontuario/prontuario_animal/prontuario_animal_widget.dart';
 import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
-import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'exame_ginecologico_model.dart';
-export 'exame_ginecologico_model.dart';
 
-class ExameGinecologicoWidget extends StatefulWidget {
-  const ExameGinecologicoWidget({
+class ExameGinecologicoPage extends StatefulWidget {
+  const ExameGinecologicoPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -41,12 +40,12 @@ class ExameGinecologicoWidget extends StatefulWidget {
   static String routePath = '/exameGinecologico';
 
   @override
-  State<ExameGinecologicoWidget> createState() =>
-      _ExameGinecologicoWidgetState();
+  State<ExameGinecologicoPage> createState() => _ExameGinecologicoPageState();
 }
 
-class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
-  late ExameGinecologicoModel _model;
+class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
+  InstantTimer? _instantTimer;
+  bool? _respostaNet = true;
 
   /// Lista de animais existentes (fonte ObjectBox). Antes em
   /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
@@ -57,7 +56,6 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ExameGinecologicoModel());
 
     // Fonte única: carrega a lista do ObjectBox (offline-first). A tela renderiza
     // sempre desta lista; o Firestore é usado apenas para sincronizar.
@@ -71,13 +69,13 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.instantTimer = InstantTimer.periodic(
+      _instantTimer = InstantTimer.periodic(
         duration: Duration(seconds: 5),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
+          _respostaNet = await actions.checkInternetConnection();
 
           safeSetState(() {});
-          if (_model.respostaNet!) {
+          if (_respostaNet!) {
             safeSetState(() {});
           } else {
             // Offline: notificação passiva via SyncStatusBanner (app-wide);
@@ -93,7 +91,7 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
 
   @override
   void dispose() {
-    _model.dispose();
+    _instantTimer?.cancel();
 
     super.dispose();
   }
@@ -435,7 +433,7 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
           preferredSize: Size.fromHeight(100.0),
           child: AppBar(
             backgroundColor:
-                _model.respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
+                _respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
             automaticallyImplyLeading: false,
             actions: [],
             flexibleSpace: FlexibleSpaceBar(

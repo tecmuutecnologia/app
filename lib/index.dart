@@ -23,8 +23,8 @@ export '/pages/tecnico/propriedade/animals/lista_animais/lista_animais_widget.da
     show ListaAnimaisWidget;
 export '/features/inseminacoes/presentation/pages/lista_inseminacoes_page.dart'
     show ListaInseminacoesPage;
-export '/pages/tecnico/propriedade/exame_ginecologico/exame_ginecologico/exame_ginecologico_widget.dart'
-    show ExameGinecologicoWidget;
+export '/features/exame_ginecologico/presentation/pages/exame_ginecologico_page.dart'
+    show ExameGinecologicoPage;
 export '/features/prenhas/presentation/pages/animais_prenhas_page.dart'
     show AnimaisPrenhasPage;
 export '/pages/tecnico/propriedade/secas/secas/secas_widget.dart'

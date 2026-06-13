@@ -298,7 +298,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
       badgeCount: getBadgeCount(),
       onTap: () {
         context.pushNamed(
-          ExameGinecologicoWidget.routeName,
+          ExameGinecologicoPage.routeName,
           queryParameters: navigationParams.toQueryParameters(),
         );
       },
