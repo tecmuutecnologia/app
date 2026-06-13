@@ -1,4 +1,4 @@
-// ignore_for_file: dead_code
+// ignore_for_file: dead_code, unused_field
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_animations.dart';
@@ -6,14 +6,12 @@ import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'dart:ui';
-import '/index.dart';
+import '/features/propriedades/presentation/pages/lista_propriedade_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'confirmar_senha_model.dart';
-export 'confirmar_senha_model.dart';
 
 class ConfirmarSenhaWidget extends StatefulWidget {
   const ConfirmarSenhaWidget({
@@ -49,23 +47,33 @@ class ConfirmarSenhaWidget extends StatefulWidget {
 
 class _ConfirmarSenhaWidgetState extends State<ConfirmarSenhaWidget>
     with TickerProviderStateMixin {
-  late ConfirmarSenhaModel _model;
-
   final animationsMap = <String, AnimationInfo>{};
 
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
+  final _formKey = GlobalKey<FormState>();
+
+  FocusNode? _senhaTemporariaFocusNode;
+  TextEditingController? _senhaTemporariaTextController;
+  bool _senhaTemporariaVisibility = false;
+
+  // Outputs de query/criação (antes no FlutterFlowModel).
+  TecnicoRecord? _outUidTecnicoLogged;
+  PropriedadesRecord? _propriedadeTecnico;
+  PropriedadesRecord? _outUidPropriedadeNewCadaster;
+
+  String? _senhaTemporariaTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Senha Temporária is required';
+    }
+    return null;
   }
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ConfirmarSenhaModel());
 
-    _model.senhaTemporariaTextController ??= TextEditingController();
-    _model.senhaTemporariaFocusNode ??= FocusNode();
+    _senhaTemporariaTextController ??= TextEditingController();
+    _senhaTemporariaFocusNode ??= FocusNode();
 
     animationsMap.addAll({
       'containerOnPageLoadAnimation1': AnimationInfo(
@@ -107,7 +115,8 @@ class _ConfirmarSenhaWidgetState extends State<ConfirmarSenhaWidget>
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _senhaTemporariaFocusNode?.dispose();
+    _senhaTemporariaTextController?.dispose();
 
     super.dispose();
   }
@@ -165,7 +174,7 @@ class _ConfirmarSenhaWidgetState extends State<ConfirmarSenhaWidget>
 
   Widget _p3(BuildContext context) {
     return Form(
-      key: _model.formKey,
+      key: _formKey,
       autovalidateMode: AutovalidateMode.always,
       child: Padding(
         padding: EdgeInsets.all(24.0),
@@ -229,10 +238,10 @@ class _ConfirmarSenhaWidgetState extends State<ConfirmarSenhaWidget>
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 12.0),
       child: TextFormField(
-        controller: _model.senhaTemporariaTextController,
-        focusNode: _model.senhaTemporariaFocusNode,
+        controller: _senhaTemporariaTextController,
+        focusNode: _senhaTemporariaFocusNode,
         autofocus: true,
-        obscureText: !_model.senhaTemporariaVisibility,
+        obscureText: !_senhaTemporariaVisibility,
         decoration: InputDecoration(
           labelText: 'Senha',
           labelStyle: FlutterFlowTheme.of(context).labelLarge.override(
@@ -297,12 +306,11 @@ class _ConfirmarSenhaWidgetState extends State<ConfirmarSenhaWidget>
           ),
           suffixIcon: InkWell(
             onTap: () => safeSetState(
-              () => _model.senhaTemporariaVisibility =
-                  !_model.senhaTemporariaVisibility,
+              () => _senhaTemporariaVisibility = !_senhaTemporariaVisibility,
             ),
             focusNode: FocusNode(skipTraversal: true),
             child: Icon(
-              _model.senhaTemporariaVisibility
+              _senhaTemporariaVisibility
                   ? Icons.visibility_outlined
                   : Icons.visibility_off_outlined,
               color: Color(0xFF757575),
@@ -319,8 +327,7 @@ class _ConfirmarSenhaWidgetState extends State<ConfirmarSenhaWidget>
               fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
             ),
-        validator:
-            _model.senhaTemporariaTextControllerValidator.asValidator(context),
+        validator: _senhaTemporariaTextControllerValidator.asValidator(context),
       ),
     );
   }
@@ -342,14 +349,14 @@ class _ConfirmarSenhaWidgetState extends State<ConfirmarSenhaWidget>
                 final user = await authManager.signInWithEmail(
                   context,
                   widget.email!,
-                  _model.senhaTemporariaTextController.text,
+                  _senhaTemporariaTextController.text,
                 );
                 if (user == null) {
                   return;
                 }
 
                 if (loggedIn == true) {
-                  _model.outUidTecnicoLogged = await queryTecnicoRecordOnce(
+                  _outUidTecnicoLogged = await queryTecnicoRecordOnce(
                     queryBuilder: (tecnicoRecord) => tecnicoRecord.where(
                       'uidPerson',
                       isEqualTo: currentUserUid,
@@ -357,8 +364,8 @@ class _ConfirmarSenhaWidgetState extends State<ConfirmarSenhaWidget>
                     singleRecord: true,
                   ).then((s) => s.firstOrNull);
                   _shouldSetState = true;
-                  _model.propriedadeTecnico = await queryPropriedadesRecordOnce(
-                    parent: _model.outUidTecnicoLogged?.reference,
+                  _propriedadeTecnico = await queryPropriedadesRecordOnce(
+                    parent: _outUidTecnicoLogged?.reference,
                     queryBuilder: (propriedadesRecord) =>
                         propriedadesRecord.where(
                       'email',
@@ -368,14 +375,14 @@ class _ConfirmarSenhaWidgetState extends State<ConfirmarSenhaWidget>
                   ).then((s) => s.firstOrNull);
                   _shouldSetState = true;
                   if (widget.isEdit!) {
-                    await _model.propriedadeTecnico!.reference
+                    await _propriedadeTecnico!.reference
                         .update(createPropriedadesRecordData(
                       uidPersonProdutor: widget.uidPersonProdutor,
                     ));
                   } else {
                     var propriedadesRecordReference =
                         PropriedadesRecord.createDoc(
-                            _model.outUidTecnicoLogged!.reference);
+                            _outUidTecnicoLogged!.reference);
                     await propriedadesRecordReference
                         .set(createPropriedadesRecordData(
                       email: widget.emailProdutor,
@@ -387,7 +394,7 @@ class _ConfirmarSenhaWidgetState extends State<ConfirmarSenhaWidget>
                       diasParaDg: widget.diasparaDg,
                       uidPersonProdutor: widget.uidPersonProdutor,
                     ));
-                    _model.outUidPropriedadeNewCadaster =
+                    _outUidPropriedadeNewCadaster =
                         PropriedadesRecord.getDocumentFromData(
                             createPropriedadesRecordData(
                               email: widget.emailProdutor,
@@ -403,7 +410,7 @@ class _ConfirmarSenhaWidgetState extends State<ConfirmarSenhaWidget>
                     _shouldSetState = true;
                   }
 
-                  await _model.outUidTecnicoLogged!.reference.update({
+                  await _outUidTecnicoLogged!.reference.update({
                     ...createTecnicoRecordData(
                       uidPerson: currentUserUid,
                     ),
