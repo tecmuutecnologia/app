@@ -20,8 +20,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
-import 'nova_inseminacao_model.dart';
-export 'nova_inseminacao_model.dart';
 
 class NovaInseminacaoWidget extends StatefulWidget {
   const NovaInseminacaoWidget({
@@ -63,34 +61,38 @@ class NovaInseminacaoWidget extends StatefulWidget {
 
 class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
     with TickerProviderStateMixin {
-  late NovaInseminacaoModel _model;
-
   final animationsMap = <String, AnimationInfo>{};
 
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
+  AnimaisProdutoresRecord? _outUidAnimaisAnimal;
+  String? _touroValue;
+  FormFieldController<String>? _touroValueController;
+  FocusNode? _dtInseminacaoFocusNode;
+  TextEditingController? _dtInseminacaoTextController;
+  late MaskTextInputFormatter _dtInseminacaoMask;
+  final String? Function(BuildContext, String?)?
+      _dtInseminacaoTextControllerValidator = null;
+  DateTime? _datePicked;
+  FocusNode? _obsFocusNode;
+  TextEditingController? _obsTextController;
+  final String? Function(BuildContext, String?)? _obsTextControllerValidator =
+      null;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => NovaInseminacaoModel());
 
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.outUidAnimaisAnimal =
-          await AnimaisProdutoresRecord.getDocumentOnce(
-              widget.uidAnimaisProdutores!);
+      _outUidAnimaisAnimal = await AnimaisProdutoresRecord.getDocumentOnce(
+          widget.uidAnimaisProdutores!);
     });
 
-    _model.dtInseminacaoTextController ??= TextEditingController();
-    _model.dtInseminacaoFocusNode ??= FocusNode();
+    _dtInseminacaoTextController ??= TextEditingController();
+    _dtInseminacaoFocusNode ??= FocusNode();
 
-    _model.dtInseminacaoMask = MaskTextInputFormatter(mask: '##/##/####');
-    _model.obsTextController ??= TextEditingController();
-    _model.obsFocusNode ??= FocusNode();
+    _dtInseminacaoMask = MaskTextInputFormatter(mask: '##/##/####');
+    _obsTextController ??= TextEditingController();
+    _obsFocusNode ??= FocusNode();
 
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
@@ -122,7 +124,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {
-          _model.dtInseminacaoTextController?.text = dateTimeFormat(
+          _dtInseminacaoTextController?.text = dateTimeFormat(
             "dd/MM/yyyy",
             getCurrentTimestamp,
             locale: FFLocalizations.of(context).languageCode,
@@ -132,7 +134,10 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _dtInseminacaoFocusNode?.dispose();
+    _dtInseminacaoTextController?.dispose();
+    _obsFocusNode?.dispose();
+    _obsTextController?.dispose();
 
     super.dispose();
   }
@@ -142,7 +147,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
   /// AnimalRepository (status 'Inseminada' + incrementa total), sem bloquear a
   /// UI. Funciona sem internet e sincroniza ao reconectar.
   Future<void> _inseminarOfflineFirst() async {
-    final dtIns = _model.dtInseminacaoTextController.text;
+    final dtIns = _dtInseminacaoTextController.text;
 
     final acao = AcaoEntity(
       parentPath: widget.uidTecnico!.path,
@@ -153,8 +158,8 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
       nomeAnimal: widget.nomeAnimal,
       acao: 'Inseminada',
       dataVisita: dtIns,
-      obsVisita: _model.obsTextController.text,
-      touroInseminacao: _model.touroValue,
+      obsVisita: _obsTextController.text,
+      touroInseminacao: _touroValue,
       dataPartoPrevisto: functions.somarDataParto(dtIns),
       dataSecPrevista: functions.somarDataSecagem(dtIns),
       dataPrePartoPrevista: functions.somarDataPreParto(dtIns),
@@ -169,7 +174,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
       'dtSecPrevista': functions.somarDataSecagem(dtIns),
       'dtPrePartoPrevista': functions.somarDataPreParto(dtIns),
       'dtPP': '',
-      'nomeTouroUltimaInseminacao': _model.touroValue,
+      'nomeTouroUltimaInseminacao': _touroValue,
       'compararDtUltimaInseminacao':
           functions.converterDataUltimaInseminacao(dtIns),
       'idStatusAnimal': 3,
@@ -186,9 +191,9 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
         ...dadosAnimal,
         'totalInseminacoes': entity.totalInseminacoes + 1,
       }));
-    } else if (_model.outUidAnimaisAnimal != null) {
+    } else if (_outUidAnimaisAnimal != null) {
       // Fallback: animal não no cache local (grava direto; persistência offline).
-      unawaited(_model.outUidAnimaisAnimal!.reference.update({
+      unawaited(_outUidAnimaisAnimal!.reference.update({
         ...createAnimaisProdutoresRecordData(
           dtUltimaInseminacao: dtIns,
           status: 'Inseminada',
@@ -196,7 +201,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
           dtSecPrevista: functions.somarDataSecagem(dtIns),
           dtPrePartoPrevista: functions.somarDataPreParto(dtIns),
           dtPP: '',
-          nomeTouroUltimaInseminacao: _model.touroValue,
+          nomeTouroUltimaInseminacao: _touroValue,
           compararDtUltimaInseminacao:
               functions.converterDataUltimaInseminacao(dtIns),
           idStatusAnimal: 3,
@@ -337,13 +342,13 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
             child: FFButtonWidget(
               onPressed: () async {
                 var _shouldSetState = false;
-                if (_model.touroValue != null && _model.touroValue != '') {
-                  if (_model.dtInseminacaoTextController.text != '') {
+                if (_touroValue != null && _touroValue != '') {
+                  if (_dtInseminacaoTextController.text != '') {
                     if (widget.dtUltimaInseminacao != null &&
                         widget.dtUltimaInseminacao != '') {
                       if (functions.verificarDataUltimoPartoMenorMaiorAtual(
                               widget.dtUltimaInseminacao!,
-                              _model.dtInseminacaoTextController.text) ==
+                              _dtInseminacaoTextController.text) ==
                           false) {
                         var confirmDialogResponse = await showDialog<bool>(
                               context: context,
@@ -560,7 +565,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
               snapshot.data!;
 
           return FlutterFlowDropDown<String>(
-            controller: _model.touroValueController ??=
+            controller: _touroValueController ??=
                 FormFieldController<String>(null),
             options: functions.duasListasEmUma(
                 touroAnimaisProdutoresRecordList
@@ -574,7 +579,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
                     .toList()
                     .map((e) => e.nomeBrincoConcat)
                     .toList())!,
-            onChanged: (val) => safeSetState(() => _model.touroValue = val),
+            onChanged: (val) => safeSetState(() => _touroValue = val),
             width: double.infinity,
             height: 58.0,
             textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -620,10 +625,10 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
             child: Padding(
               padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
               child: TextFormField(
-                controller: _model.dtInseminacaoTextController,
-                focusNode: _model.dtInseminacaoFocusNode,
+                controller: _dtInseminacaoTextController,
+                focusNode: _dtInseminacaoFocusNode,
                 onChanged: (_) => EasyDebounce.debounce(
-                  '_model.dtInseminacaoTextController',
+                  '_dtInseminacaoTextController',
                   Duration(milliseconds: 2000),
                   () => safeSetState(() {}),
                 ),
@@ -693,19 +698,18 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
                   ),
                   contentPadding:
                       EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-                  suffixIcon:
-                      _model.dtInseminacaoTextController!.text.isNotEmpty
-                          ? InkWell(
-                              onTap: () async {
-                                _model.dtInseminacaoTextController?.clear();
-                                safeSetState(() {});
-                              },
-                              child: Icon(
-                                Icons.clear,
-                                size: 22.0,
-                              ),
-                            )
-                          : null,
+                  suffixIcon: _dtInseminacaoTextController!.text.isNotEmpty
+                      ? InkWell(
+                          onTap: () async {
+                            _dtInseminacaoTextController?.clear();
+                            safeSetState(() {});
+                          },
+                          child: Icon(
+                            Icons.clear,
+                            size: 22.0,
+                          ),
+                        )
+                      : null,
                 ),
                 style: FlutterFlowTheme.of(context).bodyMedium.override(
                       font: GoogleFonts.readexPro(
@@ -728,9 +732,9 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
                         maxLength}) =>
                     null,
                 keyboardType: TextInputType.datetime,
-                validator: _model.dtInseminacaoTextControllerValidator
-                    .asValidator(context),
-                inputFormatters: [_model.dtInseminacaoMask],
+                validator:
+                    _dtInseminacaoTextControllerValidator.asValidator(context),
+                inputFormatters: [_dtInseminacaoMask],
               ),
             ),
           ),
@@ -800,7 +804,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
                             use24hFormat: false,
                             onDateTimeChanged: (newDateTime) =>
                                 safeSetState(() {
-                              _model.datePicked = newDateTime;
+                              _datePicked = newDateTime;
                             }),
                           ),
                         ),
@@ -808,14 +812,14 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
                     );
                   });
               safeSetState(() {
-                _model.dtInseminacaoTextController?.text = dateTimeFormat(
+                _dtInseminacaoTextController?.text = dateTimeFormat(
                   "dd/MM/yyyy",
-                  _model.datePicked,
+                  _datePicked,
                   locale: FFLocalizations.of(context).languageCode,
                 );
-                _model.dtInseminacaoMask.updateMask(
+                _dtInseminacaoMask.updateMask(
                   newValue: TextEditingValue(
-                    text: _model.dtInseminacaoTextController!.text,
+                    text: _dtInseminacaoTextController!.text,
                   ),
                 );
               });
@@ -835,8 +839,8 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: TextFormField(
-        controller: _model.obsTextController,
-        focusNode: _model.obsFocusNode,
+        controller: _obsTextController,
+        focusNode: _obsFocusNode,
         autofocus: false,
         obscureText: false,
         decoration: InputDecoration(
@@ -909,7 +913,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
                 {required currentLength, required isFocused, maxLength}) =>
             null,
         cursorColor: FlutterFlowTheme.of(context).primary,
-        validator: _model.obsTextControllerValidator.asValidator(context),
+        validator: _obsTextControllerValidator.asValidator(context),
       ),
     );
   }

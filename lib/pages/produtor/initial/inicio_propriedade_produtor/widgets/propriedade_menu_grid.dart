@@ -161,7 +161,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
       badgeCount: badgeCount,
       onTap: () {
         context.pushNamed(
-          ListaInseminacoesWidget.routeName,
+          ListaInseminacoesPage.routeName,
           queryParameters: navigationParams.toQueryParameters(),
         );
       },

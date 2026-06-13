@@ -17,8 +17,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'registrar_cio_model.dart';
-export 'registrar_cio_model.dart';
 
 class RegistrarCioWidget extends StatefulWidget {
   const RegistrarCioWidget({
@@ -58,34 +56,36 @@ class RegistrarCioWidget extends StatefulWidget {
 
 class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
     with TickerProviderStateMixin {
-  late RegistrarCioModel _model;
-
   final animationsMap = <String, AnimationInfo>{};
 
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
+  AnimaisProdutoresRecord? _outUidAnimaisAnimal;
+  FocusNode? _dtCioFocusNode;
+  TextEditingController? _dtCioTextController;
+  late MaskTextInputFormatter _dtCioMask;
+  final String? Function(BuildContext, String?)? _dtCioTextControllerValidator =
+      null;
+  DateTime? _datePicked;
+  FocusNode? _obsFocusNode;
+  TextEditingController? _obsTextController;
+  final String? Function(BuildContext, String?)? _obsTextControllerValidator =
+      null;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => RegistrarCioModel());
 
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.outUidAnimaisAnimal =
-          await AnimaisProdutoresRecord.getDocumentOnce(
-              widget.uidAnimaisProdutores!);
+      _outUidAnimaisAnimal = await AnimaisProdutoresRecord.getDocumentOnce(
+          widget.uidAnimaisProdutores!);
     });
 
-    _model.dtCioTextController ??= TextEditingController();
-    _model.dtCioFocusNode ??= FocusNode();
+    _dtCioTextController ??= TextEditingController();
+    _dtCioFocusNode ??= FocusNode();
 
-    _model.dtCioMask = MaskTextInputFormatter(mask: '##/##/####');
-    _model.obsTextController ??= TextEditingController();
-    _model.obsFocusNode ??= FocusNode();
+    _dtCioMask = MaskTextInputFormatter(mask: '##/##/####');
+    _obsTextController ??= TextEditingController();
+    _obsFocusNode ??= FocusNode();
 
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
@@ -117,7 +117,7 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {
-          _model.dtCioTextController?.text = dateTimeFormat(
+          _dtCioTextController?.text = dateTimeFormat(
             "dd/MM/yyyy",
             getCurrentTimestamp,
             locale: FFLocalizations.of(context).languageCode,
@@ -127,7 +127,10 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _dtCioFocusNode?.dispose();
+    _dtCioTextController?.dispose();
+    _obsFocusNode?.dispose();
+    _obsTextController?.dispose();
 
     super.dispose();
   }
@@ -147,9 +150,8 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
       acao: 'Cio',
       dataVisita: dateTimeFormat('dd/MM/yyyy', getCurrentTimestamp,
           locale: FFLocalizations.of(context).languageCode),
-      obsVisita: _model.obsTextController.text,
-      dataDaAcao:
-          functions.converteDataStringDate(_model.dtCioTextController.text),
+      obsVisita: _obsTextController.text,
+      dataDaAcao: functions.converteDataStringDate(_dtCioTextController.text),
     );
     unawaited(AcaoRepository().add(acao));
 
@@ -171,10 +173,10 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
             : null);
     if (entity != null) {
       unawaited(animalRepo.update(entity, dadosAnimal));
-    } else if (_model.outUidAnimaisAnimal != null) {
+    } else if (_outUidAnimaisAnimal != null) {
       // Fallback: animal não está no cache local (grava direto; persistência
       // offline do Firestore cuida do envio).
-      unawaited(_model.outUidAnimaisAnimal!.reference
+      unawaited(_outUidAnimaisAnimal!.reference
           .update(createAnimaisProdutoresRecordData(
         dtUltimaInseminacao: '',
         status: 'Vazia',
@@ -317,7 +319,7 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
             child: FFButtonWidget(
               onPressed: () async {
                 var _shouldSetState = false;
-                if (!(_model.dtCioTextController.text != '')) {
+                if (!(_dtCioTextController.text != '')) {
                   await showDialog(
                     context: context,
                     builder: (alertDialogContext) {
@@ -395,10 +397,10 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
             child: Padding(
               padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
               child: TextFormField(
-                controller: _model.dtCioTextController,
-                focusNode: _model.dtCioFocusNode,
+                controller: _dtCioTextController,
+                focusNode: _dtCioFocusNode,
                 onChanged: (_) => EasyDebounce.debounce(
-                  '_model.dtCioTextController',
+                  '_dtCioTextController',
                   Duration(milliseconds: 2000),
                   () => safeSetState(() {}),
                 ),
@@ -468,10 +470,10 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
                   ),
                   contentPadding:
                       EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-                  suffixIcon: _model.dtCioTextController!.text.isNotEmpty
+                  suffixIcon: _dtCioTextController!.text.isNotEmpty
                       ? InkWell(
                           onTap: () async {
-                            _model.dtCioTextController?.clear();
+                            _dtCioTextController?.clear();
                             safeSetState(() {});
                           },
                           child: Icon(
@@ -502,9 +504,8 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
                         maxLength}) =>
                     null,
                 keyboardType: TextInputType.datetime,
-                validator:
-                    _model.dtCioTextControllerValidator.asValidator(context),
-                inputFormatters: [_model.dtCioMask],
+                validator: _dtCioTextControllerValidator.asValidator(context),
+                inputFormatters: [_dtCioMask],
               ),
             ),
           ),
@@ -574,7 +575,7 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
                             use24hFormat: false,
                             onDateTimeChanged: (newDateTime) =>
                                 safeSetState(() {
-                              _model.datePicked = newDateTime;
+                              _datePicked = newDateTime;
                             }),
                           ),
                         ),
@@ -582,14 +583,14 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
                     );
                   });
               safeSetState(() {
-                _model.dtCioTextController?.text = dateTimeFormat(
+                _dtCioTextController?.text = dateTimeFormat(
                   "dd/MM/yyyy",
-                  _model.datePicked,
+                  _datePicked,
                   locale: FFLocalizations.of(context).languageCode,
                 );
-                _model.dtCioMask.updateMask(
+                _dtCioMask.updateMask(
                   newValue: TextEditingValue(
-                    text: _model.dtCioTextController!.text,
+                    text: _dtCioTextController!.text,
                   ),
                 );
               });
@@ -609,8 +610,8 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: TextFormField(
-        controller: _model.obsTextController,
-        focusNode: _model.obsFocusNode,
+        controller: _obsTextController,
+        focusNode: _obsFocusNode,
         autofocus: false,
         obscureText: false,
         decoration: InputDecoration(
@@ -683,7 +684,7 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
                 {required currentLength, required isFocused, maxLength}) =>
             null,
         cursorColor: FlutterFlowTheme.of(context).primary,
-        validator: _model.obsTextControllerValidator.asValidator(context),
+        validator: _obsTextControllerValidator.asValidator(context),
       ),
     );
   }

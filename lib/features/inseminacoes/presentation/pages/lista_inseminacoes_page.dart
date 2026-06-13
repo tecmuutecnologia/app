@@ -10,22 +10,21 @@ import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
 import '/pages/tecnico/propriedade/animals/descarte_animal/descarte_animal_widget.dart';
-import '/pages/tecnico/propriedade/inseminacoes/nova_inseminacao/nova_inseminacao_widget.dart';
-import '/pages/tecnico/propriedade/inseminacoes/registrar_cio/registrar_cio_widget.dart';
+import '../widgets/nova_inseminacao_widget.dart';
+import '../widgets/registrar_cio_widget.dart';
+import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
+import '/pages/tecnico/propriedade/prontuario/prontuario_animal/prontuario_animal_widget.dart';
 import '/features/sincronizacao/presentation/widgets/alerta_sem_internet_widget.dart';
 import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
-import '/index.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'lista_inseminacoes_model.dart';
-export 'lista_inseminacoes_model.dart';
 
-class ListaInseminacoesWidget extends StatefulWidget {
-  const ListaInseminacoesWidget({
+class ListaInseminacoesPage extends StatefulWidget {
+  const ListaInseminacoesPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -46,12 +45,16 @@ class ListaInseminacoesWidget extends StatefulWidget {
   static String routePath = '/listaInseminacoes';
 
   @override
-  State<ListaInseminacoesWidget> createState() =>
-      _ListaInseminacoesWidgetState();
+  State<ListaInseminacoesPage> createState() => _ListaInseminacoesPageState();
 }
 
-class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
-  late ListaInseminacoesModel _model;
+class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
+  InstantTimer? _instantTimer;
+  bool? _respostaNet = true;
+  FocusNode? _searchListFocusNode;
+  TextEditingController? _searchListTextController;
+  final String? Function(BuildContext, String?)?
+      _searchListTextControllerValidator = null;
 
   /// Lista de animais existentes (fonte ObjectBox). Antes em
   /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
@@ -62,7 +65,6 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ListaInseminacoesModel());
 
     // Fonte única: carrega a lista do ObjectBox (offline-first). A tela renderiza
     // sempre desta lista; o Firestore é usado apenas para sincronizar.
@@ -76,13 +78,13 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.instantTimer = InstantTimer.periodic(
+      _instantTimer = InstantTimer.periodic(
         duration: Duration(seconds: 5),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
+          _respostaNet = await actions.checkInternetConnection();
 
           safeSetState(() {});
-          if (_model.respostaNet!) {
+          if (_respostaNet!) {
             safeSetState(() {});
           } else {
             // Offline: notificação passiva via SyncStatusBanner (app-wide);
@@ -94,15 +96,17 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
       );
     });
 
-    _model.searchListTextController ??= TextEditingController();
-    _model.searchListFocusNode ??= FocusNode();
+    _searchListTextController ??= TextEditingController();
+    _searchListFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.dispose();
+    _instantTimer?.cancel();
+    _searchListFocusNode?.dispose();
+    _searchListTextController?.dispose();
 
     super.dispose();
   }
@@ -112,11 +116,12 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
       BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Visibility(
       visible: (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
-          ((item.nomeAnimal.toLowerCase().contains(
-                  _model.searchListTextController.text.toLowerCase())) ||
+          ((item.nomeAnimal
+                  .toLowerCase()
+                  .contains(_searchListTextController.text.toLowerCase())) ||
               (item.brincoAnimal
                   .toString()
-                  .contains(_model.searchListTextController.text))) &&
+                  .contains(_searchListTextController.text))) &&
           ehElegivelInseminacao(item.grupoAnimal, item.status),
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
@@ -927,7 +932,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
           preferredSize: Size.fromHeight(100.0),
           child: AppBar(
             backgroundColor:
-                _model.respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
+                _respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
             automaticallyImplyLeading: false,
             actions: [],
             flexibleSpace: FlexibleSpaceBar(
@@ -1094,8 +1099,8 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                               padding: EdgeInsetsDirectional.fromSTEB(
                                   8.0, 0.0, 8.0, 0.0),
                               child: TextFormField(
-                                controller: _model.searchListTextController,
-                                focusNode: _model.searchListFocusNode,
+                                controller: _searchListTextController,
+                                focusNode: _searchListFocusNode,
                                 onChanged: (_) {
                                   safeSetState(() {});
                                 },
@@ -1179,12 +1184,11 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                     Icons.search,
                                     color: Color(0xFFE46D3A),
                                   ),
-                                  suffixIcon: _model.searchListTextController!
+                                  suffixIcon: _searchListTextController!
                                           .text.isNotEmpty
                                       ? InkWell(
                                           onTap: () async {
-                                            _model.searchListTextController
-                                                ?.clear();
+                                            _searchListTextController?.clear();
                                             safeSetState(() {});
                                           },
                                           child: Icon(
@@ -1214,8 +1218,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                                           .bodyMedium
                                           .fontStyle,
                                     ),
-                                validator: _model
-                                    .searchListTextControllerValidator
+                                validator: _searchListTextControllerValidator
                                     .asValidator(context),
                               ),
                             ),
@@ -1226,7 +1229,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                   ),
                 ),
               ),
-              if (_model.searchListTextController.text == '')
+              if (_searchListTextController.text == '')
                 Container(
                   width: MediaQuery.sizeOf(context).width * 1.0,
                   height: MediaQuery.sizeOf(context).height * 1.0,
@@ -1266,7 +1269,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                     ],
                   ),
                 ),
-              if (_model.searchListTextController.text != '')
+              if (_searchListTextController.text != '')
                 Container(
                   width: MediaQuery.sizeOf(context).width * 1.0,
                   height: MediaQuery.sizeOf(context).height * 1.0,
@@ -1278,7 +1281,7 @@ class _ListaInseminacoesWidgetState extends State<ListaInseminacoesWidget> {
                     primary: false,
                     scrollDirection: Axis.vertical,
                     children: [
-                      if (_model.searchListTextController.text != '')
+                      if (_searchListTextController.text != '')
                         Builder(
                           builder: (context) {
                             final listaAnimaisOfflineExistente =

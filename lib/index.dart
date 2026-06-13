@@ -21,8 +21,8 @@ export '/pages/tecnico/propriedade/animals/cadastrar_novo_animal/cadastrar_novo_
     show CadastrarNovoAnimalWidget;
 export '/pages/tecnico/propriedade/animals/lista_animais/lista_animais_widget.dart'
     show ListaAnimaisWidget;
-export '/pages/tecnico/propriedade/inseminacoes/lista_inseminacoes/lista_inseminacoes_widget.dart'
-    show ListaInseminacoesWidget;
+export '/features/inseminacoes/presentation/pages/lista_inseminacoes_page.dart'
+    show ListaInseminacoesPage;
 export '/pages/tecnico/propriedade/exame_ginecologico/exame_ginecologico/exame_ginecologico_widget.dart'
     show ExameGinecologicoWidget;
 export '/features/prenhas/presentation/pages/animais_prenhas_page.dart'

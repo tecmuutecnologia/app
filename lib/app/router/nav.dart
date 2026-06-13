@@ -306,9 +306,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: ListaInseminacoesWidget.routeName,
-          path: ListaInseminacoesWidget.routePath,
-          builder: (context, params) => ListaInseminacoesWidget(
+          name: ListaInseminacoesPage.routeName,
+          path: ListaInseminacoesPage.routePath,
+          builder: (context, params) => ListaInseminacoesPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,
