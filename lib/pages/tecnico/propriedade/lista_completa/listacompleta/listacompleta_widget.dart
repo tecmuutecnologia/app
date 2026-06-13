@@ -19,7 +19,7 @@ import '/pages/tecnico/propriedade/prenhas/registro_aborto/registro_aborto_widge
 import '/features/recria/presentation/widgets/desmame_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_parto/registrar_parto_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_pre_parto/registrar_pre_parto_widget.dart';
-import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';
+import '/features/sincronizacao/presentation/widgets/alerta_sem_internet_widget.dart';
 import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
 import '/index.dart';

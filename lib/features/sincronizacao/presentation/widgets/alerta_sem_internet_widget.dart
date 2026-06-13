@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'alerta_sem_internet_model.dart';
-export 'alerta_sem_internet_model.dart';
 
 class AlertaSemInternetWidget extends StatefulWidget {
   const AlertaSemInternetWidget({super.key});
@@ -18,27 +16,11 @@ class AlertaSemInternetWidget extends StatefulWidget {
 }
 
 class _AlertaSemInternetWidgetState extends State<AlertaSemInternetWidget> {
-  late AlertaSemInternetModel _model;
-
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
-
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => AlertaSemInternetModel());
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _model.maybeDispose();
-
-    super.dispose();
   }
 
   @override

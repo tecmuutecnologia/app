@@ -1170,9 +1170,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: ImportacaoAnimaisWidget.routeName,
-          path: ImportacaoAnimaisWidget.routePath,
-          builder: (context, params) => ImportacaoAnimaisWidget(
+          name: ImportacaoAnimaisPage.routeName,
+          path: ImportacaoAnimaisPage.routePath,
+          builder: (context, params) => ImportacaoAnimaisPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,

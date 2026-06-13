@@ -3,18 +3,16 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
-import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';
+import '../widgets/alerta_sem_internet_widget.dart';
 import '/core/services/index.dart' as actions;
-import '/index.dart';
+import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'importacao_animais_model.dart';
-export 'importacao_animais_model.dart';
 
-class ImportacaoAnimaisWidget extends StatefulWidget {
-  const ImportacaoAnimaisWidget({
+class ImportacaoAnimaisPage extends StatefulWidget {
+  const ImportacaoAnimaisPage({
     super.key,
     required this.uidPropriedade,
     required this.uidTecnico,
@@ -35,12 +33,12 @@ class ImportacaoAnimaisWidget extends StatefulWidget {
   static String routePath = '/importacaoAnimais';
 
   @override
-  State<ImportacaoAnimaisWidget> createState() =>
-      _ImportacaoAnimaisWidgetState();
+  State<ImportacaoAnimaisPage> createState() => _ImportacaoAnimaisPageState();
 }
 
-class _ImportacaoAnimaisWidgetState extends State<ImportacaoAnimaisWidget> {
-  late ImportacaoAnimaisModel _model;
+class _ImportacaoAnimaisPageState extends State<ImportacaoAnimaisPage> {
+  InstantTimer? _instantTimer;
+  bool? _respostaNet = true;
 
   /// Flag local (antes em FFAppState.verificaInternet, removido): -1 = online,
   /// 0 = offline já notificado, para mostrar o alerta uma única vez na transição.
@@ -51,24 +49,23 @@ class _ImportacaoAnimaisWidgetState extends State<ImportacaoAnimaisWidget> {
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ImportacaoAnimaisModel());
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.instantTimer = InstantTimer.periodic(
+      _instantTimer = InstantTimer.periodic(
         duration: Duration(seconds: 5),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
+          _respostaNet = await actions.checkInternetConnection();
 
           safeSetState(() {});
-          if (_model.respostaNet!) {
+          if (_respostaNet!) {
             _verificaInternet = -1;
             safeSetState(() {});
           } else {
             if (_verificaInternet == -1) {
               _verificaInternet = 0;
               safeSetState(() {});
-              _model.instantTimer?.cancel();
+              _instantTimer?.cancel();
               await showModalBottomSheet(
                 isScrollControlled: true,
                 backgroundColor: Colors.transparent,
@@ -102,7 +99,7 @@ class _ImportacaoAnimaisWidgetState extends State<ImportacaoAnimaisWidget> {
 
   @override
   void dispose() {
-    _model.dispose();
+    _instantTimer?.cancel();
 
     super.dispose();
   }
@@ -125,7 +122,7 @@ class _ImportacaoAnimaisWidgetState extends State<ImportacaoAnimaisWidget> {
             preferredSize: Size.fromHeight(100.0),
             child: AppBar(
               backgroundColor:
-                  _model.respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
+                  _respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
               automaticallyImplyLeading: false,
               actions: [],
               flexibleSpace: FlexibleSpaceBar(
