@@ -10,21 +10,20 @@ import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
 import '/pages/tecnico/propriedade/animals/descarte_animal/descarte_animal_widget.dart';
-import '/pages/tecnico/propriedade/prenhas/registrar_secagem/registrar_secagem_widget.dart';
-import '/pages/tecnico/propriedade/prenhas/registro_aborto/registro_aborto_widget.dart';
+import '../widgets/registrar_secagem_widget.dart';
+import '../widgets/registro_aborto_widget.dart';
 import '/features/sincronizacao/presentation/widgets/alerta_sem_internet_widget.dart';
 import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
-import '/index.dart';
+import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
+import '/pages/tecnico/propriedade/prontuario/prontuario_animal/prontuario_animal_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'animais_prenhas_model.dart';
-export 'animais_prenhas_model.dart';
 
-class AnimaisPrenhasWidget extends StatefulWidget {
-  const AnimaisPrenhasWidget({
+class AnimaisPrenhasPage extends StatefulWidget {
+  const AnimaisPrenhasPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -45,11 +44,12 @@ class AnimaisPrenhasWidget extends StatefulWidget {
   static String routePath = '/animaisPrenhas';
 
   @override
-  State<AnimaisPrenhasWidget> createState() => _AnimaisPrenhasWidgetState();
+  State<AnimaisPrenhasPage> createState() => _AnimaisPrenhasPageState();
 }
 
-class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
-  late AnimaisPrenhasModel _model;
+class _AnimaisPrenhasPageState extends State<AnimaisPrenhasPage> {
+  InstantTimer? _instantTimer;
+  bool? _respostaNet = true;
 
   /// Lista de animais existentes (fonte ObjectBox). Antes em
   /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
@@ -60,7 +60,6 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => AnimaisPrenhasModel());
 
     // Fonte única: carrega a lista do ObjectBox (offline-first). A tela renderiza
     // sempre desta lista; o Firestore é usado apenas para sincronizar.
@@ -74,13 +73,13 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.instantTimer = InstantTimer.periodic(
+      _instantTimer = InstantTimer.periodic(
         duration: Duration(seconds: 5),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
+          _respostaNet = await actions.checkInternetConnection();
 
           safeSetState(() {});
-          if (_model.respostaNet!) {
+          if (_respostaNet!) {
             safeSetState(() {});
           } else {
             // Offline: notificação passiva via SyncStatusBanner (app-wide);
@@ -97,7 +96,7 @@ class _AnimaisPrenhasWidgetState extends State<AnimaisPrenhasWidget> {
 
   @override
   void dispose() {
-    _model.dispose();
+    _instantTimer?.cancel();
 
     super.dispose();
   }

@@ -21,8 +21,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'registrar_secagem_model.dart';
-export 'registrar_secagem_model.dart';
 
 class RegistrarSecagemWidget extends StatefulWidget {
   const RegistrarSecagemWidget({
@@ -64,32 +62,38 @@ class RegistrarSecagemWidget extends StatefulWidget {
 
 class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
     with TickerProviderStateMixin {
-  late RegistrarSecagemModel _model;
-
   final animationsMap = <String, AnimationInfo>{};
 
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
+  AnimaisProdutoresRecord? _outUidAnimaisAnimal;
+  FocusNode? _dtSecagemFocusNode;
+  TextEditingController? _dtSecagemTextController;
+  late MaskTextInputFormatter _dtSecagemMask;
+  final String? Function(BuildContext, String?)?
+      _dtSecagemTextControllerValidator = null;
+  DateTime? _datePicked;
+
+  // Outputs de query/criação (antes no FlutterFlowModel).
+  ResumoDaVisitaRecord? _outUidResumoDaVisita;
+  AnimaisProdutoresRecord? _uidAnimalRecebeAcao1;
+  RecomendacoesRecord? _outUidRecomendacoes;
+  ResumoDaVisitaRecord? _outNewUidResumoDaVisita;
+  AnimaisProdutoresRecord? _uidAnimalRecebeAcao;
+  RecomendacoesRecord? _outUidRecomendacoes2;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => RegistrarSecagemModel());
 
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.outUidAnimaisAnimal =
-          await AnimaisProdutoresRecord.getDocumentOnce(
-              widget.uidAnimaisProdutores!);
+      _outUidAnimaisAnimal = await AnimaisProdutoresRecord.getDocumentOnce(
+          widget.uidAnimaisProdutores!);
     });
 
-    _model.dtSecagemTextController ??= TextEditingController();
-    _model.dtSecagemFocusNode ??= FocusNode();
+    _dtSecagemTextController ??= TextEditingController();
+    _dtSecagemFocusNode ??= FocusNode();
 
-    _model.dtSecagemMask = MaskTextInputFormatter(mask: '##/##/####');
+    _dtSecagemMask = MaskTextInputFormatter(mask: '##/##/####');
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
         trigger: AnimationTrigger.onPageLoad,
@@ -120,7 +124,7 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {
-          _model.dtSecagemTextController?.text = dateTimeFormat(
+          _dtSecagemTextController?.text = dateTimeFormat(
             "dd/MM/yyyy",
             widget.dtSecPrevista,
             locale: FFLocalizations.of(context).languageCode,
@@ -130,7 +134,8 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _dtSecagemFocusNode?.dispose();
+    _dtSecagemTextController?.dispose();
 
     super.dispose();
   }
@@ -146,14 +151,14 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
           widget.uidAnimaisProdutores == null ? widget.uidAnimalOffline : null,
       nomeAnimal: widget.nomeAnimal,
       acao: 'Secagem',
-      dataVisita: _model.dtSecagemTextController.text,
+      dataVisita: _dtSecagemTextController.text,
       dataDaAcao: getCurrentTimestamp,
     );
     unawaited(AcaoRepository().add(acao));
 
     final dados = {
       'status': 'Seca',
-      'dtSecagem': _model.dtSecagemTextController.text,
+      'dtSecagem': _dtSecagemTextController.text,
       'dtUltimoParto': '',
       'idStatusAnimal': 4,
     };
@@ -166,11 +171,11 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
             : null);
     if (entity != null) {
       unawaited(animalRepo.update(entity, dados));
-    } else if (_model.outUidAnimaisAnimal != null) {
-      unawaited(_model.outUidAnimaisAnimal!.reference
+    } else if (_outUidAnimaisAnimal != null) {
+      unawaited(_outUidAnimaisAnimal!.reference
           .update(createAnimaisProdutoresRecordData(
         status: 'Seca',
-        dtSecagem: _model.dtSecagemTextController.text,
+        dtSecagem: _dtSecagemTextController.text,
         dtUltimoParto: '',
         idStatusAnimal: 4,
       )));
@@ -247,10 +252,10 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                 child: Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
                   child: TextFormField(
-                    controller: _model.dtSecagemTextController,
-                    focusNode: _model.dtSecagemFocusNode,
+                    controller: _dtSecagemTextController,
+                    focusNode: _dtSecagemFocusNode,
                     onChanged: (_) => EasyDebounce.debounce(
-                      '_model.dtSecagemTextController',
+                      '_dtSecagemTextController',
                       Duration(milliseconds: 2000),
                       () => safeSetState(() {}),
                     ),
@@ -327,19 +332,18 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                       ),
                       contentPadding: EdgeInsetsDirectional.fromSTEB(
                           16.0, 12.0, 16.0, 12.0),
-                      suffixIcon:
-                          _model.dtSecagemTextController!.text.isNotEmpty
-                              ? InkWell(
-                                  onTap: () async {
-                                    _model.dtSecagemTextController?.clear();
-                                    safeSetState(() {});
-                                  },
-                                  child: Icon(
-                                    Icons.clear,
-                                    size: 22.0,
-                                  ),
-                                )
-                              : null,
+                      suffixIcon: _dtSecagemTextController!.text.isNotEmpty
+                          ? InkWell(
+                              onTap: () async {
+                                _dtSecagemTextController?.clear();
+                                safeSetState(() {});
+                              },
+                              child: Icon(
+                                Icons.clear,
+                                size: 22.0,
+                              ),
+                            )
+                          : null,
                     ),
                     style: FlutterFlowTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.readexPro(
@@ -365,9 +369,9 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                             maxLength}) =>
                         null,
                     keyboardType: TextInputType.datetime,
-                    validator: _model.dtSecagemTextControllerValidator
-                        .asValidator(context),
-                    inputFormatters: [_model.dtSecagemMask],
+                    validator:
+                        _dtSecagemTextControllerValidator.asValidator(context),
+                    inputFormatters: [_dtSecagemMask],
                   ),
                 ),
               ),
@@ -441,7 +445,7 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                                 use24hFormat: false,
                                 onDateTimeChanged: (newDateTime) =>
                                     safeSetState(() {
-                                  _model.datePicked = newDateTime;
+                                  _datePicked = newDateTime;
                                 }),
                               ),
                             ),
@@ -449,14 +453,14 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                         );
                       });
                   safeSetState(() {
-                    _model.dtSecagemTextController?.text = dateTimeFormat(
+                    _dtSecagemTextController?.text = dateTimeFormat(
                       "dd/MM/yyyy",
-                      _model.datePicked,
+                      _datePicked,
                       locale: FFLocalizations.of(context).languageCode,
                     );
-                    _model.dtSecagemMask.updateMask(
+                    _dtSecagemMask.updateMask(
                       newValue: TextEditingValue(
-                        text: _model.dtSecagemTextController!.text,
+                        text: _dtSecagemTextController!.text,
                       ),
                     );
                   });
@@ -527,7 +531,7 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
             child: FFButtonWidget(
               onPressed: () async {
                 var _shouldSetState = false;
-                if (_model.dtSecagemTextController.text == '') {
+                if (_dtSecagemTextController.text == '') {
                   await showDialog(
                     context: context,
                     builder: (alertDialogContext) {
@@ -557,8 +561,7 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                 // só online — offline a variante original também o omite
                 // (evita travar em queries sem rede).
                 if (ConnectivityService.instance.isOnline) {
-                  _model.outUidResumoDaVisita =
-                      await queryResumoDaVisitaRecordOnce(
+                  _outUidResumoDaVisita = await queryResumoDaVisitaRecordOnce(
                     queryBuilder: (resumoDaVisitaRecord) => resumoDaVisitaRecord
                         .where(
                           'uidPropriedade',
@@ -579,34 +582,33 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                     singleRecord: true,
                   ).then((s) => s.firstOrNull);
                   _shouldSetState = true;
-                  if (_model.outUidResumoDaVisita != null) {
-                    _model.uidAnimalRecebeAcao1 =
+                  if (_outUidResumoDaVisita != null) {
+                    _uidAnimalRecebeAcao1 =
                         await AnimaisProdutoresRecord.getDocumentOnce(
                             widget.uidAnimaisProdutores!);
                     _shouldSetState = true;
 
                     await TratamentosRecord.createDoc(
-                            _model.outUidResumoDaVisita!.reference)
+                            _outUidResumoDaVisita!.reference)
                         .set(createTratamentosRecordData(
                       uidAnimal: widget.uidAnimaisProdutores,
                       tipoAcao: 'Secagem',
-                      uidResumoDaVisita: _model.outUidResumoDaVisita?.reference,
-                      observacaoAcao: _model.dtSecagemTextController.text,
+                      uidResumoDaVisita: _outUidResumoDaVisita?.reference,
+                      observacaoAcao: _dtSecagemTextController.text,
                       brincoAnimal: widget.brincoAnimal,
                       nomeAnimal: widget.nomeAnimal,
                       grupoAnimal: widget.grupoAnimal,
                       brincoAnimalOrder:
                           functions.converterStringToInt(widget.brincoAnimal!),
-                      compararDtUltimaInseminacao: _model
-                          .uidAnimalRecebeAcao1?.compararDtUltimaInseminacao,
+                      compararDtUltimaInseminacao:
+                          _uidAnimalRecebeAcao1?.compararDtUltimaInseminacao,
                     ));
-                    _model.outUidRecomendacoes =
-                        await queryRecomendacoesRecordOnce(
-                      parent: _model.outUidResumoDaVisita?.reference,
+                    _outUidRecomendacoes = await queryRecomendacoesRecordOnce(
+                      parent: _outUidResumoDaVisita?.reference,
                       queryBuilder: (recomendacoesRecord) => recomendacoesRecord
                           .where(
                             'uidResumoDaVisita',
-                            isEqualTo: _model.outUidResumoDaVisita?.reference,
+                            isEqualTo: _outUidResumoDaVisita?.reference,
                           )
                           .where(
                             'tituloRecomendacao',
@@ -615,13 +617,12 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                       singleRecord: true,
                     ).then((s) => s.firstOrNull);
                     _shouldSetState = true;
-                    if (_model.outUidRecomendacoes?.reference == null) {
+                    if (_outUidRecomendacoes?.reference == null) {
                       await RecomendacoesRecord.createDoc(
-                              _model.outUidResumoDaVisita!.reference)
+                              _outUidResumoDaVisita!.reference)
                           .set(createRecomendacoesRecordData(
                         tituloRecomendacao: 'Secagem',
-                        uidResumoDaVisita:
-                            _model.outUidResumoDaVisita?.reference,
+                        uidResumoDaVisita: _outUidResumoDaVisita?.reference,
                       ));
                     }
                   } else {
@@ -638,7 +639,7 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                         locale: FFLocalizations.of(context).languageCode,
                       ),
                     ));
-                    _model.outNewUidResumoDaVisita =
+                    _outNewUidResumoDaVisita =
                         ResumoDaVisitaRecord.getDocumentFromData(
                             createResumoDaVisitaRecordData(
                               uidPropriedade: widget.uidPropriedade,
@@ -654,40 +655,36 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                             resumoDaVisitaRecordReference);
                     _shouldSetState = true;
 
-                    await _model.outNewUidResumoDaVisita!.reference
+                    await _outNewUidResumoDaVisita!.reference
                         .update(createResumoDaVisitaRecordData(
-                      uidResumoDaVisita:
-                          _model.outNewUidResumoDaVisita?.reference,
+                      uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
                     ));
-                    _model.uidAnimalRecebeAcao =
+                    _uidAnimalRecebeAcao =
                         await AnimaisProdutoresRecord.getDocumentOnce(
                             widget.uidAnimaisProdutores!);
                     _shouldSetState = true;
 
                     await TratamentosRecord.createDoc(
-                            _model.outNewUidResumoDaVisita!.reference)
+                            _outNewUidResumoDaVisita!.reference)
                         .set(createTratamentosRecordData(
                       uidAnimal: widget.uidAnimaisProdutores,
                       tipoAcao: 'Secagem',
-                      uidResumoDaVisita:
-                          _model.outNewUidResumoDaVisita?.reference,
-                      observacaoAcao: _model.dtSecagemTextController.text,
+                      uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
+                      observacaoAcao: _dtSecagemTextController.text,
                       brincoAnimal: widget.brincoAnimal,
                       nomeAnimal: widget.nomeAnimal,
                       grupoAnimal: widget.grupoAnimal,
                       brincoAnimalOrder:
                           functions.converterStringToInt(widget.brincoAnimal!),
-                      compararDtUltimaInseminacao: _model
-                          .uidAnimalRecebeAcao?.compararDtUltimaInseminacao,
+                      compararDtUltimaInseminacao:
+                          _uidAnimalRecebeAcao?.compararDtUltimaInseminacao,
                     ));
-                    _model.outUidRecomendacoes2 =
-                        await queryRecomendacoesRecordOnce(
-                      parent: _model.outNewUidResumoDaVisita?.reference,
+                    _outUidRecomendacoes2 = await queryRecomendacoesRecordOnce(
+                      parent: _outNewUidResumoDaVisita?.reference,
                       queryBuilder: (recomendacoesRecord) => recomendacoesRecord
                           .where(
                             'uidResumoDaVisita',
-                            isEqualTo:
-                                _model.outNewUidResumoDaVisita?.reference,
+                            isEqualTo: _outNewUidResumoDaVisita?.reference,
                           )
                           .where(
                             'tituloRecomendacao',
@@ -696,13 +693,12 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                       singleRecord: true,
                     ).then((s) => s.firstOrNull);
                     _shouldSetState = true;
-                    if (_model.outUidRecomendacoes2?.reference == null) {
+                    if (_outUidRecomendacoes2?.reference == null) {
                       await RecomendacoesRecord.createDoc(
-                              _model.outNewUidResumoDaVisita!.reference)
+                              _outNewUidResumoDaVisita!.reference)
                           .set(createRecomendacoesRecordData(
                         tituloRecomendacao: 'Secagem',
-                        uidResumoDaVisita:
-                            _model.outNewUidResumoDaVisita?.reference,
+                        uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
                       ));
                     }
                   }

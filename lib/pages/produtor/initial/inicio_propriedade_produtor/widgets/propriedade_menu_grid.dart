@@ -233,7 +233,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
       badgeCount: getBadgeCount(),
       onTap: () {
         context.pushNamed(
-          AnimaisPrenhasWidget.routeName,
+          AnimaisPrenhasPage.routeName,
           queryParameters: navigationParams.toQueryParameters(),
         );
       },

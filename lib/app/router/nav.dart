@@ -374,9 +374,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: AnimaisPrenhasWidget.routeName,
-          path: AnimaisPrenhasWidget.routePath,
-          builder: (context, params) => AnimaisPrenhasWidget(
+          name: AnimaisPrenhasPage.routeName,
+          path: AnimaisPrenhasPage.routePath,
+          builder: (context, params) => AnimaisPrenhasPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,

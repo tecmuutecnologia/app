@@ -18,8 +18,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'registro_aborto_model.dart';
-export 'registro_aborto_model.dart';
 
 class RegistroAbortoWidget extends StatefulWidget {
   const RegistroAbortoWidget({
@@ -55,32 +53,30 @@ class RegistroAbortoWidget extends StatefulWidget {
 
 class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
     with TickerProviderStateMixin {
-  late RegistroAbortoModel _model;
-
   final animationsMap = <String, AnimationInfo>{};
 
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
+  AnimaisProdutoresRecord? _outUidAnimaisAnimal;
+  FocusNode? _dtAbortoFocusNode;
+  TextEditingController? _dtAbortoTextController;
+  late MaskTextInputFormatter _dtAbortoMask;
+  final String? Function(BuildContext, String?)?
+      _dtAbortoTextControllerValidator = null;
+  DateTime? _datePicked;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => RegistroAbortoModel());
 
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.outUidAnimaisAnimal =
-          await AnimaisProdutoresRecord.getDocumentOnce(
-              widget.uidAnimaisProdutores!);
+      _outUidAnimaisAnimal = await AnimaisProdutoresRecord.getDocumentOnce(
+          widget.uidAnimaisProdutores!);
     });
 
-    _model.dtAbortoTextController ??= TextEditingController();
-    _model.dtAbortoFocusNode ??= FocusNode();
+    _dtAbortoTextController ??= TextEditingController();
+    _dtAbortoFocusNode ??= FocusNode();
 
-    _model.dtAbortoMask = MaskTextInputFormatter(mask: '##/##/####');
+    _dtAbortoMask = MaskTextInputFormatter(mask: '##/##/####');
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
         trigger: AnimationTrigger.onPageLoad,
@@ -111,7 +107,7 @@ class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {
-          _model.dtAbortoTextController?.text = dateTimeFormat(
+          _dtAbortoTextController?.text = dateTimeFormat(
             "dd/MM/yyyy",
             getCurrentTimestamp,
             locale: FFLocalizations.of(context).languageCode,
@@ -121,7 +117,8 @@ class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _dtAbortoFocusNode?.dispose();
+    _dtAbortoTextController?.dispose();
 
     super.dispose();
   }
@@ -143,13 +140,13 @@ class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
         locale: FFLocalizations.of(context).languageCode,
       ),
       dataDaAcao: getCurrentTimestamp,
-      dtAborto: _model.dtAbortoTextController.text,
+      dtAborto: _dtAbortoTextController.text,
     );
     unawaited(AcaoRepository().add(acao));
 
     final dados = {
       'status': 'Vazia',
-      'dtAborto': _model.dtAbortoTextController.text,
+      'dtAborto': _dtAbortoTextController.text,
       'dtPartoPrevisto': '',
       'dtSecPrevista': '',
       'dtPrePartoPrevista': '',
@@ -167,11 +164,11 @@ class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
             : null);
     if (entity != null) {
       unawaited(animalRepo.update(entity, dados));
-    } else if (_model.outUidAnimaisAnimal != null) {
-      unawaited(_model.outUidAnimaisAnimal!.reference
+    } else if (_outUidAnimaisAnimal != null) {
+      unawaited(_outUidAnimaisAnimal!.reference
           .update(createAnimaisProdutoresRecordData(
         status: 'Vazia',
-        dtAborto: _model.dtAbortoTextController.text,
+        dtAborto: _dtAbortoTextController.text,
         dtPartoPrevisto: '',
         dtSecPrevista: '',
         dtPrePartoPrevista: '',
@@ -253,10 +250,10 @@ class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
                 child: Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
                   child: TextFormField(
-                    controller: _model.dtAbortoTextController,
-                    focusNode: _model.dtAbortoFocusNode,
+                    controller: _dtAbortoTextController,
+                    focusNode: _dtAbortoFocusNode,
                     onChanged: (_) => EasyDebounce.debounce(
-                      '_model.dtAbortoTextController',
+                      '_dtAbortoTextController',
                       Duration(milliseconds: 2000),
                       () => safeSetState(() {}),
                     ),
@@ -333,10 +330,10 @@ class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
                       ),
                       contentPadding: EdgeInsetsDirectional.fromSTEB(
                           16.0, 12.0, 16.0, 12.0),
-                      suffixIcon: _model.dtAbortoTextController!.text.isNotEmpty
+                      suffixIcon: _dtAbortoTextController!.text.isNotEmpty
                           ? InkWell(
                               onTap: () async {
-                                _model.dtAbortoTextController?.clear();
+                                _dtAbortoTextController?.clear();
                                 safeSetState(() {});
                               },
                               child: Icon(
@@ -370,9 +367,9 @@ class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
                             maxLength}) =>
                         null,
                     keyboardType: TextInputType.datetime,
-                    validator: _model.dtAbortoTextControllerValidator
-                        .asValidator(context),
-                    inputFormatters: [_model.dtAbortoMask],
+                    validator:
+                        _dtAbortoTextControllerValidator.asValidator(context),
+                    inputFormatters: [_dtAbortoMask],
                   ),
                 ),
               ),
@@ -445,7 +442,7 @@ class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
                                 use24hFormat: false,
                                 onDateTimeChanged: (newDateTime) =>
                                     safeSetState(() {
-                                  _model.datePicked = newDateTime;
+                                  _datePicked = newDateTime;
                                 }),
                               ),
                             ),
@@ -453,14 +450,14 @@ class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
                         );
                       });
                   safeSetState(() {
-                    _model.dtAbortoTextController?.text = dateTimeFormat(
+                    _dtAbortoTextController?.text = dateTimeFormat(
                       "dd/MM/yyyy",
-                      _model.datePicked,
+                      _datePicked,
                       locale: FFLocalizations.of(context).languageCode,
                     );
-                    _model.dtAbortoMask.updateMask(
+                    _dtAbortoMask.updateMask(
                       newValue: TextEditingValue(
-                        text: _model.dtAbortoTextController!.text,
+                        text: _dtAbortoTextController!.text,
                       ),
                     );
                   });
@@ -531,7 +528,7 @@ class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
             child: FFButtonWidget(
               onPressed: () async {
                 var _shouldSetState = false;
-                if (_model.dtAbortoTextController.text == '') {
+                if (_dtAbortoTextController.text == '') {
                   await showDialog(
                     context: context,
                     builder: (alertDialogContext) {

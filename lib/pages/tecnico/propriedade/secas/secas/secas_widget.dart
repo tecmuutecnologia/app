@@ -10,7 +10,7 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
-import '/pages/tecnico/propriedade/prenhas/registro_aborto/registro_aborto_widget.dart';
+import '/features/prenhas/presentation/widgets/registro_aborto_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_parto/registrar_parto_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_parto_induzido/registrar_parto_induzido_widget.dart';
 import '/pages/tecnico/propriedade/secas/registrar_pre_parto/registrar_pre_parto_widget.dart';

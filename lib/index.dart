@@ -25,8 +25,8 @@ export '/pages/tecnico/propriedade/inseminacoes/lista_inseminacoes/lista_insemin
     show ListaInseminacoesWidget;
 export '/pages/tecnico/propriedade/exame_ginecologico/exame_ginecologico/exame_ginecologico_widget.dart'
     show ExameGinecologicoWidget;
-export '/pages/tecnico/propriedade/prenhas/animais_prenhas/animais_prenhas_widget.dart'
-    show AnimaisPrenhasWidget;
+export '/features/prenhas/presentation/pages/animais_prenhas_page.dart'
+    show AnimaisPrenhasPage;
 export '/pages/tecnico/propriedade/secas/secas/secas_widget.dart'
     show SecasWidget;
 export '/pages/tecnico/initial/sync_technician/sync_technician_widget.dart'
