@@ -4,8 +4,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import '/auth/firebase_auth/auth_util.dart';
-import '/auth/firebase_auth/firebase_user_provider.dart';
+import '/core/auth/firebase_auth/auth_util.dart';
+import '/core/auth/firebase_auth/firebase_user_provider.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/internationalization.dart';

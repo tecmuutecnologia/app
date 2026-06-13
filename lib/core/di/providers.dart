@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../auth/auth_repository.dart';
+import '/core/auth/auth_repository.dart';
 import '../connectivity/connectivity_service.dart';
 import '../../backend/objectbox/index.dart';
 

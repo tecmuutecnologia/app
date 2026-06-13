@@ -1,4 +1,4 @@
-import '/auth/firebase_auth/auth_util.dart';
+import '/core/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/backend/objectbox/offline_auth_service.dart';
 import '/core/ui/flutter_flow_animations.dart';

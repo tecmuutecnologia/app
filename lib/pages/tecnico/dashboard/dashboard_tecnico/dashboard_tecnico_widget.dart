@@ -1,7 +1,7 @@
 import 'package:tecmuu/backend/objectbox/widgets/objectbox_debug_menu.dart';
 import '/domain/animais/classificacao_animal.dart';
 
-import '/auth/firebase_auth/auth_util.dart';
+import '/core/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_icon_button.dart';

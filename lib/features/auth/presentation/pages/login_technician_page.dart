@@ -4,7 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '/auth/firebase_auth/auth_util.dart';
+import '/core/auth/firebase_auth/auth_util.dart';
 import '/backend/objectbox/offline_auth_service.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/app/theme/flutter_flow_theme.dart';
