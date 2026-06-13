@@ -1,9 +1,9 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
 import '/backend/objectbox/offline_auth_service.dart';
-import '/flutter_flow/flutter_flow_animations.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_animations.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
 import '/pages/produtor/initial/inicio_propriedade_produtor/inicio_propriedade_produtor_widget.dart';
 
 import 'package:collection/collection.dart';

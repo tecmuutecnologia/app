@@ -1,8 +1,8 @@
-import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/instant_timer.dart';
+import '/core/ui/flutter_flow_icon_button.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_widgets.dart';
+import '/core/ui/instant_timer.dart';
 import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';

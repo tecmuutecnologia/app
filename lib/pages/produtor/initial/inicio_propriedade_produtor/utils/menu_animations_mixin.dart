@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '/flutter_flow/flutter_flow_animations.dart';
+import '/core/ui/flutter_flow_animations.dart';
 
 /// Helper para criar as animações padronizadas usadas nos cards do menu.
 ///

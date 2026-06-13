@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_widgets.dart';
 
 /// Botão de login com estilo padrão do app.
 class LoginButton extends StatelessWidget {

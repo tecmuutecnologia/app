@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
+import '/app/theme/flutter_flow_theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Widget que exibe o status de sincronização offline/online.

@@ -6,10 +6,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/objectbox/offline_auth_service.dart';
-import '/flutter_flow/flutter_flow_animations.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import '/core/ui/flutter_flow_animations.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_widgets.dart';
 import '/features/auth/presentation/pages/create_account_technician_page.dart';
 import '/pages/tecnico/initial/sync_technician/sync_technician_widget.dart';
 import '../controllers/login_technician_controller.dart';

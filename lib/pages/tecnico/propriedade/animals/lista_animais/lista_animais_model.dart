@@ -1,7 +1,7 @@
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/instant_timer.dart';
-import '/flutter_flow/request_manager.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/instant_timer.dart';
+import '/core/ui/request_manager.dart';
 
 import '/index.dart';
 import 'lista_animais_widget.dart' show ListaAnimaisWidget;

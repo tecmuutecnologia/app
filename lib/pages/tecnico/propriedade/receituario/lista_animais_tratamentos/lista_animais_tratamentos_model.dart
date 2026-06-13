@@ -1,5 +1,5 @@
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_util.dart';
 import 'lista_animais_tratamentos_widget.dart'
     show ListaAnimaisTratamentosWidget;
 import 'package:flutter/material.dart';

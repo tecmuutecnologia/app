@@ -1,9 +1,9 @@
 import '/backend/backend.dart';
 import '/backend/firebase_storage/storage.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/upload_data.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_widgets.dart';
+import '/core/ui/upload_data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:signature/signature.dart';

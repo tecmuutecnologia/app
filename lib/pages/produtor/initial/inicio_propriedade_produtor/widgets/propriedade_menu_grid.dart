@@ -3,9 +3,9 @@ import '/domain/animais/classificacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_animations.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/custom_functions.dart' as functions;
+import '/core/ui/flutter_flow_animations.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/custom_functions.dart' as functions;
 import '/index.dart';
 
 import 'menu_item_card.dart';

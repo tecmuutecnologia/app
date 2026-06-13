@@ -1,5 +1,5 @@
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_util.dart';
 import '/index.dart';
 import 'resumo_visita_atual_widget.dart' show ResumoVisitaAtualWidget;
 import 'package:flutter/material.dart';

@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_util.dart';
 
 /// Classe que encapsula os parâmetros de navegação comuns usados em todas
 /// as rotas da propriedade do produtor.

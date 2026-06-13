@@ -759,7 +759,8 @@ List<String> retornaGruposComContagem(List<String> animalGroups) {
   List<String> uniqueGroups = groupCount.keys.toList()..sort();
 
   // Criar lista de "Grupo - Contagem"
-  List<String> result = uniqueGroups.map((group) => '$group - ${groupCount[group]}').toList();
+  List<String> result =
+      uniqueGroups.map((group) => '$group - ${groupCount[group]}').toList();
 
   return result;
 }

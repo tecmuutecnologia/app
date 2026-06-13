@@ -1,10 +1,10 @@
 // ignore_for_file: dead_code, unused_field
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_animations.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import '/core/ui/flutter_flow_animations.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_widgets.dart';
 import 'dart:ui';
 import '/features/propriedades/presentation/pages/lista_propriedade_page.dart';
 import 'package:collection/collection.dart';

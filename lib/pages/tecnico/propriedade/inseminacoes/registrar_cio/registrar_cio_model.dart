@@ -1,5 +1,5 @@
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_util.dart';
 import 'registrar_cio_widget.dart' show RegistrarCioWidget;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

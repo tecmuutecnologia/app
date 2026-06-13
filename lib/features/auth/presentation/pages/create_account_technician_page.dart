@@ -1,8 +1,8 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_widgets.dart';
 import '/features/auth/presentation/pages/login_technician_page.dart';
 import '/features/perfil/presentation/pages/completar_perfil_tecnico_page.dart';
 import 'package:flutter/gestures.dart';

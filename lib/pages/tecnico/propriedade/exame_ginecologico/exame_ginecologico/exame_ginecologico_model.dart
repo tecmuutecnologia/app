@@ -1,5 +1,5 @@
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/instant_timer.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/instant_timer.dart';
 import '/index.dart';
 import 'exame_ginecologico_widget.dart' show ExameGinecologicoWidget;
 import 'package:flutter/material.dart';

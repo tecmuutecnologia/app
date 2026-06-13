@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
+import '/app/theme/flutter_flow_theme.dart';
 
 /// Header do formulário de login com título e subtítulo.
 class LoginHeader extends StatelessWidget {

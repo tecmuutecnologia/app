@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
+import '/app/theme/flutter_flow_theme.dart';
 
 /// Card de estatística para o dashboard com valor e label.
 class DashboardStatCard extends StatelessWidget {

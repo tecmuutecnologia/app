@@ -6,9 +6,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '/auth/firebase_auth/auth_util.dart';
 import '/auth/firebase_auth/firebase_user_provider.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/internationalization.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/internationalization.dart';
 import '/features/shared/widgets/sync_status_banner.dart';
 
 /// Raiz da aplicação (`MaterialApp.router`), antes em `main.dart`.

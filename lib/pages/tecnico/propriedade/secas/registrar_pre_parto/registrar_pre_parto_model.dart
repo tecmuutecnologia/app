@@ -1,5 +1,5 @@
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_util.dart';
 import 'registrar_pre_parto_widget.dart' show RegistrarPrePartoWidget;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

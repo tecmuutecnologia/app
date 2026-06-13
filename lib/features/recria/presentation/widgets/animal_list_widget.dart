@@ -3,8 +3,8 @@ import '/features/animais/application/animal_struct_adapter.dart';
 import 'package:provider/provider.dart';
 
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
 import 'animal_card_widget.dart';
 
 /// Widget que exibe a lista de animais (online ou offline)

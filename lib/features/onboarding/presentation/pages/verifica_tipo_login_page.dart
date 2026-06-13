@@ -1,7 +1,7 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
 import '/pages/produtor/initial/inicio_propriedade_produtor/inicio_propriedade_produtor_widget.dart';
 import '/pages/tecnico/dashboard/dashboard_tecnico/dashboard_tecnico_widget.dart';
 import 'package:collection/collection.dart';

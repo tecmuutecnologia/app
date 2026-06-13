@@ -1,6 +1,6 @@
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/form_field_controller.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/form_field_controller.dart';
 import 'nova_inseminacao_widget.dart' show NovaInseminacaoWidget;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

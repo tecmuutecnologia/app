@@ -1,15 +1,15 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_animations.dart';
-import '/flutter_flow/flutter_flow_button_tabbar.dart';
-import '/flutter_flow/flutter_flow_checkbox_group.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/form_field_controller.dart';
+import '/core/ui/flutter_flow_animations.dart';
+import '/core/ui/flutter_flow_button_tabbar.dart';
+import '/core/ui/flutter_flow_checkbox_group.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_widgets.dart';
+import '/core/ui/form_field_controller.dart';
 import '/pages/tecnico/propriedade/calendario_sanitario/nova_acao_calendario_sanitario/nova_acao_calendario_sanitario_widget.dart';
-import '/flutter_flow/custom_functions.dart' as functions;
+import '/core/ui/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';

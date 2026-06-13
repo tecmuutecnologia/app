@@ -1,12 +1,12 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_button_tabbar.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/instant_timer.dart';
+import '/core/ui/flutter_flow_button_tabbar.dart';
+import '/core/ui/flutter_flow_icon_button.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_widgets.dart';
+import '/core/ui/instant_timer.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/index.dart';
 import '/features/animais/presentation/animal_group_list_view.dart';

@@ -1,7 +1,7 @@
-import '/flutter_flow/flutter_flow_animations.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import '/core/ui/flutter_flow_animations.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_widgets.dart';
 import '/features/auth/presentation/pages/login_technician_page.dart';
 import '/features/produtor/presentation/pages/login_produtor_page.dart';
 import 'package:flutter/material.dart';

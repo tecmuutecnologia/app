@@ -1,4 +1,4 @@
-import '/flutter_flow/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_util.dart';
 import 'lista_diagnostico_gestacao_widget.dart'
     show ListaDiagnosticoGestacaoWidget;
 import 'package:flutter/material.dart';

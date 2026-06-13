@@ -7,7 +7,7 @@ import '/backend/schema/structs/index.dart';
 
 import '/auth/base_auth_user_provider.dart';
 
-import '/flutter_flow/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_util.dart';
 
 import '/index.dart';
 
@@ -76,9 +76,8 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       debugLogDiagnostics: true,
       refreshListenable: appStateNotifier,
       navigatorKey: appNavigatorKey,
-      errorBuilder: (context, state) => appStateNotifier.loggedIn
-          ? VerificaTipoLoginPage()
-          : WelcomePage(),
+      errorBuilder: (context, state) =>
+          appStateNotifier.loggedIn ? VerificaTipoLoginPage() : WelcomePage(),
       routes: [
         FFRoute(
           name: '_initialize',

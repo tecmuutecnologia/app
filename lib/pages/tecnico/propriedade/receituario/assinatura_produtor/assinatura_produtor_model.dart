@@ -1,4 +1,4 @@
-import '/flutter_flow/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_util.dart';
 import 'assinatura_produtor_widget.dart' show AssinaturaProdutorWidget;
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';

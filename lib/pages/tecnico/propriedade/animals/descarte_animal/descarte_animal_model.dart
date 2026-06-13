@@ -1,6 +1,6 @@
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/form_field_controller.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/form_field_controller.dart';
 import 'descarte_animal_widget.dart' show DescarteAnimalWidget;
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';

@@ -1,5 +1,5 @@
-import '/flutter_flow/flutter_flow_calendar.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_calendar.dart';
+import '/core/ui/flutter_flow_util.dart';
 import '/index.dart';
 import 'calendario_sanitario_widget.dart' show CalendarioSanitarioWidget;
 import 'package:flutter/material.dart';

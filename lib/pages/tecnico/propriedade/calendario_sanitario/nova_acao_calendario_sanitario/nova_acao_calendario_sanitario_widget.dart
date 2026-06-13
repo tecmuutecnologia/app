@@ -1,15 +1,15 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_animations.dart';
-import '/flutter_flow/flutter_flow_choice_chips.dart';
-import '/flutter_flow/flutter_flow_drop_down.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
-import '/flutter_flow/form_field_controller.dart';
+import '/core/ui/flutter_flow_animations.dart';
+import '/core/ui/flutter_flow_choice_chips.dart';
+import '/core/ui/flutter_flow_drop_down.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_widgets.dart';
+import '/core/ui/form_field_controller.dart';
 import 'dart:ui';
-import '/flutter_flow/custom_functions.dart' as functions;
+import '/core/ui/custom_functions.dart' as functions;
 import 'package:collection/collection.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/cupertino.dart';

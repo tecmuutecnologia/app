@@ -1,10 +1,10 @@
 // ignore_for_file: dead_code
 
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
+import '/core/ui/flutter_flow_icon_button.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_widgets.dart';
 import '/pages/tecnico/propriedade/receituario/assinatura_produtor/assinatura_produtor_widget.dart';
 import '/pages/tecnico/propriedade/receituario/assinatura_tecnico/assinatura_tecnico_widget.dart';
 import '/pages/tecnico/propriedade/receituario/lista_animais_tratamentos/lista_animais_tratamentos_widget.dart';

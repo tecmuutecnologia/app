@@ -1,4 +1,4 @@
-import '/flutter_flow/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_util.dart';
 import '/index.dart';
 import 'indices_zootecnicos_widget.dart' show IndicesZootecnicosWidget;
 import 'package:flutter/material.dart';

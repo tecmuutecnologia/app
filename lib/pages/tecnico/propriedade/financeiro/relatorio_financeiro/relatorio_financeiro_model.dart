@@ -1,4 +1,4 @@
-import '/flutter_flow/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_util.dart';
 import '/index.dart';
 import 'relatorio_financeiro_widget.dart' show RelatorioFinanceiroWidget;
 import 'package:flutter/material.dart';

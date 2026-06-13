@@ -5,7 +5,7 @@ import 'package:collection/collection.dart';
 import '/backend/schema/util/firestore_util.dart';
 
 import 'index.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_util.dart';
 
 class ColunasRelatorioRebanhoRecord extends FirestoreRecord {
   ColunasRelatorioRebanhoRecord._(

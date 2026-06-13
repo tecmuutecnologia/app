@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
+import '/app/theme/flutter_flow_theme.dart';
 
 /// Card container do formulário de login com sombra e borda arredondada.
 class LoginFormCard extends StatelessWidget {

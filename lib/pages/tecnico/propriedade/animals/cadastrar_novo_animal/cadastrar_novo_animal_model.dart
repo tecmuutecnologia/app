@@ -1,8 +1,8 @@
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/form_field_controller.dart';
-import '/flutter_flow/instant_timer.dart';
-import '/flutter_flow/request_manager.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/form_field_controller.dart';
+import '/core/ui/instant_timer.dart';
+import '/core/ui/request_manager.dart';
 
 import '/index.dart';
 import 'cadastrar_novo_animal_widget.dart' show CadastrarNovoAnimalWidget;

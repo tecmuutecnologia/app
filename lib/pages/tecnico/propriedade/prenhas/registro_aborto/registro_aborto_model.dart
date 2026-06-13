@@ -1,5 +1,5 @@
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_util.dart';
 import 'registro_aborto_widget.dart' show RegistroAbortoWidget;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

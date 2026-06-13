@@ -1,5 +1,5 @@
-import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/instant_timer.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/instant_timer.dart';
 import '/index.dart';
 import 'secas_widget.dart' show SecasWidget;
 import 'package:flutter/material.dart';

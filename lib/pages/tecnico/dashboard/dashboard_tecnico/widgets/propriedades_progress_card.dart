@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
+import '/app/theme/flutter_flow_theme.dart';
 
 /// Card com indicador circular de progresso das propriedades.
 class PropriedadesProgressCard extends StatelessWidget {

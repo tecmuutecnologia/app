@@ -1,7 +1,7 @@
 import '/backend/backend.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_icon_button.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
 import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
 import '/pages/tecnico/propriedade/receituario/resumo_visita_atual/resumo_visita_atual_widget.dart';
 import 'package:flutter/material.dart';
