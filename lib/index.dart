@@ -13,8 +13,8 @@ export '/features/propriedades/presentation/pages/nova_propriedade_page.dart'
     show NovaPropriedadePage;
 export '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart'
     show InicioPropriedadeWidget;
-export '/pages/tecnico/propriedade/propriedades/editar_propriedade/editar_propriedade_widget.dart'
-    show EditarPropriedadeWidget;
+export '/features/propriedades/presentation/pages/editar_propriedade_page.dart'
+    show EditarPropriedadePage;
 export '/features/propriedades/presentation/pages/propriedades_excluidas_page.dart'
     show PropriedadesExcluiasPage;
 export '/pages/tecnico/propriedade/animals/cadastrar_novo_animal/cadastrar_novo_animal_widget.dart'

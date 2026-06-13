@@ -2349,7 +2349,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                     ),
                     onPressed: () async {
                       context.pushNamed(
-                        EditarPropriedadeWidget.routeName,
+                        EditarPropriedadePage.routeName,
                         queryParameters: {
                           'uidPropriedade': serializeParam(
                             widget.uidPropriedade,

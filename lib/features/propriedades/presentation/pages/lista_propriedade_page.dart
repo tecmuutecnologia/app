@@ -8,7 +8,7 @@ import '/flutter_flow/flutter_flow_widgets.dart';
 import '/features/propriedades/presentation/pages/propriedades_excluidas_page.dart';
 import '/pages/tecnico/dashboard/dashboard_tecnico/dashboard_tecnico_widget.dart';
 import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
-import '/pages/tecnico/propriedade/propriedades/editar_propriedade/editar_propriedade_widget.dart';
+import '/features/propriedades/presentation/pages/editar_propriedade_page.dart';
 import '/features/propriedades/presentation/pages/nova_propriedade_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -483,7 +483,7 @@ class _ListaPropriedadePageState extends State<ListaPropriedadePage> {
                     },
                     onLongPress: () async {
                       context.pushNamed(
-                        EditarPropriedadeWidget.routeName,
+                        EditarPropriedadePage.routeName,
                         queryParameters: {
                           'uidPropriedade': serializeParam(
                             listViewPropriedadesRecord.reference,

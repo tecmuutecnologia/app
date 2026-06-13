@@ -7,16 +7,15 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
 import '/pages/tecnico/propriedade/propriedades/confirmar_senha/confirmar_senha_widget.dart';
-import '/index.dart';
+import '/features/onboarding/presentation/pages/welcome_page.dart';
+import '/features/propriedades/presentation/pages/lista_propriedade_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'editar_propriedade_model.dart';
-export 'editar_propriedade_model.dart';
 
-class EditarPropriedadeWidget extends StatefulWidget {
-  const EditarPropriedadeWidget({
+class EditarPropriedadePage extends StatefulWidget {
+  const EditarPropriedadePage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -37,48 +36,157 @@ class EditarPropriedadeWidget extends StatefulWidget {
   static String routePath = '/editarPropriedade';
 
   @override
-  State<EditarPropriedadeWidget> createState() =>
-      _EditarPropriedadeWidgetState();
+  State<EditarPropriedadePage> createState() => _EditarPropriedadePageState();
 }
 
-class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
-  late EditarPropriedadeModel _model;
-
+class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final _formKey = GlobalKey<FormState>();
+
+  FocusNode? _yourNameFocusNode;
+  TextEditingController? _yourNameTextController;
+  FocusNode? _cpfFocusNode;
+  TextEditingController? _cpfTextController;
+  late MaskTextInputFormatter _cpfMask;
+  FocusNode? _celularFocusNode;
+  TextEditingController? _celularTextController;
+  late MaskTextInputFormatter _celularMask;
+  FocusNode? _enderecoFocusNode;
+  TextEditingController? _enderecoTextController;
+  String? _diasdgValue;
+  FormFieldController<String>? _diasdgValueController;
+  FocusNode? _emailProdutorFocusNode;
+  TextEditingController? _emailProdutorTextController;
+  FocusNode? _senhaFocusNode;
+  TextEditingController? _senhaTextController;
+  bool _senhaVisibility = false;
+  final String? Function(BuildContext, String?)? _senhaTextControllerValidator =
+      null;
+  FocusNode? _confirmaSenhaFocusNode;
+  TextEditingController? _confirmaSenhaTextController;
+  bool _confirmaSenhaVisibility = false;
+
+  // Output de criação (antes no FlutterFlowModel).
+  PersonRecord? _uidPersonProdutor;
+
+  String? _yourNameTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 5) {
+      return 'Mínimo 5 caracteres.';
+    }
+    if (val.length > 150) {
+      return 'Máximo 150 caracteres.';
+    }
+    return null;
+  }
+
+  String? _cpfTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 14) {
+      return 'Mínimo 14 caracteres.';
+    }
+    if (val.length > 14) {
+      return 'Máximo 14 caracteres.';
+    }
+    return null;
+  }
+
+  String? _celularTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 15) {
+      return 'Mínimo 15 caracteres.';
+    }
+    if (val.length > 15) {
+      return 'Máximo 15 caracteres.';
+    }
+    return null;
+  }
+
+  String? _enderecoTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 2) {
+      return 'Mínimo 15 caracteres.';
+    }
+    if (val.length > 50) {
+      return 'Máximo 50 caracteres.';
+    }
+    return null;
+  }
+
+  String? _emailProdutorTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'emailPropriedade is required';
+    }
+    if (!RegExp(kTextValidatorEmailRegex).hasMatch(val)) {
+      return 'Has to be a valid email address.';
+    }
+    return null;
+  }
+
+  String? _confirmaSenhaTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Confirmar Senha is required';
+    }
+    if (!RegExp('').hasMatch(val)) {
+      return 'Invalid text';
+    }
+    return null;
+  }
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => EditarPropriedadeModel());
 
-    _model.yourNameFocusNode ??= FocusNode();
+    _yourNameFocusNode ??= FocusNode();
 
-    _model.cpfFocusNode ??= FocusNode();
+    _cpfFocusNode ??= FocusNode();
+    _cpfMask = MaskTextInputFormatter(mask: '###.###.###-##');
 
-    _model.cpfMask = MaskTextInputFormatter(mask: '###.###.###-##');
+    _celularFocusNode ??= FocusNode();
+    _celularMask = MaskTextInputFormatter(mask: '(##) #####-####');
 
-    _model.celularFocusNode ??= FocusNode();
+    _enderecoFocusNode ??= FocusNode();
 
-    _model.celularMask = MaskTextInputFormatter(mask: '(##) #####-####');
-
-    _model.enderecoFocusNode ??= FocusNode();
-
-    _model.emailProdutorTextController ??=
+    _emailProdutorTextController ??=
         TextEditingController(text: widget.emailPropriedade);
-    _model.emailProdutorFocusNode ??= FocusNode();
+    _emailProdutorFocusNode ??= FocusNode();
 
-    _model.senhaTextController ??= TextEditingController();
-    _model.senhaFocusNode ??= FocusNode();
+    _senhaTextController ??= TextEditingController();
+    _senhaFocusNode ??= FocusNode();
 
-    _model.confirmaSenhaTextController ??= TextEditingController();
-    _model.confirmaSenhaFocusNode ??= FocusNode();
+    _confirmaSenhaTextController ??= TextEditingController();
+    _confirmaSenhaFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.dispose();
+    _yourNameFocusNode?.dispose();
+    _yourNameTextController?.dispose();
+    _cpfFocusNode?.dispose();
+    _cpfTextController?.dispose();
+    _celularFocusNode?.dispose();
+    _celularTextController?.dispose();
+    _enderecoFocusNode?.dispose();
+    _enderecoTextController?.dispose();
+    _emailProdutorFocusNode?.dispose();
+    _emailProdutorTextController?.dispose();
+    _senhaFocusNode?.dispose();
+    _senhaTextController?.dispose();
+    _confirmaSenhaFocusNode?.dispose();
+    _confirmaSenhaTextController?.dispose();
 
     super.dispose();
   }
@@ -131,10 +239,10 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
-        controller: _model.yourNameTextController ??= TextEditingController(
+        controller: _yourNameTextController ??= TextEditingController(
           text: editarPropriedadePropriedadesRecord?.displayName,
         ),
-        focusNode: _model.yourNameFocusNode,
+        focusNode: _yourNameFocusNode,
         textCapitalization: TextCapitalization.words,
         obscureText: false,
         decoration: InputDecoration(
@@ -200,7 +308,7 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
               fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
             ),
-        validator: _model.yourNameTextControllerValidator.asValidator(context),
+        validator: _yourNameTextControllerValidator.asValidator(context),
         inputFormatters: [
           if (!isAndroid && !isiOS)
             TextInputFormatter.withFunction((oldValue, newValue) {
@@ -219,10 +327,10 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
       child: TextFormField(
-        controller: _model.cpfTextController ??= TextEditingController(
+        controller: _cpfTextController ??= TextEditingController(
           text: editarPropriedadePropriedadesRecord?.cpf,
         ),
-        focusNode: _model.cpfFocusNode,
+        focusNode: _cpfFocusNode,
         textCapitalization: TextCapitalization.none,
         obscureText: false,
         decoration: InputDecoration(
@@ -289,8 +397,8 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
               fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
             ),
         keyboardType: TextInputType.number,
-        validator: _model.cpfTextControllerValidator.asValidator(context),
-        inputFormatters: [_model.cpfMask],
+        validator: _cpfTextControllerValidator.asValidator(context),
+        inputFormatters: [_cpfMask],
       ),
     );
   }
@@ -300,10 +408,10 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
       child: TextFormField(
-        controller: _model.celularTextController ??= TextEditingController(
+        controller: _celularTextController ??= TextEditingController(
           text: editarPropriedadePropriedadesRecord?.phoneNumber,
         ),
-        focusNode: _model.celularFocusNode,
+        focusNode: _celularFocusNode,
         textCapitalization: TextCapitalization.none,
         obscureText: false,
         decoration: InputDecoration(
@@ -370,8 +478,8 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
               fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
             ),
         keyboardType: TextInputType.number,
-        validator: _model.celularTextControllerValidator.asValidator(context),
-        inputFormatters: [_model.celularMask],
+        validator: _celularTextControllerValidator.asValidator(context),
+        inputFormatters: [_celularMask],
       ),
     );
   }
@@ -381,10 +489,10 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
       child: TextFormField(
-        controller: _model.enderecoTextController ??= TextEditingController(
+        controller: _enderecoTextController ??= TextEditingController(
           text: editarPropriedadePropriedadesRecord?.endereco,
         ),
-        focusNode: _model.enderecoFocusNode,
+        focusNode: _enderecoFocusNode,
         textCapitalization: TextCapitalization.none,
         obscureText: false,
         decoration: InputDecoration(
@@ -450,7 +558,7 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
               fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
             ),
-        validator: _model.enderecoTextControllerValidator.asValidator(context),
+        validator: _enderecoTextControllerValidator.asValidator(context),
         inputFormatters: [
           if (!isAndroid && !isiOS)
             TextInputFormatter.withFunction((oldValue, newValue) {
@@ -469,14 +577,12 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
       child: FlutterFlowDropDown<String>(
-        controller: _model.diasdgValueController ??=
-            FormFieldController<String>(
-          _model.diasdgValue ??=
-              editarPropriedadePropriedadesRecord?.diasParaDg,
+        controller: _diasdgValueController ??= FormFieldController<String>(
+          _diasdgValue ??= editarPropriedadePropriedadesRecord?.diasParaDg,
         ),
         options: List<String>.from(['28', '30', '40', '21']),
         optionLabels: ['28 Dias', '30 Dias', '40 Dias', '21 Dias'],
-        onChanged: (val) => safeSetState(() => _model.diasdgValue = val),
+        onChanged: (val) => safeSetState(() => _diasdgValue = val),
         width: MediaQuery.sizeOf(context).width * 1.0,
         height: 50.0,
         textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -514,8 +620,8 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
       child: Container(
         width: double.infinity,
         child: TextFormField(
-          controller: _model.emailProdutorTextController,
-          focusNode: _model.emailProdutorFocusNode,
+          controller: _emailProdutorTextController,
+          focusNode: _emailProdutorFocusNode,
           autofocus: false,
           obscureText: false,
           decoration: InputDecoration(
@@ -589,8 +695,7 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                 fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
               ),
           keyboardType: TextInputType.emailAddress,
-          validator:
-              _model.emailProdutorTextControllerValidator.asValidator(context),
+          validator: _emailProdutorTextControllerValidator.asValidator(context),
         ),
       ),
     );
@@ -707,11 +812,11 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
         padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 15.0),
         child: FFButtonWidget(
           onPressed: () async {
-            if (_model.formKey.currentState == null ||
-                !_model.formKey.currentState!.validate()) {
+            if (_formKey.currentState == null ||
+                !_formKey.currentState!.validate()) {
               return;
             }
-            if (_model.diasdgValue == null) {
+            if (_diasdgValue == null) {
               return;
             }
             if ((editarPropriedadePropriedadesRecord.displayName != '') &&
@@ -719,7 +824,7 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                 (editarPropriedadePropriedadesRecord.cpf != '') &&
                 (editarPropriedadePropriedadesRecord.phoneNumber != '')) {
               if (editarPropriedadePropriedadesRecord.diasParaDg !=
-                  _model.diasdgValue) {
+                  _diasdgValue) {
                 var confirmDialogResponse = await showDialog<bool>(
                       context: context,
                       builder: (alertDialogContext) {
@@ -768,11 +873,11 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
 
             await editarPropriedadePropriedadesRecord.reference
                 .update(createPropriedadesRecordData(
-              cpf: _model.cpfTextController.text,
-              endereco: _model.enderecoTextController.text,
-              displayName: _model.yourNameTextController.text,
-              phoneNumber: _model.celularTextController.text,
-              diasParaDg: _model.diasdgValue,
+              cpf: _cpfTextController.text,
+              endereco: _enderecoTextController.text,
+              displayName: _yourNameTextController.text,
+              phoneNumber: _celularTextController.text,
+              diasParaDg: _diasdgValue,
             ));
             await showDialog(
               context: context,
@@ -952,7 +1057,7 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
           body: SafeArea(
             top: true,
             child: Form(
-              key: _model.formKey,
+              key: _formKey,
               autovalidateMode: AutovalidateMode.disabled,
               child: SingleChildScrollView(
                 child: Column(
@@ -972,10 +1077,10 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                         child: Container(
                           width: double.infinity,
                           child: TextFormField(
-                            controller: _model.senhaTextController,
-                            focusNode: _model.senhaFocusNode,
+                            controller: _senhaTextController,
+                            focusNode: _senhaFocusNode,
                             autofocus: false,
-                            obscureText: !_model.senhaVisibility,
+                            obscureText: !_senhaVisibility,
                             decoration: InputDecoration(
                               isDense: true,
                               labelText: 'Senha Temporária',
@@ -1052,12 +1157,11 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                                   24.0, 24.0, 0.0, 24.0),
                               suffixIcon: InkWell(
                                 onTap: () => safeSetState(
-                                  () => _model.senhaVisibility =
-                                      !_model.senhaVisibility,
+                                  () => _senhaVisibility = !_senhaVisibility,
                                 ),
                                 focusNode: FocusNode(skipTraversal: true),
                                 child: Icon(
-                                  _model.senhaVisibility
+                                  _senhaVisibility
                                       ? Icons.visibility_outlined
                                       : Icons.visibility_off_outlined,
                                   size: 22,
@@ -1083,7 +1187,7 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                                       .bodyMedium
                                       .fontStyle,
                                 ),
-                            validator: _model.senhaTextControllerValidator
+                            validator: _senhaTextControllerValidator
                                 .asValidator(context),
                           ),
                         ),
@@ -1096,10 +1200,10 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                         child: Container(
                           width: double.infinity,
                           child: TextFormField(
-                            controller: _model.confirmaSenhaTextController,
-                            focusNode: _model.confirmaSenhaFocusNode,
+                            controller: _confirmaSenhaTextController,
+                            focusNode: _confirmaSenhaFocusNode,
                             autofocus: false,
-                            obscureText: !_model.confirmaSenhaVisibility,
+                            obscureText: !_confirmaSenhaVisibility,
                             decoration: InputDecoration(
                               isDense: true,
                               labelText: 'Confirmar Senha',
@@ -1176,12 +1280,12 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                                   24.0, 24.0, 0.0, 24.0),
                               suffixIcon: InkWell(
                                 onTap: () => safeSetState(
-                                  () => _model.confirmaSenhaVisibility =
-                                      !_model.confirmaSenhaVisibility,
+                                  () => _confirmaSenhaVisibility =
+                                      !_confirmaSenhaVisibility,
                                 ),
                                 focusNode: FocusNode(skipTraversal: true),
                                 child: Icon(
-                                  _model.confirmaSenhaVisibility
+                                  _confirmaSenhaVisibility
                                       ? Icons.visibility_outlined
                                       : Icons.visibility_off_outlined,
                                   size: 22,
@@ -1207,8 +1311,7 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                                       .bodyMedium
                                       .fontStyle,
                                 ),
-                            validator: _model
-                                .confirmaSenhaTextControllerValidator
+                            validator: _confirmaSenhaTextControllerValidator
                                 .asValidator(context),
                           ),
                         ),
@@ -1225,16 +1328,16 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                           child: FFButtonWidget(
                             onPressed: () async {
                               // Valida Formulário
-                              if (_model.formKey.currentState == null ||
-                                  !_model.formKey.currentState!.validate()) {
+                              if (_formKey.currentState == null ||
+                                  !_formKey.currentState!.validate()) {
                                 return;
                               }
-                              if (_model.diasdgValue == null) {
+                              if (_diasdgValue == null) {
                                 return;
                               }
                               GoRouter.of(context).prepareAuthEvent();
-                              if (_model.senhaTextController.text !=
-                                  _model.confirmaSenhaTextController.text) {
+                              if (_senhaTextController.text !=
+                                  _confirmaSenhaTextController.text) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
@@ -1248,8 +1351,8 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                               final user =
                                   await authManager.createAccountWithEmail(
                                 context,
-                                _model.emailProdutorTextController.text,
-                                _model.senhaTextController.text,
+                                _emailProdutorTextController.text,
+                                _senhaTextController.text,
                               );
                               if (user == null) {
                                 return;
@@ -1281,7 +1384,7 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                                   },
                                 ),
                               });
-                              _model.uidPersonProdutor =
+                              _uidPersonProdutor =
                                   PersonRecord.getDocumentFromData({
                                 ...createPersonRecordData(
                                   cpf: editarPropriedadePropriedadesRecord.cpf,
@@ -1322,7 +1425,7 @@ class _EditarPropriedadeWidgetState extends State<EditarPropriedadeWidget> {
                                       visitaPresencial:
                                           widget.visitaPresencial!,
                                       uidPersonProdutor:
-                                          _model.uidPersonProdutor!.reference,
+                                          _uidPersonProdutor!.reference,
                                       emailProdutor: widget.emailPropriedade!,
                                       telefoneProdutor:
                                           editarPropriedadePropriedadesRecord

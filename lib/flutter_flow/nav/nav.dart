@@ -173,9 +173,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: EditarPropriedadeWidget.routeName,
-          path: EditarPropriedadeWidget.routePath,
-          builder: (context, params) => EditarPropriedadeWidget(
+          name: EditarPropriedadePage.routeName,
+          path: EditarPropriedadePage.routePath,
+          builder: (context, params) => EditarPropriedadePage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,

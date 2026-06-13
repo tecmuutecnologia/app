@@ -270,7 +270,7 @@ class _InicioPropriedadeProdutorWidgetState
   /// Navega para a tela de editar propriedade.
   void _navigateToEditarPropriedade() {
     context.pushNamed(
-      EditarPropriedadeWidget.routeName,
+      EditarPropriedadePage.routeName,
       queryParameters: {
         ..._navigationParams.toQueryParameters(),
         'emailTecnico': serializeParam(
