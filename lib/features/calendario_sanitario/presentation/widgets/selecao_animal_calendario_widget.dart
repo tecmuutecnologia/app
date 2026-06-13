@@ -8,13 +8,11 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
-import '/pages/tecnico/propriedade/calendario_sanitario/nova_acao_calendario_sanitario/nova_acao_calendario_sanitario_widget.dart';
+import 'nova_acao_calendario_sanitario_widget.dart';
 import '/core/ui/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'selecao_animal_calendario_model.dart';
-export 'selecao_animal_calendario_model.dart';
 
 class SelecaoAnimalCalendarioWidget extends StatefulWidget {
   const SelecaoAnimalCalendarioWidget({
@@ -39,22 +37,55 @@ class SelecaoAnimalCalendarioWidget extends StatefulWidget {
 
 class _SelecaoAnimalCalendarioWidgetState
     extends State<SelecaoAnimalCalendarioWidget> with TickerProviderStateMixin {
-  late SelecaoAnimalCalendarioModel _model;
-
   final animationsMap = <String, AnimationInfo>{};
 
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
+  final _formKey = GlobalKey<FormState>();
+  TabController? _tabBarController;
+  int get _tabBarCurrentIndex =>
+      _tabBarController != null ? _tabBarController!.index : 0;
+
+  bool? _checkboxValue1;
+  FormFieldController<List<String>>? _checkboxGroupTodosValueController;
+  List<String>? get _checkboxGroupTodosValues =>
+      _checkboxGroupTodosValueController?.value;
+  set _checkboxGroupTodosValues(List<String>? v) =>
+      _checkboxGroupTodosValueController?.value = v;
+  bool? _checkboxValue2;
+  FormFieldController<List<String>>? _checkboxGroupTerneirosValueController;
+  List<String>? get _checkboxGroupTerneirosValues =>
+      _checkboxGroupTerneirosValueController?.value;
+  set _checkboxGroupTerneirosValues(List<String>? v) =>
+      _checkboxGroupTerneirosValueController?.value = v;
+  bool? _checkboxValue3;
+  FormFieldController<List<String>>? _checkboxGroupNovilhasValueController;
+  List<String>? get _checkboxGroupNovilhasValues =>
+      _checkboxGroupNovilhasValueController?.value;
+  set _checkboxGroupNovilhasValues(List<String>? v) =>
+      _checkboxGroupNovilhasValueController?.value = v;
+  bool? _checkboxValue4;
+  FormFieldController<List<String>>? _checkboxGroupTourosValueController;
+  List<String>? get _checkboxGroupTourosValues =>
+      _checkboxGroupTourosValueController?.value;
+  set _checkboxGroupTourosValues(List<String>? v) =>
+      _checkboxGroupTourosValueController?.value = v;
+  bool? _checkboxValue5;
+  FormFieldController<List<String>>? _checkboxGroupVacasValueController;
+  List<String>? get _checkboxGroupVacasValues =>
+      _checkboxGroupVacasValueController?.value;
+  set _checkboxGroupVacasValues(List<String>? v) =>
+      _checkboxGroupVacasValueController?.value = v;
+  bool? _checkboxValue6;
+  FormFieldController<List<String>>? _checkboxGroupTerneirasValueController;
+  List<String>? get _checkboxGroupTerneirasValues =>
+      _checkboxGroupTerneirasValueController?.value;
+  set _checkboxGroupTerneirasValues(List<String>? v) =>
+      _checkboxGroupTerneirasValueController?.value = v;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => SelecaoAnimalCalendarioModel());
 
-    _model.tabBarController = TabController(
+    _tabBarController = TabController(
       vsync: this,
       length: 6,
       initialIndex: 0,
@@ -94,7 +125,7 @@ class _SelecaoAnimalCalendarioWidgetState
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _tabBarController?.dispose();
 
     super.dispose();
   }
@@ -130,24 +161,24 @@ class _SelecaoAnimalCalendarioWidgetState
               _p2(context),
               _p3(context),
               _p4(context),
-              if (((_model.checkboxGroupTodosValues != null &&
-                          (_model.checkboxGroupTodosValues)!.isNotEmpty) &&
-                      (_model.checkboxGroupTodosValues!.length >= 1)) ||
-                  ((_model.checkboxGroupTerneirosValues != null &&
-                          (_model.checkboxGroupTerneirosValues)!.isNotEmpty) &&
-                      (_model.checkboxGroupTerneirosValues!.length >= 1)) ||
-                  ((_model.checkboxGroupNovilhasValues != null &&
-                          (_model.checkboxGroupNovilhasValues)!.isNotEmpty) &&
-                      (_model.checkboxGroupNovilhasValues!.length >= 1)) ||
-                  ((_model.checkboxGroupTourosValues != null &&
-                          (_model.checkboxGroupTourosValues)!.isNotEmpty) &&
-                      (_model.checkboxGroupTourosValues!.length >= 1)) ||
-                  ((_model.checkboxGroupVacasValues != null &&
-                          (_model.checkboxGroupVacasValues)!.isNotEmpty) &&
-                      (_model.checkboxGroupVacasValues!.length >= 1)) ||
-                  ((_model.checkboxGroupTerneirasValues != null &&
-                          (_model.checkboxGroupTerneirasValues)!.isNotEmpty) &&
-                      (_model.checkboxGroupTerneirasValues!.length >= 1)))
+              if (((_checkboxGroupTodosValues != null &&
+                          (_checkboxGroupTodosValues)!.isNotEmpty) &&
+                      (_checkboxGroupTodosValues!.length >= 1)) ||
+                  ((_checkboxGroupTerneirosValues != null &&
+                          (_checkboxGroupTerneirosValues)!.isNotEmpty) &&
+                      (_checkboxGroupTerneirosValues!.length >= 1)) ||
+                  ((_checkboxGroupNovilhasValues != null &&
+                          (_checkboxGroupNovilhasValues)!.isNotEmpty) &&
+                      (_checkboxGroupNovilhasValues!.length >= 1)) ||
+                  ((_checkboxGroupTourosValues != null &&
+                          (_checkboxGroupTourosValues)!.isNotEmpty) &&
+                      (_checkboxGroupTourosValues!.length >= 1)) ||
+                  ((_checkboxGroupVacasValues != null &&
+                          (_checkboxGroupVacasValues)!.isNotEmpty) &&
+                      (_checkboxGroupVacasValues!.length >= 1)) ||
+                  ((_checkboxGroupTerneirasValues != null &&
+                          (_checkboxGroupTerneirasValues)!.isNotEmpty) &&
+                      (_checkboxGroupTerneirasValues!.length >= 1)))
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
                   child: FFButtonWidget(
@@ -168,44 +199,37 @@ class _SelecaoAnimalCalendarioWidgetState
                               emailPropriedade: widget.emailPropriedade!,
                               visitaPresencial: widget.visitaPresencial!,
                               listaAnimaisSelecionados: () {
-                                if (_model.tabBarCurrentIndex == 0) {
-                                  return _model.checkboxGroupTodosValues!;
-                                } else if (_model.tabBarCurrentIndex == 1) {
-                                  return _model.checkboxGroupTerneirosValues!;
-                                } else if (_model.tabBarCurrentIndex == 2) {
-                                  return _model.checkboxGroupNovilhasValues!;
-                                } else if (_model.tabBarCurrentIndex == 3) {
-                                  return _model.checkboxGroupTourosValues!;
-                                } else if (_model.tabBarCurrentIndex == 4) {
-                                  return _model.checkboxGroupVacasValues!;
-                                } else if (_model.tabBarCurrentIndex == 5) {
-                                  return _model.checkboxGroupTerneirasValues!;
+                                if (_tabBarCurrentIndex == 0) {
+                                  return _checkboxGroupTodosValues!;
+                                } else if (_tabBarCurrentIndex == 1) {
+                                  return _checkboxGroupTerneirosValues!;
+                                } else if (_tabBarCurrentIndex == 2) {
+                                  return _checkboxGroupNovilhasValues!;
+                                } else if (_tabBarCurrentIndex == 3) {
+                                  return _checkboxGroupTourosValues!;
+                                } else if (_tabBarCurrentIndex == 4) {
+                                  return _checkboxGroupVacasValues!;
+                                } else if (_tabBarCurrentIndex == 5) {
+                                  return _checkboxGroupTerneirasValues!;
                                 } else {
-                                  return _model.checkboxGroupTodosValues!;
+                                  return _checkboxGroupTodosValues!;
                                 }
                               }(),
                               qtdAnimaisSelecionados: () {
-                                if (_model.tabBarCurrentIndex == 0) {
-                                  return _model
-                                      .checkboxGroupTodosValues!.length;
-                                } else if (_model.tabBarCurrentIndex == 1) {
-                                  return _model
-                                      .checkboxGroupTerneirosValues!.length;
-                                } else if (_model.tabBarCurrentIndex == 2) {
-                                  return _model
-                                      .checkboxGroupNovilhasValues!.length;
-                                } else if (_model.tabBarCurrentIndex == 3) {
-                                  return _model
-                                      .checkboxGroupTourosValues!.length;
-                                } else if (_model.tabBarCurrentIndex == 4) {
-                                  return _model
-                                      .checkboxGroupVacasValues!.length;
-                                } else if (_model.tabBarCurrentIndex == 5) {
-                                  return _model
-                                      .checkboxGroupTerneirasValues!.length;
+                                if (_tabBarCurrentIndex == 0) {
+                                  return _checkboxGroupTodosValues!.length;
+                                } else if (_tabBarCurrentIndex == 1) {
+                                  return _checkboxGroupTerneirosValues!.length;
+                                } else if (_tabBarCurrentIndex == 2) {
+                                  return _checkboxGroupNovilhasValues!.length;
+                                } else if (_tabBarCurrentIndex == 3) {
+                                  return _checkboxGroupTourosValues!.length;
+                                } else if (_tabBarCurrentIndex == 4) {
+                                  return _checkboxGroupVacasValues!.length;
+                                } else if (_tabBarCurrentIndex == 5) {
+                                  return _checkboxGroupTerneirasValues!.length;
                                 } else {
-                                  return _model
-                                      .checkboxGroupTodosValues!.length;
+                                  return _checkboxGroupTodosValues!.length;
                                 }
                               }(),
                               diasDg: '',
@@ -309,7 +333,7 @@ class _SelecaoAnimalCalendarioWidgetState
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: Form(
-        key: _model.formKey,
+        key: _formKey,
         autovalidateMode: AutovalidateMode.disabled,
         child: Container(
           height: 350.0,
@@ -371,7 +395,7 @@ class _SelecaoAnimalCalendarioWidgetState
             text: 'Bezerras',
           ),
         ],
-        controller: _model.tabBarController,
+        controller: _tabBarController,
         onTap: (i) async {
           [
             () async {},
@@ -389,7 +413,7 @@ class _SelecaoAnimalCalendarioWidgetState
   Widget _p6(BuildContext context) {
     return Expanded(
       child: TabBarView(
-        controller: _model.tabBarController,
+        controller: _tabBarController,
         children: [
           _p7(context),
           _p8(context),
@@ -470,13 +494,12 @@ class _SelecaoAnimalCalendarioWidgetState
                                     FlutterFlowTheme.of(context).secondaryText,
                               ),
                               child: Checkbox(
-                                value: _model.checkboxValue1 ??= false,
+                                value: _checkboxValue1 ??= false,
                                 onChanged: (newValue) async {
                                   safeSetState(
-                                      () => _model.checkboxValue1 = newValue!);
+                                      () => _checkboxValue1 = newValue!);
                                   if (newValue!) {
-                                    safeSetState(() => _model
-                                            .checkboxGroupTodosValueController
+                                    safeSetState(() => _checkboxGroupTodosValueController
                                             ?.value =
                                         List.from(functions.formatAnimalData(
                                             containerAnimaisProdutoresRecordList
@@ -486,9 +509,9 @@ class _SelecaoAnimalCalendarioWidgetState
                                                 .map((e) => e.brincoAnimal)
                                                 .toList())));
                                   } else {
-                                    safeSetState(() => _model
-                                        .checkboxGroupTodosValueController
-                                        ?.value = []);
+                                    safeSetState(() =>
+                                        _checkboxGroupTodosValueController
+                                            ?.value = []);
                                   }
                                 },
                                 side: (FlutterFlowTheme.of(context)
@@ -539,9 +562,9 @@ class _SelecaoAnimalCalendarioWidgetState
                                     .map((e) => e.brincoAnimal)
                                     .toList())
                             .toList(),
-                        onChanged: (val) => safeSetState(
-                            () => _model.checkboxGroupTodosValues = val),
-                        controller: _model.checkboxGroupTodosValueController ??=
+                        onChanged: (val) =>
+                            safeSetState(() => _checkboxGroupTodosValues = val),
+                        controller: _checkboxGroupTodosValueController ??=
                             FormFieldController<List<String>>(
                           [],
                         ),
@@ -568,7 +591,7 @@ class _SelecaoAnimalCalendarioWidgetState
                                       .fontStyle,
                                 ),
                         checkboxBorderRadius: BorderRadius.circular(4.0),
-                        initialized: _model.checkboxGroupTodosValues != null,
+                        initialized: _checkboxGroupTodosValues != null,
                       ),
                     ),
                   ],
@@ -653,25 +676,25 @@ class _SelecaoAnimalCalendarioWidgetState
                                     FlutterFlowTheme.of(context).secondaryText,
                               ),
                               child: Checkbox(
-                                value: _model.checkboxValue2 ??= false,
+                                value: _checkboxValue2 ??= false,
                                 onChanged: (newValue) async {
                                   safeSetState(
-                                      () => _model.checkboxValue2 = newValue!);
+                                      () => _checkboxValue2 = newValue!);
                                   if (newValue!) {
-                                    safeSetState(() => _model
-                                            .checkboxGroupTerneirosValueController
-                                            ?.value =
-                                        List.from(functions.formatAnimalData(
-                                            containerAnimaisProdutoresRecordList
-                                                .map((e) => e.nomeAnimal)
-                                                .toList(),
-                                            containerAnimaisProdutoresRecordList
-                                                .map((e) => e.brincoAnimal)
-                                                .toList())));
+                                    safeSetState(() =>
+                                        _checkboxGroupTerneirosValueController
+                                                ?.value =
+                                            List.from(functions.formatAnimalData(
+                                                containerAnimaisProdutoresRecordList
+                                                    .map((e) => e.nomeAnimal)
+                                                    .toList(),
+                                                containerAnimaisProdutoresRecordList
+                                                    .map((e) => e.brincoAnimal)
+                                                    .toList())));
                                   } else {
-                                    safeSetState(() => _model
-                                        .checkboxGroupTerneirosValueController
-                                        ?.value = []);
+                                    safeSetState(() =>
+                                        _checkboxGroupTerneirosValueController
+                                            ?.value = []);
                                   }
                                 },
                                 side: (FlutterFlowTheme.of(context)
@@ -723,10 +746,9 @@ class _SelecaoAnimalCalendarioWidgetState
                                     .toList())
                             .toList(),
                         onChanged: (val) => safeSetState(
-                            () => _model.checkboxGroupTerneirosValues = val),
-                        controller:
-                            _model.checkboxGroupTerneirosValueController ??=
-                                FormFieldController<List<String>>(
+                            () => _checkboxGroupTerneirosValues = val),
+                        controller: _checkboxGroupTerneirosValueController ??=
+                            FormFieldController<List<String>>(
                           [],
                         ),
                         activeColor: FlutterFlowTheme.of(context).tertiary,
@@ -752,8 +774,7 @@ class _SelecaoAnimalCalendarioWidgetState
                                       .fontStyle,
                                 ),
                         checkboxBorderRadius: BorderRadius.circular(4.0),
-                        initialized:
-                            _model.checkboxGroupTerneirosValues != null,
+                        initialized: _checkboxGroupTerneirosValues != null,
                       ),
                     ),
                   ],
@@ -838,25 +859,25 @@ class _SelecaoAnimalCalendarioWidgetState
                                     FlutterFlowTheme.of(context).secondaryText,
                               ),
                               child: Checkbox(
-                                value: _model.checkboxValue3 ??= false,
+                                value: _checkboxValue3 ??= false,
                                 onChanged: (newValue) async {
                                   safeSetState(
-                                      () => _model.checkboxValue3 = newValue!);
+                                      () => _checkboxValue3 = newValue!);
                                   if (newValue!) {
-                                    safeSetState(() => _model
-                                            .checkboxGroupNovilhasValueController
-                                            ?.value =
-                                        List.from(functions.formatAnimalData(
-                                            containerAnimaisProdutoresRecordList
-                                                .map((e) => e.nomeAnimal)
-                                                .toList(),
-                                            containerAnimaisProdutoresRecordList
-                                                .map((e) => e.brincoAnimal)
-                                                .toList())));
+                                    safeSetState(() =>
+                                        _checkboxGroupNovilhasValueController
+                                                ?.value =
+                                            List.from(functions.formatAnimalData(
+                                                containerAnimaisProdutoresRecordList
+                                                    .map((e) => e.nomeAnimal)
+                                                    .toList(),
+                                                containerAnimaisProdutoresRecordList
+                                                    .map((e) => e.brincoAnimal)
+                                                    .toList())));
                                   } else {
-                                    safeSetState(() => _model
-                                        .checkboxGroupNovilhasValueController
-                                        ?.value = []);
+                                    safeSetState(() =>
+                                        _checkboxGroupNovilhasValueController
+                                            ?.value = []);
                                   }
                                 },
                                 side: (FlutterFlowTheme.of(context)
@@ -908,10 +929,9 @@ class _SelecaoAnimalCalendarioWidgetState
                                     .toList())
                             .toList(),
                         onChanged: (val) => safeSetState(
-                            () => _model.checkboxGroupNovilhasValues = val),
-                        controller:
-                            _model.checkboxGroupNovilhasValueController ??=
-                                FormFieldController<List<String>>(
+                            () => _checkboxGroupNovilhasValues = val),
+                        controller: _checkboxGroupNovilhasValueController ??=
+                            FormFieldController<List<String>>(
                           [],
                         ),
                         activeColor: FlutterFlowTheme.of(context).tertiary,
@@ -937,7 +957,7 @@ class _SelecaoAnimalCalendarioWidgetState
                                       .fontStyle,
                                 ),
                         checkboxBorderRadius: BorderRadius.circular(4.0),
-                        initialized: _model.checkboxGroupNovilhasValues != null,
+                        initialized: _checkboxGroupNovilhasValues != null,
                       ),
                     ),
                   ],
@@ -1022,25 +1042,25 @@ class _SelecaoAnimalCalendarioWidgetState
                                     FlutterFlowTheme.of(context).secondaryText,
                               ),
                               child: Checkbox(
-                                value: _model.checkboxValue4 ??= false,
+                                value: _checkboxValue4 ??= false,
                                 onChanged: (newValue) async {
                                   safeSetState(
-                                      () => _model.checkboxValue4 = newValue!);
+                                      () => _checkboxValue4 = newValue!);
                                   if (newValue!) {
-                                    safeSetState(() => _model
-                                            .checkboxGroupTourosValueController
-                                            ?.value =
-                                        List.from(functions.formatAnimalData(
-                                            containerAnimaisProdutoresRecordList
-                                                .map((e) => e.nomeAnimal)
-                                                .toList(),
-                                            containerAnimaisProdutoresRecordList
-                                                .map((e) => e.brincoAnimal)
-                                                .toList())));
+                                    safeSetState(() =>
+                                        _checkboxGroupTourosValueController
+                                                ?.value =
+                                            List.from(functions.formatAnimalData(
+                                                containerAnimaisProdutoresRecordList
+                                                    .map((e) => e.nomeAnimal)
+                                                    .toList(),
+                                                containerAnimaisProdutoresRecordList
+                                                    .map((e) => e.brincoAnimal)
+                                                    .toList())));
                                   } else {
-                                    safeSetState(() => _model
-                                        .checkboxGroupTourosValueController
-                                        ?.value = []);
+                                    safeSetState(() =>
+                                        _checkboxGroupTourosValueController
+                                            ?.value = []);
                                   }
                                 },
                                 side: (FlutterFlowTheme.of(context)
@@ -1092,10 +1112,9 @@ class _SelecaoAnimalCalendarioWidgetState
                                     .toList())
                             .toList(),
                         onChanged: (val) => safeSetState(
-                            () => _model.checkboxGroupTourosValues = val),
-                        controller:
-                            _model.checkboxGroupTourosValueController ??=
-                                FormFieldController<List<String>>(
+                            () => _checkboxGroupTourosValues = val),
+                        controller: _checkboxGroupTourosValueController ??=
+                            FormFieldController<List<String>>(
                           [],
                         ),
                         activeColor: FlutterFlowTheme.of(context).tertiary,
@@ -1121,7 +1140,7 @@ class _SelecaoAnimalCalendarioWidgetState
                                       .fontStyle,
                                 ),
                         checkboxBorderRadius: BorderRadius.circular(4.0),
-                        initialized: _model.checkboxGroupTourosValues != null,
+                        initialized: _checkboxGroupTourosValues != null,
                       ),
                     ),
                   ],
@@ -1206,13 +1225,12 @@ class _SelecaoAnimalCalendarioWidgetState
                                     FlutterFlowTheme.of(context).secondaryText,
                               ),
                               child: Checkbox(
-                                value: _model.checkboxValue5 ??= false,
+                                value: _checkboxValue5 ??= false,
                                 onChanged: (newValue) async {
                                   safeSetState(
-                                      () => _model.checkboxValue5 = newValue!);
+                                      () => _checkboxValue5 = newValue!);
                                   if (newValue!) {
-                                    safeSetState(() => _model
-                                            .checkboxGroupVacasValueController
+                                    safeSetState(() => _checkboxGroupVacasValueController
                                             ?.value =
                                         List.from(functions.formatAnimalData(
                                             containerAnimaisProdutoresRecordList
@@ -1222,9 +1240,9 @@ class _SelecaoAnimalCalendarioWidgetState
                                                 .map((e) => e.brincoAnimal)
                                                 .toList())));
                                   } else {
-                                    safeSetState(() => _model
-                                        .checkboxGroupVacasValueController
-                                        ?.value = []);
+                                    safeSetState(() =>
+                                        _checkboxGroupVacasValueController
+                                            ?.value = []);
                                   }
                                 },
                                 side: (FlutterFlowTheme.of(context)
@@ -1275,9 +1293,9 @@ class _SelecaoAnimalCalendarioWidgetState
                                     .map((e) => e.brincoAnimal)
                                     .toList())
                             .toList(),
-                        onChanged: (val) => safeSetState(
-                            () => _model.checkboxGroupVacasValues = val),
-                        controller: _model.checkboxGroupVacasValueController ??=
+                        onChanged: (val) =>
+                            safeSetState(() => _checkboxGroupVacasValues = val),
+                        controller: _checkboxGroupVacasValueController ??=
                             FormFieldController<List<String>>(
                           [],
                         ),
@@ -1304,7 +1322,7 @@ class _SelecaoAnimalCalendarioWidgetState
                                       .fontStyle,
                                 ),
                         checkboxBorderRadius: BorderRadius.circular(4.0),
-                        initialized: _model.checkboxGroupVacasValues != null,
+                        initialized: _checkboxGroupVacasValues != null,
                       ),
                     ),
                   ],
@@ -1389,25 +1407,25 @@ class _SelecaoAnimalCalendarioWidgetState
                                     FlutterFlowTheme.of(context).secondaryText,
                               ),
                               child: Checkbox(
-                                value: _model.checkboxValue6 ??= false,
+                                value: _checkboxValue6 ??= false,
                                 onChanged: (newValue) async {
                                   safeSetState(
-                                      () => _model.checkboxValue6 = newValue!);
+                                      () => _checkboxValue6 = newValue!);
                                   if (newValue!) {
-                                    safeSetState(() => _model
-                                            .checkboxGroupTerneirasValueController
-                                            ?.value =
-                                        List.from(functions.formatAnimalData(
-                                            containerAnimaisProdutoresRecordList
-                                                .map((e) => e.nomeAnimal)
-                                                .toList(),
-                                            containerAnimaisProdutoresRecordList
-                                                .map((e) => e.brincoAnimal)
-                                                .toList())));
+                                    safeSetState(() =>
+                                        _checkboxGroupTerneirasValueController
+                                                ?.value =
+                                            List.from(functions.formatAnimalData(
+                                                containerAnimaisProdutoresRecordList
+                                                    .map((e) => e.nomeAnimal)
+                                                    .toList(),
+                                                containerAnimaisProdutoresRecordList
+                                                    .map((e) => e.brincoAnimal)
+                                                    .toList())));
                                   } else {
-                                    safeSetState(() => _model
-                                        .checkboxGroupTerneirasValueController
-                                        ?.value = []);
+                                    safeSetState(() =>
+                                        _checkboxGroupTerneirasValueController
+                                            ?.value = []);
                                   }
                                 },
                                 side: (FlutterFlowTheme.of(context)
@@ -1459,10 +1477,9 @@ class _SelecaoAnimalCalendarioWidgetState
                                     .toList())
                             .toList(),
                         onChanged: (val) => safeSetState(
-                            () => _model.checkboxGroupTerneirasValues = val),
-                        controller:
-                            _model.checkboxGroupTerneirasValueController ??=
-                                FormFieldController<List<String>>(
+                            () => _checkboxGroupTerneirasValues = val),
+                        controller: _checkboxGroupTerneirasValueController ??=
+                            FormFieldController<List<String>>(
                           [],
                         ),
                         activeColor: FlutterFlowTheme.of(context).tertiary,
@@ -1488,8 +1505,7 @@ class _SelecaoAnimalCalendarioWidgetState
                                       .fontStyle,
                                 ),
                         checkboxBorderRadius: BorderRadius.circular(4.0),
-                        initialized:
-                            _model.checkboxGroupTerneirasValues != null,
+                        initialized: _checkboxGroupTerneirasValues != null,
                       ),
                     ),
                   ],

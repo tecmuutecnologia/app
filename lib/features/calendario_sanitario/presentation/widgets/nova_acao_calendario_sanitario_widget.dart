@@ -19,8 +19,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'nova_acao_calendario_sanitario_model.dart';
-export 'nova_acao_calendario_sanitario_model.dart';
 
 class NovaAcaoCalendarioSanitarioWidget extends StatefulWidget {
   const NovaAcaoCalendarioSanitarioWidget({
@@ -54,35 +52,62 @@ class NovaAcaoCalendarioSanitarioWidget extends StatefulWidget {
 class _NovaAcaoCalendarioSanitarioWidgetState
     extends State<NovaAcaoCalendarioSanitarioWidget>
     with TickerProviderStateMixin {
-  late NovaAcaoCalendarioSanitarioModel _model;
-
   final animationsMap = <String, AnimationInfo>{};
 
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
+  // Estado local (antes no FlutterFlowModel).
+  int _qtdInicialAnimais = 0;
+  int _qtdMaxAnimais = 0;
+  int _qtdInicialAnimais1 = 0;
+  int _qtdMaxAnimais1 = 0;
+  int _qtdInicialAnimais2 = 0;
+  int _qtdMaxAnimais2 = 0;
+
+  final _formKey = GlobalKey<FormState>();
+  FormFieldController<List<String>>? _choiceChipsValueController;
+  set _choiceChipsValue(String? val) =>
+      _choiceChipsValueController?.value = val != null ? [val] : [];
+  String? _tipoValue;
+  FormFieldController<String>? _tipoValueController;
+  String? _valoracaoValue;
+  FormFieldController<String>? _valoracaoValueController;
+  FocusNode? _dtAcaoFocusNode;
+  TextEditingController? _dtAcaoTextController;
+  late MaskTextInputFormatter _dtAcaoMask;
+  final String? Function(BuildContext, String?)?
+      _dtAcaoTextControllerValidator = null;
+  DateTime? _datePicked;
+  FocusNode? _obsFocusNode;
+  TextEditingController? _obsTextController;
+  final String? Function(BuildContext, String?)? _obsTextControllerValidator =
+      null;
+
+  // Outputs de query/criação.
+  AnimaisProdutoresRecord? _outPesquisaAnimalSelecionado;
+  ResumoDaVisitaRecord? _outUidResumoDaVisita;
+  AnimaisProdutoresRecord? _outPesquisaAnimalSelecionado1;
+  RecomendacoesRecord? _outUidRecomendacoes;
+  ResumoDaVisitaRecord? _outNewUidResumoDaVisita;
+  AnimaisProdutoresRecord? _outPesquisaAnimalSelecionado2;
+  RecomendacoesRecord? _outUidRecomendacoes2;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => NovaAcaoCalendarioSanitarioModel());
 
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.qtdMaxAnimais = widget.qtdAnimaisSelecionados!;
-      _model.qtdMaxAnimais1 = widget.qtdAnimaisSelecionados!;
-      _model.qtdMaxAnimais2 = widget.qtdAnimaisSelecionados!;
+      _qtdMaxAnimais = widget.qtdAnimaisSelecionados!;
+      _qtdMaxAnimais1 = widget.qtdAnimaisSelecionados!;
+      _qtdMaxAnimais2 = widget.qtdAnimaisSelecionados!;
       safeSetState(() {});
     });
 
-    _model.dtAcaoTextController ??= TextEditingController();
-    _model.dtAcaoFocusNode ??= FocusNode();
+    _dtAcaoTextController ??= TextEditingController();
+    _dtAcaoFocusNode ??= FocusNode();
 
-    _model.dtAcaoMask = MaskTextInputFormatter(mask: '##/##/####');
-    _model.obsTextController ??= TextEditingController();
-    _model.obsFocusNode ??= FocusNode();
+    _dtAcaoMask = MaskTextInputFormatter(mask: '##/##/####');
+    _obsTextController ??= TextEditingController();
+    _obsFocusNode ??= FocusNode();
 
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
@@ -114,7 +139,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {
-          _model.dtAcaoTextController?.text = dateTimeFormat(
+          _dtAcaoTextController?.text = dateTimeFormat(
             "dd/MM/yyyy",
             getCurrentTimestamp,
             locale: FFLocalizations.of(context).languageCode,
@@ -124,7 +149,10 @@ class _NovaAcaoCalendarioSanitarioWidgetState
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _dtAcaoFocusNode?.dispose();
+    _dtAcaoTextController?.dispose();
+    _obsFocusNode?.dispose();
+    _obsTextController?.dispose();
 
     super.dispose();
   }
@@ -186,7 +214,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
 
   Widget _p3(BuildContext context) {
     return Form(
-      key: _model.formKey,
+      key: _formKey,
       autovalidateMode: AutovalidateMode.disabled,
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -236,8 +264,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
         onChanged: (widget.listaAnimaisSelecionados != null &&
                 (widget.listaAnimaisSelecionados)!.isNotEmpty)
             ? null
-            : (val) =>
-                safeSetState(() => _model.choiceChipsValue = val?.firstOrNull),
+            : (val) => safeSetState(() => _choiceChipsValue = val?.firstOrNull),
         selectedChipStyle: ChipStyle(
           backgroundColor: FlutterFlowTheme.of(context).tertiary,
           textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -278,7 +305,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
         rowSpacing: 12.0,
         multiselect: false,
         alignment: WrapAlignment.start,
-        controller: _model.choiceChipsValueController ??=
+        controller: _choiceChipsValueController ??=
             FormFieldController<List<String>>(
           [],
         ),
@@ -291,12 +318,12 @@ class _NovaAcaoCalendarioSanitarioWidgetState
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: FlutterFlowDropDown<String>(
-        controller: _model.tipoValueController ??= FormFieldController<String>(
-          _model.tipoValue ??= '',
+        controller: _tipoValueController ??= FormFieldController<String>(
+          _tipoValue ??= '',
         ),
         options: List<String>.from(['Exame', 'Vacina', 'Doença']),
         optionLabels: ['Exame ', 'Vacina', 'Doença'],
-        onChanged: (val) => safeSetState(() => _model.tipoValue = val),
+        onChanged: (val) => safeSetState(() => _tipoValue = val),
         width: double.infinity,
         height: 58.0,
         textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -354,22 +381,22 @@ class _NovaAcaoCalendarioSanitarioWidgetState
               valoracaoCalendarioSanitarioRecordList = snapshot.data!;
 
           return FlutterFlowDropDown<String>(
-            controller: _model.valoracaoValueController ??=
+            controller: _valoracaoValueController ??=
                 FormFieldController<String>(null),
             options: List<String>.from(() {
-              if (_model.tipoValue == 'Doença') {
+              if (_tipoValue == 'Doença') {
                 return valoracaoCalendarioSanitarioRecordList
                     .where((e) => e.tipo == 'Doença')
                     .toList()
                     .map((e) => e.descricao)
                     .toList();
-              } else if (_model.tipoValue == 'Exame') {
+              } else if (_tipoValue == 'Exame') {
                 return valoracaoCalendarioSanitarioRecordList
                     .where((e) => e.tipo == 'Exame')
                     .toList()
                     .map((e) => e.descricao)
                     .toList();
-              } else if (_model.tipoValue == 'Vacina') {
+              } else if (_tipoValue == 'Vacina') {
                 return valoracaoCalendarioSanitarioRecordList
                     .where((e) => e.tipo == 'Vacina')
                     .toList()
@@ -380,19 +407,19 @@ class _NovaAcaoCalendarioSanitarioWidgetState
               }
             }()),
             optionLabels: () {
-              if (_model.tipoValue == 'Doença') {
+              if (_tipoValue == 'Doença') {
                 return valoracaoCalendarioSanitarioRecordList
                     .where((e) => e.tipo == 'Doença')
                     .toList()
                     .map((e) => e.descricao)
                     .toList();
-              } else if (_model.tipoValue == 'Exame') {
+              } else if (_tipoValue == 'Exame') {
                 return valoracaoCalendarioSanitarioRecordList
                     .where((e) => e.tipo == 'Exame')
                     .toList()
                     .map((e) => e.descricao)
                     .toList();
-              } else if (_model.tipoValue == 'Vacina') {
+              } else if (_tipoValue == 'Vacina') {
                 return valoracaoCalendarioSanitarioRecordList
                     .where((e) => e.tipo == 'Vacina')
                     .toList()
@@ -402,7 +429,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                 return functions.retornaStringEmLista('Selecione um tipo');
               }
             }(),
-            onChanged: (val) => safeSetState(() => _model.valoracaoValue = val),
+            onChanged: (val) => safeSetState(() => _valoracaoValue = val),
             width: double.infinity,
             height: 58.0,
             searchHintTextStyle: FlutterFlowTheme.of(context)
@@ -444,11 +471,11 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                   fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
                 ),
             hintText: () {
-              if (_model.tipoValue == 'Exame') {
+              if (_tipoValue == 'Exame') {
                 return 'Selecione qual exame';
-              } else if (_model.tipoValue == 'Vacina') {
+              } else if (_tipoValue == 'Vacina') {
                 return 'Selecione qual vacina';
-              } else if (_model.tipoValue == 'Doença') {
+              } else if (_tipoValue == 'Doença') {
                 return 'Selecione qual doença';
               } else {
                 return 'Selecione';
@@ -485,10 +512,10 @@ class _NovaAcaoCalendarioSanitarioWidgetState
             child: Padding(
               padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
               child: TextFormField(
-                controller: _model.dtAcaoTextController,
-                focusNode: _model.dtAcaoFocusNode,
+                controller: _dtAcaoTextController,
+                focusNode: _dtAcaoFocusNode,
                 onChanged: (_) => EasyDebounce.debounce(
-                  '_model.dtAcaoTextController',
+                  '_dtAcaoTextController',
                   Duration(milliseconds: 2000),
                   () => safeSetState(() {}),
                 ),
@@ -558,10 +585,10 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                   ),
                   contentPadding:
                       EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-                  suffixIcon: _model.dtAcaoTextController!.text.isNotEmpty
+                  suffixIcon: _dtAcaoTextController!.text.isNotEmpty
                       ? InkWell(
                           onTap: () async {
-                            _model.dtAcaoTextController?.clear();
+                            _dtAcaoTextController?.clear();
                             safeSetState(() {});
                           },
                           child: Icon(
@@ -592,9 +619,8 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                         maxLength}) =>
                     null,
                 keyboardType: TextInputType.datetime,
-                validator:
-                    _model.dtAcaoTextControllerValidator.asValidator(context),
-                inputFormatters: [_model.dtAcaoMask],
+                validator: _dtAcaoTextControllerValidator.asValidator(context),
+                inputFormatters: [_dtAcaoMask],
               ),
             ),
           ),
@@ -664,7 +690,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                             use24hFormat: false,
                             onDateTimeChanged: (newDateTime) =>
                                 safeSetState(() {
-                              _model.datePicked = newDateTime;
+                              _datePicked = newDateTime;
                             }),
                           ),
                         ),
@@ -672,14 +698,14 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                     );
                   });
               safeSetState(() {
-                _model.dtAcaoTextController?.text = dateTimeFormat(
+                _dtAcaoTextController?.text = dateTimeFormat(
                   "dd/MM/yyyy",
-                  _model.datePicked,
+                  _datePicked,
                   locale: FFLocalizations.of(context).languageCode,
                 );
-                _model.dtAcaoMask.updateMask(
+                _dtAcaoMask.updateMask(
                   newValue: TextEditingValue(
-                    text: _model.dtAcaoTextController!.text,
+                    text: _dtAcaoTextController!.text,
                   ),
                 );
               });
@@ -699,8 +725,8 @@ class _NovaAcaoCalendarioSanitarioWidgetState
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: TextFormField(
-        controller: _model.obsTextController,
-        focusNode: _model.obsFocusNode,
+        controller: _obsTextController,
+        focusNode: _obsFocusNode,
         autofocus: false,
         obscureText: false,
         decoration: InputDecoration(
@@ -773,7 +799,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                 {required currentLength, required isFocused, maxLength}) =>
             null,
         cursorColor: FlutterFlowTheme.of(context).primary,
-        validator: _model.obsTextControllerValidator.asValidator(context),
+        validator: _obsTextControllerValidator.asValidator(context),
       ),
     );
   }
@@ -825,19 +851,19 @@ class _NovaAcaoCalendarioSanitarioWidgetState
       child: FFButtonWidget(
         onPressed: () async {
           var _shouldSetState = false;
-          if (_model.formKey.currentState == null ||
-              !_model.formKey.currentState!.validate()) {
+          if (_formKey.currentState == null ||
+              !_formKey.currentState!.validate()) {
             return;
           }
-          if (_model.tipoValue == null) {
+          if (_tipoValue == null) {
             return;
           }
-          if (_model.valoracaoValue == null) {
+          if (_valoracaoValue == null) {
             return;
           }
-          if (_model.valoracaoValue != 'Selecione um tipo') {
-            while (_model.qtdMaxAnimais > _model.qtdInicialAnimais) {
-              _model.outPesquisaAnimalSelecionado =
+          if (_valoracaoValue != 'Selecione um tipo') {
+            while (_qtdMaxAnimais > _qtdInicialAnimais) {
+              _outPesquisaAnimalSelecionado =
                   await queryAnimaisProdutoresRecordOnce(
                 parent: widget.uidTecnico,
                 queryBuilder: (animaisProdutoresRecord) =>
@@ -849,7 +875,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                         .where(
                           'nomeBrincoConcat',
                           isEqualTo: widget.listaAnimaisSelecionados
-                              ?.elementAtOrNull(_model.qtdInicialAnimais),
+                              ?.elementAtOrNull(_qtdInicialAnimais),
                         ),
                 singleRecord: true,
               ).then((s) => s.firstOrNull);
@@ -857,29 +883,29 @@ class _NovaAcaoCalendarioSanitarioWidgetState
 
               await AcoesSanitarioRecord.createDoc(widget.uidTecnico!)
                   .set(createAcoesSanitarioRecordData(
-                obsVisita: _model.obsTextController.text,
-                tipoAcao: _model.tipoValue,
-                acao: _model.valoracaoValue,
-                dtAcao: _model.dtAcaoTextController.text,
+                obsVisita: _obsTextController.text,
+                tipoAcao: _tipoValue,
+                acao: _valoracaoValue,
+                dtAcao: _dtAcaoTextController.text,
                 uidPropriedade: widget.uidPropriedade,
                 uidAnimalAnimaisProdutores:
-                    _model.outPesquisaAnimalSelecionado?.reference,
+                    _outPesquisaAnimalSelecionado?.reference,
               ));
 
               await AcoesRecord.createDoc(widget.uidTecnico!)
                   .set(createAcoesRecordData(
-                obsVisita: _model.obsTextController.text,
-                acao: _model.valoracaoValue,
+                obsVisita: _obsTextController.text,
+                acao: _valoracaoValue,
                 uidPropriedade: widget.uidPropriedade,
                 uidAnimalAnimaisProdutores:
-                    _model.outPesquisaAnimalSelecionado?.reference,
-                dataVisita: _model.dtAcaoTextController.text,
+                    _outPesquisaAnimalSelecionado?.reference,
+                dataVisita: _dtAcaoTextController.text,
                 dataDaAcao: getCurrentTimestamp,
               ));
-              _model.qtdInicialAnimais = _model.qtdInicialAnimais + 1;
+              _qtdInicialAnimais = _qtdInicialAnimais + 1;
               safeSetState(() {});
             }
-            _model.outUidResumoDaVisita = await queryResumoDaVisitaRecordOnce(
+            _outUidResumoDaVisita = await queryResumoDaVisitaRecordOnce(
               queryBuilder: (resumoDaVisitaRecord) => resumoDaVisitaRecord
                   .where(
                     'uidPropriedade',
@@ -900,10 +926,10 @@ class _NovaAcaoCalendarioSanitarioWidgetState
               singleRecord: true,
             ).then((s) => s.firstOrNull);
             _shouldSetState = true;
-            if (_model.outUidResumoDaVisita != null) {
-              if (_model.tipoValue == 'Doença') {
-                while (_model.qtdMaxAnimais1 > _model.qtdInicialAnimais1) {
-                  _model.outPesquisaAnimalSelecionado1 =
+            if (_outUidResumoDaVisita != null) {
+              if (_tipoValue == 'Doença') {
+                while (_qtdMaxAnimais1 > _qtdInicialAnimais1) {
+                  _outPesquisaAnimalSelecionado1 =
                       await queryAnimaisProdutoresRecordOnce(
                     parent: widget.uidTecnico,
                     queryBuilder: (animaisProdutoresRecord) =>
@@ -915,28 +941,26 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                             .where(
                               'nomeBrincoConcat',
                               isEqualTo: widget.listaAnimaisSelecionados
-                                  ?.elementAtOrNull(_model.qtdInicialAnimais1),
+                                  ?.elementAtOrNull(_qtdInicialAnimais1),
                             ),
                     singleRecord: true,
                   ).then((s) => s.firstOrNull);
                   _shouldSetState = true;
 
                   await TratamentosRecord.createDoc(
-                          _model.outUidResumoDaVisita!.reference)
+                          _outUidResumoDaVisita!.reference)
                       .set(createTratamentosRecordData(
-                    uidAnimal: _model.outPesquisaAnimalSelecionado1?.reference,
-                    tipoAcao: _model.valoracaoValue,
-                    uidResumoDaVisita: _model.outUidResumoDaVisita?.reference,
-                    observacaoAcao: _model.obsTextController.text,
-                    brincoAnimal: _model
-                        .outPesquisaAnimalSelecionado1?.brincoAnimalOrder
+                    uidAnimal: _outPesquisaAnimalSelecionado1?.reference,
+                    tipoAcao: _valoracaoValue,
+                    uidResumoDaVisita: _outUidResumoDaVisita?.reference,
+                    observacaoAcao: _obsTextController.text,
+                    brincoAnimal: _outPesquisaAnimalSelecionado1
+                        ?.brincoAnimalOrder
                         .toString(),
-                    nomeAnimal:
-                        _model.outPesquisaAnimalSelecionado1?.nomeAnimal,
-                    grupoAnimal:
-                        _model.outPesquisaAnimalSelecionado1?.grupoAnimal,
+                    nomeAnimal: _outPesquisaAnimalSelecionado1?.nomeAnimal,
+                    grupoAnimal: _outPesquisaAnimalSelecionado1?.grupoAnimal,
                   ));
-                  _model.qtdInicialAnimais1 = _model.qtdInicialAnimais1 + 1;
+                  _qtdInicialAnimais1 = _qtdInicialAnimais1 + 1;
                   safeSetState(() {});
                 }
               } else {
@@ -957,26 +981,26 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                 return;
               }
 
-              _model.outUidRecomendacoes = await queryRecomendacoesRecordOnce(
-                parent: _model.outUidResumoDaVisita?.reference,
+              _outUidRecomendacoes = await queryRecomendacoesRecordOnce(
+                parent: _outUidResumoDaVisita?.reference,
                 queryBuilder: (recomendacoesRecord) => recomendacoesRecord
                     .where(
                       'uidResumoDaVisita',
-                      isEqualTo: _model.outUidResumoDaVisita?.reference,
+                      isEqualTo: _outUidResumoDaVisita?.reference,
                     )
                     .where(
                       'tituloRecomendacao',
-                      isEqualTo: _model.valoracaoValue,
+                      isEqualTo: _valoracaoValue,
                     ),
                 singleRecord: true,
               ).then((s) => s.firstOrNull);
               _shouldSetState = true;
-              if (_model.outUidRecomendacoes?.reference == null) {
+              if (_outUidRecomendacoes?.reference == null) {
                 await RecomendacoesRecord.createDoc(
-                        _model.outUidResumoDaVisita!.reference)
+                        _outUidResumoDaVisita!.reference)
                     .set(createRecomendacoesRecordData(
-                  tituloRecomendacao: _model.valoracaoValue,
-                  uidResumoDaVisita: _model.outUidResumoDaVisita?.reference,
+                  tituloRecomendacao: _valoracaoValue,
+                  uidResumoDaVisita: _outUidResumoDaVisita?.reference,
                 ));
               }
               Navigator.pop(context);
@@ -1008,7 +1032,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                   locale: FFLocalizations.of(context).languageCode,
                 ),
               ));
-              _model.outNewUidResumoDaVisita =
+              _outNewUidResumoDaVisita =
                   ResumoDaVisitaRecord.getDocumentFromData(
                       createResumoDaVisitaRecordData(
                         uidPropriedade: widget.uidPropriedade,
@@ -1023,13 +1047,13 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                       resumoDaVisitaRecordReference);
               _shouldSetState = true;
 
-              await _model.outNewUidResumoDaVisita!.reference
+              await _outNewUidResumoDaVisita!.reference
                   .update(createResumoDaVisitaRecordData(
-                uidResumoDaVisita: _model.outNewUidResumoDaVisita?.reference,
+                uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
               ));
-              if (_model.tipoValue == 'Doença') {
-                while (_model.qtdMaxAnimais2 > _model.qtdInicialAnimais2) {
-                  _model.outPesquisaAnimalSelecionado2 =
+              if (_tipoValue == 'Doença') {
+                while (_qtdMaxAnimais2 > _qtdInicialAnimais2) {
+                  _outPesquisaAnimalSelecionado2 =
                       await queryAnimaisProdutoresRecordOnce(
                     parent: widget.uidTecnico,
                     queryBuilder: (animaisProdutoresRecord) =>
@@ -1041,29 +1065,26 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                             .where(
                               'nomeBrincoConcat',
                               isEqualTo: widget.listaAnimaisSelecionados
-                                  ?.elementAtOrNull(_model.qtdInicialAnimais2),
+                                  ?.elementAtOrNull(_qtdInicialAnimais2),
                             ),
                     singleRecord: true,
                   ).then((s) => s.firstOrNull);
                   _shouldSetState = true;
 
                   await TratamentosRecord.createDoc(
-                          _model.outNewUidResumoDaVisita!.reference)
+                          _outNewUidResumoDaVisita!.reference)
                       .set(createTratamentosRecordData(
-                    uidAnimal: _model.outPesquisaAnimalSelecionado2?.reference,
-                    tipoAcao: _model.valoracaoValue,
-                    uidResumoDaVisita:
-                        _model.outNewUidResumoDaVisita?.reference,
-                    observacaoAcao: _model.obsTextController.text,
-                    brincoAnimal: _model
-                        .outPesquisaAnimalSelecionado2?.brincoAnimalOrder
+                    uidAnimal: _outPesquisaAnimalSelecionado2?.reference,
+                    tipoAcao: _valoracaoValue,
+                    uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
+                    observacaoAcao: _obsTextController.text,
+                    brincoAnimal: _outPesquisaAnimalSelecionado2
+                        ?.brincoAnimalOrder
                         .toString(),
-                    nomeAnimal:
-                        _model.outPesquisaAnimalSelecionado2?.nomeAnimal,
-                    grupoAnimal:
-                        _model.outPesquisaAnimalSelecionado2?.grupoAnimal,
+                    nomeAnimal: _outPesquisaAnimalSelecionado2?.nomeAnimal,
+                    grupoAnimal: _outPesquisaAnimalSelecionado2?.grupoAnimal,
                   ));
-                  _model.qtdInicialAnimais2 = _model.qtdInicialAnimais2 + 1;
+                  _qtdInicialAnimais2 = _qtdInicialAnimais2 + 1;
                   safeSetState(() {});
                 }
               } else {
@@ -1084,26 +1105,26 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                 return;
               }
 
-              _model.outUidRecomendacoes2 = await queryRecomendacoesRecordOnce(
-                parent: _model.outNewUidResumoDaVisita?.reference,
+              _outUidRecomendacoes2 = await queryRecomendacoesRecordOnce(
+                parent: _outNewUidResumoDaVisita?.reference,
                 queryBuilder: (recomendacoesRecord) => recomendacoesRecord
                     .where(
                       'uidResumoDaVisita',
-                      isEqualTo: _model.outNewUidResumoDaVisita?.reference,
+                      isEqualTo: _outNewUidResumoDaVisita?.reference,
                     )
                     .where(
                       'tituloRecomendacao',
-                      isEqualTo: _model.valoracaoValue,
+                      isEqualTo: _valoracaoValue,
                     ),
                 singleRecord: true,
               ).then((s) => s.firstOrNull);
               _shouldSetState = true;
-              if (_model.outUidRecomendacoes2?.reference == null) {
+              if (_outUidRecomendacoes2?.reference == null) {
                 await RecomendacoesRecord.createDoc(
-                        _model.outNewUidResumoDaVisita!.reference)
+                        _outNewUidResumoDaVisita!.reference)
                     .set(createRecomendacoesRecordData(
-                  tituloRecomendacao: _model.valoracaoValue,
-                  uidResumoDaVisita: _model.outNewUidResumoDaVisita?.reference,
+                  tituloRecomendacao: _valoracaoValue,
+                  uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
                 ));
               }
               Navigator.pop(context);
