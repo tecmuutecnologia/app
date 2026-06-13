@@ -1,7 +1,7 @@
 // ignore_for_file: dead_null_aware_expression
 
-import '/backend/backend.dart';
-import '/backend/objectbox/repositories/animal_repository.dart';
+import '/data/backend.dart';
+import '/data/objectbox/repositories/animal_repository.dart';
 import 'dart:async';
 import '/core/ui/flutter_flow_animations.dart';
 import '/app/theme/flutter_flow_theme.dart';

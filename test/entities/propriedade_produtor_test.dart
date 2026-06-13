@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecmuu/backend/objectbox/entities/tecnico_entity.dart';
-import 'package:tecmuu/backend/objectbox/entities/produtor_entity.dart';
-import 'package:tecmuu/backend/objectbox/entities/propriedade_entity.dart';
+import 'package:tecmuu/data/objectbox/entities/tecnico_entity.dart';
+import 'package:tecmuu/data/objectbox/entities/produtor_entity.dart';
+import 'package:tecmuu/data/objectbox/entities/propriedade_entity.dart';
 
 void main() {
   group('TecnicoEntity - Cadastro de Técnico', () {

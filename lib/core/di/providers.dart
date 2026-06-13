@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '/core/auth/auth_repository.dart';
 import '../connectivity/connectivity_service.dart';
-import '../../backend/objectbox/index.dart';
+import '../../data/objectbox/index.dart';
 
 /// Injeção de dependência (Riverpod) da camada offline-first.
 ///

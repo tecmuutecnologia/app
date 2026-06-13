@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../../backend/objectbox/entities/index.dart';
-import '../../../backend/objectbox/objectbox_service.dart';
-import '../../../backend/objectbox/repositories/animal_repository.dart';
-import '../../../backend/schema/structs/index.dart';
+import '../../../data/objectbox/entities/index.dart';
+import '../../../data/objectbox/objectbox_service.dart';
+import '../../../data/objectbox/repositories/animal_repository.dart';
+import '../../../data/schema/structs/index.dart';
 
 /// Converte uma [AnimalEntity] (ObjectBox) no [AnimaisProdutoresStruct] usado
 /// pelas telas FlutterFlow legadas (ex.: `listacompleta`, que renderiza a partir

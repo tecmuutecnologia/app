@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecmuu/backend/objectbox/entities/index.dart';
+import 'package:tecmuu/data/objectbox/entities/index.dart';
 
 /// Garante que as entidades migradas para a camada de repositórios cumprem o
 /// contrato [SyncableEntity]. Se alguém quebrar o contrato (remover um campo ou

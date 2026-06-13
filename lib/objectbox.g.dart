@@ -14,20 +14,20 @@ import 'package:objectbox/internal.dart'
 import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
-import 'backend/objectbox/entities/acao_da_visita_entity.dart';
-import 'backend/objectbox/entities/acao_entity.dart';
-import 'backend/objectbox/entities/animal_entity.dart';
-import 'backend/objectbox/entities/financeiro_entity.dart';
-import 'backend/objectbox/entities/pending_operation_entity.dart';
-import 'backend/objectbox/entities/person_entity.dart';
-import 'backend/objectbox/entities/produtor_entity.dart';
-import 'backend/objectbox/entities/propriedade_entity.dart';
-import 'backend/objectbox/entities/reference_entities.dart';
-import 'backend/objectbox/entities/sync_metadata_entity.dart';
-import 'backend/objectbox/entities/tecnico_entity.dart';
-import 'backend/objectbox/entities/tratamento_entity.dart';
-import 'backend/objectbox/entities/user_session_entity.dart';
-import 'backend/objectbox/entities/visita_entities.dart';
+import 'data/objectbox/entities/acao_da_visita_entity.dart';
+import 'data/objectbox/entities/acao_entity.dart';
+import 'data/objectbox/entities/animal_entity.dart';
+import 'data/objectbox/entities/financeiro_entity.dart';
+import 'data/objectbox/entities/pending_operation_entity.dart';
+import 'data/objectbox/entities/person_entity.dart';
+import 'data/objectbox/entities/produtor_entity.dart';
+import 'data/objectbox/entities/propriedade_entity.dart';
+import 'data/objectbox/entities/reference_entities.dart';
+import 'data/objectbox/entities/sync_metadata_entity.dart';
+import 'data/objectbox/entities/tecnico_entity.dart';
+import 'data/objectbox/entities/tratamento_entity.dart';
+import 'data/objectbox/entities/user_session_entity.dart';
+import 'data/objectbox/entities/visita_entities.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 

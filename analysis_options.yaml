@@ -15,7 +15,7 @@ analyzer:
     - lib/core/ui/custom_functions.dart
     - "**/*.g.dart"
     - lib/objectbox.g.dart
-    - lib/backend/schema/**
+    - lib/data/schema/**
     - build/**
 
 linter:

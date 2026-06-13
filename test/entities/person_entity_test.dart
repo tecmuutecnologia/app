@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecmuu/backend/objectbox/entities/person_entity.dart';
+import 'package:tecmuu/data/objectbox/entities/person_entity.dart';
 
 void main() {
   group('PersonEntity - Cadastro de Novo Usuário', () {

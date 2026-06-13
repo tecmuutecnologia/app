@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecmuu/backend/objectbox/entities/index.dart';
-import 'package:tecmuu/backend/schema/structs/index.dart';
+import 'package:tecmuu/data/objectbox/entities/index.dart';
+import 'package:tecmuu/data/schema/structs/index.dart';
 import 'package:tecmuu/features/animais/application/animal_struct_adapter.dart';
 
 /// Valida o mapeamento de campos escalares do adapter AnimalEntity ->

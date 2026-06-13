@@ -1,4 +1,4 @@
-import '/backend/backend.dart';
+import '/data/backend.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/index.dart';
 import 'resumo_visita_atual_widget.dart' show ResumoVisitaAtualWidget;

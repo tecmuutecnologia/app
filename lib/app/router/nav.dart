@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '/backend/backend.dart';
-import '/backend/schema/structs/index.dart';
+import '/data/backend.dart';
+import '/data/schema/structs/index.dart';
 
 import '/core/auth/base_auth_user_provider.dart';
 

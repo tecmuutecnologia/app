@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecmuu/backend/objectbox/entities/animal_entity.dart';
+import 'package:tecmuu/data/objectbox/entities/animal_entity.dart';
 
 void main() {
   group('AnimalEntity - Criação de Animal Básico', () {

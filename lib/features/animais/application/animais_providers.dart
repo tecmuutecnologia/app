@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../backend/objectbox/entities/index.dart';
+import '../../../data/objectbox/entities/index.dart';
 import '../../../core/di/providers.dart';
 
 /// Lista reativa de animais de uma propriedade, lida do ObjectBox via

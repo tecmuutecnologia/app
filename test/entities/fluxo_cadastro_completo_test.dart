@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecmuu/backend/objectbox/entities/person_entity.dart';
-import 'package:tecmuu/backend/objectbox/entities/tecnico_entity.dart';
-import 'package:tecmuu/backend/objectbox/entities/produtor_entity.dart';
-import 'package:tecmuu/backend/objectbox/entities/propriedade_entity.dart';
-import 'package:tecmuu/backend/objectbox/entities/animal_entity.dart';
+import 'package:tecmuu/data/objectbox/entities/person_entity.dart';
+import 'package:tecmuu/data/objectbox/entities/tecnico_entity.dart';
+import 'package:tecmuu/data/objectbox/entities/produtor_entity.dart';
+import 'package:tecmuu/data/objectbox/entities/propriedade_entity.dart';
+import 'package:tecmuu/data/objectbox/entities/animal_entity.dart';
 
 /// Testes de integração simulando fluxos completos de cadastro
 /// sem dependência de Firebase/ObjectBox Store

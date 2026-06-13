@@ -7,9 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' show ProviderScope;
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:provider/provider.dart';
 
-import '/backend/firebase/firebase_config.dart';
-import '/backend/objectbox/index.dart';
-import '/backend/stripe/payment_manager.dart';
+import '/data/firebase/firebase_config.dart';
+import '/data/objectbox/index.dart';
+import '/data/stripe/payment_manager.dart';
 import '/core/connectivity/connectivity_service.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/app/theme/flutter_flow_theme.dart';

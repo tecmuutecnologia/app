@@ -1,5 +1,5 @@
-import '/backend/backend.dart';
-import '/backend/stripe/payment_manager.dart';
+import '/data/backend.dart';
+import '/data/stripe/payment_manager.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';

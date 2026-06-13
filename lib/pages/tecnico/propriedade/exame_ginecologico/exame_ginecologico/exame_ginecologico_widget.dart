@@ -1,7 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison
-import '/backend/backend.dart';
+import '/data/backend.dart';
 import '/domain/animais/classificacao_animal.dart';
-import '/backend/objectbox/index.dart';
+import '/data/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';

@@ -1,10 +1,10 @@
 // ignore_for_file: unused_import, dead_code, unnecessary_null_in_if_null_operators, dead_null_aware_expression
-import '/backend/backend.dart';
+import '/data/backend.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/core/constants/tipo_acoes_constantes.dart';
-import '/backend/objectbox/entities/index.dart';
-import '/backend/objectbox/repositories/acao_repository.dart';
-import '/backend/objectbox/repositories/animal_repository.dart';
+import '/data/objectbox/entities/index.dart';
+import '/data/objectbox/repositories/acao_repository.dart';
+import '/data/objectbox/repositories/animal_repository.dart';
 import '/core/connectivity/connectivity_service.dart';
 import 'dart:async';
 import '/core/ui/flutter_flow_animations.dart';

@@ -1,7 +1,7 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
-import '/backend/backend.dart';
-import '/backend/objectbox/index.dart';
+import '/data/backend.dart';
+import '/data/objectbox/index.dart';
 import 'dart:async';
 import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_drop_down.dart';

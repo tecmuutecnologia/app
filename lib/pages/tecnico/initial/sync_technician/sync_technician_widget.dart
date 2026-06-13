@@ -1,6 +1,6 @@
 import '/core/auth/firebase_auth/auth_util.dart';
-import '/backend/backend.dart';
-import '/backend/objectbox/index.dart';
+import '/data/backend.dart';
+import '/data/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';

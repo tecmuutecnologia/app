@@ -21,17 +21,25 @@ um widget novo — passar por repositório.
 ```
 core/            infra transversal: connectivity/, sync/ (codec, ConflictResolver),
                  security/ (PasswordHasher), result/ (Result<T>)
-backend/objectbox/
-  entities/      entidades ObjectBox (implementam SyncableEntity)
-  repositories/  1 repo por agregado, sobre BaseSyncRepository<E>
-  offline_first_sync_service.dart   o "SyncEngine" (download + push + fila)
-  remote_sync_listeners_service.dart  listeners Firestore->ObjectBox (HOJE INATIVO)
+data/            camada de dados (ex-backend/ do FlutterFlow):
+  objectbox/
+    entities/      entidades ObjectBox (implementam SyncableEntity)
+    repositories/  1 repo por agregado, sobre BaseSyncRepository<E>
+    offline_first_sync_service.dart   o "SyncEngine" (download + push + fila)
+    remote_sync_listeners_service.dart  listeners Firestore->ObjectBox (HOJE INATIVO)
+  schema/        record classes Firestore (geradas); backend.dart (queries); firebase*/, stripe/
 domain/          regras puras testáveis (ex.: animais/classificacao_animal.dart)
 features/        feature-first: <feature>/presentation/{pages,widgets,controllers},
                  application/, domain/, data/
+app/             app-shell: bootstrap.dart (init+runApp), app.dart (MaterialApp.router),
+                 router/ (nav.dart, serialization_util.dart), theme/ (flutter_flow_theme.dart)
+core/ui/         utilitários ex-flutter_flow (util, widgets, model, i18n, dropdowns, etc.)
 pages/           telas FlutterFlow legadas (vão sendo migradas p/ features/)
-flutter_flow/    utilitários gerados (mantidos durante a migração)
 ```
+
+> `main.dart` é fino (só chama `bootstrap()`). O antigo `lib/flutter_flow/` foi relocado
+> (Fase 1): nav→`app/router`, theme→`app/theme`, o resto→`core/ui`. O barrel `index.dart`
+> ainda existe (telas legadas em `pages/` o importam); será deletado quando todas migrarem.
 
 ## Migração da UI (FlutterFlow → feature-first)
 

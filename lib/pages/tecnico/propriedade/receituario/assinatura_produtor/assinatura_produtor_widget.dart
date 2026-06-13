@@ -1,5 +1,5 @@
-import '/backend/backend.dart';
-import '/backend/firebase_storage/storage.dart';
+import '/data/backend.dart';
+import '/data/firebase_storage/storage.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';

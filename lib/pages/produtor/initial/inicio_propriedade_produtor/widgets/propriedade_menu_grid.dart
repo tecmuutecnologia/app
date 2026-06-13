@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 
-import '/backend/backend.dart';
+import '/data/backend.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/custom_functions.dart' as functions;

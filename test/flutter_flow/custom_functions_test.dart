@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
-import 'package:tecmuu/flutter_flow/custom_functions.dart' as functions;
+import 'package:tecmuu/core/ui/custom_functions.dart' as functions;
 
 /// Cobre as funções PURAS de data/cálculo de `custom_functions.dart` usadas
 /// pelos formulários offline-first (parto/secagem/pré-parto previstos etc.).

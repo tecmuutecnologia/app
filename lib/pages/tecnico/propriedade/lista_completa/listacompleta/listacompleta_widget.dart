@@ -1,7 +1,7 @@
 // ignore_for_file: unused_import, unused_local_variable, unnecessary_null_comparison
 
-import '/backend/backend.dart';
-import '/backend/objectbox/index.dart';
+import '/data/backend.dart';
+import '/data/objectbox/index.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
