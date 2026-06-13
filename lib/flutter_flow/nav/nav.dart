@@ -119,9 +119,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: NovaPropriedadeWidget.routeName,
-          path: NovaPropriedadeWidget.routePath,
-          builder: (context, params) => NovaPropriedadeWidget(
+          name: NovaPropriedadePage.routeName,
+          path: NovaPropriedadePage.routePath,
+          builder: (context, params) => NovaPropriedadePage(
             visitaPresencial: params.getParam(
               'visitaPresencial',
               ParamType.bool,

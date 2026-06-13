@@ -12,15 +12,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'nova_propriedade_model.dart';
-export 'nova_propriedade_model.dart';
-
 //TODO Esta pedidndo para o tecnico confirmar a senha após criar a propriedade,
 //isso acontece pela criação dos dados da conta do produtor, não seria mais facil
 //armazenar a senha em um local seguro e deopis somente utilizar?? Outra coisa é que pede para gerar uma senha e depois manda um e-mail para a pessoa com uma senha padrão, não seria melhor remover os campos de gerar senha, e utilizar o cpf como senha padrão e no primeiro acesso do produtor pedir pra trocar, e informar no email que a senha é o cpf??
 
-class NovaPropriedadeWidget extends StatefulWidget {
-  const NovaPropriedadeWidget({
+class NovaPropriedadePage extends StatefulWidget {
+  const NovaPropriedadePage({
     super.key,
     required this.visitaPresencial,
     required this.uidTecnico,
@@ -35,58 +32,235 @@ class NovaPropriedadeWidget extends StatefulWidget {
   static String routePath = '/novaPropriedade';
 
   @override
-  State<NovaPropriedadeWidget> createState() => _NovaPropriedadeWidgetState();
+  State<NovaPropriedadePage> createState() => _NovaPropriedadePageState();
 }
 
-class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
-  late NovaPropriedadeModel _model;
-
+class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final _formKey = GlobalKey<FormState>();
+
+  FocusNode? _nomeFocusNode;
+  TextEditingController? _nomeTextController;
+  FocusNode? _cpfFocusNode;
+  TextEditingController? _cpfTextController;
+  late MaskTextInputFormatter _cpfMask;
+  FocusNode? _emailFocusNode;
+  TextEditingController? _emailTextController;
+  FocusNode? _celularFocusNode;
+  TextEditingController? _celularTextController;
+  late MaskTextInputFormatter _celularMask;
+  FocusNode? _cidadeFocusNode;
+  TextEditingController? _cidadeTextController;
+  FocusNode? _enderecoFocusNode;
+  TextEditingController? _enderecoTextController;
+  FocusNode? _cepFocusNode;
+  TextEditingController? _cepTextController;
+  late MaskTextInputFormatter _cepMask;
+  FocusNode? _complementoFocusNode;
+  TextEditingController? _complementoTextController;
+  final String? Function(BuildContext, String?)?
+      _complementoTextControllerValidator = null;
+  String? _diasdgValue;
+  FormFieldController<String>? _diasdgValueController;
+  FocusNode? _senhaFocusNode;
+  TextEditingController? _senhaTextController;
+  bool _senhaVisibility = false;
+  FocusNode? _confirmaSenhaFocusNode;
+  TextEditingController? _confirmaSenhaTextController;
+  bool _confirmaSenhaVisibility = false;
+
+  // Outputs de query/criação (antes no FlutterFlowModel).
+  PersonRecord? _outRetornoPersonExist;
+  PropriedadesRecord? _outUidPersonCpf;
+  PersonRecord? _uidPersonProdutor;
+
+  String? _nomeTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 5) {
+      return 'Digite no mínimo 5 caracteres.';
+    }
+    if (val.length > 150) {
+      return 'Máximo 150 caracteres.';
+    }
+    return null;
+  }
+
+  String? _cpfTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 11) {
+      return 'Digite no mínimo 11 caracteres.';
+    }
+    if (val.length > 50) {
+      return 'Máximo 50 caracteres.';
+    }
+    return null;
+  }
+
+  String? _emailTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 5) {
+      return 'Digite no mínimo 5 caracteres.';
+    }
+    if (val.length > 150) {
+      return 'Máximo 150 caracteres.';
+    }
+    if (!RegExp(kTextValidatorEmailRegex).hasMatch(val)) {
+      return 'Has to be a valid email address.';
+    }
+    return null;
+  }
+
+  String? _celularTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 12) {
+      return 'Digite no mínimo 11 caracteres.';
+    }
+    if (val.length > 50) {
+      return 'Máximo 12 caracteres.';
+    }
+    return null;
+  }
+
+  String? _cidadeTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 5) {
+      return 'Digite no mínimo 5 caracteres.';
+    }
+    if (val.length > 50) {
+      return 'Máximo 50 caracteres.';
+    }
+    return null;
+  }
+
+  String? _enderecoTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 3) {
+      return 'Digite no mínimo 3 caracteres.';
+    }
+    if (val.length > 150) {
+      return 'Máximo 150 caracteres.';
+    }
+    return null;
+  }
+
+  String? _cepTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 8) {
+      return 'Digite no mínimo 8 caracteres.';
+    }
+    if (val.length > 10) {
+      return 'Máximo 10 caracteres.';
+    }
+    return null;
+  }
+
+  String? _senhaTextControllerValidator(BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 6) {
+      return 'Mínimo 6 caracteres.';
+    }
+    if (val.length > 100) {
+      return 'Máximo 100 caracteres.';
+    }
+    return null;
+  }
+
+  String? _confirmaSenhaTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    if (val.length < 6) {
+      return 'Mínimo 6 caracteres.';
+    }
+    if (val.length > 100) {
+      return 'Máximo 100 caracteres.';
+    }
+    if (val != _senhaTextController?.text) {
+      return 'As senhas não correspondem.';
+    }
+    return null;
+  }
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => NovaPropriedadeModel());
 
-    _model.nomeTextController ??= TextEditingController();
-    _model.nomeFocusNode ??= FocusNode();
+    _nomeTextController ??= TextEditingController();
+    _nomeFocusNode ??= FocusNode();
 
-    _model.cpfTextController ??= TextEditingController();
-    _model.cpfFocusNode ??= FocusNode();
+    _cpfTextController ??= TextEditingController();
+    _cpfFocusNode ??= FocusNode();
+    _cpfMask = MaskTextInputFormatter(mask: '###.###.###-##');
 
-    _model.cpfMask = MaskTextInputFormatter(mask: '###.###.###-##');
-    _model.emailTextController ??= TextEditingController();
-    _model.emailFocusNode ??= FocusNode();
+    _emailTextController ??= TextEditingController();
+    _emailFocusNode ??= FocusNode();
 
-    _model.celularTextController ??= TextEditingController();
-    _model.celularFocusNode ??= FocusNode();
+    _celularTextController ??= TextEditingController();
+    _celularFocusNode ??= FocusNode();
+    _celularMask = MaskTextInputFormatter(mask: '(##) #####-####');
 
-    _model.celularMask = MaskTextInputFormatter(mask: '(##) #####-####');
-    _model.cidadeTextController ??= TextEditingController();
-    _model.cidadeFocusNode ??= FocusNode();
+    _cidadeTextController ??= TextEditingController();
+    _cidadeFocusNode ??= FocusNode();
 
-    _model.enderecoTextController ??= TextEditingController();
-    _model.enderecoFocusNode ??= FocusNode();
+    _enderecoTextController ??= TextEditingController();
+    _enderecoFocusNode ??= FocusNode();
 
-    _model.cepTextController ??= TextEditingController();
-    _model.cepFocusNode ??= FocusNode();
+    _cepTextController ??= TextEditingController();
+    _cepFocusNode ??= FocusNode();
+    _cepMask = MaskTextInputFormatter(mask: '#####-###');
 
-    _model.cepMask = MaskTextInputFormatter(mask: '#####-###');
-    _model.complementoTextController ??= TextEditingController();
-    _model.complementoFocusNode ??= FocusNode();
+    _complementoTextController ??= TextEditingController();
+    _complementoFocusNode ??= FocusNode();
 
-    _model.senhaTextController ??= TextEditingController();
-    _model.senhaFocusNode ??= FocusNode();
+    _senhaTextController ??= TextEditingController();
+    _senhaFocusNode ??= FocusNode();
 
-    _model.confirmaSenhaTextController ??= TextEditingController();
-    _model.confirmaSenhaFocusNode ??= FocusNode();
+    _confirmaSenhaTextController ??= TextEditingController();
+    _confirmaSenhaFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.dispose();
+    _nomeFocusNode?.dispose();
+    _nomeTextController?.dispose();
+    _cpfFocusNode?.dispose();
+    _cpfTextController?.dispose();
+    _emailFocusNode?.dispose();
+    _emailTextController?.dispose();
+    _celularFocusNode?.dispose();
+    _celularTextController?.dispose();
+    _cidadeFocusNode?.dispose();
+    _cidadeTextController?.dispose();
+    _enderecoFocusNode?.dispose();
+    _enderecoTextController?.dispose();
+    _cepFocusNode?.dispose();
+    _cepTextController?.dispose();
+    _complementoFocusNode?.dispose();
+    _complementoTextController?.dispose();
+    _senhaFocusNode?.dispose();
+    _senhaTextController?.dispose();
+    _confirmaSenhaFocusNode?.dispose();
+    _confirmaSenhaTextController?.dispose();
 
     super.dispose();
   }
@@ -136,7 +310,7 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
 
   Widget _p2(BuildContext context) {
     return Form(
-      key: _model.formKey,
+      key: _formKey,
       autovalidateMode: AutovalidateMode.always,
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
@@ -166,28 +340,28 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
       child: FFButtonWidget(
         onPressed: () async {
           var _shouldSetState = false;
-          if (_model.formKey.currentState == null ||
-              !_model.formKey.currentState!.validate()) {
+          if (_formKey.currentState == null ||
+              !_formKey.currentState!.validate()) {
             return;
           }
-          if (_model.diasdgValue == null) {
+          if (_diasdgValue == null) {
             return;
           }
-          _model.outRetornoPersonExist = await queryPersonRecordOnce(
+          _outRetornoPersonExist = await queryPersonRecordOnce(
             queryBuilder: (personRecord) => personRecord.where(Filter.or(
               Filter(
                 'cpf',
-                isEqualTo: _model.cpfTextController.text,
+                isEqualTo: _cpfTextController.text,
               ),
               Filter(
                 'email',
-                isEqualTo: _model.emailTextController.text,
+                isEqualTo: _emailTextController.text,
               ),
             )),
             singleRecord: true,
           ).then((s) => s.firstOrNull);
           _shouldSetState = true;
-          if (_model.outRetornoPersonExist != null) {
+          if (_outRetornoPersonExist != null) {
             await showDialog(
               context: context,
               builder: (alertDialogContext) {
@@ -207,16 +381,16 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
             if (_shouldSetState) safeSetState(() {});
             return;
           } else {
-            _model.outUidPersonCpf = await queryPropriedadesRecordOnce(
+            _outUidPersonCpf = await queryPropriedadesRecordOnce(
               parent: widget.uidTecnico,
               queryBuilder: (propriedadesRecord) => propriedadesRecord.where(
                 'cpf',
-                isEqualTo: _model.cpfTextController.text,
+                isEqualTo: _cpfTextController.text,
               ),
               singleRecord: true,
             ).then((s) => s.firstOrNull);
             _shouldSetState = true;
-            if (_model.outUidPersonCpf != null) {
+            if (_outUidPersonCpf != null) {
               await showDialog(
                 context: context,
                 builder: (alertDialogContext) {
@@ -236,8 +410,7 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
               return;
             }
             GoRouter.of(context).prepareAuthEvent();
-            if (_model.senhaTextController.text !=
-                _model.senhaTextController.text) {
+            if (_senhaTextController.text != _senhaTextController.text) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
@@ -250,8 +423,8 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
 
             final user = await authManager.createAccountWithEmail(
               context,
-              _model.emailTextController.text,
-              _model.senhaTextController.text,
+              _emailTextController.text,
+              _senhaTextController.text,
             );
             if (user == null) {
               return;
@@ -260,26 +433,26 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
             var personRecordReference =
                 PersonRecord.collection.doc(currentUserUid);
             await personRecordReference.set(createPersonRecordData(
-              cpf: _model.cpfTextController.text,
+              cpf: _cpfTextController.text,
               uid: currentUserUid,
-              endereco: _model.enderecoTextController.text,
-              cidade: _model.cidadeTextController.text,
-              email: _model.emailTextController.text,
+              endereco: _enderecoTextController.text,
+              cidade: _cidadeTextController.text,
+              email: _emailTextController.text,
               createdTime: getCurrentTimestamp,
-              displayName: _model.nomeTextController.text,
-              phoneNumber: _model.celularTextController.text,
+              displayName: _nomeTextController.text,
+              phoneNumber: _celularTextController.text,
               tipo: 'produtor',
             ));
-            _model.uidPersonProdutor = PersonRecord.getDocumentFromData(
+            _uidPersonProdutor = PersonRecord.getDocumentFromData(
                 createPersonRecordData(
-                  cpf: _model.cpfTextController.text,
+                  cpf: _cpfTextController.text,
                   uid: currentUserUid,
-                  endereco: _model.enderecoTextController.text,
-                  cidade: _model.cidadeTextController.text,
-                  email: _model.emailTextController.text,
+                  endereco: _enderecoTextController.text,
+                  cidade: _cidadeTextController.text,
+                  email: _emailTextController.text,
                   createdTime: getCurrentTimestamp,
-                  displayName: _model.nomeTextController.text,
-                  phoneNumber: _model.celularTextController.text,
+                  displayName: _nomeTextController.text,
+                  phoneNumber: _celularTextController.text,
                   tipo: 'produtor',
                 ),
                 personRecordReference);
@@ -304,14 +477,14 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
                     child: ConfirmarSenhaWidget(
                       email: widget.email!,
                       visitaPresencial: widget.visitaPresencial!,
-                      uidPersonProdutor: _model.uidPersonProdutor!.reference,
-                      emailProdutor: _model.emailTextController.text,
-                      telefoneProdutor: _model.celularTextController.text,
-                      enderecoProdutor: _model.enderecoTextController.text,
-                      nomeProdutor: _model.nomeTextController.text,
-                      cpfProdutor: _model.cpfTextController.text,
-                      diasparaDg: _model.diasdgValue!,
-                      cidadeProdutor: _model.cidadeTextController.text,
+                      uidPersonProdutor: _uidPersonProdutor!.reference,
+                      emailProdutor: _emailTextController.text,
+                      telefoneProdutor: _celularTextController.text,
+                      enderecoProdutor: _enderecoTextController.text,
+                      nomeProdutor: _nomeTextController.text,
+                      cpfProdutor: _cpfTextController.text,
+                      diasparaDg: _diasdgValue!,
+                      cidadeProdutor: _cidadeTextController.text,
                       isEdit: false,
                     ),
                   ),
@@ -357,8 +530,8 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
 
   Widget _p4(BuildContext context) {
     return TextFormField(
-      controller: _model.nomeTextController,
-      focusNode: _model.nomeFocusNode,
+      controller: _nomeTextController,
+      focusNode: _nomeFocusNode,
       autofocus: true,
       textInputAction: TextInputAction.next,
       obscureText: false,
@@ -427,14 +600,14 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
               {required currentLength, required isFocused, maxLength}) =>
           null,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.nomeTextControllerValidator.asValidator(context),
+      validator: _nomeTextControllerValidator.asValidator(context),
     );
   }
 
   Widget _p5(BuildContext context) {
     return TextFormField(
-      controller: _model.cpfTextController,
-      focusNode: _model.cpfFocusNode,
+      controller: _cpfTextController,
+      focusNode: _cpfFocusNode,
       autofocus: true,
       obscureText: false,
       decoration: InputDecoration(
@@ -503,15 +676,15 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
           null,
       keyboardType: TextInputType.number,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.cpfTextControllerValidator.asValidator(context),
-      inputFormatters: [_model.cpfMask],
+      validator: _cpfTextControllerValidator.asValidator(context),
+      inputFormatters: [_cpfMask],
     );
   }
 
   Widget _p6(BuildContext context) {
     return TextFormField(
-      controller: _model.emailTextController,
-      focusNode: _model.emailFocusNode,
+      controller: _emailTextController,
+      focusNode: _emailFocusNode,
       autofocus: true,
       obscureText: false,
       decoration: InputDecoration(
@@ -579,14 +752,14 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
               {required currentLength, required isFocused, maxLength}) =>
           null,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.emailTextControllerValidator.asValidator(context),
+      validator: _emailTextControllerValidator.asValidator(context),
     );
   }
 
   Widget _p7(BuildContext context) {
     return TextFormField(
-      controller: _model.celularTextController,
-      focusNode: _model.celularFocusNode,
+      controller: _celularTextController,
+      focusNode: _celularFocusNode,
       autofocus: true,
       textCapitalization: TextCapitalization.none,
       obscureText: false,
@@ -656,15 +829,15 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
           null,
       keyboardType: TextInputType.number,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.celularTextControllerValidator.asValidator(context),
-      inputFormatters: [_model.celularMask],
+      validator: _celularTextControllerValidator.asValidator(context),
+      inputFormatters: [_celularMask],
     );
   }
 
   Widget _p8(BuildContext context) {
     return TextFormField(
-      controller: _model.cidadeTextController,
-      focusNode: _model.cidadeFocusNode,
+      controller: _cidadeTextController,
+      focusNode: _cidadeFocusNode,
       autofocus: true,
       obscureText: false,
       decoration: InputDecoration(
@@ -732,14 +905,14 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
               {required currentLength, required isFocused, maxLength}) =>
           null,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.cidadeTextControllerValidator.asValidator(context),
+      validator: _cidadeTextControllerValidator.asValidator(context),
     );
   }
 
   Widget _p9(BuildContext context) {
     return TextFormField(
-      controller: _model.enderecoTextController,
-      focusNode: _model.enderecoFocusNode,
+      controller: _enderecoTextController,
+      focusNode: _enderecoFocusNode,
       autofocus: true,
       obscureText: false,
       decoration: InputDecoration(
@@ -807,14 +980,14 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
               {required currentLength, required isFocused, maxLength}) =>
           null,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.enderecoTextControllerValidator.asValidator(context),
+      validator: _enderecoTextControllerValidator.asValidator(context),
     );
   }
 
   Widget _p10(BuildContext context) {
     return TextFormField(
-      controller: _model.cepTextController,
-      focusNode: _model.cepFocusNode,
+      controller: _cepTextController,
+      focusNode: _cepFocusNode,
       autofocus: true,
       obscureText: false,
       decoration: InputDecoration(
@@ -883,15 +1056,15 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
           null,
       keyboardType: TextInputType.number,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.cepTextControllerValidator.asValidator(context),
-      inputFormatters: [_model.cepMask],
+      validator: _cepTextControllerValidator.asValidator(context),
+      inputFormatters: [_cepMask],
     );
   }
 
   Widget _p11(BuildContext context) {
     return TextFormField(
-      controller: _model.complementoTextController,
-      focusNode: _model.complementoFocusNode,
+      controller: _complementoTextController,
+      focusNode: _complementoFocusNode,
       autofocus: true,
       obscureText: false,
       decoration: InputDecoration(
@@ -959,14 +1132,14 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
               {required currentLength, required isFocused, maxLength}) =>
           null,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.complementoTextControllerValidator.asValidator(context),
+      validator: _complementoTextControllerValidator.asValidator(context),
     );
   }
 
   Widget _p12(BuildContext context) {
     return FlutterFlowDropDown<String>(
-      controller: _model.diasdgValueController ??= FormFieldController<String>(
-        _model.diasdgValue ??= '28',
+      controller: _diasdgValueController ??= FormFieldController<String>(
+        _diasdgValue ??= '28',
       ),
       options: List<String>.from(['28', '30', '40', '21']),
       optionLabels: [
@@ -975,7 +1148,7 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
         '40 Dias para Diagnóstico Gestação (DG)',
         '21 Dias para Diagnóstico Gestação (DG)'
       ],
-      onChanged: (val) => safeSetState(() => _model.diasdgValue = val),
+      onChanged: (val) => safeSetState(() => _diasdgValue = val),
       width: MediaQuery.sizeOf(context).width * 1.0,
       height: 50.0,
       textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -1008,10 +1181,10 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
 
   Widget _p13(BuildContext context) {
     return TextFormField(
-      controller: _model.senhaTextController,
-      focusNode: _model.senhaFocusNode,
+      controller: _senhaTextController,
+      focusNode: _senhaFocusNode,
       autofocus: true,
-      obscureText: !_model.senhaVisibility,
+      obscureText: !_senhaVisibility,
       decoration: InputDecoration(
         labelText: 'Senha temporária',
         labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
@@ -1063,11 +1236,11 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
         contentPadding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
         suffixIcon: InkWell(
           onTap: () => safeSetState(
-            () => _model.senhaVisibility = !_model.senhaVisibility,
+            () => _senhaVisibility = !_senhaVisibility,
           ),
           focusNode: FocusNode(skipTraversal: true),
           child: Icon(
-            _model.senhaVisibility
+            _senhaVisibility
                 ? Icons.visibility_outlined
                 : Icons.visibility_off_outlined,
             size: 22,
@@ -1089,16 +1262,16 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
               {required currentLength, required isFocused, maxLength}) =>
           null,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.senhaTextControllerValidator.asValidator(context),
+      validator: _senhaTextControllerValidator.asValidator(context),
     );
   }
 
   Widget _p14(BuildContext context) {
     return TextFormField(
-      controller: _model.confirmaSenhaTextController,
-      focusNode: _model.confirmaSenhaFocusNode,
+      controller: _confirmaSenhaTextController,
+      focusNode: _confirmaSenhaFocusNode,
       autofocus: true,
-      obscureText: !_model.confirmaSenhaVisibility,
+      obscureText: !_confirmaSenhaVisibility,
       decoration: InputDecoration(
         labelText: 'Repita a Senha temporária',
         labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
@@ -1150,12 +1323,11 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
         contentPadding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
         suffixIcon: InkWell(
           onTap: () => safeSetState(
-            () => _model.confirmaSenhaVisibility =
-                !_model.confirmaSenhaVisibility,
+            () => _confirmaSenhaVisibility = !_confirmaSenhaVisibility,
           ),
           focusNode: FocusNode(skipTraversal: true),
           child: Icon(
-            _model.confirmaSenhaVisibility
+            _confirmaSenhaVisibility
                 ? Icons.visibility_outlined
                 : Icons.visibility_off_outlined,
             size: 22,
@@ -1177,8 +1349,7 @@ class _NovaPropriedadeWidgetState extends State<NovaPropriedadeWidget> {
               {required currentLength, required isFocused, maxLength}) =>
           null,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator:
-          _model.confirmaSenhaTextControllerValidator.asValidator(context),
+      validator: _confirmaSenhaTextControllerValidator.asValidator(context),
     );
   }
 

@@ -9,7 +9,7 @@ import '/features/propriedades/presentation/pages/propriedades_excluidas_page.da
 import '/pages/tecnico/dashboard/dashboard_tecnico/dashboard_tecnico_widget.dart';
 import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
 import '/pages/tecnico/propriedade/propriedades/editar_propriedade/editar_propriedade_widget.dart';
-import '/pages/tecnico/propriedade/propriedades/nova_propriedade/nova_propriedade_widget.dart';
+import '/features/propriedades/presentation/pages/nova_propriedade_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -260,7 +260,7 @@ class _ListaPropriedadePageState extends State<ListaPropriedadePage> {
                 if (listaPropriedadeTecnicoRecord!.restanteLimiteProdutores >
                     0) {
                   context.pushNamed(
-                    NovaPropriedadeWidget.routeName,
+                    NovaPropriedadePage.routeName,
                     queryParameters: {
                       'visitaPresencial': serializeParam(
                         widget.visitaPresencial,

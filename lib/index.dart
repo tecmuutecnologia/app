@@ -9,8 +9,8 @@ export '/pages/tecnico/dashboard/dashboard_tecnico/dashboard_tecnico_widget.dart
     show DashboardTecnicoWidget;
 export '/features/propriedades/presentation/pages/lista_propriedade_page.dart'
     show ListaPropriedadePage;
-export '/pages/tecnico/propriedade/propriedades/nova_propriedade/nova_propriedade_widget.dart'
-    show NovaPropriedadeWidget;
+export '/features/propriedades/presentation/pages/nova_propriedade_page.dart'
+    show NovaPropriedadePage;
 export '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart'
     show InicioPropriedadeWidget;
 export '/pages/tecnico/propriedade/propriedades/editar_propriedade/editar_propriedade_widget.dart'
