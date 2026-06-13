@@ -1,26 +1,23 @@
 // Automatic FlutterFlow imports
-import '/backend/backend.dart';
-import '/backend/schema/structs/index.dart';
-import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
-import 'index.dart'; // Imports other custom widgets
-import '/custom_code/actions/index.dart'; // Imports custom actions
-import '/core/ui/custom_functions.dart'; // Imports custom functions
+// Imports other custom widgets
+// Imports custom actions
+// Imports custom functions
 import 'package:flutter/material.dart';
 // Begin custom widget code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
 import 'package:flutter/services.dart';
 
-class DespesasNoMes extends StatefulWidget {
-  const DespesasNoMes({
-    Key? key,
+class PrecoRecebidoLitro extends StatefulWidget {
+  const PrecoRecebidoLitro({
+    super.key,
     this.width,
     this.height,
     required this.bordercolor,
     required this.borderRadius,
     required this.initialValue,
-  }) : super(key: key);
+  });
 
   final double? width;
   final double? height;
@@ -32,7 +29,7 @@ class DespesasNoMes extends StatefulWidget {
   _PriceFieldState createState() => _PriceFieldState();
 }
 
-class _PriceFieldState extends State<DespesasNoMes> {
+class _PriceFieldState extends State<PrecoRecebidoLitro> {
   late TextEditingController _priceEditingController;
   final currencyFormat = NumberFormat("#,##0.00", "pt_BR");
 
@@ -51,7 +48,7 @@ class _PriceFieldState extends State<DespesasNoMes> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: widget.width,
       height: widget.height,
       child: TextField(
@@ -79,7 +76,7 @@ class _PriceFieldState extends State<DespesasNoMes> {
               final price = double.parse(text.replaceAll('.', '')) / 100;
               final newText = currencyFormat.format(price);
               FFAppState().update(() {
-                FFAppState().despesasNoMes = price;
+                FFAppState().precoRecebidoLitro = price;
               });
               final newSelectionIndex =
                   newText.length - (text.length - selection.end);
@@ -91,18 +88,18 @@ class _PriceFieldState extends State<DespesasNoMes> {
           })
         ],
         onChanged: (value) {},
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.bold,
         ),
         decoration: InputDecoration(
           hintText: '1.000,00',
-          hintStyle: TextStyle(
+          hintStyle: const TextStyle(
             color: Color.fromARGB(255, 35, 35, 35),
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide(
+            borderSide: const BorderSide(
               color: Color.fromARGB(255, 35, 35, 35),
             ),
           ),
@@ -110,7 +107,7 @@ class _PriceFieldState extends State<DespesasNoMes> {
             borderRadius: BorderRadius.circular(10),
             borderSide: BorderSide(color: widget.bordercolor),
           ),
-          prefix: Text(
+          prefix: const Text(
             'R\$ ',
             style: TextStyle(
               color: Color.fromARGB(255, 35, 35, 35),

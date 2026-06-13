@@ -9,7 +9,7 @@ import '/pages/tecnico/propriedade/receituario/assinatura_produtor/assinatura_pr
 import '/pages/tecnico/propriedade/receituario/assinatura_tecnico/assinatura_tecnico_widget.dart';
 import '/pages/tecnico/propriedade/receituario/lista_animais_tratamentos/lista_animais_tratamentos_widget.dart';
 import '/pages/tecnico/propriedade/receituario/lista_diagnostico_gestacao/lista_diagnostico_gestacao_widget.dart';
-import '/custom_code/actions/index.dart' as actions;
+import '/core/services/index.dart' as actions;
 import '/index.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';

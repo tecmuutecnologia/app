@@ -1,11 +1,8 @@
 // Automatic FlutterFlow imports
 import '/backend/backend.dart';
-import '/backend/schema/structs/index.dart';
-import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
-import 'index.dart'; // Imports other custom actions
+// Imports other custom actions
 import '/core/ui/custom_functions.dart' as functions;
-import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
@@ -14,8 +11,6 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:excel/excel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 
 Future<void> createResumoRebanhoExcel(
@@ -165,26 +160,23 @@ Future<void> createResumoRebanhoExcel(
 
         // Adicionar os dados do animal à lista
         animaisData.add({
-          'nomeAnimal': data['nomeAnimal'] ?? null,
-          'brincoAnimal': data['brincoAnimal'] ?? null,
-          'grupoAnimal': data['grupoAnimal'] ?? null,
+          'nomeAnimal': data['nomeAnimal'],
+          'brincoAnimal': data['brincoAnimal'],
+          'grupoAnimal': data['grupoAnimal'],
           'statusReprodutivo': statusReprodutivo,
-          'dtUltimoPartoContingencia':
-              data['dtUltimoPartoContingencia'] ?? null,
-          'dtUltimaInseminacao': data['dtUltimaInseminacao'] ?? null,
-          'nomeTouroUltimaInseminacao':
-              data['nomeTouroUltimaInseminacao'] ?? null,
+          'dtUltimoPartoContingencia': data['dtUltimoPartoContingencia'],
+          'dtUltimaInseminacao': data['dtUltimaInseminacao'],
+          'nomeTouroUltimaInseminacao': data['nomeTouroUltimaInseminacao'],
           'dtSecagem':
               (data['status'] == 'Vazia' && data['dtSecPrevista'] == null)
                   ? ''
-                  : data['dtSecPrevista'] ?? null,
-          'dtPrePartoPrevista': data['dtPrePartoPrevista'] ?? null,
-          'dtSecPrevista': data['grupoAnimal'] == 'Vacas'
-              ? data['dtSecPrevista'] ?? null
-              : null,
+                  : data['dtSecPrevista'],
+          'dtPrePartoPrevista': data['dtPrePartoPrevista'],
+          'dtSecPrevista':
+              data['grupoAnimal'] == 'Vacas' ? data['dtSecPrevista'] : null,
           'dtUltimoParto':
-              data['dtUltimoParto'] ?? null, // Adiciona a data do último parto
-          'dtPartoPrevisto': data['dtPartoPrevisto'] ?? null,
+              data['dtUltimoParto'], // Adiciona a data do último parto
+          'dtPartoPrevisto': data['dtPartoPrevisto'],
           'ultimaAcao':
               ultimaAcaoAnimal, // Última ação do animal (apenas para Vazias)
         });
@@ -251,11 +243,9 @@ Future<void> createResumoRebanhoExcel(
             : (animalData['brincoAnimal'] != null &&
                     animalData['brincoAnimal'] != -1)
                 ? '${animalData['brincoAnimal']}'
-                : (animalData['nomeAnimal'] != null
-                    ? animalData['nomeAnimal']
-                    : ''),
-        animalData['grupoAnimal'].toString() ?? '',
-        animalData['statusReprodutivo'].toString() ?? '',
+                : (animalData['nomeAnimal'] ?? ''),
+        animalData['grupoAnimal'].toString(),
+        animalData['statusReprodutivo'].toString(),
       ];
 
       if (ultimoParto) {

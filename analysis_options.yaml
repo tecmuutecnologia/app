@@ -12,7 +12,6 @@ include: package:flutter_lints/flutter.yaml
 
 analyzer:
   exclude:
-    - lib/custom_code/**
     - lib/core/ui/custom_functions.dart
     - "**/*.g.dart"
     - lib/objectbox.g.dart

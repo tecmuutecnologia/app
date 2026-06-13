@@ -1,11 +1,8 @@
 // Automatic FlutterFlow imports
 import '/backend/backend.dart';
-import '/backend/schema/structs/index.dart';
-import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
-import 'index.dart'; // Imports other custom actions
-import '/core/ui/custom_functions.dart'; // Imports custom functions
-import 'package:flutter/material.dart';
+// Imports other custom actions
+// Imports custom functions
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
@@ -17,7 +14,6 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 
 Future<void> createReceituario(
   DocumentReference uidResumoVisita,
@@ -355,7 +351,7 @@ Future<void> createReceituario(
             ),
             pw.SizedBox(height: 10),
             pw.Table(
-              border: pw.TableBorder(
+              border: const pw.TableBorder(
                 top: pw.BorderSide(style: pw.BorderStyle.dashed),
                 bottom: pw.BorderSide(style: pw.BorderStyle.dashed),
                 left: pw.BorderSide(style: pw.BorderStyle.dashed),
@@ -426,7 +422,7 @@ Future<void> createReceituario(
       // Filtrar apenas animais que pertencem à propriedade atual
       final List<QueryDocumentSnapshot> acoesDiagnostico = [];
       for (final acaoDoc in acoesDiagnosticoTemp) {
-        final acaoData = acaoDoc.data() as Map<String, dynamic>;
+        final acaoData = acaoDoc.data();
         final uidAnimal =
             acaoData['uidAnimalAnimaisProdutores'] as DocumentReference?;
         if (uidAnimal != null) {
@@ -521,11 +517,11 @@ Future<void> createReceituario(
             final brincoB = b['brincoAnimal'];
 
             int? numA = hasValidBrinco(brincoA)
-              ? int.tryParse(brincoA.toString())
-              : null;
+                ? int.tryParse(brincoA.toString())
+                : null;
             int? numB = hasValidBrinco(brincoB)
-              ? int.tryParse(brincoB.toString())
-              : null;
+                ? int.tryParse(brincoB.toString())
+                : null;
 
             if (numA != null && numB != null) {
               return numA.compareTo(numB);
@@ -715,7 +711,7 @@ Future<void> createReceituario(
           final rowsPPDGMais = await buildDiagnosticoRows(acoesPPDGMais);
           diagnosticoWidgets.add(
             pw.Table(
-              border: pw.TableBorder(
+              border: const pw.TableBorder(
                 top: pw.BorderSide(style: pw.BorderStyle.dashed),
                 bottom: pw.BorderSide(style: pw.BorderStyle.dashed),
                 left: pw.BorderSide(style: pw.BorderStyle.dashed),
@@ -745,7 +741,7 @@ Future<void> createReceituario(
           final rowsDGMenos = await buildDiagnosticoRows(acoesDGMenos);
           diagnosticoWidgets.add(
             pw.Table(
-              border: pw.TableBorder(
+              border: const pw.TableBorder(
                 top: pw.BorderSide(style: pw.BorderStyle.dashed),
                 bottom: pw.BorderSide(style: pw.BorderStyle.dashed),
                 left: pw.BorderSide(style: pw.BorderStyle.dashed),
@@ -789,7 +785,7 @@ Future<void> createReceituario(
             final rowsAbortos = await buildDiagnosticoRows(acoesAbortosVacas);
             diagnosticoWidgets.add(
               pw.Table(
-                border: pw.TableBorder(
+                border: const pw.TableBorder(
                   top: pw.BorderSide(style: pw.BorderStyle.dashed),
                   bottom: pw.BorderSide(style: pw.BorderStyle.dashed),
                   left: pw.BorderSide(style: pw.BorderStyle.dashed),
@@ -841,7 +837,7 @@ Future<void> createReceituario(
           if (context.pageNumber == 1) {
             return pw.Container(
               alignment: pw.Alignment.center,
-              margin: pw.EdgeInsets.only(bottom: 20.0),
+              margin: const pw.EdgeInsets.only(bottom: 20.0),
               child: pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
                 children: [
@@ -863,14 +859,14 @@ Future<void> createReceituario(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
                         if (nomeTecnico != null && nomeTecnico.isNotEmpty)
-                          pw.Text('$nomeTecnico',
-                              style: pw.TextStyle(
+                          pw.Text(nomeTecnico,
+                              style: const pw.TextStyle(
                                 fontSize: 18,
                               )),
                         if (nomeEmpresaTecnico != null &&
                             nomeEmpresaTecnico.isNotEmpty)
-                          pw.Text('$nomeEmpresaTecnico',
-                              style: pw.TextStyle(
+                          pw.Text(nomeEmpresaTecnico,
+                              style: const pw.TextStyle(
                                 fontSize: 18,
                               )),
                       ],
@@ -882,16 +878,16 @@ Future<void> createReceituario(
                       crossAxisAlignment: pw.CrossAxisAlignment.end,
                       children: [
                         if (nomeProdutor != null && nomeProdutor.isNotEmpty)
-                          pw.Text('$nomeProdutor',
-                              style: pw.TextStyle(
+                          pw.Text(nomeProdutor,
+                              style: const pw.TextStyle(
                                 fontSize: 18,
                               ),
                               textAlign: pw.TextAlign.right),
                         if (enderecoProdutor != null &&
                             enderecoProdutor.isNotEmpty)
                           pw.Text(
-                            '$enderecoProdutor',
-                            style: pw.TextStyle(
+                            enderecoProdutor,
+                            style: const pw.TextStyle(
                               fontSize: 18,
                             ),
                             textAlign: pw.TextAlign.right,
@@ -941,7 +937,7 @@ Future<void> createReceituario(
                       pw.SizedBox(height: 5),
                       pw.Text(
                         'Assinatura Técnico',
-                        style: pw.TextStyle(
+                        style: const pw.TextStyle(
                           fontSize: 10,
                         ),
                       ),
@@ -961,7 +957,7 @@ Future<void> createReceituario(
                       pw.SizedBox(height: 5),
                       pw.Text(
                         'Assinatura Produtor',
-                        style: pw.TextStyle(
+                        style: const pw.TextStyle(
                           fontSize: 10,
                         ),
                       ),

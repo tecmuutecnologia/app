@@ -13,7 +13,7 @@ import '/pages/tecnico/propriedade/animals/descarte_animal/descarte_animal_widge
 import '/pages/tecnico/propriedade/inseminacoes/nova_inseminacao/nova_inseminacao_widget.dart';
 import '/pages/tecnico/propriedade/inseminacoes/registrar_cio/registrar_cio_widget.dart';
 import '/pages/tecnico/propriedade/sincronizacao/alerta_sem_internet/alerta_sem_internet_widget.dart';
-import '/custom_code/actions/index.dart' as actions;
+import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
 import '/index.dart';
 import 'package:easy_debounce/easy_debounce.dart';

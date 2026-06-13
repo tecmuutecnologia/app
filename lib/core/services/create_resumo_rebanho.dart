@@ -1,11 +1,8 @@
 // Automatic FlutterFlow imports
 import '/backend/backend.dart';
-import '/backend/schema/structs/index.dart';
-import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
-import 'index.dart'; // Imports other custom actions
+// Imports other custom actions
 import '/core/ui/custom_functions.dart'; // Imports custom functions
-import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
@@ -13,11 +10,10 @@ import 'dart:async';
 import 'dart:io';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart'; // Certifique-se de importar o pacote intl
+// Certifique-se de importar o pacote intl
 
 Future<void> createResumoRebanho(
   List<DocumentReference> animaisProdutores,
@@ -173,26 +169,23 @@ Future<void> createResumoRebanho(
 
         // Adicionar os dados do animal à lista
         animaisData.add({
-          'nomeAnimal': data['nomeAnimal'] ?? null,
-          'brincoAnimal': data['brincoAnimal'] ?? null,
-          'grupoAnimal': data['grupoAnimal'] ?? null,
+          'nomeAnimal': data['nomeAnimal'],
+          'brincoAnimal': data['brincoAnimal'],
+          'grupoAnimal': data['grupoAnimal'],
           'statusReprodutivo': statusReprodutivo,
-          'dtUltimoPartoContingencia':
-              data['dtUltimoPartoContingencia'] ?? null,
-          'dtUltimaInseminacao': data['dtUltimaInseminacao'] ?? null,
-          'nomeTouroUltimaInseminacao':
-              data['nomeTouroUltimaInseminacao'] ?? null,
+          'dtUltimoPartoContingencia': data['dtUltimoPartoContingencia'],
+          'dtUltimaInseminacao': data['dtUltimaInseminacao'],
+          'nomeTouroUltimaInseminacao': data['nomeTouroUltimaInseminacao'],
           'dtSecagem':
               (data['status'] == 'Vazia' && data['dtSecPrevista'] == null)
                   ? ''
-                  : data['dtSecPrevista'] ?? null,
-          'dtPrePartoPrevista': data['dtPrePartoPrevista'] ?? null,
-          'dtSecPrevista': data['grupoAnimal'] == 'Vacas'
-              ? data['dtSecPrevista'] ?? null
-              : null,
+                  : data['dtSecPrevista'],
+          'dtPrePartoPrevista': data['dtPrePartoPrevista'],
+          'dtSecPrevista':
+              data['grupoAnimal'] == 'Vacas' ? data['dtSecPrevista'] : null,
           'dtUltimoParto':
-              data['dtUltimoParto'] ?? null, // Adiciona a data do último parto
-          'dtPartoPrevisto': data['dtPartoPrevisto'] ?? null,
+              data['dtUltimoParto'], // Adiciona a data do último parto
+          'dtPartoPrevisto': data['dtPartoPrevisto'],
           'ultimaAcao':
               ultimaAcaoAnimal, // Última ação do animal (apenas para Vazias)
         });
@@ -436,7 +429,7 @@ Future<void> createResumoRebanho(
             children: [
               pw.Container(
                 alignment: pw.Alignment.center,
-                margin: pw.EdgeInsets.only(bottom: 20.0),
+                margin: const pw.EdgeInsets.only(bottom: 20.0),
                 child: pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
                   children: [
@@ -518,9 +511,7 @@ Future<void> createResumoRebanho(
                                 : (animalData['brincoAnimal'] != null &&
                                         animalData['brincoAnimal'] != -1)
                                     ? '${animalData['brincoAnimal']}'
-                                    : (animalData['nomeAnimal'] != null
-                                        ? animalData['nomeAnimal']
-                                        : ''),
+                                    : (animalData['nomeAnimal'] ?? ''),
                             style: pw.TextStyle(fontSize: fontSize),
                           ),
                         ),
@@ -530,7 +521,7 @@ Future<void> createResumoRebanho(
                         child: pw.Container(
                           alignment: pw.Alignment.center,
                           child: pw.Text(
-                            animalData['grupoAnimal'].toString() ?? '',
+                            animalData['grupoAnimal'].toString(),
                             style: pw.TextStyle(fontSize: fontSize),
                           ),
                         ),
@@ -540,7 +531,7 @@ Future<void> createResumoRebanho(
                         child: pw.Container(
                           alignment: pw.Alignment.center,
                           child: pw.Text(
-                            animalData['statusReprodutivo'].toString() ?? '',
+                            animalData['statusReprodutivo'].toString(),
                             style: pw.TextStyle(fontSize: fontSize),
                           ),
                         ),

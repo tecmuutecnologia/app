@@ -7,7 +7,7 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
-import '/custom_code/actions/index.dart' as actions;
+import '/core/services/index.dart' as actions;
 import '/index.dart';
 import '/features/animais/presentation/animal_group_list_view.dart';
 import 'package:flutter/material.dart';
