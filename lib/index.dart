@@ -27,8 +27,8 @@ export '/features/exame_ginecologico/presentation/pages/exame_ginecologico_page.
     show ExameGinecologicoPage;
 export '/features/prenhas/presentation/pages/animais_prenhas_page.dart'
     show AnimaisPrenhasPage;
-export '/pages/tecnico/propriedade/secas/secas/secas_widget.dart'
-    show SecasWidget;
+export '/features/secas/presentation/pages/secas_page.dart'
+    show SecasPage;
 export '/pages/tecnico/initial/sync_technician/sync_technician_widget.dart'
     show SyncTechnicianWidget;
 export '/features/receituario/presentation/pages/receituarios_lista_page.dart'

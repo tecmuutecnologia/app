@@ -408,9 +408,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: SecasWidget.routeName,
-          path: SecasWidget.routePath,
-          builder: (context, params) => SecasWidget(
+          name: SecasPage.routeName,
+          path: SecasPage.routePath,
+          builder: (context, params) => SecasPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,

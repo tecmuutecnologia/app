@@ -1555,7 +1555,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
         highlightColor: Colors.transparent,
         onTap: () async {
           context.pushNamed(
-            SecasWidget.routeName,
+            SecasPage.routeName,
             queryParameters: {
               'uidPropriedade': serializeParam(
                 widget.uidPropriedade,

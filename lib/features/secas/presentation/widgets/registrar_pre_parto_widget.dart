@@ -17,8 +17,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'registrar_pre_parto_model.dart';
-export 'registrar_pre_parto_model.dart';
 
 class RegistrarPrePartoWidget extends StatefulWidget {
   const RegistrarPrePartoWidget({
@@ -55,25 +53,29 @@ class RegistrarPrePartoWidget extends StatefulWidget {
 
 class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
     with TickerProviderStateMixin {
-  late RegistrarPrePartoModel _model;
-
   final animationsMap = <String, AnimationInfo>{};
 
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
+  FocusNode? _dtPrePartoFocusNode;
+  TextEditingController? _dtPrePartoTextController;
+  late MaskTextInputFormatter _dtPrePartoMask;
+  final String? Function(BuildContext, String?)?
+      _dtPrePartoTextControllerValidator = null;
+  DateTime? _datePicked;
+  ResumoDaVisitaRecord? _outUidResumoDaVisita;
+  AnimaisProdutoresRecord? _uidAnimalRecebeAcao1;
+  RecomendacoesRecord? _outUidRecomendacoes;
+  ResumoDaVisitaRecord? _outNewUidResumoDaVisita;
+  AnimaisProdutoresRecord? _uidAnimalRecebeAcao;
+  RecomendacoesRecord? _outUidRecomendacoes2;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => RegistrarPrePartoModel());
 
-    _model.dtPrePartoTextController ??= TextEditingController();
-    _model.dtPrePartoFocusNode ??= FocusNode();
+    _dtPrePartoTextController ??= TextEditingController();
+    _dtPrePartoFocusNode ??= FocusNode();
 
-    _model.dtPrePartoMask = MaskTextInputFormatter(mask: '##/##/####');
+    _dtPrePartoMask = MaskTextInputFormatter(mask: '##/##/####');
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
         trigger: AnimationTrigger.onPageLoad,
@@ -104,7 +106,7 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {
-          _model.dtPrePartoTextController?.text = dateTimeFormat(
+          _dtPrePartoTextController?.text = dateTimeFormat(
             "dd/MM/yyyy",
             widget.dtPrePartoPrevista,
             locale: FFLocalizations.of(context).languageCode,
@@ -114,7 +116,8 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _dtPrePartoFocusNode?.dispose();
+    _dtPrePartoTextController?.dispose();
 
     super.dispose();
   }
@@ -125,7 +128,7 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
   Future<void> _registrarPrePartoOfflineFirst() async {
     final dados = {
       'status': 'Pré Parto',
-      'dtPreParto': _model.dtPrePartoTextController.text,
+      'dtPreParto': _dtPrePartoTextController.text,
       'idStatusAnimal': 5,
     };
     final animalRepo = AnimalRepository();
@@ -138,7 +141,7 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
       unawaited(
           widget.uidAnimaisProdutores!.update(createAnimaisProdutoresRecordData(
         status: 'Pré Parto',
-        dtPreParto: _model.dtPrePartoTextController.text,
+        dtPreParto: _dtPrePartoTextController.text,
         idStatusAnimal: 5,
       )));
     }
@@ -216,8 +219,8 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
                 child: Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 16.0, 0.0),
                   child: TextFormField(
-                    controller: _model.dtPrePartoTextController,
-                    focusNode: _model.dtPrePartoFocusNode,
+                    controller: _dtPrePartoTextController,
+                    focusNode: _dtPrePartoFocusNode,
                     autofocus: false,
                     readOnly: true,
                     obscureText: false,
@@ -318,9 +321,9 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
                         null,
                     keyboardType: TextInputType.datetime,
                     cursorColor: FlutterFlowTheme.of(context).primary,
-                    validator: _model.dtPrePartoTextControllerValidator
-                        .asValidator(context),
-                    inputFormatters: [_model.dtPrePartoMask],
+                    validator:
+                        _dtPrePartoTextControllerValidator.asValidator(context),
+                    inputFormatters: [_dtPrePartoMask],
                   ),
                 ),
               ),
@@ -394,7 +397,7 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
                                 use24hFormat: false,
                                 onDateTimeChanged: (newDateTime) =>
                                     safeSetState(() {
-                                  _model.datePicked = newDateTime;
+                                  _datePicked = newDateTime;
                                 }),
                               ),
                             ),
@@ -402,14 +405,14 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
                         );
                       });
                   safeSetState(() {
-                    _model.dtPrePartoTextController?.text = dateTimeFormat(
+                    _dtPrePartoTextController?.text = dateTimeFormat(
                       "dd/MM/yyyy",
-                      _model.datePicked,
+                      _datePicked,
                       locale: FFLocalizations.of(context).languageCode,
                     );
-                    _model.dtPrePartoMask.updateMask(
+                    _dtPrePartoMask.updateMask(
                       newValue: TextEditingValue(
-                        text: _model.dtPrePartoTextController!.text,
+                        text: _dtPrePartoTextController!.text,
                       ),
                     );
                   });
@@ -480,7 +483,7 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
             child: FFButtonWidget(
               onPressed: () async {
                 var _shouldSetState = false;
-                if (_model.dtPrePartoTextController.text == '') {
+                if (_dtPrePartoTextController.text == '') {
                   await showDialog(
                     context: context,
                     builder: (alertDialogContext) {
@@ -508,8 +511,7 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
                 // Bookkeeping de visita/tratamento/recomendação roda
                 // só online (offline a antiga variante também omite).
                 if (ConnectivityService.instance.isOnline) {
-                  _model.outUidResumoDaVisita =
-                      await queryResumoDaVisitaRecordOnce(
+                  _outUidResumoDaVisita = await queryResumoDaVisitaRecordOnce(
                     queryBuilder: (resumoDaVisitaRecord) => resumoDaVisitaRecord
                         .where(
                           'uidPropriedade',
@@ -530,34 +532,33 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
                     singleRecord: true,
                   ).then((s) => s.firstOrNull);
                   _shouldSetState = true;
-                  if (_model.outUidResumoDaVisita != null) {
-                    _model.uidAnimalRecebeAcao1 =
+                  if (_outUidResumoDaVisita != null) {
+                    _uidAnimalRecebeAcao1 =
                         await AnimaisProdutoresRecord.getDocumentOnce(
                             widget.uidAnimaisProdutores!);
                     _shouldSetState = true;
 
                     await TratamentosRecord.createDoc(
-                            _model.outUidResumoDaVisita!.reference)
+                            _outUidResumoDaVisita!.reference)
                         .set(createTratamentosRecordData(
                       uidAnimal: widget.uidAnimaisProdutores,
                       tipoAcao: 'Pré Parto',
-                      uidResumoDaVisita: _model.outUidResumoDaVisita?.reference,
-                      observacaoAcao: _model.dtPrePartoTextController.text,
+                      uidResumoDaVisita: _outUidResumoDaVisita?.reference,
+                      observacaoAcao: _dtPrePartoTextController.text,
                       brincoAnimal: widget.brincoAnimal,
                       nomeAnimal: widget.nomeAnimal,
                       grupoAnimal: widget.grupoAnimal,
                       brincoAnimalOrder:
                           functions.converterStringToInt(widget.brincoAnimal!),
-                      compararDtUltimaInseminacao: _model
-                          .uidAnimalRecebeAcao1?.compararDtUltimaInseminacao,
+                      compararDtUltimaInseminacao:
+                          _uidAnimalRecebeAcao1?.compararDtUltimaInseminacao,
                     ));
-                    _model.outUidRecomendacoes =
-                        await queryRecomendacoesRecordOnce(
-                      parent: _model.outUidResumoDaVisita?.reference,
+                    _outUidRecomendacoes = await queryRecomendacoesRecordOnce(
+                      parent: _outUidResumoDaVisita?.reference,
                       queryBuilder: (recomendacoesRecord) => recomendacoesRecord
                           .where(
                             'uidResumoDaVisita',
-                            isEqualTo: _model.outUidResumoDaVisita?.reference,
+                            isEqualTo: _outUidResumoDaVisita?.reference,
                           )
                           .where(
                             'tituloRecomendacao',
@@ -566,13 +567,12 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
                       singleRecord: true,
                     ).then((s) => s.firstOrNull);
                     _shouldSetState = true;
-                    if (_model.outUidRecomendacoes?.reference == null) {
+                    if (_outUidRecomendacoes?.reference == null) {
                       await RecomendacoesRecord.createDoc(
-                              _model.outUidResumoDaVisita!.reference)
+                              _outUidResumoDaVisita!.reference)
                           .set(createRecomendacoesRecordData(
                         tituloRecomendacao: 'Pré Parto',
-                        uidResumoDaVisita:
-                            _model.outUidResumoDaVisita?.reference,
+                        uidResumoDaVisita: _outUidResumoDaVisita?.reference,
                       ));
                     }
                   } else {
@@ -589,7 +589,7 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
                         locale: FFLocalizations.of(context).languageCode,
                       ),
                     ));
-                    _model.outNewUidResumoDaVisita =
+                    _outNewUidResumoDaVisita =
                         ResumoDaVisitaRecord.getDocumentFromData(
                             createResumoDaVisitaRecordData(
                               uidPropriedade: widget.uidPropriedade,
@@ -605,40 +605,36 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
                             resumoDaVisitaRecordReference);
                     _shouldSetState = true;
 
-                    await _model.outNewUidResumoDaVisita!.reference
+                    await _outNewUidResumoDaVisita!.reference
                         .update(createResumoDaVisitaRecordData(
-                      uidResumoDaVisita:
-                          _model.outNewUidResumoDaVisita?.reference,
+                      uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
                     ));
-                    _model.uidAnimalRecebeAcao =
+                    _uidAnimalRecebeAcao =
                         await AnimaisProdutoresRecord.getDocumentOnce(
                             widget.uidAnimaisProdutores!);
                     _shouldSetState = true;
 
                     await TratamentosRecord.createDoc(
-                            _model.outNewUidResumoDaVisita!.reference)
+                            _outNewUidResumoDaVisita!.reference)
                         .set(createTratamentosRecordData(
                       uidAnimal: widget.uidAnimaisProdutores,
                       tipoAcao: 'Pré Parto',
-                      uidResumoDaVisita:
-                          _model.outNewUidResumoDaVisita?.reference,
-                      observacaoAcao: _model.dtPrePartoTextController.text,
+                      uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
+                      observacaoAcao: _dtPrePartoTextController.text,
                       brincoAnimal: widget.brincoAnimal,
                       nomeAnimal: widget.nomeAnimal,
                       grupoAnimal: widget.grupoAnimal,
                       brincoAnimalOrder:
                           functions.converterStringToInt(widget.brincoAnimal!),
-                      compararDtUltimaInseminacao: _model
-                          .uidAnimalRecebeAcao?.compararDtUltimaInseminacao,
+                      compararDtUltimaInseminacao:
+                          _uidAnimalRecebeAcao?.compararDtUltimaInseminacao,
                     ));
-                    _model.outUidRecomendacoes2 =
-                        await queryRecomendacoesRecordOnce(
-                      parent: _model.outNewUidResumoDaVisita?.reference,
+                    _outUidRecomendacoes2 = await queryRecomendacoesRecordOnce(
+                      parent: _outNewUidResumoDaVisita?.reference,
                       queryBuilder: (recomendacoesRecord) => recomendacoesRecord
                           .where(
                             'uidResumoDaVisita',
-                            isEqualTo:
-                                _model.outNewUidResumoDaVisita?.reference,
+                            isEqualTo: _outNewUidResumoDaVisita?.reference,
                           )
                           .where(
                             'tituloRecomendacao',
@@ -647,13 +643,12 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
                       singleRecord: true,
                     ).then((s) => s.firstOrNull);
                     _shouldSetState = true;
-                    if (_model.outUidRecomendacoes2?.reference == null) {
+                    if (_outUidRecomendacoes2?.reference == null) {
                       await RecomendacoesRecord.createDoc(
-                              _model.outNewUidResumoDaVisita!.reference)
+                              _outNewUidResumoDaVisita!.reference)
                           .set(createRecomendacoesRecordData(
                         tituloRecomendacao: 'Pré Parto',
-                        uidResumoDaVisita:
-                            _model.outNewUidResumoDaVisita?.reference,
+                        uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
                       ));
                     }
                   }

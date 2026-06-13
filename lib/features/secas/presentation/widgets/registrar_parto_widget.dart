@@ -1,4 +1,4 @@
-// ignore_for_file: dead_null_aware_expression
+// ignore_for_file: dead_null_aware_expression, unused_field
 
 import '/data/backend.dart';
 import '/data/objectbox/repositories/animal_repository.dart';
@@ -19,8 +19,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'registrar_parto_model.dart';
-export 'registrar_parto_model.dart';
 
 class RegistrarPartoWidget extends StatefulWidget {
   const RegistrarPartoWidget({
@@ -59,43 +57,58 @@ class RegistrarPartoWidget extends StatefulWidget {
 
 class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     with TickerProviderStateMixin {
-  late RegistrarPartoModel _model;
-
   final animationsMap = <String, AnimationInfo>{};
 
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
+  AnimaisProdutoresRecord? _outUidAnimaisAnimal;
+  FocusNode? _nomeFocusNode;
+  TextEditingController? _nomeTextController;
+  final String? Function(BuildContext, String?)? _nomeTextControllerValidator =
+      null;
+  FocusNode? _brincoFocusNode;
+  TextEditingController? _brincoTextController;
+  final String? Function(BuildContext, String?)?
+      _brincoTextControllerValidator = null;
+  String? _sexoValue;
+  FormFieldController<String>? _sexoValueController;
+  String? _racaPreValue;
+  FormFieldController<String>? _racaPreValueController;
+  FocusNode? _dtPartoFocusNode;
+  TextEditingController? _dtPartoTextController;
+  late MaskTextInputFormatter _dtPartoMask;
+  final String? Function(BuildContext, String?)?
+      _dtPartoTextControllerValidator = null;
+  DateTime? _datePicked;
+  FocusNode? _pesoNascFocusNode;
+  TextEditingController? _pesoNascTextController;
+  final String? Function(BuildContext, String?)?
+      _pesoNascTextControllerValidator = null;
+  bool? _novoAnimalValue;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => RegistrarPartoModel());
 
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       // Mãe criada offline não tem doc no Firestore: pula a leitura remota.
       if (widget.uidAnimaisProdutores != null) {
-        _model.outUidAnimaisAnimal =
-            await AnimaisProdutoresRecord.getDocumentOnce(
-                widget.uidAnimaisProdutores!);
+        _outUidAnimaisAnimal = await AnimaisProdutoresRecord.getDocumentOnce(
+            widget.uidAnimaisProdutores!);
       }
     });
 
-    _model.nomeTextController ??= TextEditingController();
-    _model.nomeFocusNode ??= FocusNode();
+    _nomeTextController ??= TextEditingController();
+    _nomeFocusNode ??= FocusNode();
 
-    _model.brincoTextController ??= TextEditingController();
-    _model.brincoFocusNode ??= FocusNode();
+    _brincoTextController ??= TextEditingController();
+    _brincoFocusNode ??= FocusNode();
 
-    _model.dtPartoTextController ??= TextEditingController();
-    _model.dtPartoFocusNode ??= FocusNode();
+    _dtPartoTextController ??= TextEditingController();
+    _dtPartoFocusNode ??= FocusNode();
 
-    _model.dtPartoMask = MaskTextInputFormatter(mask: '##/##/####');
-    _model.pesoNascTextController ??= TextEditingController();
-    _model.pesoNascFocusNode ??= FocusNode();
+    _dtPartoMask = MaskTextInputFormatter(mask: '##/##/####');
+    _pesoNascTextController ??= TextEditingController();
+    _pesoNascFocusNode ??= FocusNode();
 
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
@@ -127,7 +140,7 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {
-          _model.dtPartoTextController?.text = dateTimeFormat(
+          _dtPartoTextController?.text = dateTimeFormat(
             "dd/MM/yyyy",
             getCurrentTimestamp,
             locale: FFLocalizations.of(context).languageCode,
@@ -137,7 +150,14 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _nomeFocusNode?.dispose();
+    _nomeTextController?.dispose();
+    _brincoFocusNode?.dispose();
+    _brincoTextController?.dispose();
+    _dtPartoFocusNode?.dispose();
+    _dtPartoTextController?.dispose();
+    _pesoNascFocusNode?.dispose();
+    _pesoNascTextController?.dispose();
 
     super.dispose();
   }
@@ -324,14 +344,14 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
             alignment: AlignmentDirectional(0.0, 0.05),
             child: FFButtonWidget(
               onPressed: () async {
-                if (_model.novoAnimalValue == true) {
-                  if ((_model.nomeTextController.text != '') ||
-                      (_model.brincoTextController.text != '')) {
-                    if (_model.dtPartoTextController.text != '') {
+                if (_novoAnimalValue == true) {
+                  if ((_nomeTextController.text != '') ||
+                      (_brincoTextController.text != '')) {
+                    if (_dtPartoTextController.text != '') {
                       // Offline-first: atualiza a mãe (parto)
                       // no ObjectBox; sync enfileirado.
                       await _registrarPartoMaeOfflineFirst(
-                          _model.dtPartoTextController.text);
+                          _dtPartoTextController.text);
 
                       // Cadastro do bezerro offline-first: cria
                       // no ObjectBox (online empurra na hora;
@@ -339,16 +359,15 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
                       // ações ao bezerro quando ele sincroniza).
                       await criarAnimalOffline(AnimaisProdutoresStruct(
                         uidTecnicoPropriedade: widget.uidPropriedade,
-                        nomeAnimal: _model.nomeTextController.text,
-                        brincoAnimal:
-                            (_model.brincoTextController.text != '') &&
-                                    (_model.brincoTextController.text != '-1')
-                                ? int.tryParse(_model.brincoTextController.text)
-                                : -1,
-                        racaAnimal: _model.racaPreValue,
-                        pesoAnimal: _model.pesoNascTextController.text,
-                        dtNascimento: _model.dtPartoTextController.text,
-                        grupoAnimal: _model.sexoValue,
+                        nomeAnimal: _nomeTextController.text,
+                        brincoAnimal: (_brincoTextController.text != '') &&
+                                (_brincoTextController.text != '-1')
+                            ? int.tryParse(_brincoTextController.text)
+                            : -1,
+                        racaAnimal: _racaPreValue,
+                        pesoAnimal: _pesoNascTextController.text,
+                        dtNascimento: _dtPartoTextController.text,
+                        grupoAnimal: _sexoValue,
                         vaca: () {
                           if ((widget.nomeVacaAtual != null &&
                                   widget.nomeVacaAtual != '') &&
@@ -365,21 +384,20 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
                         touro: widget.nomeTourtoUltimaInseminacao,
                         status: '',
                         nomeBrincoConcat: () {
-                          if ((_model.nomeTextController.text != '') &&
-                              (_model.brincoTextController.text != '') &&
-                              (_model.brincoTextController.text != '-1')) {
-                            return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                          } else if (_model.nomeTextController.text != '') {
-                            return _model.nomeTextController.text;
+                          if ((_nomeTextController.text != '') &&
+                              (_brincoTextController.text != '') &&
+                              (_brincoTextController.text != '-1')) {
+                            return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                          } else if (_nomeTextController.text != '') {
+                            return _nomeTextController.text;
                           } else {
-                            return _model.brincoTextController.text;
+                            return _brincoTextController.text;
                           }
                         }(),
-                        brincoAnimalOrder:
-                            (_model.brincoTextController.text != '') &&
-                                    (_model.brincoTextController.text != '-1')
-                                ? int.tryParse(_model.brincoTextController.text)
-                                : 999999,
+                        brincoAnimalOrder: (_brincoTextController.text != '') &&
+                                (_brincoTextController.text != '-1')
+                            ? int.tryParse(_brincoTextController.text)
+                            : 999999,
                         uidAnimalOffline: functions.criarUidRandom(),
                       ));
                       Navigator.pop(context);
@@ -426,8 +444,8 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
                   // Offline-first: atualiza a mãe (parto) no
                   // ObjectBox; sync enfileirado.
                   await _registrarPartoMaeOfflineFirst(
-                    _model.dtPartoTextController.text != ''
-                        ? _model.dtPartoTextController.text
+                    _dtPartoTextController.text != ''
+                        ? _dtPartoTextController.text
                         : dateTimeFormat(
                             "dd/MM/yyyy",
                             getCurrentTimestamp,
@@ -486,8 +504,8 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: TextFormField(
-        controller: _model.nomeTextController,
-        focusNode: _model.nomeFocusNode,
+        controller: _nomeTextController,
+        focusNode: _nomeFocusNode,
         autofocus: false,
         obscureText: false,
         decoration: InputDecoration(
@@ -556,7 +574,7 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
             ),
         keyboardType: TextInputType.name,
         cursorColor: FlutterFlowTheme.of(context).primary,
-        validator: _model.nomeTextControllerValidator.asValidator(context),
+        validator: _nomeTextControllerValidator.asValidator(context),
       ),
     );
   }
@@ -565,8 +583,8 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: TextFormField(
-        controller: _model.brincoTextController,
-        focusNode: _model.brincoFocusNode,
+        controller: _brincoTextController,
+        focusNode: _brincoFocusNode,
         autofocus: false,
         obscureText: false,
         decoration: InputDecoration(
@@ -635,7 +653,7 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
             ),
         keyboardType: TextInputType.number,
         cursorColor: FlutterFlowTheme.of(context).primary,
-        validator: _model.brincoTextControllerValidator.asValidator(context),
+        validator: _brincoTextControllerValidator.asValidator(context),
       ),
     );
   }
@@ -644,12 +662,12 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: FlutterFlowDropDown<String>(
-        controller: _model.sexoValueController ??= FormFieldController<String>(
-          _model.sexoValue ??= 'Bezerras',
+        controller: _sexoValueController ??= FormFieldController<String>(
+          _sexoValue ??= 'Bezerras',
         ),
         options: List<String>.from(['Bezerras', 'Bezerros']),
         optionLabels: ['Feminino (Bezerra)', 'Masculino (Bezerro)'],
-        onChanged: (val) => safeSetState(() => _model.sexoValue = val),
+        onChanged: (val) => safeSetState(() => _sexoValue = val),
         width: double.infinity,
         height: 58.0,
         textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -703,12 +721,11 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
           List<RacasRecord> racaPreRacasRecordList = snapshot.data!;
 
           return FlutterFlowDropDown<String>(
-            controller: _model.racaPreValueController ??=
-                FormFieldController<String>(
-              _model.racaPreValue ??= 'Holandesa',
+            controller: _racaPreValueController ??= FormFieldController<String>(
+              _racaPreValue ??= 'Holandesa',
             ),
             options: racaPreRacasRecordList.map((e) => e.descricao).toList(),
-            onChanged: (val) => safeSetState(() => _model.racaPreValue = val),
+            onChanged: (val) => safeSetState(() => _racaPreValue = val),
             width: double.infinity,
             height: 58.0,
             searchHintTextStyle: FlutterFlowTheme.of(context)
@@ -783,8 +800,8 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
             child: Padding(
               padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 16.0, 0.0),
               child: TextFormField(
-                controller: _model.dtPartoTextController,
-                focusNode: _model.dtPartoFocusNode,
+                controller: _dtPartoTextController,
+                focusNode: _dtPartoFocusNode,
                 autofocus: false,
                 readOnly: true,
                 obscureText: false,
@@ -875,9 +892,8 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
                     null,
                 keyboardType: TextInputType.datetime,
                 cursorColor: FlutterFlowTheme.of(context).primary,
-                validator:
-                    _model.dtPartoTextControllerValidator.asValidator(context),
-                inputFormatters: [_model.dtPartoMask],
+                validator: _dtPartoTextControllerValidator.asValidator(context),
+                inputFormatters: [_dtPartoMask],
               ),
             ),
           ),
@@ -947,7 +963,7 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
                             use24hFormat: false,
                             onDateTimeChanged: (newDateTime) =>
                                 safeSetState(() {
-                              _model.datePicked = newDateTime;
+                              _datePicked = newDateTime;
                             }),
                           ),
                         ),
@@ -955,14 +971,14 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
                     );
                   });
               safeSetState(() {
-                _model.dtPartoTextController?.text = dateTimeFormat(
+                _dtPartoTextController?.text = dateTimeFormat(
                   "dd/MM/yyyy",
-                  _model.datePicked,
+                  _datePicked,
                   locale: FFLocalizations.of(context).languageCode,
                 );
-                _model.dtPartoMask.updateMask(
+                _dtPartoMask.updateMask(
                   newValue: TextEditingValue(
-                    text: _model.dtPartoTextController!.text,
+                    text: _dtPartoTextController!.text,
                   ),
                 );
               });
@@ -982,8 +998,8 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: TextFormField(
-        controller: _model.pesoNascTextController,
-        focusNode: _model.pesoNascFocusNode,
+        controller: _pesoNascTextController,
+        focusNode: _pesoNascFocusNode,
         autofocus: false,
         obscureText: false,
         decoration: InputDecoration(
@@ -1052,7 +1068,7 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
             ),
         keyboardType: TextInputType.number,
         cursorColor: FlutterFlowTheme.of(context).primary,
-        validator: _model.pesoNascTextControllerValidator.asValidator(context),
+        validator: _pesoNascTextControllerValidator.asValidator(context),
       ),
     );
   }
@@ -1063,9 +1079,9 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
       child: Material(
         color: Colors.transparent,
         child: SwitchListTile.adaptive(
-          value: _model.novoAnimalValue ??= true,
+          value: _novoAnimalValue ??= true,
           onChanged: (newValue) async {
-            safeSetState(() => _model.novoAnimalValue = newValue);
+            safeSetState(() => _novoAnimalValue = newValue);
           },
           title: Text(
             'Registrar novo animal ao salvar',

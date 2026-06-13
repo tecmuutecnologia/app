@@ -17,8 +17,8 @@ import '/features/exame_ginecologico/presentation/widgets/nova_acao_exame_gineco
 import '/features/inseminacoes/presentation/widgets/nova_inseminacao_widget.dart';
 import '/features/prenhas/presentation/widgets/registro_aborto_widget.dart';
 import 'desmame_widget.dart';
-import '/pages/tecnico/propriedade/secas/registrar_parto/registrar_parto_widget.dart';
-import '/pages/tecnico/propriedade/secas/registrar_pre_parto/registrar_pre_parto_widget.dart';
+import '/features/secas/presentation/widgets/registrar_parto_widget.dart';
+import '/features/secas/presentation/widgets/registrar_pre_parto_widget.dart';
 
 // Imports para bottom sheets offline (novos)
 

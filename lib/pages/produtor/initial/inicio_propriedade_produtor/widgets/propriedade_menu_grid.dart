@@ -257,7 +257,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
       badgeCount: count,
       onTap: () {
         context.pushNamed(
-          SecasWidget.routeName,
+          SecasPage.routeName,
           queryParameters: navigationParams.toQueryParameters(),
         );
       },

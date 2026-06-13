@@ -11,21 +11,20 @@ import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
 import '/features/prenhas/presentation/widgets/registro_aborto_widget.dart';
-import '/pages/tecnico/propriedade/secas/registrar_parto/registrar_parto_widget.dart';
-import '/pages/tecnico/propriedade/secas/registrar_parto_induzido/registrar_parto_induzido_widget.dart';
-import '/pages/tecnico/propriedade/secas/registrar_pre_parto/registrar_pre_parto_widget.dart';
+import '../widgets/registrar_parto_widget.dart';
+import '../widgets/registrar_parto_induzido_widget.dart';
+import '../widgets/registrar_pre_parto_widget.dart';
+import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
+import '/pages/tecnico/propriedade/prontuario/prontuario_animal/prontuario_animal_widget.dart';
 import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
-import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'secas_model.dart';
-export 'secas_model.dart';
 
-class SecasWidget extends StatefulWidget {
-  const SecasWidget({
+class SecasPage extends StatefulWidget {
+  const SecasPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -46,12 +45,13 @@ class SecasWidget extends StatefulWidget {
   static String routePath = '/secas';
 
   @override
-  State<SecasWidget> createState() => _SecasWidgetState();
+  State<SecasPage> createState() => _SecasPageState();
 }
 
-class _SecasWidgetState extends State<SecasWidget>
-    with TickerProviderStateMixin {
-  late SecasModel _model;
+class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
+  InstantTimer? _instantTimer;
+  bool? _respostaNet = true;
+  TabController? _tabBarController;
 
   /// Lista de animais existentes (fonte ObjectBox). Antes em
   /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
@@ -62,7 +62,6 @@ class _SecasWidgetState extends State<SecasWidget>
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => SecasModel());
 
     // Fonte única: carrega a lista do ObjectBox (offline-first). A tela renderiza
     // sempre desta lista; o Firestore é usado apenas para sincronizar.
@@ -76,13 +75,13 @@ class _SecasWidgetState extends State<SecasWidget>
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.instantTimer = InstantTimer.periodic(
+      _instantTimer = InstantTimer.periodic(
         duration: Duration(seconds: 5),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
+          _respostaNet = await actions.checkInternetConnection();
 
           safeSetState(() {});
-          if (_model.respostaNet!) {
+          if (_respostaNet!) {
             safeSetState(() {});
           } else {
             // Offline: notificação passiva via SyncStatusBanner (app-wide);
@@ -93,7 +92,7 @@ class _SecasWidgetState extends State<SecasWidget>
       );
     });
 
-    _model.tabBarController = TabController(
+    _tabBarController = TabController(
       vsync: this,
       length: 4,
       initialIndex: 0,
@@ -104,7 +103,8 @@ class _SecasWidgetState extends State<SecasWidget>
 
   @override
   void dispose() {
-    _model.dispose();
+    _instantTimer?.cancel();
+    _tabBarController?.dispose();
 
     super.dispose();
   }
@@ -1862,7 +1862,7 @@ class _SecasWidgetState extends State<SecasWidget>
                           text: 'Descarte',
                         ),
                       ],
-                      controller: _model.tabBarController,
+                      controller: _tabBarController,
                       onTap: (i) async {
                         [
                           () async {},
@@ -1875,7 +1875,7 @@ class _SecasWidgetState extends State<SecasWidget>
                   ),
                   Expanded(
                     child: TabBarView(
-                      controller: _model.tabBarController,
+                      controller: _tabBarController,
                       children: [
                         SingleChildScrollView(
                           primary: false,

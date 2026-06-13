@@ -17,8 +17,8 @@ import '/features/inseminacoes/presentation/widgets/nova_inseminacao_widget.dart
 import '/features/prenhas/presentation/widgets/registrar_secagem_widget.dart';
 import '/features/prenhas/presentation/widgets/registro_aborto_widget.dart';
 import '/features/recria/presentation/widgets/desmame_widget.dart';
-import '/pages/tecnico/propriedade/secas/registrar_parto/registrar_parto_widget.dart';
-import '/pages/tecnico/propriedade/secas/registrar_pre_parto/registrar_pre_parto_widget.dart';
+import '/features/secas/presentation/widgets/registrar_parto_widget.dart';
+import '/features/secas/presentation/widgets/registrar_pre_parto_widget.dart';
 import '/features/sincronizacao/presentation/widgets/alerta_sem_internet_widget.dart';
 import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;

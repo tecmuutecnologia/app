@@ -1,4 +1,4 @@
-// ignore_for_file: dead_null_aware_expression
+// ignore_for_file: dead_null_aware_expression, unused_field
 
 import '/data/backend.dart';
 import '/data/objectbox/repositories/animal_repository.dart';
@@ -16,8 +16,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'registrar_parto_induzido_model.dart';
-export 'registrar_parto_induzido_model.dart';
 
 class RegistrarPartoInduzidoWidget extends StatefulWidget {
   const RegistrarPartoInduzidoWidget({
@@ -48,32 +46,30 @@ class RegistrarPartoInduzidoWidget extends StatefulWidget {
 
 class _RegistrarPartoInduzidoWidgetState
     extends State<RegistrarPartoInduzidoWidget> with TickerProviderStateMixin {
-  late RegistrarPartoInduzidoModel _model;
-
   final animationsMap = <String, AnimationInfo>{};
 
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
+  AnimaisProdutoresRecord? _outUidAnimaisAnimal;
+  FocusNode? _dtPartoInduzidoFocusNode;
+  TextEditingController? _dtPartoInduzidoTextController;
+  late MaskTextInputFormatter _dtPartoInduzidoMask;
+  final String? Function(BuildContext, String?)?
+      _dtPartoInduzidoTextControllerValidator = null;
+  DateTime? _datePicked;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => RegistrarPartoInduzidoModel());
 
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.outUidAnimaisAnimal =
-          await AnimaisProdutoresRecord.getDocumentOnce(
-              widget.uidAnimaisProdutores!);
+      _outUidAnimaisAnimal = await AnimaisProdutoresRecord.getDocumentOnce(
+          widget.uidAnimaisProdutores!);
     });
 
-    _model.dtPartoInduzidoTextController ??= TextEditingController();
-    _model.dtPartoInduzidoFocusNode ??= FocusNode();
+    _dtPartoInduzidoTextController ??= TextEditingController();
+    _dtPartoInduzidoFocusNode ??= FocusNode();
 
-    _model.dtPartoInduzidoMask = MaskTextInputFormatter(mask: '##/##/####');
+    _dtPartoInduzidoMask = MaskTextInputFormatter(mask: '##/##/####');
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
         trigger: AnimationTrigger.onPageLoad,
@@ -104,7 +100,7 @@ class _RegistrarPartoInduzidoWidgetState
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {
-          _model.dtPartoInduzidoTextController?.text = dateTimeFormat(
+          _dtPartoInduzidoTextController?.text = dateTimeFormat(
             "dd/MM/yyyy",
             getCurrentTimestamp,
             locale: FFLocalizations.of(context).languageCode,
@@ -114,7 +110,8 @@ class _RegistrarPartoInduzidoWidgetState
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _dtPartoInduzidoFocusNode?.dispose();
+    _dtPartoInduzidoTextController?.dispose();
 
     super.dispose();
   }
@@ -125,14 +122,14 @@ class _RegistrarPartoInduzidoWidgetState
   /// repositórios. Funciona sem conexão.
   Future<void> _registrarPartoInduzidoOfflineFirst() async {
     final dados = <String, dynamic>{
-      'dtUltimoParto': _model.dtPartoInduzidoTextController.text,
+      'dtUltimoParto': _dtPartoInduzidoTextController.text,
       'dtPartoPrevisto': '',
       'dtPrePartoPrevista': '',
       'dtSecagem': '',
       'dtSecPrevista': '',
       'grupoAnimal': 'Vacas',
       'status': 'Vazia',
-      'dtUltimoPartoContingencia': _model.dtPartoInduzidoTextController.text,
+      'dtUltimoPartoContingencia': _dtPartoInduzidoTextController.text,
       'idStatusAnimal': 2,
     };
     final animalRepo = AnimalRepository();
@@ -146,14 +143,14 @@ class _RegistrarPartoInduzidoWidgetState
     } else {
       unawaited(widget.uidAnimaisProdutores!.update({
         ...createAnimaisProdutoresRecordData(
-          dtUltimoParto: _model.dtPartoInduzidoTextController.text,
+          dtUltimoParto: _dtPartoInduzidoTextController.text,
           dtPartoPrevisto: '',
           dtPrePartoPrevista: '',
           dtSecagem: '',
           dtSecPrevista: '',
           grupoAnimal: 'Vacas',
           status: 'Vazia',
-          dtUltimoPartoContingencia: _model.dtPartoInduzidoTextController.text,
+          dtUltimoPartoContingencia: _dtPartoInduzidoTextController.text,
           idStatusAnimal: 2,
         ),
         ...mapToFirestore(
@@ -243,8 +240,8 @@ class _RegistrarPartoInduzidoWidgetState
                 child: Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 16.0, 0.0),
                   child: TextFormField(
-                    controller: _model.dtPartoInduzidoTextController,
-                    focusNode: _model.dtPartoInduzidoFocusNode,
+                    controller: _dtPartoInduzidoTextController,
+                    focusNode: _dtPartoInduzidoFocusNode,
                     autofocus: false,
                     readOnly: true,
                     obscureText: false,
@@ -345,9 +342,9 @@ class _RegistrarPartoInduzidoWidgetState
                         null,
                     keyboardType: TextInputType.datetime,
                     cursorColor: FlutterFlowTheme.of(context).primary,
-                    validator: _model.dtPartoInduzidoTextControllerValidator
+                    validator: _dtPartoInduzidoTextControllerValidator
                         .asValidator(context),
-                    inputFormatters: [_model.dtPartoInduzidoMask],
+                    inputFormatters: [_dtPartoInduzidoMask],
                   ),
                 ),
               ),
@@ -422,7 +419,7 @@ class _RegistrarPartoInduzidoWidgetState
                                 use24hFormat: false,
                                 onDateTimeChanged: (newDateTime) =>
                                     safeSetState(() {
-                                  _model.datePicked = newDateTime;
+                                  _datePicked = newDateTime;
                                 }),
                               ),
                             ),
@@ -430,14 +427,14 @@ class _RegistrarPartoInduzidoWidgetState
                         );
                       });
                   safeSetState(() {
-                    _model.dtPartoInduzidoTextController?.text = dateTimeFormat(
+                    _dtPartoInduzidoTextController?.text = dateTimeFormat(
                       "dd/MM/yyyy",
-                      _model.datePicked,
+                      _datePicked,
                       locale: FFLocalizations.of(context).languageCode,
                     );
-                    _model.dtPartoInduzidoMask.updateMask(
+                    _dtPartoInduzidoMask.updateMask(
                       newValue: TextEditingValue(
-                        text: _model.dtPartoInduzidoTextController!.text,
+                        text: _dtPartoInduzidoTextController!.text,
                       ),
                     );
                   });
@@ -507,7 +504,7 @@ class _RegistrarPartoInduzidoWidgetState
             alignment: AlignmentDirectional(0.0, 0.05),
             child: FFButtonWidget(
               onPressed: () async {
-                if (_model.dtPartoInduzidoTextController.text == '') {
+                if (_dtPartoInduzidoTextController.text == '') {
                   await showDialog(
                     context: context,
                     builder: (alertDialogContext) {
