@@ -11,8 +11,8 @@ import '/core/ui/custom_functions.dart' as functions;
 import '/index.dart';
 
 // Imports para bottom sheets online
-import '/pages/tecnico/propriedade/dignostico_gestacao/dg_mais/dg_mais_widget.dart';
-import '/pages/tecnico/propriedade/dignostico_gestacao/dg_menos/dg_menos_widget.dart';
+import '/features/diagnostico_gestacao/presentation/widgets/dg_mais_widget.dart';
+import '/features/diagnostico_gestacao/presentation/widgets/dg_menos_widget.dart';
 import '/pages/tecnico/propriedade/exame_ginecologico/nova_acao_exame_ginecologico/nova_acao_exame_ginecologico_widget.dart';
 import '/pages/tecnico/propriedade/inseminacoes/nova_inseminacao/nova_inseminacao_widget.dart';
 import '/pages/tecnico/propriedade/prenhas/registro_aborto/registro_aborto_widget.dart';

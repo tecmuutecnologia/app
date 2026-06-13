@@ -1,4 +1,4 @@
-// ignore_for_file: dead_null_aware_expression
+// ignore_for_file: dead_code, dead_null_aware_expression
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import 'dart:async';
@@ -15,11 +15,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'dg_mais_model.dart';
-export 'dg_mais_model.dart';
 
-class DgMaisWidget extends StatefulWidget {
-  const DgMaisWidget({
+class DgMenosWidget extends StatefulWidget {
+  const DgMenosWidget({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -30,7 +28,6 @@ class DgMaisWidget extends StatefulWidget {
     required this.grupoPredominante,
     required this.nomeAnimal,
     required this.visitaPresencial,
-    required this.diasDg,
   });
 
   final DocumentReference? uidPropriedade;
@@ -46,40 +43,37 @@ class DgMaisWidget extends StatefulWidget {
   final String? grupoPredominante;
   final String? nomeAnimal;
   final bool? visitaPresencial;
-  final String? diasDg;
 
   @override
-  State<DgMaisWidget> createState() => _DgMaisWidgetState();
+  State<DgMenosWidget> createState() => _DgMenosWidgetState();
 }
 
-class _DgMaisWidgetState extends State<DgMaisWidget>
+class _DgMenosWidgetState extends State<DgMenosWidget>
     with TickerProviderStateMixin {
-  late DgMaisModel _model;
-
   final animationsMap = <String, AnimationInfo>{};
 
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
+  AnimaisProdutoresRecord? _outUidAnimaisAnimal;
+  FocusNode? _dtDgMenosFocusNode;
+  TextEditingController? _dtDgMenosTextController;
+  late MaskTextInputFormatter _dtDgMenosMask;
+  final String? Function(BuildContext, String?)?
+      _dtDgMenosTextControllerValidator = null;
+  DateTime? _datePicked;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => DgMaisModel());
 
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.outUidAnimaisAnimal =
-          await AnimaisProdutoresRecord.getDocumentOnce(
-              widget.uidAnimaisProdutores!);
+      _outUidAnimaisAnimal = await AnimaisProdutoresRecord.getDocumentOnce(
+          widget.uidAnimaisProdutores!);
     });
 
-    _model.dtDgMaisTextController ??= TextEditingController();
-    _model.dtDgMaisFocusNode ??= FocusNode();
+    _dtDgMenosTextController ??= TextEditingController();
+    _dtDgMenosFocusNode ??= FocusNode();
 
-    _model.dtDgMaisMask = MaskTextInputFormatter(mask: '##/##/####');
+    _dtDgMenosMask = MaskTextInputFormatter(mask: '##/##/####');
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
         trigger: AnimationTrigger.onPageLoad,
@@ -110,7 +104,7 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {
-          _model.dtDgMaisTextController?.text = dateTimeFormat(
+          _dtDgMenosTextController?.text = dateTimeFormat(
             "dd/MM/yyyy",
             getCurrentTimestamp,
             locale: FFLocalizations.of(context).languageCode,
@@ -120,33 +114,33 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _dtDgMenosFocusNode?.dispose();
+    _dtDgMenosTextController?.dispose();
 
     super.dispose();
   }
 
-  /// Registra o DG+ offline-first: cria a ação ([acaoNome] = 'DG+' p/ Vacas,
-  /// 'Secagem' p/ os demais) via AcaoRepository e atualiza o animal (Prenha)
-  /// via AnimalRepository, sem bloquear a UI.
-  Future<void> _dgMaisOfflineFirst(String acaoNome) async {
+  /// Registra o DG- offline-first: cria a ação 'DG-' via AcaoRepository e
+  /// atualiza o animal (Vazia) via AnimalRepository, sem bloquear a UI.
+  Future<void> _dgMenosOfflineFirst() async {
     final acao = AcaoEntity(
       parentPath: widget.uidTecnico!.path,
       uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
       uidAnimalOffline:
           widget.uidAnimaisProdutores == null ? widget.uidAnimalOffline : null,
       nomeAnimal: widget.nomeAnimal,
-      acao: acaoNome,
+      acao: 'DG-',
       dataVisita: dateTimeFormat('dd/MM/yyyy', getCurrentTimestamp,
           locale: FFLocalizations.of(context).languageCode),
       dataDaAcao: getCurrentTimestamp,
-      dtDgMais: _model.dtDgMaisTextController.text,
+      dtDgMenos: _dtDgMenosTextController.text,
     );
     unawaited(AcaoRepository().add(acao));
 
     final dados = <String, dynamic>{
-      'status': 'Prenha',
-      'dtDgMais': _model.dtDgMaisTextController.text,
-      'idStatusAnimal': 6,
+      'status': 'Vazia',
+      'dtDgMenos': _dtDgMenosTextController.text,
+      'idStatusAnimal': 2,
     };
     final animalRepo = AnimalRepository();
     final entity = widget.uidAnimaisProdutores != null
@@ -157,12 +151,12 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
             : null);
     if (entity != null) {
       unawaited(animalRepo.update(entity, dados));
-    } else if (_model.outUidAnimaisAnimal != null) {
-      unawaited(_model.outUidAnimaisAnimal!.reference.update(
+    } else if (_outUidAnimaisAnimal != null) {
+      unawaited(_outUidAnimaisAnimal!.reference.update(
           createAnimaisProdutoresRecordData(
-              status: 'Prenha',
-              dtDgMais: _model.dtDgMaisTextController.text,
-              idStatusAnimal: 6)));
+              status: 'Vazia',
+              dtDgMenos: _dtDgMenosTextController.text,
+              idStatusAnimal: 2)));
     }
   }
 
@@ -205,7 +199,7 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(24.0, 16.0, 0.0, 0.0),
       child: Text(
-        'Data do DG+',
+        'Data do DG-',
         style: FlutterFlowTheme.of(context).headlineMedium.override(
               font: GoogleFonts.outfit(
                 fontWeight:
@@ -236,10 +230,10 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
                 child: Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
                   child: TextFormField(
-                    controller: _model.dtDgMaisTextController,
-                    focusNode: _model.dtDgMaisFocusNode,
+                    controller: _dtDgMenosTextController,
+                    focusNode: _dtDgMenosFocusNode,
                     onChanged: (_) => EasyDebounce.debounce(
-                      '_model.dtDgMaisTextController',
+                      '_dtDgMenosTextController',
                       Duration(milliseconds: 2000),
                       () => safeSetState(() {}),
                     ),
@@ -249,7 +243,7 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
                     readOnly: true,
                     obscureText: false,
                     decoration: InputDecoration(
-                      labelText: 'Data do DG+',
+                      labelText: 'Data do DG-',
                       labelStyle:
                           FlutterFlowTheme.of(context).bodyMedium.override(
                                 font: GoogleFonts.readexPro(
@@ -316,10 +310,10 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
                       ),
                       contentPadding: EdgeInsetsDirectional.fromSTEB(
                           16.0, 12.0, 16.0, 12.0),
-                      suffixIcon: _model.dtDgMaisTextController!.text.isNotEmpty
+                      suffixIcon: _dtDgMenosTextController!.text.isNotEmpty
                           ? InkWell(
                               onTap: () async {
-                                _model.dtDgMaisTextController?.clear();
+                                _dtDgMenosTextController?.clear();
                                 safeSetState(() {});
                               },
                               child: Icon(
@@ -353,9 +347,9 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
                             maxLength}) =>
                         null,
                     keyboardType: TextInputType.datetime,
-                    validator: _model.dtDgMaisTextControllerValidator
-                        .asValidator(context),
-                    inputFormatters: [_model.dtDgMaisMask],
+                    validator:
+                        _dtDgMenosTextControllerValidator.asValidator(context),
+                    inputFormatters: [_dtDgMenosMask],
                   ),
                 ),
               ),
@@ -428,7 +422,7 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
                                 use24hFormat: false,
                                 onDateTimeChanged: (newDateTime) =>
                                     safeSetState(() {
-                                  _model.datePicked = newDateTime;
+                                  _datePicked = newDateTime;
                                 }),
                               ),
                             ),
@@ -436,14 +430,14 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
                         );
                       });
                   safeSetState(() {
-                    _model.dtDgMaisTextController?.text = dateTimeFormat(
+                    _dtDgMenosTextController?.text = dateTimeFormat(
                       "dd/MM/yyyy",
-                      _model.datePicked,
+                      _datePicked,
                       locale: FFLocalizations.of(context).languageCode,
                     );
-                    _model.dtDgMaisMask.updateMask(
+                    _dtDgMenosMask.updateMask(
                       newValue: TextEditingValue(
-                        text: _model.dtDgMaisTextController!.text,
+                        text: _dtDgMenosTextController!.text,
                       ),
                     );
                   });
@@ -513,22 +507,16 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
             alignment: AlignmentDirectional(0.0, 0.05),
             child: FFButtonWidget(
               onPressed: () async {
-                if (_model.dtDgMaisTextController.text != '') {
-                  if (widget.grupoPredominante == 'Vacas') {
-                    await _dgMaisOfflineFirst('DG+');
-                    Navigator.pop(context);
-                    return;
-                  } else {
-                    await _dgMaisOfflineFirst('Secagem');
-                    Navigator.pop(context);
-                    return;
-                  }
+                var _shouldSetState = false;
+                if (_dtDgMenosTextController.text != '') {
+                  await _dgMenosOfflineFirst();
+                  _shouldSetState = true;
                 } else {
                   await showDialog(
                     context: context,
                     builder: (alertDialogContext) {
                       return AlertDialog(
-                        title: Text('Data do DG+ vazia.'),
+                        title: Text('Data do DG- vazia.'),
                         content: Text('Selecione uma data.'),
                         actions: [
                           TextButton(
@@ -539,10 +527,14 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
                       );
                     },
                   );
+                  if (_shouldSetState) safeSetState(() {});
                   return;
                 }
+
+                Navigator.pop(context);
+                if (_shouldSetState) safeSetState(() {});
               },
-              text: 'DG+',
+              text: 'DG-',
               icon: Icon(
                 Icons.check,
                 size: 15.0,
@@ -551,7 +543,7 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
                 height: 44.0,
                 padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                 iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                color: Color(0xFF048508),
+                color: Color(0xFFAE0303),
                 textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                       font: GoogleFonts.readexPro(
                         fontWeight:

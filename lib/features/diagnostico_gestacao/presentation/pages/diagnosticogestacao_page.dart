@@ -10,19 +10,18 @@ import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
-import '/pages/tecnico/propriedade/dignostico_gestacao/dg_mais/dg_mais_widget.dart';
-import '/pages/tecnico/propriedade/dignostico_gestacao/dg_menos/dg_menos_widget.dart';
-import '/pages/tecnico/propriedade/dignostico_gestacao/confirma_pp/confirma_pp_widget.dart';
-import '/index.dart';
+import '../widgets/dg_mais_widget.dart';
+import '../widgets/dg_menos_widget.dart';
+import '../widgets/confirma_pp_widget.dart';
+import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
+import '/pages/tecnico/propriedade/prontuario/prontuario_animal/prontuario_animal_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'diagnosticogestacao_model.dart';
-export 'diagnosticogestacao_model.dart';
 
-class DiagnosticogestacaoWidget extends StatefulWidget {
-  const DiagnosticogestacaoWidget({
+class DiagnosticogestacaoPage extends StatefulWidget {
+  const DiagnosticogestacaoPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -43,12 +42,13 @@ class DiagnosticogestacaoWidget extends StatefulWidget {
   static String routePath = '/diagnosticogestacao';
 
   @override
-  State<DiagnosticogestacaoWidget> createState() =>
-      _DiagnosticogestacaoWidgetState();
+  State<DiagnosticogestacaoPage> createState() =>
+      _DiagnosticogestacaoPageState();
 }
 
-class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
-  late DiagnosticogestacaoModel _model;
+class _DiagnosticogestacaoPageState extends State<DiagnosticogestacaoPage> {
+  InstantTimer? _instantTimer;
+  bool? _respostaNet = true;
 
   /// Lista de animais existentes (fonte ObjectBox). Antes em
   /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
@@ -59,7 +59,6 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => DiagnosticogestacaoModel());
 
     // Fonte única: carrega a lista do ObjectBox (offline-first). A tela renderiza
     // sempre desta lista; o Firestore é usado apenas para sincronizar.
@@ -73,13 +72,13 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.instantTimer = InstantTimer.periodic(
+      _instantTimer = InstantTimer.periodic(
         duration: Duration(seconds: 5),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
+          _respostaNet = await actions.checkInternetConnection();
 
           safeSetState(() {});
-          if (_model.respostaNet!) {
+          if (_respostaNet!) {
             safeSetState(() {});
           } else {
             // Offline: notificação passiva via SyncStatusBanner (app-wide);
@@ -95,7 +94,7 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
 
   @override
   void dispose() {
-    _model.dispose();
+    _instantTimer?.cancel();
 
     super.dispose();
   }
@@ -609,9 +608,8 @@ class _DiagnosticogestacaoWidgetState extends State<DiagnosticogestacaoWidget> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(100.0),
           child: AppBar(
-            backgroundColor: (_model.respostaNet ?? true)
-                ? Color(0xFFF75E38)
-                : Color(0xFFF2886E),
+            backgroundColor:
+                (_respostaNet ?? true) ? Color(0xFFF75E38) : Color(0xFFF2886E),
             automaticallyImplyLeading: false,
             actions: [],
             flexibleSpace: FlexibleSpaceBar(

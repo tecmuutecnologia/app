@@ -1,4 +1,4 @@
-// ignore_for_file: dead_code, dead_null_aware_expression
+// ignore_for_file: dead_null_aware_expression
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import 'dart:async';
@@ -15,11 +15,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'dg_menos_model.dart';
-export 'dg_menos_model.dart';
 
-class DgMenosWidget extends StatefulWidget {
-  const DgMenosWidget({
+class DgMaisWidget extends StatefulWidget {
+  const DgMaisWidget({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -30,6 +28,7 @@ class DgMenosWidget extends StatefulWidget {
     required this.grupoPredominante,
     required this.nomeAnimal,
     required this.visitaPresencial,
+    required this.diasDg,
   });
 
   final DocumentReference? uidPropriedade;
@@ -45,39 +44,38 @@ class DgMenosWidget extends StatefulWidget {
   final String? grupoPredominante;
   final String? nomeAnimal;
   final bool? visitaPresencial;
+  final String? diasDg;
 
   @override
-  State<DgMenosWidget> createState() => _DgMenosWidgetState();
+  State<DgMaisWidget> createState() => _DgMaisWidgetState();
 }
 
-class _DgMenosWidgetState extends State<DgMenosWidget>
+class _DgMaisWidgetState extends State<DgMaisWidget>
     with TickerProviderStateMixin {
-  late DgMenosModel _model;
-
   final animationsMap = <String, AnimationInfo>{};
 
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
+  AnimaisProdutoresRecord? _outUidAnimaisAnimal;
+  FocusNode? _dtDgMaisFocusNode;
+  TextEditingController? _dtDgMaisTextController;
+  late MaskTextInputFormatter _dtDgMaisMask;
+  final String? Function(BuildContext, String?)?
+      _dtDgMaisTextControllerValidator = null;
+  DateTime? _datePicked;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => DgMenosModel());
 
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.outUidAnimaisAnimal =
-          await AnimaisProdutoresRecord.getDocumentOnce(
-              widget.uidAnimaisProdutores!);
+      _outUidAnimaisAnimal = await AnimaisProdutoresRecord.getDocumentOnce(
+          widget.uidAnimaisProdutores!);
     });
 
-    _model.dtDgMenosTextController ??= TextEditingController();
-    _model.dtDgMenosFocusNode ??= FocusNode();
+    _dtDgMaisTextController ??= TextEditingController();
+    _dtDgMaisFocusNode ??= FocusNode();
 
-    _model.dtDgMenosMask = MaskTextInputFormatter(mask: '##/##/####');
+    _dtDgMaisMask = MaskTextInputFormatter(mask: '##/##/####');
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
         trigger: AnimationTrigger.onPageLoad,
@@ -108,7 +106,7 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {
-          _model.dtDgMenosTextController?.text = dateTimeFormat(
+          _dtDgMaisTextController?.text = dateTimeFormat(
             "dd/MM/yyyy",
             getCurrentTimestamp,
             locale: FFLocalizations.of(context).languageCode,
@@ -118,32 +116,34 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _dtDgMaisFocusNode?.dispose();
+    _dtDgMaisTextController?.dispose();
 
     super.dispose();
   }
 
-  /// Registra o DG- offline-first: cria a ação 'DG-' via AcaoRepository e
-  /// atualiza o animal (Vazia) via AnimalRepository, sem bloquear a UI.
-  Future<void> _dgMenosOfflineFirst() async {
+  /// Registra o DG+ offline-first: cria a ação ([acaoNome] = 'DG+' p/ Vacas,
+  /// 'Secagem' p/ os demais) via AcaoRepository e atualiza o animal (Prenha)
+  /// via AnimalRepository, sem bloquear a UI.
+  Future<void> _dgMaisOfflineFirst(String acaoNome) async {
     final acao = AcaoEntity(
       parentPath: widget.uidTecnico!.path,
       uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
       uidAnimalOffline:
           widget.uidAnimaisProdutores == null ? widget.uidAnimalOffline : null,
       nomeAnimal: widget.nomeAnimal,
-      acao: 'DG-',
+      acao: acaoNome,
       dataVisita: dateTimeFormat('dd/MM/yyyy', getCurrentTimestamp,
           locale: FFLocalizations.of(context).languageCode),
       dataDaAcao: getCurrentTimestamp,
-      dtDgMenos: _model.dtDgMenosTextController.text,
+      dtDgMais: _dtDgMaisTextController.text,
     );
     unawaited(AcaoRepository().add(acao));
 
     final dados = <String, dynamic>{
-      'status': 'Vazia',
-      'dtDgMenos': _model.dtDgMenosTextController.text,
-      'idStatusAnimal': 2,
+      'status': 'Prenha',
+      'dtDgMais': _dtDgMaisTextController.text,
+      'idStatusAnimal': 6,
     };
     final animalRepo = AnimalRepository();
     final entity = widget.uidAnimaisProdutores != null
@@ -154,12 +154,12 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
             : null);
     if (entity != null) {
       unawaited(animalRepo.update(entity, dados));
-    } else if (_model.outUidAnimaisAnimal != null) {
-      unawaited(_model.outUidAnimaisAnimal!.reference.update(
+    } else if (_outUidAnimaisAnimal != null) {
+      unawaited(_outUidAnimaisAnimal!.reference.update(
           createAnimaisProdutoresRecordData(
-              status: 'Vazia',
-              dtDgMenos: _model.dtDgMenosTextController.text,
-              idStatusAnimal: 2)));
+              status: 'Prenha',
+              dtDgMais: _dtDgMaisTextController.text,
+              idStatusAnimal: 6)));
     }
   }
 
@@ -202,7 +202,7 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(24.0, 16.0, 0.0, 0.0),
       child: Text(
-        'Data do DG-',
+        'Data do DG+',
         style: FlutterFlowTheme.of(context).headlineMedium.override(
               font: GoogleFonts.outfit(
                 fontWeight:
@@ -233,10 +233,10 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
                 child: Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
                   child: TextFormField(
-                    controller: _model.dtDgMenosTextController,
-                    focusNode: _model.dtDgMenosFocusNode,
+                    controller: _dtDgMaisTextController,
+                    focusNode: _dtDgMaisFocusNode,
                     onChanged: (_) => EasyDebounce.debounce(
-                      '_model.dtDgMenosTextController',
+                      '_dtDgMaisTextController',
                       Duration(milliseconds: 2000),
                       () => safeSetState(() {}),
                     ),
@@ -246,7 +246,7 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
                     readOnly: true,
                     obscureText: false,
                     decoration: InputDecoration(
-                      labelText: 'Data do DG-',
+                      labelText: 'Data do DG+',
                       labelStyle:
                           FlutterFlowTheme.of(context).bodyMedium.override(
                                 font: GoogleFonts.readexPro(
@@ -313,19 +313,18 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
                       ),
                       contentPadding: EdgeInsetsDirectional.fromSTEB(
                           16.0, 12.0, 16.0, 12.0),
-                      suffixIcon:
-                          _model.dtDgMenosTextController!.text.isNotEmpty
-                              ? InkWell(
-                                  onTap: () async {
-                                    _model.dtDgMenosTextController?.clear();
-                                    safeSetState(() {});
-                                  },
-                                  child: Icon(
-                                    Icons.clear,
-                                    size: 22.0,
-                                  ),
-                                )
-                              : null,
+                      suffixIcon: _dtDgMaisTextController!.text.isNotEmpty
+                          ? InkWell(
+                              onTap: () async {
+                                _dtDgMaisTextController?.clear();
+                                safeSetState(() {});
+                              },
+                              child: Icon(
+                                Icons.clear,
+                                size: 22.0,
+                              ),
+                            )
+                          : null,
                     ),
                     style: FlutterFlowTheme.of(context).bodyMedium.override(
                           font: GoogleFonts.readexPro(
@@ -351,9 +350,9 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
                             maxLength}) =>
                         null,
                     keyboardType: TextInputType.datetime,
-                    validator: _model.dtDgMenosTextControllerValidator
-                        .asValidator(context),
-                    inputFormatters: [_model.dtDgMenosMask],
+                    validator:
+                        _dtDgMaisTextControllerValidator.asValidator(context),
+                    inputFormatters: [_dtDgMaisMask],
                   ),
                 ),
               ),
@@ -426,7 +425,7 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
                                 use24hFormat: false,
                                 onDateTimeChanged: (newDateTime) =>
                                     safeSetState(() {
-                                  _model.datePicked = newDateTime;
+                                  _datePicked = newDateTime;
                                 }),
                               ),
                             ),
@@ -434,14 +433,14 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
                         );
                       });
                   safeSetState(() {
-                    _model.dtDgMenosTextController?.text = dateTimeFormat(
+                    _dtDgMaisTextController?.text = dateTimeFormat(
                       "dd/MM/yyyy",
-                      _model.datePicked,
+                      _datePicked,
                       locale: FFLocalizations.of(context).languageCode,
                     );
-                    _model.dtDgMenosMask.updateMask(
+                    _dtDgMaisMask.updateMask(
                       newValue: TextEditingValue(
-                        text: _model.dtDgMenosTextController!.text,
+                        text: _dtDgMaisTextController!.text,
                       ),
                     );
                   });
@@ -511,16 +510,22 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
             alignment: AlignmentDirectional(0.0, 0.05),
             child: FFButtonWidget(
               onPressed: () async {
-                var _shouldSetState = false;
-                if (_model.dtDgMenosTextController.text != '') {
-                  await _dgMenosOfflineFirst();
-                  _shouldSetState = true;
+                if (_dtDgMaisTextController.text != '') {
+                  if (widget.grupoPredominante == 'Vacas') {
+                    await _dgMaisOfflineFirst('DG+');
+                    Navigator.pop(context);
+                    return;
+                  } else {
+                    await _dgMaisOfflineFirst('Secagem');
+                    Navigator.pop(context);
+                    return;
+                  }
                 } else {
                   await showDialog(
                     context: context,
                     builder: (alertDialogContext) {
                       return AlertDialog(
-                        title: Text('Data do DG- vazia.'),
+                        title: Text('Data do DG+ vazia.'),
                         content: Text('Selecione uma data.'),
                         actions: [
                           TextButton(
@@ -531,14 +536,10 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
                       );
                     },
                   );
-                  if (_shouldSetState) safeSetState(() {});
                   return;
                 }
-
-                Navigator.pop(context);
-                if (_shouldSetState) safeSetState(() {});
               },
-              text: 'DG-',
+              text: 'DG+',
               icon: Icon(
                 Icons.check,
                 size: 15.0,
@@ -547,7 +548,7 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
                 height: 44.0,
                 padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                 iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                color: Color(0xFFAE0303),
+                color: Color(0xFF048508),
                 textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                       font: GoogleFonts.readexPro(
                         fontWeight:

@@ -15,8 +15,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'confirma_pp_model.dart';
-export 'confirma_pp_model.dart';
 
 class ConfirmaPpWidget extends StatefulWidget {
   const ConfirmaPpWidget({
@@ -54,32 +52,30 @@ class ConfirmaPpWidget extends StatefulWidget {
 
 class _ConfirmaPpWidgetState extends State<ConfirmaPpWidget>
     with TickerProviderStateMixin {
-  late ConfirmaPpModel _model;
-
   final animationsMap = <String, AnimationInfo>{};
 
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
+  AnimaisProdutoresRecord? _outUidAnimaisAnimal;
+  FocusNode? _dtPPFocusNode;
+  TextEditingController? _dtPPTextController;
+  late MaskTextInputFormatter _dtPPMask;
+  final String? Function(BuildContext, String?)? _dtPPTextControllerValidator =
+      null;
+  DateTime? _datePicked;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ConfirmaPpModel());
 
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.outUidAnimaisAnimal =
-          await AnimaisProdutoresRecord.getDocumentOnce(
-              widget.uidAnimaisProdutores!);
+      _outUidAnimaisAnimal = await AnimaisProdutoresRecord.getDocumentOnce(
+          widget.uidAnimaisProdutores!);
     });
 
-    _model.dtPPTextController ??= TextEditingController();
-    _model.dtPPFocusNode ??= FocusNode();
+    _dtPPTextController ??= TextEditingController();
+    _dtPPFocusNode ??= FocusNode();
 
-    _model.dtPPMask = MaskTextInputFormatter(mask: '##/##/####');
+    _dtPPMask = MaskTextInputFormatter(mask: '##/##/####');
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
         trigger: AnimationTrigger.onPageLoad,
@@ -110,7 +106,7 @@ class _ConfirmaPpWidgetState extends State<ConfirmaPpWidget>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {
-          _model.dtPPTextController?.text = dateTimeFormat(
+          _dtPPTextController?.text = dateTimeFormat(
             "dd/MM/yyyy",
             getCurrentTimestamp,
             locale: FFLocalizations.of(context).languageCode,
@@ -120,7 +116,8 @@ class _ConfirmaPpWidgetState extends State<ConfirmaPpWidget>
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _dtPPFocusNode?.dispose();
+    _dtPPTextController?.dispose();
 
     super.dispose();
   }
@@ -140,13 +137,13 @@ class _ConfirmaPpWidgetState extends State<ConfirmaPpWidget>
       acao: 'PP',
       dataVisita: hoje,
       dataDaAcao: getCurrentTimestamp,
-      dtPP: _model.dtPPTextController.text,
+      dtPP: _dtPPTextController.text,
     );
     unawaited(AcaoRepository().add(acao));
 
     final dados = <String, dynamic>{
       'status': 'Inseminada PP',
-      'dtPP': _model.dtPPTextController.text,
+      'dtPP': _dtPPTextController.text,
       'dtUltimoPP': hoje,
       'idStatusAnimal': 1,
     };
@@ -159,11 +156,11 @@ class _ConfirmaPpWidgetState extends State<ConfirmaPpWidget>
             : null);
     if (entity != null) {
       unawaited(animalRepo.update(entity, dados));
-    } else if (_model.outUidAnimaisAnimal != null) {
-      unawaited(_model.outUidAnimaisAnimal!.reference.update(
+    } else if (_outUidAnimaisAnimal != null) {
+      unawaited(_outUidAnimaisAnimal!.reference.update(
           createAnimaisProdutoresRecordData(
               status: 'Inseminada PP',
-              dtPP: _model.dtPPTextController.text,
+              dtPP: _dtPPTextController.text,
               dtUltimoPP: hoje,
               idStatusAnimal: 1)));
     }
@@ -239,10 +236,10 @@ class _ConfirmaPpWidgetState extends State<ConfirmaPpWidget>
                 child: Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
                   child: TextFormField(
-                    controller: _model.dtPPTextController,
-                    focusNode: _model.dtPPFocusNode,
+                    controller: _dtPPTextController,
+                    focusNode: _dtPPFocusNode,
                     onChanged: (_) => EasyDebounce.debounce(
-                      '_model.dtPPTextController',
+                      '_dtPPTextController',
                       Duration(milliseconds: 2000),
                       () => safeSetState(() {}),
                     ),
@@ -319,10 +316,10 @@ class _ConfirmaPpWidgetState extends State<ConfirmaPpWidget>
                       ),
                       contentPadding: EdgeInsetsDirectional.fromSTEB(
                           16.0, 12.0, 16.0, 12.0),
-                      suffixIcon: _model.dtPPTextController!.text.isNotEmpty
+                      suffixIcon: _dtPPTextController!.text.isNotEmpty
                           ? InkWell(
                               onTap: () async {
-                                _model.dtPPTextController?.clear();
+                                _dtPPTextController?.clear();
                                 safeSetState(() {});
                               },
                               child: Icon(
@@ -357,8 +354,8 @@ class _ConfirmaPpWidgetState extends State<ConfirmaPpWidget>
                         null,
                     keyboardType: TextInputType.datetime,
                     validator:
-                        _model.dtPPTextControllerValidator.asValidator(context),
-                    inputFormatters: [_model.dtPPMask],
+                        _dtPPTextControllerValidator.asValidator(context),
+                    inputFormatters: [_dtPPMask],
                   ),
                 ),
               ),
@@ -431,7 +428,7 @@ class _ConfirmaPpWidgetState extends State<ConfirmaPpWidget>
                                 use24hFormat: false,
                                 onDateTimeChanged: (newDateTime) =>
                                     safeSetState(() {
-                                  _model.datePicked = newDateTime;
+                                  _datePicked = newDateTime;
                                 }),
                               ),
                             ),
@@ -439,14 +436,14 @@ class _ConfirmaPpWidgetState extends State<ConfirmaPpWidget>
                         );
                       });
                   safeSetState(() {
-                    _model.dtPPTextController?.text = dateTimeFormat(
+                    _dtPPTextController?.text = dateTimeFormat(
                       "dd/MM/yyyy",
-                      _model.datePicked,
+                      _datePicked,
                       locale: FFLocalizations.of(context).languageCode,
                     );
-                    _model.dtPPMask.updateMask(
+                    _dtPPMask.updateMask(
                       newValue: TextEditingValue(
-                        text: _model.dtPPTextController!.text,
+                        text: _dtPPTextController!.text,
                       ),
                     );
                   });
@@ -517,7 +514,7 @@ class _ConfirmaPpWidgetState extends State<ConfirmaPpWidget>
             child: FFButtonWidget(
               onPressed: () async {
                 var _shouldSetState = false;
-                if (_model.dtPPTextController.text != '') {
+                if (_dtPPTextController.text != '') {
                   await _confirmaPpOfflineFirst();
                   _shouldSetState = true;
                 } else {

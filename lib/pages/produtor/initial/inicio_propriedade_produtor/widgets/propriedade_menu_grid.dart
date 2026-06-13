@@ -189,7 +189,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
       badgeCount: count,
       onTap: () {
         context.pushNamed(
-          DiagnosticogestacaoWidget.routeName,
+          DiagnosticogestacaoPage.routeName,
           queryParameters: navigationParams.toQueryParameters(),
         );
       },

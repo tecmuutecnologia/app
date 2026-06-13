@@ -921,9 +921,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: DiagnosticogestacaoWidget.routeName,
-          path: DiagnosticogestacaoWidget.routePath,
-          builder: (context, params) => DiagnosticogestacaoWidget(
+          name: DiagnosticogestacaoPage.routeName,
+          path: DiagnosticogestacaoPage.routePath,
+          builder: (context, params) => DiagnosticogestacaoPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,

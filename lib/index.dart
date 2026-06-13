@@ -63,8 +63,8 @@ export '/features/prontuario/presentation/pages/pron_diag_gestacao_page.dart'
     show PronDiagGestacaoPage;
 export '/features/prontuario/presentation/pages/pron_cios_page.dart'
     show PronCiosPage;
-export '/pages/tecnico/propriedade/dignostico_gestacao/diagnosticogestacao/diagnosticogestacao_widget.dart'
-    show DiagnosticogestacaoWidget;
+export '/features/diagnostico_gestacao/presentation/pages/diagnosticogestacao_page.dart'
+    show DiagnosticogestacaoPage;
 export '/pages/tecnico/propriedade/calendario_sanitario/calendario_sanitario/calendario_sanitario_widget.dart'
     show CalendarioSanitarioWidget;
 export '/pages/tecnico/propriedade/financeiro/relatorio_financeiro/relatorio_financeiro_widget.dart'
