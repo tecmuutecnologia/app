@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_widgets.dart';
+import '/core/ui/app_card.dart';
 
 /// Botão de ação principal do dashboard (Iniciar visita).
 class DashboardActionButton extends StatelessWidget {
@@ -43,7 +44,7 @@ class DashboardActionButton extends StatelessWidget {
           color: Colors.transparent,
           width: 1.0,
         ),
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
     );
   }
@@ -70,9 +71,10 @@ class DashboardSecondaryActionCard extends StatelessWidget {
       width: MediaQuery.sizeOf(context).width * 0.91,
       height: 80.0,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radius),
         shape: BoxShape.rectangle,
-        border: Border.all(color: const Color(0xFFB7B7B7)),
+        boxShadow: AppTokens.softShadow(context),
       ),
       child: Container(
         width: double.infinity,

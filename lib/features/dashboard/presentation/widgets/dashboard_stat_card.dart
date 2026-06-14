@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/app_card.dart';
 
 /// Card de estatística para o dashboard com valor e label.
 class DashboardStatCard extends StatelessWidget {
@@ -21,14 +22,11 @@ class DashboardStatCard extends StatelessWidget {
       width: 160.0,
       decoration: BoxDecoration(
         color: FlutterFlowTheme.of(context).secondaryBackground,
-        borderRadius: BorderRadius.circular(8.0),
-        border: Border.all(
-          color: const Color(0xFFE0E3E7),
-          width: 2.0,
-        ),
+        borderRadius: BorderRadius.circular(AppTokens.radius),
+        boxShadow: AppTokens.softShadow(context),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: AppTokens.cardPadding,
         child: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,14 +94,11 @@ class DashboardStatCardWithStream extends StatelessWidget {
       width: 160.0,
       decoration: BoxDecoration(
         color: FlutterFlowTheme.of(context).secondaryBackground,
-        borderRadius: BorderRadius.circular(8.0),
-        border: Border.all(
-          color: const Color(0xFFE0E3E7),
-          width: 2.0,
-        ),
+        borderRadius: BorderRadius.circular(AppTokens.radius),
+        boxShadow: AppTokens.softShadow(context),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: AppTokens.cardPadding,
         child: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,

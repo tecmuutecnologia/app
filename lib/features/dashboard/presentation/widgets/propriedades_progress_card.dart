@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/app_card.dart';
 
 /// Card com indicador circular de progresso das propriedades.
 class PropriedadesProgressCard extends StatelessWidget {
@@ -27,14 +28,8 @@ class PropriedadesProgressCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: FlutterFlowTheme.of(context).secondaryBackground,
-        boxShadow: const [
-          BoxShadow(
-            blurRadius: 3.0,
-            color: Color(0x33000000),
-            offset: Offset(0.0, 1.0),
-          )
-        ],
-        borderRadius: BorderRadius.circular(8.0),
+        boxShadow: AppTokens.softShadow(context),
+        borderRadius: BorderRadius.circular(AppTokens.radius),
       ),
       child: Padding(
         padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
