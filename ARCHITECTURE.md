@@ -34,19 +34,23 @@ features/        feature-first: <feature>/presentation/{pages,widgets,controller
 app/             app-shell: bootstrap.dart (init+runApp), app.dart (MaterialApp.router),
                  router/ (nav.dart, serialization_util.dart), theme/ (flutter_flow_theme.dart)
 core/ui/         utilitários ex-flutter_flow (util, widgets, model, i18n, dropdowns, etc.)
-pages/           telas FlutterFlow legadas (vão sendo migradas p/ features/)
 ```
 
 > `main.dart` é fino (só chama `bootstrap()`). O antigo `lib/flutter_flow/` foi relocado
-> (Fase 1): nav→`app/router`, theme→`app/theme`, o resto→`core/ui`. O barrel `index.dart`
-> ainda existe (telas legadas em `pages/` o importam); será deletado quando todas migrarem.
+> (Fase 1): nav→`app/router`, theme→`app/theme`, o resto→`core/ui`.
+>
+> **Migração da UI CONCLUÍDA:** todas as telas estão em `features/<f>/presentation/`. Os resíduos
+> FlutterFlow `lib/pages/` e o barrel `lib/index.dart` foram **removidos** — referências de tela
+> são por import direto. Único resíduo estrutural restante: `lib/app_state.dart` (`FFAppState`,
+> ainda um `Provider` lido por algumas telas; decomposição é trabalho à parte de médio risco).
 
 ## Migração da UI (FlutterFlow → feature-first)
 
-Programa **incremental por feature** (ver plano completo no histórico). A camada de
-dados já é offline-first; a migração agora move a **apresentação** do padrão FlutterFlow
-(`pages/<área>/<tela>/<tela>_widget.dart` + `_model.dart` extends `FlutterFlowModel`) para
-`features/<feature>/presentation/`. Cada tela compila e passa no gate isoladamente.
+Programa **incremental por feature** (ver plano completo no histórico) — **concluído**: toda a
+apresentação migrou do padrão FlutterFlow (`pages/<área>/<tela>/<tela>_widget.dart` + `_model.dart`
+extends `FlutterFlowModel`) para `features/<feature>/presentation/`. A receita abaixo fica
+documentada como referência (padrão do repo para novas telas / eventual migração de resíduos).
+Cada tela compila e passa no gate isoladamente.
 
 **Receita por tela** (referência-ouro: `features/auth/presentation/` — login do técnico):
 1. `X_widget.dart` → `features/<f>/presentation/pages/x_page.dart`; classe `XWidget`→`XPage`
@@ -59,10 +63,9 @@ dados já é offline-first; a migração agora move a **apresentação** do padr
    `presentation/controllers/x_controller.dart`: `XController extends Notifier<XState>`
    (estado imutável + `copyWith`), consumido via `ref.watch`/`ref.read`. Escritas passam pelos
    repositórios offline-first — nunca Firestore/`currentUserUid` direto.
-4. Imports: **sem** `import '/index.dart'`; referenciar telas/route names por import direto.
-   Tema/i18n via `flutter_flow_util.dart` (relocação p/ `core/ui` vem na fase de app-shell).
-5. Atualizar a rota (`flutter_flow/nav/nav.dart` hoje) e a entrada do `index.dart`; deletar
-   `X_model.dart` e a pasta antiga.
+4. Imports: **sem** `import '/index.dart'` (o barrel foi removido); referenciar telas/route names
+   por import direto. Tema/i18n via `core/ui/flutter_flow_util.dart`.
+5. Atualizar a rota em `app/router/nav.dart`; deletar `X_model.dart` e a pasta antiga.
 
 ## Repositórios (`BaseSyncRepository<E>`)
 
