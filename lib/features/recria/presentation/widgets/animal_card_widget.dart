@@ -321,7 +321,7 @@ class AnimalCardWidget extends StatelessWidget {
   void _navigateToProntuario(BuildContext context) {
     if (isOnline && animal.reference != null) {
       context.pushNamed(
-        ProntuarioAnimalWidget.routeName,
+        ProntuarioAnimalPage.routeName,
         queryParameters: {
           'uidPropriedade':
               serializeParam(uidPropriedade, ParamType.DocumentReference),

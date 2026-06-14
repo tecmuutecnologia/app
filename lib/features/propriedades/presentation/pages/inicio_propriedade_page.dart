@@ -10,6 +10,7 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
+import '/core/ui/request_manager.dart';
 import '/features/sincronizacao/presentation/widgets/alerta_sem_internet_widget.dart';
 import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
@@ -20,11 +21,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'inicio_propriedade_model.dart';
-export 'inicio_propriedade_model.dart';
 
-class InicioPropriedadeWidget extends StatefulWidget {
-  const InicioPropriedadeWidget({
+class InicioPropriedadePage extends StatefulWidget {
+  const InicioPropriedadePage({
     super.key,
     required this.nomePropriedade,
     required this.uidPropriedade,
@@ -45,13 +44,26 @@ class InicioPropriedadeWidget extends StatefulWidget {
   static String routePath = '/inicioPropriedade';
 
   @override
-  State<InicioPropriedadeWidget> createState() =>
-      _InicioPropriedadeWidgetState();
+  State<InicioPropriedadePage> createState() => _InicioPropriedadePageState();
 }
 
-class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
+class _InicioPropriedadePageState extends State<InicioPropriedadePage>
     with TickerProviderStateMixin {
-  late InicioPropriedadeModel _model;
+  InstantTimer? _instantTimer;
+  bool? _respostaNet = true;
+
+  final _cacheAnimaisListaCompletaManager =
+      StreamRequestManager<List<AnimaisProdutoresRecord>>();
+  Stream<List<AnimaisProdutoresRecord>> _cacheAnimaisListaCompleta({
+    String? uniqueQueryKey,
+    bool? overrideCache,
+    required Stream<List<AnimaisProdutoresRecord>> Function() requestFn,
+  }) =>
+      _cacheAnimaisListaCompletaManager.performRequest(
+        uniqueQueryKey: uniqueQueryKey,
+        overrideCache: overrideCache,
+        requestFn: requestFn,
+      );
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -60,17 +72,16 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => InicioPropriedadeModel());
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.instantTimer = InstantTimer.periodic(
+      _instantTimer = InstantTimer.periodic(
         duration: Duration(seconds: 5),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
+          _respostaNet = await actions.checkInternetConnection();
 
           safeSetState(() {});
-          if (_model.respostaNet!) {
+          if (_respostaNet!) {
             safeSetState(() {});
           } else {
             // Offline: notificação passiva via SyncStatusBanner (app-wide);
@@ -400,7 +411,8 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
 
   @override
   void dispose() {
-    _model.dispose();
+    _instantTimer?.cancel();
+    _cacheAnimaisListaCompletaManager.clear();
 
     super.dispose();
   }
@@ -450,7 +462,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
           _p10(context, inicioPropriedadeAnimaisProdutoresRecordList),
           _p11(context, inicioPropriedadeAnimaisProdutoresRecordList),
           _p12(context, inicioPropriedadeAnimaisProdutoresRecordList),
-          if (_model.respostaNet ?? true)
+          if (_respostaNet ?? true)
             Container(
               width: MediaQuery.sizeOf(context).width * 0.3,
               height: 120.0,
@@ -512,7 +524,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
               ),
             ).animateOnPageLoad(
                 animationsMap['containerOnPageLoadAnimation11']!),
-          if (_model.respostaNet ?? true)
+          if (_respostaNet ?? true)
             Container(
               width: MediaQuery.sizeOf(context).width * 0.3,
               height: 120.0,
@@ -530,7 +542,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                 highlightColor: Colors.transparent,
                 onTap: () async {
                   context.pushNamed(
-                    ResumoRebanhoWidget.routeName,
+                    ResumoRebanhoPage.routeName,
                     queryParameters: {
                       'uidPropriedade': serializeParam(
                         widget.uidPropriedade,
@@ -574,7 +586,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
               ),
             ).animateOnPageLoad(
                 animationsMap['containerOnPageLoadAnimation12']!),
-          if (_model.respostaNet ?? true)
+          if (_respostaNet ?? true)
             Container(
               width: MediaQuery.sizeOf(context).width * 0.3,
               height: 120.0,
@@ -637,7 +649,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
             ).animateOnPageLoad(
                 animationsMap['containerOnPageLoadAnimation13']!),
           _p13(context),
-          if (_model.respostaNet ?? true)
+          if (_respostaNet ?? true)
             Container(
               width: MediaQuery.sizeOf(context).width * 0.3,
               height: 120.0,
@@ -655,7 +667,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                 highlightColor: Colors.transparent,
                 onTap: () async {
                   context.pushNamed(
-                    RelatorioFinanceiroWidget.routeName,
+                    RelatorioFinanceiroPage.routeName,
                     queryParameters: {
                       'uidPropriedade': serializeParam(
                         widget.uidPropriedade,
@@ -793,7 +805,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
         hoverColor: Colors.transparent,
         highlightColor: Colors.transparent,
         onTap: () async {
-          context.pushNamed(DashboardTecnicoWidget.routeName);
+          context.pushNamed(DashboardTecnicoPage.routeName);
 
           FFAppState().clearAllAnimaisProdutorCache();
         },
@@ -906,12 +918,12 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
         hoverColor: Colors.transparent,
         highlightColor: Colors.transparent,
         onTap: () async {
-          if (_model.respostaNet!) {
+          if (_respostaNet!) {
             if ((FFAppState().animaisProdutoresOffline.length == 0) &&
                 (true) &&
                 (true)) {
               context.pushNamed(
-                ListaAnimaisWidget.routeName,
+                ListaAnimaisPage.routeName,
                 queryParameters: {
                   'uidPropriedade': serializeParam(
                     widget.uidPropriedade,
@@ -961,7 +973,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
             }
           } else {
             context.pushNamed(
-              ListaAnimaisWidget.routeName,
+              ListaAnimaisPage.routeName,
               queryParameters: {
                 'uidPropriedade': serializeParam(
                   widget.uidPropriedade,
@@ -1100,7 +1112,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 5.0, 5.0, 5.0, 5.0),
                             child: Text(
-                              _model.respostaNet!
+                              _respostaNet!
                                   ? inicioPropriedadeAnimaisProdutoresRecordList
                                       .where((e) =>
                                           ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
@@ -1112,7 +1124,9 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                                       .toString()
                                   : (inicioPropriedadeAnimaisProdutoresRecordList
                                               .where((e) =>
-                                                  ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
+                                                  ((ehVaca(e.grupoAnimal)) ||
+                                                      (ehNovilha(
+                                                          e.grupoAnimal))) &&
                                                   ((ehVazia(e.status)) ||
                                                       (ehInseminada(
                                                           e.status)) ||
@@ -1446,7 +1460,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                               textAnimaisProdutoresRecordList = snapshot.data!;
 
                           return Text(
-                            _model.respostaNet!
+                            _respostaNet!
                                 ? inicioPropriedadeAnimaisProdutoresRecordList
                                     .where((e) =>
                                         (ehPrenha(e.status)) &&
@@ -1745,7 +1759,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                       padding:
                           EdgeInsetsDirectional.fromSTEB(5.0, 5.0, 5.0, 5.0),
                       child: Text(
-                        _model.respostaNet!
+                        _respostaNet!
                             ? inicioPropriedadeAnimaisProdutoresRecordList
                                 .where((e) =>
                                     (ehVazia(e.status)) &&
@@ -1904,11 +1918,10 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                       padding:
                           EdgeInsetsDirectional.fromSTEB(5.0, 5.0, 5.0, 5.0),
                       child: Text(
-                        _model.respostaNet!
+                        _respostaNet!
                             ? inicioPropriedadeAnimaisProdutoresRecordList
                                 .where((e) =>
-                                    (((ehTouros(e.grupoAnimal)) &&
-                                            (e.liberaInseminacao == false)) ||
+                                    (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) ||
                                         ((ehNovilha(e.grupoAnimal)) &&
                                             (e.dtInducaoLactacao == null)) ||
                                         (ehBezerras(e.grupoAnimal)) ||
@@ -1920,7 +1933,12 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                                 .toString()
                             : (inicioPropriedadeAnimaisProdutoresRecordList
                                         .where((e) =>
-                                            (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) || ((ehNovilha(e.grupoAnimal)) && (e.dtInducaoLactacao == null)) || (ehBezerras(e.grupoAnimal)) || (ehBezerros(e.grupoAnimal))) &&
+                                            (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) ||
+                                                ((ehNovilha(e.grupoAnimal)) &&
+                                                    (e.dtInducaoLactacao ==
+                                                        null)) ||
+                                                (ehBezerras(e.grupoAnimal)) ||
+                                                (ehBezerros(e.grupoAnimal))) &&
                                             ((!ehDescarte(e.status)) &&
                                                 (e.status != 'Pré Parto')))
                                         .toList()
@@ -1930,8 +1948,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                                         .where((e) =>
                                             (e.uidTecnicoPropriedade == widget.uidPropriedade) &&
                                             (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) ||
-                                                ((ehNovilha(e.grupoAnimal)) &&
-                                                    (e.dtInducaoLactacao == null)) ||
+                                                ((ehNovilha(e.grupoAnimal)) && (e.dtInducaoLactacao == null)) ||
                                                 (ehBezerras(e.grupoAnimal)) ||
                                                 (ehBezerros(e.grupoAnimal))) &&
                                             ((!ehDescarte(e.status)) && (e.status != 'Pré Parto')))
@@ -2017,7 +2034,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
         highlightColor: Colors.transparent,
         onTap: () async {
           context.pushNamed(
-            ListacompletaWidget.routeName,
+            ListacompletaPage.routeName,
             queryParameters: {
               'uidPropriedade': serializeParam(
                 widget.uidPropriedade,
@@ -2153,7 +2170,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
         highlightColor: Colors.transparent,
         onTap: () async {
           context.pushNamed(
-            IndicesZootecnicosWidget.routeName,
+            IndicesZootecnicosPage.routeName,
             queryParameters: {
               'uidPropriedade': serializeParam(
                 widget.uidPropriedade,
@@ -2269,7 +2286,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
     // context.watch<FFAppState>();
 
     return StreamBuilder<List<AnimaisProdutoresRecord>>(
-      stream: _model.cacheAnimaisListaCompleta(
+      stream: _cacheAnimaisListaCompleta(
         requestFn: () => queryAnimaisProdutoresRecord(
           parent: widget.uidTecnico,
           queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
@@ -2312,7 +2329,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
             backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
             appBar: AppBar(
               backgroundColor:
-                  _model.respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
+                  _respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
               automaticallyImplyLeading: false,
               title: Text(
                 widget.nomePropriedade!,
@@ -2394,7 +2411,7 @@ class _InicioPropriedadeWidgetState extends State<InicioPropriedadeWidget>
                     _p1(context),
                     _p2(context, inicioPropriedadeAnimaisProdutoresRecordList),
                     if (!valueOrDefault<bool>(
-                      _model.respostaNet,
+                      _respostaNet,
                       true,
                     ))
                       Container(

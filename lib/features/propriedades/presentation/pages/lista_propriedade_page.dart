@@ -6,8 +6,8 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/features/propriedades/presentation/pages/propriedades_excluidas_page.dart';
-import '/pages/tecnico/dashboard/dashboard_tecnico/dashboard_tecnico_widget.dart';
-import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
+import '/features/dashboard/presentation/pages/dashboard_tecnico_page.dart';
+import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
 import '/features/propriedades/presentation/pages/editar_propriedade_page.dart';
 import '/features/propriedades/presentation/pages/nova_propriedade_page.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +65,7 @@ class _ListaPropriedadePageState extends State<ListaPropriedadePage> {
               size: 30.0,
             ),
             onPressed: () async {
-              context.pushNamed(DashboardTecnicoWidget.routeName);
+              context.pushNamed(DashboardTecnicoPage.routeName);
             },
           ),
         ),
@@ -433,7 +433,7 @@ class _ListaPropriedadePageState extends State<ListaPropriedadePage> {
                     highlightColor: Colors.transparent,
                     onTap: () async {
                       context.pushNamed(
-                        InicioPropriedadeWidget.routeName,
+                        InicioPropriedadePage.routeName,
                         queryParameters: {
                           'nomePropriedade': serializeParam(
                             listViewPropriedadesRecord.displayName,

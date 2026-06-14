@@ -4,39 +4,38 @@ import '/data/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
-import '/index.dart';
+import '/features/dashboard/presentation/pages/dashboard_tecnico_page.dart';
+import '/features/perfil/presentation/pages/completar_perfil_tecnico_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'sync_technician_model.dart';
-export 'sync_technician_model.dart';
 
-class SyncTechnicianWidget extends StatefulWidget {
-  const SyncTechnicianWidget({super.key});
+class SyncTechnicianPage extends StatefulWidget {
+  const SyncTechnicianPage({super.key});
 
   static String routeName = 'syncTechnician';
   static String routePath = '/syncTechnician';
 
   @override
-  State<SyncTechnicianWidget> createState() => _SyncTechnicianWidgetState();
+  State<SyncTechnicianPage> createState() => _SyncTechnicianPageState();
 }
 
-class _SyncTechnicianWidgetState extends State<SyncTechnicianWidget> {
-  late SyncTechnicianModel _model;
+class _SyncTechnicianPageState extends State<SyncTechnicianPage> {
+  PersonRecord? _personverify;
+  TecnicoRecord? _uidTecnico;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => SyncTechnicianModel());
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.personverify = await queryPersonRecordOnce(
+      _personverify = await queryPersonRecordOnce(
         queryBuilder: (personRecord) => personRecord.where(
           'uid',
           isEqualTo: currentUserUid,
@@ -48,11 +47,11 @@ class _SyncTechnicianWidgetState extends State<SyncTechnicianWidget> {
       await migrarAnimaisOfflineLegado(FFAppState().animaisProdutoresOffline);
       FFAppState().animaisProdutoresOffline = [];
       safeSetState(() {});
-      if (_model.personverify != null) {
-        _model.uidTecnico = await queryTecnicoRecordOnce(
+      if (_personverify != null) {
+        _uidTecnico = await queryTecnicoRecordOnce(
           queryBuilder: (tecnicoRecord) => tecnicoRecord.where(
             'uidPerson',
-            isEqualTo: _model.personverify?.reference.id,
+            isEqualTo: _personverify?.reference.id,
           ),
           singleRecord: true,
         ).then((s) => s.firstOrNull);
@@ -60,31 +59,31 @@ class _SyncTechnicianWidgetState extends State<SyncTechnicianWidget> {
         // Sincronização em tempo real Firestore->ObjectBox: reflete mudanças
         // remotas (ex.: outro dispositivo) automaticamente. Conflitos resolvidos
         // por ConflictResolver (edição local pendente vence). Só nativo.
-        if (ObjectBoxService.isInitialized && _model.uidTecnico != null) {
+        if (ObjectBoxService.isInitialized && _uidTecnico != null) {
           await RemoteSyncListenersService.initialize();
           RemoteSyncListenersService.instance
-              .startAllListeners(_model.uidTecnico!.reference.path);
+              .startAllListeners(_uidTecnico!.reference.path);
         }
 
         await queryPropriedadesRecordOnce(
-          parent: _model.uidTecnico?.reference,
+          parent: _uidTecnico?.reference,
         );
         await queryAcoesRecordOnce(
-          parent: _model.uidTecnico?.reference,
+          parent: _uidTecnico?.reference,
         );
         await queryAcoesSanitarioRecordOnce(
-          parent: _model.uidTecnico?.reference,
+          parent: _uidTecnico?.reference,
         );
         await queryResumoDaVisitaRecordOnce(
           queryBuilder: (resumoDaVisitaRecord) => resumoDaVisitaRecord.where(
             'uidTecnico',
-            isEqualTo: _model.uidTecnico?.reference,
+            isEqualTo: _uidTecnico?.reference,
           ),
         );
         await queryTipoAcoesRecordOnce();
 
         if (!mounted) return;
-        context.pushNamed(DashboardTecnicoWidget.routeName);
+        context.pushNamed(DashboardTecnicoPage.routeName);
 
         return;
       } else {
@@ -117,8 +116,6 @@ class _SyncTechnicianWidgetState extends State<SyncTechnicianWidget> {
 
   @override
   void dispose() {
-    _model.dispose();
-
     super.dispose();
   }
 

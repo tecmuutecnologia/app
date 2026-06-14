@@ -13,8 +13,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'descarte_animal_model.dart';
-export 'descarte_animal_model.dart';
 
 class DescarteAnimalWidget extends StatefulWidget {
   const DescarteAnimalWidget({
@@ -46,32 +44,31 @@ class DescarteAnimalWidget extends StatefulWidget {
 
 class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
     with TickerProviderStateMixin {
-  late DescarteAnimalModel _model;
+  AnimaisProdutoresRecord? _outUidAnimaisAnimal;
+  String? _motivoDescarteValue;
+  FormFieldController<String>? _motivoDescarteValueController;
+  FocusNode? _dtDescarteFocusNode;
+  TextEditingController? _dtDescarteTextController;
+  late MaskTextInputFormatter _dtDescarteMask;
+  final String? Function(BuildContext, String?)?
+      _dtDescarteTextControllerValidator = null;
 
   final animationsMap = <String, AnimationInfo>{};
 
   @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
-
-  @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => DescarteAnimalModel());
 
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.outUidAnimaisAnimal =
-          await AnimaisProdutoresRecord.getDocumentOnce(
-              widget.uidAnimaisProdutores!);
+      _outUidAnimaisAnimal = await AnimaisProdutoresRecord.getDocumentOnce(
+          widget.uidAnimaisProdutores!);
     });
 
-    _model.dtDescarteTextController ??= TextEditingController();
-    _model.dtDescarteFocusNode ??= FocusNode();
+    _dtDescarteTextController ??= TextEditingController();
+    _dtDescarteFocusNode ??= FocusNode();
 
-    _model.dtDescarteMask = MaskTextInputFormatter(mask: '##/##/####');
+    _dtDescarteMask = MaskTextInputFormatter(mask: '##/##/####');
     animationsMap.addAll({
       'containerOnPageLoadAnimation': AnimationInfo(
         trigger: AnimationTrigger.onPageLoad,
@@ -102,7 +99,7 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {
-          _model.dtDescarteTextController?.text = dateTimeFormat(
+          _dtDescarteTextController?.text = dateTimeFormat(
             "dd/MM/yyyy",
             getCurrentTimestamp,
             locale: FFLocalizations.of(context).languageCode,
@@ -112,7 +109,8 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _dtDescarteFocusNode?.dispose();
+    _dtDescarteTextController?.dispose();
 
     super.dispose();
   }
@@ -242,7 +240,7 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
                   motivoDescarteAnimaisProdutoresRecordList = snapshot.data!;
 
               return FlutterFlowDropDown<String>(
-                controller: _model.motivoDescarteValueController ??=
+                controller: _motivoDescarteValueController ??=
                     FormFieldController<String>(null),
                 options: [
                   'Problema reprodutivo',
@@ -255,7 +253,7 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
                   'Outras Causas'
                 ],
                 onChanged: (val) =>
-                    safeSetState(() => _model.motivoDescarteValue = val),
+                    safeSetState(() => _motivoDescarteValue = val),
                 width: double.infinity,
                 height: 60.0,
                 textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -302,8 +300,8 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
         Padding(
           padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
           child: TextFormField(
-            controller: _model.dtDescarteTextController,
-            focusNode: _model.dtDescarteFocusNode,
+            controller: _dtDescarteTextController,
+            focusNode: _dtDescarteFocusNode,
             autofocus: false,
             obscureText: false,
             decoration: InputDecoration(
@@ -386,9 +384,8 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
                 null,
             keyboardType: TextInputType.datetime,
             cursorColor: FlutterFlowTheme.of(context).primary,
-            validator:
-                _model.dtDescarteTextControllerValidator.asValidator(context),
-            inputFormatters: [_model.dtDescarteMask],
+            validator: _dtDescarteTextControllerValidator.asValidator(context),
+            inputFormatters: [_dtDescarteMask],
           ),
         ),
       ],
@@ -447,7 +444,7 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
             alignment: AlignmentDirectional(0.0, 0.05),
             child: FFButtonWidget(
               onPressed: () async {
-                if (_model.dtDescarteTextController.text != '') {
+                if (_dtDescarteTextController.text != '') {
                   var confirmDialogResponse = await showDialog<bool>(
                         context: context,
                         builder: (alertDialogContext) {
@@ -473,11 +470,11 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
                       ) ??
                       false;
                   if (confirmDialogResponse) {
-                    await _model.outUidAnimaisAnimal!.reference
+                    await _outUidAnimaisAnimal!.reference
                         .update(createAnimaisProdutoresRecordData(
                       status: 'Descarte',
-                      dtDescarteAnimal: _model.dtDescarteTextController.text,
-                      motivoDescarteAnimal: _model.motivoDescarteValue,
+                      dtDescarteAnimal: _dtDescarteTextController.text,
+                      motivoDescarteAnimal: _motivoDescarteValue,
                     ));
                     Navigator.pop(context);
                     return;

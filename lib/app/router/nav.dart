@@ -138,9 +138,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: InicioPropriedadeWidget.routeName,
-          path: InicioPropriedadeWidget.routePath,
-          builder: (context, params) => InicioPropriedadeWidget(
+          name: InicioPropriedadePage.routeName,
+          path: InicioPropriedadePage.routePath,
+          builder: (context, params) => InicioPropriedadePage(
             nomePropriedade: params.getParam(
               'nomePropriedade',
               ParamType.String,
@@ -222,9 +222,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: CadastrarNovoAnimalWidget.routeName,
-          path: CadastrarNovoAnimalWidget.routePath,
-          builder: (context, params) => CadastrarNovoAnimalWidget(
+          name: CadastrarNovoAnimalPage.routeName,
+          path: CadastrarNovoAnimalPage.routePath,
+          builder: (context, params) => CadastrarNovoAnimalPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,
@@ -629,9 +629,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: ProntuarioAnimalWidget.routeName,
-          path: ProntuarioAnimalWidget.routePath,
-          builder: (context, params) => ProntuarioAnimalWidget(
+          name: ProntuarioAnimalPage.routeName,
+          path: ProntuarioAnimalPage.routePath,
+          builder: (context, params) => ProntuarioAnimalPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,
@@ -673,9 +673,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: EditarAnimalWidget.routeName,
-          path: EditarAnimalWidget.routePath,
-          builder: (context, params) => EditarAnimalWidget(
+          name: EditarAnimalPage.routeName,
+          path: EditarAnimalPage.routePath,
+          builder: (context, params) => EditarAnimalPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,
@@ -1023,9 +1023,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: NovoRelatorioFinanceiroWidget.routeName,
-          path: NovoRelatorioFinanceiroWidget.routePath,
-          builder: (context, params) => NovoRelatorioFinanceiroWidget(
+          name: NovoRelatorioFinanceiroPage.routeName,
+          path: NovoRelatorioFinanceiroPage.routePath,
+          builder: (context, params) => NovoRelatorioFinanceiroPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,
@@ -1057,9 +1057,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: ListacompletaWidget.routeName,
-          path: ListacompletaWidget.routePath,
-          builder: (context, params) => ListacompletaWidget(
+          name: ListacompletaPage.routeName,
+          path: ListacompletaPage.routePath,
+          builder: (context, params) => ListacompletaPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,
@@ -1096,9 +1096,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => ApagarContaPage(),
         ),
         FFRoute(
-          name: EditarRelatorioFinanceiroWidget.routeName,
-          path: EditarRelatorioFinanceiroWidget.routePath,
-          builder: (context, params) => EditarRelatorioFinanceiroWidget(
+          name: EditarRelatorioFinanceiroPage.routeName,
+          path: EditarRelatorioFinanceiroPage.routePath,
+          builder: (context, params) => EditarRelatorioFinanceiroPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,

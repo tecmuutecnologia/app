@@ -6,11 +6,9 @@ import '/core/ui/flutter_flow_widgets.dart';
 import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'relatorio_financeiro_model.dart';
-export 'relatorio_financeiro_model.dart';
 
-class RelatorioFinanceiroWidget extends StatefulWidget {
-  const RelatorioFinanceiroWidget({
+class RelatorioFinanceiroPage extends StatefulWidget {
+  const RelatorioFinanceiroPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -31,27 +29,22 @@ class RelatorioFinanceiroWidget extends StatefulWidget {
   static String routePath = '/relatorioFinanceiro';
 
   @override
-  State<RelatorioFinanceiroWidget> createState() =>
-      _RelatorioFinanceiroWidgetState();
+  State<RelatorioFinanceiroPage> createState() =>
+      _RelatorioFinanceiroPageState();
 }
 
-class _RelatorioFinanceiroWidgetState extends State<RelatorioFinanceiroWidget> {
-  late RelatorioFinanceiroModel _model;
-
+class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => RelatorioFinanceiroModel());
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.dispose();
-
     super.dispose();
   }
 
@@ -73,7 +66,7 @@ class _RelatorioFinanceiroWidgetState extends State<RelatorioFinanceiroWidget> {
             ),
             onPressed: () async {
               context.pushNamed(
-                InicioPropriedadeWidget.routeName,
+                InicioPropriedadePage.routeName,
                 queryParameters: {
                   'nomePropriedade': serializeParam(
                     widget.nomePropriedade,
@@ -214,7 +207,7 @@ class _RelatorioFinanceiroWidgetState extends State<RelatorioFinanceiroWidget> {
                             highlightColor: Colors.transparent,
                             onTap: () async {
                               context.pushNamed(
-                                EditarRelatorioFinanceiroWidget.routeName,
+                                EditarRelatorioFinanceiroPage.routeName,
                                 queryParameters: {
                                   'uidPropriedade': serializeParam(
                                     widget.uidPropriedade,
@@ -384,7 +377,7 @@ class _RelatorioFinanceiroWidgetState extends State<RelatorioFinanceiroWidget> {
                 child: FFButtonWidget(
                   onPressed: () async {
                     context.pushNamed(
-                      NovoRelatorioFinanceiroWidget.routeName,
+                      NovoRelatorioFinanceiroPage.routeName,
                       queryParameters: {
                         'uidPropriedade': serializeParam(
                           widget.uidPropriedade,

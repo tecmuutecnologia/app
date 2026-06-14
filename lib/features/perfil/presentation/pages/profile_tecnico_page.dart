@@ -7,7 +7,7 @@ import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/features/onboarding/presentation/pages/welcome_page.dart';
 import '/features/perfil/presentation/pages/apagar_conta_page.dart';
-import '/pages/tecnico/dashboard/dashboard_tecnico/dashboard_tecnico_widget.dart';
+import '/features/dashboard/presentation/pages/dashboard_tecnico_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -686,7 +686,7 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
               );
             }
 
-            context.goNamed(DashboardTecnicoWidget.routeName);
+            context.goNamed(DashboardTecnicoPage.routeName);
           },
           text: 'Salvar',
           icon: Icon(

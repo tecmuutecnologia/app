@@ -14,11 +14,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'prontuario_animal_model.dart';
-export 'prontuario_animal_model.dart';
 
-class ProntuarioAnimalWidget extends StatefulWidget {
-  const ProntuarioAnimalWidget({
+class ProntuarioAnimalPage extends StatefulWidget {
+  const ProntuarioAnimalPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -43,25 +41,26 @@ class ProntuarioAnimalWidget extends StatefulWidget {
   static String routePath = '/prontuarioAnimal';
 
   @override
-  State<ProntuarioAnimalWidget> createState() => _ProntuarioAnimalWidgetState();
+  State<ProntuarioAnimalPage> createState() => _ProntuarioAnimalPageState();
 }
 
-class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
-  late ProntuarioAnimalModel _model;
+class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
+  InstantTimer? _instantTimer;
+  bool? _respostaNet = true;
+  TratamentosRecord? _deleteAcaoUidTratamentos;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ProntuarioAnimalModel());
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.instantTimer = InstantTimer.periodic(
+      _instantTimer = InstantTimer.periodic(
         duration: Duration(milliseconds: 1000),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
+          _respostaNet = await actions.checkInternetConnection();
 
           safeSetState(() {});
         },
@@ -74,7 +73,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
 
   @override
   void dispose() {
-    _model.dispose();
+    _instantTimer?.cancel();
 
     super.dispose();
   }
@@ -1285,7 +1284,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
               ) ??
               false;
           if (confirmDialogResponse) {
-            _model.deleteAcaoUidTratamentos = await queryTratamentosRecordOnce(
+            _deleteAcaoUidTratamentos = await queryTratamentosRecordOnce(
               queryBuilder: (tratamentosRecord) => tratamentosRecord.where(
                 'uidAcaoLancada',
                 isEqualTo: item.reference,
@@ -1293,7 +1292,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
               singleRecord: true,
             ).then((s) => s.firstOrNull);
             _shouldSetState = true;
-            await _model.deleteAcaoUidTratamentos!.reference.delete();
+            await _deleteAcaoUidTratamentos!.reference.delete();
             await item.reference.delete();
             if (_shouldSetState) safeSetState(() {});
             return;
@@ -4731,7 +4730,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (_model.respostaNet ?? true)
+                  if (_respostaNet ?? true)
                     Container(
                       width: 500.0,
                       constraints: BoxConstraints(
@@ -4784,7 +4783,7 @@ class _ProntuarioAnimalWidgetState extends State<ProntuarioAnimalWidget> {
                         ),
                       ),
                     ),
-                  if (!_model.respostaNet!)
+                  if (!_respostaNet!)
                     Container(
                       width: 500.0,
                       constraints: BoxConstraints(

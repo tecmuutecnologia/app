@@ -8,11 +8,9 @@ import '/core/ui/custom_functions.dart' as functions;
 import '/index.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'indices_zootecnicos_model.dart';
-export 'indices_zootecnicos_model.dart';
 
-class IndicesZootecnicosWidget extends StatefulWidget {
-  const IndicesZootecnicosWidget({
+class IndicesZootecnicosPage extends StatefulWidget {
+  const IndicesZootecnicosPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -33,27 +31,21 @@ class IndicesZootecnicosWidget extends StatefulWidget {
   static String routePath = '/indicesZootecnicos';
 
   @override
-  State<IndicesZootecnicosWidget> createState() =>
-      _IndicesZootecnicosWidgetState();
+  State<IndicesZootecnicosPage> createState() => _IndicesZootecnicosPageState();
 }
 
-class _IndicesZootecnicosWidgetState extends State<IndicesZootecnicosWidget> {
-  late IndicesZootecnicosModel _model;
-
+class _IndicesZootecnicosPageState extends State<IndicesZootecnicosPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => IndicesZootecnicosModel());
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.dispose();
-
     super.dispose();
   }
 
@@ -75,7 +67,7 @@ class _IndicesZootecnicosWidgetState extends State<IndicesZootecnicosWidget> {
             ),
             onPressed: () async {
               context.pushNamed(
-                InicioPropriedadeWidget.routeName,
+                InicioPropriedadePage.routeName,
                 queryParameters: {
                   'nomePropriedade': serializeParam(
                     widget.nomePropriedade,

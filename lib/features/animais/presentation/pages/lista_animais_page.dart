@@ -14,11 +14,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'lista_animais_model.dart';
-export 'lista_animais_model.dart';
 
-class ListaAnimaisWidget extends StatefulWidget {
-  const ListaAnimaisWidget({
+class ListaAnimaisPage extends StatefulWidget {
+  const ListaAnimaisPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -44,29 +42,45 @@ class ListaAnimaisWidget extends StatefulWidget {
   static String routePath = '/listaAnimais';
 
   @override
-  State<ListaAnimaisWidget> createState() => _ListaAnimaisWidgetState();
+  State<ListaAnimaisPage> createState() => _ListaAnimaisPageState();
 }
 
-class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
+class _ListaAnimaisPageState extends State<ListaAnimaisPage>
     with TickerProviderStateMixin {
-  late ListaAnimaisModel _model;
+  InstantTimer? _instantTimer;
+  bool? _respostaNet = true;
+  TabController? _tabBarController;
+  int get _tabBarCurrentIndex =>
+      _tabBarController != null ? _tabBarController!.index : 0;
+
+  FocusNode? _searchListBezerrasFocusNode;
+  TextEditingController? _searchListBezerrasTextController;
+  FocusNode? _searchListBezerrosFocusNode;
+  TextEditingController? _searchListBezerrosTextController;
+  FocusNode? _searchListNovilhasFocusNode;
+  TextEditingController? _searchListNovilhasTextController;
+  FocusNode? _searchListSemensFocusNode;
+  TextEditingController? _searchListSemensTextController;
+  FocusNode? _searchListTourosFocusNode;
+  TextEditingController? _searchListTourosTextController;
+  FocusNode? _searchListVacasFocusNode;
+  TextEditingController? _searchListVacasTextController;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ListaAnimaisModel());
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.instantTimer = InstantTimer.periodic(
+      _instantTimer = InstantTimer.periodic(
         duration: Duration(seconds: 5),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
+          _respostaNet = await actions.checkInternetConnection();
 
           safeSetState(() {});
-          if (_model.respostaNet!) {
+          if (_respostaNet!) {
             safeSetState(() {});
           } else {
             // Offline: notificação passiva via SyncStatusBanner (app-wide);
@@ -78,7 +92,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
       );
     });
 
-    _model.tabBarController = TabController(
+    _tabBarController = TabController(
       vsync: this,
       length: 6,
       initialIndex: min(
@@ -89,30 +103,43 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
           5),
     )..addListener(() => safeSetState(() {}));
 
-    _model.searchListBezerrasTextController ??= TextEditingController();
-    _model.searchListBezerrasFocusNode ??= FocusNode();
+    _searchListBezerrasTextController ??= TextEditingController();
+    _searchListBezerrasFocusNode ??= FocusNode();
 
-    _model.searchListBezerrosTextController ??= TextEditingController();
-    _model.searchListBezerrosFocusNode ??= FocusNode();
+    _searchListBezerrosTextController ??= TextEditingController();
+    _searchListBezerrosFocusNode ??= FocusNode();
 
-    _model.searchListNovilhasTextController ??= TextEditingController();
-    _model.searchListNovilhasFocusNode ??= FocusNode();
+    _searchListNovilhasTextController ??= TextEditingController();
+    _searchListNovilhasFocusNode ??= FocusNode();
 
-    _model.searchListSemensTextController ??= TextEditingController();
-    _model.searchListSemensFocusNode ??= FocusNode();
+    _searchListSemensTextController ??= TextEditingController();
+    _searchListSemensFocusNode ??= FocusNode();
 
-    _model.searchListTourosTextController ??= TextEditingController();
-    _model.searchListTourosFocusNode ??= FocusNode();
+    _searchListTourosTextController ??= TextEditingController();
+    _searchListTourosFocusNode ??= FocusNode();
 
-    _model.searchListVacasTextController ??= TextEditingController();
-    _model.searchListVacasFocusNode ??= FocusNode();
+    _searchListVacasTextController ??= TextEditingController();
+    _searchListVacasFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.dispose();
+    _instantTimer?.cancel();
+    _tabBarController?.dispose();
+    _searchListBezerrasFocusNode?.dispose();
+    _searchListBezerrasTextController?.dispose();
+    _searchListBezerrosFocusNode?.dispose();
+    _searchListBezerrosTextController?.dispose();
+    _searchListNovilhasFocusNode?.dispose();
+    _searchListNovilhasTextController?.dispose();
+    _searchListSemensFocusNode?.dispose();
+    _searchListSemensTextController?.dispose();
+    _searchListTourosFocusNode?.dispose();
+    _searchListTourosTextController?.dispose();
+    _searchListVacasFocusNode?.dispose();
+    _searchListVacasTextController?.dispose();
 
     super.dispose();
   }
@@ -135,7 +162,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
             ),
             onPressed: () async {
               context.pushNamed(
-                InicioPropriedadeWidget.routeName,
+                InicioPropriedadePage.routeName,
                 queryParameters: {
                   'nomePropriedade': serializeParam(
                     widget.nomePropriedade,
@@ -214,7 +241,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
               labelColor: Colors.white,
               unselectedLabelColor: Color(0xFF525D67),
               backgroundColor: valueOrDefault<Color>(
-                _model.respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
+                _respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
                 Color(0xFFF75E38),
               ),
               unselectedBackgroundColor: Color(0xFFC5C5C5),
@@ -247,7 +274,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                   text: 'Vacas',
                 ),
               ],
-              controller: _model.tabBarController,
+              controller: _tabBarController,
               onTap: (i) async {
                 [
                   () async {},
@@ -262,14 +289,14 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
           ),
           Expanded(
             child: TabBarView(
-              controller: _model.tabBarController,
+              controller: _tabBarController,
               children: [
                 AnimalGroupListView(
                   propriedadePath: widget.uidPropriedade!.path,
                   grupo: 'Bezerras',
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
-                      EditarAnimalWidget.routeName,
+                      EditarAnimalPage.routeName,
                       queryParameters: {
                         'uidPropriedade': serializeParam(
                             widget.uidPropriedade, ParamType.DocumentReference),
@@ -301,7 +328,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                   grupo: 'Bezerros',
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
-                      EditarAnimalWidget.routeName,
+                      EditarAnimalPage.routeName,
                       queryParameters: {
                         'uidPropriedade': serializeParam(
                             widget.uidPropriedade, ParamType.DocumentReference),
@@ -333,7 +360,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                   grupo: 'Novilhas',
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
-                      EditarAnimalWidget.routeName,
+                      EditarAnimalPage.routeName,
                       queryParameters: {
                         'uidPropriedade': serializeParam(
                             widget.uidPropriedade, ParamType.DocumentReference),
@@ -365,7 +392,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                   grupo: 'Sêmens',
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
-                      EditarAnimalWidget.routeName,
+                      EditarAnimalPage.routeName,
                       queryParameters: {
                         'uidPropriedade': serializeParam(
                             widget.uidPropriedade, ParamType.DocumentReference),
@@ -397,7 +424,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                   grupo: 'Touros',
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
-                      EditarAnimalWidget.routeName,
+                      EditarAnimalPage.routeName,
                       queryParameters: {
                         'uidPropriedade': serializeParam(
                             widget.uidPropriedade, ParamType.DocumentReference),
@@ -429,7 +456,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                   grupo: 'Vacas',
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
-                      EditarAnimalWidget.routeName,
+                      EditarAnimalPage.routeName,
                       queryParameters: {
                         'uidPropriedade': serializeParam(
                             widget.uidPropriedade, ParamType.DocumentReference),
@@ -469,7 +496,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
       alignment: AlignmentDirectional(0.0, 0.0),
       child: FFButtonWidget(
         onPressed: () async {
-          if ((_model.respostaNet == true) &&
+          if ((_respostaNet == true) &&
               (FFAppState().animaisProdutoresOffline.length > 0)) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -486,7 +513,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
             return;
           } else {
             context.pushNamed(
-              CadastrarNovoAnimalWidget.routeName,
+              CadastrarNovoAnimalPage.routeName,
               queryParameters: {
                 'uidPropriedade': serializeParam(
                   widget.uidPropriedade,
@@ -506,17 +533,17 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                 ),
                 'grupoPredominante': serializeParam(
                   () {
-                    if (_model.tabBarCurrentIndex == 0) {
+                    if (_tabBarCurrentIndex == 0) {
                       return 'Bezerras';
-                    } else if (_model.tabBarCurrentIndex == 1) {
+                    } else if (_tabBarCurrentIndex == 1) {
                       return 'Bezerros';
-                    } else if (_model.tabBarCurrentIndex == 2) {
+                    } else if (_tabBarCurrentIndex == 2) {
                       return 'Novilhas';
-                    } else if (_model.tabBarCurrentIndex == 3) {
+                    } else if (_tabBarCurrentIndex == 3) {
                       return 'Sêmens';
-                    } else if (_model.tabBarCurrentIndex == 4) {
+                    } else if (_tabBarCurrentIndex == 4) {
                       return 'Touros';
-                    } else if (_model.tabBarCurrentIndex == 5) {
+                    } else if (_tabBarCurrentIndex == 5) {
                       return 'Vacas';
                     } else {
                       return 'Novilhas';
@@ -529,7 +556,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
                   ParamType.bool,
                 ),
                 'initialTabSelect': serializeParam(
-                  _model.tabBarCurrentIndex,
+                  _tabBarCurrentIndex,
                   ParamType.int,
                 ),
                 'diasDg': serializeParam(
@@ -592,7 +619,7 @@ class _ListaAnimaisWidgetState extends State<ListaAnimaisWidget>
           preferredSize: Size.fromHeight(100.0),
           child: AppBar(
             backgroundColor:
-                _model.respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
+                _respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
             automaticallyImplyLeading: false,
             actions: [],
             flexibleSpace: FlexibleSpaceBar(

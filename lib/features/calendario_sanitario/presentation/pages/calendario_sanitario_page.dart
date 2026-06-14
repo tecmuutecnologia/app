@@ -7,7 +7,7 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '../widgets/selecao_animal_calendario_widget.dart';
-import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
+import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -72,7 +72,7 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
             ),
             onPressed: () async {
               context.pushNamed(
-                InicioPropriedadeWidget.routeName,
+                InicioPropriedadePage.routeName,
                 queryParameters: {
                   'nomePropriedade': serializeParam(
                     widget.nomePropriedade,

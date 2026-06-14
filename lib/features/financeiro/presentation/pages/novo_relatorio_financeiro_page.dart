@@ -17,11 +17,9 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
-import 'novo_relatorio_financeiro_model.dart';
-export 'novo_relatorio_financeiro_model.dart';
 
-class NovoRelatorioFinanceiroWidget extends StatefulWidget {
-  const NovoRelatorioFinanceiroWidget({
+class NovoRelatorioFinanceiroPage extends StatefulWidget {
+  const NovoRelatorioFinanceiroPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -42,48 +40,128 @@ class NovoRelatorioFinanceiroWidget extends StatefulWidget {
   static String routePath = '/novoRelatorioFinanceiro';
 
   @override
-  State<NovoRelatorioFinanceiroWidget> createState() =>
-      _NovoRelatorioFinanceiroWidgetState();
+  State<NovoRelatorioFinanceiroPage> createState() =>
+      _NovoRelatorioFinanceiroPageState();
 }
 
-class _NovoRelatorioFinanceiroWidgetState
-    extends State<NovoRelatorioFinanceiroWidget> {
-  late NovoRelatorioFinanceiroModel _model;
+class _NovoRelatorioFinanceiroPageState
+    extends State<NovoRelatorioFinanceiroPage> {
+  final _formKey = GlobalKey<FormState>();
+  FocusNode? _dtRelatorioFocusNode;
+  TextEditingController? _dtRelatorioTextController;
+  late MaskTextInputFormatter _dtRelatorioMask;
+  String? _dtRelatorioTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    return null;
+  }
+
+  DateTime? _datePicked;
+  FocusNode? _vacasLactacaoFocusNode;
+  TextEditingController? _vacasLactacaoTextController;
+  String? _vacasLactacaoTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    return null;
+  }
+
+  FocusNode? _litrosLeiteDiaFocusNode;
+  TextEditingController? _litrosLeiteDiaTextController;
+  String? _litrosLeiteDiaTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    return null;
+  }
+
+  FocusNode? _litrosLeiteMesFocusNode;
+  TextEditingController? _litrosLeiteMesTextController;
+  String? _litrosLeiteMesTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    return null;
+  }
+
+  FocusNode? _totalRecebidoFocusNode;
+  TextEditingController? _totalRecebidoTextController;
+  String? _totalRecebidoTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    return null;
+  }
+
+  FocusNode? _faturamentoLiquidoFocusNode;
+  TextEditingController? _faturamentoLiquidoTextController;
+  String? _faturamentoLiquidoTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    return null;
+  }
+
+  FocusNode? _mediaProducaoVacaFocusNode;
+  TextEditingController? _mediaProducaoVacaTextController;
+  String? _mediaProducaoVacaTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    return null;
+  }
+
+  FocusNode? _custoLitroLeiteFocusNode;
+  TextEditingController? _custoLitroLeiteTextController;
+  String? _custoLitroLeiteTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+    return null;
+  }
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => NovoRelatorioFinanceiroModel());
 
-    _model.dtRelatorioTextController ??= TextEditingController();
-    _model.dtRelatorioFocusNode ??= FocusNode();
+    _dtRelatorioTextController ??= TextEditingController();
+    _dtRelatorioFocusNode ??= FocusNode();
 
-    _model.dtRelatorioMask = MaskTextInputFormatter(mask: '##/##/####');
+    _dtRelatorioMask = MaskTextInputFormatter(mask: '##/##/####');
 
-    _model.vacasLactacaoFocusNode ??= FocusNode();
+    _vacasLactacaoFocusNode ??= FocusNode();
 
-    _model.litrosLeiteDiaTextController ??= TextEditingController();
-    _model.litrosLeiteDiaFocusNode ??= FocusNode();
+    _litrosLeiteDiaTextController ??= TextEditingController();
+    _litrosLeiteDiaFocusNode ??= FocusNode();
 
-    _model.litrosLeiteMesTextController ??= TextEditingController();
-    _model.litrosLeiteMesFocusNode ??= FocusNode();
+    _litrosLeiteMesTextController ??= TextEditingController();
+    _litrosLeiteMesFocusNode ??= FocusNode();
 
-    _model.totalRecebidoTextController ??= TextEditingController();
-    _model.totalRecebidoFocusNode ??= FocusNode();
+    _totalRecebidoTextController ??= TextEditingController();
+    _totalRecebidoFocusNode ??= FocusNode();
 
-    _model.faturamentoLiquidoTextController ??= TextEditingController();
-    _model.faturamentoLiquidoFocusNode ??= FocusNode();
+    _faturamentoLiquidoTextController ??= TextEditingController();
+    _faturamentoLiquidoFocusNode ??= FocusNode();
 
-    _model.mediaProducaoVacaTextController ??= TextEditingController();
-    _model.mediaProducaoVacaFocusNode ??= FocusNode();
+    _mediaProducaoVacaTextController ??= TextEditingController();
+    _mediaProducaoVacaFocusNode ??= FocusNode();
 
-    _model.custoLitroLeiteTextController ??= TextEditingController();
-    _model.custoLitroLeiteFocusNode ??= FocusNode();
+    _custoLitroLeiteTextController ??= TextEditingController();
+    _custoLitroLeiteFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {
-          _model.dtRelatorioTextController?.text = dateTimeFormat(
+          _dtRelatorioTextController?.text = dateTimeFormat(
             "dd/MM/yyyy",
             getCurrentTimestamp,
             locale: FFLocalizations.of(context).languageCode,
@@ -93,7 +171,22 @@ class _NovoRelatorioFinanceiroWidgetState
 
   @override
   void dispose() {
-    _model.dispose();
+    _dtRelatorioFocusNode?.dispose();
+    _dtRelatorioTextController?.dispose();
+    _vacasLactacaoFocusNode?.dispose();
+    _vacasLactacaoTextController?.dispose();
+    _litrosLeiteDiaFocusNode?.dispose();
+    _litrosLeiteDiaTextController?.dispose();
+    _litrosLeiteMesFocusNode?.dispose();
+    _litrosLeiteMesTextController?.dispose();
+    _totalRecebidoFocusNode?.dispose();
+    _totalRecebidoTextController?.dispose();
+    _faturamentoLiquidoFocusNode?.dispose();
+    _faturamentoLiquidoTextController?.dispose();
+    _mediaProducaoVacaFocusNode?.dispose();
+    _mediaProducaoVacaTextController?.dispose();
+    _custoLitroLeiteFocusNode?.dispose();
+    _custoLitroLeiteTextController?.dispose();
 
     super.dispose();
   }
@@ -191,16 +284,16 @@ class _NovoRelatorioFinanceiroWidgetState
         _p12(context),
         _p13(context),
         _p14(context),
-        if ((_model.totalRecebidoTextController.text != '') &&
-            (_model.faturamentoLiquidoTextController.text != '') &&
-            (_model.mediaProducaoVacaTextController.text != '') &&
-            (_model.custoLitroLeiteTextController.text != ''))
+        if ((_totalRecebidoTextController.text != '') &&
+            (_faturamentoLiquidoTextController.text != '') &&
+            (_mediaProducaoVacaTextController.text != '') &&
+            (_custoLitroLeiteTextController.text != ''))
           Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 10.0),
             child: FFButtonWidget(
               onPressed: () async {
-                if (_model.formKey.currentState == null ||
-                    !_model.formKey.currentState!.validate()) {
+                if (_formKey.currentState == null ||
+                    !_formKey.currentState!.validate()) {
                   return;
                 }
 
@@ -208,26 +301,24 @@ class _NovoRelatorioFinanceiroWidgetState
                     .set(createFinanceiroRecordData(
                   uidPropriedade: widget.uidPropriedade,
                   uidTecnico: widget.uidTecnico,
-                  dtRelatorio: _model.dtRelatorioTextController.text,
+                  dtRelatorio: _dtRelatorioTextController.text,
                   vacasLactacao:
-                      int.tryParse(_model.vacasLactacaoTextController.text),
+                      int.tryParse(_vacasLactacaoTextController.text),
                   litrosLeiteMes:
-                      int.tryParse(_model.litrosLeiteMesTextController.text),
+                      int.tryParse(_litrosLeiteMesTextController.text),
                   litrosLeitePorDia:
-                      int.tryParse(_model.litrosLeiteDiaTextController.text),
+                      int.tryParse(_litrosLeiteDiaTextController.text),
                   precoRecebidoPorLitro:
                       FFAppState().precoRecebidoLitro.toString(),
                   despesasNoMes: FFAppState().despesasNoMes.toString(),
-                  totalRecebidoMes: _model.totalRecebidoTextController.text,
-                  faturamentoLiquido:
-                      _model.faturamentoLiquidoTextController.text,
-                  mediaProducaoVaca:
-                      _model.mediaProducaoVacaTextController.text,
-                  custoLitroLeite: _model.custoLitroLeiteTextController.text,
+                  totalRecebidoMes: _totalRecebidoTextController.text,
+                  faturamentoLiquido: _faturamentoLiquidoTextController.text,
+                  mediaProducaoVaca: _mediaProducaoVacaTextController.text,
+                  custoLitroLeite: _custoLitroLeiteTextController.text,
                 ));
 
                 context.goNamed(
-                  RelatorioFinanceiroWidget.routeName,
+                  RelatorioFinanceiroPage.routeName,
                   queryParameters: {
                     'uidPropriedade': serializeParam(
                       widget.uidPropriedade,
@@ -302,10 +393,10 @@ class _NovoRelatorioFinanceiroWidgetState
           child: Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
             child: TextFormField(
-              controller: _model.dtRelatorioTextController,
-              focusNode: _model.dtRelatorioFocusNode,
+              controller: _dtRelatorioTextController,
+              focusNode: _dtRelatorioFocusNode,
               onChanged: (_) => EasyDebounce.debounce(
-                '_model.dtRelatorioTextController',
+                '_dtRelatorioTextController',
                 Duration(milliseconds: 2000),
                 () => safeSetState(() {}),
               ),
@@ -359,10 +450,10 @@ class _NovoRelatorioFinanceiroWidgetState
                 ),
                 contentPadding:
                     EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-                suffixIcon: _model.dtRelatorioTextController!.text.isNotEmpty
+                suffixIcon: _dtRelatorioTextController!.text.isNotEmpty
                     ? InkWell(
                         onTap: () async {
-                          _model.dtRelatorioTextController?.clear();
+                          _dtRelatorioTextController?.clear();
                           safeSetState(() {});
                         },
                         child: Icon(
@@ -393,9 +484,9 @@ class _NovoRelatorioFinanceiroWidgetState
                       maxLength}) =>
                   null,
               keyboardType: TextInputType.datetime,
-              validator: _model.dtRelatorioTextControllerValidator
-                  .asValidator(context),
-              inputFormatters: [_model.dtRelatorioMask],
+              validator:
+                  _dtRelatorioTextControllerValidator.asValidator(context),
+              inputFormatters: [_dtRelatorioMask],
             ),
           ),
         ),
@@ -462,7 +553,7 @@ class _NovoRelatorioFinanceiroWidgetState
                               FlutterFlowTheme.of(context).secondaryBackground,
                           use24hFormat: false,
                           onDateTimeChanged: (newDateTime) => safeSetState(() {
-                            _model.datePicked = newDateTime;
+                            _datePicked = newDateTime;
                           }),
                         ),
                       ),
@@ -470,14 +561,14 @@ class _NovoRelatorioFinanceiroWidgetState
                   );
                 });
             safeSetState(() {
-              _model.dtRelatorioTextController?.text = dateTimeFormat(
+              _dtRelatorioTextController?.text = dateTimeFormat(
                 "dd/MM/yyyy",
-                _model.datePicked,
+                _datePicked,
                 locale: FFLocalizations.of(context).languageCode,
               );
-              _model.dtRelatorioMask.updateMask(
+              _dtRelatorioMask.updateMask(
                 newValue: TextEditingValue(
-                  text: _model.dtRelatorioTextController!.text,
+                  text: _dtRelatorioTextController!.text,
                 ),
               );
             });
@@ -525,8 +616,7 @@ class _NovoRelatorioFinanceiroWidgetState
             snapshot.data!;
 
         return TextFormField(
-          controller: _model.vacasLactacaoTextController ??=
-              TextEditingController(
+          controller: _vacasLactacaoTextController ??= TextEditingController(
             text: vacasLactacaoAnimaisProdutoresRecordList
                 .where((e) =>
                     (ehVazia(e.status)) ||
@@ -537,9 +627,9 @@ class _NovoRelatorioFinanceiroWidgetState
                 .length
                 .toString(),
           ),
-          focusNode: _model.vacasLactacaoFocusNode,
+          focusNode: _vacasLactacaoFocusNode,
           onChanged: (_) => EasyDebounce.debounce(
-            '_model.vacasLactacaoTextController',
+            '_vacasLactacaoTextController',
             Duration(milliseconds: 2000),
             () async {},
           ),
@@ -614,8 +704,7 @@ class _NovoRelatorioFinanceiroWidgetState
               ),
           keyboardType: TextInputType.number,
           cursorColor: FlutterFlowTheme.of(context).primary,
-          validator:
-              _model.vacasLactacaoTextControllerValidator.asValidator(context),
+          validator: _vacasLactacaoTextControllerValidator.asValidator(context),
         );
       },
     );
@@ -623,17 +712,16 @@ class _NovoRelatorioFinanceiroWidgetState
 
   Widget _p6(BuildContext context) {
     return TextFormField(
-      controller: _model.litrosLeiteDiaTextController,
-      focusNode: _model.litrosLeiteDiaFocusNode,
+      controller: _litrosLeiteDiaTextController,
+      focusNode: _litrosLeiteDiaFocusNode,
       onChanged: (_) => EasyDebounce.debounce(
-        '_model.litrosLeiteDiaTextController',
+        '_litrosLeiteDiaTextController',
         Duration(milliseconds: 2000),
         () async {
-          if (_model.vacasLactacaoTextController.text != '') {
+          if (_vacasLactacaoTextController.text != '') {
             safeSetState(() {
-              _model.litrosLeiteMesTextController?.text = functions
-                  .calcularLitrosLeiteMes(
-                      _model.litrosLeiteDiaTextController.text)
+              _litrosLeiteMesTextController?.text = functions
+                  .calcularLitrosLeiteMes(_litrosLeiteDiaTextController.text)
                   .toString();
             });
             return;
@@ -706,8 +794,7 @@ class _NovoRelatorioFinanceiroWidgetState
           ),
       keyboardType: TextInputType.number,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator:
-          _model.litrosLeiteDiaTextControllerValidator.asValidator(context),
+      validator: _litrosLeiteDiaTextControllerValidator.asValidator(context),
       inputFormatters: [
         if (!isAndroid && !isiOS)
           TextInputFormatter.withFunction((oldValue, newValue) {
@@ -722,10 +809,10 @@ class _NovoRelatorioFinanceiroWidgetState
 
   Widget _p7(BuildContext context) {
     return TextFormField(
-      controller: _model.litrosLeiteMesTextController,
-      focusNode: _model.litrosLeiteMesFocusNode,
+      controller: _litrosLeiteMesTextController,
+      focusNode: _litrosLeiteMesFocusNode,
       onChanged: (_) => EasyDebounce.debounce(
-        '_model.litrosLeiteMesTextController',
+        '_litrosLeiteMesTextController',
         Duration(milliseconds: 2000),
         () async {},
       ),
@@ -798,8 +885,7 @@ class _NovoRelatorioFinanceiroWidgetState
           null,
       keyboardType: TextInputType.number,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator:
-          _model.litrosLeiteMesTextControllerValidator.asValidator(context),
+      validator: _litrosLeiteMesTextControllerValidator.asValidator(context),
       inputFormatters: [
         if (!isAndroid && !isiOS)
           TextInputFormatter.withFunction((oldValue, newValue) {
@@ -857,37 +943,37 @@ class _NovoRelatorioFinanceiroWidgetState
       children: [
         FFButtonWidget(
           onPressed: () async {
-            if ((_model.dtRelatorioTextController.text != '') &&
-                (_model.vacasLactacaoTextController.text != '') &&
-                (_model.litrosLeiteDiaTextController.text != '') &&
-                (_model.litrosLeiteMesTextController.text != '') &&
+            if ((_dtRelatorioTextController.text != '') &&
+                (_vacasLactacaoTextController.text != '') &&
+                (_litrosLeiteDiaTextController.text != '') &&
+                (_litrosLeiteMesTextController.text != '') &&
                 (FFAppState().despesasNoMes != null) &&
                 (FFAppState().precoRecebidoLitro != null)) {
               safeSetState(() {
-                _model.totalRecebidoTextController?.text =
+                _totalRecebidoTextController?.text =
                     functions.calcularTotalRecebido(
                         FFAppState().precoRecebidoLitro.toString(),
-                        _model.litrosLeiteMesTextController.text);
+                        _litrosLeiteMesTextController.text);
               });
               safeSetState(() {
-                _model.faturamentoLiquidoTextController?.text =
+                _faturamentoLiquidoTextController?.text =
                     functions.subtracaoFaturamentoLiquido(
-                        _model.totalRecebidoTextController.text,
+                        _totalRecebidoTextController.text,
                         FFAppState().despesasNoMes.toString());
               });
               safeSetState(() {
-                _model.mediaProducaoVacaTextController?.text = formatNumber(
+                _mediaProducaoVacaTextController?.text = formatNumber(
                   functions.calcularMediaProducaoPorVaca(
-                      _model.litrosLeiteDiaTextController.text,
-                      _model.vacasLactacaoTextController.text),
+                      _litrosLeiteDiaTextController.text,
+                      _vacasLactacaoTextController.text),
                   formatType: FormatType.decimal,
                   decimalType: DecimalType.commaDecimal,
                 );
               });
               safeSetState(() {
-                _model.custoLitroLeiteTextController?.text =
+                _custoLitroLeiteTextController?.text =
                     functions.calcularCustoPorLitro(
-                        _model.litrosLeiteMesTextController.text,
+                        _litrosLeiteMesTextController.text,
                         FFAppState().despesasNoMes.toString());
               });
               return;
@@ -982,21 +1068,20 @@ class _NovoRelatorioFinanceiroWidgetState
       child: Container(
         decoration: BoxDecoration(),
         child: TextFormField(
-          controller: _model.totalRecebidoTextController,
-          focusNode: _model.totalRecebidoFocusNode,
+          controller: _totalRecebidoTextController,
+          focusNode: _totalRecebidoFocusNode,
           onChanged: (_) => EasyDebounce.debounce(
-            '_model.totalRecebidoTextController',
+            '_totalRecebidoTextController',
             Duration(milliseconds: 2000),
             () async {
               safeSetState(() {
-                _model.totalRecebidoTextController?.text =
-                    functions.formataMoedaText(
-                        double.parse(_model.totalRecebidoTextController.text));
+                _totalRecebidoTextController?.text = functions.formataMoedaText(
+                    double.parse(_totalRecebidoTextController.text));
               });
               safeSetState(() {
-                _model.faturamentoLiquidoTextController?.text =
+                _faturamentoLiquidoTextController?.text =
                     functions.subtracaoFaturamentoLiquido(
-                        _model.totalRecebidoTextController.text,
+                        _totalRecebidoTextController.text,
                         FFAppState().despesasNoMes.toString());
               });
               return;
@@ -1074,8 +1159,7 @@ class _NovoRelatorioFinanceiroWidgetState
                 fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
               ),
           cursorColor: FlutterFlowTheme.of(context).primary,
-          validator:
-              _model.totalRecebidoTextControllerValidator.asValidator(context),
+          validator: _totalRecebidoTextControllerValidator.asValidator(context),
           inputFormatters: [
             if (!isAndroid && !isiOS)
               TextInputFormatter.withFunction((oldValue, newValue) {
@@ -1094,23 +1178,22 @@ class _NovoRelatorioFinanceiroWidgetState
     return Container(
       decoration: BoxDecoration(),
       child: TextFormField(
-        controller: _model.faturamentoLiquidoTextController,
-        focusNode: _model.faturamentoLiquidoFocusNode,
+        controller: _faturamentoLiquidoTextController,
+        focusNode: _faturamentoLiquidoFocusNode,
         onChanged: (_) => EasyDebounce.debounce(
-          '_model.faturamentoLiquidoTextController',
+          '_faturamentoLiquidoTextController',
           Duration(milliseconds: 2000),
           () async {
             safeSetState(() {
-              _model.faturamentoLiquidoTextController?.text =
-                  functions.formataMoedaText(double.parse(
-                      _model.faturamentoLiquidoTextController.text));
+              _faturamentoLiquidoTextController?.text =
+                  functions.formataMoedaText(
+                      double.parse(_faturamentoLiquidoTextController.text));
             });
             safeSetState(() {
-              _model.custoLitroLeiteTextController?.text = formatNumber(
-                (double.parse(_model.totalRecebidoTextController.text) -
-                        double.parse(
-                            _model.faturamentoLiquidoTextController.text)) /
-                    double.parse(_model.litrosLeiteMesTextController.text),
+              _custoLitroLeiteTextController?.text = formatNumber(
+                (double.parse(_totalRecebidoTextController.text) -
+                        double.parse(_faturamentoLiquidoTextController.text)) /
+                    double.parse(_litrosLeiteMesTextController.text),
                 formatType: FormatType.decimal,
                 decimalType: DecimalType.commaDecimal,
               );
@@ -1184,8 +1267,8 @@ class _NovoRelatorioFinanceiroWidgetState
               fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
             ),
         cursorColor: FlutterFlowTheme.of(context).primary,
-        validator: _model.faturamentoLiquidoTextControllerValidator
-            .asValidator(context),
+        validator:
+            _faturamentoLiquidoTextControllerValidator.asValidator(context),
         inputFormatters: [
           if (!isAndroid && !isiOS)
             TextInputFormatter.withFunction((oldValue, newValue) {
@@ -1205,8 +1288,8 @@ class _NovoRelatorioFinanceiroWidgetState
       child: Container(
         decoration: BoxDecoration(),
         child: TextFormField(
-          controller: _model.mediaProducaoVacaTextController,
-          focusNode: _model.mediaProducaoVacaFocusNode,
+          controller: _mediaProducaoVacaTextController,
+          focusNode: _mediaProducaoVacaFocusNode,
           autofocus: false,
           textCapitalization: TextCapitalization.none,
           readOnly: true,
@@ -1279,8 +1362,8 @@ class _NovoRelatorioFinanceiroWidgetState
                 fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
               ),
           cursorColor: FlutterFlowTheme.of(context).primary,
-          validator: _model.mediaProducaoVacaTextControllerValidator
-              .asValidator(context),
+          validator:
+              _mediaProducaoVacaTextControllerValidator.asValidator(context),
           inputFormatters: [
             if (!isAndroid && !isiOS)
               TextInputFormatter.withFunction((oldValue, newValue) {
@@ -1301,16 +1384,16 @@ class _NovoRelatorioFinanceiroWidgetState
       child: Container(
         decoration: BoxDecoration(),
         child: TextFormField(
-          controller: _model.custoLitroLeiteTextController,
-          focusNode: _model.custoLitroLeiteFocusNode,
+          controller: _custoLitroLeiteTextController,
+          focusNode: _custoLitroLeiteFocusNode,
           onChanged: (_) => EasyDebounce.debounce(
-            '_model.custoLitroLeiteTextController',
+            '_custoLitroLeiteTextController',
             Duration(milliseconds: 2000),
             () async {
               safeSetState(() {
-                _model.custoLitroLeiteTextController?.text =
-                    functions.formataMoedaText(double.parse(
-                        _model.custoLitroLeiteTextController.text));
+                _custoLitroLeiteTextController?.text =
+                    functions.formataMoedaText(
+                        double.parse(_custoLitroLeiteTextController.text));
               });
             },
           ),
@@ -1386,8 +1469,8 @@ class _NovoRelatorioFinanceiroWidgetState
                 fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
               ),
           cursorColor: FlutterFlowTheme.of(context).primary,
-          validator: _model.custoLitroLeiteTextControllerValidator
-              .asValidator(context),
+          validator:
+              _custoLitroLeiteTextControllerValidator.asValidator(context),
           inputFormatters: [
             if (!isAndroid && !isiOS)
               TextInputFormatter.withFunction((oldValue, newValue) {
@@ -1440,7 +1523,7 @@ class _NovoRelatorioFinanceiroWidgetState
           child: Container(
             width: MediaQuery.sizeOf(context).width * 1.0,
             child: Form(
-              key: _model.formKey,
+              key: _formKey,
               autovalidateMode: AutovalidateMode.disabled,
               child: Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),

@@ -6,7 +6,7 @@ import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/form_field_controller.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/services/index.dart' as actions;
-import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
+import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -169,7 +169,7 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
 
   void _navigateBack() {
     context.pushNamed(
-      InicioPropriedadeWidget.routeName,
+      InicioPropriedadePage.routeName,
       queryParameters: {
         'nomePropriedade':
             serializeParam(widget.nomePropriedade, ParamType.String),

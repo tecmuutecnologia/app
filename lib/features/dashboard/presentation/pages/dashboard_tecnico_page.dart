@@ -9,7 +9,9 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/services/index.dart' as actions;
-import '/index.dart';
+import '/features/propriedades/presentation/pages/lista_propriedade_page.dart';
+import '/features/perfil/presentation/pages/profile_tecnico_page.dart';
+import '/features/plano/presentation/pages/subscription_plan_tecnico_page.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +19,8 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'dashboard_tecnico_model.dart';
-export 'dashboard_tecnico_model.dart';
-
 // Widgets refatorados
-import 'widgets/widgets.dart';
+import '../widgets/widgets.dart';
 
 /// Dashboard principal do técnico.
 ///
@@ -31,19 +30,20 @@ import 'widgets/widgets.dart';
 /// - [PropriedadesProgressCard]: Card com progresso circular
 /// - [DashboardActionButton]: Botão de ação principal
 /// - [DashboardSecondaryActionCard]: Card de ação secundária
-class DashboardTecnicoWidget extends StatefulWidget {
-  const DashboardTecnicoWidget({super.key});
+class DashboardTecnicoPage extends StatefulWidget {
+  const DashboardTecnicoPage({super.key});
 
   static String routeName = 'dashboardTecnico';
   static String routePath = '/dashboardTecnico';
 
   @override
-  State<DashboardTecnicoWidget> createState() => _DashboardTecnicoWidgetState();
+  State<DashboardTecnicoPage> createState() => _DashboardTecnicoPageState();
 }
 
-class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
+class _DashboardTecnicoPageState extends State<DashboardTecnicoPage>
     with TickerProviderStateMixin {
-  late DashboardTecnicoModel _model;
+  InstantTimer? _instantTimer;
+  bool? _respostaNet = true;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final animationsMap = <String, AnimationInfo>{};
@@ -51,7 +51,6 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => DashboardTecnicoModel());
 
     _setupInternetCheckTimer();
     _setupAnimations();
@@ -62,11 +61,11 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
   /// Configura o timer de verificação de internet.
   void _setupInternetCheckTimer() {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.instantTimer = InstantTimer.periodic(
+      _instantTimer = InstantTimer.periodic(
         duration: const Duration(milliseconds: 3000),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
-          if (!_model.respostaNet!) {
+          _respostaNet = await actions.checkInternetConnection();
+          if (!_respostaNet!) {
             // Offline: notificação passiva via SyncStatusBanner (app-wide);
             // sem flag global. O respostaNet acima já atualiza a UI.
           }
@@ -122,7 +121,7 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
 
   @override
   void dispose() {
-    _model.dispose();
+    _instantTimer?.cancel();
     super.dispose();
   }
 
@@ -186,9 +185,8 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
   /// AppBar do dashboard.
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: _model.respostaNet!
-          ? const Color(0xFFF75E38)
-          : const Color(0xFFF2886E),
+      backgroundColor:
+          _respostaNet! ? const Color(0xFFF75E38) : const Color(0xFFF2886E),
       automaticallyImplyLeading: false,
       title: Text(
         currentUserDisplayName,
@@ -258,7 +256,7 @@ class _DashboardTecnicoWidgetState extends State<DashboardTecnicoWidget>
   Widget _buildHeaderSection(TecnicoRecord tecnicoRecord) {
     return DashboardHeader(
       email: currentUserEmail,
-      isOnline: _model.respostaNet!,
+      isOnline: _respostaNet!,
       child: _buildStatsList(tecnicoRecord),
     );
   }

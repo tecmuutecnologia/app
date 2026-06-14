@@ -13,8 +13,8 @@ import '/core/ui/custom_functions.dart' as functions;
 import '../widgets/dg_mais_widget.dart';
 import '../widgets/dg_menos_widget.dart';
 import '../widgets/confirma_pp_widget.dart';
-import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
-import '/pages/tecnico/propriedade/prontuario/prontuario_animal/prontuario_animal_widget.dart';
+import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
+import '/features/prontuario/presentation/pages/prontuario_animal_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -147,7 +147,7 @@ class _DiagnosticogestacaoPageState extends State<DiagnosticogestacaoPage> {
                 highlightColor: Colors.transparent,
                 onTap: () async {
                   context.pushNamed(
-                    ProntuarioAnimalWidget.routeName,
+                    ProntuarioAnimalPage.routeName,
                     queryParameters: {
                       'uidPropriedade': serializeParam(
                         widget.uidPropriedade,
@@ -636,7 +636,7 @@ class _DiagnosticogestacaoPageState extends State<DiagnosticogestacaoPage> {
                           ),
                           onPressed: () async {
                             context.pushNamed(
-                              InicioPropriedadeWidget.routeName,
+                              InicioPropriedadePage.routeName,
                               queryParameters: {
                                 'nomePropriedade': serializeParam(
                                   widget.nomePropriedade,

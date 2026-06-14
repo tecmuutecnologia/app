@@ -9,11 +9,11 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
-import '/pages/tecnico/propriedade/animals/descarte_animal/descarte_animal_widget.dart';
+import '/features/animais/presentation/widgets/descarte_animal_widget.dart';
 import '../widgets/nova_inseminacao_widget.dart';
 import '../widgets/registrar_cio_widget.dart';
-import '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart';
-import '/pages/tecnico/propriedade/prontuario/prontuario_animal/prontuario_animal_widget.dart';
+import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
+import '/features/prontuario/presentation/pages/prontuario_animal_page.dart';
 import '/features/sincronizacao/presentation/widgets/alerta_sem_internet_widget.dart';
 import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
@@ -132,7 +132,7 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
           highlightColor: Colors.transparent,
           onTap: () async {
             context.pushNamed(
-              ProntuarioAnimalWidget.routeName,
+              ProntuarioAnimalPage.routeName,
               queryParameters: {
                 'uidPropriedade': serializeParam(
                   widget.uidPropriedade,
@@ -199,7 +199,7 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
           highlightColor: Colors.transparent,
           onTap: () async {
             context.pushNamed(
-              ProntuarioAnimalWidget.routeName,
+              ProntuarioAnimalPage.routeName,
               queryParameters: {
                 'uidPropriedade': serializeParam(
                   widget.uidPropriedade,
@@ -959,7 +959,7 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
                           ),
                           onPressed: () async {
                             context.pushNamed(
-                              InicioPropriedadeWidget.routeName,
+                              InicioPropriedadePage.routeName,
                               queryParameters: {
                                 'nomePropriedade': serializeParam(
                                   widget.nomePropriedade,

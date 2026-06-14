@@ -30,11 +30,9 @@ import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'listacompleta_model.dart';
-export 'listacompleta_model.dart';
 
-class ListacompletaWidget extends StatefulWidget {
-  const ListacompletaWidget({
+class ListacompletaPage extends StatefulWidget {
+  const ListacompletaPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -55,11 +53,16 @@ class ListacompletaWidget extends StatefulWidget {
   static String routePath = '/listacompleta';
 
   @override
-  State<ListacompletaWidget> createState() => _ListacompletaWidgetState();
+  State<ListacompletaPage> createState() => _ListacompletaPageState();
 }
 
-class _ListacompletaWidgetState extends State<ListacompletaWidget> {
-  late ListacompletaModel _model;
+class _ListacompletaPageState extends State<ListacompletaPage> {
+  InstantTimer? _instantTimer;
+  bool? _respostaNet = true;
+  FocusNode? _searchListFocusNode;
+  TextEditingController? _searchListTextController;
+  final String? Function(BuildContext, String?)?
+      _searchListTextControllerValidator = null;
 
   /// Lista de animais existentes (fonte ObjectBox). Antes em
   /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
@@ -70,7 +73,6 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ListacompletaModel());
 
     // Fonte única: carrega a lista do ObjectBox (offline-first). A tela renderiza
     // sempre desta lista; o Firestore é usado apenas para sincronizar.
@@ -84,13 +86,13 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.instantTimer = InstantTimer.periodic(
+      _instantTimer = InstantTimer.periodic(
         duration: Duration(seconds: 5),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
+          _respostaNet = await actions.checkInternetConnection();
 
           safeSetState(() {});
-          if (_model.respostaNet!) {
+          if (_respostaNet!) {
             safeSetState(() {});
           } else {
             // Offline: notificação passiva via SyncStatusBanner (app-wide);
@@ -101,15 +103,17 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
       );
     });
 
-    _model.searchListTextController ??= TextEditingController();
-    _model.searchListFocusNode ??= FocusNode();
+    _searchListTextController ??= TextEditingController();
+    _searchListFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.dispose();
+    _instantTimer?.cancel();
+    _searchListFocusNode?.dispose();
+    _searchListTextController?.dispose();
 
     super.dispose();
   }
@@ -135,7 +139,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
   /// (Fase 4).
   Widget _buildAnimalCardFiltrado(
       BuildContext context, AnimaisProdutoresStruct item, int index) {
-    final searchText = _model.searchListTextController.text.toLowerCase();
+    final searchText = _searchListTextController.text.toLowerCase();
     final matchesSearch = searchText.isEmpty ||
         item.nomeAnimal.toLowerCase().contains(searchText) ||
         item.brincoAnimal.toString().contains(searchText);
@@ -309,7 +313,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                 highlightColor: Colors.transparent,
                                 onTap: () async {
                                   context.pushNamed(
-                                    ProntuarioAnimalWidget.routeName,
+                                    ProntuarioAnimalPage.routeName,
                                     queryParameters: {
                                       'uidPropriedade': serializeParam(
                                         widget.uidPropriedade,
@@ -576,7 +580,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                 highlightColor: Colors.transparent,
                                 onTap: () async {
                                   context.pushNamed(
-                                    ProntuarioAnimalWidget.routeName,
+                                    ProntuarioAnimalPage.routeName,
                                     queryParameters: {
                                       'uidPropriedade': serializeParam(
                                         widget.uidPropriedade,
@@ -4532,7 +4536,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                           ),
                           onPressed: () async {
                             context.pushNamed(
-                              InicioPropriedadeWidget.routeName,
+                              InicioPropriedadePage.routeName,
                               queryParameters: {
                                 'nomePropriedade': serializeParam(
                                   widget.nomePropriedade,
@@ -4672,8 +4676,8 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                               padding: EdgeInsetsDirectional.fromSTEB(
                                   8.0, 0.0, 8.0, 0.0),
                               child: TextFormField(
-                                controller: _model.searchListTextController,
-                                focusNode: _model.searchListFocusNode,
+                                controller: _searchListTextController,
+                                focusNode: _searchListFocusNode,
                                 onChanged: (_) => safeSetState(() {}),
                                 autofocus: false,
                                 obscureText: false,
@@ -4755,12 +4759,11 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                     Icons.search,
                                     color: Color(0xFFE46D3A),
                                   ),
-                                  suffixIcon: _model.searchListTextController!
+                                  suffixIcon: _searchListTextController!
                                           .text.isNotEmpty
                                       ? InkWell(
                                           onTap: () async {
-                                            _model.searchListTextController
-                                                ?.clear();
+                                            _searchListTextController?.clear();
                                             safeSetState(() {});
                                           },
                                           child: Icon(
@@ -4790,8 +4793,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                                           .bodyMedium
                                           .fontStyle,
                                     ),
-                                validator: _model
-                                    .searchListTextControllerValidator
+                                validator: _searchListTextControllerValidator
                                     .asValidator(context),
                               ),
                             ),
@@ -4802,7 +4804,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                   ),
                 ),
               ),
-              if (_model.searchListTextController.text == '')
+              if (_searchListTextController.text == '')
                 Container(
                   width: MediaQuery.sizeOf(context).width * 1.0,
                   height: MediaQuery.sizeOf(context).height * 0.85,
@@ -4843,7 +4845,7 @@ class _ListacompletaWidgetState extends State<ListacompletaWidget> {
                     ],
                   ),
                 ),
-              if (_model.searchListTextController.text != '')
+              if (_searchListTextController.text != '')
                 Container(
                   width: MediaQuery.sizeOf(context).width * 1.0,
                   height: MediaQuery.sizeOf(context).height * 0.85,

@@ -10,6 +10,7 @@ import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
 import '/core/ui/instant_timer.dart';
+import '/core/ui/request_manager.dart';
 import 'dart:ui';
 import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
@@ -22,11 +23,9 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
-import 'cadastrar_novo_animal_model.dart';
-export 'cadastrar_novo_animal_model.dart';
 
-class CadastrarNovoAnimalWidget extends StatefulWidget {
-  const CadastrarNovoAnimalWidget({
+class CadastrarNovoAnimalPage extends StatefulWidget {
+  const CadastrarNovoAnimalPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -51,29 +50,101 @@ class CadastrarNovoAnimalWidget extends StatefulWidget {
   static String routePath = '/cadastrarNovoAnimal';
 
   @override
-  State<CadastrarNovoAnimalWidget> createState() =>
-      _CadastrarNovoAnimalWidgetState();
+  State<CadastrarNovoAnimalPage> createState() =>
+      _CadastrarNovoAnimalPageState();
 }
 
-class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
-  late CadastrarNovoAnimalModel _model;
+class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
+  final _formKey = GlobalKey<FormState>();
+  InstantTimer? _instantTimer;
+  bool? _respostaNet = true;
+  FocusNode? _nomeFocusNode;
+  TextEditingController? _nomeTextController;
+  final String? Function(BuildContext, String?)? _nomeTextControllerValidator =
+      null;
+  FocusNode? _brincoFocusNode;
+  TextEditingController? _brincoTextController;
+  final String? Function(BuildContext, String?)?
+      _brincoTextControllerValidator = null;
+  String? _racaValue;
+  FormFieldController<String>? _racaValueController;
+  String? _grupoValue;
+  FormFieldController<String>? _grupoValueController;
+  bool? _switchValue;
+  FocusNode? _pesoFocusNode;
+  TextEditingController? _pesoTextController;
+  final String? Function(BuildContext, String?)? _pesoTextControllerValidator =
+      null;
+  FocusNode? _dataNascimentoFocusNode;
+  TextEditingController? _dataNascimentoTextController;
+  late MaskTextInputFormatter _dataNascimentoMask;
+  String? _dataNascimentoTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório';
+    }
+    return null;
+  }
+
+  DateTime? _datePicked1;
+  FocusNode? _touroPaiFocusNode;
+  TextEditingController? _touroPaiTextController;
+  final String? Function(BuildContext, String?)?
+      _touroPaiTextControllerValidator = null;
+  FocusNode? _vacaMaeFocusNode;
+  TextEditingController? _vacaMaeTextController;
+  final String? Function(BuildContext, String?)?
+      _vacaMaeTextControllerValidator = null;
+  FocusNode? _dataUltimoPartoFocusNode;
+  TextEditingController? _dataUltimoPartoTextController;
+  late MaskTextInputFormatter _dataUltimoPartoMask;
+  final String? Function(BuildContext, String?)?
+      _dataUltimoPartoTextControllerValidator = null;
+  DateTime? _datePicked2;
+  List<StatusAnimaisRecord>? _outListaAnimais;
+  FocusNode? _dataUltimaInseminacaoFocusNode;
+  TextEditingController? _dataUltimaInseminacaoTextController;
+  late MaskTextInputFormatter _dataUltimaInseminacaoMask;
+  final String? Function(BuildContext, String?)?
+      _dataUltimaInseminacaoTextControllerValidator = null;
+  DateTime? _datePicked3;
+  String? _touroInseminacaoValue;
+  FormFieldController<String>? _touroInseminacaoValueController;
+  String? _statusAnimalValue;
+  FormFieldController<String>? _statusAnimalValueController;
+  List<AnimaisProdutoresRecord>? _outListaAnimaisVerificaNome;
+  List<AnimaisProdutoresRecord>? _outListaAnimaisVerificaBrinco;
+  List<AnimaisProdutoresRecord>? _outListaAnimaisVerificaNomeOff;
+  List<AnimaisProdutoresRecord>? _outListaAnimaisVerificaBrincoOff;
+
+  final _animaisLiberaoParaInseminarManager =
+      StreamRequestManager<List<AnimaisProdutoresRecord>>();
+  Stream<List<AnimaisProdutoresRecord>> _animaisLiberaoParaInseminar({
+    String? uniqueQueryKey,
+    bool? overrideCache,
+    required Stream<List<AnimaisProdutoresRecord>> Function() requestFn,
+  }) =>
+      _animaisLiberaoParaInseminarManager.performRequest(
+        uniqueQueryKey: uniqueQueryKey,
+        overrideCache: overrideCache,
+        requestFn: requestFn,
+      );
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => CadastrarNovoAnimalModel());
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.instantTimer = InstantTimer.periodic(
+      _instantTimer = InstantTimer.periodic(
         duration: Duration(seconds: 5),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
+          _respostaNet = await actions.checkInternetConnection();
 
           safeSetState(() {});
-          if (_model.respostaNet!) {
+          if (_respostaNet!) {
             safeSetState(() {});
           } else {
             // Offline: notificação passiva via SyncStatusBanner (app-wide);
@@ -85,42 +156,58 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
       );
     });
 
-    _model.nomeTextController ??= TextEditingController();
-    _model.nomeFocusNode ??= FocusNode();
+    _nomeTextController ??= TextEditingController();
+    _nomeFocusNode ??= FocusNode();
 
-    _model.brincoTextController ??= TextEditingController();
-    _model.brincoFocusNode ??= FocusNode();
+    _brincoTextController ??= TextEditingController();
+    _brincoFocusNode ??= FocusNode();
 
-    _model.switchValue = true;
-    _model.pesoTextController ??= TextEditingController();
-    _model.pesoFocusNode ??= FocusNode();
+    _switchValue = true;
+    _pesoTextController ??= TextEditingController();
+    _pesoFocusNode ??= FocusNode();
 
-    _model.dataNascimentoTextController ??=
+    _dataNascimentoTextController ??=
         TextEditingController(text: functions.obterDataAtualMenosTresAnos());
-    _model.dataNascimentoFocusNode ??= FocusNode();
+    _dataNascimentoFocusNode ??= FocusNode();
 
-    _model.dataNascimentoMask = MaskTextInputFormatter(mask: '##/##/####');
-    _model.touroPaiTextController ??= TextEditingController();
-    _model.touroPaiFocusNode ??= FocusNode();
+    _dataNascimentoMask = MaskTextInputFormatter(mask: '##/##/####');
+    _touroPaiTextController ??= TextEditingController();
+    _touroPaiFocusNode ??= FocusNode();
 
-    _model.vacaMaeTextController ??= TextEditingController();
-    _model.vacaMaeFocusNode ??= FocusNode();
+    _vacaMaeTextController ??= TextEditingController();
+    _vacaMaeFocusNode ??= FocusNode();
 
-    _model.dataUltimoPartoTextController ??= TextEditingController();
-    _model.dataUltimoPartoFocusNode ??= FocusNode();
+    _dataUltimoPartoTextController ??= TextEditingController();
+    _dataUltimoPartoFocusNode ??= FocusNode();
 
-    _model.dataUltimoPartoMask = MaskTextInputFormatter(mask: '##/##/####');
-    _model.dataUltimaInseminacaoTextController ??= TextEditingController();
-    _model.dataUltimaInseminacaoFocusNode ??= FocusNode();
+    _dataUltimoPartoMask = MaskTextInputFormatter(mask: '##/##/####');
+    _dataUltimaInseminacaoTextController ??= TextEditingController();
+    _dataUltimaInseminacaoFocusNode ??= FocusNode();
 
-    _model.dataUltimaInseminacaoMask =
-        MaskTextInputFormatter(mask: '##/##/####');
+    _dataUltimaInseminacaoMask = MaskTextInputFormatter(mask: '##/##/####');
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.dispose();
+    _instantTimer?.cancel();
+    _nomeFocusNode?.dispose();
+    _nomeTextController?.dispose();
+    _brincoFocusNode?.dispose();
+    _brincoTextController?.dispose();
+    _pesoFocusNode?.dispose();
+    _pesoTextController?.dispose();
+    _dataNascimentoFocusNode?.dispose();
+    _dataNascimentoTextController?.dispose();
+    _touroPaiFocusNode?.dispose();
+    _touroPaiTextController?.dispose();
+    _vacaMaeFocusNode?.dispose();
+    _vacaMaeTextController?.dispose();
+    _dataUltimoPartoFocusNode?.dispose();
+    _dataUltimoPartoTextController?.dispose();
+    _dataUltimaInseminacaoFocusNode?.dispose();
+    _dataUltimaInseminacaoTextController?.dispose();
+    _animaisLiberaoParaInseminarManager.clear();
 
     super.dispose();
   }
@@ -129,20 +216,19 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
   /// botão de salvar (Fase 4): eram ~4000 linhas inline.
   Future<void> _cadastrarAnimal(BuildContext context) async {
     var _shouldSetState = false;
-    if (_model.respostaNet!) {
+    if (_respostaNet!) {
       if (FFAppState().animaisProdutoresOffline.length == 0) {
-        if (_model.formKey.currentState == null ||
-            !_model.formKey.currentState!.validate()) {
+        if (_formKey.currentState == null ||
+            !_formKey.currentState!.validate()) {
           return;
         }
-        if (_model.racaValue == null) {
+        if (_racaValue == null) {
           return;
         }
-        if (_model.grupoValue == null) {
+        if (_grupoValue == null) {
           return;
         }
-        _model.outListaAnimaisVerificaNome =
-            await queryAnimaisProdutoresRecordOnce(
+        _outListaAnimaisVerificaNome = await queryAnimaisProdutoresRecordOnce(
           parent: widget.uidTecnico,
           queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
               .where(
@@ -151,12 +237,11 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
               )
               .where(
                 'nomeAnimal',
-                isEqualTo: _model.nomeTextController.text,
+                isEqualTo: _nomeTextController.text,
               ),
         );
         _shouldSetState = true;
-        _model.outListaAnimaisVerificaBrinco =
-            await queryAnimaisProdutoresRecordOnce(
+        _outListaAnimaisVerificaBrinco = await queryAnimaisProdutoresRecordOnce(
           parent: widget.uidTecnico,
           queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
               .where(
@@ -165,12 +250,12 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
               )
               .where(
                 'brincoAnimal',
-                isEqualTo: int.tryParse(_model.brincoTextController.text),
+                isEqualTo: int.tryParse(_brincoTextController.text),
               ),
         );
         _shouldSetState = true;
-        if ((_model.outListaAnimaisVerificaNome!.length > 0) &&
-            (_model.outListaAnimaisVerificaBrinco!.length > 0)) {
+        if ((_outListaAnimaisVerificaNome!.length > 0) &&
+            (_outListaAnimaisVerificaBrinco!.length > 0)) {
           await showDialog(
             context: context,
             builder: (alertDialogContext) {
@@ -189,11 +274,11 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
           if (_shouldSetState) safeSetState(() {});
           return;
         }
-        if ((_model.nomeTextController.text != '') ||
-            (_model.brincoTextController.text != '')) {
-          if (_model.dataUltimaInseminacaoTextController.text != '') {
-            if (!(_model.touroInseminacaoValue != null &&
-                _model.touroInseminacaoValue != '')) {
+        if ((_nomeTextController.text != '') ||
+            (_brincoTextController.text != '')) {
+          if (_dataUltimaInseminacaoTextController.text != '') {
+            if (!(_touroInseminacaoValue != null &&
+                _touroInseminacaoValue != '')) {
               await showDialog(
                 context: context,
                 builder: (alertDialogContext) {
@@ -233,56 +318,54 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
           return;
         }
 
-        if ((_model.grupoValue == 'Vacas') ||
-            (_model.grupoValue == 'Novilhas')) {
-          if (_model.statusAnimalValue != null &&
-              _model.statusAnimalValue != '') {
-            if (_model.statusAnimalValue == 'Inseminada') {
-              if ((_model.dataUltimaInseminacaoTextController.text != '') &&
-                  (_model.dataUltimoPartoTextController.text == '') &&
-                  (_model.touroInseminacaoValue != null &&
-                      _model.touroInseminacaoValue != '')) {
+        if ((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) {
+          if (_statusAnimalValue != null && _statusAnimalValue != '') {
+            if (_statusAnimalValue == 'Inseminada') {
+              if ((_dataUltimaInseminacaoTextController.text != '') &&
+                  (_dataUltimoPartoTextController.text == '') &&
+                  (_touroInseminacaoValue != null &&
+                      _touroInseminacaoValue != '')) {
                 await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
                     .set(createAnimaisProdutoresRecordData(
                   uidTecnicoPropriedade: widget.uidPropriedade,
-                  nomeAnimal: _model.nomeTextController.text,
-                  brincoAnimal: _model.brincoTextController.text != ''
-                      ? int.tryParse(_model.brincoTextController.text)
+                  nomeAnimal: _nomeTextController.text,
+                  brincoAnimal: _brincoTextController.text != ''
+                      ? int.tryParse(_brincoTextController.text)
                       : -1,
-                  racaAnimal: _model.racaValue,
-                  pesoAnimal: _model.pesoTextController.text,
-                  dtNascimento: _model.dataNascimentoTextController.text,
-                  touro: _model.touroPaiTextController.text,
-                  vaca: _model.vacaMaeTextController.text,
-                  status: _model.statusAnimalValue,
+                  racaAnimal: _racaValue,
+                  pesoAnimal: _pesoTextController.text,
+                  dtNascimento: _dataNascimentoTextController.text,
+                  touro: _touroPaiTextController.text,
+                  vaca: _vacaMaeTextController.text,
+                  status: _statusAnimalValue,
                   dtUltimaInseminacao:
-                      _model.dataUltimaInseminacaoTextController.text,
-                  grupoAnimal: _model.grupoValue,
-                  nomeTouroUltimaInseminacao: _model.touroInseminacaoValue,
+                      _dataUltimaInseminacaoTextController.text,
+                  grupoAnimal: _grupoValue,
+                  nomeTouroUltimaInseminacao: _touroInseminacaoValue,
                   dtPartoPrevisto: functions.somarDataParto(
-                      _model.dataUltimaInseminacaoTextController.text),
+                      _dataUltimaInseminacaoTextController.text),
                   dtSecPrevista: functions.somarDataSecagem(
-                      _model.dataUltimaInseminacaoTextController.text),
+                      _dataUltimaInseminacaoTextController.text),
                   dtPrePartoPrevista: functions.somarDataPreParto(
-                      _model.dataUltimaInseminacaoTextController.text),
+                      _dataUltimaInseminacaoTextController.text),
                   totalInseminacoes: 1,
                   compararDtUltimaInseminacao:
                       functions.converterDataUltimaInseminacao(
-                          _model.dataUltimaInseminacaoTextController.text),
+                          _dataUltimaInseminacaoTextController.text),
                   nomeBrincoConcat: () {
-                    if ((_model.nomeTextController.text != '') &&
-                        (_model.brincoTextController.text != '') &&
-                        (_model.brincoTextController.text != '-1')) {
-                      return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                    } else if (_model.nomeTextController.text != '') {
-                      return _model.nomeTextController.text;
+                    if ((_nomeTextController.text != '') &&
+                        (_brincoTextController.text != '') &&
+                        (_brincoTextController.text != '-1')) {
+                      return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                    } else if (_nomeTextController.text != '') {
+                      return _nomeTextController.text;
                     } else {
-                      return _model.brincoTextController.text;
+                      return _brincoTextController.text;
                     }
                   }(),
                   idStatusAnimal: 3,
-                  brincoAnimalOrder: _model.brincoTextController.text != ''
-                      ? int.tryParse(_model.brincoTextController.text)
+                  brincoAnimalOrder: _brincoTextController.text != ''
+                      ? int.tryParse(_brincoTextController.text)
                       : 999999,
                 ));
 
@@ -310,7 +393,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                   context.pop();
                 }
                 context.pushNamed(
-                  ListaAnimaisWidget.routeName,
+                  ListaAnimaisPage.routeName,
                   queryParameters: {
                     'uidPropriedade': serializeParam(
                       widget.uidPropriedade,
@@ -350,55 +433,55 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                 if (_shouldSetState) safeSetState(() {});
                 return;
               } else {
-                if ((_model.dataUltimoPartoTextController.text != '') &&
-                    (_model.dataUltimaInseminacaoTextController.text != '') &&
-                    (_model.touroInseminacaoValue != null &&
-                        _model.touroInseminacaoValue != '')) {
+                if ((_dataUltimoPartoTextController.text != '') &&
+                    (_dataUltimaInseminacaoTextController.text != '') &&
+                    (_touroInseminacaoValue != null &&
+                        _touroInseminacaoValue != '')) {
                   await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
                       .set(createAnimaisProdutoresRecordData(
                     uidTecnicoPropriedade: widget.uidPropriedade,
-                    nomeAnimal: _model.nomeTextController.text,
-                    brincoAnimal: _model.brincoTextController.text != ''
-                        ? int.tryParse(_model.brincoTextController.text)
+                    nomeAnimal: _nomeTextController.text,
+                    brincoAnimal: _brincoTextController.text != ''
+                        ? int.tryParse(_brincoTextController.text)
                         : -1,
-                    racaAnimal: _model.racaValue,
-                    pesoAnimal: _model.pesoTextController.text,
-                    dtNascimento: _model.dataNascimentoTextController.text,
-                    touro: _model.touroPaiTextController.text,
-                    vaca: _model.vacaMaeTextController.text,
-                    status: _model.statusAnimalValue,
+                    racaAnimal: _racaValue,
+                    pesoAnimal: _pesoTextController.text,
+                    dtNascimento: _dataNascimentoTextController.text,
+                    touro: _touroPaiTextController.text,
+                    vaca: _vacaMaeTextController.text,
+                    status: _statusAnimalValue,
                     dtUltimaInseminacao:
-                        _model.dataUltimaInseminacaoTextController.text,
-                    dtUltimoParto: _model.dataUltimoPartoTextController.text,
-                    grupoAnimal: _model.grupoValue,
-                    nomeTouroUltimaInseminacao: _model.touroInseminacaoValue,
+                        _dataUltimaInseminacaoTextController.text,
+                    dtUltimoParto: _dataUltimoPartoTextController.text,
+                    grupoAnimal: _grupoValue,
+                    nomeTouroUltimaInseminacao: _touroInseminacaoValue,
                     dtPartoPrevisto: functions.somarDataParto(
-                        _model.dataUltimaInseminacaoTextController.text),
+                        _dataUltimaInseminacaoTextController.text),
                     dtSecPrevista: functions.somarDataSecagem(
-                        _model.dataUltimaInseminacaoTextController.text),
+                        _dataUltimaInseminacaoTextController.text),
                     dtPrePartoPrevista: functions.somarDataPreParto(
-                        _model.dataUltimaInseminacaoTextController.text),
+                        _dataUltimaInseminacaoTextController.text),
                     totalInseminacoes: 1,
                     totalPartos: 1,
                     compararDtUltimaInseminacao:
                         functions.converterDataUltimaInseminacao(
-                            _model.dataUltimaInseminacaoTextController.text),
+                            _dataUltimaInseminacaoTextController.text),
                     nomeBrincoConcat: () {
-                      if ((_model.nomeTextController.text != '') &&
-                          (_model.brincoTextController.text != '') &&
-                          (_model.brincoTextController.text != '-1')) {
-                        return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                      } else if (_model.nomeTextController.text != '') {
-                        return _model.nomeTextController.text;
+                      if ((_nomeTextController.text != '') &&
+                          (_brincoTextController.text != '') &&
+                          (_brincoTextController.text != '-1')) {
+                        return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                      } else if (_nomeTextController.text != '') {
+                        return _nomeTextController.text;
                       } else {
-                        return _model.brincoTextController.text;
+                        return _brincoTextController.text;
                       }
                     }(),
                     idStatusAnimal: 3,
                     dtUltimoPartoContingencia:
-                        _model.dataUltimoPartoTextController.text,
-                    brincoAnimalOrder: _model.brincoTextController.text != ''
-                        ? int.tryParse(_model.brincoTextController.text)
+                        _dataUltimoPartoTextController.text,
+                    brincoAnimalOrder: _brincoTextController.text != ''
+                        ? int.tryParse(_brincoTextController.text)
                         : 999999,
                   ));
 
@@ -426,7 +509,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                     context.pop();
                   }
                   context.pushNamed(
-                    ListaAnimaisWidget.routeName,
+                    ListaAnimaisPage.routeName,
                     queryParameters: {
                       'uidPropriedade': serializeParam(
                         widget.uidPropriedade,
@@ -471,48 +554,48 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                 }
               }
             } else {
-              if (_model.statusAnimalValue == 'Seca') {
-                if (_model.grupoValue == 'Vacas') {
+              if (_statusAnimalValue == 'Seca') {
+                if (_grupoValue == 'Vacas') {
                   await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
                       .set(createAnimaisProdutoresRecordData(
                     uidTecnicoPropriedade: widget.uidPropriedade,
-                    nomeAnimal: _model.nomeTextController.text,
-                    brincoAnimal: _model.brincoTextController.text != ''
-                        ? int.tryParse(_model.brincoTextController.text)
+                    nomeAnimal: _nomeTextController.text,
+                    brincoAnimal: _brincoTextController.text != ''
+                        ? int.tryParse(_brincoTextController.text)
                         : -1,
-                    racaAnimal: _model.racaValue,
-                    pesoAnimal: _model.pesoTextController.text,
-                    dtNascimento: _model.dataNascimentoTextController.text,
-                    touro: _model.touroPaiTextController.text,
-                    vaca: _model.vacaMaeTextController.text,
-                    status: _model.statusAnimalValue,
+                    racaAnimal: _racaValue,
+                    pesoAnimal: _pesoTextController.text,
+                    dtNascimento: _dataNascimentoTextController.text,
+                    touro: _touroPaiTextController.text,
+                    vaca: _vacaMaeTextController.text,
+                    status: _statusAnimalValue,
                     dtUltimaInseminacao:
-                        _model.dataUltimaInseminacaoTextController.text,
-                    grupoAnimal: _model.grupoValue,
+                        _dataUltimaInseminacaoTextController.text,
+                    grupoAnimal: _grupoValue,
                     dtPartoPrevisto: functions.somarDataParto(
-                        _model.dataUltimaInseminacaoTextController.text),
+                        _dataUltimaInseminacaoTextController.text),
                     dtSecPrevista: functions.somarDataSecagem(
-                        _model.dataUltimaInseminacaoTextController.text),
+                        _dataUltimaInseminacaoTextController.text),
                     dtPrePartoPrevista: functions.somarDataPreParto(
-                        _model.dataUltimaInseminacaoTextController.text),
-                    nomeTouroUltimaInseminacao: _model.touroInseminacaoValue,
+                        _dataUltimaInseminacaoTextController.text),
+                    nomeTouroUltimaInseminacao: _touroInseminacaoValue,
                     compararDtUltimaInseminacao:
                         functions.converterDataUltimaInseminacao(
-                            _model.dataUltimaInseminacaoTextController.text),
+                            _dataUltimaInseminacaoTextController.text),
                     nomeBrincoConcat: () {
-                      if ((_model.nomeTextController.text != '') &&
-                          (_model.brincoTextController.text != '') &&
-                          (_model.brincoTextController.text != '-1')) {
-                        return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                      } else if (_model.nomeTextController.text != '') {
-                        return _model.nomeTextController.text;
+                      if ((_nomeTextController.text != '') &&
+                          (_brincoTextController.text != '') &&
+                          (_brincoTextController.text != '-1')) {
+                        return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                      } else if (_nomeTextController.text != '') {
+                        return _nomeTextController.text;
                       } else {
-                        return _model.brincoTextController.text;
+                        return _brincoTextController.text;
                       }
                     }(),
                     idStatusAnimal: 4,
-                    brincoAnimalOrder: _model.brincoTextController.text != ''
-                        ? int.tryParse(_model.brincoTextController.text)
+                    brincoAnimalOrder: _brincoTextController.text != ''
+                        ? int.tryParse(_brincoTextController.text)
                         : 999999,
                   ));
 
@@ -540,7 +623,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                     context.pop();
                   }
                   context.pushNamed(
-                    ListaAnimaisWidget.routeName,
+                    ListaAnimaisPage.routeName,
                     queryParameters: {
                       'uidPropriedade': serializeParam(
                         widget.uidPropriedade,
@@ -600,40 +683,40 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                   return;
                 }
               } else {
-                if (_model.statusAnimalValue == 'Vazia') {
+                if (_statusAnimalValue == 'Vazia') {
                   await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
                       .set(createAnimaisProdutoresRecordData(
                     uidTecnicoPropriedade: widget.uidPropriedade,
-                    nomeAnimal: _model.nomeTextController.text,
-                    brincoAnimal: _model.brincoTextController.text != ''
-                        ? int.tryParse(_model.brincoTextController.text)
+                    nomeAnimal: _nomeTextController.text,
+                    brincoAnimal: _brincoTextController.text != ''
+                        ? int.tryParse(_brincoTextController.text)
                         : -1,
-                    racaAnimal: _model.racaValue,
-                    pesoAnimal: _model.pesoTextController.text,
-                    dtNascimento: _model.dataNascimentoTextController.text,
-                    touro: _model.touroPaiTextController.text,
-                    vaca: _model.vacaMaeTextController.text,
-                    status: _model.statusAnimalValue,
-                    grupoAnimal: _model.grupoValue,
-                    dtUltimoParto: _model.dataUltimoPartoTextController.text,
+                    racaAnimal: _racaValue,
+                    pesoAnimal: _pesoTextController.text,
+                    dtNascimento: _dataNascimentoTextController.text,
+                    touro: _touroPaiTextController.text,
+                    vaca: _vacaMaeTextController.text,
+                    status: _statusAnimalValue,
+                    grupoAnimal: _grupoValue,
+                    dtUltimoParto: _dataUltimoPartoTextController.text,
                     totalPartos:
-                        _model.dataUltimoPartoTextController.text != '' ? 1 : 0,
+                        _dataUltimoPartoTextController.text != '' ? 1 : 0,
                     nomeBrincoConcat: () {
-                      if ((_model.nomeTextController.text != '') &&
-                          (_model.brincoTextController.text != '') &&
-                          (_model.brincoTextController.text != '-1')) {
-                        return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                      } else if (_model.nomeTextController.text != '') {
-                        return _model.nomeTextController.text;
+                      if ((_nomeTextController.text != '') &&
+                          (_brincoTextController.text != '') &&
+                          (_brincoTextController.text != '-1')) {
+                        return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                      } else if (_nomeTextController.text != '') {
+                        return _nomeTextController.text;
                       } else {
-                        return _model.brincoTextController.text;
+                        return _brincoTextController.text;
                       }
                     }(),
                     idStatusAnimal: 2,
                     dtUltimoPartoContingencia:
-                        _model.dataUltimoPartoTextController.text,
-                    brincoAnimalOrder: _model.brincoTextController.text != ''
-                        ? int.tryParse(_model.brincoTextController.text)
+                        _dataUltimoPartoTextController.text,
+                    brincoAnimalOrder: _brincoTextController.text != ''
+                        ? int.tryParse(_brincoTextController.text)
                         : 999999,
                   ));
 
@@ -661,7 +744,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                     context.pop();
                   }
                   context.pushNamed(
-                    ListaAnimaisWidget.routeName,
+                    ListaAnimaisPage.routeName,
                     queryParameters: {
                       'uidPropriedade': serializeParam(
                         widget.uidPropriedade,
@@ -701,65 +784,61 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                   if (_shouldSetState) safeSetState(() {});
                   return;
                 } else {
-                  if (_model.statusAnimalValue == 'Prenha') {
-                    if ((_model.dataUltimaInseminacaoTextController.text !=
-                            '') &&
-                        (_model.touroInseminacaoValue != null &&
-                            _model.touroInseminacaoValue != '')) {
+                  if (_statusAnimalValue == 'Prenha') {
+                    if ((_dataUltimaInseminacaoTextController.text != '') &&
+                        (_touroInseminacaoValue != null &&
+                            _touroInseminacaoValue != '')) {
                       await AnimaisProdutoresRecord.createDoc(
                               widget.uidTecnico!)
                           .set(createAnimaisProdutoresRecordData(
                         uidTecnicoPropriedade: widget.uidPropriedade,
-                        nomeAnimal: _model.nomeTextController.text,
-                        brincoAnimal: _model.brincoTextController.text != ''
-                            ? int.tryParse(_model.brincoTextController.text)
+                        nomeAnimal: _nomeTextController.text,
+                        brincoAnimal: _brincoTextController.text != ''
+                            ? int.tryParse(_brincoTextController.text)
                             : -1,
-                        racaAnimal: _model.racaValue,
-                        pesoAnimal: _model.pesoTextController.text,
-                        dtNascimento: _model.dataNascimentoTextController.text,
-                        touro: _model.touroPaiTextController.text,
-                        vaca: _model.vacaMaeTextController.text,
-                        status: _model.statusAnimalValue,
+                        racaAnimal: _racaValue,
+                        pesoAnimal: _pesoTextController.text,
+                        dtNascimento: _dataNascimentoTextController.text,
+                        touro: _touroPaiTextController.text,
+                        vaca: _vacaMaeTextController.text,
+                        status: _statusAnimalValue,
                         dtUltimaInseminacao:
-                            _model.dataUltimaInseminacaoTextController.text,
-                        grupoAnimal: _model.grupoValue,
-                        nomeTouroUltimaInseminacao:
-                            _model.touroInseminacaoValue,
+                            _dataUltimaInseminacaoTextController.text,
+                        grupoAnimal: _grupoValue,
+                        nomeTouroUltimaInseminacao: _touroInseminacaoValue,
                         dtPartoPrevisto: functions.somarDataParto(
-                            _model.dataUltimaInseminacaoTextController.text),
+                            _dataUltimaInseminacaoTextController.text),
                         dtSecPrevista: functions.somarDataSecagem(
-                            _model.dataUltimaInseminacaoTextController.text),
+                            _dataUltimaInseminacaoTextController.text),
                         dtPrePartoPrevista: functions.somarDataPreParto(
-                            _model.dataUltimaInseminacaoTextController.text),
+                            _dataUltimaInseminacaoTextController.text),
                         totalInseminacoes: 1,
                         dtDgMais: dateTimeFormat(
                           "dd/MM/yyyy",
                           getCurrentTimestamp,
                           locale: FFLocalizations.of(context).languageCode,
                         ),
-                        dtUltimoParto:
-                            _model.dataUltimoPartoTextController.text,
+                        dtUltimoParto: _dataUltimoPartoTextController.text,
                         compararDtUltimaInseminacao:
-                            functions.converterDataUltimaInseminacao(_model
-                                .dataUltimaInseminacaoTextController.text),
+                            functions.converterDataUltimaInseminacao(
+                                _dataUltimaInseminacaoTextController.text),
                         nomeBrincoConcat: () {
-                          if ((_model.nomeTextController.text != '') &&
-                              (_model.brincoTextController.text != '') &&
-                              (_model.brincoTextController.text != '-1')) {
-                            return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                          } else if (_model.nomeTextController.text != '') {
-                            return _model.nomeTextController.text;
+                          if ((_nomeTextController.text != '') &&
+                              (_brincoTextController.text != '') &&
+                              (_brincoTextController.text != '-1')) {
+                            return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                          } else if (_nomeTextController.text != '') {
+                            return _nomeTextController.text;
                           } else {
-                            return _model.brincoTextController.text;
+                            return _brincoTextController.text;
                           }
                         }(),
                         idStatusAnimal: 6,
                         dtUltimoPartoContingencia:
-                            _model.dataUltimoPartoTextController.text,
-                        brincoAnimalOrder:
-                            _model.brincoTextController.text != ''
-                                ? int.tryParse(_model.brincoTextController.text)
-                                : 999999,
+                            _dataUltimoPartoTextController.text,
+                        brincoAnimalOrder: _brincoTextController.text != ''
+                            ? int.tryParse(_brincoTextController.text)
+                            : 999999,
                       ));
 
                       await widget.uidTecnico!.update({
@@ -788,7 +867,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                         context.pop();
                       }
                       context.pushNamed(
-                        ListaAnimaisWidget.routeName,
+                        ListaAnimaisPage.routeName,
                         queryParameters: {
                           'uidPropriedade': serializeParam(
                             widget.uidPropriedade,
@@ -849,37 +928,34 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                       return;
                     }
                   } else {
-                    if (_model.statusAnimalValue == 'Inseminada PP') {
-                      if ((_model.dataUltimaInseminacaoTextController.text !=
-                              '') &&
-                          (_model.touroInseminacaoValue != null &&
-                              _model.touroInseminacaoValue != '')) {
+                    if (_statusAnimalValue == 'Inseminada PP') {
+                      if ((_dataUltimaInseminacaoTextController.text != '') &&
+                          (_touroInseminacaoValue != null &&
+                              _touroInseminacaoValue != '')) {
                         await AnimaisProdutoresRecord.createDoc(
                                 widget.uidTecnico!)
                             .set(createAnimaisProdutoresRecordData(
                           uidTecnicoPropriedade: widget.uidPropriedade,
-                          nomeAnimal: _model.nomeTextController.text,
-                          brincoAnimal: _model.brincoTextController.text != ''
-                              ? int.tryParse(_model.brincoTextController.text)
+                          nomeAnimal: _nomeTextController.text,
+                          brincoAnimal: _brincoTextController.text != ''
+                              ? int.tryParse(_brincoTextController.text)
                               : -1,
-                          racaAnimal: _model.racaValue,
-                          pesoAnimal: _model.pesoTextController.text,
-                          dtNascimento:
-                              _model.dataNascimentoTextController.text,
-                          touro: _model.touroPaiTextController.text,
-                          vaca: _model.vacaMaeTextController.text,
-                          status: _model.statusAnimalValue,
+                          racaAnimal: _racaValue,
+                          pesoAnimal: _pesoTextController.text,
+                          dtNascimento: _dataNascimentoTextController.text,
+                          touro: _touroPaiTextController.text,
+                          vaca: _vacaMaeTextController.text,
+                          status: _statusAnimalValue,
                           dtUltimaInseminacao:
-                              _model.dataUltimaInseminacaoTextController.text,
-                          grupoAnimal: _model.grupoValue,
-                          nomeTouroUltimaInseminacao:
-                              _model.touroInseminacaoValue,
+                              _dataUltimaInseminacaoTextController.text,
+                          grupoAnimal: _grupoValue,
+                          nomeTouroUltimaInseminacao: _touroInseminacaoValue,
                           dtPartoPrevisto: functions.somarDataParto(
-                              _model.dataUltimaInseminacaoTextController.text),
+                              _dataUltimaInseminacaoTextController.text),
                           dtSecPrevista: functions.somarDataSecagem(
-                              _model.dataUltimaInseminacaoTextController.text),
+                              _dataUltimaInseminacaoTextController.text),
                           dtPrePartoPrevista: functions.somarDataPreParto(
-                              _model.dataUltimaInseminacaoTextController.text),
+                              _dataUltimaInseminacaoTextController.text),
                           totalInseminacoes: 1,
                           dtPP: dateTimeFormat(
                             "dd/MM/yyyy",
@@ -891,28 +967,26 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                             getCurrentTimestamp,
                             locale: FFLocalizations.of(context).languageCode,
                           ),
-                          dtUltimoParto:
-                              _model.dataUltimoPartoTextController.text,
+                          dtUltimoParto: _dataUltimoPartoTextController.text,
                           compararDtUltimaInseminacao:
-                              functions.converterDataUltimaInseminacao(_model
-                                  .dataUltimaInseminacaoTextController.text),
+                              functions.converterDataUltimaInseminacao(
+                                  _dataUltimaInseminacaoTextController.text),
                           nomeBrincoConcat: () {
-                            if ((_model.nomeTextController.text != '') &&
-                                (_model.brincoTextController.text != '') &&
-                                (_model.brincoTextController.text != '-1')) {
-                              return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                            } else if (_model.nomeTextController.text != '') {
-                              return _model.nomeTextController.text;
+                            if ((_nomeTextController.text != '') &&
+                                (_brincoTextController.text != '') &&
+                                (_brincoTextController.text != '-1')) {
+                              return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                            } else if (_nomeTextController.text != '') {
+                              return _nomeTextController.text;
                             } else {
-                              return _model.brincoTextController.text;
+                              return _brincoTextController.text;
                             }
                           }(),
                           idStatusAnimal: 1,
                           dtUltimoPartoContingencia:
-                              _model.dataUltimoPartoTextController.text,
-                          brincoAnimalOrder: _model.brincoTextController.text !=
-                                  ''
-                              ? int.tryParse(_model.brincoTextController.text)
+                              _dataUltimoPartoTextController.text,
+                          brincoAnimalOrder: _brincoTextController.text != ''
+                              ? int.tryParse(_brincoTextController.text)
                               : 999999,
                         ));
 
@@ -943,7 +1017,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                           context.pop();
                         }
                         context.pushNamed(
-                          ListaAnimaisWidget.routeName,
+                          ListaAnimaisPage.routeName,
                           queryParameters: {
                             'uidPropriedade': serializeParam(
                               widget.uidPropriedade,
@@ -1004,38 +1078,34 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                         return;
                       }
                     } else {
-                      if (_model.statusAnimalValue == 'Pré Parto') {
-                        if ((_model.dataUltimaInseminacaoTextController.text !=
-                                '') &&
-                            (_model.touroInseminacaoValue != null &&
-                                _model.touroInseminacaoValue != '')) {
+                      if (_statusAnimalValue == 'Pré Parto') {
+                        if ((_dataUltimaInseminacaoTextController.text != '') &&
+                            (_touroInseminacaoValue != null &&
+                                _touroInseminacaoValue != '')) {
                           await AnimaisProdutoresRecord.createDoc(
                                   widget.uidTecnico!)
                               .set(createAnimaisProdutoresRecordData(
                             uidTecnicoPropriedade: widget.uidPropriedade,
-                            nomeAnimal: _model.nomeTextController.text,
-                            brincoAnimal: _model.brincoTextController.text != ''
-                                ? int.tryParse(_model.brincoTextController.text)
+                            nomeAnimal: _nomeTextController.text,
+                            brincoAnimal: _brincoTextController.text != ''
+                                ? int.tryParse(_brincoTextController.text)
                                 : -1,
-                            racaAnimal: _model.racaValue,
-                            pesoAnimal: _model.pesoTextController.text,
-                            dtNascimento:
-                                _model.dataNascimentoTextController.text,
-                            touro: _model.touroPaiTextController.text,
-                            vaca: _model.vacaMaeTextController.text,
-                            status: _model.statusAnimalValue,
+                            racaAnimal: _racaValue,
+                            pesoAnimal: _pesoTextController.text,
+                            dtNascimento: _dataNascimentoTextController.text,
+                            touro: _touroPaiTextController.text,
+                            vaca: _vacaMaeTextController.text,
+                            status: _statusAnimalValue,
                             dtUltimaInseminacao:
-                                _model.dataUltimaInseminacaoTextController.text,
-                            grupoAnimal: _model.grupoValue,
-                            nomeTouroUltimaInseminacao:
-                                _model.touroInseminacaoValue,
-                            dtPartoPrevisto: functions.somarDataParto(_model
-                                .dataUltimaInseminacaoTextController.text),
-                            dtSecPrevista: functions.somarDataSecagem(_model
-                                .dataUltimaInseminacaoTextController.text),
+                                _dataUltimaInseminacaoTextController.text,
+                            grupoAnimal: _grupoValue,
+                            nomeTouroUltimaInseminacao: _touroInseminacaoValue,
+                            dtPartoPrevisto: functions.somarDataParto(
+                                _dataUltimaInseminacaoTextController.text),
+                            dtSecPrevista: functions.somarDataSecagem(
+                                _dataUltimaInseminacaoTextController.text),
                             dtPrePartoPrevista: functions.somarDataPreParto(
-                                _model
-                                    .dataUltimaInseminacaoTextController.text),
+                                _dataUltimaInseminacaoTextController.text),
                             totalInseminacoes: 1,
                             dtPP: dateTimeFormat(
                               "dd/MM/yyyy",
@@ -1047,29 +1117,26 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                               getCurrentTimestamp,
                               locale: FFLocalizations.of(context).languageCode,
                             ),
-                            dtUltimoParto:
-                                _model.dataUltimoPartoTextController.text,
+                            dtUltimoParto: _dataUltimoPartoTextController.text,
                             compararDtUltimaInseminacao:
-                                functions.converterDataUltimaInseminacao(_model
-                                    .dataUltimaInseminacaoTextController.text),
+                                functions.converterDataUltimaInseminacao(
+                                    _dataUltimaInseminacaoTextController.text),
                             nomeBrincoConcat: () {
-                              if ((_model.nomeTextController.text != '') &&
-                                  (_model.brincoTextController.text != '') &&
-                                  (_model.brincoTextController.text != '-1')) {
-                                return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                              } else if (_model.nomeTextController.text != '') {
-                                return _model.nomeTextController.text;
+                              if ((_nomeTextController.text != '') &&
+                                  (_brincoTextController.text != '') &&
+                                  (_brincoTextController.text != '-1')) {
+                                return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                              } else if (_nomeTextController.text != '') {
+                                return _nomeTextController.text;
                               } else {
-                                return _model.brincoTextController.text;
+                                return _brincoTextController.text;
                               }
                             }(),
                             idStatusAnimal: 5,
                             dtUltimoPartoContingencia:
-                                _model.dataUltimoPartoTextController.text,
-                            brincoAnimalOrder: _model
-                                        .brincoTextController.text !=
-                                    ''
-                                ? int.tryParse(_model.brincoTextController.text)
+                                _dataUltimoPartoTextController.text,
+                            brincoAnimalOrder: _brincoTextController.text != ''
+                                ? int.tryParse(_brincoTextController.text)
                                 : 999999,
                           ));
 
@@ -1101,7 +1168,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                             context.pop();
                           }
                           context.pushNamed(
-                            ListaAnimaisWidget.routeName,
+                            ListaAnimaisPage.routeName,
                             queryParameters: {
                               'uidPropriedade': serializeParam(
                                 widget.uidPropriedade,
@@ -1191,45 +1258,44 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
             return;
           }
         } else {
-          if ((_model.grupoValue == 'Sêmens') ||
-              (_model.grupoValue == 'Touros')) {
-            if (_model.grupoValue == 'Touros') {
+          if ((_grupoValue == 'Sêmens') || (_grupoValue == 'Touros')) {
+            if (_grupoValue == 'Touros') {
               await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
                   .set(createAnimaisProdutoresRecordData(
                 uidTecnicoPropriedade: widget.uidPropriedade,
-                nomeAnimal: _model.nomeTextController.text,
-                brincoAnimal: _model.brincoTextController.text != ''
-                    ? int.tryParse(_model.brincoTextController.text)
+                nomeAnimal: _nomeTextController.text,
+                brincoAnimal: _brincoTextController.text != ''
+                    ? int.tryParse(_brincoTextController.text)
                     : -1,
-                racaAnimal: _model.racaValue,
-                pesoAnimal: _model.pesoTextController.text,
-                dtNascimento: _model.dataNascimentoTextController.text,
-                touro: _model.touroPaiTextController.text,
-                vaca: _model.vacaMaeTextController.text,
-                grupoAnimal: _model.grupoValue,
+                racaAnimal: _racaValue,
+                pesoAnimal: _pesoTextController.text,
+                dtNascimento: _dataNascimentoTextController.text,
+                touro: _touroPaiTextController.text,
+                vaca: _vacaMaeTextController.text,
+                grupoAnimal: _grupoValue,
                 liberaInseminacao: () {
-                  if (_model.grupoValue == 'Touros') {
-                    return _model.switchValue;
-                  } else if (_model.grupoValue == 'Sêmens') {
-                    return _model.switchValue;
+                  if (_grupoValue == 'Touros') {
+                    return _switchValue;
+                  } else if (_grupoValue == 'Sêmens') {
+                    return _switchValue;
                   } else {
                     return true;
                   }
                 }(),
                 status: '',
                 nomeBrincoConcat: () {
-                  if ((_model.nomeTextController.text != '') &&
-                      (_model.brincoTextController.text != '') &&
-                      (_model.brincoTextController.text != '-1')) {
-                    return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                  } else if (_model.nomeTextController.text != '') {
-                    return _model.nomeTextController.text;
+                  if ((_nomeTextController.text != '') &&
+                      (_brincoTextController.text != '') &&
+                      (_brincoTextController.text != '-1')) {
+                    return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                  } else if (_nomeTextController.text != '') {
+                    return _nomeTextController.text;
                   } else {
-                    return _model.brincoTextController.text;
+                    return _brincoTextController.text;
                   }
                 }(),
-                brincoAnimalOrder: _model.brincoTextController.text != ''
-                    ? int.tryParse(_model.brincoTextController.text)
+                brincoAnimalOrder: _brincoTextController.text != ''
+                    ? int.tryParse(_brincoTextController.text)
                     : 999999,
               ));
 
@@ -1257,7 +1323,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                 context.pop();
               }
               context.pushNamed(
-                ListaAnimaisWidget.routeName,
+                ListaAnimaisPage.routeName,
                 queryParameters: {
                   'uidPropriedade': serializeParam(
                     widget.uidPropriedade,
@@ -1293,41 +1359,41 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
               if (_shouldSetState) safeSetState(() {});
               return;
             } else {
-              if (_model.grupoValue == 'Sêmens') {
+              if (_grupoValue == 'Sêmens') {
                 await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
                     .set(createAnimaisProdutoresRecordData(
                   uidTecnicoPropriedade: widget.uidPropriedade,
-                  nomeAnimal: _model.nomeTextController.text,
-                  brincoAnimal: _model.brincoTextController.text != ''
-                      ? int.tryParse(_model.brincoTextController.text)
+                  nomeAnimal: _nomeTextController.text,
+                  brincoAnimal: _brincoTextController.text != ''
+                      ? int.tryParse(_brincoTextController.text)
                       : -1,
-                  racaAnimal: _model.racaValue,
-                  dtNascimento: _model.dataNascimentoTextController.text,
-                  touro: _model.touroPaiTextController.text,
-                  grupoAnimal: _model.grupoValue,
+                  racaAnimal: _racaValue,
+                  dtNascimento: _dataNascimentoTextController.text,
+                  touro: _touroPaiTextController.text,
+                  grupoAnimal: _grupoValue,
                   liberaInseminacao: () {
-                    if (_model.grupoValue == 'Touros') {
-                      return _model.switchValue;
-                    } else if (_model.grupoValue == 'Sêmens') {
-                      return _model.switchValue;
+                    if (_grupoValue == 'Touros') {
+                      return _switchValue;
+                    } else if (_grupoValue == 'Sêmens') {
+                      return _switchValue;
                     } else {
                       return true;
                     }
                   }(),
                   status: '',
                   nomeBrincoConcat: () {
-                    if ((_model.nomeTextController.text != '') &&
-                        (_model.brincoTextController.text != '') &&
-                        (_model.brincoTextController.text != '-1')) {
-                      return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                    } else if (_model.nomeTextController.text != '') {
-                      return _model.nomeTextController.text;
+                    if ((_nomeTextController.text != '') &&
+                        (_brincoTextController.text != '') &&
+                        (_brincoTextController.text != '-1')) {
+                      return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                    } else if (_nomeTextController.text != '') {
+                      return _nomeTextController.text;
                     } else {
-                      return _model.brincoTextController.text;
+                      return _brincoTextController.text;
                     }
                   }(),
-                  brincoAnimalOrder: _model.brincoTextController.text != ''
-                      ? int.tryParse(_model.brincoTextController.text)
+                  brincoAnimalOrder: _brincoTextController.text != ''
+                      ? int.tryParse(_brincoTextController.text)
                       : 999999,
                 ));
 
@@ -1355,7 +1421,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                   context.pop();
                 }
                 context.pushNamed(
-                  ListaAnimaisWidget.routeName,
+                  ListaAnimaisPage.routeName,
                   queryParameters: {
                     'uidPropriedade': serializeParam(
                       widget.uidPropriedade,
@@ -1399,30 +1465,30 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
             await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
                 .set(createAnimaisProdutoresRecordData(
               uidTecnicoPropriedade: widget.uidPropriedade,
-              nomeAnimal: _model.nomeTextController.text,
-              brincoAnimal: _model.brincoTextController.text != ''
-                  ? int.tryParse(_model.brincoTextController.text)
+              nomeAnimal: _nomeTextController.text,
+              brincoAnimal: _brincoTextController.text != ''
+                  ? int.tryParse(_brincoTextController.text)
                   : -1,
-              racaAnimal: _model.racaValue,
-              pesoAnimal: _model.pesoTextController.text,
-              dtNascimento: _model.dataNascimentoTextController.text,
-              touro: _model.touroPaiTextController.text,
-              vaca: _model.vacaMaeTextController.text,
-              grupoAnimal: _model.grupoValue,
+              racaAnimal: _racaValue,
+              pesoAnimal: _pesoTextController.text,
+              dtNascimento: _dataNascimentoTextController.text,
+              touro: _touroPaiTextController.text,
+              vaca: _vacaMaeTextController.text,
+              grupoAnimal: _grupoValue,
               status: '',
               nomeBrincoConcat: () {
-                if ((_model.nomeTextController.text != '') &&
-                    (_model.brincoTextController.text != '') &&
-                    (_model.brincoTextController.text != '-1')) {
-                  return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                } else if (_model.nomeTextController.text != '') {
-                  return _model.nomeTextController.text;
+                if ((_nomeTextController.text != '') &&
+                    (_brincoTextController.text != '') &&
+                    (_brincoTextController.text != '-1')) {
+                  return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                } else if (_nomeTextController.text != '') {
+                  return _nomeTextController.text;
                 } else {
-                  return _model.brincoTextController.text;
+                  return _brincoTextController.text;
                 }
               }(),
-              brincoAnimalOrder: _model.brincoTextController.text != ''
-                  ? int.tryParse(_model.brincoTextController.text)
+              brincoAnimalOrder: _brincoTextController.text != ''
+                  ? int.tryParse(_brincoTextController.text)
                   : 999999,
             ));
 
@@ -1450,7 +1516,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
               context.pop();
             }
             context.pushNamed(
-              ListaAnimaisWidget.routeName,
+              ListaAnimaisPage.routeName,
               queryParameters: {
                 'uidPropriedade': serializeParam(
                   widget.uidPropriedade,
@@ -1504,18 +1570,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
         return;
       }
     } else {
-      if (_model.formKey.currentState == null ||
-          !_model.formKey.currentState!.validate()) {
+      if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
         return;
       }
-      if (_model.racaValue == null) {
+      if (_racaValue == null) {
         return;
       }
-      if (_model.grupoValue == null) {
+      if (_grupoValue == null) {
         return;
       }
-      _model.outListaAnimaisVerificaNomeOff =
-          await queryAnimaisProdutoresRecordOnce(
+      _outListaAnimaisVerificaNomeOff = await queryAnimaisProdutoresRecordOnce(
         parent: widget.uidTecnico,
         queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
             .where(
@@ -1524,11 +1588,11 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
             )
             .where(
               'nomeAnimal',
-              isEqualTo: _model.nomeTextController.text,
+              isEqualTo: _nomeTextController.text,
             ),
       );
       _shouldSetState = true;
-      _model.outListaAnimaisVerificaBrincoOff =
+      _outListaAnimaisVerificaBrincoOff =
           await queryAnimaisProdutoresRecordOnce(
         parent: widget.uidTecnico,
         queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
@@ -1538,12 +1602,12 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
             )
             .where(
               'brincoAnimal',
-              isEqualTo: int.tryParse(_model.brincoTextController.text),
+              isEqualTo: int.tryParse(_brincoTextController.text),
             ),
       );
       _shouldSetState = true;
-      if ((_model.outListaAnimaisVerificaNomeOff!.length > 0) &&
-          (_model.outListaAnimaisVerificaBrincoOff!.length > 0)) {
+      if ((_outListaAnimaisVerificaNomeOff!.length > 0) &&
+          (_outListaAnimaisVerificaBrincoOff!.length > 0)) {
         await showDialog(
           context: context,
           builder: (alertDialogContext) {
@@ -1562,11 +1626,11 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
         if (_shouldSetState) safeSetState(() {});
         return;
       }
-      if ((_model.nomeTextController.text != '') ||
-          (_model.brincoTextController.text != '')) {
-        if (_model.dataUltimaInseminacaoTextController.text != '') {
-          if (!(_model.touroInseminacaoValue != null &&
-              _model.touroInseminacaoValue != '')) {
+      if ((_nomeTextController.text != '') ||
+          (_brincoTextController.text != '')) {
+        if (_dataUltimaInseminacaoTextController.text != '') {
+          if (!(_touroInseminacaoValue != null &&
+              _touroInseminacaoValue != '')) {
             await showDialog(
               context: context,
               builder: (alertDialogContext) {
@@ -1606,52 +1670,50 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
         return;
       }
 
-      if ((_model.grupoValue == 'Vacas') || (_model.grupoValue == 'Novilhas')) {
-        if (_model.statusAnimalValue != null &&
-            _model.statusAnimalValue != '') {
-          if (_model.statusAnimalValue == 'Inseminada') {
-            if ((_model.dataUltimaInseminacaoTextController.text != '') &&
-                (_model.dataUltimoPartoTextController.text == '') &&
-                (_model.touroInseminacaoValue != null &&
-                    _model.touroInseminacaoValue != '')) {
+      if ((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) {
+        if (_statusAnimalValue != null && _statusAnimalValue != '') {
+          if (_statusAnimalValue == 'Inseminada') {
+            if ((_dataUltimaInseminacaoTextController.text != '') &&
+                (_dataUltimoPartoTextController.text == '') &&
+                (_touroInseminacaoValue != null &&
+                    _touroInseminacaoValue != '')) {
               await criarAnimalOffline(AnimaisProdutoresStruct(
                 uidTecnicoPropriedade: widget.uidPropriedade,
-                nomeAnimal: _model.nomeTextController.text,
-                racaAnimal: _model.racaValue,
-                pesoAnimal: _model.pesoTextController.text,
-                dtNascimento: _model.dataNascimentoTextController.text,
-                touro: _model.touroPaiTextController.text,
-                vaca: _model.vacaMaeTextController.text,
-                status: _model.statusAnimalValue,
-                grupoAnimal: _model.grupoValue,
-                dtUltimaInseminacao:
-                    _model.dataUltimaInseminacaoTextController.text,
-                brincoAnimalOrder: _model.brincoTextController.text != ''
-                    ? int.tryParse(_model.brincoTextController.text)
+                nomeAnimal: _nomeTextController.text,
+                racaAnimal: _racaValue,
+                pesoAnimal: _pesoTextController.text,
+                dtNascimento: _dataNascimentoTextController.text,
+                touro: _touroPaiTextController.text,
+                vaca: _vacaMaeTextController.text,
+                status: _statusAnimalValue,
+                grupoAnimal: _grupoValue,
+                dtUltimaInseminacao: _dataUltimaInseminacaoTextController.text,
+                brincoAnimalOrder: _brincoTextController.text != ''
+                    ? int.tryParse(_brincoTextController.text)
                     : 999999,
-                brincoAnimal: _model.brincoTextController.text != ''
-                    ? int.tryParse(_model.brincoTextController.text)
+                brincoAnimal: _brincoTextController.text != ''
+                    ? int.tryParse(_brincoTextController.text)
                     : -1,
-                nomeTouroUltimaInseminacao: _model.touroInseminacaoValue,
-                dtPartoPrevisto: functions.somarDataParto(
-                    _model.dataUltimaInseminacaoTextController.text),
+                nomeTouroUltimaInseminacao: _touroInseminacaoValue,
+                dtPartoPrevisto: functions
+                    .somarDataParto(_dataUltimaInseminacaoTextController.text),
                 dtSecPrevista: functions.somarDataSecagem(
-                    _model.dataUltimaInseminacaoTextController.text),
+                    _dataUltimaInseminacaoTextController.text),
                 dtPrePartoPrevista: functions.somarDataPreParto(
-                    _model.dataUltimaInseminacaoTextController.text),
+                    _dataUltimaInseminacaoTextController.text),
                 totalInseminacoes: 1,
                 compararDtUltimaInseminacao:
                     functions.converterDataUltimaInseminacao(
-                        _model.dataUltimaInseminacaoTextController.text),
+                        _dataUltimaInseminacaoTextController.text),
                 nomeBrincoConcat: () {
-                  if ((_model.nomeTextController.text != '') &&
-                      (_model.brincoTextController.text != '') &&
-                      (_model.brincoTextController.text != '-1')) {
-                    return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                  } else if (_model.nomeTextController.text != '') {
-                    return _model.nomeTextController.text;
+                  if ((_nomeTextController.text != '') &&
+                      (_brincoTextController.text != '') &&
+                      (_brincoTextController.text != '-1')) {
+                    return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                  } else if (_nomeTextController.text != '') {
+                    return _nomeTextController.text;
                   } else {
-                    return _model.brincoTextController.text;
+                    return _brincoTextController.text;
                   }
                 }(),
                 idStatusAnimal: 3,
@@ -1674,7 +1736,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                 context.pop();
               }
               context.pushNamed(
-                ListaAnimaisWidget.routeName,
+                ListaAnimaisPage.routeName,
                 queryParameters: {
                   'uidPropriedade': serializeParam(
                     widget.uidPropriedade,
@@ -1714,55 +1776,55 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
               if (_shouldSetState) safeSetState(() {});
               return;
             } else {
-              if ((_model.dataUltimoPartoTextController.text != '') &&
-                  (_model.dataUltimaInseminacaoTextController.text != '') &&
-                  (_model.touroInseminacaoValue != null &&
-                      _model.touroInseminacaoValue != '')) {
+              if ((_dataUltimoPartoTextController.text != '') &&
+                  (_dataUltimaInseminacaoTextController.text != '') &&
+                  (_touroInseminacaoValue != null &&
+                      _touroInseminacaoValue != '')) {
                 await criarAnimalOffline(AnimaisProdutoresStruct(
                   uidTecnicoPropriedade: widget.uidPropriedade,
-                  nomeAnimal: _model.nomeTextController.text,
-                  racaAnimal: _model.racaValue,
-                  pesoAnimal: _model.pesoTextController.text,
-                  dtNascimento: _model.dataNascimentoTextController.text,
-                  touro: _model.touroPaiTextController.text,
-                  vaca: _model.vacaMaeTextController.text,
-                  grupoAnimal: _model.grupoValue,
-                  brincoAnimalOrder: _model.brincoTextController.text != ''
-                      ? int.tryParse(_model.brincoTextController.text)
+                  nomeAnimal: _nomeTextController.text,
+                  racaAnimal: _racaValue,
+                  pesoAnimal: _pesoTextController.text,
+                  dtNascimento: _dataNascimentoTextController.text,
+                  touro: _touroPaiTextController.text,
+                  vaca: _vacaMaeTextController.text,
+                  grupoAnimal: _grupoValue,
+                  brincoAnimalOrder: _brincoTextController.text != ''
+                      ? int.tryParse(_brincoTextController.text)
                       : 999999,
-                  brincoAnimal: _model.brincoTextController.text != ''
-                      ? int.tryParse(_model.brincoTextController.text)
+                  brincoAnimal: _brincoTextController.text != ''
+                      ? int.tryParse(_brincoTextController.text)
                       : -1,
                   nomeBrincoConcat: () {
-                    if ((_model.nomeTextController.text != '') &&
-                        (_model.brincoTextController.text != '') &&
-                        (_model.brincoTextController.text != '-1')) {
-                      return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                    } else if (_model.nomeTextController.text != '') {
-                      return _model.nomeTextController.text;
+                    if ((_nomeTextController.text != '') &&
+                        (_brincoTextController.text != '') &&
+                        (_brincoTextController.text != '-1')) {
+                      return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                    } else if (_nomeTextController.text != '') {
+                      return _nomeTextController.text;
                     } else {
-                      return _model.brincoTextController.text;
+                      return _brincoTextController.text;
                     }
                   }(),
-                  status: _model.statusAnimalValue,
+                  status: _statusAnimalValue,
                   dtUltimaInseminacao:
-                      _model.dataUltimaInseminacaoTextController.text,
-                  dtUltimoParto: _model.dataUltimoPartoTextController.text,
-                  nomeTouroUltimaInseminacao: _model.touroInseminacaoValue,
+                      _dataUltimaInseminacaoTextController.text,
+                  dtUltimoParto: _dataUltimoPartoTextController.text,
+                  nomeTouroUltimaInseminacao: _touroInseminacaoValue,
                   dtPartoPrevisto: functions.somarDataParto(
-                      _model.dataUltimaInseminacaoTextController.text),
+                      _dataUltimaInseminacaoTextController.text),
                   dtSecPrevista: functions.somarDataSecagem(
-                      _model.dataUltimaInseminacaoTextController.text),
+                      _dataUltimaInseminacaoTextController.text),
                   dtPrePartoPrevista: functions.somarDataPreParto(
-                      _model.dataUltimaInseminacaoTextController.text),
+                      _dataUltimaInseminacaoTextController.text),
                   totalInseminacoes: 1,
                   totalPartos: 1,
                   compararDtUltimaInseminacao:
                       functions.converterDataUltimaInseminacao(
-                          _model.dataUltimaInseminacaoTextController.text),
+                          _dataUltimaInseminacaoTextController.text),
                   idStatusAnimal: 3,
                   dtUltimoPartoContingencia:
-                      _model.dataUltimoPartoTextController.text,
+                      _dataUltimoPartoTextController.text,
                   uidAnimalOffline: functions.criarUidRandom(),
                 ));
                 safeSetState(() {});
@@ -1782,7 +1844,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                   context.pop();
                 }
                 context.pushNamed(
-                  ListaAnimaisWidget.routeName,
+                  ListaAnimaisPage.routeName,
                   queryParameters: {
                     'uidPropriedade': serializeParam(
                       widget.uidPropriedade,
@@ -1827,47 +1889,47 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
               }
             }
           } else {
-            if (_model.statusAnimalValue == 'Seca') {
-              if (_model.grupoValue == 'Vacas') {
+            if (_statusAnimalValue == 'Seca') {
+              if (_grupoValue == 'Vacas') {
                 await criarAnimalOffline(AnimaisProdutoresStruct(
                   uidTecnicoPropriedade: widget.uidPropriedade,
-                  nomeAnimal: _model.nomeTextController.text,
-                  racaAnimal: _model.racaValue,
-                  pesoAnimal: _model.pesoTextController.text,
-                  dtNascimento: _model.dataNascimentoTextController.text,
-                  touro: _model.touroPaiTextController.text,
-                  vaca: _model.vacaMaeTextController.text,
-                  grupoAnimal: _model.grupoValue,
-                  brincoAnimalOrder: _model.brincoTextController.text != ''
-                      ? int.tryParse(_model.brincoTextController.text)
+                  nomeAnimal: _nomeTextController.text,
+                  racaAnimal: _racaValue,
+                  pesoAnimal: _pesoTextController.text,
+                  dtNascimento: _dataNascimentoTextController.text,
+                  touro: _touroPaiTextController.text,
+                  vaca: _vacaMaeTextController.text,
+                  grupoAnimal: _grupoValue,
+                  brincoAnimalOrder: _brincoTextController.text != ''
+                      ? int.tryParse(_brincoTextController.text)
                       : 999999,
-                  brincoAnimal: _model.brincoTextController.text != ''
-                      ? int.tryParse(_model.brincoTextController.text)
+                  brincoAnimal: _brincoTextController.text != ''
+                      ? int.tryParse(_brincoTextController.text)
                       : -1,
                   nomeBrincoConcat: () {
-                    if ((_model.nomeTextController.text != '') &&
-                        (_model.brincoTextController.text != '') &&
-                        (_model.brincoTextController.text != '-1')) {
-                      return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                    } else if (_model.nomeTextController.text != '') {
-                      return _model.nomeTextController.text;
+                    if ((_nomeTextController.text != '') &&
+                        (_brincoTextController.text != '') &&
+                        (_brincoTextController.text != '-1')) {
+                      return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                    } else if (_nomeTextController.text != '') {
+                      return _nomeTextController.text;
                     } else {
-                      return _model.brincoTextController.text;
+                      return _brincoTextController.text;
                     }
                   }(),
-                  status: _model.statusAnimalValue,
+                  status: _statusAnimalValue,
                   dtUltimaInseminacao:
-                      _model.dataUltimaInseminacaoTextController.text,
+                      _dataUltimaInseminacaoTextController.text,
                   dtPartoPrevisto: functions.somarDataParto(
-                      _model.dataUltimaInseminacaoTextController.text),
+                      _dataUltimaInseminacaoTextController.text),
                   dtSecPrevista: functions.somarDataSecagem(
-                      _model.dataUltimaInseminacaoTextController.text),
+                      _dataUltimaInseminacaoTextController.text),
                   dtPrePartoPrevista: functions.somarDataPreParto(
-                      _model.dataUltimaInseminacaoTextController.text),
-                  nomeTouroUltimaInseminacao: _model.touroInseminacaoValue,
+                      _dataUltimaInseminacaoTextController.text),
+                  nomeTouroUltimaInseminacao: _touroInseminacaoValue,
                   compararDtUltimaInseminacao:
                       functions.converterDataUltimaInseminacao(
-                          _model.dataUltimaInseminacaoTextController.text),
+                          _dataUltimaInseminacaoTextController.text),
                   idStatusAnimal: 4,
                   uidAnimalOffline: functions.criarUidRandom(),
                 ));
@@ -1888,7 +1950,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                   context.pop();
                 }
                 context.pushNamed(
-                  ListaAnimaisWidget.routeName,
+                  ListaAnimaisPage.routeName,
                   queryParameters: {
                     'uidPropriedade': serializeParam(
                       widget.uidPropriedade,
@@ -1948,40 +2010,40 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                 return;
               }
             } else {
-              if (_model.statusAnimalValue == 'Vazia') {
+              if (_statusAnimalValue == 'Vazia') {
                 await criarAnimalOffline(AnimaisProdutoresStruct(
                   uidTecnicoPropriedade: widget.uidPropriedade,
-                  nomeAnimal: _model.nomeTextController.text,
-                  racaAnimal: _model.racaValue,
-                  pesoAnimal: _model.pesoTextController.text,
-                  dtNascimento: _model.dataNascimentoTextController.text,
-                  touro: _model.touroPaiTextController.text,
-                  vaca: _model.vacaMaeTextController.text,
-                  grupoAnimal: _model.grupoValue,
-                  brincoAnimalOrder: _model.brincoTextController.text != ''
-                      ? int.tryParse(_model.brincoTextController.text)
+                  nomeAnimal: _nomeTextController.text,
+                  racaAnimal: _racaValue,
+                  pesoAnimal: _pesoTextController.text,
+                  dtNascimento: _dataNascimentoTextController.text,
+                  touro: _touroPaiTextController.text,
+                  vaca: _vacaMaeTextController.text,
+                  grupoAnimal: _grupoValue,
+                  brincoAnimalOrder: _brincoTextController.text != ''
+                      ? int.tryParse(_brincoTextController.text)
                       : 999999,
-                  brincoAnimal: _model.brincoTextController.text != ''
-                      ? int.tryParse(_model.brincoTextController.text)
+                  brincoAnimal: _brincoTextController.text != ''
+                      ? int.tryParse(_brincoTextController.text)
                       : -1,
                   nomeBrincoConcat: () {
-                    if ((_model.nomeTextController.text != '') &&
-                        (_model.brincoTextController.text != '') &&
-                        (_model.brincoTextController.text != '-1')) {
-                      return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                    } else if (_model.nomeTextController.text != '') {
-                      return _model.nomeTextController.text;
+                    if ((_nomeTextController.text != '') &&
+                        (_brincoTextController.text != '') &&
+                        (_brincoTextController.text != '-1')) {
+                      return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                    } else if (_nomeTextController.text != '') {
+                      return _nomeTextController.text;
                     } else {
-                      return _model.brincoTextController.text;
+                      return _brincoTextController.text;
                     }
                   }(),
-                  dtUltimoParto: _model.dataUltimoPartoTextController.text,
-                  status: _model.statusAnimalValue,
+                  dtUltimoParto: _dataUltimoPartoTextController.text,
+                  status: _statusAnimalValue,
                   totalPartos:
-                      _model.dataUltimoPartoTextController.text != '' ? 1 : 0,
+                      _dataUltimoPartoTextController.text != '' ? 1 : 0,
                   idStatusAnimal: 2,
                   dtUltimoPartoContingencia:
-                      _model.dataUltimoPartoTextController.text,
+                      _dataUltimoPartoTextController.text,
                   uidAnimalOffline: functions.criarUidRandom(),
                 ));
                 safeSetState(() {});
@@ -2001,7 +2063,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                   context.pop();
                 }
                 context.pushNamed(
-                  ListaAnimaisWidget.routeName,
+                  ListaAnimaisPage.routeName,
                   queryParameters: {
                     'uidPropriedade': serializeParam(
                       widget.uidPropriedade,
@@ -2041,59 +2103,59 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                 if (_shouldSetState) safeSetState(() {});
                 return;
               } else {
-                if (_model.statusAnimalValue == 'Prenha') {
-                  if ((_model.dataUltimaInseminacaoTextController.text != '') &&
-                      (_model.touroInseminacaoValue != null &&
-                          _model.touroInseminacaoValue != '')) {
+                if (_statusAnimalValue == 'Prenha') {
+                  if ((_dataUltimaInseminacaoTextController.text != '') &&
+                      (_touroInseminacaoValue != null &&
+                          _touroInseminacaoValue != '')) {
                     await criarAnimalOffline(AnimaisProdutoresStruct(
                       uidTecnicoPropriedade: widget.uidPropriedade,
-                      nomeAnimal: _model.nomeTextController.text,
-                      racaAnimal: _model.racaValue,
-                      pesoAnimal: _model.pesoTextController.text,
-                      dtNascimento: _model.dataNascimentoTextController.text,
-                      touro: _model.touroPaiTextController.text,
-                      vaca: _model.vacaMaeTextController.text,
-                      grupoAnimal: _model.grupoValue,
-                      brincoAnimalOrder: _model.brincoTextController.text != ''
-                          ? int.tryParse(_model.brincoTextController.text)
+                      nomeAnimal: _nomeTextController.text,
+                      racaAnimal: _racaValue,
+                      pesoAnimal: _pesoTextController.text,
+                      dtNascimento: _dataNascimentoTextController.text,
+                      touro: _touroPaiTextController.text,
+                      vaca: _vacaMaeTextController.text,
+                      grupoAnimal: _grupoValue,
+                      brincoAnimalOrder: _brincoTextController.text != ''
+                          ? int.tryParse(_brincoTextController.text)
                           : 999999,
-                      brincoAnimal: _model.brincoTextController.text != ''
-                          ? int.tryParse(_model.brincoTextController.text)
+                      brincoAnimal: _brincoTextController.text != ''
+                          ? int.tryParse(_brincoTextController.text)
                           : -1,
                       nomeBrincoConcat: () {
-                        if ((_model.nomeTextController.text != '') &&
-                            (_model.brincoTextController.text != '') &&
-                            (_model.brincoTextController.text != '-1')) {
-                          return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                        } else if (_model.nomeTextController.text != '') {
-                          return _model.nomeTextController.text;
+                        if ((_nomeTextController.text != '') &&
+                            (_brincoTextController.text != '') &&
+                            (_brincoTextController.text != '-1')) {
+                          return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                        } else if (_nomeTextController.text != '') {
+                          return _nomeTextController.text;
                         } else {
-                          return _model.brincoTextController.text;
+                          return _brincoTextController.text;
                         }
                       }(),
-                      status: _model.statusAnimalValue,
+                      status: _statusAnimalValue,
                       dtUltimaInseminacao:
-                          _model.dataUltimaInseminacaoTextController.text,
-                      nomeTouroUltimaInseminacao: _model.touroInseminacaoValue,
+                          _dataUltimaInseminacaoTextController.text,
+                      nomeTouroUltimaInseminacao: _touroInseminacaoValue,
                       dtPartoPrevisto: functions.somarDataParto(
-                          _model.dataUltimaInseminacaoTextController.text),
+                          _dataUltimaInseminacaoTextController.text),
                       dtSecPrevista: functions.somarDataSecagem(
-                          _model.dataUltimaInseminacaoTextController.text),
+                          _dataUltimaInseminacaoTextController.text),
                       dtPrePartoPrevista: functions.somarDataPreParto(
-                          _model.dataUltimaInseminacaoTextController.text),
+                          _dataUltimaInseminacaoTextController.text),
                       totalInseminacoes: 1,
                       dtDgMais: dateTimeFormat(
                         "dd/MM/yyyy",
                         getCurrentTimestamp,
                         locale: FFLocalizations.of(context).languageCode,
                       ),
-                      dtUltimoParto: _model.dataUltimoPartoTextController.text,
+                      dtUltimoParto: _dataUltimoPartoTextController.text,
                       compararDtUltimaInseminacao:
                           functions.converterDataUltimaInseminacao(
-                              _model.dataUltimaInseminacaoTextController.text),
+                              _dataUltimaInseminacaoTextController.text),
                       idStatusAnimal: 6,
                       dtUltimoPartoContingencia:
-                          _model.dataUltimoPartoTextController.text,
+                          _dataUltimoPartoTextController.text,
                       uidAnimalOffline: functions.criarUidRandom(),
                     ));
                     safeSetState(() {});
@@ -2113,7 +2175,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                       context.pop();
                     }
                     context.pushNamed(
-                      ListaAnimaisWidget.routeName,
+                      ListaAnimaisPage.routeName,
                       queryParameters: {
                         'uidPropriedade': serializeParam(
                           widget.uidPropriedade,
@@ -2174,49 +2236,46 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                     return;
                   }
                 } else {
-                  if (_model.statusAnimalValue == 'Inseminada PP') {
-                    if ((_model.dataUltimaInseminacaoTextController.text !=
-                            '') &&
-                        (_model.touroInseminacaoValue != null &&
-                            _model.touroInseminacaoValue != '')) {
+                  if (_statusAnimalValue == 'Inseminada PP') {
+                    if ((_dataUltimaInseminacaoTextController.text != '') &&
+                        (_touroInseminacaoValue != null &&
+                            _touroInseminacaoValue != '')) {
                       await criarAnimalOffline(AnimaisProdutoresStruct(
                         uidTecnicoPropriedade: widget.uidPropriedade,
-                        nomeAnimal: _model.nomeTextController.text,
-                        racaAnimal: _model.racaValue,
-                        pesoAnimal: _model.pesoTextController.text,
-                        dtNascimento: _model.dataNascimentoTextController.text,
-                        touro: _model.touroPaiTextController.text,
-                        vaca: _model.vacaMaeTextController.text,
-                        grupoAnimal: _model.grupoValue,
-                        brincoAnimalOrder:
-                            _model.brincoTextController.text != ''
-                                ? int.tryParse(_model.brincoTextController.text)
-                                : 999999,
-                        brincoAnimal: _model.brincoTextController.text != ''
-                            ? int.tryParse(_model.brincoTextController.text)
+                        nomeAnimal: _nomeTextController.text,
+                        racaAnimal: _racaValue,
+                        pesoAnimal: _pesoTextController.text,
+                        dtNascimento: _dataNascimentoTextController.text,
+                        touro: _touroPaiTextController.text,
+                        vaca: _vacaMaeTextController.text,
+                        grupoAnimal: _grupoValue,
+                        brincoAnimalOrder: _brincoTextController.text != ''
+                            ? int.tryParse(_brincoTextController.text)
+                            : 999999,
+                        brincoAnimal: _brincoTextController.text != ''
+                            ? int.tryParse(_brincoTextController.text)
                             : -1,
                         nomeBrincoConcat: () {
-                          if ((_model.nomeTextController.text != '') &&
-                              (_model.brincoTextController.text != '') &&
-                              (_model.brincoTextController.text != '-1')) {
-                            return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                          } else if (_model.nomeTextController.text != '') {
-                            return _model.nomeTextController.text;
+                          if ((_nomeTextController.text != '') &&
+                              (_brincoTextController.text != '') &&
+                              (_brincoTextController.text != '-1')) {
+                            return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                          } else if (_nomeTextController.text != '') {
+                            return _nomeTextController.text;
                           } else {
-                            return _model.brincoTextController.text;
+                            return _brincoTextController.text;
                           }
                         }(),
-                        status: _model.statusAnimalValue,
+                        status: _statusAnimalValue,
                         dtUltimaInseminacao:
-                            _model.dataUltimaInseminacaoTextController.text,
-                        nomeTouroUltimaInseminacao:
-                            _model.touroInseminacaoValue,
+                            _dataUltimaInseminacaoTextController.text,
+                        nomeTouroUltimaInseminacao: _touroInseminacaoValue,
                         dtPartoPrevisto: functions.somarDataParto(
-                            _model.dataUltimaInseminacaoTextController.text),
+                            _dataUltimaInseminacaoTextController.text),
                         dtSecPrevista: functions.somarDataSecagem(
-                            _model.dataUltimaInseminacaoTextController.text),
+                            _dataUltimaInseminacaoTextController.text),
                         dtPrePartoPrevista: functions.somarDataPreParto(
-                            _model.dataUltimaInseminacaoTextController.text),
+                            _dataUltimaInseminacaoTextController.text),
                         totalInseminacoes: 1,
                         dtPP: dateTimeFormat(
                           "dd/MM/yyyy",
@@ -2228,14 +2287,13 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                           getCurrentTimestamp,
                           locale: FFLocalizations.of(context).languageCode,
                         ),
-                        dtUltimoParto:
-                            _model.dataUltimoPartoTextController.text,
+                        dtUltimoParto: _dataUltimoPartoTextController.text,
                         compararDtUltimaInseminacao:
-                            functions.converterDataUltimaInseminacao(_model
-                                .dataUltimaInseminacaoTextController.text),
+                            functions.converterDataUltimaInseminacao(
+                                _dataUltimaInseminacaoTextController.text),
                         idStatusAnimal: 1,
                         dtUltimoPartoContingencia:
-                            _model.dataUltimoPartoTextController.text,
+                            _dataUltimoPartoTextController.text,
                         uidAnimalOffline: functions.criarUidRandom(),
                       ));
                       safeSetState(() {});
@@ -2256,7 +2314,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                         context.pop();
                       }
                       context.pushNamed(
-                        ListaAnimaisWidget.routeName,
+                        ListaAnimaisPage.routeName,
                         queryParameters: {
                           'uidPropriedade': serializeParam(
                             widget.uidPropriedade,
@@ -2317,50 +2375,46 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                       return;
                     }
                   } else {
-                    if (_model.statusAnimalValue == 'Pré Parto') {
-                      if ((_model.dataUltimaInseminacaoTextController.text !=
-                              '') &&
-                          (_model.touroInseminacaoValue != null &&
-                              _model.touroInseminacaoValue != '')) {
+                    if (_statusAnimalValue == 'Pré Parto') {
+                      if ((_dataUltimaInseminacaoTextController.text != '') &&
+                          (_touroInseminacaoValue != null &&
+                              _touroInseminacaoValue != '')) {
                         await criarAnimalOffline(AnimaisProdutoresStruct(
                           uidTecnicoPropriedade: widget.uidPropriedade,
-                          nomeAnimal: _model.nomeTextController.text,
-                          racaAnimal: _model.racaValue,
-                          pesoAnimal: _model.pesoTextController.text,
-                          dtNascimento:
-                              _model.dataNascimentoTextController.text,
-                          touro: _model.touroPaiTextController.text,
-                          vaca: _model.vacaMaeTextController.text,
-                          grupoAnimal: _model.grupoValue,
-                          brincoAnimalOrder: _model.brincoTextController.text !=
-                                  ''
-                              ? int.tryParse(_model.brincoTextController.text)
+                          nomeAnimal: _nomeTextController.text,
+                          racaAnimal: _racaValue,
+                          pesoAnimal: _pesoTextController.text,
+                          dtNascimento: _dataNascimentoTextController.text,
+                          touro: _touroPaiTextController.text,
+                          vaca: _vacaMaeTextController.text,
+                          grupoAnimal: _grupoValue,
+                          brincoAnimalOrder: _brincoTextController.text != ''
+                              ? int.tryParse(_brincoTextController.text)
                               : 999999,
-                          brincoAnimal: _model.brincoTextController.text != ''
-                              ? int.tryParse(_model.brincoTextController.text)
+                          brincoAnimal: _brincoTextController.text != ''
+                              ? int.tryParse(_brincoTextController.text)
                               : -1,
                           nomeBrincoConcat: () {
-                            if ((_model.nomeTextController.text != '') &&
-                                (_model.brincoTextController.text != '') &&
-                                (_model.brincoTextController.text != '-1')) {
-                              return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                            } else if (_model.nomeTextController.text != '') {
-                              return _model.nomeTextController.text;
+                            if ((_nomeTextController.text != '') &&
+                                (_brincoTextController.text != '') &&
+                                (_brincoTextController.text != '-1')) {
+                              return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                            } else if (_nomeTextController.text != '') {
+                              return _nomeTextController.text;
                             } else {
-                              return _model.brincoTextController.text;
+                              return _brincoTextController.text;
                             }
                           }(),
-                          status: _model.statusAnimalValue,
+                          status: _statusAnimalValue,
                           dtUltimaInseminacao:
-                              _model.dataUltimaInseminacaoTextController.text,
-                          nomeTouroUltimaInseminacao:
-                              _model.touroInseminacaoValue,
+                              _dataUltimaInseminacaoTextController.text,
+                          nomeTouroUltimaInseminacao: _touroInseminacaoValue,
                           dtPartoPrevisto: functions.somarDataParto(
-                              _model.dataUltimaInseminacaoTextController.text),
+                              _dataUltimaInseminacaoTextController.text),
                           dtSecPrevista: functions.somarDataSecagem(
-                              _model.dataUltimaInseminacaoTextController.text),
+                              _dataUltimaInseminacaoTextController.text),
                           dtPrePartoPrevista: functions.somarDataPreParto(
-                              _model.dataUltimaInseminacaoTextController.text),
+                              _dataUltimaInseminacaoTextController.text),
                           totalInseminacoes: 1,
                           dtPP: dateTimeFormat(
                             "dd/MM/yyyy",
@@ -2372,14 +2426,13 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                             getCurrentTimestamp,
                             locale: FFLocalizations.of(context).languageCode,
                           ),
-                          dtUltimoParto:
-                              _model.dataUltimoPartoTextController.text,
+                          dtUltimoParto: _dataUltimoPartoTextController.text,
                           compararDtUltimaInseminacao:
-                              functions.converterDataUltimaInseminacao(_model
-                                  .dataUltimaInseminacaoTextController.text),
+                              functions.converterDataUltimaInseminacao(
+                                  _dataUltimaInseminacaoTextController.text),
                           idStatusAnimal: 5,
                           dtUltimoPartoContingencia:
-                              _model.dataUltimoPartoTextController.text,
+                              _dataUltimoPartoTextController.text,
                           uidAnimalOffline: functions.criarUidRandom(),
                         ));
                         safeSetState(() {});
@@ -2400,7 +2453,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                           context.pop();
                         }
                         context.pushNamed(
-                          ListaAnimaisWidget.routeName,
+                          ListaAnimaisPage.routeName,
                           queryParameters: {
                             'uidPropriedade': serializeParam(
                               widget.uidPropriedade,
@@ -2489,40 +2542,39 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
           return;
         }
       } else {
-        if ((_model.grupoValue == 'Sêmens') ||
-            (_model.grupoValue == 'Touros')) {
-          if (_model.grupoValue == 'Touros') {
+        if ((_grupoValue == 'Sêmens') || (_grupoValue == 'Touros')) {
+          if (_grupoValue == 'Touros') {
             await criarAnimalOffline(AnimaisProdutoresStruct(
               uidTecnicoPropriedade: widget.uidPropriedade,
-              nomeAnimal: _model.nomeTextController.text,
-              racaAnimal: _model.racaValue,
-              pesoAnimal: _model.pesoTextController.text,
-              dtNascimento: _model.dataNascimentoTextController.text,
-              touro: _model.touroPaiTextController.text,
-              vaca: _model.vacaMaeTextController.text,
-              grupoAnimal: _model.grupoValue,
-              brincoAnimalOrder: _model.brincoTextController.text != ''
-                  ? int.tryParse(_model.brincoTextController.text)
+              nomeAnimal: _nomeTextController.text,
+              racaAnimal: _racaValue,
+              pesoAnimal: _pesoTextController.text,
+              dtNascimento: _dataNascimentoTextController.text,
+              touro: _touroPaiTextController.text,
+              vaca: _vacaMaeTextController.text,
+              grupoAnimal: _grupoValue,
+              brincoAnimalOrder: _brincoTextController.text != ''
+                  ? int.tryParse(_brincoTextController.text)
                   : 999999,
-              brincoAnimal: _model.brincoTextController.text != ''
-                  ? int.tryParse(_model.brincoTextController.text)
+              brincoAnimal: _brincoTextController.text != ''
+                  ? int.tryParse(_brincoTextController.text)
                   : -1,
               nomeBrincoConcat: () {
-                if ((_model.nomeTextController.text != '') &&
-                    (_model.brincoTextController.text != '') &&
-                    (_model.brincoTextController.text != '-1')) {
-                  return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                } else if (_model.nomeTextController.text != '') {
-                  return _model.nomeTextController.text;
+                if ((_nomeTextController.text != '') &&
+                    (_brincoTextController.text != '') &&
+                    (_brincoTextController.text != '-1')) {
+                  return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                } else if (_nomeTextController.text != '') {
+                  return _nomeTextController.text;
                 } else {
-                  return _model.brincoTextController.text;
+                  return _brincoTextController.text;
                 }
               }(),
               liberaInseminacao: () {
-                if (_model.grupoValue == 'Touros') {
-                  return _model.switchValue;
-                } else if (_model.grupoValue == 'Sêmens') {
-                  return _model.switchValue;
+                if (_grupoValue == 'Touros') {
+                  return _switchValue;
+                } else if (_grupoValue == 'Sêmens') {
+                  return _switchValue;
                 } else {
                   return true;
                 }
@@ -2546,7 +2598,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
               context.pop();
             }
             context.pushNamed(
-              ListaAnimaisWidget.routeName,
+              ListaAnimaisPage.routeName,
               queryParameters: {
                 'uidPropriedade': serializeParam(
                   widget.uidPropriedade,
@@ -2582,37 +2634,37 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
             if (_shouldSetState) safeSetState(() {});
             return;
           } else {
-            if (_model.grupoValue == 'Sêmens') {
+            if (_grupoValue == 'Sêmens') {
               await criarAnimalOffline(AnimaisProdutoresStruct(
                 uidTecnicoPropriedade: widget.uidPropriedade,
-                nomeAnimal: _model.nomeTextController.text,
-                racaAnimal: _model.racaValue,
-                pesoAnimal: _model.pesoTextController.text,
-                dtNascimento: _model.dataNascimentoTextController.text,
-                touro: _model.touroPaiTextController.text,
-                grupoAnimal: _model.grupoValue,
-                brincoAnimalOrder: _model.brincoTextController.text != ''
-                    ? int.tryParse(_model.brincoTextController.text)
+                nomeAnimal: _nomeTextController.text,
+                racaAnimal: _racaValue,
+                pesoAnimal: _pesoTextController.text,
+                dtNascimento: _dataNascimentoTextController.text,
+                touro: _touroPaiTextController.text,
+                grupoAnimal: _grupoValue,
+                brincoAnimalOrder: _brincoTextController.text != ''
+                    ? int.tryParse(_brincoTextController.text)
                     : 999999,
-                brincoAnimal: _model.brincoTextController.text != ''
-                    ? int.tryParse(_model.brincoTextController.text)
+                brincoAnimal: _brincoTextController.text != ''
+                    ? int.tryParse(_brincoTextController.text)
                     : -1,
                 nomeBrincoConcat: () {
-                  if ((_model.nomeTextController.text != '') &&
-                      (_model.brincoTextController.text != '') &&
-                      (_model.brincoTextController.text != '-1')) {
-                    return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                  } else if (_model.nomeTextController.text != '') {
-                    return _model.nomeTextController.text;
+                  if ((_nomeTextController.text != '') &&
+                      (_brincoTextController.text != '') &&
+                      (_brincoTextController.text != '-1')) {
+                    return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                  } else if (_nomeTextController.text != '') {
+                    return _nomeTextController.text;
                   } else {
-                    return _model.brincoTextController.text;
+                    return _brincoTextController.text;
                   }
                 }(),
                 liberaInseminacao: () {
-                  if (_model.grupoValue == 'Touros') {
-                    return _model.switchValue;
-                  } else if (_model.grupoValue == 'Sêmens') {
-                    return _model.switchValue;
+                  if (_grupoValue == 'Touros') {
+                    return _switchValue;
+                  } else if (_grupoValue == 'Sêmens') {
+                    return _switchValue;
                   } else {
                     return true;
                   }
@@ -2636,7 +2688,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                 context.pop();
               }
               context.pushNamed(
-                ListaAnimaisWidget.routeName,
+                ListaAnimaisPage.routeName,
                 queryParameters: {
                   'uidPropriedade': serializeParam(
                     widget.uidPropriedade,
@@ -2679,28 +2731,28 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
         } else {
           await criarAnimalOffline(AnimaisProdutoresStruct(
             uidTecnicoPropriedade: widget.uidPropriedade,
-            nomeAnimal: _model.nomeTextController.text,
-            racaAnimal: _model.racaValue,
-            pesoAnimal: _model.pesoTextController.text,
-            dtNascimento: _model.dataNascimentoTextController.text,
-            touro: _model.touroPaiTextController.text,
-            vaca: _model.vacaMaeTextController.text,
-            grupoAnimal: _model.grupoValue,
-            brincoAnimalOrder: _model.brincoTextController.text != ''
-                ? int.tryParse(_model.brincoTextController.text)
+            nomeAnimal: _nomeTextController.text,
+            racaAnimal: _racaValue,
+            pesoAnimal: _pesoTextController.text,
+            dtNascimento: _dataNascimentoTextController.text,
+            touro: _touroPaiTextController.text,
+            vaca: _vacaMaeTextController.text,
+            grupoAnimal: _grupoValue,
+            brincoAnimalOrder: _brincoTextController.text != ''
+                ? int.tryParse(_brincoTextController.text)
                 : 999999,
-            brincoAnimal: _model.brincoTextController.text != ''
-                ? int.tryParse(_model.brincoTextController.text)
+            brincoAnimal: _brincoTextController.text != ''
+                ? int.tryParse(_brincoTextController.text)
                 : -1,
             nomeBrincoConcat: () {
-              if ((_model.nomeTextController.text != '') &&
-                  (_model.brincoTextController.text != '') &&
-                  (_model.brincoTextController.text != '-1')) {
-                return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-              } else if (_model.nomeTextController.text != '') {
-                return _model.nomeTextController.text;
+              if ((_nomeTextController.text != '') &&
+                  (_brincoTextController.text != '') &&
+                  (_brincoTextController.text != '-1')) {
+                return '${_nomeTextController.text} - ${_brincoTextController.text}';
+              } else if (_nomeTextController.text != '') {
+                return _nomeTextController.text;
               } else {
-                return _model.brincoTextController.text;
+                return _brincoTextController.text;
               }
             }(),
             uidAnimalOffline: functions.criarUidRandom(),
@@ -2722,7 +2774,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
             context.pop();
           }
           context.pushNamed(
-            ListaAnimaisWidget.routeName,
+            ListaAnimaisPage.routeName,
             queryParameters: {
               'uidPropriedade': serializeParam(
                 widget.uidPropriedade,
@@ -2782,7 +2834,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
             ),
             onPressed: () async {
               context.goNamed(
-                ListaAnimaisWidget.routeName,
+                ListaAnimaisPage.routeName,
                 queryParameters: {
                   'uidPropriedade': serializeParam(
                     widget.uidPropriedade,
@@ -2842,7 +2894,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
   Widget _p2(BuildContext context,
       dynamic cadastrarNovoAnimalStatusAnimaisRecordList) {
     return Form(
-      key: _model.formKey,
+      key: _formKey,
       autovalidateMode: AutovalidateMode.always,
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
@@ -2856,8 +2908,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
               _p6(context),
               if (((widget.grupoPredominante == 'Sêmens') ||
                       (widget.grupoPredominante == 'Touros')) ||
-                  ((_model.grupoValue == 'Touros') ||
-                      (_model.grupoValue == 'Sêmens')))
+                  ((_grupoValue == 'Touros') || (_grupoValue == 'Sêmens')))
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -2866,10 +2917,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                     _p12(context),
                   ],
                 ),
-              if (_model.grupoValue != 'Sêmens')
+              if (_grupoValue != 'Sêmens')
                 TextFormField(
-                  controller: _model.pesoTextController,
-                  focusNode: _model.pesoFocusNode,
+                  controller: _pesoTextController,
+                  focusNode: _pesoFocusNode,
                   autofocus: false,
                   textCapitalization: TextCapitalization.none,
                   obscureText: false,
@@ -2965,8 +3016,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                       null,
                   keyboardType: TextInputType.number,
                   cursorColor: FlutterFlowTheme.of(context).primary,
-                  validator:
-                      _model.pesoTextControllerValidator.asValidator(context),
+                  validator: _pesoTextControllerValidator.asValidator(context),
                   inputFormatters: [
                     if (!isAndroid && !isiOS)
                       TextInputFormatter.withFunction((oldValue, newValue) {
@@ -2981,9 +3031,9 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
               _p7(context),
               _p8(context),
               _p9(context),
-              if (((_model.grupoValue == 'Vacas') ||
+              if (((_grupoValue == 'Vacas') ||
                       (widget.grupoPredominante == 'Vacas')) &&
-                  (_model.statusAnimalValue != 'Seca'))
+                  (_statusAnimalValue != 'Seca'))
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -2991,8 +3041,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                     _p14(context),
                   ],
                 ),
-              if (((_model.grupoValue == 'Vacas') ||
-                      (_model.grupoValue == 'Novilhas')) ||
+              if (((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) ||
                   ((widget.grupoPredominante == 'Novilhas') ||
                       (widget.grupoPredominante == 'Vacas')))
                 Row(
@@ -3002,11 +3051,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                     _p16(context),
                   ],
                 ),
-              if (((_model.grupoValue == 'Vacas') ||
-                      (_model.grupoValue == 'Novilhas')) &&
-                  (_model.dataUltimaInseminacaoTextController.text != ''))
+              if (((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) &&
+                  (_dataUltimaInseminacaoTextController.text != ''))
                 StreamBuilder<List<AnimaisProdutoresRecord>>(
-                  stream: _model.animaisLiberaoParaInseminar(
+                  stream: _animaisLiberaoParaInseminar(
                     requestFn: () => queryAnimaisProdutoresRecord(
                       parent: widget.uidTecnico,
                       queryBuilder: (animaisProdutoresRecord) =>
@@ -3041,7 +3089,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                         snapshot.data!;
 
                     return FlutterFlowDropDown<String>(
-                      controller: _model.touroInseminacaoValueController ??=
+                      controller: _touroInseminacaoValueController ??=
                           FormFieldController<String>(null),
                       options: functions.duasListasEmUma(
                           touroInseminacaoAnimaisProdutoresRecordList
@@ -3056,8 +3104,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                               .toList()
                               .map((e) => e.nomeBrincoConcat)
                               .toList())!,
-                      onChanged: (val) => safeSetState(
-                          () => _model.touroInseminacaoValue = val),
+                      onChanged: (val) =>
+                          safeSetState(() => _touroInseminacaoValue = val),
                       width: double.infinity,
                       height: 50.0,
                       searchHintTextStyle:
@@ -3137,28 +3185,25 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                 ),
               if (((widget.grupoPredominante == 'Novilhas') ||
                       (widget.grupoPredominante == 'Vacas')) ||
-                  ((_model.grupoValue == 'Vacas') ||
-                      (_model.grupoValue == 'Novilhas')))
+                  ((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')))
                 FlutterFlowDropDown<String>(
-                  controller: _model.statusAnimalValueController ??=
+                  controller: _statusAnimalValueController ??=
                       FormFieldController<String>(
-                    _model.statusAnimalValue ??= 'Vazia',
+                    _statusAnimalValue ??= 'Vazia',
                   ),
                   options: () {
-                    if ((_model.dataUltimaInseminacaoTextController.text !=
-                            '') &&
-                        (_model.dataUltimoPartoTextController.text != '') &&
-                        (_model.datePicked2! > _model.datePicked3!)) {
+                    if ((_dataUltimaInseminacaoTextController.text != '') &&
+                        (_dataUltimoPartoTextController.text != '') &&
+                        (_datePicked2! > _datePicked3!)) {
                       return cadastrarNovoAnimalStatusAnimaisRecordList
                           .map((e) => e.descricao)
                           .toList()
                           .where((e) => e == 'Vazia')
                           .toList();
-                    } else if ((_model
-                                .dataUltimaInseminacaoTextController.text !=
+                    } else if ((_dataUltimaInseminacaoTextController.text !=
                             '') &&
-                        (_model.dataUltimoPartoTextController.text != '') &&
-                        (_model.datePicked2! < _model.datePicked3!)) {
+                        (_dataUltimoPartoTextController.text != '') &&
+                        (_datePicked2! < _datePicked3!)) {
                       return cadastrarNovoAnimalStatusAnimaisRecordList
                           .map((e) => e.descricao)
                           .toList()
@@ -3169,18 +3214,16 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                               (e == 'Inseminada PP') ||
                               (e == 'Pré Parto'))
                           .toList();
-                    } else if ((_model
-                                .dataUltimaInseminacaoTextController.text !=
+                    } else if ((_dataUltimaInseminacaoTextController.text !=
                             '') &&
-                        (_model.dataUltimoPartoTextController.text == '')) {
-                      return functions.retornaStringEmLista(_model.grupoValue ==
+                        (_dataUltimoPartoTextController.text == '')) {
+                      return functions.retornaStringEmLista(_grupoValue ==
                               'Novilhas'
                           ? 'Inseminada, Inseminada PP, Prenha, Pré Parto'
                           : 'Inseminada, Inseminada PP, Prenha, Seca, Pré Parto');
-                    } else if ((_model
-                                .dataUltimaInseminacaoTextController.text ==
+                    } else if ((_dataUltimaInseminacaoTextController.text ==
                             '') &&
-                        (_model.dataUltimoPartoTextController.text != '')) {
+                        (_dataUltimoPartoTextController.text != '')) {
                       return cadastrarNovoAnimalStatusAnimaisRecordList
                           .map((e) => e.descricao)
                           .toList()
@@ -3191,7 +3234,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                     }
                   }(),
                   onChanged: (val) =>
-                      safeSetState(() => _model.statusAnimalValue = val),
+                      safeSetState(() => _statusAnimalValue = val),
                   width: double.infinity,
                   height: 50.0,
                   textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -3234,8 +3277,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
 
   Widget _p3(BuildContext context) {
     return TextFormField(
-      controller: _model.nomeTextController,
-      focusNode: _model.nomeFocusNode,
+      controller: _nomeTextController,
+      focusNode: _nomeFocusNode,
       autofocus: false,
       obscureText: false,
       decoration: InputDecoration(
@@ -3298,14 +3341,14 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
             fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
           ),
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.nomeTextControllerValidator.asValidator(context),
+      validator: _nomeTextControllerValidator.asValidator(context),
     );
   }
 
   Widget _p4(BuildContext context) {
     return TextFormField(
-      controller: _model.brincoTextController,
-      focusNode: _model.brincoFocusNode,
+      controller: _brincoTextController,
+      focusNode: _brincoFocusNode,
       autofocus: false,
       obscureText: false,
       decoration: InputDecoration(
@@ -3369,7 +3412,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
           ),
       keyboardType: TextInputType.number,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.brincoTextControllerValidator.asValidator(context),
+      validator: _brincoTextControllerValidator.asValidator(context),
     );
   }
 
@@ -3396,14 +3439,13 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
         List<RacasRecord> racaRacasRecordList = snapshot.data!;
 
         return FlutterFlowDropDown<String>(
-          controller: _model.racaValueController ??=
-              FormFieldController<String>(
-            _model.racaValue ??= 'Holandesa',
+          controller: _racaValueController ??= FormFieldController<String>(
+            _racaValue ??= 'Holandesa',
           ),
-          options: _model.respostaNet!
+          options: _respostaNet!
               ? racaRacasRecordList.map((e) => e.descricao).toList()
               : kRacasDescricoes.toList(),
-          onChanged: (val) => safeSetState(() => _model.racaValue = val),
+          onChanged: (val) => safeSetState(() => _racaValue = val),
           width: double.infinity,
           height: 50.0,
           searchHintTextStyle: FlutterFlowTheme.of(context)
@@ -3483,14 +3525,13 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
         List<GrupoRecord> grupoGrupoRecordList = snapshot.data!;
 
         return FlutterFlowDropDown<String>(
-          controller: _model.grupoValueController ??=
-              FormFieldController<String>(
-            _model.grupoValue ??= widget.grupoPredominante,
+          controller: _grupoValueController ??= FormFieldController<String>(
+            _grupoValue ??= widget.grupoPredominante,
           ),
-          options: _model.respostaNet!
+          options: _respostaNet!
               ? grupoGrupoRecordList.map((e) => e.descricao).toList()
               : kGruposDescricoes.toList(),
-          onChanged: (val) => safeSetState(() => _model.grupoValue = val),
+          onChanged: (val) => safeSetState(() => _grupoValue = val),
           width: double.infinity,
           height: 50.0,
           textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -3531,10 +3572,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
           child: Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
             child: TextFormField(
-              controller: _model.dataNascimentoTextController,
-              focusNode: _model.dataNascimentoFocusNode,
+              controller: _dataNascimentoTextController,
+              focusNode: _dataNascimentoFocusNode,
               onChanged: (_) => EasyDebounce.debounce(
-                '_model.dataNascimentoTextController',
+                '_dataNascimentoTextController',
                 Duration(milliseconds: 2000),
                 () => safeSetState(() {}),
               ),
@@ -3588,10 +3629,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                 ),
                 contentPadding:
                     EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-                suffixIcon: _model.dataNascimentoTextController!.text.isNotEmpty
+                suffixIcon: _dataNascimentoTextController!.text.isNotEmpty
                     ? InkWell(
                         onTap: () async {
-                          _model.dataNascimentoTextController?.clear();
+                          _dataNascimentoTextController?.clear();
                           safeSetState(() {});
                         },
                         child: Icon(
@@ -3622,9 +3663,9 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                       maxLength}) =>
                   null,
               keyboardType: TextInputType.datetime,
-              validator: _model.dataNascimentoTextControllerValidator
-                  .asValidator(context),
-              inputFormatters: [_model.dataNascimentoMask],
+              validator:
+                  _dataNascimentoTextControllerValidator.asValidator(context),
+              inputFormatters: [_dataNascimentoMask],
             ),
           ),
         ),
@@ -3692,7 +3733,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                               FlutterFlowTheme.of(context).secondaryBackground,
                           use24hFormat: false,
                           onDateTimeChanged: (newDateTime) => safeSetState(() {
-                            _model.datePicked1 = newDateTime;
+                            _datePicked1 = newDateTime;
                           }),
                         ),
                       ),
@@ -3700,14 +3741,14 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                   );
                 });
             safeSetState(() {
-              _model.dataNascimentoTextController?.text = dateTimeFormat(
+              _dataNascimentoTextController?.text = dateTimeFormat(
                 "dd/MM/yyyy",
-                _model.datePicked1,
+                _datePicked1,
                 locale: FFLocalizations.of(context).languageCode,
               );
-              _model.dataNascimentoMask.updateMask(
+              _dataNascimentoMask.updateMask(
                 newValue: TextEditingValue(
-                  text: _model.dataNascimentoTextController!.text,
+                  text: _dataNascimentoTextController!.text,
                 ),
               );
             });
@@ -3724,8 +3765,8 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
 
   Widget _p8(BuildContext context) {
     return TextFormField(
-      controller: _model.touroPaiTextController,
-      focusNode: _model.touroPaiFocusNode,
+      controller: _touroPaiTextController,
+      focusNode: _touroPaiFocusNode,
       autofocus: false,
       obscureText: false,
       decoration: InputDecoration(
@@ -3788,14 +3829,14 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
             fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
           ),
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.touroPaiTextControllerValidator.asValidator(context),
+      validator: _touroPaiTextControllerValidator.asValidator(context),
     );
   }
 
   Widget _p9(BuildContext context) {
     return TextFormField(
-      controller: _model.vacaMaeTextController,
-      focusNode: _model.vacaMaeFocusNode,
+      controller: _vacaMaeTextController,
+      focusNode: _vacaMaeFocusNode,
       autofocus: false,
       obscureText: false,
       decoration: InputDecoration(
@@ -3859,7 +3900,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
           ),
       textAlign: TextAlign.start,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.vacaMaeTextControllerValidator.asValidator(context),
+      validator: _vacaMaeTextControllerValidator.asValidator(context),
     );
   }
 
@@ -3920,9 +3961,9 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
 
   Widget _p12(BuildContext context) {
     return Switch.adaptive(
-      value: _model.switchValue!,
+      value: _switchValue!,
       onChanged: (newValue) async {
-        safeSetState(() => _model.switchValue = newValue);
+        safeSetState(() => _switchValue = newValue);
       },
       activeColor: FlutterFlowTheme.of(context).tertiary,
       activeTrackColor: FlutterFlowTheme.of(context).alternate,
@@ -3936,10 +3977,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
         child: TextFormField(
-          controller: _model.dataUltimoPartoTextController,
-          focusNode: _model.dataUltimoPartoFocusNode,
+          controller: _dataUltimoPartoTextController,
+          focusNode: _dataUltimoPartoFocusNode,
           onChanged: (_) => EasyDebounce.debounce(
-            '_model.dataUltimoPartoTextController',
+            '_dataUltimoPartoTextController',
             Duration(milliseconds: 2000),
             () => safeSetState(() {}),
           ),
@@ -3992,10 +4033,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
             ),
             contentPadding:
                 EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-            suffixIcon: _model.dataUltimoPartoTextController!.text.isNotEmpty
+            suffixIcon: _dataUltimoPartoTextController!.text.isNotEmpty
                 ? InkWell(
                     onTap: () async {
-                      _model.dataUltimoPartoTextController?.clear();
+                      _dataUltimoPartoTextController?.clear();
                       safeSetState(() {});
                     },
                     child: Icon(
@@ -4021,9 +4062,9 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                   {required currentLength, required isFocused, maxLength}) =>
               null,
           keyboardType: TextInputType.datetime,
-          validator: _model.dataUltimoPartoTextControllerValidator
-              .asValidator(context),
-          inputFormatters: [_model.dataUltimoPartoMask],
+          validator:
+              _dataUltimoPartoTextControllerValidator.asValidator(context),
+          inputFormatters: [_dataUltimoPartoMask],
         ),
       ),
     );
@@ -4089,7 +4130,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                           FlutterFlowTheme.of(context).secondaryBackground,
                       use24hFormat: false,
                       onDateTimeChanged: (newDateTime) => safeSetState(() {
-                        _model.datePicked2 = newDateTime;
+                        _datePicked2 = newDateTime;
                       }),
                     ),
                   ),
@@ -4097,39 +4138,38 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
               );
             });
         safeSetState(() {
-          _model.dataUltimoPartoTextController?.text = dateTimeFormat(
+          _dataUltimoPartoTextController?.text = dateTimeFormat(
             "dd/MM/yyyy",
-            _model.datePicked2,
+            _datePicked2,
             locale: FFLocalizations.of(context).languageCode,
           );
-          _model.dataUltimoPartoMask.updateMask(
+          _dataUltimoPartoMask.updateMask(
             newValue: TextEditingValue(
-              text: _model.dataUltimoPartoTextController!.text,
+              text: _dataUltimoPartoTextController!.text,
             ),
           );
         });
-        if (_model.datePicked2! > _model.datePicked3!) {
+        if (_datePicked2! > _datePicked3!) {
           safeSetState(() {
-            _model.statusAnimalValueController?.value = 'Vazia';
-            _model.statusAnimalValue = 'Vazia';
+            _statusAnimalValueController?.value = 'Vazia';
+            _statusAnimalValue = 'Vazia';
           });
           if (_shouldSetState) safeSetState(() {});
           return;
         } else {
-          _model.outListaAnimais = await queryStatusAnimaisRecordOnce();
+          _outListaAnimais = await queryStatusAnimaisRecordOnce();
           _shouldSetState = true;
           safeSetState(() {
-            _model.statusAnimalValueController?.value =
-                (_model.outListaAnimais != null &&
-                        (_model.outListaAnimais)!.isNotEmpty)
+            _statusAnimalValueController?.value =
+                (_outListaAnimais != null && (_outListaAnimais)!.isNotEmpty)
                     .toString();
-            _model.statusAnimalValue = (_model.outListaAnimais != null &&
-                    (_model.outListaAnimais)!.isNotEmpty)
-                .toString();
+            _statusAnimalValue =
+                (_outListaAnimais != null && (_outListaAnimais)!.isNotEmpty)
+                    .toString();
           });
           safeSetState(() {
-            _model.statusAnimalValueController?.value = 'Inseminada';
-            _model.statusAnimalValue = 'Inseminada';
+            _statusAnimalValueController?.value = 'Inseminada';
+            _statusAnimalValue = 'Inseminada';
           });
           if (_shouldSetState) safeSetState(() {});
           return;
@@ -4150,10 +4190,10 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
         child: TextFormField(
-          controller: _model.dataUltimaInseminacaoTextController,
-          focusNode: _model.dataUltimaInseminacaoFocusNode,
+          controller: _dataUltimaInseminacaoTextController,
+          focusNode: _dataUltimaInseminacaoFocusNode,
           onChanged: (_) => EasyDebounce.debounce(
-            '_model.dataUltimaInseminacaoTextController',
+            '_dataUltimaInseminacaoTextController',
             Duration(milliseconds: 2000),
             () => safeSetState(() {}),
           ),
@@ -4218,19 +4258,18 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
             ),
             contentPadding:
                 EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-            suffixIcon:
-                _model.dataUltimaInseminacaoTextController!.text.isNotEmpty
-                    ? InkWell(
-                        onTap: () async {
-                          _model.dataUltimaInseminacaoTextController?.clear();
-                          safeSetState(() {});
-                        },
-                        child: Icon(
-                          Icons.clear,
-                          size: 22.0,
-                        ),
-                      )
-                    : null,
+            suffixIcon: _dataUltimaInseminacaoTextController!.text.isNotEmpty
+                ? InkWell(
+                    onTap: () async {
+                      _dataUltimaInseminacaoTextController?.clear();
+                      safeSetState(() {});
+                    },
+                    child: Icon(
+                      Icons.clear,
+                      size: 22.0,
+                    ),
+                  )
+                : null,
           ),
           style: FlutterFlowTheme.of(context).bodyMedium.override(
                 font: GoogleFonts.readexPro(
@@ -4248,9 +4287,9 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                   {required currentLength, required isFocused, maxLength}) =>
               null,
           keyboardType: TextInputType.datetime,
-          validator: _model.dataUltimaInseminacaoTextControllerValidator
+          validator: _dataUltimaInseminacaoTextControllerValidator
               .asValidator(context),
-          inputFormatters: [_model.dataUltimaInseminacaoMask],
+          inputFormatters: [_dataUltimaInseminacaoMask],
         ),
       ),
     );
@@ -4315,7 +4354,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
                           FlutterFlowTheme.of(context).secondaryBackground,
                       use24hFormat: false,
                       onDateTimeChanged: (newDateTime) => safeSetState(() {
-                        _model.datePicked3 = newDateTime;
+                        _datePicked3 = newDateTime;
                       }),
                     ),
                   ),
@@ -4323,36 +4362,36 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
               );
             });
         safeSetState(() {
-          _model.dataUltimaInseminacaoTextController?.text = dateTimeFormat(
+          _dataUltimaInseminacaoTextController?.text = dateTimeFormat(
             "dd/MM/yyyy",
-            _model.datePicked3,
+            _datePicked3,
             locale: FFLocalizations.of(context).languageCode,
           );
-          _model.dataUltimaInseminacaoMask.updateMask(
+          _dataUltimaInseminacaoMask.updateMask(
             newValue: TextEditingValue(
-              text: _model.dataUltimaInseminacaoTextController!.text,
+              text: _dataUltimaInseminacaoTextController!.text,
             ),
           );
         });
-        if ((_model.dataUltimaInseminacaoTextController.text != '') &&
-            (_model.dataUltimoPartoTextController.text != '')) {
-          if (_model.datePicked2! > _model.datePicked3!) {
+        if ((_dataUltimaInseminacaoTextController.text != '') &&
+            (_dataUltimoPartoTextController.text != '')) {
+          if (_datePicked2! > _datePicked3!) {
             safeSetState(() {
-              _model.statusAnimalValueController?.value = 'Vazia';
-              _model.statusAnimalValue = 'Vazia';
+              _statusAnimalValueController?.value = 'Vazia';
+              _statusAnimalValue = 'Vazia';
             });
             return;
           } else {
             safeSetState(() {
-              _model.statusAnimalValueController?.value = 'Inseminada';
-              _model.statusAnimalValue = 'Inseminada';
+              _statusAnimalValueController?.value = 'Inseminada';
+              _statusAnimalValue = 'Inseminada';
             });
             return;
           }
         } else {
           safeSetState(() {
-            _model.statusAnimalValueController?.value = 'Inseminada';
-            _model.statusAnimalValue = 'Inseminada';
+            _statusAnimalValueController?.value = 'Inseminada';
+            _statusAnimalValue = 'Inseminada';
           });
           return;
         }
@@ -4406,7 +4445,7 @@ class _CadastrarNovoAnimalWidgetState extends State<CadastrarNovoAnimalWidget> {
               preferredSize: Size.fromHeight(100.0),
               child: AppBar(
                 backgroundColor:
-                    _model.respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
+                    _respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
                 automaticallyImplyLeading: false,
                 actions: [],
                 flexibleSpace: FlexibleSpaceBar(

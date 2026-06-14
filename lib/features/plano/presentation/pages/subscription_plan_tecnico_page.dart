@@ -6,7 +6,7 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
-import '/pages/tecnico/dashboard/dashboard_tecnico/dashboard_tecnico_widget.dart';
+import '/features/dashboard/presentation/pages/dashboard_tecnico_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -418,7 +418,7 @@ class _SubscriptionPlanTecnicoPageState
             },
           );
 
-          context.goNamed(DashboardTecnicoWidget.routeName);
+          context.goNamed(DashboardTecnicoPage.routeName);
 
           if (_shouldSetState) safeSetState(() {});
           return;
@@ -528,7 +528,7 @@ class _SubscriptionPlanTecnicoPageState
             },
           );
 
-          context.goNamed(DashboardTecnicoWidget.routeName);
+          context.goNamed(DashboardTecnicoPage.routeName);
 
           if (_shouldSetState) safeSetState(() {});
           return;

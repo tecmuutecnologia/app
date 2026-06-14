@@ -11,7 +11,7 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/features/auth/presentation/pages/create_account_technician_page.dart';
-import '/pages/tecnico/initial/sync_technician/sync_technician_widget.dart';
+import '/features/auth/presentation/pages/sync_technician_page.dart';
 import '../controllers/login_technician_controller.dart';
 
 /// Tela de login do técnico.
@@ -413,7 +413,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
           }
 
           context.pushNamedAuth(
-              SyncTechnicianWidget.routeName, context.mounted);
+              SyncTechnicianPage.routeName, context.mounted);
         },
         text: 'Entrar',
         options: FFButtonOptions(
@@ -461,7 +461,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
               final session = await service.loginOfflineComBiometria();
               if (session != null && context.mounted) {
                 context.pushNamedAuth(
-                    SyncTechnicianWidget.routeName, context.mounted);
+                    SyncTechnicianPage.routeName, context.mounted);
               }
             },
             text: 'Entrar com biometria',

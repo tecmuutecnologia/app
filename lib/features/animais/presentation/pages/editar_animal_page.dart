@@ -21,11 +21,9 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
-import 'editar_animal_model.dart';
-export 'editar_animal_model.dart';
 
-class EditarAnimalWidget extends StatefulWidget {
-  const EditarAnimalWidget({
+class EditarAnimalPage extends StatefulWidget {
+  const EditarAnimalPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -52,28 +50,67 @@ class EditarAnimalWidget extends StatefulWidget {
   static String routePath = '/editarAnimal';
 
   @override
-  State<EditarAnimalWidget> createState() => _EditarAnimalWidgetState();
+  State<EditarAnimalPage> createState() => _EditarAnimalPageState();
 }
 
-class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
-  late EditarAnimalModel _model;
+class _EditarAnimalPageState extends State<EditarAnimalPage> {
+  final _formKey = GlobalKey<FormState>();
+  InstantTimer? _instantTimer;
+  bool? _respostaNet = true;
+  FocusNode? _nomeFocusNode;
+  TextEditingController? _nomeTextController;
+  final String? Function(BuildContext, String?)? _nomeTextControllerValidator =
+      null;
+  FocusNode? _brincoFocusNode;
+  TextEditingController? _brincoTextController;
+  final String? Function(BuildContext, String?)?
+      _brincoTextControllerValidator = null;
+  String? _racaValue;
+  FormFieldController<String>? _racaValueController;
+  String? _grupoValue;
+  FormFieldController<String>? _grupoValueController;
+  bool? _switchValue;
+  FocusNode? _pesoFocusNode;
+  TextEditingController? _pesoTextController;
+  final String? Function(BuildContext, String?)? _pesoTextControllerValidator =
+      null;
+  FocusNode? _dataNascimentoFocusNode;
+  TextEditingController? _dataNascimentoTextController;
+  late MaskTextInputFormatter _dataNascimentoMask;
+  String? _dataNascimentoTextControllerValidator(
+      BuildContext context, String? val) {
+    if (val == null || val.isEmpty) {
+      return 'Campo é obrigatório.';
+    }
+
+    return null;
+  }
+
+  DateTime? _datePicked;
+  FocusNode? _touroFocusNode;
+  TextEditingController? _touroTextController;
+  final String? Function(BuildContext, String?)? _touroTextControllerValidator =
+      null;
+  FocusNode? _vacaFocusNode;
+  TextEditingController? _vacaTextController;
+  final String? Function(BuildContext, String?)? _vacaTextControllerValidator =
+      null;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => EditarAnimalModel());
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.instantTimer = InstantTimer.periodic(
+      _instantTimer = InstantTimer.periodic(
         duration: Duration(seconds: 5),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
+          _respostaNet = await actions.checkInternetConnection();
 
           safeSetState(() {});
-          if (_model.respostaNet!) {
+          if (_respostaNet!) {
             safeSetState(() {});
           } else {
             // Offline: notificação passiva via SyncStatusBanner (app-wide);
@@ -85,26 +122,38 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
       );
     });
 
-    _model.nomeFocusNode ??= FocusNode();
+    _nomeFocusNode ??= FocusNode();
 
-    _model.brincoFocusNode ??= FocusNode();
+    _brincoFocusNode ??= FocusNode();
 
-    _model.pesoFocusNode ??= FocusNode();
+    _pesoFocusNode ??= FocusNode();
 
-    _model.dataNascimentoFocusNode ??= FocusNode();
+    _dataNascimentoFocusNode ??= FocusNode();
 
-    _model.dataNascimentoMask = MaskTextInputFormatter(mask: '##/##/####');
+    _dataNascimentoMask = MaskTextInputFormatter(mask: '##/##/####');
 
-    _model.touroFocusNode ??= FocusNode();
+    _touroFocusNode ??= FocusNode();
 
-    _model.vacaFocusNode ??= FocusNode();
+    _vacaFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.dispose();
+    _instantTimer?.cancel();
+    _nomeFocusNode?.dispose();
+    _nomeTextController?.dispose();
+    _brincoFocusNode?.dispose();
+    _brincoTextController?.dispose();
+    _pesoFocusNode?.dispose();
+    _pesoTextController?.dispose();
+    _dataNascimentoFocusNode?.dispose();
+    _dataNascimentoTextController?.dispose();
+    _touroFocusNode?.dispose();
+    _touroTextController?.dispose();
+    _vacaFocusNode?.dispose();
+    _vacaTextController?.dispose();
 
     super.dispose();
   }
@@ -146,7 +195,7 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
             ),
             onPressed: () async {
               context.goNamed(
-                ListaAnimaisWidget.routeName,
+                ListaAnimaisPage.routeName,
                 queryParameters: {
                   'uidPropriedade': serializeParam(
                     widget.uidPropriedade,
@@ -206,7 +255,7 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
   Widget _p2(
       BuildContext context, dynamic editarAnimalAnimaisProdutoresRecord) {
     return Form(
-      key: _model.formKey,
+      key: _formKey,
       autovalidateMode: AutovalidateMode.disabled,
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
@@ -220,8 +269,7 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
               _p7(context, editarAnimalAnimaisProdutoresRecord),
               if (((widget.grupoPredominante == 'Sêmens') ||
                       (widget.grupoPredominante == 'Touros')) ||
-                  ((_model.grupoValue == 'Touros') ||
-                      (_model.grupoValue == 'Sêmens')))
+                  ((_grupoValue == 'Touros') || (_grupoValue == 'Sêmens')))
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -247,10 +295,10 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                           ),
                     ),
                     Switch.adaptive(
-                      value: _model.switchValue ??=
+                      value: _switchValue ??=
                           editarAnimalAnimaisProdutoresRecord.liberaInseminacao,
                       onChanged: (newValue) async {
-                        safeSetState(() => _model.switchValue = newValue);
+                        safeSetState(() => _switchValue = newValue);
                       },
                       activeColor: FlutterFlowTheme.of(context).tertiary,
                       activeTrackColor: FlutterFlowTheme.of(context).alternate,
@@ -261,13 +309,12 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                     ),
                   ],
                 ),
-              if (_model.grupoValue != 'Sêmens')
+              if (_grupoValue != 'Sêmens')
                 TextFormField(
-                  controller: _model.pesoTextController ??=
-                      TextEditingController(
+                  controller: _pesoTextController ??= TextEditingController(
                     text: editarAnimalAnimaisProdutoresRecord.pesoAnimal,
                   ),
-                  focusNode: _model.pesoFocusNode,
+                  focusNode: _pesoFocusNode,
                   autofocus: false,
                   obscureText: false,
                   decoration: InputDecoration(
@@ -355,8 +402,7 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                       ),
                   keyboardType: TextInputType.number,
                   cursorColor: FlutterFlowTheme.of(context).primary,
-                  validator:
-                      _model.pesoTextControllerValidator.asValidator(context),
+                  validator: _pesoTextControllerValidator.asValidator(context),
                 ),
               _p8(context, editarAnimalAnimaisProdutoresRecord),
               _p9(context, editarAnimalAnimaisProdutoresRecord),
@@ -374,45 +420,44 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 12.0),
       child: FFButtonWidget(
         onPressed: () async {
-          if ((_model.nomeTextController.text != '') ||
-              (_model.brincoTextController.text != '')) {
-            if (_model.formKey.currentState == null ||
-                !_model.formKey.currentState!.validate()) {
+          if ((_nomeTextController.text != '') ||
+              (_brincoTextController.text != '')) {
+            if (_formKey.currentState == null ||
+                !_formKey.currentState!.validate()) {
               return;
             }
-            if (_model.racaValue == null) {
+            if (_racaValue == null) {
               return;
             }
-            if (_model.grupoValue == null) {
+            if (_grupoValue == null) {
               return;
             }
-            if ((_model.grupoValue == 'Vacas') ||
-                (_model.grupoValue == 'Novilhas')) {
+            if ((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) {
               await _saveAnimalOfflineFirst(createAnimaisProdutoresRecordData(
                 uidTecnicoPropriedade:
                     editarAnimalAnimaisProdutoresRecord.uidTecnicoPropriedade,
-                nomeAnimal: _model.nomeTextController.text,
-                brincoAnimal: int.tryParse(_model.brincoTextController.text),
-                racaAnimal: _model.racaValue,
-                pesoAnimal: _model.pesoTextController.text,
-                dtNascimento: _model.dataNascimentoTextController.text,
-                touro: _model.touroTextController.text,
-                vaca: _model.vacaTextController.text,
+                nomeAnimal: _nomeTextController.text,
+                brincoAnimal: int.tryParse(_brincoTextController.text),
+                racaAnimal: _racaValue,
+                pesoAnimal: _pesoTextController.text,
+                dtNascimento: _dataNascimentoTextController.text,
+                touro: _touroTextController.text,
+                vaca: _vacaTextController.text,
                 grupoAnimal: editarAnimalAnimaisProdutoresRecord.grupoAnimal,
                 nomeBrincoConcat: () {
-                  if ((_model.nomeTextController.text != '') &&
-                      (_model.brincoTextController.text != '') &&
-                      (_model.brincoTextController.text != '-1')) {
-                    return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                  } else if (_model.nomeTextController.text != '') {
-                    return _model.nomeTextController.text;
+                  if ((_nomeTextController.text != '') &&
+                      (_brincoTextController.text != '') &&
+                      (_brincoTextController.text != '-1')) {
+                    return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                  } else if (_nomeTextController.text != '') {
+                    return _nomeTextController.text;
                   } else {
-                    return _model.brincoTextController.text;
+                    return _brincoTextController.text;
                   }
                 }(),
-                brincoAnimalOrder: (_model.brincoTextController.text != '') &&
-                        (_model.brincoTextController.text != '-1')
-                    ? int.tryParse(_model.brincoTextController.text)
+                brincoAnimalOrder: (_brincoTextController.text != '') &&
+                        (_brincoTextController.text != '-1')
+                    ? int.tryParse(_brincoTextController.text)
                     : 999999,
               ));
               ScaffoldMessenger.of(context).showSnackBar(
@@ -429,7 +474,7 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
               );
 
               context.goNamed(
-                ListaAnimaisWidget.routeName,
+                ListaAnimaisPage.routeName,
                 queryParameters: {
                   'uidPropriedade': serializeParam(
                     widget.uidPropriedade,
@@ -464,34 +509,34 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
 
               return;
             } else {
-              if (_model.grupoValue == 'Touros') {
+              if (_grupoValue == 'Touros') {
                 await _saveAnimalOfflineFirst(createAnimaisProdutoresRecordData(
                   uidTecnicoPropriedade:
                       editarAnimalAnimaisProdutoresRecord.uidTecnicoPropriedade,
-                  nomeAnimal: _model.nomeTextController.text,
-                  brincoAnimal: int.tryParse(_model.brincoTextController.text),
-                  racaAnimal: _model.racaValue,
-                  pesoAnimal: _model.pesoTextController.text,
-                  dtNascimento: _model.dataNascimentoTextController.text,
-                  touro: _model.touroTextController.text,
-                  vaca: _model.vacaTextController.text,
+                  nomeAnimal: _nomeTextController.text,
+                  brincoAnimal: int.tryParse(_brincoTextController.text),
+                  racaAnimal: _racaValue,
+                  pesoAnimal: _pesoTextController.text,
+                  dtNascimento: _dataNascimentoTextController.text,
+                  touro: _touroTextController.text,
+                  vaca: _vacaTextController.text,
                   grupoAnimal: editarAnimalAnimaisProdutoresRecord.grupoAnimal,
                   nomeBrincoConcat: () {
-                    if ((_model.nomeTextController.text != '') &&
-                        (_model.brincoTextController.text != '') &&
-                        (_model.brincoTextController.text != '-1')) {
-                      return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                    } else if (_model.nomeTextController.text != '') {
-                      return _model.nomeTextController.text;
+                    if ((_nomeTextController.text != '') &&
+                        (_brincoTextController.text != '') &&
+                        (_brincoTextController.text != '-1')) {
+                      return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                    } else if (_nomeTextController.text != '') {
+                      return _nomeTextController.text;
                     } else {
-                      return _model.brincoTextController.text;
+                      return _brincoTextController.text;
                     }
                   }(),
-                  brincoAnimalOrder: (_model.brincoTextController.text != '') &&
-                          (_model.brincoTextController.text != '-1')
-                      ? int.tryParse(_model.brincoTextController.text)
+                  brincoAnimalOrder: (_brincoTextController.text != '') &&
+                          (_brincoTextController.text != '-1')
+                      ? int.tryParse(_brincoTextController.text)
                       : 999999,
-                  liberaInseminacao: _model.switchValue,
+                  liberaInseminacao: _switchValue,
                 ));
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -507,7 +552,7 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                 );
 
                 context.goNamed(
-                  ListaAnimaisWidget.routeName,
+                  ListaAnimaisPage.routeName,
                   queryParameters: {
                     'uidPropriedade': serializeParam(
                       widget.uidPropriedade,
@@ -542,38 +587,36 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
 
                 return;
               } else {
-                if (_model.grupoValue == 'Sêmens') {
+                if (_grupoValue == 'Sêmens') {
                   await _saveAnimalOfflineFirst(
                       createAnimaisProdutoresRecordData(
                     uidTecnicoPropriedade: editarAnimalAnimaisProdutoresRecord
                         .uidTecnicoPropriedade,
-                    nomeAnimal: _model.nomeTextController.text,
-                    brincoAnimal:
-                        int.tryParse(_model.brincoTextController.text),
-                    racaAnimal: _model.racaValue,
-                    dtNascimento: _model.dataNascimentoTextController.text,
-                    touro: _model.touroTextController.text,
-                    vaca: _model.vacaTextController.text,
+                    nomeAnimal: _nomeTextController.text,
+                    brincoAnimal: int.tryParse(_brincoTextController.text),
+                    racaAnimal: _racaValue,
+                    dtNascimento: _dataNascimentoTextController.text,
+                    touro: _touroTextController.text,
+                    vaca: _vacaTextController.text,
                     grupoAnimal:
                         editarAnimalAnimaisProdutoresRecord.grupoAnimal,
                     nomeBrincoConcat: () {
-                      if ((_model.nomeTextController.text != '') &&
-                          (_model.brincoTextController.text != '') &&
+                      if ((_nomeTextController.text != '') &&
+                          (_brincoTextController.text != '') &&
                           (editarAnimalAnimaisProdutoresRecord.brincoAnimal !=
                               -1)) {
-                        return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                      } else if (_model.nomeTextController.text != '') {
-                        return _model.nomeTextController.text;
+                        return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                      } else if (_nomeTextController.text != '') {
+                        return _nomeTextController.text;
                       } else {
-                        return _model.brincoTextController.text;
+                        return _brincoTextController.text;
                       }
                     }(),
-                    brincoAnimalOrder:
-                        (_model.brincoTextController.text != '') &&
-                                (_model.brincoTextController.text != '-1')
-                            ? int.tryParse(_model.brincoTextController.text)
-                            : 999999,
-                    liberaInseminacao: _model.switchValue,
+                    brincoAnimalOrder: (_brincoTextController.text != '') &&
+                            (_brincoTextController.text != '-1')
+                        ? int.tryParse(_brincoTextController.text)
+                        : 999999,
+                    liberaInseminacao: _switchValue,
                   ));
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -589,7 +632,7 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                   );
 
                   context.goNamed(
-                    ListaAnimaisWidget.routeName,
+                    ListaAnimaisPage.routeName,
                     queryParameters: {
                       'uidPropriedade': serializeParam(
                         widget.uidPropriedade,
@@ -628,33 +671,31 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                       createAnimaisProdutoresRecordData(
                     uidTecnicoPropriedade: editarAnimalAnimaisProdutoresRecord
                         .uidTecnicoPropriedade,
-                    nomeAnimal: _model.nomeTextController.text,
-                    brincoAnimal:
-                        int.tryParse(_model.brincoTextController.text),
-                    racaAnimal: _model.racaValue,
-                    pesoAnimal: _model.pesoTextController.text,
-                    dtNascimento: _model.dataNascimentoTextController.text,
-                    touro: _model.touroTextController.text,
-                    vaca: _model.vacaTextController.text,
+                    nomeAnimal: _nomeTextController.text,
+                    brincoAnimal: int.tryParse(_brincoTextController.text),
+                    racaAnimal: _racaValue,
+                    pesoAnimal: _pesoTextController.text,
+                    dtNascimento: _dataNascimentoTextController.text,
+                    touro: _touroTextController.text,
+                    vaca: _vacaTextController.text,
                     grupoAnimal:
                         editarAnimalAnimaisProdutoresRecord.grupoAnimal,
                     nomeBrincoConcat: () {
-                      if ((_model.nomeTextController.text != '') &&
-                          (_model.brincoTextController.text != '') &&
+                      if ((_nomeTextController.text != '') &&
+                          (_brincoTextController.text != '') &&
                           (editarAnimalAnimaisProdutoresRecord.brincoAnimal !=
                               -1)) {
-                        return '${_model.nomeTextController.text} - ${_model.brincoTextController.text}';
-                      } else if (_model.nomeTextController.text != '') {
-                        return _model.nomeTextController.text;
+                        return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                      } else if (_nomeTextController.text != '') {
+                        return _nomeTextController.text;
                       } else {
-                        return _model.brincoTextController.text;
+                        return _brincoTextController.text;
                       }
                     }(),
-                    brincoAnimalOrder:
-                        (_model.brincoTextController.text != '') &&
-                                (_model.brincoTextController.text != '-1')
-                            ? int.tryParse(_model.brincoTextController.text)
-                            : 999999,
+                    brincoAnimalOrder: (_brincoTextController.text != '') &&
+                            (_brincoTextController.text != '-1')
+                        ? int.tryParse(_brincoTextController.text)
+                        : 999999,
                   ));
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -670,7 +711,7 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                   );
 
                   context.goNamed(
-                    ListaAnimaisWidget.routeName,
+                    ListaAnimaisPage.routeName,
                     queryParameters: {
                       'uidPropriedade': serializeParam(
                         widget.uidPropriedade,
@@ -763,10 +804,10 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
   Widget _p4(
       BuildContext context, dynamic editarAnimalAnimaisProdutoresRecord) {
     return TextFormField(
-      controller: _model.nomeTextController ??= TextEditingController(
+      controller: _nomeTextController ??= TextEditingController(
         text: editarAnimalAnimaisProdutoresRecord.nomeAnimal,
       ),
-      focusNode: _model.nomeFocusNode,
+      focusNode: _nomeFocusNode,
       autofocus: false,
       obscureText: false,
       decoration: InputDecoration(
@@ -829,17 +870,17 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
             fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
           ),
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.nomeTextControllerValidator.asValidator(context),
+      validator: _nomeTextControllerValidator.asValidator(context),
     );
   }
 
   Widget _p5(
       BuildContext context, dynamic editarAnimalAnimaisProdutoresRecord) {
     return TextFormField(
-      controller: _model.brincoTextController ??= TextEditingController(
+      controller: _brincoTextController ??= TextEditingController(
         text: editarAnimalAnimaisProdutoresRecord.brincoAnimal.toString(),
       ),
-      focusNode: _model.brincoFocusNode,
+      focusNode: _brincoFocusNode,
       autofocus: false,
       obscureText: false,
       decoration: InputDecoration(
@@ -903,7 +944,7 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
           ),
       keyboardType: TextInputType.number,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.brincoTextControllerValidator.asValidator(context),
+      validator: _brincoTextControllerValidator.asValidator(context),
     );
   }
 
@@ -929,12 +970,11 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
         List<RacasRecord> racaRacasRecordList = snapshot.data!;
 
         return FlutterFlowDropDown<String>(
-          controller: _model.racaValueController ??=
-              FormFieldController<String>(
-            _model.racaValue ??= editarAnimalAnimaisProdutoresRecord.racaAnimal,
+          controller: _racaValueController ??= FormFieldController<String>(
+            _racaValue ??= editarAnimalAnimaisProdutoresRecord.racaAnimal,
           ),
           options: racaRacasRecordList.map((e) => e.descricao).toList(),
-          onChanged: (val) => safeSetState(() => _model.racaValue = val),
+          onChanged: (val) => safeSetState(() => _racaValue = val),
           width: double.infinity,
           height: 50.0,
           searchHintTextStyle: FlutterFlowTheme.of(context)
@@ -1013,13 +1053,11 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
         List<GrupoRecord> grupoGrupoRecordList = snapshot.data!;
 
         return FlutterFlowDropDown<String>(
-          controller: _model.grupoValueController ??=
-              FormFieldController<String>(
-            _model.grupoValue ??=
-                editarAnimalAnimaisProdutoresRecord.grupoAnimal,
+          controller: _grupoValueController ??= FormFieldController<String>(
+            _grupoValue ??= editarAnimalAnimaisProdutoresRecord.grupoAnimal,
           ),
           options: grupoGrupoRecordList.map((e) => e.descricao).toList(),
-          onChanged: (val) => safeSetState(() => _model.grupoValue = val),
+          onChanged: (val) => safeSetState(() => _grupoValue = val),
           width: double.infinity,
           height: 50.0,
           textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -1061,13 +1099,13 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
           child: Padding(
             padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
             child: TextFormField(
-              controller: _model.dataNascimentoTextController ??=
+              controller: _dataNascimentoTextController ??=
                   TextEditingController(
                 text: editarAnimalAnimaisProdutoresRecord.dtNascimento,
               ),
-              focusNode: _model.dataNascimentoFocusNode,
+              focusNode: _dataNascimentoFocusNode,
               onChanged: (_) => EasyDebounce.debounce(
-                '_model.dataNascimentoTextController',
+                '_dataNascimentoTextController',
                 Duration(milliseconds: 2000),
                 () => safeSetState(() {}),
               ),
@@ -1121,10 +1159,10 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                 ),
                 contentPadding:
                     EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-                suffixIcon: _model.dataNascimentoTextController!.text.isNotEmpty
+                suffixIcon: _dataNascimentoTextController!.text.isNotEmpty
                     ? InkWell(
                         onTap: () async {
-                          _model.dataNascimentoTextController?.clear();
+                          _dataNascimentoTextController?.clear();
                           safeSetState(() {});
                         },
                         child: Icon(
@@ -1155,9 +1193,9 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                       maxLength}) =>
                   null,
               keyboardType: TextInputType.datetime,
-              validator: _model.dataNascimentoTextControllerValidator
-                  .asValidator(context),
-              inputFormatters: [_model.dataNascimentoMask],
+              validator:
+                  _dataNascimentoTextControllerValidator.asValidator(context),
+              inputFormatters: [_dataNascimentoMask],
             ),
           ),
         ),
@@ -1227,7 +1265,7 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                               FlutterFlowTheme.of(context).secondaryBackground,
                           use24hFormat: false,
                           onDateTimeChanged: (newDateTime) => safeSetState(() {
-                            _model.datePicked = newDateTime;
+                            _datePicked = newDateTime;
                           }),
                         ),
                       ),
@@ -1235,14 +1273,14 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
                   );
                 });
             safeSetState(() {
-              _model.dataNascimentoTextController?.text = dateTimeFormat(
+              _dataNascimentoTextController?.text = dateTimeFormat(
                 "dd/MM/yyyy",
-                _model.datePicked,
+                _datePicked,
                 locale: FFLocalizations.of(context).languageCode,
               );
-              _model.dataNascimentoMask.updateMask(
+              _dataNascimentoMask.updateMask(
                 newValue: TextEditingValue(
-                  text: _model.dataNascimentoTextController!.text,
+                  text: _dataNascimentoTextController!.text,
                 ),
               );
             });
@@ -1260,10 +1298,10 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
   Widget _p9(
       BuildContext context, dynamic editarAnimalAnimaisProdutoresRecord) {
     return TextFormField(
-      controller: _model.touroTextController ??= TextEditingController(
+      controller: _touroTextController ??= TextEditingController(
         text: editarAnimalAnimaisProdutoresRecord.touro,
       ),
-      focusNode: _model.touroFocusNode,
+      focusNode: _touroFocusNode,
       autofocus: false,
       obscureText: false,
       decoration: InputDecoration(
@@ -1326,17 +1364,17 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
             fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
           ),
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.touroTextControllerValidator.asValidator(context),
+      validator: _touroTextControllerValidator.asValidator(context),
     );
   }
 
   Widget _p10(
       BuildContext context, dynamic editarAnimalAnimaisProdutoresRecord) {
     return TextFormField(
-      controller: _model.vacaTextController ??= TextEditingController(
+      controller: _vacaTextController ??= TextEditingController(
         text: editarAnimalAnimaisProdutoresRecord.vaca,
       ),
-      focusNode: _model.vacaFocusNode,
+      focusNode: _vacaFocusNode,
       autofocus: false,
       obscureText: false,
       decoration: InputDecoration(
@@ -1400,7 +1438,7 @@ class _EditarAnimalWidgetState extends State<EditarAnimalWidget> {
           ),
       textAlign: TextAlign.start,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.vacaTextControllerValidator.asValidator(context),
+      validator: _vacaTextControllerValidator.asValidator(context),
     );
   }
 

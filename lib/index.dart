@@ -11,14 +11,14 @@ export '/features/propriedades/presentation/pages/lista_propriedade_page.dart'
     show ListaPropriedadePage;
 export '/features/propriedades/presentation/pages/nova_propriedade_page.dart'
     show NovaPropriedadePage;
-export '/pages/tecnico/propriedade/inicio_propriedade/inicio_propriedade_widget.dart'
-    show InicioPropriedadeWidget;
+export '/features/propriedades/presentation/pages/inicio_propriedade_page.dart'
+    show InicioPropriedadePage;
 export '/features/propriedades/presentation/pages/editar_propriedade_page.dart'
     show EditarPropriedadePage;
 export '/features/propriedades/presentation/pages/propriedades_excluidas_page.dart'
     show PropriedadesExcluiasPage;
-export '/pages/tecnico/propriedade/animals/cadastrar_novo_animal/cadastrar_novo_animal_widget.dart'
-    show CadastrarNovoAnimalWidget;
+export '/features/animais/presentation/pages/cadastrar_novo_animal_page.dart'
+    show CadastrarNovoAnimalPage;
 export '/features/animais/presentation/pages/lista_animais_page.dart'
     show ListaAnimaisPage;
 export '/features/inseminacoes/presentation/pages/lista_inseminacoes_page.dart'
@@ -48,10 +48,10 @@ export '/features/perfil/presentation/pages/profile_tecnico_page.dart'
     show ProfileTecnicoPage;
 export '/features/plano/presentation/pages/subscription_plan_tecnico_page.dart'
     show SubscriptionPlanTecnicoPage;
-export '/pages/tecnico/propriedade/prontuario/prontuario_animal/prontuario_animal_widget.dart'
-    show ProntuarioAnimalWidget;
-export '/pages/tecnico/propriedade/animals/editar_animal/editar_animal_widget.dart'
-    show EditarAnimalWidget;
+export '/features/prontuario/presentation/pages/prontuario_animal_page.dart'
+    show ProntuarioAnimalPage;
+export '/features/animais/presentation/pages/editar_animal_page.dart'
+    show EditarAnimalPage;
 export '/features/prontuario/presentation/pages/pron_inseminacoes_page.dart'
     show PronInseminacoesPage;
 export '/features/prontuario/presentation/pages/pron_acoes_page.dart'
@@ -68,14 +68,14 @@ export '/features/calendario_sanitario/presentation/pages/calendario_sanitario_p
     show CalendarioSanitarioPage;
 export '/features/financeiro/presentation/pages/relatorio_financeiro_page.dart'
     show RelatorioFinanceiroPage;
-export '/pages/tecnico/propriedade/financeiro/novo_relatorio_financeiro/novo_relatorio_financeiro_widget.dart'
-    show NovoRelatorioFinanceiroWidget;
-export '/pages/tecnico/propriedade/lista_completa/listacompleta/listacompleta_widget.dart'
-    show ListacompletaWidget;
+export '/features/financeiro/presentation/pages/novo_relatorio_financeiro_page.dart'
+    show NovoRelatorioFinanceiroPage;
+export '/features/relatorios/presentation/pages/listacompleta_page.dart'
+    show ListacompletaPage;
 export '/features/perfil/presentation/pages/apagar_conta_page.dart'
     show ApagarContaPage;
-export '/pages/tecnico/propriedade/financeiro/editar_relatorio_financeiro/editar_relatorio_financeiro_widget.dart'
-    show EditarRelatorioFinanceiroWidget;
+export '/features/financeiro/presentation/pages/editar_relatorio_financeiro_page.dart'
+    show EditarRelatorioFinanceiroPage;
 export '/features/recria/presentation/pages/recriacao_page.dart'
     show RecriacaoPage;
 export '/features/sincronizacao/presentation/pages/importacao_animais_page.dart'

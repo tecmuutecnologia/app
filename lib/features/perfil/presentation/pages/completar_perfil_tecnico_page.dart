@@ -3,7 +3,7 @@ import '/data/backend.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
-import '/pages/tecnico/initial/sync_technician/sync_technician_widget.dart';
+import '/features/auth/presentation/pages/sync_technician_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -1155,7 +1155,7 @@ class _CompletarPerfilTecnicoPageState
                       nomePlano: 'Plano Start',
                     ));
 
-                context.pushNamed(SyncTechnicianWidget.routeName);
+                context.pushNamed(SyncTechnicianPage.routeName);
 
                 if (_shouldSetState) safeSetState(() {});
               },

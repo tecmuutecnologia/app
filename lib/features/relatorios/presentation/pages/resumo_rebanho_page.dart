@@ -17,16 +17,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'resumo_rebanho_model.dart';
-export 'resumo_rebanho_model.dart';
 
 /// Status extras fixos (antes em FFAppState.statusExtras, que nunca era
 /// escrito — constante de fato). Combinados com os status vindos do Firestore
 /// nas opções do dropdown de categoria.
 const kStatusExtrasFixos = ['Indução de Lactação', 'Descarte'];
 
-class ResumoRebanhoWidget extends StatefulWidget {
-  const ResumoRebanhoWidget({
+class ResumoRebanhoPage extends StatefulWidget {
+  const ResumoRebanhoPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -49,25 +47,44 @@ class ResumoRebanhoWidget extends StatefulWidget {
   static String routePath = '/resumoRebanho';
 
   @override
-  State<ResumoRebanhoWidget> createState() => _ResumoRebanhoWidgetState();
+  State<ResumoRebanhoPage> createState() => _ResumoRebanhoPageState();
 }
 
-class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
-  late ResumoRebanhoModel _model;
+class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
+  InstantTimer? _instantTimer;
+  bool? _respostaNet = true;
+  List<String>? _categoriaAnimalValue;
+  FormFieldController<List<String>>? _categoriaAnimalValueController;
+  List<String>? _statusAnimalValue;
+  FormFieldController<List<String>>? _statusAnimalValueController;
+  bool? _checkUltimopartoValue;
+  bool? _checkUltimaiaValue;
+  bool? _checkDelValue;
+  bool? _checkTouroValue;
+  bool? _checkSecagemValue;
+  bool? _checkPrepartoValue;
+  bool? _checkDiasAbertoValue;
+  bool? _checkIntervaloEntrePartosValue;
+  bool? _checkParicaoValue;
+  bool? _checkUltimaAcaoValue;
+  String? _formatoExportacaoValue;
+  FormFieldController<String>? _formatoExportacaoValueController;
+  PropriedadesRecord? _outUidPropriedade;
+  TecnicoRecord? _outUidTecnico;
+  PersonRecord? _outUidPersonTecnico;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ResumoRebanhoModel());
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.instantTimer = InstantTimer.periodic(
+      _instantTimer = InstantTimer.periodic(
         duration: Duration(milliseconds: 1000),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
+          _respostaNet = await actions.checkInternetConnection();
 
           safeSetState(() {});
         },
@@ -80,7 +97,7 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
 
   @override
   void dispose() {
-    _model.dispose();
+    _instantTimer?.cancel();
 
     super.dispose();
   }
@@ -103,7 +120,7 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
             ),
             onPressed: () async {
               context.pushNamed(
-                InicioPropriedadeWidget.routeName,
+                InicioPropriedadePage.routeName,
                 queryParameters: {
                   'nomePropriedade': serializeParam(
                     widget.nomePropriedade,
@@ -204,13 +221,13 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
           List<GrupoRecord> categoriaAnimalGrupoRecordList = snapshot.data!;
 
           return FlutterFlowDropDown<String>(
-            multiSelectController: _model.categoriaAnimalValueController ??=
+            multiSelectController: _categoriaAnimalValueController ??=
                 FormListFieldController<String>(
-                    _model.categoriaAnimalValue ??= List<String>.from(
+                    _categoriaAnimalValue ??= List<String>.from(
               categoriaAnimalGrupoRecordList.map((e) => e.descricao).toList() ??
                   [],
             )),
-            options: _model.respostaNet!
+            options: _respostaNet!
                 ? categoriaAnimalGrupoRecordList
                     .map((e) => e.descricao)
                     .toList()
@@ -272,7 +289,7 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
             isSearchable: true,
             isMultiSelect: true,
             onMultiSelectChanged: (val) =>
-                safeSetState(() => _model.categoriaAnimalValue = val),
+                safeSetState(() => _categoriaAnimalValue = val),
           );
         },
       ),
@@ -301,9 +318,9 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
             snapshot.data!;
 
         return FlutterFlowDropDown<String>(
-          multiSelectController: _model.statusAnimalValueController ??=
+          multiSelectController: _statusAnimalValueController ??=
               FormListFieldController<String>(
-                  _model.statusAnimalValue ??= List<String>.from(
+                  _statusAnimalValue ??= List<String>.from(
             functions.combinarListas(
                     statusAnimalStatusAnimaisRecordList
                         .where((e) => e.descricao != 'Parto Induzido')
@@ -371,7 +388,7 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
           isSearchable: true,
           isMultiSelect: true,
           onMultiSelectChanged: (val) =>
-              safeSetState(() => _model.statusAnimalValue = val),
+              safeSetState(() => _statusAnimalValue = val),
         );
       },
     );
@@ -431,9 +448,9 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
               unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
             ),
             child: Checkbox(
-              value: _model.checkUltimopartoValue ??= true,
+              value: _checkUltimopartoValue ??= true,
               onChanged: (newValue) async {
-                safeSetState(() => _model.checkUltimopartoValue = newValue!);
+                safeSetState(() => _checkUltimopartoValue = newValue!);
               },
               side: (FlutterFlowTheme.of(context).secondaryText != null)
                   ? BorderSide(
@@ -484,9 +501,9 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
               unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
             ),
             child: Checkbox(
-              value: _model.checkUltimaiaValue ??= true,
+              value: _checkUltimaiaValue ??= true,
               onChanged: (newValue) async {
-                safeSetState(() => _model.checkUltimaiaValue = newValue!);
+                safeSetState(() => _checkUltimaiaValue = newValue!);
               },
               side: (FlutterFlowTheme.of(context).secondaryText != null)
                   ? BorderSide(
@@ -537,9 +554,9 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
               unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
             ),
             child: Checkbox(
-              value: _model.checkDelValue ??= true,
+              value: _checkDelValue ??= true,
               onChanged: (newValue) async {
-                safeSetState(() => _model.checkDelValue = newValue!);
+                safeSetState(() => _checkDelValue = newValue!);
               },
               side: (FlutterFlowTheme.of(context).secondaryText != null)
                   ? BorderSide(
@@ -590,9 +607,9 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
               unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
             ),
             child: Checkbox(
-              value: _model.checkTouroValue ??= true,
+              value: _checkTouroValue ??= true,
               onChanged: (newValue) async {
-                safeSetState(() => _model.checkTouroValue = newValue!);
+                safeSetState(() => _checkTouroValue = newValue!);
               },
               side: (FlutterFlowTheme.of(context).secondaryText != null)
                   ? BorderSide(
@@ -643,9 +660,9 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
               unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
             ),
             child: Checkbox(
-              value: _model.checkSecagemValue ??= true,
+              value: _checkSecagemValue ??= true,
               onChanged: (newValue) async {
-                safeSetState(() => _model.checkSecagemValue = newValue!);
+                safeSetState(() => _checkSecagemValue = newValue!);
               },
               side: (FlutterFlowTheme.of(context).secondaryText != null)
                   ? BorderSide(
@@ -696,9 +713,9 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
               unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
             ),
             child: Checkbox(
-              value: _model.checkPrepartoValue ??= true,
+              value: _checkPrepartoValue ??= true,
               onChanged: (newValue) async {
-                safeSetState(() => _model.checkPrepartoValue = newValue!);
+                safeSetState(() => _checkPrepartoValue = newValue!);
               },
               side: (FlutterFlowTheme.of(context).secondaryText != null)
                   ? BorderSide(
@@ -749,9 +766,9 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
               unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
             ),
             child: Checkbox(
-              value: _model.checkDiasAbertoValue ??= true,
+              value: _checkDiasAbertoValue ??= true,
               onChanged: (newValue) async {
-                safeSetState(() => _model.checkDiasAbertoValue = newValue!);
+                safeSetState(() => _checkDiasAbertoValue = newValue!);
               },
               side: (FlutterFlowTheme.of(context).secondaryText != null)
                   ? BorderSide(
@@ -802,10 +819,9 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
               unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
             ),
             child: Checkbox(
-              value: _model.checkIntervaloEntrePartosValue ??= true,
+              value: _checkIntervaloEntrePartosValue ??= true,
               onChanged: (newValue) async {
-                safeSetState(
-                    () => _model.checkIntervaloEntrePartosValue = newValue!);
+                safeSetState(() => _checkIntervaloEntrePartosValue = newValue!);
               },
               side: (FlutterFlowTheme.of(context).secondaryText != null)
                   ? BorderSide(
@@ -856,9 +872,9 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
               unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
             ),
             child: Checkbox(
-              value: _model.checkParicaoValue ??= true,
+              value: _checkParicaoValue ??= true,
               onChanged: (newValue) async {
-                safeSetState(() => _model.checkParicaoValue = newValue!);
+                safeSetState(() => _checkParicaoValue = newValue!);
               },
               side: (FlutterFlowTheme.of(context).secondaryText != null)
                   ? BorderSide(
@@ -909,9 +925,9 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
               unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
             ),
             child: Checkbox(
-              value: _model.checkUltimaAcaoValue ??= false,
+              value: _checkUltimaAcaoValue ??= false,
               onChanged: (newValue) async {
-                safeSetState(() => _model.checkUltimaAcaoValue = newValue!);
+                safeSetState(() => _checkUltimaAcaoValue = newValue!);
               },
               side: (FlutterFlowTheme.of(context).secondaryText != null)
                   ? BorderSide(
@@ -951,14 +967,14 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
           ),
           SizedBox(height: 10.0),
           FlutterFlowDropDown<String>(
-            controller: _model.formatoExportacaoValueController ??=
+            controller: _formatoExportacaoValueController ??=
                 FormFieldController<String>(
-              _model.formatoExportacaoValue ??= 'PDF',
+              _formatoExportacaoValue ??= 'PDF',
             ),
             options: ['PDF', 'Excel'],
             onChanged: (val) {
               safeSetState(() {
-                _model.formatoExportacaoValue = val;
+                _formatoExportacaoValue = val;
               });
             },
             width: MediaQuery.sizeOf(context).width * 0.8,
@@ -1007,49 +1023,48 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
           FFButtonWidget(
             onPressed: () async {
               var _shouldSetState = false;
-              if (_model.categoriaAnimalValue!.length >= 1) {
-                _model.outUidPropriedade =
-                    await PropriedadesRecord.getDocumentOnce(
-                        widget.uidPropriedade!);
+              if (_categoriaAnimalValue!.length >= 1) {
+                _outUidPropriedade = await PropriedadesRecord.getDocumentOnce(
+                    widget.uidPropriedade!);
                 _shouldSetState = true;
-                _model.outUidTecnico =
+                _outUidTecnico =
                     await TecnicoRecord.getDocumentOnce(widget.uidTecnico!);
                 _shouldSetState = true;
-                _model.outUidPersonTecnico = await queryPersonRecordOnce(
+                _outUidPersonTecnico = await queryPersonRecordOnce(
                   queryBuilder: (personRecord) => personRecord.where(
                     'uid',
-                    isEqualTo: _model.outUidTecnico?.uidPerson,
+                    isEqualTo: _outUidTecnico?.uidPerson,
                   ),
                   singleRecord: true,
                 ).then((s) => s.firstOrNull);
                 _shouldSetState = true;
 
                 // Verificar qual formato foi selecionado
-                if (_model.formatoExportacaoValue == 'Excel') {
+                if (_formatoExportacaoValue == 'Excel') {
                   // Gerar Excel
                   await actions.createResumoRebanhoExcel(
                     resumoRebanhoAnimaisProdutoresRecordList
                         .map((e) => e.reference)
                         .toList(),
-                    _model.checkUltimopartoValue == true,
-                    _model.checkUltimaiaValue == true,
-                    _model.checkDelValue == true,
-                    _model.checkTouroValue == true,
-                    _model.checkSecagemValue == true,
-                    _model.checkPrepartoValue == true,
-                    _model.checkParicaoValue == true,
-                    _model.checkDiasAbertoValue!,
-                    _model.checkIntervaloEntrePartosValue!,
-                    _model.categoriaAnimalValue!.toList(),
-                    _model.statusAnimalValue?.toList(),
-                    _model.outUidPropriedade!.displayName,
-                    '${_model.outUidPropriedade?.endereco} - ${_model.outUidPropriedade?.cidade}',
-                    _model.outUidPersonTecnico!.displayName,
-                    _model.outUidPersonTecnico!.phoneNumber,
-                    _model.outUidPersonTecnico!.email,
-                    _model.outUidPersonTecnico!.empresa,
+                    _checkUltimopartoValue == true,
+                    _checkUltimaiaValue == true,
+                    _checkDelValue == true,
+                    _checkTouroValue == true,
+                    _checkSecagemValue == true,
+                    _checkPrepartoValue == true,
+                    _checkParicaoValue == true,
+                    _checkDiasAbertoValue!,
+                    _checkIntervaloEntrePartosValue!,
+                    _categoriaAnimalValue!.toList(),
+                    _statusAnimalValue?.toList(),
+                    _outUidPropriedade!.displayName,
+                    '${_outUidPropriedade?.endereco} - ${_outUidPropriedade?.cidade}',
+                    _outUidPersonTecnico!.displayName,
+                    _outUidPersonTecnico!.phoneNumber,
+                    _outUidPersonTecnico!.email,
+                    _outUidPersonTecnico!.empresa,
                     'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/tecmuu-xingpe/assets/mjfv0ghrztrz/logo-2.png',
-                    _model.checkUltimaAcaoValue ?? false,
+                    _checkUltimaAcaoValue ?? false,
                     widget.uidTecnico!,
                   );
                 } else {
@@ -1058,25 +1073,25 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
                     resumoRebanhoAnimaisProdutoresRecordList
                         .map((e) => e.reference)
                         .toList(),
-                    _model.checkUltimopartoValue == true,
-                    _model.checkUltimaiaValue == true,
-                    _model.checkDelValue == true,
-                    _model.checkTouroValue == true,
-                    _model.checkSecagemValue == true,
-                    _model.checkPrepartoValue == true,
-                    _model.checkParicaoValue == true,
-                    _model.checkDiasAbertoValue!,
-                    _model.checkIntervaloEntrePartosValue!,
-                    _model.categoriaAnimalValue!.toList(),
-                    _model.statusAnimalValue?.toList(),
-                    _model.outUidPropriedade!.displayName,
-                    '${_model.outUidPropriedade?.endereco} - ${_model.outUidPropriedade?.cidade}',
-                    _model.outUidPersonTecnico!.displayName,
-                    _model.outUidPersonTecnico!.phoneNumber,
-                    _model.outUidPersonTecnico!.email,
-                    _model.outUidPersonTecnico!.empresa,
+                    _checkUltimopartoValue == true,
+                    _checkUltimaiaValue == true,
+                    _checkDelValue == true,
+                    _checkTouroValue == true,
+                    _checkSecagemValue == true,
+                    _checkPrepartoValue == true,
+                    _checkParicaoValue == true,
+                    _checkDiasAbertoValue!,
+                    _checkIntervaloEntrePartosValue!,
+                    _categoriaAnimalValue!.toList(),
+                    _statusAnimalValue?.toList(),
+                    _outUidPropriedade!.displayName,
+                    '${_outUidPropriedade?.endereco} - ${_outUidPropriedade?.cidade}',
+                    _outUidPersonTecnico!.displayName,
+                    _outUidPersonTecnico!.phoneNumber,
+                    _outUidPersonTecnico!.email,
+                    _outUidPersonTecnico!.empresa,
                     'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/tecmuu-xingpe/assets/mjfv0ghrztrz/logo-2.png',
-                    _model.checkUltimaAcaoValue ?? false,
+                    _checkUltimaAcaoValue ?? false,
                     widget.uidTecnico!,
                   );
                 }
@@ -1105,7 +1120,7 @@ class _ResumoRebanhoWidgetState extends State<ResumoRebanhoWidget> {
             },
             text: 'Gerar relatório',
             icon: Icon(
-              _model.formatoExportacaoValue == 'Excel'
+              _formatoExportacaoValue == 'Excel'
                   ? Icons.table_chart
                   : Icons.picture_as_pdf,
               size: 15.0,
