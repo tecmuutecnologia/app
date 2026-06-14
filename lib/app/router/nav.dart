@@ -102,10 +102,10 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => CreateAccountTechnicianPage(),
         ),
         FFRoute(
-          name: DashboardTecnicoWidget.routeName,
-          path: DashboardTecnicoWidget.routePath,
+          name: DashboardTecnicoPage.routeName,
+          path: DashboardTecnicoPage.routePath,
           requireAuth: true,
-          builder: (context, params) => DashboardTecnicoWidget(),
+          builder: (context, params) => DashboardTecnicoPage(),
         ),
         FFRoute(
           name: ListaPropriedadePage.routeName,
@@ -264,9 +264,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: ListaAnimaisWidget.routeName,
-          path: ListaAnimaisWidget.routePath,
-          builder: (context, params) => ListaAnimaisWidget(
+          name: ListaAnimaisPage.routeName,
+          path: ListaAnimaisPage.routePath,
+          builder: (context, params) => ListaAnimaisPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,
@@ -442,9 +442,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: SyncTechnicianWidget.routeName,
-          path: SyncTechnicianWidget.routePath,
-          builder: (context, params) => SyncTechnicianWidget(),
+          name: SyncTechnicianPage.routeName,
+          path: SyncTechnicianPage.routePath,
+          builder: (context, params) => SyncTechnicianPage(),
         ),
         FFRoute(
           name: ReceituariosListaPage.routeName,
@@ -521,9 +521,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: ResumoRebanhoWidget.routeName,
-          path: ResumoRebanhoWidget.routePath,
-          builder: (context, params) => ResumoRebanhoWidget(
+          name: ResumoRebanhoPage.routeName,
+          path: ResumoRebanhoPage.routePath,
+          builder: (context, params) => ResumoRebanhoPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,
@@ -559,9 +559,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: IndicesZootecnicosWidget.routeName,
-          path: IndicesZootecnicosWidget.routePath,
-          builder: (context, params) => IndicesZootecnicosWidget(
+          name: IndicesZootecnicosPage.routeName,
+          path: IndicesZootecnicosPage.routePath,
+          builder: (context, params) => IndicesZootecnicosPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,
@@ -989,9 +989,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: RelatorioFinanceiroWidget.routeName,
-          path: RelatorioFinanceiroWidget.routePath,
-          builder: (context, params) => RelatorioFinanceiroWidget(
+          name: RelatorioFinanceiroPage.routeName,
+          path: RelatorioFinanceiroPage.routePath,
+          builder: (context, params) => RelatorioFinanceiroPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,
@@ -1204,9 +1204,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: InicioPropriedadeProdutorWidget.routeName,
-          path: InicioPropriedadeProdutorWidget.routePath,
-          builder: (context, params) => InicioPropriedadeProdutorWidget(
+          name: InicioPropriedadeProdutorPage.routeName,
+          path: InicioPropriedadeProdutorPage.routePath,
+          builder: (context, params) => InicioPropriedadeProdutorPage(
             nomePropriedade: params.getParam(
               'nomePropriedade',
               ParamType.String,

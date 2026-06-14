@@ -6,6 +6,7 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
+import '/core/ui/request_manager.dart';
 import '/core/services/index.dart' as actions;
 import '/index.dart';
 
@@ -15,11 +16,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import 'inicio_propriedade_produtor_model.dart';
-export 'inicio_propriedade_produtor_model.dart';
-
 // Importa os widgets refatorados
-import 'widgets/widgets.dart';
+import '../widgets/widgets.dart';
 
 /// Widget principal da página de início da propriedade do produtor.
 ///
@@ -29,8 +27,8 @@ import 'widgets/widgets.dart';
 /// - [MenuItemCardWithBadge]: Card de menu com badge de contagem
 /// - [SyncStatusBar]: Barra de status de sincronização
 /// - [PropriedadeNavigationParams]: Parâmetros de navegação reutilizáveis
-class InicioPropriedadeProdutorWidget extends StatefulWidget {
-  const InicioPropriedadeProdutorWidget({
+class InicioPropriedadeProdutorPage extends StatefulWidget {
+  const InicioPropriedadeProdutorPage({
     super.key,
     required this.nomePropriedade,
     required this.uidPropriedade,
@@ -51,14 +49,27 @@ class InicioPropriedadeProdutorWidget extends StatefulWidget {
   static String routePath = '/inicioPropriedadeProdutor';
 
   @override
-  State<InicioPropriedadeProdutorWidget> createState() =>
-      _InicioPropriedadeProdutorWidgetState();
+  State<InicioPropriedadeProdutorPage> createState() =>
+      _InicioPropriedadeProdutorPageState();
 }
 
-class _InicioPropriedadeProdutorWidgetState
-    extends State<InicioPropriedadeProdutorWidget>
-    with TickerProviderStateMixin {
-  late InicioPropriedadeProdutorModel _model;
+class _InicioPropriedadeProdutorPageState
+    extends State<InicioPropriedadeProdutorPage> with TickerProviderStateMixin {
+  InstantTimer? _instantTimer;
+  bool? _respostaNet = true;
+
+  final _cacheAnimaisListaCompletaManager =
+      StreamRequestManager<List<AnimaisProdutoresRecord>>();
+  Stream<List<AnimaisProdutoresRecord>> _cacheAnimaisListaCompleta({
+    String? uniqueQueryKey,
+    bool? overrideCache,
+    required Stream<List<AnimaisProdutoresRecord>> Function() requestFn,
+  }) =>
+      _cacheAnimaisListaCompletaManager.performRequest(
+        uniqueQueryKey: uniqueQueryKey,
+        overrideCache: overrideCache,
+        requestFn: requestFn,
+      );
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final animationsMap = <String, AnimationInfo>{};
@@ -69,7 +80,6 @@ class _InicioPropriedadeProdutorWidgetState
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => InicioPropriedadeProdutorModel());
 
     // Inicializa parâmetros de navegação
     _navigationParams = PropriedadeNavigationParams(
@@ -93,13 +103,13 @@ class _InicioPropriedadeProdutorWidgetState
   /// Configura o timer periódico para verificar conexão com internet.
   void _setupInternetCheckTimer() {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.instantTimer = InstantTimer.periodic(
+      _instantTimer = InstantTimer.periodic(
         duration: const Duration(seconds: 5),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
+          _respostaNet = await actions.checkInternetConnection();
           safeSetState(() {});
 
-          if (_model.respostaNet!) {
+          if (_respostaNet!) {
             safeSetState(() {});
           } else {
             // Offline: notificação passiva via SyncStatusBanner (app-wide);
@@ -152,7 +162,8 @@ class _InicioPropriedadeProdutorWidgetState
 
   @override
   void dispose() {
-    _model.dispose();
+    _instantTimer?.cancel();
+    _cacheAnimaisListaCompletaManager.clear();
     super.dispose();
   }
 
@@ -161,7 +172,7 @@ class _InicioPropriedadeProdutorWidgetState
     context.watch<FFAppState>();
 
     return StreamBuilder<List<AnimaisProdutoresRecord>>(
-      stream: _model.cacheAnimaisListaCompleta(
+      stream: _cacheAnimaisListaCompleta(
         requestFn: () => queryAnimaisProdutoresRecord(
           parent: widget.uidTecnico,
           queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
@@ -225,9 +236,8 @@ class _InicioPropriedadeProdutorWidgetState
   /// Constrói a AppBar.
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: _model.respostaNet!
-          ? const Color(0xFFF75E38)
-          : const Color(0xFFF2886E),
+      backgroundColor:
+          _respostaNet! ? const Color(0xFFF75E38) : const Color(0xFFF2886E),
       automaticallyImplyLeading: false,
       title: Text(
         widget.nomePropriedade!,
@@ -309,7 +319,7 @@ class _InicioPropriedadeProdutorWidgetState
       child: PropriedadeMenuGrid(
         animaisRecordList: animaisRecordList,
         navigationParams: _navigationParams,
-        isOnline: _model.respostaNet ?? true,
+        isOnline: _respostaNet ?? true,
         animationsMap: animationsMap,
       ),
     );
@@ -318,7 +328,7 @@ class _InicioPropriedadeProdutorWidgetState
   /// Constrói a seção de status de sincronização.
   Widget _buildSyncStatusSection() {
     final appState = FFAppState();
-    final isOnline = _model.respostaNet ?? true;
+    final isOnline = _respostaNet ?? true;
 
     // Sem internet
     if (!isOnline) {

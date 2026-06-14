@@ -2,8 +2,8 @@ import '/core/auth/firebase_auth/auth_util.dart';
 import '/data/backend.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
-import '/pages/produtor/initial/inicio_propriedade_produtor/inicio_propriedade_produtor_widget.dart';
-import '/pages/tecnico/dashboard/dashboard_tecnico/dashboard_tecnico_widget.dart';
+import '/features/produtor/presentation/pages/inicio_propriedade_produtor_page.dart';
+import '/features/dashboard/presentation/pages/dashboard_tecnico_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -44,7 +44,7 @@ class _VerificaTipoLoginPageState extends State<VerificaTipoLoginPage> {
         singleRecord: true,
       ).then((s) => s.firstOrNull);
       if (outUidTecnico?.reference != null) {
-        context.goNamed(DashboardTecnicoWidget.routeName);
+        context.goNamed(DashboardTecnicoPage.routeName);
 
         return;
       } else {
@@ -57,7 +57,7 @@ class _VerificaTipoLoginPageState extends State<VerificaTipoLoginPage> {
         ).then((s) => s.firstOrNull);
 
         context.goNamed(
-          InicioPropriedadeProdutorWidget.routeName,
+          InicioPropriedadeProdutorPage.routeName,
           queryParameters: {
             'nomePropriedade': serializeParam(
               outUidPropriedade?.displayName,

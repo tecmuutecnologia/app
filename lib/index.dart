@@ -5,8 +5,8 @@ export '/features/auth/presentation/pages/login_technician_page.dart'
     show LoginTechnicianPage;
 export '/features/auth/presentation/pages/create_account_technician_page.dart'
     show CreateAccountTechnicianPage;
-export '/pages/tecnico/dashboard/dashboard_tecnico/dashboard_tecnico_widget.dart'
-    show DashboardTecnicoWidget;
+export '/features/dashboard/presentation/pages/dashboard_tecnico_page.dart'
+    show DashboardTecnicoPage;
 export '/features/propriedades/presentation/pages/lista_propriedade_page.dart'
     show ListaPropriedadePage;
 export '/features/propriedades/presentation/pages/nova_propriedade_page.dart'
@@ -19,8 +19,8 @@ export '/features/propriedades/presentation/pages/propriedades_excluidas_page.da
     show PropriedadesExcluiasPage;
 export '/pages/tecnico/propriedade/animals/cadastrar_novo_animal/cadastrar_novo_animal_widget.dart'
     show CadastrarNovoAnimalWidget;
-export '/pages/tecnico/propriedade/animals/lista_animais/lista_animais_widget.dart'
-    show ListaAnimaisWidget;
+export '/features/animais/presentation/pages/lista_animais_page.dart'
+    show ListaAnimaisPage;
 export '/features/inseminacoes/presentation/pages/lista_inseminacoes_page.dart'
     show ListaInseminacoesPage;
 export '/features/exame_ginecologico/presentation/pages/exame_ginecologico_page.dart'
@@ -28,16 +28,16 @@ export '/features/exame_ginecologico/presentation/pages/exame_ginecologico_page.
 export '/features/prenhas/presentation/pages/animais_prenhas_page.dart'
     show AnimaisPrenhasPage;
 export '/features/secas/presentation/pages/secas_page.dart' show SecasPage;
-export '/pages/tecnico/initial/sync_technician/sync_technician_widget.dart'
-    show SyncTechnicianWidget;
+export '/features/auth/presentation/pages/sync_technician_page.dart'
+    show SyncTechnicianPage;
 export '/features/receituario/presentation/pages/receituarios_lista_page.dart'
     show ReceituariosListaPage;
 export '/features/receituario/presentation/pages/resumo_visita_atual_page.dart'
     show ResumoVisitaAtualPage;
-export '/pages/tecnico/propriedade/resumo_rebanho/resumo_rebanho/resumo_rebanho_widget.dart'
-    show ResumoRebanhoWidget;
-export '/pages/tecnico/propriedade/indices_zootecnicos/indices_zootecnicos/indices_zootecnicos_widget.dart'
-    show IndicesZootecnicosWidget;
+export '/features/relatorios/presentation/pages/resumo_rebanho_page.dart'
+    show ResumoRebanhoPage;
+export '/features/relatorios/presentation/pages/indices_zootecnicos_page.dart'
+    show IndicesZootecnicosPage;
 export '/features/perfil/presentation/pages/completar_perfil_tecnico_page.dart'
     show CompletarPerfilTecnicoPage;
 export '/features/produtor/presentation/pages/login_produtor_page.dart'
@@ -66,8 +66,8 @@ export '/features/diagnostico_gestacao/presentation/pages/diagnosticogestacao_pa
     show DiagnosticogestacaoPage;
 export '/features/calendario_sanitario/presentation/pages/calendario_sanitario_page.dart'
     show CalendarioSanitarioPage;
-export '/pages/tecnico/propriedade/financeiro/relatorio_financeiro/relatorio_financeiro_widget.dart'
-    show RelatorioFinanceiroWidget;
+export '/features/financeiro/presentation/pages/relatorio_financeiro_page.dart'
+    show RelatorioFinanceiroPage;
 export '/pages/tecnico/propriedade/financeiro/novo_relatorio_financeiro/novo_relatorio_financeiro_widget.dart'
     show NovoRelatorioFinanceiroWidget;
 export '/pages/tecnico/propriedade/lista_completa/listacompleta/listacompleta_widget.dart'
@@ -80,7 +80,7 @@ export '/features/recria/presentation/pages/recriacao_page.dart'
     show RecriacaoPage;
 export '/features/sincronizacao/presentation/pages/importacao_animais_page.dart'
     show ImportacaoAnimaisPage;
-export '/pages/produtor/initial/inicio_propriedade_produtor/inicio_propriedade_produtor_widget.dart'
-    show InicioPropriedadeProdutorWidget;
+export '/features/produtor/presentation/pages/inicio_propriedade_produtor_page.dart'
+    show InicioPropriedadeProdutorPage;
 export '/features/onboarding/presentation/pages/verifica_tipo_login_page.dart'
     show VerificaTipoLoginPage;

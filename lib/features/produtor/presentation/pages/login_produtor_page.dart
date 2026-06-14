@@ -4,7 +4,7 @@ import '/data/objectbox/offline_auth_service.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
-import '/pages/produtor/initial/inicio_propriedade_produtor/inicio_propriedade_produtor_widget.dart';
+import '/features/produtor/presentation/pages/inicio_propriedade_produtor_page.dart';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -288,7 +288,7 @@ class _LoginProdutorPageState extends State<LoginProdutorPage>
   /// Navega para a tela inicial da propriedade.
   void _navigateToHome(PropriedadesRecord? outUidPropriedade) {
     context.goNamedAuth(
-      InicioPropriedadeProdutorWidget.routeName,
+      InicioPropriedadeProdutorPage.routeName,
       context.mounted,
       queryParameters: {
         'nomePropriedade': serializeParam(

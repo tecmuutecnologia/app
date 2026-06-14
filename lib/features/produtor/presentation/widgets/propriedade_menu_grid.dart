@@ -101,7 +101,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
       // Verifica se precisa sincronizar
       if (appState.animaisProdutoresOffline.isEmpty && true && true) {
         context.pushNamed(
-          ListaAnimaisWidget.routeName,
+          ListaAnimaisPage.routeName,
           queryParameters: navigationParams.toQueryParameters(),
         );
       } else {
@@ -123,7 +123,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
       }
     } else {
       context.pushNamed(
-        ListaAnimaisWidget.routeName,
+        ListaAnimaisPage.routeName,
         queryParameters: navigationParams.toQueryParameters(),
       );
     }
@@ -396,7 +396,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
       iconSize: 30.0,
       onTap: () {
         context.pushNamed(
-          ResumoRebanhoWidget.routeName,
+          ResumoRebanhoPage.routeName,
           queryParameters: navigationParams.toQueryParameters(),
         );
       },
@@ -424,7 +424,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
       iconSize: 30.0,
       onTap: () {
         context.pushNamed(
-          IndicesZootecnicosWidget.routeName,
+          IndicesZootecnicosPage.routeName,
           queryParameters: navigationParams.toQueryParameters(),
         );
       },
@@ -438,7 +438,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
       iconSize: 30.0,
       onTap: () {
         context.pushNamed(
-          RelatorioFinanceiroWidget.routeName,
+          RelatorioFinanceiroPage.routeName,
           queryParameters: navigationParams.toQueryParameters(),
         );
       },
