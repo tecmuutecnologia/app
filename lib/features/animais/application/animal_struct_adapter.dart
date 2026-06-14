@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../data/objectbox/entities/index.dart';
 import '../../../data/objectbox/objectbox_service.dart';
@@ -175,5 +178,36 @@ Future<int> migrarAnimaisOfflineLegado(
     await criarAnimalOffline(s);
     migrados++;
   }
+  return migrados;
+}
+
+/// Chave de SharedPreferences onde o mecanismo FlutterFlow antigo persistia os
+/// animais criados offline (`FFAppState().animaisProdutoresOffline`).
+const String kPrefsAnimaisOfflineLegado = 'ff_animaisProdutoresOffline';
+
+/// Migração única, AUTÔNOMA do FFAppState (lê direto das prefs): resgata para o
+/// ObjectBox quaisquer animais que tenham ficado no array persistido do
+/// mecanismo antigo e **remove a chave** ao final. Substitui a drenagem que
+/// dependia do campo `FFAppState().animaisProdutoresOffline` (removido).
+///
+/// Idempotente: se a chave não existe (instalações novas / já drenadas) é no-op;
+/// [migrarAnimaisOfflineLegado] pula os que já existem por `uidAnimalOffline`.
+/// Só remove a chave APÓS o sucesso da migração (em erro, tenta de novo depois).
+Future<int> migrarAnimaisOfflineLegadoDePrefs() async {
+  final prefs = await SharedPreferences.getInstance();
+  final raw = prefs.getStringList(kPrefsAnimaisOfflineLegado);
+  if (raw == null || raw.isEmpty) return 0;
+
+  final legado = <AnimaisProdutoresStruct>[];
+  for (final x in raw) {
+    try {
+      legado.add(AnimaisProdutoresStruct.fromSerializableMap(jsonDecode(x)));
+    } catch (_) {
+      // Item corrompido: ignora (não trava o resgate dos demais).
+    }
+  }
+
+  final migrados = await migrarAnimaisOfflineLegado(legado);
+  await prefs.remove(kPrefsAnimaisOfflineLegado);
   return migrados;
 }

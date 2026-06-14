@@ -1040,7 +1040,6 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 0.0),
       child: FFButtonWidget(
         onPressed: () async {
-          FFAppState().animaisProdutoresOffline = [];
           // Para os listeners remotos (evita escutar dados do
           // técnico anterior após troca de conta).
           if (RemoteSyncListenersService.isInitialized) {

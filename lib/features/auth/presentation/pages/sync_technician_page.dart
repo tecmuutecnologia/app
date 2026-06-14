@@ -42,10 +42,9 @@ class _SyncTechnicianPageState extends State<SyncTechnicianPage> {
         ),
         singleRecord: true,
       ).then((s) => s.firstOrNull);
-      // Migração legado→ObjectBox: drena os animais criados offline pelo
-      // mecanismo antigo ANTES de limpar o array (antes isto os descartava).
-      await migrarAnimaisOfflineLegado(FFAppState().animaisProdutoresOffline);
-      FFAppState().animaisProdutoresOffline = [];
+      // Migração legado→ObjectBox: resgata (das prefs) os animais criados
+      // offline pelo mecanismo antigo e limpa a chave. Autônoma do FFAppState.
+      await migrarAnimaisOfflineLegadoDePrefs();
       safeSetState(() {});
       if (_personverify != null) {
         _uidTecnico = await queryTecnicoRecordOnce(

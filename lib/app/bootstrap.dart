@@ -39,16 +39,11 @@ Future<void> bootstrap() async {
   await appState.initializePersistedState();
 
   // Migração legado->ObjectBox a cada startup (idempotente, não-bloqueante):
-  // garante que animais criados offline pelo mecanismo antigo (array persistido
-  // `animaisProdutoresOffline`) não fiquem presos nem sejam descartados,
-  // independente do caminho de login. Pré-requisito para remover as telas
-  // variantes `_offline`. Complementa a drenagem do sync_technician.
+  // resgata animais criados offline pelo mecanismo antigo (array persistido em
+  // prefs `ff_animaisProdutoresOffline`) para o ObjectBox e remove a chave.
+  // Autônoma do FFAppState (o campo foi removido); no-op se a chave não existe.
   if (!kIsWeb && ObjectBoxService.isInitialized) {
-    final legado = appState.animaisProdutoresOffline;
-    if (legado.isNotEmpty) {
-      unawaited(migrarAnimaisOfflineLegado(legado)
-          .then((_) => appState.animaisProdutoresOffline = []));
-    }
+    unawaited(migrarAnimaisOfflineLegadoDePrefs());
   }
 
   await initializeStripe();
