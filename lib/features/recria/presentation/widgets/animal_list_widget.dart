@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
-import 'package:provider/provider.dart';
 
 import '/data/backend.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -120,8 +119,6 @@ class AnimalListWidget extends StatelessWidget {
   Widget _buildOfflineList(BuildContext context) {
     return Builder(
       builder: (context) {
-        final appState = context.watch<FFAppState>();
-
         // Processar animais existentes (offline)
         final existingAnimals = animaisProdutoresExistentesObjectBox()
             .asMap()
@@ -137,22 +134,9 @@ class AnimalListWidget extends StatelessWidget {
             .map((entry) => _mapExistingToAnimalData(entry.value, entry.key))
             .toList();
 
-        // Processar animais novos criados offline
-        final newAnimals = appState.animaisProdutoresOffline
-            .asMap()
-            .entries
-            .where((entry) {
-              final item = entry.value;
-              if (item.uidTecnicoPropriedade != uidPropriedade) return false;
-              if (filterCategory != null &&
-                  filterCategory != 'Todos' &&
-                  item.grupoAnimal != filterCategory) return false;
-              return true;
-            })
-            .map((entry) => _mapNewToAnimalData(entry.value, entry.key))
-            .toList();
-
-        final allAnimals = [...existingAnimals, ...newAnimals];
+        // Animais criados offline agora entram no ObjectBox (vêm em
+        // existingAnimals via getAll), não há mais lista separada no FFAppState.
+        final allAnimals = existingAnimals;
 
         if (allAnimals.isEmpty) {
           return _buildEmptyState(context);
@@ -202,29 +186,6 @@ class AnimalListWidget extends StatelessWidget {
       liberaInseminacao: item.liberaInseminacao ?? false,
       itemIndex: index,
       uidAnimalOffline: item.uidAnimalOffline,
-      uidTecnicoPropriedade: item.uidTecnicoPropriedade,
-    );
-  }
-
-  AnimalData _mapNewToAnimalData(dynamic item, int index) {
-    return AnimalData(
-      grupoAnimal: item.grupoAnimal ?? '',
-      nomeAnimal: item.nomeAnimal ?? '',
-      brincoAnimal: item.brincoAnimal,
-      nomeBrincoConcat: item.nomeBrincoConcat ?? '',
-      status: item.status ?? '',
-      dtNascimento: item.dtNascimento,
-      dtUltimaInseminacao: item.dtUltimaInseminacao,
-      dtUltimoPartoContingencia: item.dtUltimoPartoContingencia,
-      dtUltimoParto: item.dtUltimoParto,
-      dtPrePartoPrevista: item.dtPrePartoPrevista,
-      dtPartoPrevisto: item.dtPartoPrevisto,
-      dtUltimaAcao: item.dtUltimaAcao,
-      dtInducaoLactacao: item.dtInducaoLactacao,
-      nomeTouroUltimaInseminacao: item.nomeTouroUltimaInseminacao,
-      brincoAnimalOrder: item.brincoAnimalOrder,
-      liberaInseminacao: item.liberaInseminacao ?? false,
-      itemIndex: index,
       uidTecnicoPropriedade: item.uidTecnicoPropriedade,
     );
   }

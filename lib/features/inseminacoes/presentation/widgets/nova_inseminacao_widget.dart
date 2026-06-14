@@ -571,14 +571,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
                 touroAnimaisProdutoresRecordList
                     .map((e) => e.nomeBrincoConcat)
                     .toList(),
-                FFAppState()
-                    .animaisProdutoresOffline
-                    .where((e) =>
-                        (e.uidTecnicoPropriedade == widget.uidPropriedade) &&
-                        (e.liberaInseminacao == true))
-                    .toList()
-                    .map((e) => e.nomeBrincoConcat)
-                    .toList())!,
+                <String>[])!,
             onChanged: (val) => safeSetState(() => _touroValue = val),
             width: double.infinity,
             height: 58.0,

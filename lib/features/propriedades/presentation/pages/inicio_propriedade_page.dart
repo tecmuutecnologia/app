@@ -934,9 +934,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
         highlightColor: Colors.transparent,
         onTap: () async {
           if (_respostaNet!) {
-            if ((FFAppState().animaisProdutoresOffline.length == 0) &&
-                (true) &&
-                (true)) {
+            // Animais criados offline vão direto ao ObjectBox e sincronizam ao
+            // reconectar — sem fila no FFAppState a bloquear a navegação.
+            {
               context.pushNamed(
                 ListaAnimaisPage.routeName,
                 queryParameters: {
@@ -967,23 +967,6 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                 }.withoutNulls,
               );
 
-              return;
-            } else {
-              await showDialog(
-                context: context,
-                builder: (alertDialogContext) {
-                  return AlertDialog(
-                    title: Text('Sincronize os dados primeiro!'),
-                    content: Text('Sincronize offline com o online.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(alertDialogContext),
-                        child: Text('Ok'),
-                      ),
-                    ],
-                  );
-                },
-              );
               return;
             }
           } else {
@@ -1130,7 +1113,8 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                               _respostaNet!
                                   ? inicioPropriedadeAnimaisProdutoresRecordList
                                       .where((e) =>
-                                          ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
+                                          ((ehVaca(e.grupoAnimal)) ||
+                                              (ehNovilha(e.grupoAnimal))) &&
                                           ((ehVazia(e.status)) ||
                                               (ehInseminada(e.status)) ||
                                               (ehInseminadaPP(e.status))))
@@ -1138,30 +1122,14 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                                       .length
                                       .toString()
                                   : (inicioPropriedadeAnimaisProdutoresRecordList
-                                              .where((e) =>
-                                                  ((ehVaca(e.grupoAnimal)) ||
-                                                      (ehNovilha(
-                                                          e.grupoAnimal))) &&
-                                                  ((ehVazia(e.status)) ||
-                                                      (ehInseminada(
-                                                          e.status)) ||
-                                                      (ehInseminadaPP(
-                                                          e.status))))
-                                              .toList()
-                                              .length +
-                                          FFAppState()
-                                              .animaisProdutoresOffline
-                                              .where((e) =>
-                                                  (e.uidTecnicoPropriedade ==
-                                                      widget.uidPropriedade) &&
-                                                  ((ehVaca(e.grupoAnimal)) ||
-                                                      (ehNovilha(
-                                                          e.grupoAnimal))) &&
-                                                  ((ehVazia(e.status)) ||
-                                                      (ehInseminada(e.status)) ||
-                                                      (ehInseminadaPP(e.status))))
-                                              .toList()
-                                              .length)
+                                          .where((e) =>
+                                              ((ehVaca(e.grupoAnimal)) ||
+                                                  (ehNovilha(e.grupoAnimal))) &&
+                                              ((ehVazia(e.status)) ||
+                                                  (ehInseminada(e.status)) ||
+                                                  (ehInseminadaPP(e.status))))
+                                          .toList()
+                                          .length)
                                       .toString(),
                               style: FlutterFlowTheme.of(context)
                                   .bodyMedium
@@ -1484,22 +1452,13 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                                     .length
                                     .toString()
                                 : (animaisProdutoresExistentesObjectBox()
-                                            .where((e) =>
-                                                (e.uidTecnicoPropriedade ==
-                                                    widget.uidPropriedade) &&
-                                                (ehVaca(e.grupoAnimal)) &&
-                                                (ehPrenha(e.status)))
-                                            .toList()
-                                            .length +
-                                        FFAppState()
-                                            .animaisProdutoresOffline
-                                            .where((e) =>
-                                                (e.uidTecnicoPropriedade ==
-                                                    widget.uidPropriedade) &&
-                                                (ehVaca(e.grupoAnimal)) &&
-                                                (ehPrenha(e.status)))
-                                            .toList()
-                                            .length)
+                                        .where((e) =>
+                                            (e.uidTecnicoPropriedade ==
+                                                widget.uidPropriedade) &&
+                                            (ehVaca(e.grupoAnimal)) &&
+                                            (ehPrenha(e.status)))
+                                        .toList()
+                                        .length)
                                     .toString(),
                             style: FlutterFlowTheme.of(context)
                                 .bodyMedium
@@ -1785,24 +1744,13 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                                 .length
                                 .toString()
                             : (inicioPropriedadeAnimaisProdutoresRecordList
-                                        .where((e) =>
-                                            (ehVazia(e.status)) &&
-                                            ((ehNovilha(e.grupoAnimal)) ||
-                                                (ehVaca(e.grupoAnimal))) &&
-                                            (e.dtInducaoLactacao == null))
-                                        .toList()
-                                        .length +
-                                    FFAppState()
-                                        .animaisProdutoresOffline
-                                        .where((e) =>
-                                            (e.uidTecnicoPropriedade ==
-                                                widget.uidPropriedade) &&
-                                            ((ehVaca(e.grupoAnimal)) ||
-                                                (ehNovilha(e.grupoAnimal))) &&
-                                            (ehVazia(e.status)) &&
-                                            (e.dtInducaoLactacao == null))
-                                        .toList()
-                                        .length)
+                                    .where((e) =>
+                                        (ehVazia(e.status)) &&
+                                        ((ehNovilha(e.grupoAnimal)) ||
+                                            (ehVaca(e.grupoAnimal))) &&
+                                        (e.dtInducaoLactacao == null))
+                                    .toList()
+                                    .length)
                                 .toString(),
                         style: FlutterFlowTheme.of(context).bodyMedium.override(
                               font: GoogleFonts.readexPro(
@@ -1936,7 +1884,8 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                         _respostaNet!
                             ? inicioPropriedadeAnimaisProdutoresRecordList
                                 .where((e) =>
-                                    (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) ||
+                                    (((ehTouros(e.grupoAnimal)) &&
+                                            (e.liberaInseminacao == false)) ||
                                         ((ehNovilha(e.grupoAnimal)) &&
                                             (e.dtInducaoLactacao == null)) ||
                                         (ehBezerras(e.grupoAnimal)) ||
@@ -1947,28 +1896,19 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                                 .length
                                 .toString()
                             : (inicioPropriedadeAnimaisProdutoresRecordList
-                                        .where((e) =>
-                                            (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) ||
-                                                ((ehNovilha(e.grupoAnimal)) &&
-                                                    (e.dtInducaoLactacao ==
-                                                        null)) ||
-                                                (ehBezerras(e.grupoAnimal)) ||
-                                                (ehBezerros(e.grupoAnimal))) &&
-                                            ((!ehDescarte(e.status)) &&
-                                                (e.status != 'Pré Parto')))
-                                        .toList()
-                                        .length +
-                                    FFAppState()
-                                        .animaisProdutoresOffline
-                                        .where((e) =>
-                                            (e.uidTecnicoPropriedade == widget.uidPropriedade) &&
-                                            (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) ||
-                                                ((ehNovilha(e.grupoAnimal)) && (e.dtInducaoLactacao == null)) ||
-                                                (ehBezerras(e.grupoAnimal)) ||
-                                                (ehBezerros(e.grupoAnimal))) &&
-                                            ((!ehDescarte(e.status)) && (e.status != 'Pré Parto')))
-                                        .toList()
-                                        .length)
+                                    .where((e) =>
+                                        (((ehTouros(e.grupoAnimal)) &&
+                                                (e.liberaInseminacao ==
+                                                    false)) ||
+                                            ((ehNovilha(e.grupoAnimal)) &&
+                                                (e.dtInducaoLactacao ==
+                                                    null)) ||
+                                            (ehBezerras(e.grupoAnimal)) ||
+                                            (ehBezerros(e.grupoAnimal))) &&
+                                        ((!ehDescarte(e.status)) &&
+                                            (e.status != 'Pré Parto')))
+                                    .toList()
+                                    .length)
                                 .toString(),
                         style: FlutterFlowTheme.of(context).bodyMedium.override(
                               font: GoogleFonts.readexPro(

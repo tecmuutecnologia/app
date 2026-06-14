@@ -107,42 +107,15 @@ class PropriedadeMenuGrid extends StatelessWidget {
   }
 
   void _navigateToAnimais(BuildContext context) async {
-    final appState = FFAppState();
-
-    if (isOnline) {
-      // Verifica se precisa sincronizar
-      if (appState.animaisProdutoresOffline.isEmpty && true && true) {
-        context.pushNamed(
-          ListaAnimaisPage.routeName,
-          queryParameters: navigationParams.toQueryParameters(),
-        );
-      } else {
-        await showDialog(
-          context: context,
-          builder: (alertDialogContext) {
-            return AlertDialog(
-              title: const Text('Sincronize os dados primeiro!'),
-              content: const Text('Sincronize offline com o online.'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(alertDialogContext),
-                  child: const Text('Ok'),
-                ),
-              ],
-            );
-          },
-        );
-      }
-    } else {
-      context.pushNamed(
-        ListaAnimaisPage.routeName,
-        queryParameters: navigationParams.toQueryParameters(),
-      );
-    }
+    // Animais criados offline vão direto ao ObjectBox e sincronizam ao
+    // reconectar — não há mais fila no FFAppState a forçar sync antes de abrir.
+    context.pushNamed(
+      ListaAnimaisPage.routeName,
+      queryParameters: navigationParams.toQueryParameters(),
+    );
   }
 
   Widget _buildInseminacoesCard(BuildContext context) {
-    final appState = FFAppState();
     final onlineCount = animaisRecordList
         .where((e) =>
             ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
@@ -152,19 +125,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
         .toList()
         .length;
 
-    final offlineCount = appState.animaisProdutoresOffline
-        .where((e) =>
-            (e.uidTecnicoPropriedade == navigationParams.uidPropriedade) &&
-            ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
-            ((ehVazia(e.status)) ||
-                (ehInseminada(e.status)) ||
-                (ehInseminadaPP(e.status))))
-        .toList()
-        .length;
-
-    final badgeCount = isOnline
-        ? onlineCount.toString()
-        : (onlineCount + offlineCount).toString();
+    final badgeCount = onlineCount.toString();
 
     return MenuItemCardWithBadge(
       icon: Icons.vaccines,
@@ -209,8 +170,6 @@ class PropriedadeMenuGrid extends StatelessWidget {
   }
 
   Widget _buildVacasPrenhasCard(BuildContext context) {
-    final appState = FFAppState();
-
     String getBadgeCount() {
       if (isOnline) {
         return animaisRecordList
@@ -227,15 +186,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
             .toList()
             .length;
 
-        final offlineCount = appState.animaisProdutoresOffline
-            .where((e) =>
-                (e.uidTecnicoPropriedade == navigationParams.uidPropriedade) &&
-                (ehVaca(e.grupoAnimal)) &&
-                (ehPrenha(e.status)))
-            .toList()
-            .length;
-
-        return (existentesCount + offlineCount).toString();
+        return existentesCount.toString();
       }
     }
 
@@ -277,8 +228,6 @@ class PropriedadeMenuGrid extends StatelessWidget {
   }
 
   Widget _buildExameGinecologicoCard(BuildContext context) {
-    final appState = FFAppState();
-
     String getBadgeCount() {
       final onlineCount = animaisRecordList
           .where((e) =>
@@ -288,20 +237,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
           .toList()
           .length;
 
-      if (isOnline) {
-        return onlineCount.toString();
-      } else {
-        final offlineCount = appState.animaisProdutoresOffline
-            .where((e) =>
-                (e.uidTecnicoPropriedade == navigationParams.uidPropriedade) &&
-                ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
-                (ehVazia(e.status)) &&
-                (e.dtInducaoLactacao == null))
-            .toList()
-            .length;
-
-        return (onlineCount + offlineCount).toString();
-      }
+      return onlineCount.toString();
     }
 
     return MenuItemCardWithBadge(
@@ -318,8 +254,6 @@ class PropriedadeMenuGrid extends StatelessWidget {
   }
 
   Widget _buildRecriaCard(BuildContext context) {
-    final appState = FFAppState();
-
     String getBadgeCount() {
       final onlineCount = animaisRecordList
           .where((e) =>
@@ -332,24 +266,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
           .toList()
           .length;
 
-      if (isOnline) {
-        return onlineCount.toString();
-      } else {
-        final offlineCount = appState.animaisProdutoresOffline
-            .where((e) =>
-                (e.uidTecnicoPropriedade == navigationParams.uidPropriedade) &&
-                (((ehTouros(e.grupoAnimal)) &&
-                        (e.liberaInseminacao == false)) ||
-                    ((ehNovilha(e.grupoAnimal)) &&
-                        (e.dtInducaoLactacao == null)) ||
-                    (ehBezerras(e.grupoAnimal)) ||
-                    (ehBezerros(e.grupoAnimal))) &&
-                ((!ehDescarte(e.status)) && (e.status != 'Pré Parto')))
-            .toList()
-            .length;
-
-        return (onlineCount + offlineCount).toString();
-      }
+      return onlineCount.toString();
     }
 
     return MenuItemCardWithBadge(

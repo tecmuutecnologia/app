@@ -498,78 +498,61 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
       alignment: AlignmentDirectional(0.0, 0.0),
       child: FFButtonWidget(
         onPressed: () async {
-          if ((_respostaNet == true) &&
-              (FFAppState().animaisProdutoresOffline.length > 0)) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Sincronize os dados primeiro.',
-                  style: TextStyle(
-                    color: FlutterFlowTheme.of(context).primaryText,
-                  ),
-                ),
-                duration: Duration(milliseconds: 4000),
-                backgroundColor: Color(0xFFD23939),
+          context.pushNamed(
+            CadastrarNovoAnimalPage.routeName,
+            queryParameters: {
+              'uidPropriedade': serializeParam(
+                widget.uidPropriedade,
+                ParamType.DocumentReference,
               ),
-            );
-            return;
-          } else {
-            context.pushNamed(
-              CadastrarNovoAnimalPage.routeName,
-              queryParameters: {
-                'uidPropriedade': serializeParam(
-                  widget.uidPropriedade,
-                  ParamType.DocumentReference,
-                ),
-                'nomePropriedade': serializeParam(
-                  widget.nomePropriedade,
-                  ParamType.String,
-                ),
-                'uidTecnico': serializeParam(
-                  widget.uidTecnico,
-                  ParamType.DocumentReference,
-                ),
-                'emailPropriedade': serializeParam(
-                  widget.emailPropriedade,
-                  ParamType.String,
-                ),
-                'grupoPredominante': serializeParam(
-                  () {
-                    if (_tabBarCurrentIndex == 0) {
-                      return 'Bezerras';
-                    } else if (_tabBarCurrentIndex == 1) {
-                      return 'Bezerros';
-                    } else if (_tabBarCurrentIndex == 2) {
-                      return 'Novilhas';
-                    } else if (_tabBarCurrentIndex == 3) {
-                      return 'Sêmens';
-                    } else if (_tabBarCurrentIndex == 4) {
-                      return 'Touros';
-                    } else if (_tabBarCurrentIndex == 5) {
-                      return 'Vacas';
-                    } else {
-                      return 'Novilhas';
-                    }
-                  }(),
-                  ParamType.String,
-                ),
-                'visitaPresencial': serializeParam(
-                  widget.visitaPresencial,
-                  ParamType.bool,
-                ),
-                'initialTabSelect': serializeParam(
-                  _tabBarCurrentIndex,
-                  ParamType.int,
-                ),
-                'diasDg': serializeParam(
-                  widget.diasDg,
-                  ParamType.String,
-                ),
-              }.withoutNulls,
-            );
+              'nomePropriedade': serializeParam(
+                widget.nomePropriedade,
+                ParamType.String,
+              ),
+              'uidTecnico': serializeParam(
+                widget.uidTecnico,
+                ParamType.DocumentReference,
+              ),
+              'emailPropriedade': serializeParam(
+                widget.emailPropriedade,
+                ParamType.String,
+              ),
+              'grupoPredominante': serializeParam(
+                () {
+                  if (_tabBarCurrentIndex == 0) {
+                    return 'Bezerras';
+                  } else if (_tabBarCurrentIndex == 1) {
+                    return 'Bezerros';
+                  } else if (_tabBarCurrentIndex == 2) {
+                    return 'Novilhas';
+                  } else if (_tabBarCurrentIndex == 3) {
+                    return 'Sêmens';
+                  } else if (_tabBarCurrentIndex == 4) {
+                    return 'Touros';
+                  } else if (_tabBarCurrentIndex == 5) {
+                    return 'Vacas';
+                  } else {
+                    return 'Novilhas';
+                  }
+                }(),
+                ParamType.String,
+              ),
+              'visitaPresencial': serializeParam(
+                widget.visitaPresencial,
+                ParamType.bool,
+              ),
+              'initialTabSelect': serializeParam(
+                _tabBarCurrentIndex,
+                ParamType.int,
+              ),
+              'diasDg': serializeParam(
+                widget.diasDg,
+                ParamType.String,
+              ),
+            }.withoutNulls,
+          );
 
-            return;
-          }
+          return;
         },
         text: '',
         icon: Icon(

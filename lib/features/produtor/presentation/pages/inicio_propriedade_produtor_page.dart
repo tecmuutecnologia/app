@@ -4,7 +4,6 @@ import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
-import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/ui/request_manager.dart';
 import '/core/services/index.dart' as actions;
@@ -327,14 +326,14 @@ class _InicioPropriedadeProdutorPageState
 
   /// Constrói a seção de status de sincronização.
   Widget _buildSyncStatusSection() {
-    final appState = FFAppState();
     final isOnline = _respostaNet ?? true;
 
-    // Sem internet
+    // Sem internet: banner passivo. Animais criados offline vão direto ao
+    // ObjectBox e sincronizam ao reconectar — sem fila/contagem no FFAppState.
     if (!isOnline) {
       return SyncStatusBar(
         isOnline: false,
-        offlineAnimaisCount: appState.animaisProdutoresOffline.length,
+        offlineAnimaisCount: 0,
         editedAnimaisCount: 0,
         offlineActionsCount: 0,
         uidTecnico: widget.uidTecnico,
@@ -342,129 +341,8 @@ class _InicioPropriedadeProdutorPageState
       );
     }
 
-    // Com internet e tem dados para sincronizar
-    if (appState.animaisProdutoresOffline.isNotEmpty || false || false) {
-      return _buildSyncRequiredSection(appState);
-    }
-
     return const SizedBox.shrink();
   }
 
   /// Constrói a seção quando sincronização é necessária.
-  Widget _buildSyncRequiredSection(FFAppState appState) {
-    return Opacity(
-      opacity: 0.0,
-      child: Container(
-        width: MediaQuery.sizeOf(context).width * 1.0,
-        height: 150.0,
-        decoration: BoxDecoration(
-          color: FlutterFlowTheme.of(context).secondaryBackground,
-        ),
-        child: Wrap(
-          spacing: 0.0,
-          runSpacing: 0.0,
-          alignment: WrapAlignment.center,
-          crossAxisAlignment: WrapCrossAlignment.start,
-          direction: Axis.horizontal,
-          runAlignment: WrapAlignment.start,
-          verticalDirection: VerticalDirection.down,
-          clipBehavior: Clip.none,
-          children: [
-            _buildSyncMessage(appState),
-            _buildSyncNowButton(),
-            _buildIgnoreAndDeleteButton(appState),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSyncMessage(FFAppState appState) {
-    final editedCount = 0;
-
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 0.0, 0.0),
-      child: Text(
-        'Você tem ${appState.animaisProdutoresOffline.length} novos animais cadastrados, '
-        '$editedCount animais modificados e '
-        '${0} novas ações feitas. '
-        'Deseja sincronizá-los agora?',
-        textAlign: TextAlign.center,
-        style: FlutterFlowTheme.of(context).bodyMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FontWeight.bold,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-              ),
-              color: const Color(0xFFD50000),
-              letterSpacing: 0.0,
-              fontWeight: FontWeight.bold,
-              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-            ),
-      ),
-    );
-  }
-
-  Widget _buildSyncNowButton() {
-    return const SizedBox.shrink();
-  }
-
-  Widget _buildIgnoreAndDeleteButton(FFAppState appState) {
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 0.0),
-      child: FFButtonWidget(
-        onPressed: () async {
-          final confirmDialogResponse = await showDialog<bool>(
-                context: context,
-                builder: (alertDialogContext) {
-                  return AlertDialog(
-                    title: const Text('Deseja realmente ignorar ações?'),
-                    content: const Text(
-                        'Essa ação apaga todas as ações feitas offline.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () =>
-                            Navigator.pop(alertDialogContext, false),
-                        child: const Text('Cancelar'),
-                      ),
-                      TextButton(
-                        onPressed: () =>
-                            Navigator.pop(alertDialogContext, true),
-                        child: const Text('Confirmar'),
-                      ),
-                    ],
-                  );
-                },
-              ) ??
-              false;
-
-          if (confirmDialogResponse) {
-            appState.animaisProdutoresOffline = [];
-            safeSetState(() {});
-          }
-        },
-        text: 'Ignorar e apagar',
-        icon: const Icon(Icons.sync, size: 15.0),
-        options: FFButtonOptions(
-          height: 40.0,
-          padding: const EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-          iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-          color: const Color(0xFFD50000),
-          textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                ),
-                color: Colors.white,
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-              ),
-          elevation: 3.0,
-          borderSide: const BorderSide(color: Colors.transparent, width: 1.0),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-      ),
-    );
-  }
 }

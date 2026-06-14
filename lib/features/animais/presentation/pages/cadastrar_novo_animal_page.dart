@@ -217,7 +217,9 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
   Future<void> _cadastrarAnimal(BuildContext context) async {
     var _shouldSetState = false;
     if (_respostaNet!) {
-      if (FFAppState().animaisProdutoresOffline.length == 0) {
+      // Animais criados offline agora vão direto ao ObjectBox (sem fila no
+      // FFAppState), então não há mais "pendentes" a bloquear o cadastro.
+      {
         if (_formKey.currentState == null ||
             !_formKey.currentState!.validate()) {
           return;
@@ -1553,21 +1555,6 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
             return;
           }
         }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Sincronize os dados primeiro.',
-              style: TextStyle(
-                color: FlutterFlowTheme.of(context).primaryText,
-              ),
-            ),
-            duration: Duration(milliseconds: 4000),
-            backgroundColor: Color(0xFFCC4038),
-          ),
-        );
-        if (_shouldSetState) safeSetState(() {});
-        return;
       }
     } else {
       if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
@@ -3095,15 +3082,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                           touroInseminacaoAnimaisProdutoresRecordList
                               .map((e) => e.nomeBrincoConcat)
                               .toList(),
-                          FFAppState()
-                              .animaisProdutoresOffline
-                              .where((e) =>
-                                  (e.uidTecnicoPropriedade ==
-                                      widget.uidPropriedade) &&
-                                  (e.liberaInseminacao == true))
-                              .toList()
-                              .map((e) => e.nomeBrincoConcat)
-                              .toList())!,
+                          <String>[])!,
                       onChanged: (val) =>
                           safeSetState(() => _touroInseminacaoValue = val),
                       width: double.infinity,
