@@ -5,21 +5,19 @@ import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
-import '/pages/tecnico/propriedade/receituario/assinatura_produtor/assinatura_produtor_widget.dart';
-import '/pages/tecnico/propriedade/receituario/assinatura_tecnico/assinatura_tecnico_widget.dart';
-import '/pages/tecnico/propriedade/receituario/lista_animais_tratamentos/lista_animais_tratamentos_widget.dart';
-import '/pages/tecnico/propriedade/receituario/lista_diagnostico_gestacao/lista_diagnostico_gestacao_widget.dart';
+import '../widgets/assinatura_produtor_widget.dart';
+import '../widgets/assinatura_tecnico_widget.dart';
+import '../widgets/lista_animais_tratamentos_widget.dart';
+import '../widgets/lista_diagnostico_gestacao_widget.dart';
+import 'receituarios_lista_page.dart';
 import '/core/services/index.dart' as actions;
-import '/index.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'resumo_visita_atual_model.dart';
-export 'resumo_visita_atual_model.dart';
 
-class ResumoVisitaAtualWidget extends StatefulWidget {
-  const ResumoVisitaAtualWidget({
+class ResumoVisitaAtualPage extends StatefulWidget {
+  const ResumoVisitaAtualPage({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
@@ -42,29 +40,37 @@ class ResumoVisitaAtualWidget extends StatefulWidget {
   static String routePath = '/resumoVisitaAtual';
 
   @override
-  State<ResumoVisitaAtualWidget> createState() =>
-      _ResumoVisitaAtualWidgetState();
+  State<ResumoVisitaAtualPage> createState() => _ResumoVisitaAtualPageState();
 }
 
-class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
-  late ResumoVisitaAtualModel _model;
+class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
+  FocusNode? _obsGeralFocusNode;
+  TextEditingController? _obsGeralTextController;
+  final String? Function(BuildContext, String?)?
+      _obsGeralTextControllerValidator = null;
+  PropriedadesRecord? _outUidPropriedade2;
+  TecnicoRecord? _outUidTecnico2;
+  PersonRecord? _outUidPersonTecnico2;
+  PropriedadesRecord? _outUidPropriedade;
+  TecnicoRecord? _outUidTecnico;
+  PersonRecord? _outUidPersonTecnico;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ResumoVisitaAtualModel());
 
-    _model.obsGeralTextController ??= TextEditingController();
-    _model.obsGeralFocusNode ??= FocusNode();
+    _obsGeralTextController ??= TextEditingController();
+    _obsGeralFocusNode ??= FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.dispose();
+    _obsGeralFocusNode?.dispose();
+    _obsGeralTextController?.dispose();
 
     super.dispose();
   }
@@ -409,8 +415,8 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
 
   Widget _p7(BuildContext context) {
     return TextFormField(
-      controller: _model.obsGeralTextController,
-      focusNode: _model.obsGeralFocusNode,
+      controller: _obsGeralTextController,
+      focusNode: _obsGeralFocusNode,
       autofocus: false,
       obscureText: false,
       decoration: InputDecoration(
@@ -480,7 +486,7 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
               {required currentLength, required isFocused, maxLength}) =>
           null,
       cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _model.obsGeralTextControllerValidator.asValidator(context),
+      validator: _obsGeralTextControllerValidator.asValidator(context),
     );
   }
 
@@ -495,7 +501,7 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
               (resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico != '')) {
             await widget.uidResumoVisita!.update(createResumoDaVisitaRecordData(
               dtAssinatura: getCurrentTimestamp,
-              obsGeralVisita: _model.obsGeralTextController.text,
+              obsGeralVisita: _obsGeralTextController.text,
               dtAssinaturaFormatado: dateTimeFormat(
                 "dd/MM/yyyy",
                 getCurrentTimestamp,
@@ -609,17 +615,16 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
           if ((resumoVisitaAtualResumoDaVisitaRecord.assinaturaProdutor !=
                   '') ||
               (resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico != '')) {
-            _model.outUidPropriedade2 =
-                await PropriedadesRecord.getDocumentOnce(
-                    widget.uidPropriedade!);
+            _outUidPropriedade2 = await PropriedadesRecord.getDocumentOnce(
+                widget.uidPropriedade!);
             _shouldSetState = true;
-            _model.outUidTecnico2 =
+            _outUidTecnico2 =
                 await TecnicoRecord.getDocumentOnce(widget.uidTecnico!);
             _shouldSetState = true;
-            _model.outUidPersonTecnico2 = await queryPersonRecordOnce(
+            _outUidPersonTecnico2 = await queryPersonRecordOnce(
               queryBuilder: (personRecord) => personRecord.where(
                 'uid',
-                isEqualTo: _model.outUidTecnico2?.uidPerson,
+                isEqualTo: _outUidTecnico2?.uidPerson,
               ),
               singleRecord: true,
             ).then((s) => s.firstOrNull);
@@ -632,7 +637,7 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                 getCurrentTimestamp,
                 locale: FFLocalizations.of(context).languageCode,
               ),
-              obsGeralVisita: _model.obsGeralTextController.text,
+              obsGeralVisita: _obsGeralTextController.text,
             ));
             await showDialog(
               context: context,
@@ -681,13 +686,13 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
 
             await actions.createReceituario(
               widget.uidResumoVisita!,
-              _model.outUidPropriedade2?.displayName,
-              _model.outUidPropriedade2?.endereco,
-              _model.outUidPersonTecnico2?.displayName,
-              _model.outUidPersonTecnico2?.phoneNumber,
+              _outUidPropriedade2?.displayName,
+              _outUidPropriedade2?.endereco,
+              _outUidPersonTecnico2?.displayName,
+              _outUidPersonTecnico2?.phoneNumber,
               resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado,
-              _model.outUidPersonTecnico2?.email,
-              _model.outUidPersonTecnico2?.empresa,
+              _outUidPersonTecnico2?.email,
+              _outUidPersonTecnico2?.empresa,
               'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/tecmuu-xingpe/assets/mjfv0ghrztrz/logo-2.png',
             );
             if (_shouldSetState) safeSetState(() {});
@@ -758,27 +763,26 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
               padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 16.0),
               child: FFButtonWidget(
                 onPressed: () async {
-                  _model.outUidPropriedade =
-                      await PropriedadesRecord.getDocumentOnce(
-                          widget.uidPropriedade!);
-                  _model.outUidTecnico =
+                  _outUidPropriedade = await PropriedadesRecord.getDocumentOnce(
+                      widget.uidPropriedade!);
+                  _outUidTecnico =
                       await TecnicoRecord.getDocumentOnce(widget.uidTecnico!);
-                  _model.outUidPersonTecnico = await queryPersonRecordOnce(
+                  _outUidPersonTecnico = await queryPersonRecordOnce(
                     queryBuilder: (personRecord) => personRecord.where(
                       'uid',
-                      isEqualTo: _model.outUidTecnico?.uidPerson,
+                      isEqualTo: _outUidTecnico?.uidPerson,
                     ),
                     singleRecord: true,
                   ).then((s) => s.firstOrNull);
                   await actions.createReceituario(
                     widget.uidResumoVisita!,
-                    _model.outUidPropriedade?.displayName,
-                    _model.outUidPropriedade?.endereco,
-                    _model.outUidPersonTecnico?.displayName,
-                    _model.outUidPersonTecnico?.phoneNumber,
+                    _outUidPropriedade?.displayName,
+                    _outUidPropriedade?.endereco,
+                    _outUidPersonTecnico?.displayName,
+                    _outUidPersonTecnico?.phoneNumber,
                     resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado,
-                    _model.outUidPersonTecnico?.email,
-                    _model.outUidPersonTecnico?.empresa,
+                    _outUidPersonTecnico?.email,
+                    _outUidPersonTecnico?.empresa,
                     'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/tecmuu-xingpe/assets/mjfv0ghrztrz/logo-2.png',
                   );
 

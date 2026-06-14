@@ -7,11 +7,9 @@ import '/core/ui/upload_data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:signature/signature.dart';
-import 'assinatura_tecnico_model.dart';
-export 'assinatura_tecnico_model.dart';
 
-class AssinaturaTecnicoWidget extends StatefulWidget {
-  const AssinaturaTecnicoWidget({
+class AssinaturaProdutorWidget extends StatefulWidget {
+  const AssinaturaProdutorWidget({
     super.key,
     required this.uidResumoVisita,
   });
@@ -19,30 +17,24 @@ class AssinaturaTecnicoWidget extends StatefulWidget {
   final DocumentReference? uidResumoVisita;
 
   @override
-  State<AssinaturaTecnicoWidget> createState() =>
-      _AssinaturaTecnicoWidgetState();
+  State<AssinaturaProdutorWidget> createState() =>
+      _AssinaturaProdutorWidgetState();
 }
 
-class _AssinaturaTecnicoWidgetState extends State<AssinaturaTecnicoWidget> {
-  late AssinaturaTecnicoModel _model;
-
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
+class _AssinaturaProdutorWidgetState extends State<AssinaturaProdutorWidget> {
+  SignatureController? _assProdutorController;
+  String _uploadedSignatureUrl = '';
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => AssinaturaTecnicoModel());
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _assProdutorController?.dispose();
 
     super.dispose();
   }
@@ -57,7 +49,7 @@ class _AssinaturaTecnicoWidgetState extends State<AssinaturaTecnicoWidget> {
         children: [
           ClipRect(
             child: Signature(
-              controller: _model.assTecnicoController ??= SignatureController(
+              controller: _assProdutorController ??= SignatureController(
                 penStrokeWidth: 2.0,
                 penColor: FlutterFlowTheme.of(context).primaryText,
                 exportBackgroundColor: Colors.white,
@@ -71,7 +63,7 @@ class _AssinaturaTecnicoWidgetState extends State<AssinaturaTecnicoWidget> {
             child: FFButtonWidget(
               onPressed: () async {
                 final signatureImage =
-                    await _model.assTecnicoController!.toPngBytes(height: 120);
+                    await _assProdutorController!.toPngBytes(height: 120);
                 if (signatureImage == null) {
                   showUploadMessage(
                     context,
@@ -89,7 +81,7 @@ class _AssinaturaTecnicoWidgetState extends State<AssinaturaTecnicoWidget> {
 
                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 if (downloadUrl != null) {
-                  safeSetState(() => _model.uploadedSignatureUrl = downloadUrl);
+                  safeSetState(() => _uploadedSignatureUrl = downloadUrl);
                   showUploadMessage(
                     context,
                     'Sucesso!',
@@ -102,10 +94,10 @@ class _AssinaturaTecnicoWidgetState extends State<AssinaturaTecnicoWidget> {
                   return;
                 }
 
-                if (_model.uploadedSignatureUrl != '') {
+                if (_uploadedSignatureUrl != '') {
                   await widget.uidResumoVisita!
                       .update(createResumoDaVisitaRecordData(
-                    assinaturaTecnico: _model.uploadedSignatureUrl,
+                    assinaturaProdutor: _uploadedSignatureUrl,
                   ));
                   Navigator.pop(context);
                   return;
@@ -137,7 +129,7 @@ class _AssinaturaTecnicoWidgetState extends State<AssinaturaTecnicoWidget> {
                 height: 40.0,
                 padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
                 iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                color: Color(0xFFBE6740),
+                color: FlutterFlowTheme.of(context).tertiary,
                 textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                       font: GoogleFonts.readexPro(
                         fontWeight:

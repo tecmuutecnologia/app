@@ -481,9 +481,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: ResumoVisitaAtualWidget.routeName,
-          path: ResumoVisitaAtualWidget.routePath,
-          builder: (context, params) => ResumoVisitaAtualWidget(
+          name: ResumoVisitaAtualPage.routeName,
+          path: ResumoVisitaAtualPage.routePath,
+          builder: (context, params) => ResumoVisitaAtualPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,

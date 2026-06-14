@@ -8,8 +8,6 @@ import 'package:collection/collection.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'lista_animais_tratamentos_model.dart';
-export 'lista_animais_tratamentos_model.dart';
 
 class ListaAnimaisTratamentosWidget extends StatefulWidget {
   const ListaAnimaisTratamentosWidget({
@@ -30,23 +28,20 @@ class ListaAnimaisTratamentosWidget extends StatefulWidget {
 
 class _ListaAnimaisTratamentosWidgetState
     extends State<ListaAnimaisTratamentosWidget> {
-  late ListaAnimaisTratamentosModel _model;
-
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
+  FocusNode? _tratamentoRecomendacaoFocusNode;
+  TextEditingController? _tratamentoRecomendacaoTextController;
+  final String? Function(BuildContext, String?)?
+      _tratamentoRecomendacaoTextControllerValidator = null;
+  RecomendacoesRecord? _outUidRecomendacaoObs;
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ListaAnimaisTratamentosModel());
 
-    _model.tratamentoRecomendacaoTextController ??=
+    _tratamentoRecomendacaoTextController ??=
         TextEditingController(text: widget.obsRecomendacao);
-    _model.tratamentoRecomendacaoFocusNode ??= FocusNode();
-    _model.tratamentoRecomendacaoFocusNode!.addListener(
+    _tratamentoRecomendacaoFocusNode ??= FocusNode();
+    _tratamentoRecomendacaoFocusNode!.addListener(
       () async {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -67,7 +62,8 @@ class _ListaAnimaisTratamentosWidgetState
 
   @override
   void dispose() {
-    _model.maybeDispose();
+    _tratamentoRecomendacaoFocusNode?.dispose();
+    _tratamentoRecomendacaoTextController?.dispose();
 
     super.dispose();
   }
@@ -575,13 +571,13 @@ class _ListaAnimaisTratamentosWidgetState
                 child: Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(5.0, 10.0, 5.0, 20.0),
                   child: TextFormField(
-                    controller: _model.tratamentoRecomendacaoTextController,
-                    focusNode: _model.tratamentoRecomendacaoFocusNode,
+                    controller: _tratamentoRecomendacaoTextController,
+                    focusNode: _tratamentoRecomendacaoFocusNode,
                     onChanged: (_) => EasyDebounce.debounce(
-                      '_model.tratamentoRecomendacaoTextController',
+                      '_tratamentoRecomendacaoTextController',
                       Duration(milliseconds: 2000),
                       () async {
-                        _model.outUidRecomendacaoObs =
+                        _outUidRecomendacaoObs =
                             await queryRecomendacoesRecordOnce(
                           parent: widget.parameter2,
                           queryBuilder: (recomendacoesRecord) =>
@@ -592,10 +588,10 @@ class _ListaAnimaisTratamentosWidgetState
                           singleRecord: true,
                         ).then((s) => s.firstOrNull);
 
-                        await _model.outUidRecomendacaoObs!.reference
+                        await _outUidRecomendacaoObs!.reference
                             .update(createRecomendacoesRecordData(
                           descricaoRecomendacao:
-                              _model.tratamentoRecomendacaoTextController.text,
+                              _tratamentoRecomendacaoTextController.text,
                         ));
 
                         safeSetState(() {});
@@ -687,8 +683,7 @@ class _ListaAnimaisTratamentosWidgetState
                               FlutterFlowTheme.of(context).bodyMedium.fontStyle,
                         ),
                     maxLines: 4,
-                    validator: _model
-                        .tratamentoRecomendacaoTextControllerValidator
+                    validator: _tratamentoRecomendacaoTextControllerValidator
                         .asValidator(context),
                   ),
                 ),

@@ -6,8 +6,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'lista_diagnostico_gestacao_model.dart';
-export 'lista_diagnostico_gestacao_model.dart';
 
 class ListaDiagnosticoGestacaoWidget extends StatefulWidget {
   const ListaDiagnosticoGestacaoWidget({
@@ -30,25 +28,10 @@ class ListaDiagnosticoGestacaoWidget extends StatefulWidget {
 
 class _ListaDiagnosticoGestacaoWidgetState
     extends State<ListaDiagnosticoGestacaoWidget> {
-  late ListaDiagnosticoGestacaoModel _model;
-
-  @override
-  void setState(VoidCallback callback) {
-    super.setState(callback);
-    _model.onUpdate();
-  }
-
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ListaDiagnosticoGestacaoModel());
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
-  }
-
-  @override
-  void dispose() {
-    _model.maybeDispose();
-    super.dispose();
   }
 
   // Função para formatar a data da visita para comparação

@@ -27,14 +27,13 @@ export '/features/exame_ginecologico/presentation/pages/exame_ginecologico_page.
     show ExameGinecologicoPage;
 export '/features/prenhas/presentation/pages/animais_prenhas_page.dart'
     show AnimaisPrenhasPage;
-export '/features/secas/presentation/pages/secas_page.dart'
-    show SecasPage;
+export '/features/secas/presentation/pages/secas_page.dart' show SecasPage;
 export '/pages/tecnico/initial/sync_technician/sync_technician_widget.dart'
     show SyncTechnicianWidget;
 export '/features/receituario/presentation/pages/receituarios_lista_page.dart'
     show ReceituariosListaPage;
-export '/pages/tecnico/propriedade/receituario/resumo_visita_atual/resumo_visita_atual_widget.dart'
-    show ResumoVisitaAtualWidget;
+export '/features/receituario/presentation/pages/resumo_visita_atual_page.dart'
+    show ResumoVisitaAtualPage;
 export '/pages/tecnico/propriedade/resumo_rebanho/resumo_rebanho/resumo_rebanho_widget.dart'
     show ResumoRebanhoWidget;
 export '/pages/tecnico/propriedade/indices_zootecnicos/indices_zootecnicos/indices_zootecnicos_widget.dart'
