@@ -26,10 +26,8 @@ class TecnicoRepository extends TopLevelSyncRepository<TecnicoEntity> {
       .findFirst();
 
   /// Busca o Técnico vinculado a um Person.
-  TecnicoEntity? getByUidPerson(String uidPerson) => box
-      .query(TecnicoEntity_.uidPerson.equals(uidPerson))
-      .build()
-      .findFirst();
+  TecnicoEntity? getByUidPerson(String uidPerson) =>
+      box.query(TecnicoEntity_.uidPerson.equals(uidPerson)).build().findFirst();
 
   @override
   List<TecnicoEntity> getPendingSync() =>

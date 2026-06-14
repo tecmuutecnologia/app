@@ -35,10 +35,8 @@ class PropriedadeRepository extends BaseSyncRepository<PropriedadeEntity> {
       .find();
 
   @override
-  List<PropriedadeEntity> getPendingSync() => box
-      .query(PropriedadeEntity_.needsSync.equals(true))
-      .build()
-      .find();
+  List<PropriedadeEntity> getPendingSync() =>
+      box.query(PropriedadeEntity_.needsSync.equals(true)).build().find();
 
   /// Stream reativa das propriedades de um produtor.
   Stream<List<PropriedadeEntity>> watchByParentPath(String parentPath) => box

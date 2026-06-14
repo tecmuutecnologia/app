@@ -9,7 +9,7 @@ import '/core/ui/flutter_flow_widgets.dart';
 import 'dart:ui';
 import '/features/financeiro/presentation/widgets/index.dart' as custom_widgets;
 import '/core/ui/custom_functions.dart' as functions;
-import '/index.dart';
+import '/features/financeiro/presentation/pages/relatorio_financeiro_page.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

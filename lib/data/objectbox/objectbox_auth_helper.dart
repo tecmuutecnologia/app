@@ -46,8 +46,7 @@ class ObjectBoxAuthHelper {
       // Faz o download completo na primeira sincronização OU quando o cache de
       // animais está vazio (auto-recuperação de instalações cujo sync anterior
       // baixou do path errado e ficou sem animais).
-      final semAnimaisLocais =
-          ObjectBoxService.instance.animalBox.count() == 0;
+      final semAnimaisLocais = ObjectBoxService.instance.animalBox.count() == 0;
       if (syncService.needsInitialSync() || semAnimaisLocais) {
         debugPrint('📥 Baixando todos os dados...');
         await syncService.performFullDownload(userId: user.uid);

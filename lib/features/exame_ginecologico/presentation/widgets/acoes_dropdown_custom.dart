@@ -68,65 +68,64 @@ class _AcoesDropdownCustomState extends State<AcoesDropdownCustom> {
             'Ação',
             style: FlutterFlowTheme.of(context).bodyMedium.override(
                   font: GoogleFonts.readexPro(
-                    fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                    fontWeight:
+                        FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).bodyMedium.fontStyle,
                   ),
                   letterSpacing: 0.0,
                 ),
           ),
         ),
         onChanged: widget.onChanged,
-        items: _sortedOpcoes
-            .map<DropdownMenuItem<String>>((String value) {
-              bool isFav = widget.isFavorite(value);
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          value,
-                          style:
-                              FlutterFlowTheme.of(context).bodyMedium.override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                  ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          widget.onToggleFavorite?.call(value);
-                          setState(() {
-                            _sortOpcoes();
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Icon(
-                            isFav ? Icons.star : Icons.star_outline,
-                            color: isFav
-                                ? Colors.amber
-                                : FlutterFlowTheme.of(context).secondaryText,
-                            size: 20.0,
+        items: _sortedOpcoes.map<DropdownMenuItem<String>>((String value) {
+          bool isFav = widget.isFavorite(value);
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      value,
+                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.readexPro(
+                              fontWeight: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                            ),
+                            letterSpacing: 0.0,
                           ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              );
-            })
-            .toList(),
+                  GestureDetector(
+                    onTap: () {
+                      widget.onToggleFavorite?.call(value);
+                      setState(() {
+                        _sortOpcoes();
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Icon(
+                        isFav ? Icons.star : Icons.star_outline,
+                        color: isFav
+                            ? Colors.amber
+                            : FlutterFlowTheme.of(context).secondaryText,
+                        size: 20.0,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }

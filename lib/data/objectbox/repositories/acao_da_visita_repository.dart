@@ -35,10 +35,8 @@ class AcaoDaVisitaRepository extends BaseSyncRepository<AcaoDaVisitaEntity> {
       .find();
 
   @override
-  List<AcaoDaVisitaEntity> getPendingSync() => box
-      .query(AcaoDaVisitaEntity_.needsSync.equals(true))
-      .build()
-      .find();
+  List<AcaoDaVisitaEntity> getPendingSync() =>
+      box.query(AcaoDaVisitaEntity_.needsSync.equals(true)).build().find();
 
   /// Stream reativa das ações da visita de uma propriedade.
   Stream<List<AcaoDaVisitaEntity>> watchByParentPath(String parentPath) => box

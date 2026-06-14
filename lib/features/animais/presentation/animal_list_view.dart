@@ -18,7 +18,8 @@ class AnimalListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final animaisAsync = ref.watch(animaisByPropriedadeProvider(propriedadePath));
+    final animaisAsync =
+        ref.watch(animaisByPropriedadeProvider(propriedadePath));
 
     return animaisAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),

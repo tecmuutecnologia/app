@@ -8,7 +8,7 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/custom_functions.dart' as functions;
-import '/index.dart';
+import '/features/prontuario/presentation/pages/prontuario_animal_page.dart';
 
 // Imports para bottom sheets online
 import '/features/diagnostico_gestacao/presentation/widgets/dg_mais_widget.dart';

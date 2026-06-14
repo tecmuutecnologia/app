@@ -60,8 +60,7 @@ class AnimalGroupListView extends ConsumerWidget {
                 : (animal.nomeAnimal ?? 'Animal sem nome');
             final firestoreId = animal.firestoreId;
             return Card(
-              margin:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: ListTile(
                 leading: const Icon(Icons.pets),
                 title: Text(titulo),
@@ -69,7 +68,8 @@ class AnimalGroupListView extends ConsumerWidget {
                   [
                     'Brinco ${animal.brincoAnimal}',
                     if ((animal.status ?? '').isNotEmpty) animal.status!,
-                    if ((animal.racaAnimal ?? '').isNotEmpty) animal.racaAnimal!,
+                    if ((animal.racaAnimal ?? '').isNotEmpty)
+                      animal.racaAnimal!,
                   ].join(' • '),
                 ),
                 trailing: (firestoreId != null && onEditAnimal != null)

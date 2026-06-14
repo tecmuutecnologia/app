@@ -11,7 +11,7 @@ import '/core/ui/instant_timer.dart';
 import 'dart:ui';
 import '/core/services/index.dart' as actions;
 import '/data/objectbox/index.dart';
-import '/index.dart';
+import '/features/animais/presentation/pages/lista_animais_page.dart';
 import 'dart:async';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/cupertino.dart';

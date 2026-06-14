@@ -8,7 +8,7 @@ import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/ui/request_manager.dart';
 import '/core/services/index.dart' as actions;
-import '/index.dart';
+import '/features/propriedades/presentation/pages/editar_propriedade_page.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';

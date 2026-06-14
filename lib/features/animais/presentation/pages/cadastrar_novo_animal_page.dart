@@ -14,7 +14,7 @@ import '/core/ui/request_manager.dart';
 import 'dart:ui';
 import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
-import '/index.dart';
+import '/features/animais/presentation/pages/lista_animais_page.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

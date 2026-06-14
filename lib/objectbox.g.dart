@@ -2344,8 +2344,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
             : fbb.writeString(object.parentPath!);
         final uidTecnicoPropriedadePathOffset =
             object.uidTecnicoPropriedadePath == null
-            ? null
-            : fbb.writeString(object.uidTecnicoPropriedadePath!);
+                ? null
+                : fbb.writeString(object.uidTecnicoPropriedadePath!);
         final nomeAnimalOffset = object.nomeAnimal == null
             ? null
             : fbb.writeString(object.nomeAnimal!);
@@ -2358,15 +2358,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final dtNascimentoOffset = object.dtNascimento == null
             ? null
             : fbb.writeString(object.dtNascimento!);
-        final touroOffset = object.touro == null
-            ? null
-            : fbb.writeString(object.touro!);
-        final vacaOffset = object.vaca == null
-            ? null
-            : fbb.writeString(object.vaca!);
-        final statusOffset = object.status == null
-            ? null
-            : fbb.writeString(object.status!);
+        final touroOffset =
+            object.touro == null ? null : fbb.writeString(object.touro!);
+        final vacaOffset =
+            object.vaca == null ? null : fbb.writeString(object.vaca!);
+        final statusOffset =
+            object.status == null ? null : fbb.writeString(object.status!);
         final grupoAnimalOffset = object.grupoAnimal == null
             ? null
             : fbb.writeString(object.grupoAnimal!);
@@ -2385,18 +2382,15 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final dtPrePartoPrevistaOffset = object.dtPrePartoPrevista == null
             ? null
             : fbb.writeString(object.dtPrePartoPrevista!);
-        final dtPPOffset = object.dtPP == null
-            ? null
-            : fbb.writeString(object.dtPP!);
-        final dtDgMaisOffset = object.dtDgMais == null
-            ? null
-            : fbb.writeString(object.dtDgMais!);
+        final dtPPOffset =
+            object.dtPP == null ? null : fbb.writeString(object.dtPP!);
+        final dtDgMaisOffset =
+            object.dtDgMais == null ? null : fbb.writeString(object.dtDgMais!);
         final dtDgMenosOffset = object.dtDgMenos == null
             ? null
             : fbb.writeString(object.dtDgMenos!);
-        final dtAbortoOffset = object.dtAborto == null
-            ? null
-            : fbb.writeString(object.dtAborto!);
+        final dtAbortoOffset =
+            object.dtAborto == null ? null : fbb.writeString(object.dtAborto!);
         final dtSecagemOffset = object.dtSecagem == null
             ? null
             : fbb.writeString(object.dtSecagem!);
@@ -2414,12 +2408,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
             : fbb.writeString(object.dtUltimaAcao!);
         final dtUltimoPartoContingenciaOffset =
             object.dtUltimoPartoContingencia == null
-            ? null
-            : fbb.writeString(object.dtUltimoPartoContingencia!);
+                ? null
+                : fbb.writeString(object.dtUltimoPartoContingencia!);
         final nomeTouroUltimaInseminacaoOffset =
             object.nomeTouroUltimaInseminacao == null
-            ? null
-            : fbb.writeString(object.nomeTouroUltimaInseminacao!);
+                ? null
+                : fbb.writeString(object.nomeTouroUltimaInseminacao!);
         final motivoDescarteAnimalOffset = object.motivoDescarteAnimal == null
             ? null
             : fbb.writeString(object.motivoDescarteAnimal!);
@@ -2484,8 +2478,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
       objectFromFB: (obx.Store store, ByteData fbData) {
         final buffer = fb.BufferContext(fbData);
         final rootOffset = buffer.derefObject(0);
-        final compararDtUltimaInseminacaoValue = const fb.Int64Reader()
-            .vTableGetNullable(buffer, rootOffset, 78);
+        final compararDtUltimaInseminacaoValue =
+            const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 78);
         final dtInducaoLactacaoValue = const fb.Int64Reader().vTableGetNullable(
           buffer,
           rootOffset,
@@ -2640,10 +2634,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
         );
         final compararDtUltimaInseminacaoParam =
             compararDtUltimaInseminacaoValue == null
-            ? null
-            : DateTime.fromMillisecondsSinceEpoch(
-                compararDtUltimaInseminacaoValue,
-              );
+                ? null
+                : DateTime.fromMillisecondsSinceEpoch(
+                    compararDtUltimaInseminacaoValue,
+                  );
         final dtInducaoLactacaoParam = dtInducaoLactacaoValue == null
             ? null
             : DateTime.fromMillisecondsSinceEpoch(dtInducaoLactacaoValue);
@@ -2739,9 +2733,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final documentPathOffset = object.documentPath == null
             ? null
             : fbb.writeString(object.documentPath!);
-        final dataJsonOffset = object.dataJson == null
-            ? null
-            : fbb.writeString(object.dataJson!);
+        final dataJsonOffset =
+            object.dataJson == null ? null : fbb.writeString(object.dataJson!);
         final lastErrorOffset = object.lastError == null
             ? null
             : fbb.writeString(object.lastError!);
@@ -2830,39 +2823,30 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final dtNascimentoOffset = object.dtNascimento == null
             ? null
             : fbb.writeString(object.dtNascimento!);
-        final cpfOffset = object.cpf == null
-            ? null
-            : fbb.writeString(object.cpf!);
-        final uidOffset = object.uid == null
-            ? null
-            : fbb.writeString(object.uid!);
-        final enderecoOffset = object.endereco == null
-            ? null
-            : fbb.writeString(object.endereco!);
-        final cidadeOffset = object.cidade == null
-            ? null
-            : fbb.writeString(object.cidade!);
-        final bairroOffset = object.bairro == null
-            ? null
-            : fbb.writeString(object.bairro!);
-        final emailOffset = object.email == null
-            ? null
-            : fbb.writeString(object.email!);
+        final cpfOffset =
+            object.cpf == null ? null : fbb.writeString(object.cpf!);
+        final uidOffset =
+            object.uid == null ? null : fbb.writeString(object.uid!);
+        final enderecoOffset =
+            object.endereco == null ? null : fbb.writeString(object.endereco!);
+        final cidadeOffset =
+            object.cidade == null ? null : fbb.writeString(object.cidade!);
+        final bairroOffset =
+            object.bairro == null ? null : fbb.writeString(object.bairro!);
+        final emailOffset =
+            object.email == null ? null : fbb.writeString(object.email!);
         final displayNameOffset = object.displayName == null
             ? null
             : fbb.writeString(object.displayName!);
-        final photoUrlOffset = object.photoUrl == null
-            ? null
-            : fbb.writeString(object.photoUrl!);
+        final photoUrlOffset =
+            object.photoUrl == null ? null : fbb.writeString(object.photoUrl!);
         final phoneNumberOffset = object.phoneNumber == null
             ? null
             : fbb.writeString(object.phoneNumber!);
-        final empresaOffset = object.empresa == null
-            ? null
-            : fbb.writeString(object.empresa!);
-        final tipoOffset = object.tipo == null
-            ? null
-            : fbb.writeString(object.tipo!);
+        final empresaOffset =
+            object.empresa == null ? null : fbb.writeString(object.empresa!);
+        final tipoOffset =
+            object.tipo == null ? null : fbb.writeString(object.tipo!);
         fbb.startTable(20);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, firestoreIdOffset);
@@ -3097,21 +3081,17 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final uidPersonProdutorPathOffset = object.uidPersonProdutorPath == null
             ? null
             : fbb.writeString(object.uidPersonProdutorPath!);
-        final emailOffset = object.email == null
-            ? null
-            : fbb.writeString(object.email!);
+        final emailOffset =
+            object.email == null ? null : fbb.writeString(object.email!);
         final displayNameOffset = object.displayName == null
             ? null
             : fbb.writeString(object.displayName!);
-        final cpfOffset = object.cpf == null
-            ? null
-            : fbb.writeString(object.cpf!);
-        final enderecoOffset = object.endereco == null
-            ? null
-            : fbb.writeString(object.endereco!);
-        final cidadeOffset = object.cidade == null
-            ? null
-            : fbb.writeString(object.cidade!);
+        final cpfOffset =
+            object.cpf == null ? null : fbb.writeString(object.cpf!);
+        final enderecoOffset =
+            object.endereco == null ? null : fbb.writeString(object.endereco!);
+        final cidadeOffset =
+            object.cidade == null ? null : fbb.writeString(object.cidade!);
         final phoneNumberOffset = object.phoneNumber == null
             ? null
             : fbb.writeString(object.phoneNumber!);
@@ -3259,8 +3239,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
           rootOffset,
           8,
         );
-        final lastIncrementalSyncValue = const fb.Int64Reader()
-            .vTableGetNullable(buffer, rootOffset, 10);
+        final lastIncrementalSyncValue =
+            const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 10);
         final collectionNameParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGetNullable(buffer, rootOffset, 6);
@@ -3358,10 +3338,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
           10,
           false,
         );
-        final limiteProdutoresContratadoParam = const fb.Int64Reader()
-            .vTableGet(buffer, rootOffset, 12, 0);
-        final quantidadeProdutoresCadastradosParam = const fb.Int64Reader()
-            .vTableGet(buffer, rootOffset, 14, 0);
+        final limiteProdutoresContratadoParam =
+            const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
+        final quantidadeProdutoresCadastradosParam =
+            const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0);
         final restanteLimiteProdutoresParam = const fb.Int64Reader().vTableGet(
           buffer,
           rootOffset,
@@ -3374,8 +3354,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
           18,
           0,
         );
-        final quantidadeAnimaisCadastradosParam = const fb.Int64Reader()
-            .vTableGet(buffer, rootOffset, 20, 0);
+        final quantidadeAnimaisCadastradosParam =
+            const fb.Int64Reader().vTableGet(buffer, rootOffset, 20, 0);
         final restanteLimiteAnimaisParam = const fb.Int64Reader().vTableGet(
           buffer,
           rootOffset,
@@ -3434,15 +3414,12 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final parentPathOffset = object.parentPath == null
             ? null
             : fbb.writeString(object.parentPath!);
-        final acaoOffset = object.acao == null
-            ? null
-            : fbb.writeString(object.acao!);
-        final dtAcaoOffset = object.dtAcao == null
-            ? null
-            : fbb.writeString(object.dtAcao!);
-        final dtPPOffset = object.dtPP == null
-            ? null
-            : fbb.writeString(object.dtPP!);
+        final acaoOffset =
+            object.acao == null ? null : fbb.writeString(object.acao!);
+        final dtAcaoOffset =
+            object.dtAcao == null ? null : fbb.writeString(object.dtAcao!);
+        final dtPPOffset =
+            object.dtPP == null ? null : fbb.writeString(object.dtPP!);
         final dtInseminacaoOffset = object.dtInseminacao == null
             ? null
             : fbb.writeString(object.dtInseminacao!);
@@ -3458,15 +3435,13 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final dtPrePartoPrevistaOffset = object.dtPrePartoPrevista == null
             ? null
             : fbb.writeString(object.dtPrePartoPrevista!);
-        final dtDgMaisOffset = object.dtDgMais == null
-            ? null
-            : fbb.writeString(object.dtDgMais!);
+        final dtDgMaisOffset =
+            object.dtDgMais == null ? null : fbb.writeString(object.dtDgMais!);
         final dtDgMenosOffset = object.dtDgMenos == null
             ? null
             : fbb.writeString(object.dtDgMenos!);
-        final dtAbortoOffset = object.dtAborto == null
-            ? null
-            : fbb.writeString(object.dtAborto!);
+        final dtAbortoOffset =
+            object.dtAborto == null ? null : fbb.writeString(object.dtAborto!);
         final dtSecagemOffset = object.dtSecagem == null
             ? null
             : fbb.writeString(object.dtSecagem!);
@@ -3625,14 +3600,13 @@ obx_int.ModelDefinition getObjectBoxModel() {
             : fbb.writeString(object.parentPath!);
         final uidAnimalAnimaisProdutoresPathOffset =
             object.uidAnimalAnimaisProdutoresPath == null
-            ? null
-            : fbb.writeString(object.uidAnimalAnimaisProdutoresPath!);
+                ? null
+                : fbb.writeString(object.uidAnimalAnimaisProdutoresPath!);
         final nomeAnimalOffset = object.nomeAnimal == null
             ? null
             : fbb.writeString(object.nomeAnimal!);
-        final acaoOffset = object.acao == null
-            ? null
-            : fbb.writeString(object.acao!);
+        final acaoOffset =
+            object.acao == null ? null : fbb.writeString(object.acao!);
         final obsVisitaOffset = object.obsVisita == null
             ? null
             : fbb.writeString(object.obsVisita!);
@@ -3651,18 +3625,15 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final dataPrePartoPrevistaOffset = object.dataPrePartoPrevista == null
             ? null
             : fbb.writeString(object.dataPrePartoPrevista!);
-        final dtPPOffset = object.dtPP == null
-            ? null
-            : fbb.writeString(object.dtPP!);
-        final dtDgMaisOffset = object.dtDgMais == null
-            ? null
-            : fbb.writeString(object.dtDgMais!);
+        final dtPPOffset =
+            object.dtPP == null ? null : fbb.writeString(object.dtPP!);
+        final dtDgMaisOffset =
+            object.dtDgMais == null ? null : fbb.writeString(object.dtDgMais!);
         final dtDgMenosOffset = object.dtDgMenos == null
             ? null
             : fbb.writeString(object.dtDgMenos!);
-        final dtAbortoOffset = object.dtAborto == null
-            ? null
-            : fbb.writeString(object.dtAborto!);
+        final dtAbortoOffset =
+            object.dtAborto == null ? null : fbb.writeString(object.dtAborto!);
         final uidPropriedadePathOffset = object.uidPropriedadePath == null
             ? null
             : fbb.writeString(object.uidPropriedadePath!);
@@ -3832,9 +3803,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final uidAnimalOffset = object.uidAnimal == null
             ? null
             : fbb.writeString(object.uidAnimal!);
-        final tipoAcaoOffset = object.tipoAcao == null
-            ? null
-            : fbb.writeString(object.tipoAcao!);
+        final tipoAcaoOffset =
+            object.tipoAcao == null ? null : fbb.writeString(object.tipoAcao!);
         final nomeAnimalOffset = object.nomeAnimal == null
             ? null
             : fbb.writeString(object.nomeAnimal!);
@@ -3844,27 +3814,24 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final nomePropriedadeOffset = object.nomePropriedade == null
             ? null
             : fbb.writeString(object.nomePropriedade!);
-        final acaoOffset = object.acao == null
-            ? null
-            : fbb.writeString(object.acao!);
+        final acaoOffset =
+            object.acao == null ? null : fbb.writeString(object.acao!);
         final posologiaOffset = object.posologia == null
             ? null
             : fbb.writeString(object.posologia!);
         final medicamentoOffset = object.medicamento == null
             ? null
             : fbb.writeString(object.medicamento!);
-        final loteOffset = object.lote == null
-            ? null
-            : fbb.writeString(object.lote!);
+        final loteOffset =
+            object.lote == null ? null : fbb.writeString(object.lote!);
         final laboratorioOffset = object.laboratorio == null
             ? null
             : fbb.writeString(object.laboratorio!);
         final resultadoOffset = object.resultado == null
             ? null
             : fbb.writeString(object.resultado!);
-        final obsOffset = object.obs == null
-            ? null
-            : fbb.writeString(object.obs!);
+        final obsOffset =
+            object.obs == null ? null : fbb.writeString(object.obs!);
         final createdByOffset = object.createdBy == null
             ? null
             : fbb.writeString(object.createdBy!);
@@ -4033,62 +4000,61 @@ obx_int.ModelDefinition getObjectBoxModel() {
     ),
     CalendarioSanitarioEntity:
         obx_int.EntityDefinition<CalendarioSanitarioEntity>(
-          model: _entities[10],
-          toOneRelations: (CalendarioSanitarioEntity object) => [],
-          toManyRelations: (CalendarioSanitarioEntity object) => {},
-          getId: (CalendarioSanitarioEntity object) => object.id,
-          setId: (CalendarioSanitarioEntity object, int id) {
-            object.id = id;
-          },
-          objectToFB: (CalendarioSanitarioEntity object, fb.Builder fbb) {
-            final firestoreIdOffset = object.firestoreId == null
-                ? null
-                : fbb.writeString(object.firestoreId!);
-            final descricaoOffset = object.descricao == null
-                ? null
-                : fbb.writeString(object.descricao!);
-            final tipoOffset = object.tipo == null
-                ? null
-                : fbb.writeString(object.tipo!);
-            fbb.startTable(6);
-            fbb.addInt64(0, object.id);
-            fbb.addOffset(1, firestoreIdOffset);
-            fbb.addOffset(2, descricaoOffset);
-            fbb.addOffset(3, tipoOffset);
-            fbb.addInt64(4, object.lastSynced?.millisecondsSinceEpoch);
-            fbb.finish(fbb.endTable());
-            return object.id;
-          },
-          objectFromFB: (obx.Store store, ByteData fbData) {
-            final buffer = fb.BufferContext(fbData);
-            final rootOffset = buffer.derefObject(0);
-            final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
-              buffer,
-              rootOffset,
-              12,
-            );
-            final firestoreIdParam = const fb.StringReader(
-              asciiOptimization: true,
-            ).vTableGetNullable(buffer, rootOffset, 6);
-            final descricaoParam = const fb.StringReader(
-              asciiOptimization: true,
-            ).vTableGetNullable(buffer, rootOffset, 8);
-            final tipoParam = const fb.StringReader(
-              asciiOptimization: true,
-            ).vTableGetNullable(buffer, rootOffset, 10);
-            final lastSyncedParam = lastSyncedValue == null
-                ? null
-                : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
-            final object = CalendarioSanitarioEntity(
-              firestoreId: firestoreIdParam,
-              descricao: descricaoParam,
-              tipo: tipoParam,
-              lastSynced: lastSyncedParam,
-            )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+      model: _entities[10],
+      toOneRelations: (CalendarioSanitarioEntity object) => [],
+      toManyRelations: (CalendarioSanitarioEntity object) => {},
+      getId: (CalendarioSanitarioEntity object) => object.id,
+      setId: (CalendarioSanitarioEntity object, int id) {
+        object.id = id;
+      },
+      objectToFB: (CalendarioSanitarioEntity object, fb.Builder fbb) {
+        final firestoreIdOffset = object.firestoreId == null
+            ? null
+            : fbb.writeString(object.firestoreId!);
+        final descricaoOffset = object.descricao == null
+            ? null
+            : fbb.writeString(object.descricao!);
+        final tipoOffset =
+            object.tipo == null ? null : fbb.writeString(object.tipo!);
+        fbb.startTable(6);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, firestoreIdOffset);
+        fbb.addOffset(2, descricaoOffset);
+        fbb.addOffset(3, tipoOffset);
+        fbb.addInt64(4, object.lastSynced?.millisecondsSinceEpoch);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          12,
+        );
+        final firestoreIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 6);
+        final descricaoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 8);
+        final tipoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 10);
+        final lastSyncedParam = lastSyncedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
+        final object = CalendarioSanitarioEntity(
+          firestoreId: firestoreIdParam,
+          descricao: descricaoParam,
+          tipo: tipoParam,
+          lastSynced: lastSyncedParam,
+        )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
 
-            return object;
-          },
-        ),
+        return object;
+      },
+    ),
     CidadeEntity: obx_int.EntityDefinition<CidadeEntity>(
       model: _entities[11],
       toOneRelations: (CidadeEntity object) => [],
@@ -4101,12 +4067,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final firestoreIdOffset = object.firestoreId == null
             ? null
             : fbb.writeString(object.firestoreId!);
-        final nomeOffset = object.nome == null
-            ? null
-            : fbb.writeString(object.nome!);
-        final nomeufOffset = object.nomeuf == null
-            ? null
-            : fbb.writeString(object.nomeuf!);
+        final nomeOffset =
+            object.nome == null ? null : fbb.writeString(object.nome!);
+        final nomeufOffset =
+            object.nomeuf == null ? null : fbb.writeString(object.nomeuf!);
         fbb.startTable(6);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, firestoreIdOffset);
@@ -4530,9 +4494,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final prioridadeOffset = object.prioridade == null
             ? null
             : fbb.writeString(object.prioridade!);
-        final statusOffset = object.status == null
-            ? null
-            : fbb.writeString(object.status!);
+        final statusOffset =
+            object.status == null ? null : fbb.writeString(object.status!);
         final createdByOffset = object.createdBy == null
             ? null
             : fbb.writeString(object.createdBy!);
@@ -4720,9 +4683,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final nomeProdutorOffset = object.nomeProdutor == null
             ? null
             : fbb.writeString(object.nomeProdutor!);
-        final resumoOffset = object.resumo == null
-            ? null
-            : fbb.writeString(object.resumo!);
+        final resumoOffset =
+            object.resumo == null ? null : fbb.writeString(object.resumo!);
         final observacoesOffset = object.observacoes == null
             ? null
             : fbb.writeString(object.observacoes!);
@@ -4735,9 +4697,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final assinaturaProdutorOffset = object.assinaturaProdutor == null
             ? null
             : fbb.writeString(object.assinaturaProdutor!);
-        final statusOffset = object.status == null
-            ? null
-            : fbb.writeString(object.status!);
+        final statusOffset =
+            object.status == null ? null : fbb.writeString(object.status!);
         final createdByOffset = object.createdBy == null
             ? null
             : fbb.writeString(object.createdBy!);
@@ -5100,9 +5061,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final uidAnimalOffset = object.uidAnimal == null
             ? null
             : fbb.writeString(object.uidAnimal!);
-        final tipoAcaoOffset = object.tipoAcao == null
-            ? null
-            : fbb.writeString(object.tipoAcao!);
+        final tipoAcaoOffset =
+            object.tipoAcao == null ? null : fbb.writeString(object.tipoAcao!);
         final nomeAnimalOffset = object.nomeAnimal == null
             ? null
             : fbb.writeString(object.nomeAnimal!);
@@ -5118,21 +5078,18 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final medicamentoOffset = object.medicamento == null
             ? null
             : fbb.writeString(object.medicamento!);
-        final loteOffset = object.lote == null
-            ? null
-            : fbb.writeString(object.lote!);
+        final loteOffset =
+            object.lote == null ? null : fbb.writeString(object.lote!);
         final laboratorioOffset = object.laboratorio == null
             ? null
             : fbb.writeString(object.laboratorio!);
-        final acaoOffset = object.acao == null
-            ? null
-            : fbb.writeString(object.acao!);
+        final acaoOffset =
+            object.acao == null ? null : fbb.writeString(object.acao!);
         final resultadoOffset = object.resultado == null
             ? null
             : fbb.writeString(object.resultado!);
-        final obsOffset = object.obs == null
-            ? null
-            : fbb.writeString(object.obs!);
+        final obsOffset =
+            object.obs == null ? null : fbb.writeString(object.obs!);
         final createdByOffset = object.createdBy == null
             ? null
             : fbb.writeString(object.createdBy!);
@@ -5341,8 +5298,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
       objectFromFB: (obx.Store store, ByteData fbData) {
         final buffer = fb.BufferContext(fbData);
         final rootOffset = buffer.derefObject(0);
-        final lastSuccessfulLoginValue = const fb.Int64Reader()
-            .vTableGetNullable(buffer, rootOffset, 18);
+        final lastSuccessfulLoginValue =
+            const fb.Int64Reader().vTableGetNullable(buffer, rootOffset, 18);
         final lastSyncedAtValue = const fb.Int64Reader().vTableGetNullable(
           buffer,
           rootOffset,
@@ -5390,27 +5347,26 @@ obx_int.ModelDefinition getObjectBoxModel() {
           30,
           false,
         );
-        final object =
-            UserSessionEntity(
-                email: emailParam,
-                passwordHash: passwordHashParam,
-                firebaseUid: firebaseUidParam,
-                sessionToken: sessionTokenParam,
-                displayName: displayNameParam,
-                emailVerified: emailVerifiedParam,
-                lastSuccessfulLogin: lastSuccessfulLoginParam,
-                lastSyncedAt: lastSyncedAtParam,
-                needsSync: needsSyncParam,
-                deviceFingerprint: deviceFingerprintParam,
-                isActive: isActiveParam,
-              )
-              ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0)
-              ..createdAt = DateTime.fromMillisecondsSinceEpoch(
-                const fb.Int64Reader().vTableGet(buffer, rootOffset, 26, 0),
-              )
-              ..updatedAt = DateTime.fromMillisecondsSinceEpoch(
-                const fb.Int64Reader().vTableGet(buffer, rootOffset, 28, 0),
-              );
+        final object = UserSessionEntity(
+          email: emailParam,
+          passwordHash: passwordHashParam,
+          firebaseUid: firebaseUidParam,
+          sessionToken: sessionTokenParam,
+          displayName: displayNameParam,
+          emailVerified: emailVerifiedParam,
+          lastSuccessfulLogin: lastSuccessfulLoginParam,
+          lastSyncedAt: lastSyncedAtParam,
+          needsSync: needsSyncParam,
+          deviceFingerprint: deviceFingerprintParam,
+          isActive: isActiveParam,
+        )
+          ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0)
+          ..createdAt = DateTime.fromMillisecondsSinceEpoch(
+            const fb.Int64Reader().vTableGet(buffer, rootOffset, 26, 0),
+          )
+          ..updatedAt = DateTime.fromMillisecondsSinceEpoch(
+            const fb.Int64Reader().vTableGet(buffer, rootOffset, 28, 0),
+          );
 
         return object;
       },

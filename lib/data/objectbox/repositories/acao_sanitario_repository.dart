@@ -34,10 +34,8 @@ class AcaoSanitarioRepository extends BaseSyncRepository<AcaoSanitarioEntity> {
       .find();
 
   @override
-  List<AcaoSanitarioEntity> getPendingSync() => box
-      .query(AcaoSanitarioEntity_.needsSync.equals(true))
-      .build()
-      .find();
+  List<AcaoSanitarioEntity> getPendingSync() =>
+      box.query(AcaoSanitarioEntity_.needsSync.equals(true)).build().find();
 
   Stream<List<AcaoSanitarioEntity>> watchByParentPath(String parentPath) => box
       .query(AcaoSanitarioEntity_.parentPath.equals(parentPath))

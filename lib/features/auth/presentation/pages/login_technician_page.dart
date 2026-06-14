@@ -412,8 +412,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
             return;
           }
 
-          context.pushNamedAuth(
-              SyncTechnicianPage.routeName, context.mounted);
+          context.pushNamedAuth(SyncTechnicianPage.routeName, context.mounted);
         },
         text: 'Entrar',
         options: FFButtonOptions(

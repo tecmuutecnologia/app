@@ -34,10 +34,8 @@ class RecomendacaoRepository extends BaseSyncRepository<RecomendacaoEntity> {
       .find();
 
   @override
-  List<RecomendacaoEntity> getPendingSync() => box
-      .query(RecomendacaoEntity_.needsSync.equals(true))
-      .build()
-      .find();
+  List<RecomendacaoEntity> getPendingSync() =>
+      box.query(RecomendacaoEntity_.needsSync.equals(true)).build().find();
 
   Stream<List<RecomendacaoEntity>> watchByParentPath(String parentPath) => box
       .query(RecomendacaoEntity_.parentPath.equals(parentPath))

@@ -3,7 +3,6 @@ import 'package:objectbox/objectbox.dart';
 import 'objectbox_service.dart';
 import 'package:flutter/foundation.dart';
 
-
 /// Serviço para gerenciar debug do ObjectBox
 /// Permite inspecionar dados e outras ferramentas de debug
 class ObjectBoxDebugService {
@@ -14,7 +13,6 @@ class ObjectBoxDebugService {
   /// Então descomente o import e use: store.adminAsync(port: 8090);
   static Future<bool> startAdmin({int port = 8090}) async {
     try {
-      
       if (kIsWeb) {
         print('⚠️ ObjectBox Admin não é suportado na Web');
         return false;

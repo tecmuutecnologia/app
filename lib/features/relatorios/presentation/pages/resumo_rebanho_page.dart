@@ -11,7 +11,7 @@ import '/core/ui/form_field_controller.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
-import '/index.dart';
+import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
