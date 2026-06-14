@@ -47,6 +47,8 @@ class NovoRelatorioFinanceiroPage extends StatefulWidget {
 class _NovoRelatorioFinanceiroPageState
     extends State<NovoRelatorioFinanceiroPage> {
   final _formKey = GlobalKey<FormState>();
+  double _precoRecebidoLitro = 0.0;
+  double _despesasNoMes = 0.0;
   FocusNode? _dtRelatorioFocusNode;
   TextEditingController? _dtRelatorioTextController;
   late MaskTextInputFormatter _dtRelatorioMask;
@@ -255,6 +257,7 @@ class _NovoRelatorioFinanceiroPageState
                 bordercolor: FlutterFlowTheme.of(context).primary,
                 borderRadius: 10.0,
                 initialValue: '0,00',
+                onChanged: (v) => _precoRecebidoLitro = v,
               ),
             ),
             _p9(context),
@@ -267,6 +270,7 @@ class _NovoRelatorioFinanceiroPageState
                 bordercolor: FlutterFlowTheme.of(context).primary,
                 borderRadius: 10.0,
                 initialValue: '0,00',
+                onChanged: (v) => _despesasNoMes = v,
               ),
             ),
             _p10(context),
@@ -308,9 +312,8 @@ class _NovoRelatorioFinanceiroPageState
                       int.tryParse(_litrosLeiteMesTextController.text),
                   litrosLeitePorDia:
                       int.tryParse(_litrosLeiteDiaTextController.text),
-                  precoRecebidoPorLitro:
-                      FFAppState().precoRecebidoLitro.toString(),
-                  despesasNoMes: FFAppState().despesasNoMes.toString(),
+                  precoRecebidoPorLitro: _precoRecebidoLitro.toString(),
+                  despesasNoMes: _despesasNoMes.toString(),
                   totalRecebidoMes: _totalRecebidoTextController.text,
                   faturamentoLiquido: _faturamentoLiquidoTextController.text,
                   mediaProducaoVaca: _mediaProducaoVacaTextController.text,
@@ -947,19 +950,19 @@ class _NovoRelatorioFinanceiroPageState
                 (_vacasLactacaoTextController.text != '') &&
                 (_litrosLeiteDiaTextController.text != '') &&
                 (_litrosLeiteMesTextController.text != '') &&
-                (FFAppState().despesasNoMes != null) &&
-                (FFAppState().precoRecebidoLitro != null)) {
+                (_despesasNoMes != null) &&
+                (_precoRecebidoLitro != null)) {
               safeSetState(() {
                 _totalRecebidoTextController?.text =
                     functions.calcularTotalRecebido(
-                        FFAppState().precoRecebidoLitro.toString(),
+                        _precoRecebidoLitro.toString(),
                         _litrosLeiteMesTextController.text);
               });
               safeSetState(() {
                 _faturamentoLiquidoTextController?.text =
                     functions.subtracaoFaturamentoLiquido(
                         _totalRecebidoTextController.text,
-                        FFAppState().despesasNoMes.toString());
+                        _despesasNoMes.toString());
               });
               safeSetState(() {
                 _mediaProducaoVacaTextController?.text = formatNumber(
@@ -974,7 +977,7 @@ class _NovoRelatorioFinanceiroPageState
                 _custoLitroLeiteTextController?.text =
                     functions.calcularCustoPorLitro(
                         _litrosLeiteMesTextController.text,
-                        FFAppState().despesasNoMes.toString());
+                        _despesasNoMes.toString());
               });
               return;
             } else {
@@ -1082,7 +1085,7 @@ class _NovoRelatorioFinanceiroPageState
                 _faturamentoLiquidoTextController?.text =
                     functions.subtracaoFaturamentoLiquido(
                         _totalRecebidoTextController.text,
-                        FFAppState().despesasNoMes.toString());
+                        _despesasNoMes.toString());
               });
               return;
             },

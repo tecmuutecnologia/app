@@ -1,13 +1,6 @@
-// Automatic FlutterFlow imports
-import '/core/ui/flutter_flow_util.dart';
-// Imports other custom widgets
-// Imports custom actions
-// Imports custom functions
 import 'package:flutter/material.dart';
-// Begin custom widget code
-// DO NOT REMOVE OR MODIFY THE CODE ABOVE!
-
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class DespesasNoMes extends StatefulWidget {
   const DespesasNoMes({
@@ -17,6 +10,7 @@ class DespesasNoMes extends StatefulWidget {
     required this.bordercolor,
     required this.borderRadius,
     required this.initialValue,
+    this.onChanged,
   });
 
   final double? width;
@@ -24,6 +18,7 @@ class DespesasNoMes extends StatefulWidget {
   final Color bordercolor;
   final double borderRadius;
   final String initialValue;
+  final void Function(double)? onChanged;
 
   @override
   _PriceFieldState createState() => _PriceFieldState();
@@ -75,9 +70,7 @@ class _PriceFieldState extends State<DespesasNoMes> {
             } else {
               final price = double.parse(text.replaceAll('.', '')) / 100;
               final newText = currencyFormat.format(price);
-              FFAppState().update(() {
-                FFAppState().despesasNoMes = price;
-              });
+              widget.onChanged?.call(price);
               final newSelectionIndex =
                   newText.length - (text.length - selection.end);
               return TextEditingValue(

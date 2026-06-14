@@ -48,18 +48,6 @@ class FFAppState extends ChangeNotifier {
 
   late SharedPreferences prefs;
 
-  double _despesasNoMes = 0.0;
-  double get despesasNoMes => _despesasNoMes;
-  set despesasNoMes(double value) {
-    _despesasNoMes = value;
-  }
-
-  double _precoRecebidoLitro = 0.0;
-  double get precoRecebidoLitro => _precoRecebidoLitro;
-  set precoRecebidoLitro(double value) {
-    _precoRecebidoLitro = value;
-  }
-
   List<AnimaisProdutoresStruct> _animaisProdutoresOffline = [];
   List<AnimaisProdutoresStruct> get animaisProdutoresOffline =>
       _animaisProdutoresOffline;
