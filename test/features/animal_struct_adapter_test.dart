@@ -95,4 +95,101 @@ void main() {
     final e = structToAnimalEntityOffline(s, parentPath: 'tecnico/abc');
     expect(e.uidAnimalOffline, 'meu_id_local');
   });
+
+  // O adapter é a PONTE PERMANENTE entity<->struct (struct = view-model offline
+  // da UI legada; entity = fonte ObjectBox). Este teste trava a SIMETRIA de
+  // campos: se alguém adicionar/renomear um campo num lado e esquecer o adapter,
+  // um destes valores deixa de bater. Cobre todos os campos de DATA/escalares
+  // (as referências uidAnimal/uidTecnicoPropriedade dependem do Firestore e são
+  // exercitadas em device; a identidade firestoreId NÃO faz round-trip de
+  // propósito — structToAnimalEntityOffline é p/ animal criado offline).
+  test('round-trip entity -> struct -> entity preserva os campos de dados', () {
+    final original = AnimalEntity(
+      // path nulo: a ref uidTecnicoPropriedade usa FirebaseFirestore.instance
+      // (device-only). Aqui focamos os campos de dados/escalares.
+      uidTecnicoPropriedadePath: null,
+      uidAnimalOffline: 'offline_xyz',
+      nomeAnimal: 'Estrela',
+      racaAnimal: 'Girolando',
+      pesoAnimal: '450',
+      dtNascimento: '01/01/2020',
+      touro: 'Touro X',
+      vaca: 'Vaca Y',
+      status: 'Prenha',
+      grupoAnimal: 'Vacas',
+      dtUltimaInseminacao: '10/02/2024',
+      dtUltimoParto: '05/01/2023',
+      liberaInseminacao: true,
+      dtPartoPrevisto: '10/11/2024',
+      dtSecPrevista: '10/09/2024',
+      dtPrePartoPrevista: '01/11/2024',
+      dtPP: '02/02/2024',
+      dtDgMais: '03/03/2024',
+      dtDgMenos: '04/04/2024',
+      dtAborto: '05/05/2024',
+      dtSecagem: '06/06/2024',
+      dtUltimoPP: '07/07/2024',
+      nomeTouroUltimaInseminacao: 'Touro Z',
+      totalInseminacoes: 4,
+      totalPartos: 3,
+      dtPreParto: '08/08/2024',
+      motivoDescarteAnimal: '',
+      dtDescarteAnimal: '',
+      dtUltimaAcao: '09/09/2024',
+      compararDtUltimaInseminacao: DateTime(2024, 2, 10),
+      nomeBrincoConcat: 'Estrela - 99',
+      idGrupoAnimal: 6,
+      dtUltimoPartoContingencia: '05/01/2023',
+      idStatusAnimal: 3,
+      dtInducaoLactacao: DateTime(2024, 11, 11),
+      dtDesmame: DateTime(2024, 12, 12),
+      brincoAnimal: 99,
+      brincoAnimalOrder: 99,
+    );
+
+    // entity -> struct -> entity (caminho offline reusa o uidAnimalOffline).
+    final struct = animalEntityToStruct(original);
+    final back =
+        structToAnimalEntityOffline(struct, parentPath: 'tecnico/abc');
+
+    expect(back.uidTecnicoPropriedadePath, original.uidTecnicoPropriedadePath);
+    expect(back.uidAnimalOffline, original.uidAnimalOffline);
+    expect(back.nomeAnimal, original.nomeAnimal);
+    expect(back.racaAnimal, original.racaAnimal);
+    expect(back.pesoAnimal, original.pesoAnimal);
+    expect(back.dtNascimento, original.dtNascimento);
+    expect(back.touro, original.touro);
+    expect(back.vaca, original.vaca);
+    expect(back.status, original.status);
+    expect(back.grupoAnimal, original.grupoAnimal);
+    expect(back.dtUltimaInseminacao, original.dtUltimaInseminacao);
+    expect(back.dtUltimoParto, original.dtUltimoParto);
+    expect(back.liberaInseminacao, original.liberaInseminacao);
+    expect(back.dtPartoPrevisto, original.dtPartoPrevisto);
+    expect(back.dtSecPrevista, original.dtSecPrevista);
+    expect(back.dtPrePartoPrevista, original.dtPrePartoPrevista);
+    expect(back.dtPP, original.dtPP);
+    expect(back.dtDgMais, original.dtDgMais);
+    expect(back.dtDgMenos, original.dtDgMenos);
+    expect(back.dtAborto, original.dtAborto);
+    expect(back.dtSecagem, original.dtSecagem);
+    expect(back.dtUltimoPP, original.dtUltimoPP);
+    expect(back.nomeTouroUltimaInseminacao,
+        original.nomeTouroUltimaInseminacao);
+    expect(back.totalInseminacoes, original.totalInseminacoes);
+    expect(back.totalPartos, original.totalPartos);
+    expect(back.dtPreParto, original.dtPreParto);
+    expect(back.dtUltimaAcao, original.dtUltimaAcao);
+    expect(back.compararDtUltimaInseminacao,
+        original.compararDtUltimaInseminacao);
+    expect(back.nomeBrincoConcat, original.nomeBrincoConcat);
+    expect(back.idGrupoAnimal, original.idGrupoAnimal);
+    expect(back.dtUltimoPartoContingencia,
+        original.dtUltimoPartoContingencia);
+    expect(back.idStatusAnimal, original.idStatusAnimal);
+    expect(back.dtInducaoLactacao, original.dtInducaoLactacao);
+    expect(back.dtDesmame, original.dtDesmame);
+    expect(back.brincoAnimal, original.brincoAnimal);
+    expect(back.brincoAnimalOrder, original.brincoAnimalOrder);
+  });
 }
