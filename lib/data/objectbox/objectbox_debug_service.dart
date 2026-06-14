@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+// Serviço de DEBUG (dev-only): print no console é intencional aqui.
 import 'package:objectbox/objectbox.dart';
 
 import 'objectbox_service.dart';
@@ -8,9 +10,13 @@ import 'package:flutter/foundation.dart';
 class ObjectBoxDebugService {
   static bool _adminStarted = false;
 
-  /// Nota: Para usar ObjectBox Admin, adicione objectbox_flutter_admin ao pubspec.yaml
-  /// E execute: flutter pub add objectbox_flutter_admin
-  /// Então descomente o import e use: store.adminAsync(port: 8090);
+  /// Mantém a instância viva enquanto o Admin estiver rodando (senão é coletada
+  /// e o servidor cai). `Admin` vem do core `objectbox`; o servidor só fica
+  /// disponível com `objectbox_flutter_admin` no pubspec (native libs de debug).
+  static Admin? _admin;
+
+  /// Inicia o ObjectBox Admin (UI web de inspeção do banco). Só nativo + debug:
+  /// requer `objectbox_flutter_admin` no pubspec (`Admin.isAvailable()`).
   static Future<bool> startAdmin({int port = 8090}) async {
     try {
       if (kIsWeb) {
@@ -24,28 +30,28 @@ class ObjectBoxDebugService {
       }
 
       if (_adminStarted) {
-        print('⚠️ Admin já está rodando em http://localhost:$port');
+        print('⚠️ Admin já está rodando em http://127.0.0.1:$port');
         return true;
       }
 
-      final store = ObjectBoxService.instance.store;
-      _adminStarted = true;
-
-      if (Admin.isAvailable()) {
-        // Keep a reference until no longer needed or manually closed.
-        Admin(store);
+      if (!Admin.isAvailable()) {
+        print('❌ ObjectBox Admin indisponível neste build.');
+        print('💡 Adicione `objectbox_flutter_admin` ao pubspec.yaml e rode '
+            '`flutter pub get` (só funciona em debug).');
+        return false;
       }
 
-      print('✅ ObjectBox Admin iniciado!');
-      print('🌐 Acesse: http://localhost:$port');
-      print('💡 Use no seu navegador PC/Mac para debug visual');
-      print(
-          '⚠️ Certifique-se que objectbox_flutter_admin está no pubspec.yaml');
+      final store = ObjectBoxService.instance.store;
+      // Mantém a referência viva até stopAdmin()/coleta manual.
+      _admin = Admin(store, bindUri: 'http://0.0.0.0:$port');
+      _adminStarted = true;
 
+      print('✅ ObjectBox Admin iniciado!');
+      print('🌐 Acesse: http://127.0.0.1:$port (no navegador do PC/Mac)');
       return true;
     } catch (e) {
       print('❌ Erro ao iniciar Admin: $e');
-      print('💡 Dica: Adicione objectbox_flutter_admin ao pubspec.yaml');
+      print('💡 Dica: confirme `objectbox_flutter_admin` no pubspec.yaml.');
       return false;
     }
   }
@@ -58,6 +64,8 @@ class ObjectBoxDebugService {
         return;
       }
 
+      _admin?.close();
+      _admin = null;
       _adminStarted = false;
       print('✅ Admin parado');
     } catch (e) {
