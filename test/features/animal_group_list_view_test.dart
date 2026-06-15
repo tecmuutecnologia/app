@@ -76,8 +76,8 @@ void main() {
       onEdit: (id) => edited = id,
     );
 
-    expect(find.byIcon(Icons.edit), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.edit));
+    expect(find.byIcon(Icons.edit_outlined), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.edit_outlined));
     expect(edited, 'a1');
   });
 
@@ -85,6 +85,6 @@ void main() {
     await pump(tester, [
       AnimalEntity(firestoreId: 'a1', nomeAnimal: 'X', grupoAnimal: 'Vacas'),
     ]);
-    expect(find.byIcon(Icons.edit), findsNothing);
+    expect(find.byIcon(Icons.edit_outlined), findsNothing);
   });
 }

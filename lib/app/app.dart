@@ -118,16 +118,14 @@ class _MyAppState extends State<MyApp> {
       ),
       themeMode: _themeMode,
       routerConfig: _router,
-      // Notificação passiva de conectividade app-wide: o banner fica com altura
-      // zero quando online (não desloca nada) e mostra um aviso fino no topo
-      // quando offline — sem modal nem clique. A sincronização ao reconectar é
-      // automática (OfflineFirstSyncService), então não há botão de sincronizar.
+      // Notificação passiva de conectividade app-wide: quando ONLINE o banner
+      // tem altura ZERO e nenhum inset (não desloca nada — sem o vão em branco
+      // no topo que aparecia antes). Quando OFFLINE, mostra um aviso fino no
+      // topo, com SafeArea próprio. A sincronização ao reconectar é automática
+      // (OfflineFirstSyncService), então não há botão de sincronizar.
       builder: (context, child) => Column(
         children: [
-          const SafeArea(
-            bottom: false,
-            child: SyncStatusBanner(),
-          ),
+          const SyncStatusBanner(),
           Expanded(child: child ?? const SizedBox.shrink()),
         ],
       ),

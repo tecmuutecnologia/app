@@ -9,6 +9,19 @@ import '/app/theme/flutter_flow_theme.dart';
 class AppTokens {
   AppTokens._();
 
+  /// Cor da marca (primária) — laranja do app.
+  static const Color brand = Color(0xFFF75E38);
+
+  /// Cor SECUNDÁRIA de acento — roxo. Complementa o laranja sem substituí-lo
+  /// (usar em ícones/badges/ações secundárias para dar variedade visual).
+  static const Color secondary = Color(0xFF7B61FF);
+
+  /// Versão translúcida do acento secundário (fundo de avatar/chip).
+  static const Color secondaryTint = Color(0x1A7B61FF);
+
+  /// Versão translúcida da marca (fundo de avatar/chip).
+  static const Color brandTint = Color(0x1AF75E38);
+
   /// Raio padrão dos cards/superfícies.
   static const double radius = 16.0;
 

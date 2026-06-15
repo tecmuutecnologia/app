@@ -88,7 +88,8 @@ class AnimalGroupListView extends ConsumerWidget {
                   ),
                   trailing: (firestoreId != null && onEditAnimal != null)
                       ? IconButton(
-                          icon: const Icon(Icons.edit),
+                          icon: const Icon(Icons.edit_outlined,
+                              color: AppTokens.secondary),
                           tooltip: 'Editar animal',
                           onPressed: () => onEditAnimal!(firestoreId),
                         )

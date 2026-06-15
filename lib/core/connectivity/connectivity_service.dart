@@ -17,11 +17,14 @@ typedef InternetAccessProbe = Future<bool> Function();
 /// - `internet_connection_checker_plus` (confirma acesso real à internet);
 /// - flags manuais espalhadas no `FFAppState` (já removidas).
 ///
-/// Este serviço combina as duas bibliotecas: a interface (`connectivity_plus`)
-/// dispara as mudanças e o acesso real (`internet_connection_checker_plus`)
-/// confirma se há internet de fato — evitando falsos positivos quando há Wi-Fi
-/// sem saída para a internet. Expõe um único `Stream<bool>` reativo e um
-/// `checkConnection()` pontual.
+/// Separação de responsabilidades (evita o falso "sem conexão" que aparecia
+/// ESTANDO online — a sonda real falha quando os hosts de checagem estão
+/// bloqueados/lentos na rede do usuário):
+/// - **Status para a UI** (`onStatusChange`/`isOnline`): reflete a INTERFACE de
+///   rede (`connectivity_plus`). Se há Wi-Fi/dados, a UI NÃO mostra "offline".
+/// - **`checkConnection()`**: confirma o acesso REAL à internet (sonda profunda),
+///   para o motor de sync decidir se tenta o push agora. Falha de sonda não
+///   deve pintar a UI de offline — por isso ela não alimenta o status.
 ///
 /// Toda a entrada via plugin é injetável, então a lógica de decisão é testável
 /// sem depender de hardware/rede real (ver `connectivity_service_test.dart`).
@@ -63,19 +66,24 @@ class ConnectivityService {
   Stream<bool> get onStatusChange => _statusController.stream;
 
   /// Inicia a escuta de mudanças de conectividade. Idempotente.
+  ///
+  /// O status (banner/UI) reflete a INTERFACE de rede — não a sonda profunda —
+  /// para nunca reportar "offline" quando há rede (a sonda real pode falhar por
+  /// hosts bloqueados mesmo havendo internet). O sync usa `checkConnection()`.
   Future<void> start() async {
     if (_started) return;
     _started = true;
 
-    _setOnline(await checkConnection());
+    _setOnline(await _interfaceOnline());
 
-    _subscription = _connectivityChanges.listen((result) async {
-      final online = result == ConnectivityResult.none
-          ? false
-          : await _probeInternetAccess();
-      _setOnline(online);
+    _subscription = _connectivityChanges.listen((result) {
+      _setOnline(result != ConnectivityResult.none);
     });
   }
+
+  /// Há interface de rede ativa (Wi-Fi/dados)? Base do status para a UI.
+  Future<bool> _interfaceOnline() async =>
+      (await _probeConnectivity()) != ConnectivityResult.none;
 
   /// Verificação pontual: há internet de fato AGORA?
   ///

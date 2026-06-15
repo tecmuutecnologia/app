@@ -96,7 +96,7 @@ class DashboardSecondaryActionCard extends StatelessWidget {
                   children: [
                     Card(
                       clipBehavior: Clip.antiAliasWithSaveLayer,
-                      color: const Color(0xFFE5E5E5),
+                      color: AppTokens.secondaryTint,
                       elevation: 0.0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(40.0),
@@ -105,7 +105,7 @@ class DashboardSecondaryActionCard extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Icon(
                           icon,
-                          color: const Color(0xFF57636C),
+                          color: AppTokens.secondary,
                           size: 20.0,
                         ),
                       ),

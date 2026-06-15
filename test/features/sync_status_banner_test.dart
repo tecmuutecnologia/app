@@ -25,12 +25,12 @@ void main() {
   testWidgets('mostra o aviso quando offline', (tester) async {
     await pumpBanner(tester, online: false);
     expect(find.text('Sem conexão — trabalhando offline'), findsOneWidget);
-    expect(find.byIcon(Icons.cloud_off), findsOneWidget);
+    expect(find.byIcon(Icons.cloud_off_rounded), findsOneWidget);
   });
 
   testWidgets('fica invisível quando online', (tester) async {
     await pumpBanner(tester, online: true);
     expect(find.textContaining('Sem conexão'), findsNothing);
-    expect(find.byIcon(Icons.cloud_off), findsNothing);
+    expect(find.byIcon(Icons.cloud_off_rounded), findsNothing);
   });
 }
