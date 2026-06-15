@@ -47,6 +47,8 @@ class MenuItemCard extends StatelessWidget {
             Text(
               label,
               textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: FlutterFlowTheme.of(context).labelMedium.override(
                     font: GoogleFonts.readexPro(
                       fontWeight: FontWeight.w600,

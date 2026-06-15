@@ -50,7 +50,11 @@ class PropriedadeMenuGrid extends StatelessWidget {
         crossAxisCount: 3,
         crossAxisSpacing: 10.0,
         mainAxisSpacing: 10.0,
-        childAspectRatio: 1.0,
+        // Altura de célula FIXA (não derivada da largura) — o conteúdo é de
+        // tamanho fixo (ícone + label de até 2 linhas + badge), então cabe em
+        // qualquer tela. Evita o overflow do childAspectRatio: 1.0 (célula
+        // quadrada ~112px < conteúdo ~135px).
+        mainAxisExtent: 142.0,
       ),
       primary: false,
       shrinkWrap: true,

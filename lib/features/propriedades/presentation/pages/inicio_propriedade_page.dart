@@ -461,7 +461,12 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
           crossAxisCount: 3,
           crossAxisSpacing: 10.0,
           mainAxisSpacing: 10.0,
-          childAspectRatio: 1.0,
+          // Altura de célula FIXA (não derivada da largura): o conteúdo dos
+          // cards é de tamanho fixo (ícone + badge + label de até 2 linhas),
+          // então uma altura constante cabe em qualquer largura de tela e
+          // elimina o overflow que ocorria com childAspectRatio: 1.0 (célula
+          // quadrada ~112px, menor que o conteúdo ~135px).
+          mainAxisExtent: 142.0,
         ),
         primary: false,
         shrinkWrap: true,
@@ -2071,33 +2076,38 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Icon(
-                      Icons.list_alt_sharp,
-                      color: Color(0xFFEC3B5B),
-                      size: 32.0,
-                    ),
-                    Text(
-                      'Lista completa',
-                      textAlign: TextAlign.center,
-                      style: FlutterFlowTheme.of(context).labelMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                            color: Color(0xFF14181B),
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ],
+                Flexible(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.list_alt_sharp,
+                        color: Color(0xFFEC3B5B),
+                        size: 32.0,
+                      ),
+                      Text(
+                        'Lista completa',
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style:
+                            FlutterFlowTheme.of(context).labelMedium.override(
+                                  font: GoogleFonts.readexPro(
+                                    fontWeight: FontWeight.w600,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontStyle,
+                                  ),
+                                  color: Color(0xFF14181B),
+                                  letterSpacing: 0.0,
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .fontStyle,
+                                ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
