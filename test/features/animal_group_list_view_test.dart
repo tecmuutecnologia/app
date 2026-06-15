@@ -51,7 +51,8 @@ void main() {
 
     expect(find.text('Mimosa #12'), findsOneWidget);
     expect(find.text('Brinco 12 • Prenha'), findsOneWidget);
-    expect(find.byType(Card), findsOneWidget);
+    // Reskin: cada animal é uma linha ListTile dentro de um AppCard.
+    expect(find.byType(ListTile), findsOneWidget);
   });
 
   testWidgets('estado vazio menciona o grupo', (tester) async {

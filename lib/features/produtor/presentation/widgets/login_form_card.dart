@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/app_card.dart';
 
 /// Card container do formulário de login com sombra e borda arredondada.
 class LoginFormCard extends StatelessWidget {
@@ -17,14 +18,8 @@ class LoginFormCard extends StatelessWidget {
       constraints: const BoxConstraints(maxWidth: 570.0),
       decoration: BoxDecoration(
         color: FlutterFlowTheme.of(context).secondaryBackground,
-        boxShadow: const [
-          BoxShadow(
-            blurRadius: 4.0,
-            color: Color(0x33000000),
-            offset: Offset(0.0, 2.0),
-          )
-        ],
-        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: AppTokens.softShadow(context),
+        borderRadius: BorderRadius.circular(AppTokens.radius),
       ),
       child: Align(
         alignment: const AlignmentDirectional(0.0, 0.0),

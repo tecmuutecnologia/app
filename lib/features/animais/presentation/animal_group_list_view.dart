@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../application/animais_providers.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/app_card.dart';
 
 /// Lista de animais de UMA aba (grupo) de uma propriedade, lida do
 /// `AnimalRepository` (ObjectBox) via Riverpod — fonte ÚNICA, funciona online e
@@ -59,29 +61,42 @@ class AnimalGroupListView extends ConsumerWidget {
                 ? animal.nomeBrincoConcat!
                 : (animal.nomeAnimal ?? 'Animal sem nome');
             final firestoreId = animal.firestoreId;
-            return Card(
-              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: ListTile(
-                leading: const Icon(Icons.pets),
-                title: Text(titulo),
-                subtitle: Text(
-                  [
-                    'Brinco ${animal.brincoAnimal}',
-                    if ((animal.status ?? '').isNotEmpty) animal.status!,
-                    if ((animal.racaAnimal ?? '').isNotEmpty)
-                      animal.racaAnimal!,
-                  ].join(' • '),
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+              child: AppCard(
+                padding: EdgeInsets.zero,
+                child: ListTile(
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  leading: CircleAvatar(
+                    backgroundColor: const Color(0x1AF75E38),
+                    child: const Icon(Icons.pets, color: Color(0xFFF75E38)),
+                  ),
+                  title: Text(
+                    titulo,
+                    style: FlutterFlowTheme.of(context)
+                        .bodyLarge
+                        .copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: Text(
+                    [
+                      'Brinco ${animal.brincoAnimal}',
+                      if ((animal.status ?? '').isNotEmpty) animal.status!,
+                      if ((animal.racaAnimal ?? '').isNotEmpty)
+                        animal.racaAnimal!,
+                    ].join(' • '),
+                  ),
+                  trailing: (firestoreId != null && onEditAnimal != null)
+                      ? IconButton(
+                          icon: const Icon(Icons.edit),
+                          tooltip: 'Editar animal',
+                          onPressed: () => onEditAnimal!(firestoreId),
+                        )
+                      : null,
+                  onTap: (firestoreId == null || onTapAnimal == null)
+                      ? null
+                      : () => onTapAnimal!(firestoreId),
                 ),
-                trailing: (firestoreId != null && onEditAnimal != null)
-                    ? IconButton(
-                        icon: const Icon(Icons.edit),
-                        tooltip: 'Editar animal',
-                        onPressed: () => onEditAnimal!(firestoreId),
-                      )
-                    : null,
-                onTap: (firestoreId == null || onTapAnimal == null)
-                    ? null
-                    : () => onTapAnimal!(firestoreId),
               ),
             );
           },
