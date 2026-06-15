@@ -4,6 +4,7 @@ import '/data/backend.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import 'dart:ui';
 import '/features/propriedades/presentation/pages/lista_propriedade_page.dart';
@@ -131,16 +132,7 @@ class _ConfirmarSenhaWidgetState extends State<ConfirmarSenhaWidget>
         ),
         decoration: BoxDecoration(
           color: FlutterFlowTheme.of(context).secondaryBackground,
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 3.0,
-              color: Color(0x33000000),
-              offset: Offset(
-                0.0,
-                1.0,
-              ),
-            )
-          ],
+          boxShadow: AppTokens.softShadow(context),
           borderRadius: BorderRadius.circular(16.0),
           border: Border.all(
             color: FlutterFlowTheme.of(context).alternate,

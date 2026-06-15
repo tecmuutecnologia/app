@@ -4,6 +4,7 @@ import '/core/ui/flutter_flow_drop_down.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
 import '/features/dashboard/presentation/pages/dashboard_tecnico_page.dart';
@@ -110,16 +111,7 @@ class _SubscriptionPlanTecnicoPageState
       ),
       decoration: BoxDecoration(
         color: FlutterFlowTheme.of(context).secondaryBackground,
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 4.0,
-            color: Color(0x33000000),
-            offset: Offset(
-              0.0,
-              2.0,
-            ),
-          )
-        ],
+        boxShadow: AppTokens.softShadow(context),
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Padding(

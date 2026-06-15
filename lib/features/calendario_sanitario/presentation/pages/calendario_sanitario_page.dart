@@ -5,6 +5,7 @@ import '/core/ui/flutter_flow_calendar.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '../widgets/selecao_animal_calendario_widget.dart';
 import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
@@ -353,16 +354,7 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
                   height: 100.0,
                   decoration: BoxDecoration(
                     color: Color(0xFFEDEDED),
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 4.0,
-                        color: Color(0x33000000),
-                        offset: Offset(
-                          0.0,
-                          2.0,
-                        ),
-                      )
-                    ],
+                    boxShadow: AppTokens.softShadow(context),
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(10.0),
                       bottomRight: Radius.circular(10.0),
