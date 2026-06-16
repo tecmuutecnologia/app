@@ -32,6 +32,7 @@ import '/features/relatorios/presentation/pages/listacompleta_page.dart';
 import '/features/relatorios/presentation/pages/resumo_rebanho_page.dart';
 import '/features/secas/presentation/pages/secas_page.dart';
 import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -467,7 +468,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
           // então uma altura constante cabe em qualquer largura de tela e
           // elimina o overflow que ocorria com childAspectRatio: 1.0 (célula
           // quadrada ~112px, menor que o conteúdo ~135px).
-          mainAxisExtent: 142.0,
+          mainAxisExtent: 120.0,
         ),
         primary: false,
         shrinkWrap: true,
@@ -491,7 +492,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                 color: FlutterFlowTheme.of(context).primaryBackground,
                 borderRadius: BorderRadius.circular(24.0),
                 border: Border.all(
-                  color: Color(0xFFEC3B5B),
+                  color: AppTokens.secondary,
                 ),
               ),
               child: InkWell(
@@ -553,7 +554,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                 color: FlutterFlowTheme.of(context).primaryBackground,
                 borderRadius: BorderRadius.circular(24.0),
                 border: Border.all(
-                  color: Color(0xFFEC3B5B),
+                  color: AppTokens.secondary,
                 ),
               ),
               child: InkWell(
@@ -615,7 +616,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                 color: FlutterFlowTheme.of(context).primaryBackground,
                 borderRadius: BorderRadius.circular(24.0),
                 border: Border.all(
-                  color: Color(0xFFEC3B5B),
+                  color: AppTokens.secondary,
                 ),
               ),
               child: InkWell(
@@ -678,7 +679,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                 color: FlutterFlowTheme.of(context).primaryBackground,
                 borderRadius: BorderRadius.circular(24.0),
                 border: Border.all(
-                  color: Color(0xFFEC3B5B),
+                  color: AppTokens.secondary,
                 ),
               ),
               child: InkWell(
@@ -763,7 +764,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                 color: FlutterFlowTheme.of(context).primaryBackground,
                 borderRadius: BorderRadius.circular(24.0),
                 border: Border.all(
-                  color: Color(0xFFEC3B5B),
+                  color: AppTokens.secondary,
                 ),
               ),
               child: InkWell(
@@ -817,7 +818,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
         color: FlutterFlowTheme.of(context).primaryBackground,
         borderRadius: BorderRadius.circular(24.0),
         border: Border.all(
-          color: Color(0xFFEC3B5B),
+          color: AppTokens.secondary,
         ),
       ),
       child: InkWell(
@@ -869,7 +870,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
         color: FlutterFlowTheme.of(context).primaryBackground,
         borderRadius: BorderRadius.circular(24.0),
         border: Border.all(
-          color: Color(0xFFEC3B5B),
+          color: AppTokens.secondary,
         ),
       ),
       child: InkWell(
@@ -930,7 +931,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
         color: FlutterFlowTheme.of(context).primaryBackground,
         borderRadius: BorderRadius.circular(24.0),
         border: Border.all(
-          color: Color(0xFFEC3B5B),
+          color: AppTokens.secondary,
         ),
       ),
       child: InkWell(
@@ -1044,12 +1045,13 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return Container(
       width: MediaQuery.sizeOf(context).width * 0.3,
+      padding: EdgeInsets.all(5.0),
       height: 120.0,
       decoration: BoxDecoration(
         color: FlutterFlowTheme.of(context).primaryBackground,
         borderRadius: BorderRadius.circular(24.0),
         border: Border.all(
-          color: Color(0xFFEC3B5B),
+          color: AppTokens.secondary,
         ),
       ),
       child: InkWell(
@@ -1168,36 +1170,41 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.vaccines,
-                        color: Color(0xFFEC3B5B),
-                        size: 22.0,
-                      ),
-                      Text(
-                        'Inseminações',
-                        textAlign: TextAlign.center,
-                        style: FlutterFlowTheme.of(context)
-                            .labelMedium
-                            .override(
-                              font: GoogleFonts.readexPro(
+                  Flexible(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.vaccines,
+                          color: Color(0xFFEC3B5B),
+                          size: 22.0,
+                        ),
+                        AutoSizeText(
+                          'Inseminações',
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          minFontSize: 8.0,
+                          overflow: TextOverflow.ellipsis,
+                          style: FlutterFlowTheme.of(context)
+                              .labelMedium
+                              .override(
+                                font: GoogleFonts.readexPro(
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .fontStyle,
+                                ),
+                                color: FlutterFlowTheme.of(context).primaryText,
+                                letterSpacing: 0.0,
                                 fontWeight: FontWeight.w600,
                                 fontStyle: FlutterFlowTheme.of(context)
                                     .labelMedium
                                     .fontStyle,
                               ),
-                              color: FlutterFlowTheme.of(context).primaryText,
-                              letterSpacing: 0.0,
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -1217,7 +1224,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
         color: FlutterFlowTheme.of(context).primaryBackground,
         borderRadius: BorderRadius.circular(24.0),
         border: Border.all(
-          color: Color(0xFFEC3B5B),
+          color: AppTokens.secondary,
         ),
       ),
       child: InkWell(
@@ -1362,7 +1369,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
         color: FlutterFlowTheme.of(context).primaryBackground,
         borderRadius: BorderRadius.circular(24.0),
         border: Border.all(
-          color: Color(0xFFEC3B5B),
+          color: AppTokens.secondary,
         ),
       ),
       child: InkWell(
@@ -1539,7 +1546,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
         color: FlutterFlowTheme.of(context).primaryBackground,
         borderRadius: BorderRadius.circular(24.0),
         border: Border.all(
-          color: Color(0xFFEC3B5B),
+          color: AppTokens.secondary,
         ),
       ),
       child: InkWell(
@@ -1679,7 +1686,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
         color: FlutterFlowTheme.of(context).primaryBackground,
         borderRadius: BorderRadius.circular(24.0),
         border: Border.all(
-          color: Color(0xFFEC3B5B),
+          color: AppTokens.secondary,
         ),
       ),
       child: InkWell(
@@ -1827,7 +1834,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
         color: FlutterFlowTheme.of(context).primaryBackground,
         borderRadius: BorderRadius.circular(24.0),
         border: Border.all(
-          color: Color(0xFFEC3B5B),
+          color: AppTokens.secondary,
         ),
       ),
       child: InkWell(
@@ -1985,7 +1992,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
         color: FlutterFlowTheme.of(context).primaryBackground,
         borderRadius: BorderRadius.circular(24.0),
         border: Border.all(
-          color: Color(0xFFEC3B5B),
+          color: AppTokens.secondary,
         ),
       ),
       child: InkWell(
@@ -2126,7 +2133,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
         color: FlutterFlowTheme.of(context).primaryBackground,
         borderRadius: BorderRadius.circular(24.0),
         border: Border.all(
-          color: Color(0xFFEC3B5B),
+          color: AppTokens.secondary,
         ),
       ),
       child: InkWell(
