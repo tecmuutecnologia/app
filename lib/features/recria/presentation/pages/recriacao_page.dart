@@ -208,13 +208,25 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
       children: [
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 0.0),
-          child: Text(
-            'Filtragem:',
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
-                  font: GoogleFonts.readexPro(),
-                  fontSize: 18.0,
-                  letterSpacing: 0.0,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.filter_list_rounded,
+                  color: AppTokens.secondary, size: 22.0),
+              const SizedBox(width: 8.0),
+              Flexible(
+                child: Text(
+                  'Filtragem:',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: FlutterFlowTheme.of(context).bodyMedium.override(
+                        font: GoogleFonts.readexPro(),
+                        fontSize: 18.0,
+                        letterSpacing: 0.0,
+                      ),
                 ),
+              ),
+            ],
           ),
         ),
         Padding(

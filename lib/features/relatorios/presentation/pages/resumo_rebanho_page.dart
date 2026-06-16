@@ -6,6 +6,7 @@ import '/core/ui/flutter_flow_drop_down.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
 import '/core/ui/instant_timer.dart';
@@ -176,19 +177,34 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
   Widget _p2(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 0.0),
-      child: Text(
-        'Filtro do relatório:',
-        textAlign: TextAlign.center,
-        style: FlutterFlowTheme.of(context).bodyMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FontWeight.w800,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-              ),
-              fontSize: 16.0,
-              letterSpacing: 0.0,
-              fontWeight: FontWeight.w800,
-              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.tune_rounded,
+              color: AppTokens.secondary, size: 20.0),
+          const SizedBox(width: 8.0),
+          Flexible(
+            child: Text(
+              'Filtro do relatório:',
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                    font: GoogleFonts.readexPro(
+                      fontWeight: FontWeight.w800,
+                      fontStyle:
+                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                    ),
+                    fontSize: 16.0,
+                    letterSpacing: 0.0,
+                    fontWeight: FontWeight.w800,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                  ),
             ),
+          ),
+        ],
       ),
     );
   }

@@ -4,6 +4,7 @@ import '/data/backend.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/services/index.dart' as actions;
@@ -3277,22 +3278,38 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
           Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              Text(
-                'Informações gerais:',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      fontSize: 16.0,
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.info_outline_rounded,
+                      color: AppTokens.secondary, size: 20.0),
+                  const SizedBox(width: 8.0),
+                  Flexible(
+                    child: Text(
+                      'Informações gerais:',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.readexPro(
+                              fontWeight: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                            ),
+                            fontSize: 16.0,
+                            letterSpacing: 0.0,
+                            fontWeight: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontWeight,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontStyle,
+                          ),
                     ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -4030,22 +4047,38 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
           Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              Text(
-                'Informações gerais:',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      fontSize: 16.0,
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.info_outline_rounded,
+                      color: AppTokens.secondary, size: 20.0),
+                  const SizedBox(width: 8.0),
+                  Flexible(
+                    child: Text(
+                      'Informações gerais:',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.readexPro(
+                              fontWeight: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                            ),
+                            fontSize: 16.0,
+                            letterSpacing: 0.0,
+                            fontWeight: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontWeight,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontStyle,
+                          ),
                     ),
+                  ),
+                ],
               ),
             ],
           ),
