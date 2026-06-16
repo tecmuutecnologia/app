@@ -6,6 +6,7 @@ import '/core/ui/flutter_flow_button_tabbar.dart';
 import '/core/ui/flutter_flow_checkbox_group.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
 import 'nova_acao_calendario_sanitario_widget.dart';
@@ -367,8 +368,8 @@ class _SelecaoAnimalCalendarioWidgetState
         unselectedLabelStyle: TextStyle(),
         labelColor: Colors.white,
         unselectedLabelColor: FlutterFlowTheme.of(context).secondaryText,
-        backgroundColor: Color(0xFFF75E38),
-        borderColor: Color(0xFFEC3B5B),
+        backgroundColor: AppTokens.secondary,
+        borderColor: AppTokens.secondary,
         borderWidth: 2.0,
         borderRadius: 12.0,
         elevation: 0.0,

@@ -8,6 +8,7 @@ import '/core/ui/flutter_flow_button_tabbar.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
 import '/features/prenhas/presentation/widgets/registro_aborto_widget.dart';
@@ -1836,9 +1837,9 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
                       labelColor: Colors.white,
                       unselectedLabelColor:
                           FlutterFlowTheme.of(context).secondaryText,
-                      backgroundColor: Color(0xFFF75E38),
+                      backgroundColor: AppTokens.secondary,
                       unselectedBackgroundColor: Color(0xFFC5C5C5),
-                      borderColor: Color(0xFFEC3B5B),
+                      borderColor: AppTokens.secondary,
                       borderWidth: 2.0,
                       borderRadius: 12.0,
                       elevation: 0.0,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/app_card.dart';
 
 /// Widget reutilizável para os cards do menu COM badge de contagem.
 class MenuItemCardWithBadge extends StatelessWidget {
@@ -50,7 +51,7 @@ class MenuItemCardWithBadge extends StatelessWidget {
                   alignment: const AlignmentDirectional(1.0, -1.0),
                   child: Card(
                     clipBehavior: Clip.antiAliasWithSaveLayer,
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                    color: AppTokens.secondary,
                     elevation: 4.0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
@@ -67,7 +68,7 @@ class MenuItemCardWithBadge extends StatelessWidget {
                                     .bodyMedium
                                     .fontStyle,
                               ),
-                              color: const Color(0xFFEC3B5B),
+                              color: Colors.white,
                               letterSpacing: 0.0,
                               fontWeight: FontWeight.bold,
                               fontStyle: FlutterFlowTheme.of(context)
@@ -174,7 +175,7 @@ class MenuItemCardWithBadgeBuilder extends StatelessWidget {
                   alignment: const AlignmentDirectional(1.0, -1.0),
                   child: Card(
                     clipBehavior: Clip.antiAliasWithSaveLayer,
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                    color: AppTokens.secondary,
                     elevation: 4.0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),

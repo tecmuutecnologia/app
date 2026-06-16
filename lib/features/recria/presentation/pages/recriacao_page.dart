@@ -3,6 +3,7 @@ import '/core/ui/flutter_flow_choice_chips.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/app_card.dart';
 import '/core/ui/form_field_controller.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/services/index.dart' as actions;
@@ -248,13 +249,13 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
       onChanged: (val) =>
           safeSetState(() => _choiceChipsValue = val?.firstOrNull),
       selectedChipStyle: ChipStyle(
-        backgroundColor: FlutterFlowTheme.of(context).tertiary,
+        backgroundColor: AppTokens.secondary,
         textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
               font: GoogleFonts.readexPro(),
-              color: FlutterFlowTheme.of(context).primaryText,
+              color: Colors.white,
               letterSpacing: 0.0,
             ),
-        iconColor: FlutterFlowTheme.of(context).primaryText,
+        iconColor: Colors.white,
         iconSize: 18.0,
         elevation: 4.0,
         borderRadius: BorderRadius.circular(16.0),

@@ -8,6 +8,7 @@ import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/ui/request_manager.dart';
@@ -1145,7 +1146,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                                           .bodyMedium
                                           .fontStyle,
                                     ),
-                                    color: Color(0xFFEC3B5B),
+                                    color: AppTokens.secondary,
                                     letterSpacing: 0.0,
                                     fontWeight: FontWeight.bold,
                                     fontStyle: FlutterFlowTheme.of(context)
@@ -1299,7 +1300,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                                     .bodyMedium
                                     .fontStyle,
                               ),
-                              color: Color(0xFFEC3B5B),
+                              color: AppTokens.secondary,
                               letterSpacing: 0.0,
                               fontWeight: FontWeight.bold,
                               fontStyle: FlutterFlowTheme.of(context)
@@ -1474,7 +1475,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                                         .bodyMedium
                                         .fontStyle,
                                   ),
-                                  color: Color(0xFFEC3B5B),
+                                  color: AppTokens.secondary,
                                   letterSpacing: 0.0,
                                   fontWeight: FontWeight.bold,
                                   fontStyle: FlutterFlowTheme.of(context)
@@ -1616,7 +1617,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                                     .bodyMedium
                                     .fontStyle,
                               ),
-                              color: Color(0xFFEC3B5B),
+                              color: AppTokens.secondary,
                               letterSpacing: 0.0,
                               fontWeight: FontWeight.bold,
                               fontStyle: FlutterFlowTheme.of(context)
@@ -1764,7 +1765,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                                     .bodyMedium
                                     .fontStyle,
                               ),
-                              color: Color(0xFFEC3B5B),
+                              color: AppTokens.secondary,
                               letterSpacing: 0.0,
                               fontWeight: FontWeight.bold,
                               fontStyle: FlutterFlowTheme.of(context)
@@ -1922,7 +1923,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                                     .bodyMedium
                                     .fontStyle,
                               ),
-                              color: Color(0xFFEC3B5B),
+                              color: AppTokens.secondary,
                               letterSpacing: 0.0,
                               fontWeight: FontWeight.bold,
                               fontStyle: FlutterFlowTheme.of(context)
@@ -2059,7 +2060,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                                     .bodyMedium
                                     .fontStyle,
                               ),
-                              color: Color(0xFFEC3B5B),
+                              color: AppTokens.secondary,
                               letterSpacing: 0.0,
                               fontWeight: FontWeight.bold,
                               fontStyle: FlutterFlowTheme.of(context)
