@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/app/theme/flutter_flow_theme.dart';
 
@@ -44,10 +45,11 @@ class MenuItemCard extends StatelessWidget {
               color: const Color(0xFFEC3B5B),
               size: iconSize,
             ),
-            Text(
+            AutoSizeText(
               label,
               textAlign: TextAlign.center,
               maxLines: 2,
+              minFontSize: 8.0,
               overflow: TextOverflow.ellipsis,
               style: FlutterFlowTheme.of(context).labelMedium.override(
                     font: GoogleFonts.readexPro(
