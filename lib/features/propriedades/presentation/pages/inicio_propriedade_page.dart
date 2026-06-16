@@ -727,9 +727,12 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                       color: Color(0xFFEC3B5B),
                       size: 30.0,
                     ),
-                    Text(
+                    AutoSizeText(
                       'Financeiro',
                       textAlign: TextAlign.center,
+                      maxLines: 1,
+                      minFontSize: 8.0,
+                      overflow: TextOverflow.ellipsis,
                       style: FlutterFlowTheme.of(context).labelMedium.override(
                             font: GoogleFonts.readexPro(
                               fontWeight: FontWeight.w600,
@@ -782,9 +785,12 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                       color: Color(0xFFEC3B5B),
                       size: 22.0,
                     ),
-                    Text(
+                    AutoSizeText(
                       'Importar animais',
                       textAlign: TextAlign.center,
+                      maxLines: 1,
+                      minFontSize: 8.0,
+                      overflow: TextOverflow.ellipsis,
                       style: FlutterFlowTheme.of(context).labelMedium.override(
                             font: GoogleFonts.readexPro(
                               fontWeight: FontWeight.w600,
@@ -1324,33 +1330,40 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Icon(
-                      Icons.medical_information_outlined,
-                      color: Color(0xFFEC3B5B),
-                      size: 32.0,
-                    ),
-                    Text(
-                      'Diagnóstico\nGestação',
-                      textAlign: TextAlign.center,
-                      style: FlutterFlowTheme.of(context).labelMedium.override(
-                            font: GoogleFonts.readexPro(
+                Flexible(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Icon(
+                        Icons.medical_information_outlined,
+                        color: Color(0xFFEC3B5B),
+                        size: 32.0,
+                      ),
+                      AutoSizeText(
+                        'Diagnóstico\nGestação',
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        minFontSize: 8.0,
+                        overflow: TextOverflow.ellipsis,
+                        style: FlutterFlowTheme.of(context)
+                            .labelMedium
+                            .override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontStyle,
+                              ),
+                              color: FlutterFlowTheme.of(context).primaryText,
+                              letterSpacing: 0.0,
                               fontWeight: FontWeight.w600,
                               fontStyle: FlutterFlowTheme.of(context)
                                   .labelMedium
                                   .fontStyle,
                             ),
-                            color: FlutterFlowTheme.of(context).primaryText,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -1501,33 +1514,39 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Icon(
-                      Icons.monitor_heart_outlined,
-                      color: Color(0xFFEC3B5B),
-                      size: 32.0,
-                    ),
-                    Text(
-                      'Vacas Prenhas',
-                      textAlign: TextAlign.center,
-                      style: FlutterFlowTheme.of(context).labelMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                            color: Color(0xFF14181B),
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ],
+                Flexible(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Icon(
+                        Icons.monitor_heart_outlined,
+                        color: Color(0xFFEC3B5B),
+                        size: 32.0,
+                      ),
+                      AutoSizeText(
+                        'Vacas Prenhas',
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        minFontSize: 8.0,
+                        overflow: TextOverflow.ellipsis,
+                        style:
+                            FlutterFlowTheme.of(context).labelMedium.override(
+                                  font: GoogleFonts.readexPro(
+                                    fontWeight: FontWeight.w600,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontStyle,
+                                  ),
+                                  color: Color(0xFF14181B),
+                                  letterSpacing: 0.0,
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .fontStyle,
+                                ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -1641,33 +1660,39 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Icon(
-                      Icons.alarm_add_sharp,
-                      color: Color(0xFFEC3B5B),
-                      size: 32.0,
-                    ),
-                    Text(
-                      'Secas',
-                      textAlign: TextAlign.center,
-                      style: FlutterFlowTheme.of(context).labelMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                            color: Color(0xFF14181B),
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ],
+                Flexible(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Icon(
+                        Icons.alarm_add_sharp,
+                        color: Color(0xFFEC3B5B),
+                        size: 32.0,
+                      ),
+                      AutoSizeText(
+                        'Secas',
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        minFontSize: 8.0,
+                        overflow: TextOverflow.ellipsis,
+                        style:
+                            FlutterFlowTheme.of(context).labelMedium.override(
+                                  font: GoogleFonts.readexPro(
+                                    fontWeight: FontWeight.w600,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontStyle,
+                                  ),
+                                  color: Color(0xFF14181B),
+                                  letterSpacing: 0.0,
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .fontStyle,
+                                ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -1789,33 +1814,39 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Icon(
-                      Icons.medical_services,
-                      color: Color(0xFFEC3B5B),
-                      size: 32.0,
-                    ),
-                    Text(
-                      'Exame\nGinecológico',
-                      textAlign: TextAlign.center,
-                      style: FlutterFlowTheme.of(context).labelMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                            color: Color(0xFF14181B),
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ],
+                Flexible(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Icon(
+                        Icons.medical_services,
+                        color: Color(0xFFEC3B5B),
+                        size: 32.0,
+                      ),
+                      AutoSizeText(
+                        'Exame\nGinecológico',
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        minFontSize: 8.0,
+                        overflow: TextOverflow.ellipsis,
+                        style:
+                            FlutterFlowTheme.of(context).labelMedium.override(
+                                  font: GoogleFonts.readexPro(
+                                    fontWeight: FontWeight.w600,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontStyle,
+                                  ),
+                                  color: Color(0xFF14181B),
+                                  letterSpacing: 0.0,
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .fontStyle,
+                                ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -1947,33 +1978,40 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Icon(
-                      Icons.compare_arrows_sharp,
-                      color: Color(0xFFEC3B5B),
-                      size: 32.0,
-                    ),
-                    Text(
-                      'Recria',
-                      textAlign: TextAlign.center,
-                      style: FlutterFlowTheme.of(context).labelMedium.override(
-                            font: GoogleFonts.readexPro(
+                Flexible(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Icon(
+                        Icons.compare_arrows_sharp,
+                        color: Color(0xFFEC3B5B),
+                        size: 32.0,
+                      ),
+                      AutoSizeText(
+                        'Recria',
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        minFontSize: 8.0,
+                        overflow: TextOverflow.ellipsis,
+                        style: FlutterFlowTheme.of(context)
+                            .labelMedium
+                            .override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontStyle,
+                              ),
+                              color: FlutterFlowTheme.of(context).primaryText,
+                              letterSpacing: 0.0,
                               fontWeight: FontWeight.w600,
                               fontStyle: FlutterFlowTheme.of(context)
                                   .labelMedium
                                   .fontStyle,
                             ),
-                            color: FlutterFlowTheme.of(context).primaryText,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -2093,10 +2131,11 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                         color: Color(0xFFEC3B5B),
                         size: 32.0,
                       ),
-                      Text(
+                      AutoSizeText(
                         'Lista completa',
                         textAlign: TextAlign.center,
-                        maxLines: 2,
+                        maxLines: 1,
+                        minFontSize: 8.0,
                         overflow: TextOverflow.ellipsis,
                         style:
                             FlutterFlowTheme.of(context).labelMedium.override(
