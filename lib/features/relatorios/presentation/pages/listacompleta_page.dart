@@ -4734,39 +4734,41 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                                             .labelMedium
                                             .fontStyle,
                                       ),
+                                  filled: true,
+                                  fillColor: FlutterFlowTheme.of(context)
+                                      .primaryBackground,
                                   enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context)
-                                          .alternate,
-                                      width: 2.0,
+                                    borderSide: const BorderSide(
+                                      color: Colors.transparent,
+                                      width: 0.0,
                                     ),
-                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderRadius: BorderRadius.circular(14.0),
                                   ),
                                   focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color:
-                                          FlutterFlowTheme.of(context).tertiary,
-                                      width: 2.0,
+                                    borderSide: const BorderSide(
+                                      color: AppTokens.secondary,
+                                      width: 1.5,
                                     ),
-                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderRadius: BorderRadius.circular(14.0),
                                   ),
                                   errorBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
                                       color: FlutterFlowTheme.of(context).error,
-                                      width: 2.0,
+                                      width: 1.5,
                                     ),
-                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderRadius: BorderRadius.circular(14.0),
                                   ),
                                   focusedErrorBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
                                       color: FlutterFlowTheme.of(context).error,
-                                      width: 2.0,
+                                      width: 1.5,
                                     ),
-                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderRadius: BorderRadius.circular(14.0),
                                   ),
                                   prefixIcon: Icon(
-                                    Icons.search,
-                                    color: Color(0xFFE46D3A),
+                                    Icons.search_rounded,
+                                    color: FlutterFlowTheme.of(context)
+                                        .secondaryText,
                                   ),
                                   suffixIcon: _searchListTextController!
                                           .text.isNotEmpty
