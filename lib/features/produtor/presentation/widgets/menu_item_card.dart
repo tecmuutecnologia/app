@@ -1,72 +1,85 @@
-import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/app_card.dart';
 
-/// Widget reutilizável para os cards do menu sem badge de contagem.
+/// Card de menu (reskin baseado em `layout_inspirations/`): card branco
+/// arredondado com sombra suave, ícone num "tile" quadrado-arredondado
+/// tonalizado, e o rótulo abaixo (AutoSizeText, responsivo).
 class MenuItemCard extends StatelessWidget {
   const MenuItemCard({
     super.key,
     required this.icon,
     required this.label,
     required this.onTap,
-    this.iconSize = 24.0,
+    this.iconSize = 26.0,
+    this.accent = AppTokens.brand,
   });
 
   final IconData icon;
   final String label;
   final VoidCallback onTap;
   final double iconSize;
+  final Color accent;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.sizeOf(context).width * 0.3,
-      height: 120.0,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          color: const Color(0xFFEC3B5B),
-        ),
-      ),
-      child: InkWell(
-        splashColor: Colors.transparent,
-        focusColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        onTap: onTap,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              color: const Color(0xFFEC3B5B),
-              size: iconSize,
-            ),
-            AutoSizeText(
+    return AppCard(
+      onTap: onTap,
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          MenuIconTile(icon: icon, accent: accent, iconSize: iconSize),
+          const SizedBox(height: 8.0),
+          Flexible(
+            child: AutoSizeText(
               label,
               textAlign: TextAlign.center,
               maxLines: 2,
               minFontSize: 8.0,
               overflow: TextOverflow.ellipsis,
               style: FlutterFlowTheme.of(context).labelMedium.override(
-                    font: GoogleFonts.readexPro(
-                      fontWeight: FontWeight.w600,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                    ),
+                    font: GoogleFonts.readexPro(fontWeight: FontWeight.w600),
                     color: FlutterFlowTheme.of(context).primaryText,
                     letterSpacing: 0.0,
                     fontWeight: FontWeight.w600,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).labelMedium.fontStyle,
                   ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
+    );
+  }
+}
+
+/// Tile quadrado-arredondado com o ícone tonalizado — base visual dos cards de
+/// menu. Reutilizável (cards com e sem badge).
+class MenuIconTile extends StatelessWidget {
+  const MenuIconTile({
+    super.key,
+    required this.icon,
+    this.accent = AppTokens.brand,
+    this.iconSize = 26.0,
+  });
+
+  final IconData icon;
+  final Color accent;
+  final double iconSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 48.0,
+      height: 48.0,
+      decoration: BoxDecoration(
+        // ignore: deprecated_member_use
+        color: accent.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(14.0),
+      ),
+      child: Icon(icon, color: accent, size: iconSize),
     );
   }
 }

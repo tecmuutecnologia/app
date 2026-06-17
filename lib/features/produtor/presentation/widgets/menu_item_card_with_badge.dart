@@ -1,10 +1,77 @@
-import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/app_card.dart';
+import 'menu_item_card.dart';
 
-/// Widget reutilizável para os cards do menu COM badge de contagem.
+/// Conteúdo central (tile de ícone + rótulo) compartilhado pelos cards de menu
+/// com badge.
+class _MenuCardBody extends StatelessWidget {
+  const _MenuCardBody({
+    required this.icon,
+    required this.label,
+    required this.iconSize,
+    required this.accent,
+  });
+
+  final IconData icon;
+  final String label;
+  final double iconSize;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          MenuIconTile(icon: icon, accent: accent, iconSize: iconSize),
+          const SizedBox(height: 8.0),
+          Flexible(
+            child: AutoSizeText(
+              label,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              minFontSize: 8.0,
+              overflow: TextOverflow.ellipsis,
+              style: FlutterFlowTheme.of(context).labelMedium.override(
+                    font: GoogleFonts.readexPro(fontWeight: FontWeight.w600),
+                    color: FlutterFlowTheme.of(context).primaryText,
+                    letterSpacing: 0.0,
+                    fontWeight: FontWeight.w600,
+                  ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Badge "pill" roxo (acento secundário) no canto superior direito.
+class _BadgePill extends StatelessWidget {
+  const _BadgePill({required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(minWidth: 24.0),
+      padding: const EdgeInsets.symmetric(horizontal: 7.0, vertical: 3.0),
+      decoration: BoxDecoration(
+        color: AppTokens.secondary,
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      alignment: Alignment.center,
+      child: child,
+    );
+  }
+}
+
+/// Card de menu COM badge de contagem (reskin): card branco + tile de ícone +
+/// badge pill roxo no canto.
 class MenuItemCardWithBadge extends StatelessWidget {
   const MenuItemCardWithBadge({
     super.key,
@@ -12,7 +79,8 @@ class MenuItemCardWithBadge extends StatelessWidget {
     required this.label,
     required this.badgeCount,
     required this.onTap,
-    this.iconSize = 32.0,
+    this.iconSize = 26.0,
+    this.accent = AppTokens.brand,
   });
 
   final IconData icon;
@@ -20,119 +88,43 @@ class MenuItemCardWithBadge extends StatelessWidget {
   final String badgeCount;
   final VoidCallback onTap;
   final double iconSize;
+  final Color accent;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.sizeOf(context).width * 0.3,
-      height: 120.0,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          color: const Color(0xFFEC3B5B),
-        ),
-      ),
-      child: InkWell(
-        splashColor: Colors.transparent,
-        focusColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        onTap: onTap,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            // Badge no canto superior direito
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Align(
-                  alignment: const AlignmentDirectional(1.0, -1.0),
-                  child: Card(
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    color: AppTokens.secondary,
-                    elevation: 4.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+    return AppCard(
+      onTap: onTap,
+      padding: const EdgeInsets.all(10.0),
+      child: Stack(
+        children: [
+          _MenuCardBody(
+            icon: icon,
+            label: label,
+            iconSize: iconSize,
+            accent: accent,
+          ),
+          Align(
+            alignment: AlignmentDirectional.topEnd,
+            child: _BadgePill(
+              child: Text(
+                badgeCount,
+                style: FlutterFlowTheme.of(context).labelSmall.override(
+                      font: GoogleFonts.readexPro(fontWeight: FontWeight.bold),
+                      color: Colors.white,
+                      fontSize: 11.0,
+                      letterSpacing: 0.0,
+                      fontWeight: FontWeight.bold,
                     ),
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(
-                          5.0, 5.0, 5.0, 5.0),
-                      child: Text(
-                        badgeCount,
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.readexPro(
-                                fontWeight: FontWeight.bold,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontStyle,
-                              ),
-                              color: Colors.white,
-                              letterSpacing: 0.0,
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-            // Ícone e label centralizados
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        icon,
-                        color: const Color(0xFFEC3B5B),
-                        size: iconSize,
-                      ),
-                      AutoSizeText(
-                        label,
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        minFontSize: 8.0,
-                        overflow: TextOverflow.ellipsis,
-                        style:
-                            FlutterFlowTheme.of(context).labelMedium.override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FontWeight.w600,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                                  color: const Color(0xFF14181B),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w600,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontStyle,
-                                ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
 
-/// Widget que renderiza o badge de contagem diretamente de um Widget builder
-/// para casos onde o badge precisa de um StreamBuilder interno.
+/// Variante com badge vindo de um `Widget` builder (ex.: StreamBuilder interno).
 class MenuItemCardWithBadgeBuilder extends StatelessWidget {
   const MenuItemCardWithBadgeBuilder({
     super.key,
@@ -140,7 +132,8 @@ class MenuItemCardWithBadgeBuilder extends StatelessWidget {
     required this.label,
     required this.badgeBuilder,
     required this.onTap,
-    this.iconSize = 32.0,
+    this.iconSize = 26.0,
+    this.accent = AppTokens.brand,
   });
 
   final IconData icon;
@@ -148,96 +141,26 @@ class MenuItemCardWithBadgeBuilder extends StatelessWidget {
   final Widget badgeBuilder;
   final VoidCallback onTap;
   final double iconSize;
+  final Color accent;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.sizeOf(context).width * 0.3,
-      height: 120.0,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          color: const Color(0xFFEC3B5B),
-        ),
-      ),
-      child: InkWell(
-        splashColor: Colors.transparent,
-        focusColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        onTap: onTap,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            // Badge builder no canto superior direito
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Align(
-                  alignment: const AlignmentDirectional(1.0, -1.0),
-                  child: Card(
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    color: AppTokens.secondary,
-                    elevation: 4.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(
-                          5.0, 5.0, 5.0, 5.0),
-                      child: badgeBuilder,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            // Ícone e label centralizados
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        icon,
-                        color: const Color(0xFFEC3B5B),
-                        size: iconSize,
-                      ),
-                      AutoSizeText(
-                        label,
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        minFontSize: 8.0,
-                        overflow: TextOverflow.ellipsis,
-                        style:
-                            FlutterFlowTheme.of(context).labelMedium.override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FontWeight.w600,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                                  color: const Color(0xFF14181B),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.w600,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontStyle,
-                                ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
+    return AppCard(
+      onTap: onTap,
+      padding: const EdgeInsets.all(10.0),
+      child: Stack(
+        children: [
+          _MenuCardBody(
+            icon: icon,
+            label: label,
+            iconSize: iconSize,
+            accent: accent,
+          ),
+          Align(
+            alignment: AlignmentDirectional.topEnd,
+            child: _BadgePill(child: badgeBuilder),
+          ),
+        ],
       ),
     );
   }
