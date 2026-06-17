@@ -6,6 +6,7 @@ import '/data/backend.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/services/index.dart' as actions;
@@ -285,6 +286,8 @@ class _DashboardTecnicoPageState extends State<DashboardTecnicoPage>
           child: DashboardStatCard(
             value: tecnicoRecord.quantidadeAnimaisCadastrados.toString(),
             label: 'Total de registros',
+            icon: Icons.inventory_2_rounded,
+            accent: AppTokens.brand,
           ),
         ),
       ],
@@ -300,12 +303,16 @@ class _DashboardTecnicoPageState extends State<DashboardTecnicoPage>
           return const DashboardStatCardWithStream(
             valueWidget: AppLoadingIndicator(size: 30.0),
             label: 'Propriedades',
+            icon: Icons.home_work_rounded,
+            accent: AppTokens.brand,
           );
         }
 
         return DashboardStatCard(
           value: snapshot.data!.length.toString(),
           label: 'Propriedades',
+          icon: Icons.home_work_rounded,
+          accent: AppTokens.brand,
         );
       },
     );
@@ -320,6 +327,8 @@ class _DashboardTecnicoPageState extends State<DashboardTecnicoPage>
           return const DashboardStatCardWithStream(
             valueWidget: AppLoadingIndicator(size: 30.0),
             label: 'Animais ativos',
+            icon: Icons.pets_rounded,
+            accent: AppTokens.secondary,
           );
         }
 
@@ -332,6 +341,8 @@ class _DashboardTecnicoPageState extends State<DashboardTecnicoPage>
         return DashboardStatCard(
           value: animaisAtivos.toString(),
           label: 'Animais ativos',
+          icon: Icons.pets_rounded,
+          accent: AppTokens.secondary,
         );
       },
     );
