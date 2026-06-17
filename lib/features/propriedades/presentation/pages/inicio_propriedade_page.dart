@@ -714,11 +714,8 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.attach_money_sharp,
-                      color: Color(0xFFEC3B5B),
-                      size: 30.0,
-                    ),
+                    MenuIconTile(icon: Icons.attach_money_sharp),
+                    const SizedBox(height: 8.0),
                     AutoSizeText(
                       'Financeiro',
                       textAlign: TextAlign.center,
@@ -1163,11 +1160,8 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.vaccines,
-                          color: Color(0xFFEC3B5B),
-                          size: 22.0,
-                        ),
+                        MenuIconTile(icon: Icons.vaccines),
+                        const SizedBox(height: 8.0),
                         AutoSizeText(
                           'Inseminações',
                           textAlign: TextAlign.center,
@@ -1314,11 +1308,8 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Icon(
-                        Icons.medical_information_outlined,
-                        color: Color(0xFFEC3B5B),
-                        size: 32.0,
-                      ),
+                      MenuIconTile(icon: Icons.medical_information_outlined),
+                      const SizedBox(height: 8.0),
                       AutoSizeText(
                         'Diagnóstico\nGestação',
                         textAlign: TextAlign.center,
@@ -1496,11 +1487,8 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Icon(
-                        Icons.monitor_heart_outlined,
-                        color: Color(0xFFEC3B5B),
-                        size: 32.0,
-                      ),
+                      MenuIconTile(icon: Icons.monitor_heart_outlined),
+                      const SizedBox(height: 8.0),
                       AutoSizeText(
                         'Vacas Prenhas',
                         textAlign: TextAlign.center,
@@ -1640,11 +1628,8 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Icon(
-                        Icons.alarm_add_sharp,
-                        color: Color(0xFFEC3B5B),
-                        size: 32.0,
-                      ),
+                      MenuIconTile(icon: Icons.alarm_add_sharp),
+                      const SizedBox(height: 8.0),
                       AutoSizeText(
                         'Secas',
                         textAlign: TextAlign.center,
@@ -1792,11 +1777,8 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Icon(
-                        Icons.medical_services,
-                        color: Color(0xFFEC3B5B),
-                        size: 32.0,
-                      ),
+                      MenuIconTile(icon: Icons.medical_services),
+                      const SizedBox(height: 8.0),
                       AutoSizeText(
                         'Exame\nGinecológico',
                         textAlign: TextAlign.center,
@@ -1954,11 +1936,8 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Icon(
-                        Icons.compare_arrows_sharp,
-                        color: Color(0xFFEC3B5B),
-                        size: 32.0,
-                      ),
+                      MenuIconTile(icon: Icons.compare_arrows_sharp),
+                      const SizedBox(height: 8.0),
                       AutoSizeText(
                         'Recria',
                         textAlign: TextAlign.center,
@@ -2096,11 +2075,8 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
-                        Icons.list_alt_sharp,
-                        color: Color(0xFFEC3B5B),
-                        size: 32.0,
-                      ),
+                      MenuIconTile(icon: Icons.list_alt_sharp),
+                      const SizedBox(height: 8.0),
                       AutoSizeText(
                         'Lista completa',
                         textAlign: TextAlign.center,
