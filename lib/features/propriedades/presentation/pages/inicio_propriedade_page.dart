@@ -489,11 +489,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
               width: MediaQuery.sizeOf(context).width * 0.3,
               height: 120.0,
               decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).primaryBackground,
-                borderRadius: BorderRadius.circular(24.0),
-                border: Border.all(
-                  color: AppTokens.secondary,
-                ),
+                color: FlutterFlowTheme.of(context).secondaryBackground,
+                borderRadius: BorderRadius.circular(18.0),
+                boxShadow: AppTokens.softShadow(context),
               ),
               child: InkWell(
                 splashColor: Colors.transparent,
@@ -551,11 +549,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
               width: MediaQuery.sizeOf(context).width * 0.3,
               height: 120.0,
               decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).primaryBackground,
-                borderRadius: BorderRadius.circular(24.0),
-                border: Border.all(
-                  color: AppTokens.secondary,
-                ),
+                color: FlutterFlowTheme.of(context).secondaryBackground,
+                borderRadius: BorderRadius.circular(18.0),
+                boxShadow: AppTokens.softShadow(context),
               ),
               child: InkWell(
                 splashColor: Colors.transparent,
@@ -613,11 +609,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
               width: MediaQuery.sizeOf(context).width * 0.3,
               height: 120.0,
               decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).primaryBackground,
-                borderRadius: BorderRadius.circular(24.0),
-                border: Border.all(
-                  color: AppTokens.secondary,
-                ),
+                color: FlutterFlowTheme.of(context).secondaryBackground,
+                borderRadius: BorderRadius.circular(18.0),
+                boxShadow: AppTokens.softShadow(context),
               ),
               child: InkWell(
                 splashColor: Colors.transparent,
@@ -676,11 +670,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
               width: MediaQuery.sizeOf(context).width * 0.3,
               height: 120.0,
               decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).primaryBackground,
-                borderRadius: BorderRadius.circular(24.0),
-                border: Border.all(
-                  color: AppTokens.secondary,
-                ),
+                color: FlutterFlowTheme.of(context).secondaryBackground,
+                borderRadius: BorderRadius.circular(18.0),
+                boxShadow: AppTokens.softShadow(context),
               ),
               child: InkWell(
                 splashColor: Colors.transparent,
@@ -764,11 +756,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
               width: MediaQuery.sizeOf(context).width * 0.3,
               height: 120.0,
               decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).primaryBackground,
-                borderRadius: BorderRadius.circular(24.0),
-                border: Border.all(
-                  color: AppTokens.secondary,
-                ),
+                color: FlutterFlowTheme.of(context).secondaryBackground,
+                borderRadius: BorderRadius.circular(18.0),
+                boxShadow: AppTokens.softShadow(context),
               ),
               child: InkWell(
                 splashColor: Colors.transparent,
@@ -821,11 +811,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
       width: MediaQuery.sizeOf(context).width * 0.3,
       height: 120.0,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          color: AppTokens.secondary,
-        ),
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        borderRadius: BorderRadius.circular(18.0),
+        boxShadow: AppTokens.softShadow(context),
       ),
       child: InkWell(
         splashColor: Colors.transparent,
@@ -873,11 +861,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
       width: MediaQuery.sizeOf(context).width * 0.3,
       height: 120.0,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          color: AppTokens.secondary,
-        ),
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        borderRadius: BorderRadius.circular(18.0),
+        boxShadow: AppTokens.softShadow(context),
       ),
       child: InkWell(
         splashColor: Colors.transparent,
@@ -934,11 +920,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
       width: MediaQuery.sizeOf(context).width * 0.3,
       height: 120.0,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          color: AppTokens.secondary,
-        ),
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        borderRadius: BorderRadius.circular(18.0),
+        boxShadow: AppTokens.softShadow(context),
       ),
       child: InkWell(
         splashColor: Colors.transparent,
@@ -1054,11 +1038,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
       padding: EdgeInsets.all(5.0),
       height: 120.0,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          color: AppTokens.secondary,
-        ),
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        borderRadius: BorderRadius.circular(18.0),
+        boxShadow: AppTokens.softShadow(context),
       ),
       child: InkWell(
         splashColor: Colors.transparent,
@@ -1227,11 +1209,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
       width: MediaQuery.sizeOf(context).width * 0.3,
       height: 120.0,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          color: AppTokens.secondary,
-        ),
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        borderRadius: BorderRadius.circular(18.0),
+        boxShadow: AppTokens.softShadow(context),
       ),
       child: InkWell(
         splashColor: Colors.transparent,
@@ -1379,11 +1359,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
       width: MediaQuery.sizeOf(context).width * 0.3,
       height: 120.0,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          color: AppTokens.secondary,
-        ),
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        borderRadius: BorderRadius.circular(18.0),
+        boxShadow: AppTokens.softShadow(context),
       ),
       child: InkWell(
         splashColor: Colors.transparent,
@@ -1562,11 +1540,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
       width: MediaQuery.sizeOf(context).width * 0.3,
       height: 120.0,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          color: AppTokens.secondary,
-        ),
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        borderRadius: BorderRadius.circular(18.0),
+        boxShadow: AppTokens.softShadow(context),
       ),
       child: InkWell(
         splashColor: Colors.transparent,
@@ -1708,11 +1684,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
       width: MediaQuery.sizeOf(context).width * 0.3,
       height: 120.0,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          color: AppTokens.secondary,
-        ),
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        borderRadius: BorderRadius.circular(18.0),
+        boxShadow: AppTokens.softShadow(context),
       ),
       child: InkWell(
         splashColor: Colors.transparent,
@@ -1862,11 +1836,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
       width: MediaQuery.sizeOf(context).width * 0.3,
       height: 120.0,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          color: AppTokens.secondary,
-        ),
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        borderRadius: BorderRadius.circular(18.0),
+        boxShadow: AppTokens.softShadow(context),
       ),
       child: InkWell(
         splashColor: Colors.transparent,
@@ -2027,11 +1999,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
       width: MediaQuery.sizeOf(context).width * 0.3,
       height: 120.0,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          color: AppTokens.secondary,
-        ),
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        borderRadius: BorderRadius.circular(18.0),
+        boxShadow: AppTokens.softShadow(context),
       ),
       child: InkWell(
         splashColor: Colors.transparent,
@@ -2169,11 +2139,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
       width: MediaQuery.sizeOf(context).width * 0.3,
       height: 120.0,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(24.0),
-        border: Border.all(
-          color: AppTokens.secondary,
-        ),
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        borderRadius: BorderRadius.circular(18.0),
+        boxShadow: AppTokens.softShadow(context),
       ),
       child: InkWell(
         splashColor: Colors.transparent,

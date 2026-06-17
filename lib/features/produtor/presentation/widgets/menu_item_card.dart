@@ -54,32 +54,3 @@ class MenuItemCard extends StatelessWidget {
     );
   }
 }
-
-/// Tile quadrado-arredondado com o ícone tonalizado — base visual dos cards de
-/// menu. Reutilizável (cards com e sem badge).
-class MenuIconTile extends StatelessWidget {
-  const MenuIconTile({
-    super.key,
-    required this.icon,
-    this.accent = AppTokens.brand,
-    this.iconSize = 26.0,
-  });
-
-  final IconData icon;
-  final Color accent;
-  final double iconSize;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 48.0,
-      height: 48.0,
-      decoration: BoxDecoration(
-        // ignore: deprecated_member_use
-        color: accent.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(14.0),
-      ),
-      child: Icon(icon, color: accent, size: iconSize),
-    );
-  }
-}

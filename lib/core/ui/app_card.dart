@@ -41,6 +41,38 @@ class AppTokens {
       ];
 }
 
+/// "Tile" quadrado-arredondado com o ícone tonalizado — base visual dos cards
+/// de menu e de estatística (reskin). O fundo é uma versão translúcida do
+/// [accent]; o ícone usa o [accent] cheio.
+class MenuIconTile extends StatelessWidget {
+  const MenuIconTile({
+    super.key,
+    required this.icon,
+    this.accent = AppTokens.brand,
+    this.iconSize = 26.0,
+    this.size = 48.0,
+  });
+
+  final IconData icon;
+  final Color accent;
+  final double iconSize;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        // ignore: deprecated_member_use
+        color: accent.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(14.0),
+      ),
+      child: Icon(icon, color: accent, size: iconSize),
+    );
+  }
+}
+
 /// Card branco arredondado com sombra suave — superfície base do reskin.
 /// Reutilizável em todas as telas (lista de stats, seções, linhas de menu).
 class AppCard extends StatelessWidget {

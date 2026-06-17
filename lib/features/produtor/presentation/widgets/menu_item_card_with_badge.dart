@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/app_card.dart';
-import 'menu_item_card.dart';
 
 /// Conteúdo central (tile de ícone + rótulo) compartilhado pelos cards de menu
 /// com badge.
