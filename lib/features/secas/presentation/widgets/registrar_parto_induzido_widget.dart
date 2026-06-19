@@ -286,7 +286,7 @@ class _RegistrarPartoInduzidoWidgetState
                               ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: FlutterFlowTheme.of(context).alternate,
+                          color: Colors.transparent,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.circular(12.0),

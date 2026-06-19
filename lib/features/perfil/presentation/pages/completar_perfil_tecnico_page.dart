@@ -302,9 +302,11 @@ class _CompletarPerfilTecnicoPageState
                       FlutterFlowTheme.of(context).labelMedium.fontWeight,
                   fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
                 ),
+            filled: true,
+            fillColor: FlutterFlowTheme.of(context).primaryBackground,
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).alternate,
+                color: Colors.transparent,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -392,9 +394,11 @@ class _CompletarPerfilTecnicoPageState
                       FlutterFlowTheme.of(context).labelMedium.fontWeight,
                   fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
                 ),
+            filled: true,
+            fillColor: FlutterFlowTheme.of(context).primaryBackground,
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).alternate,
+                color: Colors.transparent,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -485,7 +489,7 @@ class _CompletarPerfilTecnicoPageState
                 ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).alternate,
+                color: Colors.transparent,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -580,7 +584,7 @@ class _CompletarPerfilTecnicoPageState
                 ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).alternate,
+                color: Colors.transparent,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -675,7 +679,7 @@ class _CompletarPerfilTecnicoPageState
                 ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).alternate,
+                color: Colors.transparent,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -767,9 +771,11 @@ class _CompletarPerfilTecnicoPageState
                       FlutterFlowTheme.of(context).labelMedium.fontWeight,
                   fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
                 ),
+            filled: true,
+            fillColor: FlutterFlowTheme.of(context).primaryBackground,
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).alternate,
+                color: Colors.transparent,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -857,9 +863,11 @@ class _CompletarPerfilTecnicoPageState
                       FlutterFlowTheme.of(context).labelMedium.fontWeight,
                   fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
                 ),
+            filled: true,
+            fillColor: FlutterFlowTheme.of(context).primaryBackground,
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).alternate,
+                color: Colors.transparent,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -947,9 +955,11 @@ class _CompletarPerfilTecnicoPageState
                       FlutterFlowTheme.of(context).labelMedium.fontWeight,
                   fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
                 ),
+            filled: true,
+            fillColor: FlutterFlowTheme.of(context).primaryBackground,
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).alternate,
+                color: Colors.transparent,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),

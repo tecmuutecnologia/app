@@ -183,7 +183,7 @@ class _CreateAccountTechnicianPageState
                 ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).alternate,
+                color: Colors.transparent,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -210,7 +210,7 @@ class _CreateAccountTechnicianPageState
               borderRadius: BorderRadius.circular(40.0),
             ),
             filled: true,
-            fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+            fillColor: FlutterFlowTheme.of(context).primaryBackground,
             contentPadding: EdgeInsets.all(24.0),
             prefixIcon: Icon(
               Icons.email,
@@ -258,7 +258,7 @@ class _CreateAccountTechnicianPageState
                 ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).alternate,
+                color: Colors.transparent,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -285,7 +285,7 @@ class _CreateAccountTechnicianPageState
               borderRadius: BorderRadius.circular(40.0),
             ),
             filled: true,
-            fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+            fillColor: FlutterFlowTheme.of(context).primaryBackground,
             contentPadding: EdgeInsets.all(24.0),
             suffixIcon: InkWell(
               onTap: () => safeSetState(
@@ -342,7 +342,7 @@ class _CreateAccountTechnicianPageState
                 ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).alternate,
+                color: Colors.transparent,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -369,7 +369,7 @@ class _CreateAccountTechnicianPageState
               borderRadius: BorderRadius.circular(40.0),
             ),
             filled: true,
-            fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+            fillColor: FlutterFlowTheme.of(context).primaryBackground,
             contentPadding: EdgeInsets.all(24.0),
             suffixIcon: InkWell(
               onTap: () => safeSetState(

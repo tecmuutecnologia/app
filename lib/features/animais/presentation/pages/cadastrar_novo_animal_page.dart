@@ -2950,9 +2950,11 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                                   .labelMedium
                                   .fontStyle,
                             ),
+                    filled: true,
+                    fillColor: FlutterFlowTheme.of(context).primaryBackground,
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).alternate,
+                        color: Colors.transparent,
                         width: 2.0,
                       ),
                       borderRadius: BorderRadius.circular(12.0),
@@ -3237,7 +3239,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                     color: FlutterFlowTheme.of(context).secondaryText,
                     size: 24.0,
                   ),
-                  fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                  fillColor: FlutterFlowTheme.of(context).primaryBackground,
                   elevation: 2.0,
                   borderColor: FlutterFlowTheme.of(context).alternate,
                   borderWidth: 2.0,
@@ -3281,9 +3283,11 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
               fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
             ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).alternate,
+            color: Colors.transparent,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -3351,9 +3355,11 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
               fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
             ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).alternate,
+            color: Colors.transparent,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -3467,7 +3473,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
             color: FlutterFlowTheme.of(context).secondaryText,
             size: 24.0,
           ),
-          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          fillColor: FlutterFlowTheme.of(context).primaryBackground,
           elevation: 2.0,
           borderColor: FlutterFlowTheme.of(context).alternate,
           borderWidth: 2.0,
@@ -3530,7 +3536,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
             color: FlutterFlowTheme.of(context).secondaryText,
             size: 24.0,
           ),
-          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          fillColor: FlutterFlowTheme.of(context).primaryBackground,
           elevation: 2.0,
           borderColor: FlutterFlowTheme.of(context).alternate,
           borderWidth: 2.0,
@@ -3579,33 +3585,35 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                       fontStyle:
                           FlutterFlowTheme.of(context).labelMedium.fontStyle,
                     ),
+                filled: true,
+                fillColor: FlutterFlowTheme.of(context).primaryBackground,
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: FlutterFlowTheme.of(context).alternate,
+                    color: Colors.transparent,
                     width: 2.0,
                   ),
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
                     color: AppTokens.secondary,
                     width: 2.0,
                   ),
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
                 errorBorder: OutlineInputBorder(
                   borderSide: BorderSide(
                     color: FlutterFlowTheme.of(context).error,
                     width: 2.0,
                   ),
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
                   borderSide: BorderSide(
                     color: FlutterFlowTheme.of(context).error,
                     width: 2.0,
                   ),
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
                 contentPadding:
                     EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
@@ -3769,9 +3777,11 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
               fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
             ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).alternate,
+            color: Colors.transparent,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -3839,9 +3849,11 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
               fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
             ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).alternate,
+            color: Colors.transparent,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -3983,33 +3995,35 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                       FlutterFlowTheme.of(context).labelMedium.fontWeight,
                   fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
                 ),
+            filled: true,
+            fillColor: FlutterFlowTheme.of(context).primaryBackground,
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).alternate,
+                color: Colors.transparent,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(12.0),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: AppTokens.secondary,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(12.0),
             ),
             errorBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: FlutterFlowTheme.of(context).error,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(12.0),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: FlutterFlowTheme.of(context).error,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(12.0),
             ),
             contentPadding:
                 EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
@@ -4208,33 +4222,35 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                       FlutterFlowTheme.of(context).labelMedium.fontWeight,
                   fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
                 ),
+            filled: true,
+            fillColor: FlutterFlowTheme.of(context).primaryBackground,
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).alternate,
+                color: Colors.transparent,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(12.0),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: AppTokens.secondary,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(12.0),
             ),
             errorBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: FlutterFlowTheme.of(context).error,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(12.0),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: FlutterFlowTheme.of(context).error,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(8.0),
+              borderRadius: BorderRadius.circular(12.0),
             ),
             contentPadding:
                 EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),

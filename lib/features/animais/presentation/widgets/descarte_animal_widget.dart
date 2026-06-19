@@ -276,7 +276,7 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
                   color: FlutterFlowTheme.of(context).secondaryText,
                   size: 24.0,
                 ),
-                fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                fillColor: FlutterFlowTheme.of(context).primaryBackground,
                 elevation: 2.0,
                 borderColor: FlutterFlowTheme.of(context).alternate,
                 borderWidth: 2.0,
@@ -335,7 +335,7 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
                   ),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: FlutterFlowTheme.of(context).alternate,
+                  color: Colors.transparent,
                   width: 2.0,
                 ),
                 borderRadius: BorderRadius.circular(12.0),
@@ -362,7 +362,7 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
                 borderRadius: BorderRadius.circular(12.0),
               ),
               filled: true,
-              fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+              fillColor: FlutterFlowTheme.of(context).primaryBackground,
               contentPadding:
                   EdgeInsetsDirectional.fromSTEB(20.0, 24.0, 20.0, 24.0),
             ),

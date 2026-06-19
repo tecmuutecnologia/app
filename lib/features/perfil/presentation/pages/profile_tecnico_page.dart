@@ -159,34 +159,34 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
               ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).alternate,
+              color: Colors.transparent,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: AppTokens.secondary,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           errorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).error,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).error,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           filled: true,
-          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          fillColor: FlutterFlowTheme.of(context).primaryBackground,
           contentPadding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 0.0, 5.0),
         ),
         style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -249,34 +249,34 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
               ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).alternate,
+              color: Colors.transparent,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: AppTokens.secondary,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           errorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).error,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).error,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           filled: true,
-          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          fillColor: FlutterFlowTheme.of(context).primaryBackground,
           contentPadding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 0.0, 5.0),
         ),
         style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -339,34 +339,34 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
               ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).alternate,
+              color: Colors.transparent,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: AppTokens.secondary,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           errorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).error,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).error,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           filled: true,
-          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          fillColor: FlutterFlowTheme.of(context).primaryBackground,
           contentPadding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 0.0, 5.0),
         ),
         style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -423,34 +423,34 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
               ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).alternate,
+              color: Colors.transparent,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: AppTokens.secondary,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           errorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).error,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).error,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           filled: true,
-          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          fillColor: FlutterFlowTheme.of(context).primaryBackground,
           contentPadding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 0.0, 5.0),
         ),
         style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -507,34 +507,34 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
               ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).alternate,
+              color: Colors.transparent,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: AppTokens.secondary,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           errorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).error,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).error,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           filled: true,
-          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          fillColor: FlutterFlowTheme.of(context).primaryBackground,
           contentPadding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 0.0, 5.0),
         ),
         style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -597,34 +597,34 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
               ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).alternate,
+              color: Colors.transparent,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: AppTokens.secondary,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           errorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).error,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).error,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(12.0),
           ),
           filled: true,
-          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          fillColor: FlutterFlowTheme.of(context).primaryBackground,
           contentPadding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 0.0, 5.0),
         ),
         style: FlutterFlowTheme.of(context).bodyMedium.override(

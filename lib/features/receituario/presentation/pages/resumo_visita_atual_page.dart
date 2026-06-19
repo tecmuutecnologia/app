@@ -455,7 +455,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
             ),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).alternate,
+            color: Colors.transparent,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -482,7 +482,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
           borderRadius: BorderRadius.circular(12.0),
         ),
         filled: true,
-        fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
         contentPadding: EdgeInsetsDirectional.fromSTEB(20.0, 24.0, 20.0, 24.0),
       ),
       style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -614,7 +614,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
             color: Colors.transparent,
             width: 1.0,
           ),
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(12.0),
         ),
       ),
     );

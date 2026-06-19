@@ -522,7 +522,7 @@ class _PropriedadesExcluiasPageState extends State<PropriedadesExcluiasPage> {
                     color: Colors.transparent,
                     width: 1.0,
                   ),
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
               ),
             ),

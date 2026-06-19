@@ -556,9 +556,11 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
               fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
             ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).alternate,
+            color: Colors.transparent,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -631,9 +633,11 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
               fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
             ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).alternate,
+            color: Colors.transparent,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -708,9 +712,11 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
               fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
             ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).alternate,
+            color: Colors.transparent,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -784,9 +790,11 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
               fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
             ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).alternate,
+            color: Colors.transparent,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -861,9 +869,11 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
               fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
             ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).alternate,
+            color: Colors.transparent,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -936,9 +946,11 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
               fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
             ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).alternate,
+            color: Colors.transparent,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -1011,9 +1023,11 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
               fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
             ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).alternate,
+            color: Colors.transparent,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -1088,9 +1102,11 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
               fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
             ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).alternate,
+            color: Colors.transparent,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -1167,7 +1183,7 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
         color: FlutterFlowTheme.of(context).secondaryText,
         size: 24.0,
       ),
-      fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+      fillColor: FlutterFlowTheme.of(context).primaryBackground,
       elevation: 2.0,
       borderColor: FlutterFlowTheme.of(context).alternate,
       borderWidth: 2.0,
@@ -1206,9 +1222,11 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
               fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
             ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).alternate,
+            color: Colors.transparent,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -1293,9 +1311,11 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
               fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
             ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).alternate,
+            color: Colors.transparent,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),

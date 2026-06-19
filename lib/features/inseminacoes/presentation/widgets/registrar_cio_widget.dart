@@ -441,33 +441,35 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
                         fontStyle:
                             FlutterFlowTheme.of(context).labelMedium.fontStyle,
                       ),
+                  filled: true,
+                  fillColor: FlutterFlowTheme.of(context).primaryBackground,
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: FlutterFlowTheme.of(context).alternate,
+                      color: Colors.transparent,
                       width: 2.0,
                     ),
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                       color: AppTokens.secondary,
                       width: 2.0,
                     ),
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
                   errorBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                       color: FlutterFlowTheme.of(context).error,
                       width: 2.0,
                     ),
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
                   focusedErrorBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                       color: FlutterFlowTheme.of(context).error,
                       width: 2.0,
                     ),
-                    borderRadius: BorderRadius.circular(8.0),
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
                   contentPadding:
                       EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
@@ -639,7 +641,7 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
               ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).alternate,
+              color: Colors.transparent,
               width: 2.0,
             ),
             borderRadius: BorderRadius.circular(12.0),
@@ -666,7 +668,7 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
             borderRadius: BorderRadius.circular(12.0),
           ),
           filled: true,
-          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          fillColor: FlutterFlowTheme.of(context).primaryBackground,
           contentPadding:
               EdgeInsetsDirectional.fromSTEB(20.0, 24.0, 20.0, 24.0),
         ),
