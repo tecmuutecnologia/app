@@ -1711,98 +1711,110 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
         backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(100.0),
-          child: AppBar(
-            backgroundColor: Color(0xFFF75E38),
-            automaticallyImplyLeading: false,
-            actions: [],
-            flexibleSpace: FlexibleSpaceBar(
-              title: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+          child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFFF75E38), Color(0xFFEC3B5B)],
+                  begin: AlignmentDirectional(-1.0, -1.0),
+                  end: AlignmentDirectional(1.0, 1.0),
+                ),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(24.0),
+                  bottomRight: Radius.circular(24.0),
+                ),
+              ),
+              child: AppBar(
+                backgroundColor: Colors.transparent,
+                automaticallyImplyLeading: false,
+                actions: [],
+                flexibleSpace: FlexibleSpaceBar(
+                  title: Column(
                     mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding:
-                            EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-                        child: FlutterFlowIconButton(
-                          borderColor: Colors.transparent,
-                          borderRadius: 30.0,
-                          borderWidth: 1.0,
-                          buttonSize: 50.0,
-                          icon: Icon(
-                            Icons.arrow_back_rounded,
-                            color: Colors.white,
-                            size: 30.0,
-                          ),
-                          onPressed: () async {
-                            context.pushNamed(
-                              InicioPropriedadePage.routeName,
-                              queryParameters: {
-                                'nomePropriedade': serializeParam(
-                                  widget.nomePropriedade,
-                                  ParamType.String,
-                                ),
-                                'uidPropriedade': serializeParam(
-                                  widget.uidPropriedade,
-                                  ParamType.DocumentReference,
-                                ),
-                                'uidTecnico': serializeParam(
-                                  widget.uidTecnico,
-                                  ParamType.DocumentReference,
-                                ),
-                                'emailPropriedade': serializeParam(
-                                  widget.emailPropriedade,
-                                  ParamType.String,
-                                ),
-                                'visitaPresencial': serializeParam(
-                                  widget.visitaPresencial,
-                                  ParamType.bool,
-                                ),
-                                'diasDg': serializeParam(
-                                  widget.diasDg,
-                                  ParamType.String,
-                                ),
-                              }.withoutNulls,
-                            );
-                          },
-                        ),
-                      ),
-                      Text(
-                        'Animais em secagem',
-                        style: FlutterFlowTheme.of(context)
-                            .headlineMedium
-                            .override(
-                              font: GoogleFonts.outfit(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .headlineMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .headlineMedium
-                                    .fontStyle,
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                                12.0, 0.0, 0.0, 0.0),
+                            child: FlutterFlowIconButton(
+                              borderColor: Colors.transparent,
+                              borderRadius: 30.0,
+                              borderWidth: 1.0,
+                              buttonSize: 50.0,
+                              icon: Icon(
+                                Icons.arrow_back_rounded,
+                                color: Colors.white,
+                                size: 30.0,
                               ),
-                              color: Colors.white,
-                              fontSize: 22.0,
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .headlineMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .headlineMedium
-                                  .fontStyle,
+                              onPressed: () async {
+                                context.pushNamed(
+                                  InicioPropriedadePage.routeName,
+                                  queryParameters: {
+                                    'nomePropriedade': serializeParam(
+                                      widget.nomePropriedade,
+                                      ParamType.String,
+                                    ),
+                                    'uidPropriedade': serializeParam(
+                                      widget.uidPropriedade,
+                                      ParamType.DocumentReference,
+                                    ),
+                                    'uidTecnico': serializeParam(
+                                      widget.uidTecnico,
+                                      ParamType.DocumentReference,
+                                    ),
+                                    'emailPropriedade': serializeParam(
+                                      widget.emailPropriedade,
+                                      ParamType.String,
+                                    ),
+                                    'visitaPresencial': serializeParam(
+                                      widget.visitaPresencial,
+                                      ParamType.bool,
+                                    ),
+                                    'diasDg': serializeParam(
+                                      widget.diasDg,
+                                      ParamType.String,
+                                    ),
+                                  }.withoutNulls,
+                                );
+                              },
                             ),
+                          ),
+                          Text(
+                            'Animais em secagem',
+                            style: FlutterFlowTheme.of(context)
+                                .headlineMedium
+                                .override(
+                                  font: GoogleFonts.outfit(
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .headlineMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .headlineMedium
+                                        .fontStyle,
+                                  ),
+                                  color: Colors.white,
+                                  fontSize: 22.0,
+                                  letterSpacing: 0.0,
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                      .headlineMedium
+                                      .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .headlineMedium
+                                      .fontStyle,
+                                ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-              centerTitle: true,
-              expandedTitleScale: 1.0,
-            ),
-            elevation: 0.0,
-          ),
+                  centerTitle: true,
+                  expandedTitleScale: 1.0,
+                ),
+                elevation: 0.0,
+              )),
         ),
         body: Column(
           mainAxisSize: MainAxisSize.max,

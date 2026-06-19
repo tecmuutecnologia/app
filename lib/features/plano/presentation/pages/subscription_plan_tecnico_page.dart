@@ -608,24 +608,36 @@ class _SubscriptionPlanTecnicoPageState
             backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
             appBar: PreferredSize(
               preferredSize: Size.fromHeight(100.0),
-              child: AppBar(
-                backgroundColor: Color(0xFFF75E38),
-                automaticallyImplyLeading: false,
-                actions: [],
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _p1(context),
-                    ],
+              child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFFF75E38), Color(0xFFEC3B5B)],
+                      begin: AlignmentDirectional(-1.0, -1.0),
+                      end: AlignmentDirectional(1.0, 1.0),
+                    ),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(24.0),
+                      bottomRight: Radius.circular(24.0),
+                    ),
                   ),
-                  centerTitle: true,
-                  expandedTitleScale: 1.0,
-                ),
-                elevation: 0.0,
-              ),
+                  child: AppBar(
+                    backgroundColor: Colors.transparent,
+                    automaticallyImplyLeading: false,
+                    actions: [],
+                    flexibleSpace: FlexibleSpaceBar(
+                      title: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _p1(context),
+                        ],
+                      ),
+                      centerTitle: true,
+                      expandedTitleScale: 1.0,
+                    ),
+                    elevation: 0.0,
+                  )),
             ),
             body: Align(
               alignment: AlignmentDirectional(0.0, -1.0),
