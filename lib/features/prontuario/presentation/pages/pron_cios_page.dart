@@ -1,4 +1,5 @@
 import '/data/backend.dart';
+import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
@@ -92,13 +93,11 @@ class _PronCiosPageState extends State<PronCiosPage> {
       constraints: BoxConstraints(
         maxWidth: 570.0,
       ),
+      margin: EdgeInsetsDirectional.fromSTEB(12.0, 10.0, 12.0, 10.0),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(0.0),
-        border: Border.all(
-          color: Color(0xFFE5E7EB),
-          width: 0.0,
-        ),
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: AppTokens.softShadow(context),
       ),
       child: Padding(
         padding: EdgeInsets.all(12.0),
