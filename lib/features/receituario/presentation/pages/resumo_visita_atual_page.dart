@@ -462,7 +462,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTokens.secondary,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),

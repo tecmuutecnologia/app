@@ -1,6 +1,7 @@
 // ignore_for_file: dead_null_aware_expression
 
 import '/data/backend.dart';
+import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -364,7 +365,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).primary,
+                        color: AppTokens.secondary,
                         width: 2.0,
                       ),
                       borderRadius: BorderRadius.circular(12.0),
@@ -839,7 +840,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTokens.secondary,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -912,7 +913,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTokens.secondary,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -1138,7 +1139,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: FlutterFlowTheme.of(context).primary,
+                    color: AppTokens.secondary,
                     width: 2.0,
                   ),
                   borderRadius: BorderRadius.circular(8.0),
@@ -1333,7 +1334,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTokens.secondary,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -1406,7 +1407,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTokens.secondary,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),

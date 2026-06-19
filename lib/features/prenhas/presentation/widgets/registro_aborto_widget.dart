@@ -1,6 +1,7 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
 import '/data/backend.dart';
+import '/core/ui/app_card.dart';
 import '/data/objectbox/entities/index.dart';
 import '/data/objectbox/repositories/acao_repository.dart';
 import '/data/objectbox/repositories/animal_repository.dart';
@@ -309,7 +310,7 @@ class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: FlutterFlowTheme.of(context).primary,
+                          color: AppTokens.secondary,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.circular(8.0),

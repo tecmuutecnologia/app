@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import, dead_code, unnecessary_null_in_if_null_operators, dead_null_aware_expression
 import '/data/backend.dart';
+import '/core/ui/app_card.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/core/constants/tipo_acoes_constantes.dart';
 import '/data/objectbox/entities/index.dart';
@@ -700,7 +701,7 @@ class _NovaAcaoExameGinecologicoWidgetState
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: FlutterFlowTheme.of(context).primary,
+                      color: AppTokens.secondary,
                       width: 2.0,
                     ),
                     borderRadius: BorderRadius.circular(8.0),
@@ -896,7 +897,7 @@ class _NovaAcaoExameGinecologicoWidgetState
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).primary,
+              color: AppTokens.secondary,
               width: 2.0,
             ),
             borderRadius: BorderRadius.circular(12.0),

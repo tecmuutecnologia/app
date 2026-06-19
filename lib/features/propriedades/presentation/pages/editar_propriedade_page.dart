@@ -1,4 +1,5 @@
 import '/core/auth/firebase_auth/auth_util.dart';
+import '/core/ui/app_card.dart';
 import '/data/backend.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
@@ -276,7 +277,7 @@ class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).primary,
+              color: AppTokens.secondary,
               width: 2.0,
             ),
             borderRadius: BorderRadius.circular(8.0),
@@ -364,7 +365,7 @@ class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).primary,
+              color: AppTokens.secondary,
               width: 2.0,
             ),
             borderRadius: BorderRadius.circular(8.0),
@@ -445,7 +446,7 @@ class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).primary,
+              color: AppTokens.secondary,
               width: 2.0,
             ),
             borderRadius: BorderRadius.circular(8.0),
@@ -526,7 +527,7 @@ class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).primary,
+              color: AppTokens.secondary,
               width: 2.0,
             ),
             borderRadius: BorderRadius.circular(8.0),
@@ -660,7 +661,7 @@ class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).primary,
+                color: AppTokens.secondary,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(8.0),
@@ -1143,7 +1144,7 @@ class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context).primary,
+                                  color: AppTokens.secondary,
                                   width: 2.0,
                                 ),
                                 borderRadius: BorderRadius.circular(8.0),
@@ -1266,7 +1267,7 @@ class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context).primary,
+                                  color: AppTokens.secondary,
                                   width: 2.0,
                                 ),
                                 borderRadius: BorderRadius.circular(8.0),

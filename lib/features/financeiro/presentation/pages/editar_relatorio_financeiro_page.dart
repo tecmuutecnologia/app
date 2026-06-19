@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison, unused_local_variable
 
 import '/data/backend.dart';
+import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
@@ -395,7 +396,7 @@ class _EditarRelatorioFinanceiroPageState
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: FlutterFlowTheme.of(context).primary,
+                  color: AppTokens.secondary,
                   width: 2.0,
                 ),
                 borderRadius: BorderRadius.circular(8.0),
@@ -536,7 +537,7 @@ class _EditarRelatorioFinanceiroPageState
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).primary,
+                color: AppTokens.secondary,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(12.0),
@@ -632,7 +633,7 @@ class _EditarRelatorioFinanceiroPageState
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTokens.secondary,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -722,7 +723,7 @@ class _EditarRelatorioFinanceiroPageState
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTokens.secondary,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),

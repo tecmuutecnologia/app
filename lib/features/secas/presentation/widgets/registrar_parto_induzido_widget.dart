@@ -1,6 +1,7 @@
 // ignore_for_file: dead_null_aware_expression, unused_field
 
 import '/data/backend.dart';
+import '/core/ui/app_card.dart';
 import '/data/objectbox/repositories/animal_repository.dart';
 import 'dart:async';
 import '/core/ui/flutter_flow_animations.dart';
@@ -292,7 +293,7 @@ class _RegistrarPartoInduzidoWidgetState
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: FlutterFlowTheme.of(context).primary,
+                          color: AppTokens.secondary,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.circular(12.0),

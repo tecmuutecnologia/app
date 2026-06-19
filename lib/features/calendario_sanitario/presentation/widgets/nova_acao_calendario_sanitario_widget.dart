@@ -565,7 +565,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: FlutterFlowTheme.of(context).primary,
+                      color: AppTokens.secondary,
                       width: 2.0,
                     ),
                     borderRadius: BorderRadius.circular(8.0),
@@ -761,7 +761,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).primary,
+              color: AppTokens.secondary,
               width: 2.0,
             ),
             borderRadius: BorderRadius.circular(12.0),

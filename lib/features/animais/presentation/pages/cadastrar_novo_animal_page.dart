@@ -1,6 +1,7 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
 import '/data/backend.dart';
+import '/core/ui/app_card.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/constants/grupos_racas_constantes.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
@@ -2958,7 +2959,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: FlutterFlowTheme.of(context).primary,
+                        color: AppTokens.secondary,
                         width: 2.0,
                       ),
                       borderRadius: BorderRadius.circular(12.0),
@@ -3289,7 +3290,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTokens.secondary,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -3359,7 +3360,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTokens.secondary,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -3587,7 +3588,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: FlutterFlowTheme.of(context).primary,
+                    color: AppTokens.secondary,
                     width: 2.0,
                   ),
                   borderRadius: BorderRadius.circular(8.0),
@@ -3777,7 +3778,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTokens.secondary,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -3847,7 +3848,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).primary,
+            color: AppTokens.secondary,
             width: 2.0,
           ),
           borderRadius: BorderRadius.circular(12.0),
@@ -3991,7 +3992,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).primary,
+                color: AppTokens.secondary,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(8.0),
@@ -4216,7 +4217,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).primary,
+                color: AppTokens.secondary,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(8.0),

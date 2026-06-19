@@ -1,6 +1,7 @@
 // ignore_for_file: dead_code
 
 import '/data/backend.dart';
+import '/core/ui/app_card.dart';
 import '/data/objectbox/repositories/animal_repository.dart';
 import '/core/connectivity/connectivity_service.dart';
 import 'dart:async';
@@ -271,7 +272,7 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: FlutterFlowTheme.of(context).primary,
+                          color: AppTokens.secondary,
                           width: 2.0,
                         ),
                         borderRadius: BorderRadius.circular(12.0),

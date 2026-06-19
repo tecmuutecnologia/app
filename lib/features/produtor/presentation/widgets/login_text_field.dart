@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/app_card.dart';
 
 /// Widget reutilizável para campos de texto com estilo padrão do app.
 class LoginTextField extends StatelessWidget {
@@ -56,7 +57,7 @@ class LoginTextField extends StatelessWidget {
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).primary,
+              color: AppTokens.secondary,
               width: 2.0,
             ),
             borderRadius: BorderRadius.circular(12.0),

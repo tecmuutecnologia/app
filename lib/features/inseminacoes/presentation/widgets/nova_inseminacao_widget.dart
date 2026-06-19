@@ -1,6 +1,7 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
 import '/data/backend.dart';
+import '/core/ui/app_card.dart';
 import '/data/objectbox/index.dart';
 import 'dart:async';
 import '/core/ui/flutter_flow_animations.dart';
@@ -670,7 +671,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: FlutterFlowTheme.of(context).primary,
+                      color: AppTokens.secondary,
                       width: 2.0,
                     ),
                     borderRadius: BorderRadius.circular(8.0),
@@ -867,7 +868,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).primary,
+              color: AppTokens.secondary,
               width: 2.0,
             ),
             borderRadius: BorderRadius.circular(12.0),

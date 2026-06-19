@@ -311,7 +311,7 @@ class _CompletarPerfilTecnicoPageState
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).primary,
+                color: AppTokens.secondary,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -401,7 +401,7 @@ class _CompletarPerfilTecnicoPageState
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).primary,
+                color: AppTokens.secondary,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -492,7 +492,7 @@ class _CompletarPerfilTecnicoPageState
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).primary,
+                color: AppTokens.secondary,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -587,7 +587,7 @@ class _CompletarPerfilTecnicoPageState
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).primary,
+                color: AppTokens.secondary,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -682,7 +682,7 @@ class _CompletarPerfilTecnicoPageState
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).primary,
+                color: AppTokens.secondary,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -776,7 +776,7 @@ class _CompletarPerfilTecnicoPageState
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).primary,
+                color: AppTokens.secondary,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -866,7 +866,7 @@ class _CompletarPerfilTecnicoPageState
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).primary,
+                color: AppTokens.secondary,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
@@ -956,7 +956,7 @@ class _CompletarPerfilTecnicoPageState
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).primary,
+                color: AppTokens.secondary,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(40.0),
