@@ -1,5 +1,6 @@
 // ignore_for_file: unnecessary_null_comparison
 import '/data/backend.dart';
+import '/core/ui/app_card.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/data/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
@@ -116,27 +117,14 @@ class _DiagnosticogestacaoPageState extends State<DiagnosticogestacaoPage> {
       child: Align(
         alignment: AlignmentDirectional(0.0, 0.0),
         child: Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 1.0),
+          padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 10.0),
           child: Container(
             width: double.infinity,
             height: 180.0,
             decoration: BoxDecoration(
               color: FlutterFlowTheme.of(context).secondaryBackground,
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 0.0,
-                  color: FlutterFlowTheme.of(context).primaryBackground,
-                  offset: Offset(
-                    0.0,
-                    1.0,
-                  ),
-                )
-              ],
-              borderRadius: BorderRadius.circular(0.0),
-              border: Border.all(
-                color: FlutterFlowTheme.of(context).primaryBackground,
-                width: 1.0,
-              ),
+              borderRadius: BorderRadius.circular(16.0),
+              boxShadow: AppTokens.softShadow(context),
             ),
             child: Padding(
               padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
