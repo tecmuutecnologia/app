@@ -1783,13 +1783,11 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
       constraints: BoxConstraints(
         maxWidth: 570.0,
       ),
+      margin: EdgeInsetsDirectional.fromSTEB(12.0, 10.0, 12.0, 10.0),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(0.0),
-        border: Border.all(
-          color: Color(0xFFE5E7EB),
-          width: 0.0,
-        ),
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: AppTokens.softShadow(context),
       ),
       child: Padding(
         padding: EdgeInsets.all(12.0),
@@ -4744,23 +4742,36 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
             backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
             appBar: PreferredSize(
               preferredSize: Size.fromHeight(100.0),
-              child: AppBar(
-                backgroundColor: Color(0xFFF75E38),
-                automaticallyImplyLeading: false,
-                actions: [],
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _p1(context),
-                    ],
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFF75E38), Color(0xFFEC3B5B)],
+                    begin: AlignmentDirectional(-1.0, -1.0),
+                    end: AlignmentDirectional(1.0, 1.0),
                   ),
-                  centerTitle: true,
-                  expandedTitleScale: 1.0,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(24.0),
+                    bottomRight: Radius.circular(24.0),
+                  ),
                 ),
-                elevation: 0.0,
+                child: AppBar(
+                  backgroundColor: Colors.transparent,
+                  automaticallyImplyLeading: false,
+                  actions: [],
+                  flexibleSpace: FlexibleSpaceBar(
+                    title: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _p1(context),
+                      ],
+                    ),
+                    centerTitle: true,
+                    expandedTitleScale: 1.0,
+                  ),
+                  elevation: 0.0,
+                ),
               ),
             ),
             body: SingleChildScrollView(
@@ -4773,13 +4784,12 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                       constraints: BoxConstraints(
                         maxWidth: 570.0,
                       ),
+                      margin: EdgeInsetsDirectional.fromSTEB(
+                          12.0, 10.0, 12.0, 10.0),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(0.0),
-                        border: Border.all(
-                          color: Color(0xFFE5E7EB),
-                          width: 0.0,
-                        ),
+                        borderRadius: BorderRadius.circular(16.0),
+                        boxShadow: AppTokens.softShadow(context),
                       ),
                       child: Padding(
                         padding: EdgeInsets.all(12.0),
@@ -4826,13 +4836,12 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                       constraints: BoxConstraints(
                         maxWidth: 570.0,
                       ),
+                      margin: EdgeInsetsDirectional.fromSTEB(
+                          12.0, 10.0, 12.0, 10.0),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(0.0),
-                        border: Border.all(
-                          color: Color(0xFFE5E7EB),
-                          width: 0.0,
-                        ),
+                        borderRadius: BorderRadius.circular(16.0),
+                        boxShadow: AppTokens.softShadow(context),
                       ),
                       child: Padding(
                         padding: EdgeInsets.all(12.0),
