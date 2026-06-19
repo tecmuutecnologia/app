@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 import '/core/auth/firebase_auth/auth_util.dart';
+import '/core/ui/app_card.dart';
 import '/data/backend.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -126,36 +127,36 @@ class _PropriedadesExcluiasPageState extends State<PropriedadesExcluiasPage> {
               ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).alternate,
+              color: Colors.transparent,
               width: 1.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(14.0),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Color(0xFFF75E38),
-              width: 1.0,
+              color: AppTokens.secondary,
+              width: 1.5,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(14.0),
           ),
           errorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).error,
               width: 1.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(14.0),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).error,
               width: 1.0,
             ),
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(14.0),
           ),
           filled: true,
-          fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+          fillColor: FlutterFlowTheme.of(context).primaryBackground,
           prefixIcon: Icon(
-            Icons.search,
+            Icons.search_rounded,
             color: FlutterFlowTheme.of(context).secondaryText,
           ),
           suffixIcon: _searchController!.text.isNotEmpty
@@ -309,22 +310,14 @@ class _PropriedadesExcluiasPageState extends State<PropriedadesExcluiasPage> {
                 final listViewPropriedadesRecord =
                     listViewPropriedadesRecordList[listViewIndex];
                 return Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 1.0),
+                  padding:
+                      EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 10.0),
                   child: Container(
-                    width: 100.0,
+                    width: double.infinity,
                     decoration: BoxDecoration(
                       color: FlutterFlowTheme.of(context).secondaryBackground,
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 0.0,
-                          color: FlutterFlowTheme.of(context).alternate,
-                          offset: Offset(
-                            0.0,
-                            1.0,
-                          ),
-                        )
-                      ],
-                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(16.0),
+                      boxShadow: AppTokens.softShadow(context),
                     ),
                     child: Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(
