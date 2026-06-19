@@ -468,7 +468,7 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
           // então uma altura constante cabe em qualquer largura de tela e
           // elimina o overflow que ocorria com childAspectRatio: 1.0 (célula
           // quadrada ~112px, menor que o conteúdo ~135px).
-          mainAxisExtent: 120.0,
+          mainAxisExtent: 156.0,
         ),
         primary: false,
         shrinkWrap: true,
@@ -1160,7 +1160,8 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        MenuIconTile(icon: Icons.vaccines),
+                        MenuIconTile(
+                            icon: Icons.vaccines, accent: AppTokens.secondary),
                         const SizedBox(height: 8.0),
                         AutoSizeText(
                           'Inseminações',
@@ -1308,7 +1309,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      MenuIconTile(icon: Icons.medical_information_outlined),
+                      MenuIconTile(
+                          icon: Icons.medical_information_outlined,
+                          accent: AppTokens.secondary),
                       const SizedBox(height: 8.0),
                       AutoSizeText(
                         'Diagnóstico\nGestação',
@@ -1487,7 +1490,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      MenuIconTile(icon: Icons.monitor_heart_outlined),
+                      MenuIconTile(
+                          icon: Icons.monitor_heart_outlined,
+                          accent: AppTokens.secondary),
                       const SizedBox(height: 8.0),
                       AutoSizeText(
                         'Vacas Prenhas',
@@ -1777,7 +1782,9 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      MenuIconTile(icon: Icons.medical_services),
+                      MenuIconTile(
+                          icon: Icons.medical_services,
+                          accent: AppTokens.secondary),
                       const SizedBox(height: 8.0),
                       AutoSizeText(
                         'Exame\nGinecológico',

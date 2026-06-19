@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '/core/ui/app_card.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 
@@ -133,6 +134,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
 
     return MenuItemCardWithBadge(
       icon: Icons.vaccines,
+      accent: AppTokens.secondary,
       label: 'Inseminações',
       iconSize: 22.0,
       badgeCount: badgeCount,
@@ -162,6 +164,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
 
     return MenuItemCardWithBadge(
       icon: Icons.medical_information_outlined,
+      accent: AppTokens.secondary,
       label: 'Diagnóstico\nGestação',
       badgeCount: count,
       onTap: () {
@@ -196,6 +199,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
 
     return MenuItemCardWithBadge(
       icon: Icons.monitor_heart_outlined,
+      accent: AppTokens.secondary,
       label: 'Vacas Prenhas',
       badgeCount: getBadgeCount(),
       onTap: () {
@@ -246,6 +250,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
 
     return MenuItemCardWithBadge(
       icon: Icons.medical_services,
+      accent: AppTokens.secondary,
       label: 'Exame\nGinecológico',
       badgeCount: getBadgeCount(),
       onTap: () {
