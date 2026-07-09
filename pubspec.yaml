@@ -147,10 +147,11 @@ dependencies:
   objectbox: ^4.0.0
   objectbox_flutter_libs: ^4.3.1
   # ObjectBox Admin: UI web (http://127.0.0.1:8090) p/ inspecionar o banco em
-  # debug. Ativa Admin.isAvailable() (ver data/objectbox/objectbox_debug_service
-  # .dart); guardado por kDebugMode no menu de debug, inerte em release.
-  # Rode `flutter pub get` p/ baixar (versão ^4.x casa o objectbox).
-  objectbox_flutter_admin: ^4.0.0
+  # debug. A classe `Admin` vem do core `objectbox`; NÃO existe pacote Dart
+  # `objectbox_flutter_admin`. Para `Admin.isAvailable()` retornar true no
+  # Android, troque a native lib por `objectbox-android-objectbrowser` no
+  # android/app/build.gradle (debugImplementation). Guardado por kDebugMode no
+  # menu de debug, inerte em release.
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

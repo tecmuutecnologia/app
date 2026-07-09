@@ -12,11 +12,12 @@ class ObjectBoxDebugService {
 
   /// Mantém a instância viva enquanto o Admin estiver rodando (senão é coletada
   /// e o servidor cai). `Admin` vem do core `objectbox`; o servidor só fica
-  /// disponível com `objectbox_flutter_admin` no pubspec (native libs de debug).
+  /// disponível quando a native lib do Android é a `objectbox-android-
+  /// objectbrowser` (debugImplementation no android/app/build.gradle).
   static Admin? _admin;
 
   /// Inicia o ObjectBox Admin (UI web de inspeção do banco). Só nativo + debug:
-  /// requer `objectbox_flutter_admin` no pubspec (`Admin.isAvailable()`).
+  /// requer a native lib `objectbox-android-objectbrowser` (`Admin.isAvailable()`).
   static Future<bool> startAdmin({int port = 8090}) async {
     try {
       if (kIsWeb) {
@@ -36,8 +37,9 @@ class ObjectBoxDebugService {
 
       if (!Admin.isAvailable()) {
         print('❌ ObjectBox Admin indisponível neste build.');
-        print('💡 Adicione `objectbox_flutter_admin` ao pubspec.yaml e rode '
-            '`flutter pub get` (só funciona em debug).');
+        print('💡 Use a native lib `objectbox-android-objectbrowser` '
+            '(debugImplementation no android/app/build.gradle); só funciona '
+            'em debug no Android.');
         return false;
       }
 
@@ -51,7 +53,8 @@ class ObjectBoxDebugService {
       return true;
     } catch (e) {
       print('❌ Erro ao iniciar Admin: $e');
-      print('💡 Dica: confirme `objectbox_flutter_admin` no pubspec.yaml.');
+      print('💡 Dica: confirme a native lib `objectbox-android-objectbrowser` '
+          'no android/app/build.gradle.');
       return false;
     }
   }
