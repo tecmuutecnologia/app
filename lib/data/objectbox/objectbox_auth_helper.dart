@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -10,6 +12,8 @@ import 'repositories/index.dart';
 /// Helper para integração do ObjectBox com autenticação
 /// Gerencia o ciclo de vida de sincronização offline-first
 class ObjectBoxAuthHelper {
+  static bool _tecnicoRefreshStarted = false;
+
   /// Inicializa o sistema de sincronização
   /// Deve ser chamado uma vez no startup do app (main.dart)
   static Future<void> initializeOfflineFirst() async {
@@ -25,6 +29,28 @@ class ObjectBoxAuthHelper {
 
     // Inicia sincronização periódica
     OfflineFirstSyncService.instance.startPeriodicSync();
+
+    _startTecnicoAutoRefresh();
+  }
+
+  /// Rebaixa os dados do técnico (limites/plano, contadores) sempre que o app
+  /// abre com uma sessão já salva ou o usuário faz login. O `performFullDownload`
+  /// só roda no 1º login, então mudanças feitas direto no Firestore (ex.:
+  /// `limiteProdutoresContratado`) não chegariam ao ObjectBox por conta própria.
+  ///
+  /// No 1º login (`needsInitialSync`) o download completo já baixa o técnico —
+  /// pulamos aqui para não competir na mesma box. O retorno do offline para o
+  /// online é coberto pelo listener de conectividade do sync service.
+  static void _startTecnicoAutoRefresh() {
+    if (_tecnicoRefreshStarted) return;
+    _tecnicoRefreshStarted = true;
+
+    FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user == null || !OfflineFirstSyncService.isInitialized) return;
+      final sync = OfflineFirstSyncService.instance;
+      if (sync.needsInitialSync()) return;
+      unawaited(sync.refreshTecnico(user.uid));
+    });
   }
 
   /// Sincroniza dados do usuário após login

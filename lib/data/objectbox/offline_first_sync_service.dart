@@ -38,6 +38,10 @@ class OfflineFirstSyncService {
   bool _isOnline = true;
   bool get isOnline => _isOnline;
 
+  /// Último usuário sincronizado. Guardado para que o listener de reconexão
+  /// (que não recebe o uid) consiga rebaixar dados como o do técnico.
+  String? _lastUserId;
+
   bool _initialSyncComplete = false;
   bool get initialSyncComplete => _initialSyncComplete;
 
@@ -96,6 +100,11 @@ class OfflineFirstSyncService {
         if (_isOnline && wasOffline) {
           debugPrint('🔄 Conexão restaurada - sincronizando pendências');
           await syncPendingChangesToFirestore();
+          // Rebaixa os dados do técnico (limites/plano podem ter mudado no
+          // Firestore enquanto offline).
+          if (_lastUserId != null) {
+            await refreshTecnico(_lastUserId!);
+          }
         }
 
         _updateStatus(_isOnline ? SyncStatus.idle : SyncStatus.offline);
@@ -127,6 +136,7 @@ class OfflineFirstSyncService {
     required String userId,
     SyncProgressCallback? onProgress,
   }) async {
+    _lastUserId = userId;
     if (!_isOnline) {
       debugPrint('📴 Offline - download adiado');
       _updateStatus(SyncStatus.offline);
@@ -1080,6 +1090,25 @@ class OfflineFirstSyncService {
     } catch (e) {
       // Sem marcar como concluído: tenta de novo no próximo login.
       debugPrint('⚠️ Falha ao reparar o path das propriedades: $e');
+    }
+  }
+
+  /// Rebaixa apenas os dados do técnico do Firestore (limites/plano, contadores)
+  /// e atualiza a `TecnicoEntity` local. Diferente do técnico, esses valores
+  /// costumam mudar no backend (mudança de plano) sem qualquer escrita no app,
+  /// então precisam ser puxados; o `performFullDownload` só roda no 1º login.
+  /// Chamado ao abrir o app (logado) e ao voltar online. No-op se offline.
+  Future<void> refreshTecnico(String userId) async {
+    if (!_isOnline) return;
+    _lastUserId = userId;
+    // Um download completo em progresso já baixa o técnico — evita corrida de
+    // escrita concorrente na mesma box.
+    if (_currentStatus == SyncStatus.syncing) return;
+    try {
+      await _downloadTecnico(userId);
+      debugPrint('👨‍⚕️ Dados do técnico atualizados');
+    } catch (e) {
+      debugPrint('⚠️ Falha ao atualizar dados do técnico: $e');
     }
   }
 
