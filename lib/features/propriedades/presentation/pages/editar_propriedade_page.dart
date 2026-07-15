@@ -7,15 +7,22 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
-import '/features/propriedades/presentation/widgets/confirmar_senha_widget.dart';
+import '/core/auth/produtor_account_service.dart';
+import '/core/di/providers.dart';
+import '/data/objectbox/entities/index.dart';
+import '/features/propriedades/application/firestore_refs.dart';
+import '/features/propriedades/application/propriedades_providers.dart';
 import '/features/onboarding/presentation/pages/welcome_page.dart';
 import '/features/propriedades/presentation/pages/lista_propriedade_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class EditarPropriedadePage extends StatefulWidget {
+class EditarPropriedadePage extends ConsumerStatefulWidget {
   const EditarPropriedadePage({
     super.key,
     required this.uidPropriedade,
@@ -24,6 +31,7 @@ class EditarPropriedadePage extends StatefulWidget {
     required this.emailPropriedade,
     required this.visitaPresencial,
     required this.emailTecnico,
+    this.propriedadePendenteId,
   });
 
   final DocumentReference? uidPropriedade;
@@ -33,14 +41,20 @@ class EditarPropriedadePage extends StatefulWidget {
   final bool? visitaPresencial;
   final String? emailTecnico;
 
+  /// Id LOCAL (ObjectBox) de uma propriedade PENDENTE de ativação. Quando
+  /// presente, a tela edita a propriedade criada offline (que ainda não tem
+  /// firestoreId) — usado para corrigir dados, como o e-mail, antes de reativar.
+  final int? propriedadePendenteId;
+
   static String routeName = 'editarPropriedade';
   static String routePath = '/editarPropriedade';
 
   @override
-  State<EditarPropriedadePage> createState() => _EditarPropriedadePageState();
+  ConsumerState<EditarPropriedadePage> createState() =>
+      _EditarPropriedadePageState();
 }
 
-class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
+class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _formKey = GlobalKey<FormState>();
@@ -59,17 +73,6 @@ class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
   FormFieldController<String>? _diasdgValueController;
   FocusNode? _emailProdutorFocusNode;
   TextEditingController? _emailProdutorTextController;
-  FocusNode? _senhaFocusNode;
-  TextEditingController? _senhaTextController;
-  bool _senhaVisibility = false;
-  final String? Function(BuildContext, String?)? _senhaTextControllerValidator =
-      null;
-  FocusNode? _confirmaSenhaFocusNode;
-  TextEditingController? _confirmaSenhaTextController;
-  bool _confirmaSenhaVisibility = false;
-
-  // Output de criação (antes no FlutterFlowModel).
-  PersonRecord? _uidPersonProdutor;
 
   String? _yourNameTextControllerValidator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) {
@@ -134,17 +137,6 @@ class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
     return null;
   }
 
-  String? _confirmaSenhaTextControllerValidator(
-      BuildContext context, String? val) {
-    if (val == null || val.isEmpty) {
-      return 'Confirmar Senha is required';
-    }
-    if (!RegExp('').hasMatch(val)) {
-      return 'Invalid text';
-    }
-    return null;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -163,12 +155,6 @@ class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
         TextEditingController(text: widget.emailPropriedade);
     _emailProdutorFocusNode ??= FocusNode();
 
-    _senhaTextController ??= TextEditingController();
-    _senhaFocusNode ??= FocusNode();
-
-    _confirmaSenhaTextController ??= TextEditingController();
-    _confirmaSenhaFocusNode ??= FocusNode();
-
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
@@ -184,10 +170,6 @@ class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
     _enderecoTextController?.dispose();
     _emailProdutorFocusNode?.dispose();
     _emailProdutorTextController?.dispose();
-    _senhaFocusNode?.dispose();
-    _senhaTextController?.dispose();
-    _confirmaSenhaFocusNode?.dispose();
-    _confirmaSenhaTextController?.dispose();
 
     super.dispose();
   }
@@ -737,18 +719,28 @@ class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
               return;
             }
 
-            await editarPropriedadePropriedadesRecord.reference
-                .update(createPropriedadesRecordData(
-              isDeleted: true,
-              deletedAt: DateTime.now(),
-            ));
+            final entity = editarPropriedadePropriedadesRecord;
+            final repo = ref.read(propriedadeRepositoryProvider);
+            if (!entity.contaCriada) {
+              // Pendente: existe só localmente (sem doc no Firestore) → remove
+              // do ObjectBox. Não há lixeira porque nada foi sincronizado.
+              repo.box.remove(entity.id);
+            } else {
+              // Offline-first: soft-delete via ObjectBox (sincroniza como UPDATE,
+              // preservando a semântica de lixeira).
+              entity.isDeleted = true;
+              entity.deletedAt = DateTime.now();
+              await repo.save(entity);
+            }
 
             await showDialog(
               context: context,
               builder: (alertDialogContext) {
                 return AlertDialog(
                   title: Text('Sucesso!'),
-                  content: Text('Propriedade movida para a lixeira.'),
+                  content: Text(entity.contaCriada
+                      ? 'Propriedade movida para a lixeira.'
+                      : 'Propriedade removida.'),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(alertDialogContext),
@@ -872,14 +864,24 @@ class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
               return;
             }
 
-            await editarPropriedadePropriedadesRecord.reference
-                .update(createPropriedadesRecordData(
-              cpf: _cpfTextController.text,
-              endereco: _enderecoTextController.text,
-              displayName: _yourNameTextController.text,
-              phoneNumber: _celularTextController.text,
-              diasParaDg: _diasdgValue,
-            ));
+            // Offline-first: atualiza via ObjectBox.
+            final entity = editarPropriedadePropriedadesRecord;
+            entity.cpf = _cpfTextController.text;
+            entity.endereco = _enderecoTextController.text;
+            entity.displayName = _yourNameTextController.text;
+            entity.phoneNumber = _celularTextController.text;
+            entity.diasParaDg = _diasdgValue;
+            final repo = ref.read(propriedadeRepositoryProvider);
+            if (!entity.contaCriada) {
+              // Propriedade PENDENTE: o e-mail é editável (é o que se corrige
+              // antes de reativar) e a gravação é só local — a fila de sync não
+              // deve enviar uma propriedade cujo produtor ainda não existe.
+              entity.email = _emailProdutorTextController.text;
+              repo.saveLocalPending(entity);
+            } else {
+              // Propriedade ativa: sincroniza como UPDATE parcial (ou enfileira).
+              await repo.save(entity);
+            }
             await showDialog(
               context: context,
               builder: (alertDialogContext) {
@@ -993,43 +995,43 @@ class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<PropriedadesRecord>>(
-      stream: queryPropriedadesRecord(
-        parent: widget.uidTecnico,
-        queryBuilder: (propriedadesRecord) => propriedadesRecord.where(
-          'email',
-          isEqualTo: widget.emailPropriedade,
-        ),
-        singleRecord: true,
+    // Propriedade lida do ObjectBox (offline-first). Antes, a página inteira
+    // ficava atrás de uma query do Firestore por e-mail.
+    //
+    // Dois modos: propriedade PENDENTE (criada offline, sem firestoreId) é
+    // carregada pelo id local; propriedade já ativa é carregada pelo firestoreId.
+    final AsyncValue<PropriedadeEntity?> propriedadeAsync;
+    if (widget.propriedadePendenteId != null) {
+      propriedadeAsync =
+          ref.watch(propriedadeByLocalIdProvider(widget.propriedadePendenteId!));
+    } else {
+      final firestoreId = widget.uidPropriedade?.id;
+      if (firestoreId == null) {
+        return Scaffold(
+          backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+          body: Center(child: Text('Propriedade não informada.')),
+        );
+      }
+      propriedadeAsync = ref.watch(propriedadeByIdProvider(firestoreId));
+    }
+
+    return propriedadeAsync.when(
+      loading: () => Scaffold(
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        body: const Center(child: CircularProgressIndicator()),
       ),
-      builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
+      error: (_, __) => Scaffold(
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        body: Center(child: Text('Erro ao carregar a propriedade.')),
+      ),
+      data: (editarPropriedadePropriedadesRecord) {
+        if (editarPropriedadePropriedadesRecord == null) {
           return Scaffold(
             backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
             body: Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Color(0xFFF75E38),
-                  ),
-                ),
-              ),
-            ),
+                child: Text('Propriedade não encontrada no dispositivo.')),
           );
         }
-        List<PropriedadesRecord> editarPropriedadePropriedadesRecordList =
-            snapshot.data!;
-        // Return an empty Container when the item does not exist.
-        if (snapshot.data!.isEmpty) {
-          return Container();
-        }
-        final editarPropriedadePropriedadesRecord =
-            editarPropriedadePropriedadesRecordList.isNotEmpty
-                ? editarPropriedadePropriedadesRecordList.first
-                : null;
 
         return Scaffold(
           key: scaffoldKey,
@@ -1082,257 +1084,15 @@ class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
                     _p5(context, editarPropriedadePropriedadesRecord),
                     _p6(context, editarPropriedadePropriedadesRecord),
                     _p7(context),
-                    if (!editarPropriedadePropriedadesRecord!
-                        .hasUidPersonProdutor())
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            20.0, 0.0, 20.0, 16.0),
-                        child: Container(
-                          width: double.infinity,
-                          child: TextFormField(
-                            controller: _senhaTextController,
-                            focusNode: _senhaFocusNode,
-                            autofocus: false,
-                            obscureText: !_senhaVisibility,
-                            decoration: InputDecoration(
-                              isDense: true,
-                              labelText: 'Senha Temporária',
-                              labelStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                              hintStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.transparent,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: AppTokens.secondary,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context).error,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context).error,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              filled: true,
-                              fillColor: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
-                              contentPadding: EdgeInsetsDirectional.fromSTEB(
-                                  24.0, 24.0, 0.0, 24.0),
-                              suffixIcon: InkWell(
-                                onTap: () => safeSetState(
-                                  () => _senhaVisibility = !_senhaVisibility,
-                                ),
-                                focusNode: FocusNode(skipTraversal: true),
-                                child: Icon(
-                                  _senhaVisibility
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off_outlined,
-                                  size: 22,
-                                ),
-                              ),
-                            ),
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
-                            validator: _senhaTextControllerValidator
-                                .asValidator(context),
-                          ),
-                        ),
-                      ),
-                    if (!editarPropriedadePropriedadesRecord
-                        .hasUidPersonProdutor())
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            20.0, 0.0, 20.0, 16.0),
-                        child: Container(
-                          width: double.infinity,
-                          child: TextFormField(
-                            controller: _confirmaSenhaTextController,
-                            focusNode: _confirmaSenhaFocusNode,
-                            autofocus: false,
-                            obscureText: !_confirmaSenhaVisibility,
-                            decoration: InputDecoration(
-                              isDense: true,
-                              labelText: 'Confirmar Senha',
-                              labelStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                              hintStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .labelMedium
-                                          .fontStyle,
-                                    ),
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.transparent,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: AppTokens.secondary,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context).error,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: FlutterFlowTheme.of(context).error,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.circular(12.0),
-                              ),
-                              filled: true,
-                              fillColor: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
-                              contentPadding: EdgeInsetsDirectional.fromSTEB(
-                                  24.0, 24.0, 0.0, 24.0),
-                              suffixIcon: InkWell(
-                                onTap: () => safeSetState(
-                                  () => _confirmaSenhaVisibility =
-                                      !_confirmaSenhaVisibility,
-                                ),
-                                focusNode: FocusNode(skipTraversal: true),
-                                child: Icon(
-                                  _confirmaSenhaVisibility
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off_outlined,
-                                  size: 22,
-                                ),
-                              ),
-                            ),
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
-                            validator: _confirmaSenhaTextControllerValidator
-                                .asValidator(context),
-                          ),
-                        ),
-                      ),
                     _p8(context, editarPropriedadePropriedadesRecord),
                     _p9(context, editarPropriedadePropriedadesRecord),
-                    if (!editarPropriedadePropriedadesRecord
-                        .hasUidPersonProdutor())
+                    // "Liberar Acesso" só para propriedade JÁ ativa sem produtor
+                    // vinculado. Pendente é ativada pela lista ("Ativar conta"),
+                    // e o fluxo aqui usa docRef (nulo enquanto pendente).
+                    if (editarPropriedadePropriedadesRecord.contaCriada &&
+                        editarPropriedadePropriedadesRecord
+                                .uidPersonProdutorPath ==
+                            null)
                       Align(
                         alignment: AlignmentDirectional(0.0, 0.05),
                         child: Padding(
@@ -1348,123 +1108,171 @@ class _EditarPropriedadePageState extends State<EditarPropriedadePage> {
                               if (_diasdgValue == null) {
                                 return;
                               }
-                              GoRouter.of(context).prepareAuthEvent();
-                              if (_senhaTextController.text !=
-                                  _confirmaSenhaTextController.text) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'A confirmação da senha não corresponde à senha inicial. Por favor, verifique se as senhas digitadas são iguais e tente novamente. Se precisar de ajuda, estamos aqui para auxiliá-lo. Obrigado!',
-                                    ),
+
+                              final record =
+                                  editarPropriedadePropriedadesRecord;
+
+                              // Liberar acesso cria a conta do produtor (online).
+                              final connectivity =
+                                  ref.read(connectivityServiceProvider);
+                              if (!connectivity.isOnline) {
+                                await showDialog(
+                                  context: context,
+                                  builder: (alertDialogContext) => AlertDialog(
+                                    title: const Text('Sem conexão'),
+                                    content: const Text(
+                                        'É necessário estar conectado à internet para liberar o acesso do produtor.'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(alertDialogContext),
+                                        child: const Text('Ok'),
+                                      ),
+                                    ],
                                   ),
                                 );
                                 return;
                               }
 
-                              final user =
-                                  await authManager.createAccountWithEmail(
-                                context,
-                                _emailProdutorTextController.text,
-                                _senhaTextController.text,
-                              );
-                              if (user == null) {
-                                return;
-                              }
-
-                              var personRecordReference =
-                                  PersonRecord.collection.doc(currentUserUid);
-                              await personRecordReference.set({
-                                ...createPersonRecordData(
-                                  cpf: editarPropriedadePropriedadesRecord.cpf,
-                                  uid: currentUserUid,
-                                  endereco: editarPropriedadePropriedadesRecord
-                                      .endereco,
-                                  cidade: editarPropriedadePropriedadesRecord
-                                      .cidade,
-                                  email: widget.emailPropriedade,
-                                  displayName:
-                                      editarPropriedadePropriedadesRecord
-                                          .displayName,
-                                  phoneNumber:
-                                      editarPropriedadePropriedadesRecord
-                                          .phoneNumber,
-                                  tipo: 'produtor',
-                                ),
-                                ...mapToFirestore(
-                                  {
-                                    'created_time':
-                                        FieldValue.serverTimestamp(),
-                                  },
-                                ),
-                              });
-                              _uidPersonProdutor =
-                                  PersonRecord.getDocumentFromData({
-                                ...createPersonRecordData(
-                                  cpf: editarPropriedadePropriedadesRecord.cpf,
-                                  uid: currentUserUid,
-                                  endereco: editarPropriedadePropriedadesRecord
-                                      .endereco,
-                                  cidade: editarPropriedadePropriedadesRecord
-                                      .cidade,
-                                  email: widget.emailPropriedade,
-                                  displayName:
-                                      editarPropriedadePropriedadesRecord
-                                          .displayName,
-                                  phoneNumber:
-                                      editarPropriedadePropriedadesRecord
-                                          .phoneNumber,
-                                  tipo: 'produtor',
-                                ),
-                                ...mapToFirestore(
-                                  {
-                                    'created_time': DateTime.now(),
-                                  },
-                                ),
-                              }, personRecordReference);
-                              GoRouter.of(context).prepareAuthEvent();
-                              await authManager.signOut();
-                              GoRouter.of(context).clearRedirectLocation();
-
-                              await showModalBottomSheet(
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                enableDrag: false,
+                              // Loading bloqueante.
+                              showDialog(
                                 context: context,
-                                builder: (context) {
-                                  return Padding(
-                                    padding: MediaQuery.viewInsetsOf(context),
-                                    child: ConfirmarSenhaWidget(
-                                      email: widget.emailTecnico!,
-                                      visitaPresencial:
-                                          widget.visitaPresencial!,
-                                      uidPersonProdutor:
-                                          _uidPersonProdutor!.reference,
-                                      emailProdutor: widget.emailPropriedade!,
-                                      telefoneProdutor:
-                                          editarPropriedadePropriedadesRecord
-                                              .phoneNumber,
-                                      enderecoProdutor:
-                                          editarPropriedadePropriedadesRecord
-                                              .endereco,
-                                      nomeProdutor:
-                                          editarPropriedadePropriedadesRecord
-                                              .displayName,
-                                      cpfProdutor:
-                                          editarPropriedadePropriedadesRecord
-                                              .cpf,
-                                      diasparaDg:
-                                          editarPropriedadePropriedadesRecord
-                                              .diasParaDg,
-                                      cidadeProdutor:
-                                          editarPropriedadePropriedadesRecord
-                                              .cidade,
-                                      isEdit: true,
+                                barrierDismissible: false,
+                                builder: (_) => const Center(
+                                  child: SizedBox(
+                                    width: 50.0,
+                                    height: 50.0,
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Color(0xFFF75E38)),
                                     ),
-                                  );
-                                },
-                              ).then((value) => safeSetState(() {}));
+                                  ),
+                                ),
+                              );
 
-                              safeSetState(() {});
+                              try {
+                                // Senha padrão do produtor = CPF só dígitos.
+                                final senhaProdutor = (record.cpf ?? '')
+                                    .replaceAll(RegExp(r'[^0-9]'), '');
+
+                                // Cria a conta numa instância secundária do
+                                // Firebase — o técnico NÃO é deslogado.
+                                final produtorUid = await ProdutorAccountService
+                                    .criarContaProdutor(
+                                  email: _emailProdutorTextController.text,
+                                  password: senhaProdutor,
+                                  buildPersonData: (uid) =>
+                                      createPersonRecordData(
+                                    cpf: record.cpf,
+                                    uid: uid,
+                                    endereco: record.endereco,
+                                    cidade: record.cidade,
+                                    email: widget.emailPropriedade,
+                                    createdTime: getCurrentTimestamp,
+                                    displayName: record.displayName,
+                                    phoneNumber: record.phoneNumber,
+                                    tipo: 'produtor',
+                                  ),
+                                );
+
+                                final produtorPersonRef =
+                                    PersonRecord.collection.doc(produtorUid);
+
+                                // Vincula o produtor à propriedade existente.
+                                await record.docRef!
+                                    .update(createPropriedadesRecordData(
+                                  uidPersonProdutor: produtorPersonRef,
+                                ));
+
+                                // Espelha o vínculo no ObjectBox para o botão
+                                // "Liberar Acesso" sumir na hora. `put` direto:
+                                // o Firestore já foi atualizado acima.
+                                record.uidPersonProdutorPath =
+                                    produtorPersonRef.path;
+                                ref
+                                    .read(propriedadeRepositoryProvider)
+                                    .box
+                                    .put(record);
+
+                                // Atualiza contadores do técnico.
+                                await widget.uidTecnico!.update({
+                                  ...createTecnicoRecordData(
+                                    uidPerson: currentUserUid,
+                                  ),
+                                  ...mapToFirestore({
+                                    'quantidadeProdutoresCadastrados':
+                                        FieldValue.increment(1),
+                                    'restanteLimiteProdutores':
+                                        FieldValue.increment(-(1)),
+                                  }),
+                                });
+
+                                // E-mail de boas-vindas (senha = CPF).
+                                await launchUrl(Uri(
+                                    scheme: 'mailto',
+                                    path: widget.emailPropriedade!,
+                                    query: {
+                                      'subject': 'Bem-vindo(a) Tecmuu!',
+                                      'body':
+                                          'Olá, produtor! Seja muito bem-vindo à plataforma TecMuu! Para começar sua jornada conosco, baixe nosso aplicativo na Play Store ou na App Store e faça login utilizando seu e-mail e, como senha padrão, o seu CPF (apenas os números). No primeiro acesso, recomendamos que você troque a senha. Estamos ansiosos para ter você conosco! 🚀',
+                                    }
+                                        .entries
+                                        .map((MapEntry<String, String> e) =>
+                                            '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+                                        .join('&')));
+
+                                if (!mounted) return;
+                                Navigator.of(context).pop(); // fecha o loading
+                                await showDialog(
+                                  context: context,
+                                  builder: (alertDialogContext) => AlertDialog(
+                                    title: const Text('Acesso liberado!'),
+                                    content: const Text(
+                                        'O produtor recebeu o e-mail de boas-vindas com as instruções de acesso.'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(alertDialogContext),
+                                        child: const Text('Ok'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+
+                                if (!mounted) return;
+                                context.goNamed(
+                                  ListaPropriedadePage.routeName,
+                                  queryParameters: {
+                                    'visitaPresencial': serializeParam(
+                                      widget.visitaPresencial,
+                                      ParamType.bool,
+                                    ),
+                                  }.withoutNulls,
+                                );
+                              } catch (e) {
+                                if (!mounted) return;
+                                Navigator.of(context).pop(); // fecha o loading
+                                final jaExiste = e is FirebaseAuthException &&
+                                    e.code == 'email-already-in-use';
+                                await showDialog(
+                                  context: context,
+                                  builder: (alertDialogContext) => AlertDialog(
+                                    title: Text(jaExiste
+                                        ? 'E-mail já cadastrado'
+                                        : 'Não foi possível liberar o acesso'),
+                                    content: Text(jaExiste
+                                        ? 'Já existe uma conta com este e-mail.'
+                                        : 'Ocorreu um erro. Verifique sua conexão e tente novamente.'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.pop(alertDialogContext),
+                                        child: const Text('Ok'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
                             },
                             text: 'Liberar Acesso',
                             icon: Icon(

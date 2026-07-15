@@ -464,7 +464,7 @@
     },
     {
       "id": "5:6656913100126291315",
-      "lastPropertyId": "16:2240110343104043146",
+      "lastPropertyId": "17:4139234348514546709",
       "name": "PropriedadeEntity",
       "properties": [
         {
@@ -548,6 +548,11 @@
         {
           "id": "16:2240110343104043146",
           "name": "needsSync",
+          "type": 1
+        },
+        {
+          "id": "17:4139234348514546709",
+          "name": "contaCriada",
           "type": 1
         }
       ],

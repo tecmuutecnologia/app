@@ -10,6 +10,9 @@ import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/services/index.dart' as actions;
+import '/data/objectbox/entities/index.dart';
+import '/features/propriedades/application/firestore_refs.dart';
+import '/features/propriedades/application/propriedades_providers.dart';
 import '/features/propriedades/presentation/pages/lista_propriedade_page.dart';
 import '/features/perfil/presentation/pages/profile_tecnico_page.dart';
 import '/features/plano/presentation/pages/subscription_plan_tecnico_page.dart';
@@ -18,6 +21,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // Widgets refatorados
@@ -31,17 +35,18 @@ import '../widgets/widgets.dart';
 /// - [PropriedadesProgressCard]: Card com progresso circular
 /// - [DashboardActionButton]: Botão de ação principal
 /// - [DashboardSecondaryActionCard]: Card de ação secundária
-class DashboardTecnicoPage extends StatefulWidget {
+class DashboardTecnicoPage extends ConsumerStatefulWidget {
   const DashboardTecnicoPage({super.key});
 
   static String routeName = 'dashboardTecnico';
   static String routePath = '/dashboardTecnico';
 
   @override
-  State<DashboardTecnicoPage> createState() => _DashboardTecnicoPageState();
+  ConsumerState<DashboardTecnicoPage> createState() =>
+      _DashboardTecnicoPageState();
 }
 
-class _DashboardTecnicoPageState extends State<DashboardTecnicoPage>
+class _DashboardTecnicoPageState extends ConsumerState<DashboardTecnicoPage>
     with TickerProviderStateMixin {
   InstantTimer? _instantTimer;
   bool? _respostaNet = true;
@@ -128,24 +133,16 @@ class _DashboardTecnicoPageState extends State<DashboardTecnicoPage>
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<TecnicoRecord>>(
-      stream: queryTecnicoRecord(
-        queryBuilder: (tecnicoRecord) => tecnicoRecord.where(
-          'uidPerson',
-          isEqualTo: currentUserUid,
-        ),
-        singleRecord: true,
-      ),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return _buildLoadingScaffold();
-        }
+    // Técnico lido do ObjectBox (offline-first), não mais do Firestore.
+    final tecnicoAsync = ref.watch(tecnicoLogadoProvider);
 
-        if (snapshot.data!.isEmpty) {
+    return tecnicoAsync.when(
+      loading: () => _buildLoadingScaffold(),
+      error: (_, __) => _buildLoadingScaffold(),
+      data: (tecnicoRecord) {
+        if (tecnicoRecord == null) {
           return Container();
         }
-
-        final tecnicoRecord = snapshot.data!.first;
 
         return GestureDetector(
           onTap: () {
@@ -254,7 +251,7 @@ class _DashboardTecnicoPageState extends State<DashboardTecnicoPage>
   }
 
   /// Seção do header com estatísticas.
-  Widget _buildHeaderSection(TecnicoRecord tecnicoRecord) {
+  Widget _buildHeaderSection(TecnicoEntity tecnicoRecord) {
     return DashboardHeader(
       email: currentUserEmail,
       isOnline: _respostaNet!,
@@ -263,7 +260,7 @@ class _DashboardTecnicoPageState extends State<DashboardTecnicoPage>
   }
 
   /// Lista horizontal de estatísticas.
-  Widget _buildStatsList(TecnicoRecord tecnicoRecord) {
+  Widget _buildStatsList(TecnicoEntity tecnicoRecord) {
     return ListView(
       padding: EdgeInsets.zero,
       primary: false,
@@ -295,33 +292,26 @@ class _DashboardTecnicoPageState extends State<DashboardTecnicoPage>
   }
 
   /// Card de estatística de propriedades.
-  Widget _buildPropriedadesStatCard(TecnicoRecord tecnicoRecord) {
-    return StreamBuilder<List<PropriedadesRecord>>(
-      stream: queryPropriedadesRecord(parent: tecnicoRecord.reference),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const DashboardStatCardWithStream(
-            valueWidget: AppLoadingIndicator(size: 30.0),
-            label: 'Propriedades',
-            icon: Icons.home_work_rounded,
-            accent: AppTokens.brand,
-          );
-        }
+  Widget _buildPropriedadesStatCard(TecnicoEntity tecnicoRecord) {
+    // Conta as propriedades ATIVAS (o stream antigo do Firestore não filtrava
+    // `isDeleted`, então incluía as da lixeira).
+    final propriedades = ref
+            .watch(propriedadesAtivasProvider('tecnico/${tecnicoRecord.firestoreId}'))
+            .valueOrNull ??
+        const <PropriedadeEntity>[];
 
-        return DashboardStatCard(
-          value: snapshot.data!.length.toString(),
-          label: 'Propriedades',
-          icon: Icons.home_work_rounded,
-          accent: AppTokens.brand,
-        );
-      },
+    return DashboardStatCard(
+      value: propriedades.length.toString(),
+      label: 'Propriedades',
+      icon: Icons.home_work_rounded,
+      accent: AppTokens.brand,
     );
   }
 
   /// Card de estatística de animais ativos.
-  Widget _buildAnimaisAtivosStatCard(TecnicoRecord tecnicoRecord) {
+  Widget _buildAnimaisAtivosStatCard(TecnicoEntity tecnicoRecord) {
     return StreamBuilder<List<AnimaisProdutoresRecord>>(
-      stream: queryAnimaisProdutoresRecord(parent: tecnicoRecord.reference),
+      stream: queryAnimaisProdutoresRecord(parent: tecnicoRecord.docRef),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const DashboardStatCardWithStream(
@@ -349,27 +339,23 @@ class _DashboardTecnicoPageState extends State<DashboardTecnicoPage>
   }
 
   /// Seção de progresso das propriedades.
-  Widget _buildProgressSection(TecnicoRecord tecnicoRecord) {
+  Widget _buildProgressSection(TecnicoEntity tecnicoRecord) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 20.0, 16.0, 0.0),
-      child: StreamBuilder<List<PropriedadesRecord>>(
-        stream: queryPropriedadesRecord(parent: tecnicoRecord.reference),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const AppLoadingIndicator();
-          }
-
-          return PropriedadesProgressCard(
-            currentCount: snapshot.data!.length,
-            limitCount: tecnicoRecord.limiteProdutoresContratado,
-          );
-        },
+      child: PropriedadesProgressCard(
+        currentCount: ref
+                .watch(propriedadesAtivasProvider(
+                    'tecnico/${tecnicoRecord.firestoreId}'))
+                .valueOrNull
+                ?.length ??
+            0,
+        limitCount: tecnicoRecord.limiteProdutoresContratado,
       ),
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation4']!);
   }
 
   /// Seção de ações do dashboard.
-  Widget _buildActionsSection(TecnicoRecord tecnicoRecord) {
+  Widget _buildActionsSection(TecnicoEntity tecnicoRecord) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),
       child: Container(
@@ -426,7 +412,7 @@ class _DashboardTecnicoPageState extends State<DashboardTecnicoPage>
   }
 
   /// Seção de mudar plano.
-  Widget _buildMudarPlanoSection(TecnicoRecord tecnicoRecord) {
+  Widget _buildMudarPlanoSection(TecnicoEntity tecnicoRecord) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
       child: Row(
@@ -441,7 +427,7 @@ class _DashboardTecnicoPageState extends State<DashboardTecnicoPage>
                 SubscriptionPlanTecnicoPage.routeName,
                 queryParameters: {
                   'uidTecnico': serializeParam(
-                    tecnicoRecord.reference,
+                    tecnicoRecord.docRef,
                     ParamType.DocumentReference,
                   ),
                   'email': serializeParam(

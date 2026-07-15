@@ -29,6 +29,13 @@ class TecnicoRepository extends TopLevelSyncRepository<TecnicoEntity> {
   TecnicoEntity? getByUidPerson(String uidPerson) =>
       box.query(TecnicoEntity_.uidPerson.equals(uidPerson)).build().findFirst();
 
+  /// Técnico logado, reativo: os limites (`restanteLimiteProdutores`) mudam
+  /// quando uma propriedade é criada ou uma conta de produtor é ativada.
+  Stream<TecnicoEntity?> watchByUidPerson(String uidPerson) => box
+      .query(TecnicoEntity_.uidPerson.equals(uidPerson))
+      .watch(triggerImmediately: true)
+      .map((query) => query.findFirst());
+
   @override
   List<TecnicoEntity> getPendingSync() =>
       box.query(TecnicoEntity_.needsSync.equals(true)).build().find();

@@ -241,7 +241,7 @@ void main() {
     test('deve criar PropriedadeEntity completa', () {
       final prop = PropriedadeEntity(
         firestoreId: 'prop_001',
-        parentPath: 'produtor/prod_001',
+        parentPath: 'tecnico/tec_001',
         uidPersonProdutorPath: 'person/person_001',
         displayName: 'Fazenda Boa Vista',
         email: 'fazenda@email.com',
@@ -253,7 +253,7 @@ void main() {
       );
 
       expect(prop.firestoreId, 'prop_001');
-      expect(prop.parentPath, 'produtor/prod_001');
+      expect(prop.parentPath, 'tecnico/tec_001');
       expect(prop.uidPersonProdutorPath, 'person/person_001');
       expect(prop.displayName, 'Fazenda Boa Vista');
       expect(prop.email, 'fazenda@email.com');
@@ -291,13 +291,15 @@ void main() {
     test('deve associar propriedade ao produtor', () {
       final prop = PropriedadeEntity(
         firestoreId: 'prop_001',
-        parentPath: 'produtor/prod_001',
+        parentPath: 'tecnico/tec_001',
         uidPersonProdutorPath: 'person/person_001',
         displayName: 'Fazenda Teste',
       );
 
+      // O pai da propriedade é o TÉCNICO (`tecnico/{id}/propriedades/{id}`);
+      // o produtor é referenciado pelo campo `uidPersonProdutorPath`.
       expect(prop.parentPath, isNotNull);
-      expect(prop.parentPath, contains('produtor/'));
+      expect(prop.parentPath, contains('tecnico/'));
       expect(prop.uidPersonProdutorPath, isNotNull);
       expect(prop.uidPersonProdutorPath, contains('person/'));
     });
@@ -384,19 +386,19 @@ void main() {
       final props = [
         PropriedadeEntity(
           firestoreId: 'prop_001',
-          parentPath: 'produtor/prod_001',
+          parentPath: 'tecnico/tec_001',
           displayName: 'Fazenda 1',
           cidade: 'Cidade A',
         ),
         PropriedadeEntity(
           firestoreId: 'prop_002',
-          parentPath: 'produtor/prod_001',
+          parentPath: 'tecnico/tec_001',
           displayName: 'Fazenda 2',
           cidade: 'Cidade B',
         ),
         PropriedadeEntity(
           firestoreId: 'prop_003',
-          parentPath: 'produtor/prod_001',
+          parentPath: 'tecnico/tec_001',
           displayName: 'Fazenda 3',
           cidade: 'Cidade C',
         ),
@@ -405,7 +407,7 @@ void main() {
       // Todas do mesmo produtor
       expect(props.length, 3);
       for (final prop in props) {
-        expect(prop.parentPath, 'produtor/prod_001');
+        expect(prop.parentPath, 'tecnico/tec_001');
       }
 
       // Cada uma com nome distinto

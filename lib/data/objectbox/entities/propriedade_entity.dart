@@ -15,7 +15,9 @@ class PropriedadeEntity implements SyncableEntity {
   @Unique()
   String? firestoreId;
 
-  /// Path do documento pai (produtor)
+  /// Path do documento pai: o TÉCNICO (`tecnico/{firestoreId}`). O documento
+  /// real no Firestore é `tecnico/{id}/propriedades/{id}` — é esse o path que
+  /// toda a UI usa para criar, ler e editar propriedades.
   @override
   String? parentPath;
 
@@ -29,6 +31,12 @@ class PropriedadeEntity implements SyncableEntity {
   String? cidade;
   String? phoneNumber;
   String? diasParaDg;
+
+  /// Controle offline-first: indica se a conta do produtor (Firebase Auth) e o
+  /// registro no Firestore já foram criados. `false` = propriedade salva apenas
+  /// localmente, aguardando ativação online. Não é sincronizado (controle local).
+  bool contaCriada;
+
   @override
   bool isDeleted;
 
@@ -58,6 +66,7 @@ class PropriedadeEntity implements SyncableEntity {
     this.cidade,
     this.phoneNumber,
     this.diasParaDg,
+    this.contaCriada = false,
     this.isDeleted = false,
     this.deletedAt,
     this.lastModified,
@@ -81,6 +90,8 @@ class PropriedadeEntity implements SyncableEntity {
       cidade: data['cidade'] as String?,
       phoneNumber: data['phone_number'] as String?,
       diasParaDg: data['diasParaDg'] as String?,
+      // Veio do Firestore => a conta já existe.
+      contaCriada: true,
       isDeleted: data['isDeleted'] as bool? ?? false,
       deletedAt: data['deletedAt'] != null
           ? (data['deletedAt'] as dynamic).toDate()

@@ -1,4 +1,3 @@
-import '/core/auth/firebase_auth/auth_util.dart';
 import '/core/ui/app_card.dart';
 import '/data/backend.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
@@ -7,17 +6,20 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
-import '/features/propriedades/presentation/widgets/confirmar_senha_widget.dart';
+import '/core/di/providers.dart';
+import '/data/objectbox/entities/index.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-//TODO Esta pedidndo para o tecnico confirmar a senha após criar a propriedade,
-//isso acontece pela criação dos dados da conta do produtor, não seria mais facil
-//armazenar a senha em um local seguro e deopis somente utilizar?? Outra coisa é que pede para gerar uma senha e depois manda um e-mail para a pessoa com uma senha padrão, não seria melhor remover os campos de gerar senha, e utilizar o cpf como senha padrão e no primeiro acesso do produtor pedir pra trocar, e informar no email que a senha é o cpf??
 
-class NovaPropriedadePage extends StatefulWidget {
+/// Offline-first: o Salvar grava a propriedade apenas na base local (ObjectBox)
+/// marcada como conta NÃO criada. A criação da conta do produtor (Firebase Auth)
+/// + escrita no Firestore fica para a "ativação" online, disparada na lista.
+
+class NovaPropriedadePage extends ConsumerStatefulWidget {
   const NovaPropriedadePage({
     super.key,
     required this.visitaPresencial,
@@ -33,10 +35,11 @@ class NovaPropriedadePage extends StatefulWidget {
   static String routePath = '/novaPropriedade';
 
   @override
-  State<NovaPropriedadePage> createState() => _NovaPropriedadePageState();
+  ConsumerState<NovaPropriedadePage> createState() =>
+      _NovaPropriedadePageState();
 }
 
-class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
+class _NovaPropriedadePageState extends ConsumerState<NovaPropriedadePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _formKey = GlobalKey<FormState>();
@@ -64,17 +67,6 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
       _complementoTextControllerValidator = null;
   String? _diasdgValue;
   FormFieldController<String>? _diasdgValueController;
-  FocusNode? _senhaFocusNode;
-  TextEditingController? _senhaTextController;
-  bool _senhaVisibility = false;
-  FocusNode? _confirmaSenhaFocusNode;
-  TextEditingController? _confirmaSenhaTextController;
-  bool _confirmaSenhaVisibility = false;
-
-  // Outputs de query/criação (antes no FlutterFlowModel).
-  PersonRecord? _outRetornoPersonExist;
-  PropriedadesRecord? _outUidPersonCpf;
-  PersonRecord? _uidPersonProdutor;
 
   String? _nomeTextControllerValidator(BuildContext context, String? val) {
     if (val == null || val.isEmpty) {
@@ -170,36 +162,6 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
     return null;
   }
 
-  String? _senhaTextControllerValidator(BuildContext context, String? val) {
-    if (val == null || val.isEmpty) {
-      return 'Campo é obrigatório.';
-    }
-    if (val.length < 6) {
-      return 'Mínimo 6 caracteres.';
-    }
-    if (val.length > 100) {
-      return 'Máximo 100 caracteres.';
-    }
-    return null;
-  }
-
-  String? _confirmaSenhaTextControllerValidator(
-      BuildContext context, String? val) {
-    if (val == null || val.isEmpty) {
-      return 'Campo é obrigatório.';
-    }
-    if (val.length < 6) {
-      return 'Mínimo 6 caracteres.';
-    }
-    if (val.length > 100) {
-      return 'Máximo 100 caracteres.';
-    }
-    if (val != _senhaTextController?.text) {
-      return 'As senhas não correspondem.';
-    }
-    return null;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -231,12 +193,6 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
     _complementoTextController ??= TextEditingController();
     _complementoFocusNode ??= FocusNode();
 
-    _senhaTextController ??= TextEditingController();
-    _senhaFocusNode ??= FocusNode();
-
-    _confirmaSenhaTextController ??= TextEditingController();
-    _confirmaSenhaFocusNode ??= FocusNode();
-
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
@@ -258,15 +214,11 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
     _cepTextController?.dispose();
     _complementoFocusNode?.dispose();
     _complementoTextController?.dispose();
-    _senhaFocusNode?.dispose();
-    _senhaTextController?.dispose();
-    _confirmaSenhaFocusNode?.dispose();
-    _confirmaSenhaTextController?.dispose();
 
     super.dispose();
   }
 
-  Widget _p1(BuildContext context) {
+  Widget navBar(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -277,7 +229,7 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
             borderRadius: 30.0,
             borderWidth: 1.0,
             buttonSize: 50.0,
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back_rounded,
               color: Colors.white,
               size: 30.0,
@@ -309,38 +261,35 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget formulario(BuildContext context) {
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.always,
       child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+        padding: const EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            _p4(context),
-            _p5(context),
-            _p6(context),
-            _p7(context),
-            _p8(context),
-            _p9(context),
-            _p10(context),
-            _p11(context),
-            _p12(context),
-            _p13(context),
-            _p14(context),
+            inputNome(context),
+            inputCPF(context),
+            inputEmail(context),
+            inputCelular(context),
+            inputCidade(context),
+            inputEndereco(context),
+            inputCEP(context),
+            inputComplemento(context),
+            inputDiasDG(context),
           ].divide(SizedBox(height: 12.0)),
         ),
       ),
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget btnSalvar(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 12.0),
+      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 12.0),
       child: FFButtonWidget(
         onPressed: () async {
-          var _shouldSetState = false;
           if (_formKey.currentState == null ||
               !_formKey.currentState!.validate()) {
             return;
@@ -348,165 +297,127 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
           if (_diasdgValue == null) {
             return;
           }
-          _outRetornoPersonExist = await queryPersonRecordOnce(
-            queryBuilder: (personRecord) => personRecord.where(Filter.or(
-              Filter(
-                'cpf',
-                isEqualTo: _cpfTextController.text,
-              ),
-              Filter(
-                'email',
-                isEqualTo: _emailTextController.text,
-              ),
-            )),
-            singleRecord: true,
-          ).then((s) => s.firstOrNull);
-          _shouldSetState = true;
-          if (_outRetornoPersonExist != null) {
+
+          final cpf = _cpfTextController.text;
+          final email = _emailTextController.text;
+
+          final propriedadeRepo = ref.read(propriedadeRepositoryProvider);
+          final personRepo = ref.read(personRepositoryProvider);
+          final connectivity = ref.read(connectivityServiceProvider);
+
+          // --- Checagem de duplicidade (offline-first, híbrida) ---------------
+          // Sempre checa a base local; quando há internet, também o Firestore.
+          final localPersonDup =
+              personRepo.getByCpf(cpf) ?? personRepo.getByEmail(email);
+          final localPropriedadeDup = propriedadeRepo.getByCpf(cpf) ??
+              propriedadeRepo.getByEmail(email);
+
+          var personDupOnline = false;
+          var propriedadeDupCpfOnline = false;
+          if (connectivity.isOnline) {
+            personDupOnline = await queryPersonRecordOnce(
+              queryBuilder: (personRecord) => personRecord.where(Filter.or(
+                Filter('cpf', isEqualTo: cpf),
+                Filter('email', isEqualTo: email),
+              )),
+              singleRecord: true,
+            ).then((s) => s.firstOrNull != null);
+            propriedadeDupCpfOnline = await queryPropriedadesRecordOnce(
+              parent: widget.uidTecnico,
+              queryBuilder: (propriedadesRecord) =>
+                  propriedadesRecord.where('cpf', isEqualTo: cpf),
+              singleRecord: true,
+            ).then((s) => s.firstOrNull != null);
+          }
+
+          if (!mounted) return;
+
+          if (localPersonDup != null || personDupOnline) {
             await showDialog(
               context: context,
               builder: (alertDialogContext) {
                 return AlertDialog(
-                  title: Text('Usuário já possui cadastro!'),
-                  content:
-                      Text('E-mail e/ou cpf informado já possui um cadastro.'),
+                  title: const Text('Usuário já possui cadastro!'),
+                  content: const Text(
+                      'E-mail e/ou cpf informado já possui um cadastro.'),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(alertDialogContext),
-                      child: Text('Ok'),
+                      child: const Text('Ok'),
                     ),
                   ],
                 );
               },
             );
-            if (_shouldSetState) safeSetState(() {});
             return;
-          } else {
-            _outUidPersonCpf = await queryPropriedadesRecordOnce(
-              parent: widget.uidTecnico,
-              queryBuilder: (propriedadesRecord) => propriedadesRecord.where(
-                'cpf',
-                isEqualTo: _cpfTextController.text,
-              ),
-              singleRecord: true,
-            ).then((s) => s.firstOrNull);
-            _shouldSetState = true;
-            if (_outUidPersonCpf != null) {
-              await showDialog(
-                context: context,
-                builder: (alertDialogContext) {
-                  return AlertDialog(
-                    title: Text('CPF informado já cadastrado.'),
-                    content: Text('Produtor já cadastrado.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(alertDialogContext),
-                        child: Text('Ok'),
-                      ),
-                    ],
-                  );
-                },
-              );
-              if (_shouldSetState) safeSetState(() {});
-              return;
-            }
-            GoRouter.of(context).prepareAuthEvent();
-            if (_senhaTextController.text != _senhaTextController.text) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'A confirmação da senha não corresponde à senha inicial. Por favor, verifique se as senhas digitadas são iguais e tente novamente. Se precisar de ajuda, estamos aqui para auxiliá-lo. Obrigado!',
-                  ),
-                ),
-              );
-              return;
-            }
-
-            final user = await authManager.createAccountWithEmail(
-              context,
-              _emailTextController.text,
-              _senhaTextController.text,
-            );
-            if (user == null) {
-              return;
-            }
-
-            var personRecordReference =
-                PersonRecord.collection.doc(currentUserUid);
-            await personRecordReference.set(createPersonRecordData(
-              cpf: _cpfTextController.text,
-              uid: currentUserUid,
-              endereco: _enderecoTextController.text,
-              cidade: _cidadeTextController.text,
-              email: _emailTextController.text,
-              createdTime: getCurrentTimestamp,
-              displayName: _nomeTextController.text,
-              phoneNumber: _celularTextController.text,
-              tipo: 'produtor',
-            ));
-            _uidPersonProdutor = PersonRecord.getDocumentFromData(
-                createPersonRecordData(
-                  cpf: _cpfTextController.text,
-                  uid: currentUserUid,
-                  endereco: _enderecoTextController.text,
-                  cidade: _cidadeTextController.text,
-                  email: _emailTextController.text,
-                  createdTime: getCurrentTimestamp,
-                  displayName: _nomeTextController.text,
-                  phoneNumber: _celularTextController.text,
-                  tipo: 'produtor',
-                ),
-                personRecordReference);
-            _shouldSetState = true;
-            GoRouter.of(context).prepareAuthEvent();
-            await authManager.signOut();
-            GoRouter.of(context).clearRedirectLocation();
-
-            await showModalBottomSheet(
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              enableDrag: false,
-              context: context,
-              builder: (context) {
-                return GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).unfocus();
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  },
-                  child: Padding(
-                    padding: MediaQuery.viewInsetsOf(context),
-                    child: ConfirmarSenhaWidget(
-                      email: widget.email!,
-                      visitaPresencial: widget.visitaPresencial!,
-                      uidPersonProdutor: _uidPersonProdutor!.reference,
-                      emailProdutor: _emailTextController.text,
-                      telefoneProdutor: _celularTextController.text,
-                      enderecoProdutor: _enderecoTextController.text,
-                      nomeProdutor: _nomeTextController.text,
-                      cpfProdutor: _cpfTextController.text,
-                      diasparaDg: _diasdgValue!,
-                      cidadeProdutor: _cidadeTextController.text,
-                      isEdit: false,
-                    ),
-                  ),
-                );
-              },
-            ).then((value) => safeSetState(() {}));
           }
 
-          if (_shouldSetState) safeSetState(() {});
+          if (localPropriedadeDup != null || propriedadeDupCpfOnline) {
+            await showDialog(
+              context: context,
+              builder: (alertDialogContext) {
+                return AlertDialog(
+                  title: const Text('CPF informado já cadastrado.'),
+                  content: const Text('Produtor já cadastrado.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(alertDialogContext),
+                      child: const Text('Ok'),
+                    ),
+                  ],
+                );
+              },
+            );
+            return;
+          }
+
+          // --- Salva apenas localmente, como PENDENTE de ativação -------------
+          propriedadeRepo.saveLocalPending(PropriedadeEntity(
+            parentPath: widget.uidTecnico?.path,
+            email: email,
+            displayName: _nomeTextController.text,
+            cpf: cpf,
+            endereco: _enderecoTextController.text,
+            cidade: _cidadeTextController.text,
+            phoneNumber: _celularTextController.text,
+            diasParaDg: _diasdgValue,
+          ));
+
+          if (!mounted) return;
+
+          await showDialog(
+            context: context,
+            builder: (alertDialogContext) {
+              return AlertDialog(
+                title: const Text('Propriedade salva!'),
+                content: const Text(
+                    'A propriedade foi salva no dispositivo. Ative a conta do '
+                    'produtor pelo botão "Ativar conta" na lista quando houver '
+                    'conexão com a internet.'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(alertDialogContext),
+                    child: const Text('Ok'),
+                  ),
+                ],
+              );
+            },
+          );
+
+          if (!mounted) return;
+          Navigator.of(context).pop();
         },
-        text: 'Cadastrar nova',
-        icon: Icon(
+        text: 'Salvar',
+        icon: const Icon(
           Icons.save,
           size: 15.0,
         ),
         options: FFButtonOptions(
           width: double.infinity,
           height: 48.0,
-          padding: EdgeInsets.all(0.0),
-          iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-          color: Color(0xFFEC3B5B),
+          padding: const EdgeInsets.all(0.0),
+          iconPadding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+          color: FlutterFlowTheme.of(context).salvar,
           textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                 font: GoogleFonts.readexPro(
                   fontWeight:
@@ -519,7 +430,7 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
                 fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
               ),
           elevation: 4.0,
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Colors.transparent,
             width: 1.0,
           ),
@@ -529,7 +440,7 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget inputNome(BuildContext context) {
     return TextFormField(
       controller: _nomeTextController,
       focusNode: _nomeFocusNode,
@@ -607,7 +518,7 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
     );
   }
 
-  Widget _p5(BuildContext context) {
+  Widget inputCPF(BuildContext context) {
     return TextFormField(
       controller: _cpfTextController,
       focusNode: _cpfFocusNode,
@@ -686,7 +597,7 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
     );
   }
 
-  Widget _p6(BuildContext context) {
+  Widget inputEmail(BuildContext context) {
     return TextFormField(
       controller: _emailTextController,
       focusNode: _emailFocusNode,
@@ -763,7 +674,7 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
     );
   }
 
-  Widget _p7(BuildContext context) {
+  Widget inputCelular(BuildContext context) {
     return TextFormField(
       controller: _celularTextController,
       focusNode: _celularFocusNode,
@@ -843,7 +754,7 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
     );
   }
 
-  Widget _p8(BuildContext context) {
+  Widget inputCidade(BuildContext context) {
     return TextFormField(
       controller: _cidadeTextController,
       focusNode: _cidadeFocusNode,
@@ -920,7 +831,7 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
     );
   }
 
-  Widget _p9(BuildContext context) {
+  Widget inputEndereco(BuildContext context) {
     return TextFormField(
       controller: _enderecoTextController,
       focusNode: _enderecoFocusNode,
@@ -997,7 +908,7 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
     );
   }
 
-  Widget _p10(BuildContext context) {
+  Widget inputCEP(BuildContext context) {
     return TextFormField(
       controller: _cepTextController,
       focusNode: _cepFocusNode,
@@ -1076,7 +987,7 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
     );
   }
 
-  Widget _p11(BuildContext context) {
+  Widget inputComplemento(BuildContext context) {
     return TextFormField(
       controller: _complementoTextController,
       focusNode: _complementoFocusNode,
@@ -1153,7 +1064,7 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
     );
   }
 
-  Widget _p12(BuildContext context) {
+  Widget inputDiasDG(BuildContext context) {
     return FlutterFlowDropDown<String>(
       controller: _diasdgValueController ??= FormFieldController<String>(
         _diasdgValue ??= '28',
@@ -1196,184 +1107,6 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
     );
   }
 
-  Widget _p13(BuildContext context) {
-    return TextFormField(
-      controller: _senhaTextController,
-      focusNode: _senhaFocusNode,
-      autofocus: true,
-      obscureText: !_senhaVisibility,
-      decoration: InputDecoration(
-        labelText: 'Senha temporária',
-        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-              ),
-              letterSpacing: 0.0,
-              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-            ),
-        hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-              ),
-              letterSpacing: 0.0,
-              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-            ),
-        filled: true,
-        fillColor: FlutterFlowTheme.of(context).primaryBackground,
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.transparent,
-            width: 2.0,
-          ),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: AppTokens.secondary,
-            width: 2.0,
-          ),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).error,
-            width: 2.0,
-          ),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).error,
-            width: 2.0,
-          ),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        contentPadding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-        suffixIcon: InkWell(
-          onTap: () => safeSetState(
-            () => _senhaVisibility = !_senhaVisibility,
-          ),
-          focusNode: FocusNode(skipTraversal: true),
-          child: Icon(
-            _senhaVisibility
-                ? Icons.visibility_outlined
-                : Icons.visibility_off_outlined,
-            size: 22,
-          ),
-        ),
-      ),
-      style: FlutterFlowTheme.of(context).bodyMedium.override(
-            font: GoogleFonts.readexPro(
-              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-            ),
-            letterSpacing: 0.0,
-            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-          ),
-      maxLength: 100,
-      maxLengthEnforcement: MaxLengthEnforcement.none,
-      buildCounter: (context,
-              {required currentLength, required isFocused, maxLength}) =>
-          null,
-      cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _senhaTextControllerValidator.asValidator(context),
-    );
-  }
-
-  Widget _p14(BuildContext context) {
-    return TextFormField(
-      controller: _confirmaSenhaTextController,
-      focusNode: _confirmaSenhaFocusNode,
-      autofocus: true,
-      obscureText: !_confirmaSenhaVisibility,
-      decoration: InputDecoration(
-        labelText: 'Repita a Senha temporária',
-        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-              ),
-              letterSpacing: 0.0,
-              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-            ),
-        hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-              ),
-              letterSpacing: 0.0,
-              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-            ),
-        filled: true,
-        fillColor: FlutterFlowTheme.of(context).primaryBackground,
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.transparent,
-            width: 2.0,
-          ),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: AppTokens.secondary,
-            width: 2.0,
-          ),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).error,
-            width: 2.0,
-          ),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).error,
-            width: 2.0,
-          ),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        contentPadding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-        suffixIcon: InkWell(
-          onTap: () => safeSetState(
-            () => _confirmaSenhaVisibility = !_confirmaSenhaVisibility,
-          ),
-          focusNode: FocusNode(skipTraversal: true),
-          child: Icon(
-            _confirmaSenhaVisibility
-                ? Icons.visibility_outlined
-                : Icons.visibility_off_outlined,
-            size: 22,
-          ),
-        ),
-      ),
-      style: FlutterFlowTheme.of(context).bodyMedium.override(
-            font: GoogleFonts.readexPro(
-              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-            ),
-            letterSpacing: 0.0,
-            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-          ),
-      maxLength: 100,
-      maxLengthEnforcement: MaxLengthEnforcement.none,
-      buildCounter: (context,
-              {required currentLength, required isFocused, maxLength}) =>
-          null,
-      cursorColor: FlutterFlowTheme.of(context).primary,
-      validator: _confirmaSenhaTextControllerValidator.asValidator(context),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -1385,9 +1118,9 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100.0),
+          preferredSize: const Size.fromHeight(100.0),
           child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Color(0xFFF75E38), Color(0xFFEC3B5B)],
                   begin: AlignmentDirectional(-1.0, -1.0),
@@ -1401,14 +1134,14 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
               child: AppBar(
                 backgroundColor: Colors.transparent,
                 automaticallyImplyLeading: false,
-                actions: [],
+                actions: const [],
                 flexibleSpace: FlexibleSpaceBar(
                   title: Column(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _p1(context),
+                      navBar(context),
                     ],
                   ),
                   centerTitle: true,
@@ -1420,14 +1153,14 @@ class _NovaPropriedadePageState extends State<NovaPropriedadePage> {
         body: SafeArea(
           top: true,
           child: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),
+            padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _p2(context),
-                  _p3(context),
+                  formulario(context),
+                  btnSalvar(context),
                 ],
               ),
             ),

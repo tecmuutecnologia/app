@@ -160,7 +160,7 @@ class OfflineFirstSyncService {
       }
 
       // 5. Baixa todas as propriedades
-      await _downloadTodasPropriedades();
+      await _downloadTodasPropriedades(tecnicoRef, userId);
       _reportProgress('Propriedades baixadas', 0.60);
 
       // 6. Baixa todos os animais (subcoleção 'animaisProdutores' do técnico)
@@ -177,6 +177,10 @@ class OfflineFirstSyncService {
 
       // Marca sincronização inicial como completa
       _updateSyncMetadata('initial_download', DateTime.now(), complete: true);
+      // O download acima já gravou as propriedades no path correto — dispensa o
+      // reparo pontual em instalações novas.
+      _updateSyncMetadata(_kReparoPathPropriedades, DateTime.now(),
+          complete: true);
       _initialSyncComplete = true;
 
       _reportProgress('Download completo finalizado!', 1.0);
@@ -367,39 +371,62 @@ class OfflineFirstSyncService {
     }
   }
 
-  /// Baixa todas as propriedades dos produtores locais
-  Future<void> _downloadTodasPropriedades() async {
-    final produtores = _objectBox.produtorBox.getAll();
-    int totalProps = 0;
+  /// Baixa as propriedades do usuário logado.
+  ///
+  /// As propriedades vivem na subcoleção `propriedades` do documento do TÉCNICO
+  /// (`tecnico/{id}/propriedades`) — o mesmo caminho que a UI usa para criar e
+  /// ler propriedades. O `parentPath` é derivado do próprio documento, para que
+  /// os paths de sincronização e de edição não possam divergir.
+  Future<void> _downloadTodasPropriedades(
+    DocumentReference? tecnicoRef,
+    String userId,
+  ) async {
+    final List<QueryDocumentSnapshot<Map<String, dynamic>>> docs;
 
-    for (final produtor in produtores) {
-      if (produtor.firestoreId == null) continue;
+    if (tecnicoRef != null) {
+      docs = (await tecnicoRef.collection('propriedades').get()).docs;
+    } else {
+      // Usuário produtor: não tem subcoleção própria. Encontra suas propriedades
+      // pelo vínculo `uidPersonProdutor`, sob qualquer técnico.
+      final personSnapshot = await _firestore
+          .collection('person')
+          .where('uid', isEqualTo: userId)
+          .limit(1)
+          .get();
 
-      final produtorRef =
-          _firestore.collection('produtor').doc(produtor.firestoreId);
-      final snapshot = await produtorRef.collection('propriedades').get();
+      if (personSnapshot.docs.isEmpty) {
+        debugPrint('🏡 0 propriedade(s) baixada(s) — person não encontrado');
+        return;
+      }
 
-      for (final doc in snapshot.docs) {
-        final existing = _objectBox.propriedadeBox
-            .query(PropriedadeEntity_.firestoreId.equals(doc.id))
-            .build()
-            .findFirst();
+      docs = (await _firestore
+              .collectionGroup('propriedades')
+              .where('uidPersonProdutor',
+                  isEqualTo: personSnapshot.docs.first.reference)
+              .get())
+          .docs;
+    }
 
-        if (existing != null) {
-          existing.updateFromFirestore(doc.data());
-          _objectBox.propriedadeBox.put(existing);
-        } else {
-          final entity = PropriedadeEntity.fromFirestore(
-            doc.data(),
-            doc.id,
-            produtorRef.path,
-          );
-          _objectBox.propriedadeBox.put(entity);
-        }
-        totalProps++;
+    for (final doc in docs) {
+      final parentPath = doc.reference.parent.parent!.path;
+
+      final existing = _objectBox.propriedadeBox
+          .query(PropriedadeEntity_.firestoreId.equals(doc.id))
+          .build()
+          .findFirst();
+
+      if (existing != null) {
+        existing.updateFromFirestore(doc.data());
+        // Corrige registros legados gravados com o path do produtor.
+        existing.parentPath = parentPath;
+        _objectBox.propriedadeBox.put(existing);
+      } else {
+        _objectBox.propriedadeBox.put(
+          PropriedadeEntity.fromFirestore(doc.data(), doc.id, parentPath),
+        );
       }
     }
-    debugPrint('🏡 $totalProps propriedade(s) baixada(s)');
+    debugPrint('🏡 ${docs.length} propriedade(s) baixada(s)');
   }
 
   /// Baixa todos os animais das propriedades locais
@@ -1025,6 +1052,36 @@ class OfflineFirstSyncService {
   // ==========================================================================
   // VERIFICAÇÃO E SINCRONIZAÇÃO INCREMENTAL
   // ==========================================================================
+
+  /// Marca de reparo (uma vez por instalação) do path das propriedades.
+  static const _kReparoPathPropriedades = 'reparo_path_propriedades_v1';
+
+  /// Reparo pontual para instalações que já sincronizaram antes da correção:
+  /// o download antigo lia as propriedades de `produtor/{id}/propriedades` (path
+  /// errado) e gravava o `parentPath` do produtor, então elas nunca casavam com
+  /// as queries da UI (que usam `tecnico/{id}`). Re-baixa SÓ as propriedades,
+  /// corrigindo o `parentPath` — não força um download completo.
+  Future<void> repararPathPropriedades(String userId) async {
+    if (!_isOnline) return;
+
+    final marca = _objectBox.syncMetadataBox
+        .query(SyncMetadataEntity_.collectionName
+            .equals(_kReparoPathPropriedades))
+        .build()
+        .findFirst();
+    if (marca != null && marca.initialSyncComplete) return;
+
+    try {
+      final tecnicoRef = await _downloadTecnico(userId);
+      await _downloadTodasPropriedades(tecnicoRef, userId);
+      _updateSyncMetadata(_kReparoPathPropriedades, DateTime.now(),
+          complete: true);
+      debugPrint('🛠️ Reparo do path das propriedades concluído');
+    } catch (e) {
+      // Sem marcar como concluído: tenta de novo no próximo login.
+      debugPrint('⚠️ Falha ao reparar o path das propriedades: $e');
+    }
+  }
 
   /// Verifica se precisa de sincronização inicial
   bool needsInitialSync() {

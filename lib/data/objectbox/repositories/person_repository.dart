@@ -29,6 +29,22 @@ class PersonRepository extends TopLevelSyncRepository<PersonEntity> {
   PersonEntity? getByUid(String uid) =>
       box.query(PersonEntity_.uid.equals(uid)).build().findFirst();
 
+  /// Busca local por CPF (checagem offline de duplicidade). Ignora excluídos.
+  PersonEntity? getByCpf(String cpf) => box
+      .query(PersonEntity_.cpf
+          .equals(cpf)
+          .and(PersonEntity_.isDeleted.equals(false)))
+      .build()
+      .findFirst();
+
+  /// Busca local por e-mail (checagem offline de duplicidade). Ignora excluídos.
+  PersonEntity? getByEmail(String email) => box
+      .query(PersonEntity_.email
+          .equals(email)
+          .and(PersonEntity_.isDeleted.equals(false)))
+      .build()
+      .findFirst();
+
   @override
   List<PersonEntity> getPendingSync() =>
       box.query(PersonEntity_.needsSync.equals(true)).build().find();

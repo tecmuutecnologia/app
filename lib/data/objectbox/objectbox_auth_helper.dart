@@ -56,6 +56,11 @@ class ObjectBoxAuthHelper {
         await syncService.syncPendingChangesToFirestore();
       }
 
+      // Auto-recuperação (uma vez por instalação): quem já tinha sincronizado
+      // antes da correção ficou com as propriedades no path do produtor e nunca
+      // re-baixa por conta própria. Re-baixa só as propriedades.
+      await syncService.repararPathPropriedades(user.uid);
+
       debugPrint('✅ Sincronização após login concluída');
 
       // Manutenção: remove soft-deletes já sincronizados (Fase 1.5).
@@ -72,13 +77,17 @@ class ObjectBoxAuthHelper {
   /// Remove do cache local os soft-deletes já sincronizados de TODAS as
   /// entidades sincronizáveis (`isDeleted && !needsSync`), evitando que o banco
   /// cresça indefinidamente. Retorna o total de registros removidos.
+  ///
+  /// `propriedadeBox` fica DE FORA de propósito: propriedade excluída é um
+  /// soft-delete que continua existindo no Firestore — é a lixeira (restaurável)
+  /// da `propriedades_excluidas_page`. Purgar localmente esvaziaria a lixeira a
+  /// cada login.
   static int purgeAllSyncedSoftDeletes() {
     if (kIsWeb || !ObjectBoxService.isInitialized) return 0;
     final ob = ObjectBoxService.instance;
     return _purgeBox(ob.animalBox) +
         _purgeBox(ob.acaoBox) +
         _purgeBox(ob.acaoDaVisitaBox) +
-        _purgeBox(ob.propriedadeBox) +
         _purgeBox(ob.tratamentoBox) +
         _purgeBox(ob.acaoSanitarioBox) +
         _purgeBox(ob.financeiroBox) +

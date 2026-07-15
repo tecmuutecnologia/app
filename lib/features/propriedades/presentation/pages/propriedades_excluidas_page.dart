@@ -6,10 +6,15 @@ import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
+import '/core/di/providers.dart';
+import '/core/result/result.dart';
+import '/data/objectbox/entities/index.dart';
+import '/features/propriedades/application/propriedades_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class PropriedadesExcluiasPage extends StatefulWidget {
+class PropriedadesExcluiasPage extends ConsumerStatefulWidget {
   const PropriedadesExcluiasPage({
     super.key,
     required this.visitaPresencial,
@@ -23,13 +28,12 @@ class PropriedadesExcluiasPage extends StatefulWidget {
   static String routePath = '/propriedadesExcluidas';
 
   @override
-  State<PropriedadesExcluiasPage> createState() =>
+  ConsumerState<PropriedadesExcluiasPage> createState() =>
       _PropriedadesExcluiasPageState();
 }
 
-class _PropriedadesExcluiasPageState extends State<PropriedadesExcluiasPage> {
-  final Set<String> _restoredPropertyIds = <String>{};
-
+class _PropriedadesExcluiasPageState
+    extends ConsumerState<PropriedadesExcluiasPage> {
   FocusNode? _searchFocusNode;
   TextEditingController? _searchController;
 
@@ -41,8 +45,6 @@ class _PropriedadesExcluiasPageState extends State<PropriedadesExcluiasPage> {
 
     _searchController ??= TextEditingController();
     _searchFocusNode ??= FocusNode();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -198,142 +200,67 @@ class _PropriedadesExcluiasPageState extends State<PropriedadesExcluiasPage> {
   }
 
   Widget _p4(BuildContext context) {
+    // Lixeira lida do ObjectBox: aparece mesmo offline, e restaurar/excluir
+    // refletem na hora (a query deixa de casar com o registro).
+    final tecnicoPath =
+        widget.uidTecnico?.path ?? ref.watch(tecnicoPathProvider);
+    if (tecnicoPath == null) {
+      return Expanded(child: _mensagem(context, 'Técnico não encontrado.'));
+    }
+
+    final excluidas =
+        ref.watch(propriedadesExcluidasProvider(tecnicoPath)).valueOrNull ??
+            const <PropriedadeEntity>[];
+
+    final searchQuery = (_searchController?.text ?? '').toLowerCase();
+    final lista = searchQuery.isEmpty
+        ? excluidas
+        : excluidas
+            .where((p) =>
+                (p.displayName ?? '').toLowerCase().contains(searchQuery))
+            .toList();
+
+    if (lista.isEmpty) {
+      return Expanded(
+        child: _mensagem(
+          context,
+          searchQuery.isNotEmpty
+              ? 'Nenhuma propriedade encontrada com "$searchQuery"'
+              : 'Pasta vazia: não há nenhuma propriedade na lixeira.',
+        ),
+      );
+    }
+
     return Expanded(
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
-        child: StreamBuilder<List<PropriedadesRecord>>(
-          stream: queryPropriedadesRecord(
-            parent: widget.uidTecnico,
-            queryBuilder: (propriedadesRecord) => propriedadesRecord
-                .where('isDeleted', isEqualTo: true)
-                .orderBy('deletedAt', descending: true),
-          ),
-          initialData: const <PropriedadesRecord>[],
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting &&
-                !snapshot.hasData) {
-              return Center(
-                child: SizedBox(
-                  width: 50.0,
-                  height: 50.0,
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      Color(0xFFF75E38),
-                    ),
-                  ),
+        child: ListView.builder(
+          padding: EdgeInsets.zero,
+          itemCount: lista.length,
+          itemBuilder: (context, listViewIndex) {
+            final entity = lista[listViewIndex];
+            return Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 10.0),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  borderRadius: BorderRadius.circular(16.0),
+                  boxShadow: AppTokens.softShadow(context),
                 ),
-              );
-            }
-
-            if (snapshot.hasError) {
-              return Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 24.0),
-                child: Center(
-                  child: Text(
-                    'Não foi possível carregar a lixeira. Tente novamente.',
-                    textAlign: TextAlign.center,
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                          color: FlutterFlowTheme.of(context).secondaryText,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                  ),
-                ),
-              );
-            }
-
-            List<PropriedadesRecord> listViewPropriedadesRecordList =
-                (snapshot.data ?? [])
-                    .where((property) =>
-                        !_restoredPropertyIds.contains(property.reference.id))
-                    .toList();
-
-            // Filter properties based on search query
-            final searchQuery = _searchController.text.toLowerCase();
-            if (searchQuery.isNotEmpty) {
-              listViewPropriedadesRecordList = listViewPropriedadesRecordList
-                  .where((property) =>
-                      property.displayName.toLowerCase().contains(searchQuery))
-                  .toList();
-            }
-
-            if (listViewPropriedadesRecordList.isEmpty) {
-              return Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 24.0),
-                child: Center(
-                  child: Text(
-                    searchQuery.isNotEmpty
-                        ? 'Nenhuma propriedade encontrada com "$searchQuery"'
-                        : 'Pasta vazia: não há nenhuma propriedade na lixeira.',
-                    textAlign: TextAlign.center,
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                          color: FlutterFlowTheme.of(context).secondaryText,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                  ),
-                ),
-              );
-            }
-
-            return ListView.builder(
-              padding: EdgeInsets.zero,
-              primary: false,
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              itemCount: listViewPropriedadesRecordList.length,
-              itemBuilder: (context, listViewIndex) {
-                final listViewPropriedadesRecord =
-                    listViewPropriedadesRecordList[listViewIndex];
-                return Padding(
+                child: Padding(
                   padding:
-                      EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 10.0),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: FlutterFlowTheme.of(context).secondaryBackground,
-                      borderRadius: BorderRadius.circular(16.0),
-                      boxShadow: AppTokens.softShadow(context),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(
-                          16.0, 12.0, 16.0, 12.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _p5(context, listViewPropriedadesRecord),
-                          _p6(context, listViewPropriedadesRecord),
-                        ],
-                      ),
-                    ),
+                      EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _p5(context, entity),
+                      _p6(context, entity),
+                    ],
                   ),
-                );
-              },
+                ),
+              ),
             );
           },
         ),
@@ -341,7 +268,24 @@ class _PropriedadesExcluiasPageState extends State<PropriedadesExcluiasPage> {
     );
   }
 
-  Widget _p5(BuildContext context, dynamic listViewPropriedadesRecord) {
+  Widget _mensagem(BuildContext context, String texto) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 24.0),
+      child: Center(
+        child: Text(
+          texto,
+          textAlign: TextAlign.center,
+          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                font: GoogleFonts.readexPro(),
+                color: FlutterFlowTheme.of(context).secondaryText,
+                letterSpacing: 0.0,
+              ),
+        ),
+      ),
+    );
+  }
+
+  Widget _p5(BuildContext context, PropriedadeEntity listViewPropriedadesRecord) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -352,7 +296,7 @@ class _PropriedadesExcluiasPageState extends State<PropriedadesExcluiasPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                listViewPropriedadesRecord.displayName,
+                listViewPropriedadesRecord.displayName ?? '',
                 style: FlutterFlowTheme.of(context).bodyLarge.override(
                       font: GoogleFonts.readexPro(
                         fontWeight:
@@ -392,7 +336,7 @@ class _PropriedadesExcluiasPageState extends State<PropriedadesExcluiasPage> {
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
                 child: Text(
-                  listViewPropriedadesRecord.cidade,
+                  listViewPropriedadesRecord.cidade ?? '',
                   style: FlutterFlowTheme.of(context).labelMedium.override(
                         font: GoogleFonts.readexPro(
                           fontWeight: FlutterFlowTheme.of(context)
@@ -417,7 +361,7 @@ class _PropriedadesExcluiasPageState extends State<PropriedadesExcluiasPage> {
     );
   }
 
-  Widget _p6(BuildContext context, dynamic listViewPropriedadesRecord) {
+  Widget _p6(BuildContext context, PropriedadeEntity listViewPropriedadesRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
       child: Row(
@@ -454,41 +398,21 @@ class _PropriedadesExcluiasPageState extends State<PropriedadesExcluiasPage> {
                     return;
                   }
 
-                  safeSetState(() {
-                    _restoredPropertyIds
-                        .add(listViewPropriedadesRecord.reference.id);
-                  });
+                  // Offline-first: grava local e sincroniza (ou enfileira). O
+                  // item some da lixeira sozinho — a query reativa deixa de
+                  // casar com ele, sem precisar de setState.
+                  final result = await ref
+                      .read(propriedadeRepositoryProvider)
+                      .restaurar(listViewPropriedadesRecord);
 
-                  try {
-                    await listViewPropriedadesRecord.reference.update(
-                      createPropriedadesRecordData(
-                        isDeleted: false,
-                        deletedAt: null,
-                      ),
-                    );
-
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Propriedade restaurada com sucesso.'),
-                        ),
-                      );
-                    }
-                  } catch (e) {
-                    safeSetState(() {
-                      _restoredPropertyIds
-                          .remove(listViewPropriedadesRecord.reference.id);
-                    });
-
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content:
-                              Text('Não foi possível restaurar a propriedade.'),
-                        ),
-                      );
-                    }
-                  }
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(result is Success
+                          ? 'Propriedade restaurada com sucesso.'
+                          : 'Não foi possível restaurar a propriedade.'),
+                    ),
+                  );
                 },
                 text: 'Restaurar',
                 icon: Icon(
@@ -559,8 +483,13 @@ class _PropriedadesExcluiasPageState extends State<PropriedadesExcluiasPage> {
                     return;
                   }
 
-                  await listViewPropriedadesRecord.reference.delete();
+                  // Apaga o documento no Firestore e remove o registro local
+                  // (enfileira o DELETE se estiver offline).
+                  await ref
+                      .read(propriedadeRepositoryProvider)
+                      .excluirPermanente(listViewPropriedadesRecord);
 
+                  if (!context.mounted) return;
                   await showDialog(
                     context: context,
                     builder: (alertDialogContext) {
@@ -576,8 +505,6 @@ class _PropriedadesExcluiasPageState extends State<PropriedadesExcluiasPage> {
                       );
                     },
                   );
-
-                  safeSetState(() {});
                 },
                 text: 'Excluir',
                 icon: Icon(
@@ -666,16 +593,15 @@ class _PropriedadesExcluiasPageState extends State<PropriedadesExcluiasPage> {
         ),
         body: SafeArea(
           top: true,
-          child: SingleChildScrollView(
-            primary: false,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _p2(context),
-                _p3(context),
-              ],
-            ),
+          // Sem SingleChildScrollView: a busca fica fixa e a ListView é o único
+          // scrollable, com altura limitada — assim ela virtualiza de verdade.
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              _p2(context),
+              _p3(context),
+            ],
           ),
         ),
       ),

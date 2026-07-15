@@ -245,6 +245,10 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               'emailTecnico',
               ParamType.String,
             ),
+            propriedadePendenteId: params.getParam(
+              'propriedadePendenteId',
+              ParamType.int,
+            ),
           ),
         ),
         FFRoute(
