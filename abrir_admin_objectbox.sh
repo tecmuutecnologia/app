@@ -1,11 +1,11 @@
 #!/bin/bash
 #
-# abrir_admin.sh — abre o ObjectBox Admin do device físico no navegador do Mac.
+# abrir_admin_objectbox.sh — abre o ObjectBox Admin do device físico no navegador do Mac.
 #
 # Cria o túnel adb (Mac -> device) e abre http://127.0.0.1:PORTA.
 # Uso:
-#   ./abrir_admin.sh          # usa a porta padrão 8090
-#   ./abrir_admin.sh 9090     # usa outra porta local (mapeia para 8090 no device)
+#   ./abrir_admin_objectbox.sh          # usa a porta padrão 8090
+#   ./abrir_admin_objectbox.sh 9090     # usa outra porta local (mapeia para 8090 no device)
 #
 
 set -e
