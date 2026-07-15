@@ -415,10 +415,32 @@ class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
     );
   }
 
-  /// Card de propriedade criada offline, aguardando ativação da conta.
-  /// Só mostra o botão "Ativar conta" quando há internet.
+  /// Abre a edição de uma propriedade PENDENTE (id local, pois ainda não tem
+  /// firestoreId) — usado para corrigir dados antes de ativar.
+  void _abrirEdicaoPendente(
+      BuildContext context, PropriedadeEntity entity, TecnicoEntity tecnico) {
+    context.pushNamed(
+      EditarPropriedadePage.routeName,
+      queryParameters: {
+        'propriedadePendenteId': serializeParam(entity.id, ParamType.int),
+        'nomePropriedade': serializeParam(entity.displayName, ParamType.String),
+        'uidTecnico':
+            serializeParam(tecnico.docRef, ParamType.DocumentReference),
+        'emailPropriedade': serializeParam(entity.email, ParamType.String),
+        'visitaPresencial':
+            serializeParam(widget.visitaPresencial, ParamType.bool),
+        'emailTecnico': serializeParam(currentUserEmail, ParamType.String),
+      }.withoutNulls,
+    );
+  }
+
+  /// Card de propriedade criada offline, aguardando ativação da conta. Mantém a
+  /// mesma linha de topo dos demais cards (avatar + nome + subtítulo), porém em
+  /// moldura de alerta (borda + sombra laranja e ícone de atenção), com o botão
+  /// "Ativar conta" logo abaixo — por isso é mais alto que os cards normais.
   Widget _pendingCard(BuildContext context, PropriedadeEntity entity,
       bool isOnline, TecnicoEntity tecnico) {
+    final laranja = AppTokens.brand;
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 10.0),
       child: Container(
@@ -426,44 +448,89 @@ class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
         decoration: BoxDecoration(
           color: FlutterFlowTheme.of(context).secondaryBackground,
           borderRadius: BorderRadius.circular(16.0),
-          boxShadow: AppTokens.softShadow(context),
-          border: Border.all(
-            color: FlutterFlowTheme.of(context).warning,
-            width: 1.0,
-          ),
+          border: Border.all(color: laranja, width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: laranja.withValues(alpha: 0.25),
+              blurRadius: 16.0,
+              offset: const Offset(0.0, 6.0),
+            ),
+          ],
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Linha de topo idêntica aos demais cards (avatar + nome +
+              // subtítulo), com ícone de atenção no lugar do chevron.
               Row(
+                mainAxisSize: MainAxisSize.max,
                 children: [
-                  Icon(
-                    Icons.cloud_off_rounded,
-                    color: FlutterFlowTheme.of(context).warning,
-                    size: 20.0,
-                  ),
-                  const SizedBox(width: 8.0),
-                  Expanded(
-                    child: Text(
-                      entity.displayName ?? 'Propriedade',
-                      style: FlutterFlowTheme.of(context).bodyLarge.override(
-                            font: GoogleFonts.readexPro(),
-                            letterSpacing: 0.0,
-                          ),
+                  Container(
+                    width: 44.0,
+                    height: 44.0,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Color(0xFFEC3B5B), width: 2.0),
                     ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(44.0),
+                        child: Image.asset(
+                          'assets/images/Logo-white_(1).png',
+                          width: 35.0,
+                          height: 35.0,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.fromSTEB(
+                          12.0, 0.0, 0.0, 0.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                0.0, 0.0, 0.0, 4.0),
+                            child: Text(
+                              entity.displayName ?? 'Propriedade',
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyLarge
+                                  .override(
+                                    font: GoogleFonts.readexPro(),
+                                    letterSpacing: 0.0,
+                                  ),
+                            ),
+                          ),
+                          Text(
+                            'Conta pendente — salva no dispositivo',
+                            style: FlutterFlowTheme.of(context)
+                                .labelMedium
+                                .override(
+                                  font: GoogleFonts.readexPro(),
+                                  color:
+                                      FlutterFlowTheme.of(context).secondaryText,
+                                  letterSpacing: 0.0,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Icon(
+                    Icons.warning_amber_rounded,
+                    color: laranja,
+                    size: 24.0,
                   ),
                 ],
-              ),
-              const SizedBox(height: 4.0),
-              Text(
-                'Conta pendente — salva no dispositivo',
-                style: FlutterFlowTheme.of(context).labelMedium.override(
-                      font: GoogleFonts.readexPro(),
-                      color: FlutterFlowTheme.of(context).warning,
-                      letterSpacing: 0.0,
-                    ),
               ),
               const SizedBox(height: 12.0),
               if (isOnline)
@@ -474,12 +541,13 @@ class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
                   options: FFButtonOptions(
                     width: double.infinity,
                     height: 44.0,
-                    color: FlutterFlowTheme.of(context).primary,
+                    color: AppTokens.secondary,
                     textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                           font: GoogleFonts.readexPro(),
                           color: Colors.white,
                           letterSpacing: 0.0,
                         ),
+                    elevation: 0.0,
                     borderRadius: BorderRadius.circular(12.0),
                   ),
                 )
@@ -650,23 +718,10 @@ class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
         },
       );
 
-      // E-mail duplicado: leva à edição da propriedade PENDENTE (id local, pois
-      // ela ainda não tem firestoreId) para corrigir o e-mail antes de reativar.
+      // E-mail duplicado: leva à edição da propriedade PENDENTE para corrigir o
+      // e-mail antes de reativar.
       if (jaExiste && mounted) {
-        context.pushNamed(
-          EditarPropriedadePage.routeName,
-          queryParameters: {
-            'propriedadePendenteId': serializeParam(entity.id, ParamType.int),
-            'nomePropriedade':
-                serializeParam(entity.displayName, ParamType.String),
-            'uidTecnico':
-                serializeParam(tecnico.docRef, ParamType.DocumentReference),
-            'emailPropriedade': serializeParam(entity.email, ParamType.String),
-            'visitaPresencial':
-                serializeParam(widget.visitaPresencial, ParamType.bool),
-            'emailTecnico': serializeParam(currentUserEmail, ParamType.String),
-          }.withoutNulls,
-        );
+        _abrirEdicaoPendente(context, entity, tecnico);
       }
     }
   }
