@@ -91,10 +91,25 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
   // Escrita com sincronização (offline-first)
   // ---------------------------------------------------------------------------
 
+  /// `true` se esta entidade nasce com um `firestoreId` REAL gerado no cliente
+  /// (offline) já na criação — em vez de reconciliar o id depois do envio.
+  /// Firestore gera ids no cliente (`collection(path).doc().id`) sem escrever.
+  /// Com isto, o sync vira um `set(merge)` idempotente no id e os filhos já
+  /// referenciam o path definitivo. Padrão `false` (comportamento antigo).
+  @protected
+  bool get preGeneratesFirestoreId => false;
+
   /// Adiciona uma NOVA entidade: marca para sync, persiste localmente e
   /// sincroniza (ou enfileira se offline/erro). A entidade deve ter `parentPath`
   /// definido.
   Future<Result<E>> add(E entity) async {
+    // Gera o firestoreId REAL na criação (offline) para as entidades que optam
+    // por isso — os filhos já podem referenciar o path definitivo e o sync é um
+    // `set` idempotente, sem reconciliação pós-envio.
+    if (preGeneratesFirestoreId && entity.firestoreId == null) {
+      entity.firestoreId =
+          _firestore.collection(collectionPathFor(entity)).doc().id;
+    }
     entity.needsSync = true;
     entity.lastModified = DateTime.now();
     final id = put(entity);
@@ -162,13 +177,24 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
   @protected
   Future<Result<E>> pushCreate(E entity) async {
     final collectionPath = collectionPathFor(entity);
+    // Com firestoreId pré-gerado, o CREATE é um `set(merge)` idempotente no id
+    // definitivo — sem auto-id nem reconciliação. O path da fila também usa o
+    // firestoreId (não o objectboxId).
+    final preId = entity.firestoreId;
+    final queuePath =
+        preId != null ? '$collectionPath/$preId' : '$collectionPath/${entity.id}';
 
     if (isOnline) {
       try {
-        final docRef = _firestore.collection(collectionPath).doc();
-        await docRef.set(firestorePayloadFor(entity));
-
-        entity.firestoreId = docRef.id;
+        if (preId != null) {
+          await _firestore
+              .doc('$collectionPath/$preId')
+              .set(firestorePayloadFor(entity), SetOptions(merge: true));
+        } else {
+          final docRef = _firestore.collection(collectionPath).doc();
+          await docRef.set(firestorePayloadFor(entity));
+          entity.firestoreId = docRef.id;
+        }
         entity.needsSync = false;
         entity.lastSynced = DateTime.now();
         box.put(entity);
@@ -176,8 +202,8 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
       } catch (e, st) {
         debugPrint('❌ [$collectionName] erro ao criar no Firestore: $e');
         if (!syncedByModifiedLoop) {
-          _queue('CREATE', '$collectionPath/${entity.id}',
-              data: firestorePayloadFor(entity));
+          _queue('CREATE', queuePath,
+              firestoreId: preId, data: firestorePayloadFor(entity));
         }
         // needsSync permanece true: recriado pela fila (acima) ou, para
         // entidades com laço próprio, pelo `_syncModifiedX` ao reconectar.
@@ -187,8 +213,8 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
     }
 
     if (!syncedByModifiedLoop) {
-      _queue('CREATE', '$collectionPath/${entity.id}',
-          data: firestorePayloadFor(entity));
+      _queue('CREATE', queuePath,
+          firestoreId: preId, data: firestorePayloadFor(entity));
     }
     // needsSync permanece true: recriado pela fila (acima) ou, para entidades
     // com laço próprio, pelo `_syncModifiedX` ao reconectar.

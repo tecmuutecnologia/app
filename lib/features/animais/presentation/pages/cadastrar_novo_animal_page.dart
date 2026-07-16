@@ -12,6 +12,7 @@ import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/ui/request_manager.dart';
+import '/data/objectbox/repositories/index.dart';
 import 'dart:ui';
 import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
@@ -59,6 +60,16 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
   final _formKey = GlobalKey<FormState>();
   InstantTimer? _instantTimer;
   bool? _respostaNet = true;
+
+  /// Propriedade ainda não ativada (sem produtor vinculado). Nela o cadastro vai
+  /// SEMPRE para o ObjectBox (mesmo online): tudo fica local e sincroniza junto
+  /// pelo mecanismo offline-first, mantendo as listas (ObjectBox) consistentes.
+  /// Detecta pelo registro local, via o firestoreId real da propriedade.
+  bool get _propriedadePendente {
+    final id = widget.uidPropriedade?.id;
+    if (id == null) return false;
+    return PropriedadeRepository().getByFirestoreId(id)?.contaCriada == false;
+  }
   FocusNode? _nomeFocusNode;
   TextEditingController? _nomeTextController;
   final String? Function(BuildContext, String?)? _nomeTextControllerValidator =
@@ -217,7 +228,8 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
   /// botão de salvar (Fase 4): eram ~4000 linhas inline.
   Future<void> _cadastrarAnimal(BuildContext context) async {
     var _shouldSetState = false;
-    if (_respostaNet!) {
+    // Propriedade pendente força o ramo offline (ObjectBox), mesmo com internet.
+    if (_respostaNet! && !_propriedadePendente) {
       // Animais criados offline agora vão direto ao ObjectBox (sem fila no
       // FFAppState), então não há mais "pendentes" a bloquear o cadastro.
       {

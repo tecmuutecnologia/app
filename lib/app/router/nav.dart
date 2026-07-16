@@ -211,6 +211,10 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               'diasDg',
               ParamType.String,
             ),
+            propriedadePendenteId: params.getParam(
+              'propriedadePendenteId',
+              ParamType.int,
+            ),
           ),
         ),
         FFRoute(

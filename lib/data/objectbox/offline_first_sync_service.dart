@@ -645,7 +645,10 @@ class OfflineFirstSyncService {
     _updateStatus(SyncStatus.syncing);
 
     try {
-      // Sincroniza entidades com needsSync = true
+      // Sincroniza entidades com needsSync = true. Propriedades primeiro: seus
+      // filhos referenciam o path da propriedade (o Firestore não valida a
+      // existência da ref, mas manter a ordem é mais coerente).
+      await _syncModifiedPropriedades();
       await _syncModifiedAnimals();
       await _syncModifiedAcoes();
       await _syncModifiedTratamentos();
@@ -663,6 +666,50 @@ class OfflineFirstSyncService {
     }
   }
 
+  /// Payload da propriedade, reanexando o produtor (`uidPersonProdutor`) quando
+  /// já vinculado. Alinhado com `PropriedadeRepository.firestorePayloadFor`.
+  Map<String, dynamic> _propriedadePayload(PropriedadeEntity prop) {
+    final data = prop.toFirestore();
+    if (prop.uidPersonProdutorPath != null) {
+      data['uidPersonProdutor'] = _firestore.doc(prop.uidPersonProdutorPath!);
+    }
+    return data;
+  }
+
+  /// Sincroniza propriedades modificadas localmente. A propriedade nasce com um
+  /// firestoreId real e sobe sozinha ao reconectar (sem depender da ativação),
+  /// via `set(merge)` idempotente. Backfill: propriedade legada sem firestoreId
+  /// ganha um id gerado aqui.
+  Future<void> _syncModifiedPropriedades() async {
+    final modified = _objectBox.propriedadeBox
+        .query(PropriedadeEntity_.needsSync.equals(true))
+        .build()
+        .find();
+
+    for (final prop in modified) {
+      try {
+        if (prop.parentPath == null) continue;
+        prop.firestoreId ??=
+            _firestore.collection('${prop.parentPath}/propriedades').doc().id;
+
+        // set-merge cobre create e update (incl. soft-delete via isDeleted no
+        // payload) sem apagar o uidPersonProdutor vinculado na ativação.
+        await _firestore
+            .doc('${prop.parentPath}/propriedades/${prop.firestoreId}')
+            .set(_propriedadePayload(prop), SetOptions(merge: true));
+        prop.needsSync = false;
+        prop.lastSynced = DateTime.now();
+        _objectBox.propriedadeBox.put(prop);
+      } catch (e) {
+        debugPrint('❌ Erro ao sincronizar propriedade ${prop.firestoreId}: $e');
+      }
+    }
+
+    if (modified.isNotEmpty) {
+      debugPrint('🏡 ${modified.length} propriedade(s) sincronizada(s)');
+    }
+  }
+
   /// Sincroniza animais modificados localmente
   Future<void> _syncModifiedAnimals() async {
     final modified = _objectBox.animalBox
@@ -673,10 +720,11 @@ class OfflineFirstSyncService {
     for (final animal in modified) {
       try {
         if (animal.firestoreId != null && animal.parentPath != null) {
+          // set-merge cobre create (id pré-gerado) e update idempotentemente.
           final docRef = _firestore.doc(
             '${animal.parentPath}/animaisProdutores/${animal.firestoreId}',
           );
-          await docRef.update(animal.toFirestore());
+          await docRef.set(_animalPayload(animal), SetOptions(merge: true));
           animal.needsSync = false;
           animal.lastSynced = DateTime.now();
           _objectBox.animalBox.put(animal);
@@ -686,7 +734,7 @@ class OfflineFirstSyncService {
           // Novo animal (criado offline) - criar no Firestore e reconciliar.
           final collectionRef =
               _firestore.collection('${animal.parentPath}/animaisProdutores');
-          final docRef = await collectionRef.add(animal.toFirestore());
+          final docRef = await collectionRef.add(_animalPayload(animal));
           animal.firestoreId = docRef.id;
           animal.needsSync = false;
           animal.lastSynced = DateTime.now();
@@ -720,6 +768,19 @@ class OfflineFirstSyncService {
     return data;
   }
 
+  /// Payload do animal para o Firestore, reanexando o vínculo com a propriedade
+  /// (`uidTecnicoPropriedade` como `DocumentReference`) que a entity pura não
+  /// constrói. Sem isto, animal criado offline sobe SEM o vínculo. Alinhado com
+  /// `AnimalRepository.firestorePayloadFor`.
+  Map<String, dynamic> _animalPayload(AnimalEntity animal) {
+    final data = animal.toFirestore();
+    if (animal.uidTecnicoPropriedadePath != null) {
+      data['uidTecnicoPropriedade'] =
+          _firestore.doc(animal.uidTecnicoPropriedadePath!);
+    }
+    return data;
+  }
+
   /// Sincroniza ações modificadas localmente
   Future<void> _syncModifiedAcoes() async {
     final modified = _objectBox.acaoBox
@@ -729,11 +790,16 @@ class OfflineFirstSyncService {
 
     for (final acao in modified) {
       try {
-        if (acao.firestoreId != null && acao.parentPath != null) {
+        if (acao.firestoreId != null &&
+            acao.parentPath != null &&
+            _acaoVinculoResolvido(acao)) {
+          // set-merge cobre create (id pré-gerado) e update. A guarda de vínculo
+          // segura ações sobre animal-offline LEGADO até o animal subir e a
+          // cascata preencher `uidAnimalAnimaisProdutoresPath`.
           final docRef = _firestore.doc(
             '${acao.parentPath}/acoes/${acao.firestoreId}',
           );
-          await docRef.update(_acaoPayload(acao));
+          await docRef.set(_acaoPayload(acao), SetOptions(merge: true));
           acao.needsSync = false;
           acao.lastSynced = DateTime.now();
           _objectBox.acaoBox.put(acao);

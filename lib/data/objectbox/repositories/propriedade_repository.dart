@@ -23,6 +23,46 @@ class PropriedadeRepository extends BaseSyncRepository<PropriedadeEntity> {
   @override
   String get collectionName => 'propriedades';
 
+  /// A propriedade nasce com um firestoreId real (offline) e sincroniza sozinha
+  /// ao reconectar — independentemente da ativação da conta do produtor.
+  @override
+  bool get preGeneratesFirestoreId => true;
+
+  /// O CREATE/UPDATE da propriedade é feito pelo laço `_syncModifiedPropriedades`
+  /// (set-merge no id). Não enfileirar evita dupla-sync.
+  @override
+  bool get syncedByModifiedLoop => true;
+
+  /// Reanexa o vínculo com o produtor (`uidPersonProdutor` como
+  /// `DocumentReference`) quando já existe — a entity pura (`toFirestore`) não o
+  /// inclui. Com `set(merge)` no sync, o campo nunca é apagado quando ausente.
+  @override
+  Map<String, dynamic> firestorePayloadFor(PropriedadeEntity entity) {
+    final data = entity.toFirestore();
+    if (entity.uidPersonProdutorPath != null) {
+      data['uidPersonProdutor'] = firestore.doc(entity.uidPersonProdutorPath!);
+    }
+    return data;
+  }
+
+  /// Gera um firestoreId real (offline) para uma propriedade que ainda não tem
+  /// — usado no backfill de pendentes legadas (criadas antes deste mecanismo).
+  String gerarFirestoreId(PropriedadeEntity entity) => firestore
+      .collection('${entity.parentPath}/propriedades')
+      .doc()
+      .id;
+
+  /// Garante um firestoreId (backfill de pendente legada). Persiste e marca
+  /// `needsSync` para a propriedade subir sozinha. Retorna o id garantido.
+  String ensureFirestoreId(PropriedadeEntity entity) {
+    if (entity.firestoreId != null) return entity.firestoreId!;
+    entity.firestoreId = gerarFirestoreId(entity);
+    entity.needsSync = true;
+    entity.lastModified = DateTime.now();
+    box.put(entity);
+    return entity.firestoreId!;
+  }
+
   /// Busca uma propriedade pelo ID do Firestore (query indexada).
   PropriedadeEntity? getByFirestoreId(String firestoreId) => box
       .query(PropriedadeEntity_.firestoreId.equals(firestoreId))
@@ -127,24 +167,26 @@ class PropriedadeRepository extends BaseSyncRepository<PropriedadeEntity> {
   Future<Result<void>> excluirPermanente(PropriedadeEntity entity) =>
       softDelete(entity);
 
-  /// Persiste uma propriedade criada offline como PENDENTE de ativação.
-  ///
-  /// Diferente de [BaseSyncRepository.add], NÃO marca `needsSync` — a fila de
-  /// sync não deve tentar enviar uma propriedade cujo produtor ainda não existe
-  /// no Firestore. A entidade só entra no fluxo normal após [markContaCriada].
+  /// Persiste uma propriedade criada offline. Ela nasce com um firestoreId REAL
+  /// e `needsSync = true`, então sincroniza sozinha ao reconectar (via
+  /// `_syncModifiedPropriedades`) — sem depender da ativação. `contaCriada`
+  /// permanece `false` (sem produtor vinculado) até a ativação.
   PropriedadeEntity saveLocalPending(PropriedadeEntity entity) {
     entity.contaCriada = false;
-    entity.needsSync = false;
+    entity.firestoreId ??= gerarFirestoreId(entity);
+    entity.needsSync = true;
     entity.lastModified = DateTime.now();
     entity.id = box.put(entity);
     return entity;
   }
 
-  /// Reconcilia o registro local após a conta ser criada online: marca como
-  /// conta criada e associa o `firestoreId` da PropriedadesRecord recém-criada.
-  void markContaCriada(PropriedadeEntity entity, {required String firestoreId}) {
+  /// Reconcilia o registro local após a ATIVAÇÃO vincular o produtor: marca a
+  /// conta como criada e guarda o path do produtor. O `firestoreId` já existe
+  /// desde a criação (não muda na ativação).
+  void markContaCriada(PropriedadeEntity entity,
+      {required String uidPersonProdutorPath}) {
     entity.contaCriada = true;
-    entity.firestoreId = firestoreId;
+    entity.uidPersonProdutorPath = uidPersonProdutorPath;
     entity.needsSync = false;
     entity.lastSynced = DateTime.now();
     box.put(entity);

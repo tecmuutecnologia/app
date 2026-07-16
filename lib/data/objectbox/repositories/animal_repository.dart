@@ -27,11 +27,29 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
   @override
   String get collectionName => 'animaisProdutores';
 
-  /// O CREATE/UPDATE dos animais é feito por `_syncModifiedAnimals` (que
-  /// reconcilia o `firestoreId` de volta). Não enfileirar evita dupla-sync e o
-  /// furo de `firestoreId` não-reconciliado da fila.
+  /// O CREATE/UPDATE dos animais é feito por `_syncModifiedAnimals` (set-merge
+  /// no id). Não enfileirar evita dupla-sync.
   @override
   bool get syncedByModifiedLoop => true;
+
+  /// O animal nasce com um firestoreId real (offline) — seu path/ref fica válido
+  /// na hora e as ações já o referenciam, sem depender de reconciliação.
+  @override
+  bool get preGeneratesFirestoreId => true;
+
+  /// Reanexa o vínculo com a propriedade como `DocumentReference` — a entity
+  /// pura (`toFirestore`) não o inclui. Sem isto, animal criado offline sobe ao
+  /// Firestore SEM `uidTecnicoPropriedade` (ficaria órfão da propriedade em
+  /// reports/segundo device). Espelha `AcaoRepository.firestorePayloadFor`.
+  @override
+  Map<String, dynamic> firestorePayloadFor(AnimalEntity entity) {
+    final data = entity.toFirestore();
+    if (entity.uidTecnicoPropriedadePath != null) {
+      data['uidTecnicoPropriedade'] =
+          firestore.doc(entity.uidTecnicoPropriedadePath!);
+    }
+    return data;
+  }
 
   // ---------------------------------------------------------------------------
   // Queries específicas de animal

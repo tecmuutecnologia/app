@@ -24,10 +24,15 @@ class AcaoRepository extends BaseSyncRepository<AcaoEntity> {
   @override
   String get collectionName => 'acoes';
 
-  /// O CREATE/UPDATE das ações já é feito por `_syncModifiedAcoes` (que reconcilia
-  /// o `firestoreId` de volta). Não enfileirar evita a dupla-sincronização.
+  /// O CREATE/UPDATE das ações já é feito por `_syncModifiedAcoes` (set-merge no
+  /// id). Não enfileirar evita a dupla-sincronização.
   @override
   bool get syncedByModifiedLoop => true;
+
+  /// A ação nasce com um firestoreId real (offline), sincronizando via set-merge
+  /// idempotente no id — sem reconciliação pós-envio.
+  @override
+  bool get preGeneratesFirestoreId => true;
 
   /// Busca uma ação pelo ID do Firestore (query indexada).
   AcaoEntity? getByFirestoreId(String firestoreId) => box

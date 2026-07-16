@@ -32,9 +32,11 @@ class PropriedadeEntity implements SyncableEntity {
   String? phoneNumber;
   String? diasParaDg;
 
-  /// Controle offline-first: indica se a conta do produtor (Firebase Auth) e o
-  /// registro no Firestore já foram criados. `false` = propriedade salva apenas
-  /// localmente, aguardando ativação online. Não é sincronizado (controle local).
+  /// `true` quando há um produtor vinculado (`uidPersonProdutor` presente) — ou
+  /// seja, a conta do produtor já foi criada/ativada. `false` = propriedade
+  /// pendente de ativação (pode já existir no Firestore, mas sem produtor).
+  /// Derivado de `uidPersonProdutor` no `fromFirestore`/`updateFromFirestore`,
+  /// então é consistente localmente e após download.
   bool contaCriada;
 
   @override
@@ -90,8 +92,9 @@ class PropriedadeEntity implements SyncableEntity {
       cidade: data['cidade'] as String?,
       phoneNumber: data['phone_number'] as String?,
       diasParaDg: data['diasParaDg'] as String?,
-      // Veio do Firestore => a conta já existe.
-      contaCriada: true,
+      // Pendente/ativa é derivado do vínculo com o produtor: uma propriedade
+      // pode existir no Firestore sem produtor (sincronizada mas não ativada).
+      contaCriada: data['uidPersonProdutor'] != null,
       isDeleted: data['isDeleted'] as bool? ?? false,
       deletedAt: data['deletedAt'] != null
           ? (data['deletedAt'] as dynamic).toDate()
@@ -120,6 +123,8 @@ class PropriedadeEntity implements SyncableEntity {
   void updateFromFirestore(Map<String, dynamic> data) {
     uidPersonProdutorPath =
         data['uidPersonProdutor']?.path ?? uidPersonProdutorPath;
+    // Pendente/ativa segue o vínculo com o produtor.
+    contaCriada = uidPersonProdutorPath != null;
     email = data['email'] as String? ?? email;
     displayName = data['display_name'] as String? ?? displayName;
     cpf = data['cpf'] as String? ?? cpf;

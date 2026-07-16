@@ -434,10 +434,37 @@ class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
     );
   }
 
+  /// Abre uma propriedade PENDENTE (mesmo sem conta ativa) para operar offline
+  /// — cadastrar animais, ações, parto etc. Usa o docRef reservado da entidade
+  /// (path `tecnico/{id}/propriedades/local_{objectboxId}`), e sinaliza o modo
+  /// pendente com `propriedadePendenteId` (id local) para as telas de destino.
+  void _abrirPropriedadePendente(
+      BuildContext context, PropriedadeEntity entity, TecnicoEntity tecnico) {
+    // Backfill de pendente legada (sem firestoreId): garante o id antes de
+    // montar o docRef que a tela de destino recebe.
+    ref.read(propriedadeRepositoryProvider).ensureFirestoreId(entity);
+    context.pushNamed(
+      InicioPropriedadePage.routeName,
+      queryParameters: {
+        'nomePropriedade': serializeParam(entity.displayName, ParamType.String),
+        'uidPropriedade':
+            serializeParam(entity.docRef, ParamType.DocumentReference),
+        'uidTecnico':
+            serializeParam(tecnico.docRef, ParamType.DocumentReference),
+        'emailPropriedade': serializeParam(entity.email, ParamType.String),
+        'visitaPresencial':
+            serializeParam(widget.visitaPresencial, ParamType.bool),
+        'diasDg': serializeParam(entity.diasParaDg, ParamType.String),
+        'propriedadePendenteId': serializeParam(entity.id, ParamType.int),
+      }.withoutNulls,
+    );
+  }
+
   /// Card de propriedade criada offline, aguardando ativação da conta. Mantém a
   /// mesma linha de topo dos demais cards (avatar + nome + subtítulo), porém em
   /// moldura de alerta (borda + sombra laranja e ícone de atenção), com o botão
   /// "Ativar conta" logo abaixo — por isso é mais alto que os cards normais.
+  /// Tocar na linha de topo abre a propriedade para operar offline.
   Widget _pendingCard(BuildContext context, PropriedadeEntity entity,
       bool isOnline, TecnicoEntity tecnico) {
     final laranja = AppTokens.brand;
@@ -464,73 +491,83 @@ class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Linha de topo idêntica aos demais cards (avatar + nome +
-              // subtítulo), com ícone de atenção no lugar do chevron.
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Container(
-                    width: 44.0,
-                    height: 44.0,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Color(0xFFEC3B5B), width: 2.0),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(44.0),
-                        child: Image.asset(
-                          'assets/images/Logo-white_(1).png',
-                          width: 35.0,
-                          height: 35.0,
-                          fit: BoxFit.cover,
+              // subtítulo), com ícone de atenção no lugar do chevron. Tocar abre
+              // a propriedade para operar offline.
+              InkWell(
+                splashColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onTap: () =>
+                    _abrirPropriedadePendente(context, entity, tecnico),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Container(
+                      width: 44.0,
+                      height: 44.0,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        border:
+                            Border.all(color: Color(0xFFEC3B5B), width: 2.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(44.0),
+                          child: Image.asset(
+                            'assets/images/Logo-white_(1).png',
+                            width: 35.0,
+                            height: 35.0,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.fromSTEB(
-                          12.0, 0.0, 0.0, 0.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 4.0),
-                            child: Text(
-                              entity.displayName ?? 'Propriedade',
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsetsDirectional.fromSTEB(
+                            12.0, 0.0, 0.0, 0.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsetsDirectional.fromSTEB(
+                                  0.0, 0.0, 0.0, 4.0),
+                              child: Text(
+                                entity.displayName ?? 'Propriedade',
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyLarge
+                                    .override(
+                                      font: GoogleFonts.readexPro(),
+                                      letterSpacing: 0.0,
+                                    ),
+                              ),
+                            ),
+                            Text(
+                              'Conta pendente · toque para abrir',
                               style: FlutterFlowTheme.of(context)
-                                  .bodyLarge
+                                  .labelMedium
                                   .override(
                                     font: GoogleFonts.readexPro(),
+                                    color: FlutterFlowTheme.of(context)
+                                        .secondaryText,
                                     letterSpacing: 0.0,
                                   ),
                             ),
-                          ),
-                          Text(
-                            'Conta pendente — salva no dispositivo',
-                            style: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .override(
-                                  font: GoogleFonts.readexPro(),
-                                  color:
-                                      FlutterFlowTheme.of(context).secondaryText,
-                                  letterSpacing: 0.0,
-                                ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Icon(
-                    Icons.warning_amber_rounded,
-                    color: laranja,
-                    size: 24.0,
-                  ),
-                ],
+                    Icon(
+                      Icons.warning_amber_rounded,
+                      color: laranja,
+                      size: 24.0,
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: 12.0),
               if (isOnline)
@@ -567,14 +604,17 @@ class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
     );
   }
 
-  /// Ativa a conta do produtor de uma propriedade criada offline, de forma
-  /// transparente: cria a conta numa instância secundária do Firebase (sem
-  /// deslogar o técnico), grava a propriedade no Firestore, atualiza os
+  /// Ativa a conta do produtor de uma propriedade: cria a conta numa instância
+  /// secundária do Firebase (sem deslogar o técnico), VINCULA o produtor ao
+  /// documento da propriedade (que já existe/sincroniza sozinho), atualiza os
   /// contadores do técnico, envia o e-mail e reconcilia o registro local.
   Future<void> _ativarConta(BuildContext context, PropriedadeEntity entity,
       TecnicoEntity tecnico) async {
     final tecnicoRef = tecnico.docRef;
     if (tecnicoRef == null) return;
+
+    // Backfill de pendente legada: garante o firestoreId (usado no path do doc).
+    ref.read(propriedadeRepositoryProvider).ensureFirestoreId(entity);
 
     // Loading bloqueante enquanto a ativação acontece.
     showDialog(
@@ -615,18 +655,25 @@ class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
       // Referência (instância primária) ao person do produtor recém-criado.
       final produtorPersonRef = PersonRecord.collection.doc(produtorUid);
 
-      // Cria a propriedade no Firestore, sob o técnico logado.
-      final propriedadeRef = PropriedadesRecord.createDoc(tecnicoRef);
-      await propriedadeRef.set(createPropriedadesRecordData(
-        email: entity.email,
-        displayName: entity.displayName,
-        cpf: entity.cpf,
-        endereco: entity.endereco,
-        cidade: entity.cidade,
-        phoneNumber: entity.phoneNumber,
-        diasParaDg: entity.diasParaDg,
-        uidPersonProdutor: produtorPersonRef,
-      ));
+      // A ativação NÃO cria mais a propriedade — ela já nasceu com um
+      // firestoreId real e sincroniza sozinha. Aqui apenas VINCULAMOS o produtor
+      // ao documento existente (`set(merge)` cria-ou-mescla, idempotente mesmo se
+      // a propriedade ainda não tinha subido). O firestoreId veio da criação.
+      final propriedadeRef = FirebaseFirestore.instance
+          .doc('${entity.parentPath}/propriedades/${entity.firestoreId}');
+      await propriedadeRef.set(
+        createPropriedadesRecordData(
+          email: entity.email,
+          displayName: entity.displayName,
+          cpf: entity.cpf,
+          endereco: entity.endereco,
+          cidade: entity.cidade,
+          phoneNumber: entity.phoneNumber,
+          diasParaDg: entity.diasParaDg,
+          uidPersonProdutor: produtorPersonRef,
+        ),
+        SetOptions(merge: true),
+      );
 
       // Atualiza contadores do técnico.
       await tecnicoRef.update({
@@ -637,13 +684,14 @@ class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
         }),
       });
 
-      // Reconcilia o registro local: marca conta criada + firestoreId. O
+      // Reconcilia o registro local: vincula o produtor + marca conta criada. O
       // ObjectBox notifica os watchers, então o card pendente vira card normal
       // sozinho — sem setState.
       final propriedadeRepo = ref.read(propriedadeRepositoryProvider);
       final local = propriedadeRepo.getById(entity.id);
       if (local != null) {
-        propriedadeRepo.markContaCriada(local, firestoreId: propriedadeRef.id);
+        propriedadeRepo.markContaCriada(local,
+            uidPersonProdutorPath: produtorPersonRef.path);
       }
 
       // Espelha localmente os contadores que o Firestore acabou de incrementar.

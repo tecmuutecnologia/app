@@ -14,8 +14,10 @@ extension TecnicoDocRef on TecnicoEntity {
 }
 
 extension PropriedadeDocRef on PropriedadeEntity {
-  /// `tecnico/{id}/propriedades/{id}`. É `null` enquanto a propriedade estiver
-  /// pendente de ativação (criada offline, ainda sem documento no Firestore).
+  /// `tecnico/{tid}/propriedades/{firestoreId}`. Toda propriedade nasce com um
+  /// `firestoreId` real (gerado offline na criação), então isto vale também
+  /// enquanto a propriedade está pendente de ativação. `null` só antes do
+  /// primeiro `put` no ObjectBox (sem `firestoreId`/`parentPath`).
   DocumentReference? get docRef => (firestoreId == null || parentPath == null)
       ? null
       : FirebaseFirestore.instance.doc('$parentPath/propriedades/$firestoreId');

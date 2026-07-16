@@ -3,6 +3,8 @@
 import '/core/auth/firebase_auth/auth_util.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
+import '/features/animais/application/animais_providers.dart';
+import '/data/objectbox/entities/index.dart';
 import '/data/backend.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
@@ -32,6 +34,7 @@ import '/features/relatorios/presentation/pages/listacompleta_page.dart';
 import '/features/relatorios/presentation/pages/resumo_rebanho_page.dart';
 import '/features/secas/presentation/pages/secas_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -39,7 +42,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class InicioPropriedadePage extends StatefulWidget {
+class InicioPropriedadePage extends ConsumerStatefulWidget {
   const InicioPropriedadePage({
     super.key,
     required this.nomePropriedade,
@@ -48,6 +51,7 @@ class InicioPropriedadePage extends StatefulWidget {
     required this.emailPropriedade,
     required this.visitaPresencial,
     required this.diasDg,
+    this.propriedadePendenteId,
   });
 
   final String? nomePropriedade;
@@ -57,30 +61,22 @@ class InicioPropriedadePage extends StatefulWidget {
   final bool? visitaPresencial;
   final String? diasDg;
 
+  /// Id LOCAL (ObjectBox) quando a propriedade está PENDENTE de ativação — usado
+  /// para rotear a edição pela pendente (id local) em vez do docRef reservado.
+  final int? propriedadePendenteId;
+
   static String routeName = 'inicioPropriedade';
   static String routePath = '/inicioPropriedade';
 
   @override
-  State<InicioPropriedadePage> createState() => _InicioPropriedadePageState();
+  ConsumerState<InicioPropriedadePage> createState() =>
+      _InicioPropriedadePageState();
 }
 
-class _InicioPropriedadePageState extends State<InicioPropriedadePage>
+class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     with TickerProviderStateMixin {
   InstantTimer? _instantTimer;
   bool? _respostaNet = true;
-
-  final _cacheAnimaisListaCompletaManager =
-      StreamRequestManager<List<AnimaisProdutoresRecord>>();
-  Stream<List<AnimaisProdutoresRecord>> _cacheAnimaisListaCompleta({
-    String? uniqueQueryKey,
-    bool? overrideCache,
-    required Stream<List<AnimaisProdutoresRecord>> Function() requestFn,
-  }) =>
-      _cacheAnimaisListaCompletaManager.performRequest(
-        uniqueQueryKey: uniqueQueryKey,
-        overrideCache: overrideCache,
-        requestFn: requestFn,
-      );
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -429,7 +425,6 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
   @override
   void dispose() {
     _instantTimer?.cancel();
-    _cacheAnimaisListaCompletaManager.clear();
 
     super.dispose();
   }
@@ -1413,54 +1408,15 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                     child: Padding(
                       padding:
                           EdgeInsetsDirectional.fromSTEB(5.0, 5.0, 5.0, 5.0),
-                      child: StreamBuilder<List<AnimaisProdutoresRecord>>(
-                        stream: queryAnimaisProdutoresRecord(
-                          parent: widget.uidTecnico,
-                          queryBuilder: (animaisProdutoresRecord) =>
-                              animaisProdutoresRecord.where(
-                            'uidTecnicoPropriedade',
-                            isEqualTo: widget.uidPropriedade,
-                          ),
-                        ),
-                        builder: (context, snapshot) {
-                          // Customize what your widget looks like when it's loading.
-                          if (!snapshot.hasData) {
-                            return Center(
-                              child: SizedBox(
-                                width: 50.0,
-                                height: 50.0,
-                                child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(
-                                    Color(0xFFF75E38),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                          List<AnimaisProdutoresRecord>
-                              textAnimaisProdutoresRecordList = snapshot.data!;
-
-                          return Text(
-                            _respostaNet!
-                                ? inicioPropriedadeAnimaisProdutoresRecordList
-                                    .where((e) =>
-                                        (ehPrenha(e.status)) &&
-                                        (ehVaca(e.grupoAnimal)))
-                                    .toList()
-                                    .length
-                                    .toString()
-                                : (animaisProdutoresExistentesObjectBox()
-                                        .where((e) =>
-                                            (e.uidTecnicoPropriedade ==
-                                                widget.uidPropriedade) &&
-                                            (ehVaca(e.grupoAnimal)) &&
-                                            (ehPrenha(e.status)))
-                                        .toList()
-                                        .length)
-                                    .toString(),
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
+                      child: Text(
+                        inicioPropriedadeAnimaisProdutoresRecordList
+                            .where((e) =>
+                                (ehPrenha(e.status)) && (ehVaca(e.grupoAnimal)))
+                            .toList()
+                            .length
+                            .toString(),
+                        style:
+                            FlutterFlowTheme.of(context).bodyMedium.override(
                                   font: GoogleFonts.readexPro(
                                     fontWeight: FontWeight.bold,
                                     fontStyle: FlutterFlowTheme.of(context)
@@ -1474,8 +1430,6 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                                       .bodyMedium
                                       .fontStyle,
                                 ),
-                          );
-                        },
                       ),
                     ),
                   ),
@@ -2248,40 +2202,23 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
   Widget build(BuildContext context) {
     // context.watch<FFAppState>();
 
-    return StreamBuilder<List<AnimaisProdutoresRecord>>(
-      stream: _cacheAnimaisListaCompleta(
-        requestFn: () => queryAnimaisProdutoresRecord(
-          parent: widget.uidTecnico,
-          queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
-              .where(
-                'uidTecnicoPropriedade',
-                isEqualTo: widget.uidPropriedade,
-              )
-              .orderBy('nomeAnimal')
-              .orderBy('brincoAnimalOrder'),
-        ),
-      ),
-      builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
-          return Scaffold(
-            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-            body: Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Color(0xFFF75E38),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
-        List<AnimaisProdutoresRecord>
-            inicioPropriedadeAnimaisProdutoresRecordList = snapshot.data!;
+    // Animais lidos do ObjectBox (offline-first), filtrados pela propriedade.
+    // Antes vinham de um StreamBuilder do Firestore — que ficava no spinner
+    // offline e não enxergava a propriedade pendente. A ordenação por nome é
+    // aplicada localmente (a lista alimenta apenas contadores).
+    final animaisAsync =
+        ref.watch(animaisByPropriedadeProvider(widget.uidPropriedade?.path ?? ''));
 
+    return animaisAsync.when(
+      loading: () => Scaffold(
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        body: const Center(child: CircularProgressIndicator()),
+      ),
+      error: (_, __) => Scaffold(
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        body: Center(child: Text('Erro ao carregar os animais.')),
+      ),
+      data: (inicioPropriedadeAnimaisProdutoresRecordList) {
         return GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -2331,10 +2268,18 @@ class _InicioPropriedadePageState extends State<InicioPropriedadePage>
                       context.pushNamed(
                         EditarPropriedadePage.routeName,
                         queryParameters: {
-                          'uidPropriedade': serializeParam(
-                            widget.uidPropriedade,
-                            ParamType.DocumentReference,
-                          ),
+                          // Pendente: edita pelo id local (a pendente não tem
+                          // documento no Firestore); ativa: pelo docRef.
+                          if (widget.propriedadePendenteId != null)
+                            'propriedadePendenteId': serializeParam(
+                              widget.propriedadePendenteId,
+                              ParamType.int,
+                            )
+                          else
+                            'uidPropriedade': serializeParam(
+                              widget.uidPropriedade,
+                              ParamType.DocumentReference,
+                            ),
                           'nomePropriedade': serializeParam(
                             widget.nomePropriedade,
                             ParamType.String,
