@@ -2,6 +2,7 @@
 
 import '/data/backend.dart';
 import '/core/ui/app_card.dart';
+import '/core/ui/success_overlay.dart';
 import '/data/objectbox/repositories/animal_repository.dart';
 import 'dart:async';
 import '/core/ui/flutter_flow_animations.dart';
@@ -526,6 +527,8 @@ class _RegistrarPartoInduzidoWidgetState
                 // Offline-first: atualiza o animal (parto) no
                 // ObjectBox; sync enfileirado pelos repositórios.
                 await _registrarPartoInduzidoOfflineFirst();
+                mostrarSucessoOverlay(context,
+                    mensagem: 'Parto registrado com sucesso!');
                 Navigator.pop(context);
               },
               text: 'Salvar',

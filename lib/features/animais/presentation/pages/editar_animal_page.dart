@@ -2,6 +2,7 @@
 
 import '/data/backend.dart';
 import '/core/ui/app_card.dart';
+import '/core/ui/success_overlay.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -463,18 +464,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                     ? int.tryParse(_brincoTextController.text)
                     : 999999,
               ));
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Animal atualizado com sucesso!',
-                    style: TextStyle(
-                      color: FlutterFlowTheme.of(context).primaryText,
-                    ),
-                  ),
-                  duration: Duration(milliseconds: 4000),
-                  backgroundColor: FlutterFlowTheme.of(context).secondary,
-                ),
-              );
+              mostrarSucessoOverlay(context, mensagem: 'Animal atualizado com sucesso!');
 
               context.goNamed(
                 ListaAnimaisPage.routeName,
@@ -541,18 +531,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                       : 999999,
                   liberaInseminacao: _switchValue,
                 ));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Animal atualizado com sucesso!',
-                      style: TextStyle(
-                        color: FlutterFlowTheme.of(context).primaryText,
-                      ),
-                    ),
-                    duration: Duration(milliseconds: 4000),
-                    backgroundColor: FlutterFlowTheme.of(context).secondary,
-                  ),
-                );
+                mostrarSucessoOverlay(context, mensagem: 'Animal atualizado com sucesso!');
 
                 context.goNamed(
                   ListaAnimaisPage.routeName,
@@ -621,18 +600,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                         : 999999,
                     liberaInseminacao: _switchValue,
                   ));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Animal atualizado com sucesso!',
-                        style: TextStyle(
-                          color: FlutterFlowTheme.of(context).primaryText,
-                        ),
-                      ),
-                      duration: Duration(milliseconds: 4000),
-                      backgroundColor: FlutterFlowTheme.of(context).secondary,
-                    ),
-                  );
+                  mostrarSucessoOverlay(context, mensagem: 'Animal atualizado com sucesso!');
 
                   context.goNamed(
                     ListaAnimaisPage.routeName,
@@ -700,18 +668,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                         ? int.tryParse(_brincoTextController.text)
                         : 999999,
                   ));
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Animal atualizado com sucesso!',
-                        style: TextStyle(
-                          color: FlutterFlowTheme.of(context).primaryText,
-                        ),
-                      ),
-                      duration: Duration(milliseconds: 4000),
-                      backgroundColor: FlutterFlowTheme.of(context).secondary,
-                    ),
-                  );
+                  mostrarSucessoOverlay(context, mensagem: 'Animal atualizado com sucesso!');
 
                   context.goNamed(
                     ListaAnimaisPage.routeName,

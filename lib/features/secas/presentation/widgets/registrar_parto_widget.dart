@@ -2,6 +2,7 @@
 
 import '/data/backend.dart';
 import '/core/ui/app_card.dart';
+import '/core/ui/success_overlay.dart';
 import '/data/objectbox/repositories/animal_repository.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import 'dart:async';
@@ -401,6 +402,8 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
                             : 999999,
                         uidAnimalOffline: functions.criarUidRandom(),
                       ));
+                      mostrarSucessoOverlay(context,
+                          mensagem: 'Parto registrado com sucesso!');
                       Navigator.pop(context);
                       return;
                     } else {

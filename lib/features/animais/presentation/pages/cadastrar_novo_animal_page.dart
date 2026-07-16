@@ -2,6 +2,7 @@
 
 import '/data/backend.dart';
 import '/core/ui/app_card.dart';
+import '/core/ui/success_overlay.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/constants/grupos_racas_constantes.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
@@ -392,18 +393,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                     },
                   ),
                 });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Animal cadastrado com sucesso!',
-                      style: TextStyle(
-                        color: FlutterFlowTheme.of(context).primaryText,
-                      ),
-                    ),
-                    duration: Duration(milliseconds: 4000),
-                    backgroundColor: FlutterFlowTheme.of(context).secondary,
-                  ),
-                );
+                mostrarSucessoOverlay(context);
                 if (Navigator.of(context).canPop()) {
                   context.pop();
                 }
@@ -508,18 +498,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                       },
                     ),
                   });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Animal cadastrado com sucesso!',
-                        style: TextStyle(
-                          color: FlutterFlowTheme.of(context).primaryText,
-                        ),
-                      ),
-                      duration: Duration(milliseconds: 4000),
-                      backgroundColor: FlutterFlowTheme.of(context).secondary,
-                    ),
-                  );
+                  mostrarSucessoOverlay(context);
                   if (Navigator.of(context).canPop()) {
                     context.pop();
                   }
@@ -622,18 +601,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                       },
                     ),
                   });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Animal cadastrado com sucesso!',
-                        style: TextStyle(
-                          color: FlutterFlowTheme.of(context).primaryText,
-                        ),
-                      ),
-                      duration: Duration(milliseconds: 4000),
-                      backgroundColor: FlutterFlowTheme.of(context).secondary,
-                    ),
-                  );
+                  mostrarSucessoOverlay(context);
                   if (Navigator.of(context).canPop()) {
                     context.pop();
                   }
@@ -743,18 +711,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                       },
                     ),
                   });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Animal cadastrado com sucesso!',
-                        style: TextStyle(
-                          color: FlutterFlowTheme.of(context).primaryText,
-                        ),
-                      ),
-                      duration: Duration(milliseconds: 4000),
-                      backgroundColor: FlutterFlowTheme.of(context).secondary,
-                    ),
-                  );
+                  mostrarSucessoOverlay(context);
                   if (Navigator.of(context).canPop()) {
                     context.pop();
                   }
@@ -865,19 +822,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                           },
                         ),
                       });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Animal cadastrado com sucesso!',
-                            style: TextStyle(
-                              color: FlutterFlowTheme.of(context).primaryText,
-                            ),
-                          ),
-                          duration: Duration(milliseconds: 4000),
-                          backgroundColor:
-                              FlutterFlowTheme.of(context).secondary,
-                        ),
-                      );
+                      mostrarSucessoOverlay(context);
                       if (Navigator.of(context).canPop()) {
                         context.pop();
                       }
@@ -1015,19 +960,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                             },
                           ),
                         });
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Animal cadastrado com sucesso!',
-                              style: TextStyle(
-                                color: FlutterFlowTheme.of(context).primaryText,
-                              ),
-                            ),
-                            duration: Duration(milliseconds: 4000),
-                            backgroundColor:
-                                FlutterFlowTheme.of(context).secondary,
-                          ),
-                        );
+                        mostrarSucessoOverlay(context);
                         if (Navigator.of(context).canPop()) {
                           context.pop();
                         }
@@ -1165,20 +1098,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                               },
                             ),
                           });
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Animal cadastrado com sucesso!',
-                                style: TextStyle(
-                                  color:
-                                      FlutterFlowTheme.of(context).primaryText,
-                                ),
-                              ),
-                              duration: Duration(milliseconds: 4000),
-                              backgroundColor:
-                                  FlutterFlowTheme.of(context).secondary,
-                            ),
-                          );
+                          mostrarSucessoOverlay(context);
                           if (Navigator.of(context).canPop()) {
                             context.pop();
                           }
@@ -1322,18 +1242,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                   },
                 ),
               });
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Animal cadastrado com sucesso!',
-                    style: TextStyle(
-                      color: FlutterFlowTheme.of(context).primaryText,
-                    ),
-                  ),
-                  duration: Duration(milliseconds: 4000),
-                  backgroundColor: FlutterFlowTheme.of(context).secondary,
-                ),
-              );
+              mostrarSucessoOverlay(context);
               if (Navigator.of(context).canPop()) {
                 context.pop();
               }
@@ -1420,18 +1329,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                     },
                   ),
                 });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Animal cadastrado com sucesso!',
-                      style: TextStyle(
-                        color: FlutterFlowTheme.of(context).primaryText,
-                      ),
-                    ),
-                    duration: Duration(milliseconds: 4000),
-                    backgroundColor: FlutterFlowTheme.of(context).secondary,
-                  ),
-                );
+                mostrarSucessoOverlay(context);
                 if (Navigator.of(context).canPop()) {
                   context.pop();
                 }
@@ -1515,18 +1413,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                 },
               ),
             });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Animal cadastrado com sucesso!',
-                  style: TextStyle(
-                    color: FlutterFlowTheme.of(context).primaryText,
-                  ),
-                ),
-                duration: Duration(milliseconds: 4000),
-                backgroundColor: FlutterFlowTheme.of(context).secondary,
-              ),
-            );
+            mostrarSucessoOverlay(context);
             if (Navigator.of(context).canPop()) {
               context.pop();
             }
@@ -1720,18 +1607,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                 uidAnimalOffline: functions.criarUidRandom(),
               ));
               safeSetState(() {});
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Animal cadastrado com sucesso!',
-                    style: TextStyle(
-                      color: FlutterFlowTheme.of(context).primaryText,
-                    ),
-                  ),
-                  duration: Duration(milliseconds: 4000),
-                  backgroundColor: FlutterFlowTheme.of(context).secondary,
-                ),
-              );
+              mostrarSucessoOverlay(context);
               if (Navigator.of(context).canPop()) {
                 context.pop();
               }
@@ -1828,18 +1704,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                   uidAnimalOffline: functions.criarUidRandom(),
                 ));
                 safeSetState(() {});
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Animal cadastrado com sucesso!',
-                      style: TextStyle(
-                        color: FlutterFlowTheme.of(context).primaryText,
-                      ),
-                    ),
-                    duration: Duration(milliseconds: 4000),
-                    backgroundColor: FlutterFlowTheme.of(context).secondary,
-                  ),
-                );
+                mostrarSucessoOverlay(context);
                 if (Navigator.of(context).canPop()) {
                   context.pop();
                 }
@@ -1934,18 +1799,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                   uidAnimalOffline: functions.criarUidRandom(),
                 ));
                 safeSetState(() {});
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Animal cadastrado com sucesso!',
-                      style: TextStyle(
-                        color: FlutterFlowTheme.of(context).primaryText,
-                      ),
-                    ),
-                    duration: Duration(milliseconds: 4000),
-                    backgroundColor: FlutterFlowTheme.of(context).secondary,
-                  ),
-                );
+                mostrarSucessoOverlay(context);
                 if (Navigator.of(context).canPop()) {
                   context.pop();
                 }
@@ -2047,18 +1901,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                   uidAnimalOffline: functions.criarUidRandom(),
                 ));
                 safeSetState(() {});
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Animal cadastrado com sucesso!',
-                      style: TextStyle(
-                        color: FlutterFlowTheme.of(context).primaryText,
-                      ),
-                    ),
-                    duration: Duration(milliseconds: 4000),
-                    backgroundColor: FlutterFlowTheme.of(context).secondary,
-                  ),
-                );
+                mostrarSucessoOverlay(context);
                 if (Navigator.of(context).canPop()) {
                   context.pop();
                 }
@@ -2159,18 +2002,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                       uidAnimalOffline: functions.criarUidRandom(),
                     ));
                     safeSetState(() {});
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Animal cadastrado com sucesso!',
-                          style: TextStyle(
-                            color: FlutterFlowTheme.of(context).primaryText,
-                          ),
-                        ),
-                        duration: Duration(milliseconds: 4000),
-                        backgroundColor: FlutterFlowTheme.of(context).secondary,
-                      ),
-                    );
+                    mostrarSucessoOverlay(context);
                     if (Navigator.of(context).canPop()) {
                       context.pop();
                     }
@@ -2297,19 +2129,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                         uidAnimalOffline: functions.criarUidRandom(),
                       ));
                       safeSetState(() {});
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Animal cadastrado com sucesso!',
-                            style: TextStyle(
-                              color: FlutterFlowTheme.of(context).primaryText,
-                            ),
-                          ),
-                          duration: Duration(milliseconds: 4000),
-                          backgroundColor:
-                              FlutterFlowTheme.of(context).secondary,
-                        ),
-                      );
+                      mostrarSucessoOverlay(context);
                       if (Navigator.of(context).canPop()) {
                         context.pop();
                       }
@@ -2436,19 +2256,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                           uidAnimalOffline: functions.criarUidRandom(),
                         ));
                         safeSetState(() {});
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Animal cadastrado com sucesso!',
-                              style: TextStyle(
-                                color: FlutterFlowTheme.of(context).primaryText,
-                              ),
-                            ),
-                            duration: Duration(milliseconds: 4000),
-                            backgroundColor:
-                                FlutterFlowTheme.of(context).secondary,
-                          ),
-                        );
+                        mostrarSucessoOverlay(context);
                         if (Navigator.of(context).canPop()) {
                           context.pop();
                         }
@@ -2582,18 +2390,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
               uidAnimalOffline: functions.criarUidRandom(),
             ));
             safeSetState(() {});
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Animal cadastrado com sucesso!',
-                  style: TextStyle(
-                    color: FlutterFlowTheme.of(context).primaryText,
-                  ),
-                ),
-                duration: Duration(milliseconds: 4000),
-                backgroundColor: FlutterFlowTheme.of(context).secondary,
-              ),
-            );
+            mostrarSucessoOverlay(context);
             if (Navigator.of(context).canPop()) {
               context.pop();
             }
@@ -2672,18 +2469,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                 uidAnimalOffline: functions.criarUidRandom(),
               ));
               safeSetState(() {});
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Animal cadastrado com sucesso!',
-                    style: TextStyle(
-                      color: FlutterFlowTheme.of(context).primaryText,
-                    ),
-                  ),
-                  duration: Duration(milliseconds: 4000),
-                  backgroundColor: FlutterFlowTheme.of(context).secondary,
-                ),
-              );
+              mostrarSucessoOverlay(context);
               if (Navigator.of(context).canPop()) {
                 context.pop();
               }
@@ -2758,18 +2544,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
             uidAnimalOffline: functions.criarUidRandom(),
           ));
           safeSetState(() {});
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Animal cadastrado com sucesso!',
-                style: TextStyle(
-                  color: FlutterFlowTheme.of(context).primaryText,
-                ),
-              ),
-              duration: Duration(milliseconds: 4000),
-              backgroundColor: FlutterFlowTheme.of(context).secondary,
-            ),
-          );
+          mostrarSucessoOverlay(context);
           if (Navigator.of(context).canPop()) {
             context.pop();
           }
