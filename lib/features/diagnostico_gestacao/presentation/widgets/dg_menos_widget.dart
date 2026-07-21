@@ -142,6 +142,9 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
       'status': 'Vazia',
       'dtDgMenos': _dtDgMenosTextController.text,
       'idStatusAnimal': 2,
+      // Ao ir para vazias, a data da última inseminação é zerada (o animal
+      // volta a ficar disponível para uma nova inseminação sem histórico ativo).
+      'dtUltimaInseminacao': '',
     };
     final animalRepo = AnimalRepository();
     final entity = widget.uidAnimaisProdutores != null
@@ -157,7 +160,8 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
           createAnimaisProdutoresRecordData(
               status: 'Vazia',
               dtDgMenos: _dtDgMenosTextController.text,
-              idStatusAnimal: 2)));
+              idStatusAnimal: 2,
+              dtUltimaInseminacao: '')));
     }
   }
 
@@ -512,6 +516,34 @@ class _DgMenosWidgetState extends State<DgMenosWidget>
               onPressed: () async {
                 var _shouldSetState = false;
                 if (_dtDgMenosTextController.text != '') {
+                  // Confirmação de atenção antes de enviar o animal para vazias:
+                  // é uma ação destrutiva (zera a data de inseminação).
+                  final confirmar = await showDialog<bool>(
+                    context: context,
+                    builder: (alertDialogContext) {
+                      return AlertDialog(
+                        title: Text('Atenção'),
+                        content: Text(
+                            'Deseja realmente enviar este animal para a lista de vazias? O status irá para "Vazia" e a data de inseminação será zerada.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.pop(alertDialogContext, false),
+                            child: Text('Cancelar'),
+                          ),
+                          TextButton(
+                            onPressed: () =>
+                                Navigator.pop(alertDialogContext, true),
+                            child: Text('Sim, enviar'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  if (confirmar != true) {
+                    if (_shouldSetState) safeSetState(() {});
+                    return;
+                  }
                   await _dgMenosOfflineFirst();
                   _shouldSetState = true;
                 } else {

@@ -19,7 +19,6 @@ import '/features/prontuario/presentation/pages/prontuario_animal_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
 class DiagnosticogestacaoPage extends StatefulWidget {
   const DiagnosticogestacaoPage({
@@ -50,6 +49,10 @@ class DiagnosticogestacaoPage extends StatefulWidget {
 class _DiagnosticogestacaoPageState extends State<DiagnosticogestacaoPage> {
   InstantTimer? _instantTimer;
   bool? _respostaNet = true;
+  FocusNode? _searchListFocusNode;
+  TextEditingController? _searchListTextController;
+  final String? Function(BuildContext, String?)?
+      _searchListTextControllerValidator = null;
 
   /// Lista de animais existentes (fonte ObjectBox). Antes em
   /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
@@ -63,13 +66,7 @@ class _DiagnosticogestacaoPageState extends State<DiagnosticogestacaoPage> {
 
     // Fonte única: carrega a lista do ObjectBox (offline-first). A tela renderiza
     // sempre desta lista; o Firestore é usado apenas para sincronizar.
-    if (ObjectBoxService.isInitialized) {
-      _animaisExistentes = AnimalRepository()
-          .getAll()
-          .where((a) => !a.isDeleted)
-          .map(animalEntityToStruct)
-          .toList();
-    }
+    _recarregarAnimais();
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
@@ -90,201 +87,478 @@ class _DiagnosticogestacaoPageState extends State<DiagnosticogestacaoPage> {
       );
     });
 
+    _searchListTextController ??= TextEditingController();
+    _searchListFocusNode ??= FocusNode();
+
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
     _instantTimer?.cancel();
+    _searchListFocusNode?.dispose();
+    _searchListTextController?.dispose();
 
     super.dispose();
   }
 
-  /// Card extraído do build (Fase 4).
-  Widget _buildCard1(
-      BuildContext context, AnimaisProdutoresStruct item, int index) {
+  /// Recarrega a lista a partir do ObjectBox (fonte única offline-first). Chamado
+  /// no `initState` e após cada ação (DG+/DG-/PP) para refletir imediatamente as
+  /// mudanças de status: DG+ (Prenha) e DG- (Vazia) removem o card; PP habilita
+  /// o botão DG+.
+  void _recarregarAnimais() {
+    if (ObjectBoxService.isInitialized) {
+      _animaisExistentes = AnimalRepository()
+          .getAll()
+          .where((a) => !a.isDeleted)
+          .map(animalEntityToStruct)
+          .toList();
+    }
+  }
+
+  /// `true` quando o animal está vencido para diagnóstico de gestação: é da
+  /// propriedade, tem data de última inseminação, é Vaca/Novilha, está
+  /// Inseminada ou Inseminada PP, e já passou do prazo (dtUltimaInseminacao +
+  /// diasDg <= hoje). Mesma regra usada na lista e na busca.
+  bool _vencidoParaDg(AnimaisProdutoresStruct item) {
+    return (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
+        (item.dtUltimaInseminacao != '') &&
+        ((ehVaca(item.grupoAnimal)) || (ehNovilha(item.grupoAnimal))) &&
+        ((ehInseminada(item.status)) || (ehInseminadaPP(item.status))) &&
+        (functions.converterStringParaData(
+                item.dtUltimaInseminacao, widget.diasDg!) <=
+            functions.obterDataAtual());
+  }
+
+  /// Item da LISTA PADRÃO (sem busca ativa): mostra o cartão dos animais
+  /// vencidos para DG.
+  Widget _itemDgElegivel(BuildContext context, AnimaisProdutoresStruct item) {
     return Visibility(
-      visible: valueOrDefault<bool>(
-        (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
-            (item.dtUltimaInseminacao != '') &&
-            ((ehVaca(item.grupoAnimal)) || (ehNovilha(item.grupoAnimal))) &&
-            ((ehInseminada(item.status)) || (ehInseminadaPP(item.status))) &&
-            (functions.converterStringParaData(
-                    item.dtUltimaInseminacao, widget.diasDg!) <=
-                functions.obterDataAtual()),
-        true,
+      visible: _vencidoParaDg(item),
+      child: _linhaAnimal(context, item),
+    );
+  }
+
+  /// Item da lista de RESULTADOS DA BUSCA: além de vencido para DG, o nome/brinco
+  /// precisa casar com o texto pesquisado.
+  Widget _itemDgBusca(BuildContext context, AnimaisProdutoresStruct item) {
+    return Visibility(
+      visible: _vencidoParaDg(item) &&
+          ((item.nomeAnimal
+                  .toLowerCase()
+                  .contains(_searchListTextController.text.toLowerCase())) ||
+              (item.brincoAnimal
+                  .toString()
+                  .contains(_searchListTextController.text))),
+      child: _linhaAnimal(context, item),
+    );
+  }
+
+  /// Envelopa o cartão com o padding + InkWell (abre o prontuário do animal),
+  /// igual à tela de inseminações.
+  Widget _linhaAnimal(BuildContext context, AnimaisProdutoresStruct item) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(12.0, 6.0, 12.0, 6.0),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () async {
+          context.pushNamed(
+            ProntuarioAnimalPage.routeName,
+            queryParameters: {
+              'uidPropriedade': serializeParam(
+                widget.uidPropriedade,
+                ParamType.DocumentReference,
+              ),
+              'nomePropriedade': serializeParam(
+                widget.nomePropriedade,
+                ParamType.String,
+              ),
+              'uidTecnico': serializeParam(
+                widget.uidTecnico,
+                ParamType.DocumentReference,
+              ),
+              'emailPropriedade': serializeParam(
+                widget.emailPropriedade,
+                ParamType.String,
+              ),
+              'uidAnimaisProdutores': serializeParam(
+                item.uidAnimal,
+                ParamType.DocumentReference,
+              ),
+              'grupoPredominante': serializeParam(
+                item.grupoAnimal,
+                ParamType.String,
+              ),
+              'visitaPresencial': serializeParam(
+                widget.visitaPresencial,
+                ParamType.bool,
+              ),
+              'diasDg': serializeParam(
+                widget.diasDg,
+                ParamType.String,
+              ),
+            }.withoutNulls,
+          );
+        },
+        onLongPress: () async {},
+        child: _cartaoAnimal(context, item),
       ),
-      child: Align(
-        alignment: AlignmentDirectional(0.0, 0.0),
-        child: Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 10.0),
-          child: Container(
-            width: double.infinity,
-            height: 180.0,
-            decoration: BoxDecoration(
-              color: FlutterFlowTheme.of(context).secondaryBackground,
-              borderRadius: BorderRadius.circular(16.0),
-              boxShadow: AppTokens.softShadow(context),
-            ),
-            child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-              child: InkWell(
-                splashColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                onTap: () async {
-                  context.pushNamed(
-                    ProntuarioAnimalPage.routeName,
-                    queryParameters: {
-                      'uidPropriedade': serializeParam(
-                        widget.uidPropriedade,
-                        ParamType.DocumentReference,
+    );
+  }
+
+  /// Cartão visual de um animal na lista de DG (mesmo padrão da tela de
+  /// inseminações): avatar do grupo (VAC/NOV), nome + brinco, touro e data da
+  /// última inseminação, e a linha de ações PP / DG- / DG+.
+  Widget _cartaoAnimal(BuildContext context, AnimaisProdutoresStruct item) {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        boxShadow: AppTokens.softShadow(context),
+        borderRadius: BorderRadius.circular(AppTokens.radius),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 0.0, 12.0),
+            child: Container(
+              width: 44.0,
+              height: 44.0,
+              decoration: BoxDecoration(
+                color: () {
+                  if (ehVaca(item.grupoAnimal)) {
+                    return AppTokens.brand;
+                  } else if (ehNovilha(item.grupoAnimal)) {
+                    return AppTokens.secondary;
+                  } else {
+                    return FlutterFlowTheme.of(context).secondaryText;
+                  }
+                }(),
+                shape: BoxShape.circle,
+              ),
+              alignment: AlignmentDirectional(0.0, 0.0),
+              child: Text(
+                () {
+                  if (ehVaca(item.grupoAnimal)) {
+                    return 'VAC';
+                  } else if (ehNovilha(item.grupoAnimal)) {
+                    return 'NOV';
+                  } else {
+                    return 'N/C';
+                  }
+                }(),
+                style: FlutterFlowTheme.of(context).titleMedium.override(
+                      font: GoogleFonts.readexPro(
+                        fontWeight:
+                            FlutterFlowTheme.of(context).titleMedium.fontWeight,
+                        fontStyle:
+                            FlutterFlowTheme.of(context).titleMedium.fontStyle,
                       ),
-                      'nomePropriedade': serializeParam(
-                        widget.nomePropriedade,
-                        ParamType.String,
-                      ),
-                      'uidTecnico': serializeParam(
-                        widget.uidTecnico,
-                        ParamType.DocumentReference,
-                      ),
-                      'emailPropriedade': serializeParam(
-                        widget.emailPropriedade,
-                        ParamType.String,
-                      ),
-                      'uidAnimaisProdutores': serializeParam(
-                        item.uidAnimal,
-                        ParamType.DocumentReference,
-                      ),
-                      'grupoPredominante': serializeParam(
-                        item.grupoAnimal,
-                        ParamType.String,
-                      ),
-                      'visitaPresencial': serializeParam(
-                        widget.visitaPresencial,
-                        ParamType.bool,
-                      ),
-                      'diasDg': serializeParam(
-                        widget.diasDg,
-                        ParamType.String,
-                      ),
-                    }.withoutNulls,
-                  );
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _part1(context, item, index),
-                    _part2(context, item, index)
-                  ],
-                ),
+                      color: Colors.white,
+                      fontSize: 13.0,
+                      letterSpacing: 0.0,
+                      fontWeight:
+                          FlutterFlowTheme.of(context).titleMedium.fontWeight,
+                      fontStyle:
+                          FlutterFlowTheme.of(context).titleMedium.fontStyle,
+                    ),
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _part1(BuildContext context, AnimaisProdutoresStruct item, int index) {
-    return Container(
-      width: 50.0,
-      height: 50.0,
-      decoration: BoxDecoration(
-        color: () {
-          if (ehVaca(item.grupoAnimal)) {
-            return Color(0xFF048508);
-          } else if (ehNovilha(item.grupoAnimal)) {
-            return Color(0xFFFF0076);
-          } else {
-            return Color(0x00000000);
-          }
-        }(),
-        shape: BoxShape.circle,
-      ),
-      alignment: AlignmentDirectional(0.0, 0.0),
-      child: Text(
-        () {
-          if (ehVaca(item.grupoAnimal)) {
-            return 'VAC';
-          } else if (ehNovilha(item.grupoAnimal)) {
-            return 'NOV';
-          } else {
-            return 'N/C';
-          }
-        }(),
-        style: FlutterFlowTheme.of(context).titleMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+          Expanded(
+            child: Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(12.0, 12.0, 12.0, 12.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    () {
+                      if ((item.nomeAnimal != '') &&
+                          (item.brincoAnimal != null) &&
+                          (item.brincoAnimal != -1)) {
+                        return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
+                      } else if (item.nomeAnimal != '') {
+                        return item.nomeAnimal;
+                      } else {
+                        return item.brincoAnimal.toString();
+                      }
+                    }(),
+                    style: FlutterFlowTheme.of(context).bodyLarge.override(
+                          font: GoogleFonts.readexPro(
+                            fontWeight: FlutterFlowTheme.of(context)
+                                .bodyLarge
+                                .fontWeight,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .bodyLarge
+                                .fontStyle,
+                          ),
+                          letterSpacing: 0.0,
+                          fontWeight:
+                              FlutterFlowTheme.of(context).bodyLarge.fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                        ),
+                  ),
+                  if (item.nomeTouroUltimaInseminacao != '')
+                    Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
+                      child: Text(
+                        'Touro: ${item.nomeTouroUltimaInseminacao}',
+                        style:
+                            FlutterFlowTheme.of(context).labelMedium.override(
+                                  font: GoogleFonts.readexPro(
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontStyle,
+                                  ),
+                                  letterSpacing: 0.0,
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .fontStyle,
+                                ),
+                      ),
+                    ),
+                  if (item.dtUltimaInseminacao != '')
+                    Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
+                      child: Text(
+                        'Inseminada em: ${item.dtUltimaInseminacao}',
+                        style:
+                            FlutterFlowTheme.of(context).labelMedium.override(
+                                  font: GoogleFonts.readexPro(
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .fontStyle,
+                                  ),
+                                  letterSpacing: 0.0,
+                                  fontWeight: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .fontWeight,
+                                  fontStyle: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .fontStyle,
+                                ),
+                      ),
+                    ),
+                  const SizedBox(height: 12.0),
+                  Row(
+                    children: [
+                      Expanded(child: _botaoPp(context, item)),
+                      SizedBox(width: 8.0),
+                      Expanded(child: _botaoDgMenos(context, item)),
+                      SizedBox(width: 8.0),
+                      Expanded(child: _botaoDgMais(context, item)),
+                    ],
+                  ),
+                ],
               ),
-              color: Colors.white,
-              fontSize: 13.0,
-              letterSpacing: 0.0,
-              fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
             ),
-      ),
-    );
-  }
-
-  Widget _part2(BuildContext context, AnimaisProdutoresStruct item, int index) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _part3(context, item, index),
-          _part4(context, item, index),
-          _part5(context, item, index),
-          _part6(context, item, index)
+          ),
         ],
       ),
     );
   }
 
-  Widget _part3(BuildContext context, AnimaisProdutoresStruct item, int index) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Text(
-          () {
-            if ((item.nomeAnimal != '') &&
-                (item.brincoAnimal != null) &&
-                (item.brincoAnimal != -1)) {
-              return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
-            } else if (item.nomeAnimal != '') {
-              return item.nomeAnimal;
-            } else {
-              return item.brincoAnimal.toString();
-            }
-          }(),
-          style: FlutterFlowTheme.of(context).bodyLarge.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+  /// PP — marca prenhez parcial. Primeiro à esquerda. Roxo (secondary).
+  Widget _botaoPp(BuildContext context, AnimaisProdutoresStruct item) {
+    return FFButtonWidget(
+      onPressed: () async {
+        await showModalBottomSheet(
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          enableDrag: false,
+          context: context,
+          builder: (context) {
+            return GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
+              child: Padding(
+                padding: MediaQuery.viewInsetsOf(context),
+                child: ConfirmaPpWidget(
+                  uidPropriedade: widget.uidPropriedade!,
+                  nomePropriedade: widget.nomePropriedade!,
+                  uidTecnico: widget.uidTecnico!,
+                  emailPropriedade: widget.emailPropriedade!,
+                  uidAnimaisProdutores: item.uidAnimal,
+                  uidAnimalOffline: item.uidAnimalOffline,
+                  grupoPredominante: item.grupoAnimal,
+                  nomeAnimal: item.nomeAnimal,
+                  visitaPresencial: widget.visitaPresencial!,
+                  diasDg: widget.diasDg!,
                 ),
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
               ),
-        ),
-      ],
+            );
+          },
+        ).then((value) {
+          _recarregarAnimais();
+          safeSetState(() {});
+        });
+      },
+      text: 'PP',
+      icon: Icon(
+        Icons.notifications,
+        size: 15.0,
+      ),
+      options: _opcoesBotao(context, AppTokens.secondary),
     );
   }
 
-  Widget _part4(BuildContext context, AnimaisProdutoresStruct item, int index) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Text(
-          'Touro: ${item.nomeTouroUltimaInseminacao}',
-          style: FlutterFlowTheme.of(context).labelMedium.override(
+  /// DG- — envia o animal para vazias (com confirmação dentro do widget). Ao
+  /// meio. Vermelho (theme.error).
+  Widget _botaoDgMenos(BuildContext context, AnimaisProdutoresStruct item) {
+    return FFButtonWidget(
+      onPressed: () async {
+        await showModalBottomSheet(
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          enableDrag: false,
+          context: context,
+          builder: (context) {
+            return GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
+              child: Padding(
+                padding: MediaQuery.viewInsetsOf(context),
+                child: DgMenosWidget(
+                  uidPropriedade: widget.uidPropriedade!,
+                  nomePropriedade: widget.nomePropriedade!,
+                  uidTecnico: widget.uidTecnico!,
+                  emailPropriedade: widget.emailPropriedade!,
+                  uidAnimaisProdutores: item.uidAnimal,
+                  uidAnimalOffline: item.uidAnimalOffline,
+                  grupoPredominante: item.grupoAnimal,
+                  nomeAnimal: item.nomeAnimal,
+                  visitaPresencial: widget.visitaPresencial!,
+                ),
+              ),
+            );
+          },
+        ).then((value) {
+          _recarregarAnimais();
+          safeSetState(() {});
+        });
+      },
+      text: 'DG -',
+      icon: Icon(
+        Icons.cancel_rounded,
+        size: 15.0,
+      ),
+      options: _opcoesBotao(context, FlutterFlowTheme.of(context).error),
+    );
+  }
+
+  /// DG+ — confirma prenhez. Última posição, mais à direita. Verde. Só habilita
+  /// depois que o animal passou por PP (status 'Inseminada PP' ou dtPP != '').
+  Widget _botaoDgMais(BuildContext context, AnimaisProdutoresStruct item) {
+    final habilitado = ehInseminadaPP(item.status) || (item.dtPP != '');
+    return FFButtonWidget(
+      onPressed: !habilitado
+          ? null
+          : () async {
+              await showModalBottomSheet(
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                enableDrag: false,
+                context: context,
+                builder: (context) {
+                  return GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).unfocus();
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    },
+                    child: Padding(
+                      padding: MediaQuery.viewInsetsOf(context),
+                      child: DgMaisWidget(
+                        uidPropriedade: widget.uidPropriedade!,
+                        nomePropriedade: widget.nomePropriedade!,
+                        uidTecnico: widget.uidTecnico!,
+                        emailPropriedade: widget.emailPropriedade!,
+                        uidAnimaisProdutores: item.uidAnimal,
+                        uidAnimalOffline: item.uidAnimalOffline,
+                        grupoPredominante: item.grupoAnimal,
+                        nomeAnimal: item.nomeAnimal,
+                        visitaPresencial: widget.visitaPresencial!,
+                        diasDg: widget.diasDg!,
+                      ),
+                    ),
+                  );
+                },
+              ).then((value) {
+                _recarregarAnimais();
+                safeSetState(() {});
+              });
+            },
+      text: 'DG +',
+      icon: Icon(
+        Icons.check_circle,
+        size: 15.0,
+      ),
+      options: _opcoesBotao(context, Color(0xFF048508)),
+    );
+  }
+
+  /// Estilo compartilhado dos 3 botões de ação (mesma métrica dos botões da tela
+  /// de inseminações): altura 40, texto branco 12, cantos `radiusSmall`.
+  FFButtonOptions _opcoesBotao(BuildContext context, Color cor) {
+    return FFButtonOptions(
+      height: 40.0,
+      padding: EdgeInsetsDirectional.fromSTEB(6.0, 0.0, 6.0, 0.0),
+      iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+      color: cor,
+      textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+            ),
+            color: Colors.white,
+            fontSize: 12.0,
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+          ),
+      elevation: 0.0,
+      borderSide: BorderSide(
+        color: Colors.transparent,
+        width: 1.0,
+      ),
+      borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
+      disabledColor: FlutterFlowTheme.of(context).primaryBackground,
+      disabledTextColor: FlutterFlowTheme.of(context).secondaryText,
+    );
+  }
+
+  /// Campo de busca no mesmo padrão da tela de inseminações.
+  Widget _campoBusca(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+      child: TextFormField(
+        controller: _searchListTextController,
+        focusNode: _searchListFocusNode,
+        onChanged: (_) => safeSetState(() {}),
+        obscureText: false,
+        decoration: InputDecoration(
+          labelText: 'Pesquisar animal',
+          labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
                 font: GoogleFonts.readexPro(
                   fontWeight:
                       FlutterFlowTheme.of(context).labelMedium.fontWeight,
@@ -294,18 +568,7 @@ class _DiagnosticogestacaoPageState extends State<DiagnosticogestacaoPage> {
                 fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
                 fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
               ),
-        ),
-      ],
-    );
-  }
-
-  Widget _part5(BuildContext context, AnimaisProdutoresStruct item, int index) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Text(
-          'Inseminada em: ${item.dtUltimaInseminacao}',
-          style: FlutterFlowTheme.of(context).labelMedium.override(
+          hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
                 font: GoogleFonts.readexPro(
                   fontWeight:
                       FlutterFlowTheme.of(context).labelMedium.fontWeight,
@@ -315,275 +578,72 @@ class _DiagnosticogestacaoPageState extends State<DiagnosticogestacaoPage> {
                 fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
                 fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
               ),
-        ),
-      ],
-    );
-  }
-
-  Widget _part6(BuildContext context, AnimaisProdutoresStruct item, int index) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-              child: FFButtonWidget(
-                onPressed: ((!ehInseminadaPP(item.status)) && (item.dtPP == ''))
-                    ? null
-                    : () async {
-                        await showModalBottomSheet(
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          enableDrag: false,
-                          context: context,
-                          builder: (context) {
-                            return GestureDetector(
-                              onTap: () {
-                                FocusScope.of(context).unfocus();
-                                FocusManager.instance.primaryFocus?.unfocus();
-                              },
-                              child: Padding(
-                                padding: MediaQuery.viewInsetsOf(context),
-                                child: DgMaisWidget(
-                                  uidPropriedade: widget.uidPropriedade!,
-                                  nomePropriedade: widget.nomePropriedade!,
-                                  uidTecnico: widget.uidTecnico!,
-                                  emailPropriedade: widget.emailPropriedade!,
-                                  uidAnimaisProdutores: item.uidAnimal,
-                                  uidAnimalOffline: item.uidAnimalOffline,
-                                  grupoPredominante: item.grupoAnimal,
-                                  nomeAnimal: item.nomeAnimal,
-                                  visitaPresencial: widget.visitaPresencial!,
-                                  diasDg: widget.diasDg!,
-                                ),
-                              ),
-                            );
-                          },
-                        ).then((value) => safeSetState(() {}));
-                      },
-                text: 'DG +',
-                icon: Icon(
-                  Icons.check_circle,
-                  size: 15.0,
-                ),
-                options: FFButtonOptions(
-                  width: 80.0,
-                  height: 40.0,
-                  padding: EdgeInsets.all(0.0),
-                  iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  color: Color(0xFF048508),
-                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                        color: Colors.white,
-                        fontSize: 12.0,
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                      ),
-                  elevation: 3.0,
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 1.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                  disabledColor: FlutterFlowTheme.of(context).primaryBackground,
-                ),
-              ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              color: Colors.transparent,
+              width: 1.0,
             ),
-          ],
-        ),
-        Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 0.0, 0.0),
-              child: FFButtonWidget(
-                onPressed: () async {
-                  await showModalBottomSheet(
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    enableDrag: false,
-                    context: context,
-                    builder: (context) {
-                      return GestureDetector(
-                        onTap: () {
-                          FocusScope.of(context).unfocus();
-                          FocusManager.instance.primaryFocus?.unfocus();
-                        },
-                        child: Padding(
-                          padding: MediaQuery.viewInsetsOf(context),
-                          child: ConfirmaPpWidget(
-                            uidPropriedade: widget.uidPropriedade!,
-                            nomePropriedade: widget.nomePropriedade!,
-                            uidTecnico: widget.uidTecnico!,
-                            emailPropriedade: widget.emailPropriedade!,
-                            uidAnimaisProdutores: item.uidAnimal,
-                            uidAnimalOffline: item.uidAnimalOffline,
-                            grupoPredominante: item.grupoAnimal,
-                            nomeAnimal: item.nomeAnimal,
-                            visitaPresencial: widget.visitaPresencial!,
-                            diasDg: widget.diasDg!,
-                          ),
-                        ),
-                      );
-                    },
-                  ).then((value) => safeSetState(() {}));
-                },
-                text: 'PP',
-                icon: Icon(
-                  Icons.notifications,
-                  size: 15.0,
-                ),
-                options: FFButtonOptions(
-                  width: 80.0,
-                  height: 40.0,
-                  padding: EdgeInsets.all(0.0),
-                  iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  color: Color(0xFF1A03E9),
-                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                        color: Colors.white,
-                        fontSize: 12.0,
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                      ),
-                  elevation: 4.0,
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 1.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
+            borderRadius: BorderRadius.circular(14.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              color: AppTokens.secondary,
+              width: 1.5,
             ),
-          ],
-        ),
-        Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(5.0, 4.0, 0.0, 0.0),
-              child: FFButtonWidget(
-                onPressed: () async {
-                  await showModalBottomSheet(
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    enableDrag: false,
-                    context: context,
-                    builder: (context) {
-                      return GestureDetector(
-                        onTap: () {
-                          FocusScope.of(context).unfocus();
-                          FocusManager.instance.primaryFocus?.unfocus();
-                        },
-                        child: Padding(
-                          padding: MediaQuery.viewInsetsOf(context),
-                          child: DgMenosWidget(
-                            uidPropriedade: widget.uidPropriedade!,
-                            nomePropriedade: widget.nomePropriedade!,
-                            uidTecnico: widget.uidTecnico!,
-                            emailPropriedade: widget.emailPropriedade!,
-                            uidAnimaisProdutores: item.uidAnimal,
-                            uidAnimalOffline: item.uidAnimalOffline,
-                            grupoPredominante: item.grupoAnimal,
-                            nomeAnimal: item.nomeAnimal,
-                            visitaPresencial: widget.visitaPresencial!,
-                          ),
-                        ),
-                      );
-                    },
-                  ).then((value) => safeSetState(() {}));
-                },
-                text: 'DG -',
-                icon: Icon(
-                  Icons.cancel_rounded,
-                  size: 15.0,
-                ),
-                options: FFButtonOptions(
-                  width: 80.0,
-                  height: 40.0,
-                  padding: EdgeInsets.all(0.0),
-                  iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  color: Color(0xFFAE0303),
-                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                        color: Colors.white,
-                        fontSize: 12.0,
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                      ),
-                  elevation: 3.0,
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 1.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
+            borderRadius: BorderRadius.circular(14.0),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).error,
+              width: 1.0,
             ),
-          ],
+            borderRadius: BorderRadius.circular(14.0),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).error,
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(14.0),
+          ),
+          filled: true,
+          fillColor: FlutterFlowTheme.of(context).primaryBackground,
+          prefixIcon: Icon(
+            Icons.search_rounded,
+            color: FlutterFlowTheme.of(context).secondaryText,
+          ),
+          suffixIcon: _searchListTextController!.text.isNotEmpty
+              ? InkWell(
+                  onTap: () {
+                    _searchListTextController?.clear();
+                    safeSetState(() {});
+                  },
+                  child: Icon(
+                    Icons.clear,
+                    color: FlutterFlowTheme.of(context).secondaryText,
+                    size: 18.0,
+                  ),
+                )
+              : null,
         ),
-        Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if ((item.dtUltimoPP != '') &&
-                functions.verificaDataIgualAtualString(item.dtUltimoPP))
-              FlutterFlowIconButton(
-                borderColor: Colors.transparent,
-                borderRadius: 0.0,
-                borderWidth: 0.0,
-                buttonSize: 40.0,
-                icon: Icon(
-                  Icons.check_circle,
-                  color: Color(0xFF048508),
-                  size: 30.0,
-                ),
-                onPressed: () {
-                  print('IconButton pressed ...');
-                },
+        style: FlutterFlowTheme.of(context).bodyMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
               ),
-          ],
-        ),
-      ],
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+        validator: _searchListTextControllerValidator.asValidator(context),
+        maxLines: 1,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
+    // context.watch<FFAppState>();
 
     return GestureDetector(
       onTap: () {
@@ -689,30 +749,88 @@ class _DiagnosticogestacaoPageState extends State<DiagnosticogestacaoPage> {
             elevation: 0.0,
           ),
         ),
-        body: SingleChildScrollView(
-          primary: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
+        body: Container(
+          width: MediaQuery.sizeOf(context).width * 1.0,
+          height: MediaQuery.sizeOf(context).height * 1.0,
+          decoration: BoxDecoration(
+            color: FlutterFlowTheme.of(context).secondaryBackground,
+          ),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            primary: false,
+            scrollDirection: Axis.vertical,
             children: [
-              Builder(
-                builder: (context) {
-                  final animaisExistentes = _animaisExistentes.toList();
-
-                  return ListView.builder(
+              _campoBusca(context),
+              if (_searchListTextController.text == '')
+                Container(
+                  width: MediaQuery.sizeOf(context).width * 1.0,
+                  height: MediaQuery.sizeOf(context).height * 1.0,
+                  decoration: BoxDecoration(
+                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                  ),
+                  child: ListView(
                     padding: EdgeInsets.zero,
                     primary: false,
-                    shrinkWrap: true,
                     scrollDirection: Axis.vertical,
-                    itemCount: animaisExistentes.length,
-                    itemBuilder: (context, animaisExistentesIndex) {
-                      final animaisExistentesItem =
-                          animaisExistentes[animaisExistentesIndex];
-                      return _buildCard1(context, animaisExistentesItem,
-                          animaisExistentesIndex);
-                    },
-                  );
-                },
-              ),
+                    children: [
+                      Builder(
+                        builder: (context) {
+                          final animaisExistentes = _animaisExistentes.toList();
+
+                          return ListView.builder(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                                0.0, 0.0, 0.0, 120.0),
+                            primary: false,
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            itemCount: animaisExistentes.length,
+                            itemBuilder: (context, animaisExistentesIndex) {
+                              final animaisExistentesItem =
+                                  animaisExistentes[animaisExistentesIndex];
+                              return _itemDgElegivel(
+                                  context, animaisExistentesItem);
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              if (_searchListTextController.text != '')
+                Container(
+                  width: MediaQuery.sizeOf(context).width * 1.0,
+                  height: MediaQuery.sizeOf(context).height * 1.0,
+                  decoration: BoxDecoration(
+                    color: FlutterFlowTheme.of(context).secondaryBackground,
+                  ),
+                  child: ListView(
+                    padding: EdgeInsets.zero,
+                    primary: false,
+                    scrollDirection: Axis.vertical,
+                    children: [
+                      Builder(
+                        builder: (context) {
+                          final animaisExistentes = _animaisExistentes.toList();
+
+                          return ListView.builder(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                                0.0, 0.0, 0.0, 120.0),
+                            primary: false,
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            itemCount: animaisExistentes.length,
+                            itemBuilder: (context, animaisExistentesIndex) {
+                              final animaisExistentesItem =
+                                  animaisExistentes[animaisExistentesIndex];
+                              return _itemDgBusca(
+                                  context, animaisExistentesItem);
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
         ),
