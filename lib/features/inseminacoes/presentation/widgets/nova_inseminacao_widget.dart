@@ -3,6 +3,7 @@
 import '/data/backend.dart';
 import '/core/ui/app_card.dart';
 import '/data/objectbox/index.dart';
+import '/domain/animais/classificacao_animal.dart';
 import 'dart:async';
 import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
@@ -532,79 +533,56 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
   }
 
   Widget _campoTouro(BuildContext context) {
+    // Fonte única ObjectBox (offline-first): touros/sêmens da propriedade
+    // liberados para inseminação (liberaInseminacao == true), combinados numa
+    // lista só e ordenados alfabeticamente por `duasListasEmUma`. Antes vinha de
+    // um StreamBuilder do Firestore (queryAnimaisProdutoresRecord +
+    // .where('liberaInseminacao', isEqualTo: true)), que travava offline.
+    final opcoesTouroSemem = (widget.uidPropriedade == null
+            ? const <String>[]
+            : AnimalRepository()
+                .getAnimaisByPropriedade(widget.uidPropriedade!.path)
+                .where((a) =>
+                    !a.isDeleted &&
+                    a.liberaInseminacao &&
+                    ehTouroOuSemem(a.grupoAnimal))
+                .map((a) => a.nomeBrincoConcat ?? '')
+                .where((s) => s.isNotEmpty)
+                .toList())
+        .cast<String>();
+
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
-      child: StreamBuilder<List<AnimaisProdutoresRecord>>(
-        stream: queryAnimaisProdutoresRecord(
-          parent: widget.uidTecnico,
-          queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
-              .where(
-                'uidTecnicoPropriedade',
-                isEqualTo: widget.uidPropriedade,
-              )
-              .where(
-                'liberaInseminacao',
-                isEqualTo: true,
+      child: FlutterFlowDropDown<String>(
+        controller: _touroValueController ??= FormFieldController<String>(null),
+        options: functions.duasListasEmUma(opcoesTouroSemem, <String>[])!,
+        onChanged: (val) => safeSetState(() => _touroValue = val),
+        width: double.infinity,
+        height: 58.0,
+        textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
               ),
-        ),
-        builder: (context, snapshot) {
-          // Customize what your widget looks like when it's loading.
-          if (!snapshot.hasData) {
-            return Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Color(0xFFF75E38),
-                  ),
-                ),
-              ),
-            );
-          }
-          List<AnimaisProdutoresRecord> touroAnimaisProdutoresRecordList =
-              snapshot.data!;
-
-          return FlutterFlowDropDown<String>(
-            controller: _touroValueController ??=
-                FormFieldController<String>(null),
-            options: functions.duasListasEmUma(
-                touroAnimaisProdutoresRecordList
-                    .map((e) => e.nomeBrincoConcat)
-                    .toList(),
-                <String>[])!,
-            onChanged: (val) => safeSetState(() => _touroValue = val),
-            width: double.infinity,
-            height: 58.0,
-            textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                  ),
-                  letterSpacing: 0.0,
-                  fontWeight:
-                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                ),
-            hintText: 'Selecione um Touro/Sêmen',
-            icon: Icon(
-              Icons.keyboard_arrow_down_rounded,
-              color: FlutterFlowTheme.of(context).secondaryText,
-              size: 24.0,
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
             ),
-            fillColor: FlutterFlowTheme.of(context).primaryBackground,
-            elevation: 2.0,
-            borderColor: FlutterFlowTheme.of(context).alternate,
-            borderWidth: 2.0,
-            borderRadius: 12.0,
-            margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-            hidesUnderline: true,
-            isSearchable: false,
-            isMultiSelect: false,
-          );
-        },
+        hintText: 'Selecione um Touro/Sêmen',
+        icon: Icon(
+          Icons.keyboard_arrow_down_rounded,
+          color: FlutterFlowTheme.of(context).secondaryText,
+          size: 24.0,
+        ),
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
+        elevation: 2.0,
+        borderColor: FlutterFlowTheme.of(context).alternate,
+        borderWidth: 2.0,
+        borderRadius: 12.0,
+        margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+        hidesUnderline: true,
+        isSearchable: false,
+        isMultiSelect: false,
       ),
     );
   }

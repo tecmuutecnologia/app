@@ -72,6 +72,21 @@ bool ehBezerros(String? grupo) => grupo == kGrupoBezerros;
 bool ehBezerras(String? grupo) => grupo == kGrupoBezerras;
 bool ehTouros(String? grupo) => grupo == kGrupoTouros;
 
+/// ⚠️ Sêmen tem DUAS grafias legadas (ver nota das inconsistências acima):
+/// `'Sêmens'` (canônico, usado nos filtros de todas as telas) e `'Semêns'`
+/// (opção do dropdown em [kGruposDescricoes]). Casamos ambas para não perder
+/// registros gravados com qualquer uma das grafias.
+const String kGrupoSemens = 'Sêmens';
+const String kGrupoSemensVariante = 'Semêns';
+
+bool ehSemens(String? grupo) =>
+    grupo == kGrupoSemens || grupo == kGrupoSemensVariante;
+
+/// `true` se o animal é Touro **ou** Sêmen — as duas categorias que podem ser
+/// liberadas para inseminação (`liberaInseminacao == true`). É a fonte do
+/// dropdown "Touro/Sêmen" da tela de inseminação.
+bool ehTouroOuSemem(String? grupo) => ehTouros(grupo) || ehSemens(grupo);
+
 /// `true` se o animal é Vaca **ou** Novilha (as duas categorias reprodutivas que
 /// as telas de prenhas/secas/DG costumam considerar juntas).
 bool ehVacaOuNovilha(String? grupo) => ehVaca(grupo) || ehNovilha(grupo);
