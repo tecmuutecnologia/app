@@ -82,7 +82,7 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     super.dispose();
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -125,7 +125,7 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _p2(BuildContext context, dynamic profileTecnicoPersonRecord) {
+  Widget _campoNome(BuildContext context, dynamic profileTecnicoPersonRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
@@ -215,7 +215,7 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _p3(BuildContext context, dynamic profileTecnicoPersonRecord) {
+  Widget _campoEmpresa(BuildContext context, dynamic profileTecnicoPersonRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
@@ -305,7 +305,7 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _p4(BuildContext context, dynamic profileTecnicoPersonRecord) {
+  Widget _campoDataNascimento(BuildContext context, dynamic profileTecnicoPersonRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
@@ -389,7 +389,7 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _p5(BuildContext context, dynamic profileTecnicoPersonRecord) {
+  Widget _campoCelular(BuildContext context, dynamic profileTecnicoPersonRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
@@ -473,7 +473,7 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _p6(BuildContext context, dynamic profileTecnicoPersonRecord) {
+  Widget _campoEndereco(BuildContext context, dynamic profileTecnicoPersonRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
@@ -563,7 +563,7 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _p7(BuildContext context, dynamic profileTecnicoPersonRecord) {
+  Widget _campoBairro(BuildContext context, dynamic profileTecnicoPersonRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
@@ -653,7 +653,7 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _p8(BuildContext context, dynamic profileTecnicoPersonRecord) {
+  Widget _botaoSalvar(BuildContext context, dynamic profileTecnicoPersonRecord) {
     return Align(
       alignment: AlignmentDirectional(0.0, 0.05),
       child: Padding(
@@ -725,7 +725,7 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _p9(BuildContext context, dynamic profileTecnicoPersonRecord) {
+  Widget _botaoMeuPlano(BuildContext context, dynamic profileTecnicoPersonRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
       child: Row(
@@ -977,7 +977,7 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _p10(BuildContext context) {
+  Widget _botaoExcluirConta(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 0.0),
       child: InkWell(
@@ -1036,7 +1036,7 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _p11(BuildContext context) {
+  Widget _botaoLogout(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 0.0),
       child: FFButtonWidget(
@@ -1151,7 +1151,7 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _p1(context),
+                        _cabecalho(context),
                       ],
                     ),
                     centerTitle: true,
@@ -1166,16 +1166,16 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  _p2(context, profileTecnicoPersonRecord),
-                  _p3(context, profileTecnicoPersonRecord),
-                  _p4(context, profileTecnicoPersonRecord),
-                  _p5(context, profileTecnicoPersonRecord),
-                  _p6(context, profileTecnicoPersonRecord),
-                  _p7(context, profileTecnicoPersonRecord),
-                  _p8(context, profileTecnicoPersonRecord),
-                  _p9(context, profileTecnicoPersonRecord),
-                  _p10(context),
-                  _p11(context),
+                  _campoNome(context, profileTecnicoPersonRecord),
+                  _campoEmpresa(context, profileTecnicoPersonRecord),
+                  _campoDataNascimento(context, profileTecnicoPersonRecord),
+                  _campoCelular(context, profileTecnicoPersonRecord),
+                  _campoEndereco(context, profileTecnicoPersonRecord),
+                  _campoBairro(context, profileTecnicoPersonRecord),
+                  _botaoSalvar(context, profileTecnicoPersonRecord),
+                  _botaoMeuPlano(context, profileTecnicoPersonRecord),
+                  _botaoExcluirConta(context),
+                  _botaoLogout(context),
                 ],
               ),
             ),

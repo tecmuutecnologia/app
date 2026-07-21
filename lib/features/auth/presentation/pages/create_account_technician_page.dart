@@ -60,7 +60,7 @@ class _CreateAccountTechnicianPageState
     super.dispose();
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _conteudo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 32.0, 0.0, 32.0),
       child: Container(
@@ -83,7 +83,7 @@ class _CreateAccountTechnicianPageState
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _formulario(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(12.0),
       child: Container(
@@ -105,13 +105,13 @@ class _CreateAccountTechnicianPageState
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _p3(context),
-                _p4(context),
-                _p5(context),
-                _p6(context),
-                _p7(context),
-                _p8(context),
-                _p9(context),
+                _titulo(context),
+                _subtitulo(context),
+                _campoEmail(context),
+                _campoSenha(context),
+                _campoConfirmarSenha(context),
+                _botaoCriarConta(context),
+                _linkLogin(context),
               ],
             ),
           ),
@@ -120,7 +120,7 @@ class _CreateAccountTechnicianPageState
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _titulo(BuildContext context) {
     return Text(
       'Cadastro Técnico',
       textAlign: TextAlign.center,
@@ -137,7 +137,7 @@ class _CreateAccountTechnicianPageState
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _subtitulo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 24.0),
       child: Text(
@@ -156,7 +156,7 @@ class _CreateAccountTechnicianPageState
     );
   }
 
-  Widget _p5(BuildContext context) {
+  Widget _campoEmail(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: Container(
@@ -231,7 +231,7 @@ class _CreateAccountTechnicianPageState
     );
   }
 
-  Widget _p6(BuildContext context) {
+  Widget _campoSenha(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: Container(
@@ -315,7 +315,7 @@ class _CreateAccountTechnicianPageState
     );
   }
 
-  Widget _p7(BuildContext context) {
+  Widget _campoConfirmarSenha(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: Container(
@@ -399,7 +399,7 @@ class _CreateAccountTechnicianPageState
     );
   }
 
-  Widget _p8(BuildContext context) {
+  Widget _botaoCriarConta(BuildContext context) {
     return Align(
       alignment: AlignmentDirectional(0.0, 0.0),
       child: Padding(
@@ -468,7 +468,7 @@ class _CreateAccountTechnicianPageState
     );
   }
 
-  Widget _p9(BuildContext context) {
+  Widget _linkLogin(BuildContext context) {
     return // You will have to add an action on this rich text to go to your login page.
         Align(
       alignment: AlignmentDirectional(0.0, 0.0),
@@ -561,8 +561,8 @@ class _CreateAccountTechnicianPageState
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _p1(context),
-                  _p2(context),
+                  _conteudo(context),
+                  _formulario(context),
                 ],
               ),
             ),

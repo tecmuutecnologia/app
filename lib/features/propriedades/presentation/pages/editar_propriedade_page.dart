@@ -174,7 +174,7 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
     super.dispose();
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -217,7 +217,7 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
     );
   }
 
-  Widget _p2(
+  Widget _campoNome(
       BuildContext context, dynamic editarPropriedadePropriedadesRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
@@ -305,7 +305,7 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
     );
   }
 
-  Widget _p3(
+  Widget _campoCpf(
       BuildContext context, dynamic editarPropriedadePropriedadesRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
@@ -386,7 +386,7 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
     );
   }
 
-  Widget _p4(
+  Widget _campoCelular(
       BuildContext context, dynamic editarPropriedadePropriedadesRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
@@ -467,7 +467,7 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
     );
   }
 
-  Widget _p5(
+  Widget _campoEndereco(
       BuildContext context, dynamic editarPropriedadePropriedadesRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
@@ -555,7 +555,7 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
     );
   }
 
-  Widget _p6(
+  Widget _campoDiasDg(
       BuildContext context, dynamic editarPropriedadePropriedadesRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
@@ -597,7 +597,7 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
     );
   }
 
-  Widget _p7(BuildContext context) {
+  Widget _campoEmail(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 16.0),
       child: Container(
@@ -684,7 +684,7 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
     );
   }
 
-  Widget _p8(
+  Widget _botaoExcluir(
       BuildContext context, dynamic editarPropriedadePropriedadesRecord) {
     return Align(
       alignment: AlignmentDirectional(0.0, 0.05),
@@ -797,7 +797,7 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
     );
   }
 
-  Widget _p9(
+  Widget _botaoSalvar(
       BuildContext context, dynamic editarPropriedadePropriedadesRecord) {
     return Align(
       alignment: AlignmentDirectional(0.0, 0.05),
@@ -944,7 +944,7 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
     );
   }
 
-  Widget _p10(BuildContext context) {
+  Widget _botaoLogout(BuildContext context) {
     return Align(
       alignment: AlignmentDirectional(0.0, 0.05),
       child: Padding(
@@ -1060,7 +1060,7 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _p1(context),
+                        _cabecalho(context),
                       ],
                     ),
                     centerTitle: true,
@@ -1078,14 +1078,14 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    _p2(context, editarPropriedadePropriedadesRecord),
-                    _p3(context, editarPropriedadePropriedadesRecord),
-                    _p4(context, editarPropriedadePropriedadesRecord),
-                    _p5(context, editarPropriedadePropriedadesRecord),
-                    _p6(context, editarPropriedadePropriedadesRecord),
-                    _p7(context),
-                    _p8(context, editarPropriedadePropriedadesRecord),
-                    _p9(context, editarPropriedadePropriedadesRecord),
+                    _campoNome(context, editarPropriedadePropriedadesRecord),
+                    _campoCpf(context, editarPropriedadePropriedadesRecord),
+                    _campoCelular(context, editarPropriedadePropriedadesRecord),
+                    _campoEndereco(context, editarPropriedadePropriedadesRecord),
+                    _campoDiasDg(context, editarPropriedadePropriedadesRecord),
+                    _campoEmail(context),
+                    _botaoExcluir(context, editarPropriedadePropriedadesRecord),
+                    _botaoSalvar(context, editarPropriedadePropriedadesRecord),
                     // "Liberar Acesso" só para propriedade JÁ ativa sem produtor
                     // vinculado. Pendente é ativada pela lista ("Ativar conta"),
                     // e o fluxo aqui usa docRef (nulo enquanto pendente).
@@ -1316,7 +1316,7 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
                           ),
                         ),
                       ),
-                    _p10(context),
+                    _botaoLogout(context),
                   ],
                 ),
               ),

@@ -112,9 +112,10 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
     super.dispose();
   }
 
-  /// Card extraído do build (Fase 4).
-  Widget _buildCard2(
-      BuildContext context, AnimaisProdutoresStruct item, int index) {
+  /// Item da lista de RESULTADOS DA BUSCA: exibe o cartão do animal apenas quando
+  /// o nome/brinco casa com o texto pesquisado e o animal é elegível à inseminação.
+  Widget _itemAnimalBusca(
+      BuildContext context, AnimaisProdutoresStruct item) {
     return Visibility(
       visible: (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
           ((item.nomeAnimal
@@ -125,7 +126,7 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
                   .contains(_searchListTextController.text))) &&
           ehElegivelInseminacao(item.grupoAnimal, item.status),
       child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+        padding: EdgeInsetsDirectional.fromSTEB(12.0, 6.0, 12.0, 6.0),
         child: InkWell(
           splashColor: Colors.transparent,
           focusColor: Colors.transparent,
@@ -171,20 +172,16 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
             );
           },
           onLongPress: () async {},
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [_part1(context, item, index)],
-          ),
+          child: _cartaoAnimal(context, item),
         ),
       ),
     );
   }
 
-  /// Card extraído do build (Fase 4).
-  Widget _buildCard1(
-      BuildContext context, AnimaisProdutoresStruct item, int index) {
+  /// Item da LISTA PADRÃO (sem busca ativa): exibe o cartão dos animais elegíveis
+  /// à inseminação — vacas/novilhas vazias ou já inseminadas.
+  Widget _itemAnimalElegivel(
+      BuildContext context, AnimaisProdutoresStruct item) {
     return Visibility(
       visible: (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
           (((ehVaca(item.grupoAnimal)) || (ehNovilha(item.grupoAnimal))) &&
@@ -192,7 +189,7 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
                   (ehInseminada(item.status)) ||
                   (ehInseminadaPP(item.status)))),
       child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+        padding: EdgeInsetsDirectional.fromSTEB(12.0, 6.0, 12.0, 6.0),
         child: InkWell(
           splashColor: Colors.transparent,
           focusColor: Colors.transparent,
@@ -238,47 +235,39 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
             );
           },
           onLongPress: () async {},
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [_part2(context, item, index)],
-          ),
+          child: _cartaoAnimal(context, item),
         ),
       ),
     );
   }
 
-  Widget _part1(BuildContext context, AnimaisProdutoresStruct item, int index) {
+  /// Cartão visual de um animal na lista de inseminações: avatar do grupo
+  /// (VAC/NOV), nome + brinco, data da última inseminação e as ações "Fez Cio"
+  /// e "Inseminar". Reutilizado pela lista padrão e pela busca.
+  Widget _cartaoAnimal(BuildContext context, AnimaisProdutoresStruct item) {
     return Container(
-      width: 360.0,
-      height: 140.0,
+      width: double.infinity,
       decoration: BoxDecoration(
         color: FlutterFlowTheme.of(context).secondaryBackground,
         boxShadow: AppTokens.softShadow(context),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(10.0),
-          bottomRight: Radius.circular(10.0),
-          topLeft: Radius.circular(10.0),
-          topRight: Radius.circular(10.0),
-        ),
+        borderRadius: BorderRadius.circular(AppTokens.radius),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
           Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
+            padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 0.0, 12.0),
             child: Container(
               width: 44.0,
               height: 44.0,
               decoration: BoxDecoration(
                 color: () {
                   if (ehVaca(item.grupoAnimal)) {
-                    return Color(0xFF048508);
+                    return AppTokens.brand;
                   } else if (ehNovilha(item.grupoAnimal)) {
-                    return Color(0xFFFF0076);
+                    return AppTokens.secondary;
                   } else {
-                    return Color(0x00000000);
+                    return FlutterFlowTheme.of(context).secondaryText;
                   }
                 }(),
                 shape: BoxShape.circle,
@@ -314,10 +303,9 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
           ),
           Expanded(
             child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
+              padding: EdgeInsetsDirectional.fromSTEB(12.0, 12.0, 12.0, 12.0),
               child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -398,6 +386,7 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
                                 .fontStyle,
                           ),
                     ),
+                  const SizedBox(height: 12.0),
                   Row(
                     children: [
                       Expanded(
@@ -444,12 +433,12 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
                             size: 15.0,
                           ),
                           options: FFButtonOptions(
-                            height: 30.0,
+                            height: 40.0,
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 10.0, 0.0, 10.0, 0.0),
                             iconPadding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 0.0, 0.0, 0.0),
-                            color: Color(0xFF1A03E9),
+                            color: AppTokens.secondary,
                             textStyle: FlutterFlowTheme.of(context)
                                 .titleSmall
                                 .override(
@@ -471,12 +460,13 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
                                       .titleSmall
                                       .fontStyle,
                                 ),
-                            elevation: 3.0,
+                            elevation: 0.0,
                             borderSide: BorderSide(
                               color: Colors.transparent,
                               width: 1.0,
                             ),
-                            borderRadius: BorderRadius.circular(8.0),
+                            borderRadius:
+                                BorderRadius.circular(AppTokens.radiusSmall),
                           ),
                         ),
                       ),
@@ -527,12 +517,12 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
                             size: 15.0,
                           ),
                           options: FFButtonOptions(
-                            height: 30.0,
+                            height: 40.0,
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 10.0, 0.0, 10.0, 0.0),
                             iconPadding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 0.0, 0.0, 0.0),
-                            color: Color(0xFF7E39EF),
+                            color: AppTokens.brand,
                             textStyle: FlutterFlowTheme.of(context)
                                 .titleSmall
                                 .override(
@@ -554,12 +544,13 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
                                       .titleSmall
                                       .fontStyle,
                                 ),
-                            elevation: 3.0,
+                            elevation: 0.0,
                             borderSide: BorderSide(
                               color: Colors.transparent,
                               width: 1.0,
                             ),
-                            borderRadius: BorderRadius.circular(8.0),
+                            borderRadius:
+                                BorderRadius.circular(AppTokens.radiusSmall),
                           ),
                         ),
                       ),
@@ -574,327 +565,98 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
     );
   }
 
-  Widget _part2(BuildContext context, AnimaisProdutoresStruct item, int index) {
-    return Container(
-      width: 360.0,
-      height: 140.0,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).secondaryBackground,
-        boxShadow: AppTokens.softShadow(context),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(10.0),
-          bottomRight: Radius.circular(10.0),
-          topLeft: Radius.circular(10.0),
-          topRight: Radius.circular(10.0),
+  /// Campo de busca no mesmo padrão da tela de propriedades: `TextFormField`
+  /// preenchido, cantos arredondados e borda de foco roxa (sem card/sombra).
+  Widget _campoBusca(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+      child: TextFormField(
+        controller: _searchListTextController,
+        focusNode: _searchListFocusNode,
+        onChanged: (_) => safeSetState(() {}),
+        obscureText: false,
+        decoration: InputDecoration(
+          labelText: 'Pesquisar animal',
+          labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+          hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                ),
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              color: Colors.transparent,
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(14.0),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              color: AppTokens.secondary,
+              width: 1.5,
+            ),
+            borderRadius: BorderRadius.circular(14.0),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).error,
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(14.0),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: FlutterFlowTheme.of(context).error,
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(14.0),
+          ),
+          filled: true,
+          fillColor: FlutterFlowTheme.of(context).primaryBackground,
+          prefixIcon: Icon(
+            Icons.search_rounded,
+            color: FlutterFlowTheme.of(context).secondaryText,
+          ),
+          suffixIcon: _searchListTextController!.text.isNotEmpty
+              ? InkWell(
+                  onTap: () {
+                    _searchListTextController?.clear();
+                    safeSetState(() {});
+                  },
+                  child: Icon(
+                    Icons.clear,
+                    color: FlutterFlowTheme.of(context).secondaryText,
+                    size: 18.0,
+                  ),
+                )
+              : null,
         ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
-            child: Container(
-              width: 44.0,
-              height: 44.0,
-              decoration: BoxDecoration(
-                color: () {
-                  if (ehVaca(item.grupoAnimal)) {
-                    return Color(0xFF048508);
-                  } else if (ehNovilha(item.grupoAnimal)) {
-                    return Color(0xFFFF0076);
-                  } else {
-                    return Color(0x00000000);
-                  }
-                }(),
-                shape: BoxShape.circle,
+        style: FlutterFlowTheme.of(context).bodyMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
               ),
-              alignment: AlignmentDirectional(0.0, 0.0),
-              child: Text(
-                () {
-                  if (ehVaca(item.grupoAnimal)) {
-                    return 'VAC';
-                  } else if (ehNovilha(item.grupoAnimal)) {
-                    return 'NOV';
-                  } else {
-                    return 'N/C';
-                  }
-                }(),
-                style: FlutterFlowTheme.of(context).titleMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).titleMedium.fontStyle,
-                      ),
-                      color: Colors.white,
-                      fontSize: 13.0,
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).titleMedium.fontStyle,
-                    ),
-              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
             ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    () {
-                      if ((item.nomeAnimal != '') &&
-                          (item.brincoAnimal != null) &&
-                          (item.brincoAnimal != -1)) {
-                        return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
-                      } else if (item.nomeAnimal != '') {
-                        return item.nomeAnimal;
-                      } else {
-                        return item.brincoAnimal.toString();
-                      }
-                    }(),
-                    style: FlutterFlowTheme.of(context).bodyLarge.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .bodyLarge
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyLarge
-                                .fontStyle,
-                          ),
-                          letterSpacing: 0.0,
-                          fontWeight:
-                              FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                        ),
-                  ),
-                  if (item.dtUltimaInseminacao != '')
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                      child: Text(
-                        'Última insem.: ${item.dtUltimaInseminacao}',
-                        style:
-                            FlutterFlowTheme.of(context).labelMedium.override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .labelMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontStyle,
-                                ),
-                      ),
-                    ),
-                  if ((ehInseminada(item.status)) ||
-                      (ehInseminadaPP(item.status)))
-                    Text(
-                      'Inseminada',
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                            color: Color(0xFF048508),
-                            fontSize: 11.0,
-                            letterSpacing: 0.0,
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: FFButtonWidget(
-                          onPressed: () async {
-                            await showModalBottomSheet(
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              enableDrag: false,
-                              context: context,
-                              builder: (context) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    FocusScope.of(context).unfocus();
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                  },
-                                  child: Padding(
-                                    padding: MediaQuery.viewInsetsOf(context),
-                                    child: RegistrarCioWidget(
-                                      uidPropriedade: widget.uidPropriedade!,
-                                      nomePropriedade: widget.nomePropriedade!,
-                                      uidTecnico: widget.uidTecnico!,
-                                      emailPropriedade:
-                                          widget.emailPropriedade!,
-                                      uidAnimaisProdutores: item.uidAnimal,
-                                      uidAnimalOffline: item.uidAnimalOffline,
-                                      grupoPredominante: item.grupoAnimal,
-                                      nomeAnimal: item.nomeAnimal,
-                                      visitaPresencial:
-                                          widget.visitaPresencial!,
-                                      brincoAnimal:
-                                          item.brincoAnimal.toString(),
-                                      diasDg: widget.diasDg!,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ).then((value) => safeSetState(() {}));
-                          },
-                          text: 'Fez Cio',
-                          icon: Icon(
-                            Icons.repeat,
-                            size: 15.0,
-                          ),
-                          options: FFButtonOptions(
-                            height: 30.0,
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                10.0, 0.0, 10.0, 0.0),
-                            iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 0.0),
-                            color: Color(0xFF1A03E9),
-                            textStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .fontStyle,
-                                  ),
-                                  color: Colors.white,
-                                  fontSize: 12.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                            elevation: 3.0,
-                            borderSide: BorderSide(
-                              color: Colors.transparent,
-                              width: 1.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 8.0),
-                      Expanded(
-                        child: FFButtonWidget(
-                          onPressed: () async {
-                            await showModalBottomSheet(
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent,
-                              enableDrag: false,
-                              context: context,
-                              builder: (context) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    FocusScope.of(context).unfocus();
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                  },
-                                  child: Padding(
-                                    padding: MediaQuery.viewInsetsOf(context),
-                                    child: NovaInseminacaoWidget(
-                                      uidPropriedade: widget.uidPropriedade!,
-                                      nomePropriedade: widget.nomePropriedade!,
-                                      uidTecnico: widget.uidTecnico!,
-                                      emailPropriedade:
-                                          widget.emailPropriedade!,
-                                      grupoPredominante: item.grupoAnimal,
-                                      nomeAnimal: item.nomeAnimal,
-                                      visitaPresencial:
-                                          widget.visitaPresencial!,
-                                      dtUltimaInseminacao:
-                                          item.dtUltimaInseminacao,
-                                      brincoAnimal:
-                                          item.brincoAnimal.toString(),
-                                      diasDg: widget.diasDg!,
-                                      uidAnimaisProdutores: item.uidAnimal,
-                                      uidAnimalOffline: item.uidAnimalOffline,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ).then((value) => safeSetState(() {}));
-                          },
-                          text: 'Inseminar',
-                          icon: Icon(
-                            Icons.playlist_add,
-                            size: 15.0,
-                          ),
-                          options: FFButtonOptions(
-                            height: 30.0,
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                10.0, 0.0, 10.0, 0.0),
-                            iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 0.0),
-                            color: Color(0xFF7E39EF),
-                            textStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .fontStyle,
-                                  ),
-                                  color: Colors.white,
-                                  fontSize: 12.0,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                            elevation: 3.0,
-                            borderSide: BorderSide(
-                              color: Colors.transparent,
-                              width: 1.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+        validator:
+            _searchListTextControllerValidator.asValidator(context),
+        maxLines: 1,
       ),
     );
   }
@@ -1018,209 +780,7 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
             primary: false,
             scrollDirection: Axis.vertical,
             children: [
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 0.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.search_rounded,
-                        color: AppTokens.secondary, size: 20.0),
-                    const SizedBox(width: 8.0),
-                    Flexible(
-                      child: Text(
-                        'Pesquisa rápida:',
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.readexPro(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontStyle,
-                              ),
-                              fontSize: 18.0,
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                width: MediaQuery.sizeOf(context).width * 1.0,
-                height: 100.0,
-                decoration: BoxDecoration(
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                ),
-                child: Padding(
-                  padding:
-                      EdgeInsetsDirectional.fromSTEB(10.0, 10.0, 10.0, 10.0),
-                  child: Container(
-                    width: 100.0,
-                    height: 100.0,
-                    decoration: BoxDecoration(
-                      color: FlutterFlowTheme.of(context).secondaryBackground,
-                      boxShadow: AppTokens.softShadow(context),
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(10.0),
-                        bottomRight: Radius.circular(10.0),
-                        topLeft: Radius.circular(10.0),
-                        topRight: Radius.circular(10.0),
-                      ),
-                    ),
-                    child: Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 0.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                  8.0, 0.0, 8.0, 0.0),
-                              child: TextFormField(
-                                controller: _searchListTextController,
-                                focusNode: _searchListFocusNode,
-                                onChanged: (_) {
-                                  safeSetState(() {});
-                                },
-                                autofocus: false,
-                                obscureText: false,
-                                decoration: InputDecoration(
-                                  labelText: 'Digite algo para buscar...',
-                                  labelStyle: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .override(
-                                        font: GoogleFonts.readexPro(
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                        letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .labelMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .labelMedium
-                                            .fontStyle,
-                                      ),
-                                  hintStyle: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .override(
-                                        font: GoogleFonts.readexPro(
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .labelMedium
-                                                  .fontStyle,
-                                        ),
-                                        letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .labelMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .labelMedium
-                                            .fontStyle,
-                                      ),
-                                  filled: true,
-                                  fillColor: FlutterFlowTheme.of(context)
-                                      .primaryBackground,
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                      color: Colors.transparent,
-                                      width: 0.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(14.0),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: const BorderSide(
-                                      color: AppTokens.secondary,
-                                      width: 1.5,
-                                    ),
-                                    borderRadius: BorderRadius.circular(14.0),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context).error,
-                                      width: 1.5,
-                                    ),
-                                    borderRadius: BorderRadius.circular(14.0),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: FlutterFlowTheme.of(context).error,
-                                      width: 1.5,
-                                    ),
-                                    borderRadius: BorderRadius.circular(14.0),
-                                  ),
-                                  prefixIcon: Icon(
-                                    Icons.search_rounded,
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryText,
-                                  ),
-                                  suffixIcon: _searchListTextController!
-                                          .text.isNotEmpty
-                                      ? InkWell(
-                                          onTap: () async {
-                                            _searchListTextController?.clear();
-                                            safeSetState(() {});
-                                          },
-                                          child: Icon(
-                                            Icons.clear,
-                                            color: Color(0xFF974E2D),
-                                            size: 22,
-                                          ),
-                                        )
-                                      : null,
-                                ),
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      font: GoogleFonts.readexPro(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                                validator: _searchListTextControllerValidator
-                                    .asValidator(context),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              _campoBusca(context),
               if (_searchListTextController.text == '')
                 Container(
                   width: MediaQuery.sizeOf(context).width * 1.0,
@@ -1250,10 +810,8 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
                               final listaAnimaisOfflineExistenteItem =
                                   listaAnimaisOfflineExistente[
                                       listaAnimaisOfflineExistenteIndex];
-                              return _buildCard1(
-                                  context,
-                                  listaAnimaisOfflineExistenteItem,
-                                  listaAnimaisOfflineExistenteIndex);
+                              return _itemAnimalElegivel(context,
+                                  listaAnimaisOfflineExistenteItem);
                             },
                           );
                         },
@@ -1291,10 +849,8 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
                                 final listaAnimaisOfflineExistenteItem =
                                     listaAnimaisOfflineExistente[
                                         listaAnimaisOfflineExistenteIndex];
-                                return _buildCard2(
-                                    context,
-                                    listaAnimaisOfflineExistenteItem,
-                                    listaAnimaisOfflineExistenteIndex);
+                                return _itemAnimalBusca(context,
+                                    listaAnimaisOfflineExistenteItem);
                               },
                             );
                           },

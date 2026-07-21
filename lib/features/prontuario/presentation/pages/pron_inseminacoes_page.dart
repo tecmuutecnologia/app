@@ -45,7 +45,7 @@ class _PronInseminacoesPageState extends State<PronInseminacoesPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -88,7 +88,7 @@ class _PronInseminacoesPageState extends State<PronInseminacoesPage> {
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _secaoInseminacoes(BuildContext context) {
     return Container(
       width: 500.0,
       constraints: BoxConstraints(
@@ -107,8 +107,8 @@ class _PronInseminacoesPageState extends State<PronInseminacoesPage> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _p3(context),
-              _p4(context),
+              _tituloInseminacoes(context),
+              _listaInseminacoes(context),
             ],
           ),
         ),
@@ -116,7 +116,7 @@ class _PronInseminacoesPageState extends State<PronInseminacoesPage> {
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _tituloInseminacoes(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(5.0, 15.0, 5.0, 5.0),
       child: Row(
@@ -168,7 +168,7 @@ class _PronInseminacoesPageState extends State<PronInseminacoesPage> {
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _listaInseminacoes(BuildContext context) {
     return StreamBuilder<List<AcoesRecord>>(
       stream: queryAcoesRecord(
         parent: widget.uidTecnico,
@@ -523,7 +523,7 @@ class _PronInseminacoesPageState extends State<PronInseminacoesPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _p1(context),
+                        _cabecalho(context),
                       ],
                     ),
                     centerTitle: true,
@@ -537,7 +537,7 @@ class _PronInseminacoesPageState extends State<PronInseminacoesPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  _p2(context),
+                  _secaoInseminacoes(context),
                 ],
               ),
             ),

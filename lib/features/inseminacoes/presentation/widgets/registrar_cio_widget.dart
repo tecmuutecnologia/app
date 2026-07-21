@@ -190,7 +190,7 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
     }
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _conteudo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 2.0, 16.0, 16.0),
       child: Container(
@@ -216,16 +216,16 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _p2(context),
-            _p3(context),
-            _p4(context),
+            _cabecalho(context),
+            _formulario(context),
+            _botoesAcao(context),
           ],
         ),
       ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation']!),
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(24.0, 16.0, 0.0, 0.0),
       child: Text(
@@ -256,18 +256,18 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _formulario(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _p5(context),
-        _p6(context),
+        _campoDataCio(context),
+        _campoObservacao(context),
       ],
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _botoesAcao(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(24.0, 12.0, 24.0, 24.0),
       child: Row(
@@ -388,7 +388,7 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
     );
   }
 
-  Widget _p5(BuildContext context) {
+  Widget _campoDataCio(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: Row(
@@ -609,7 +609,7 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
     );
   }
 
-  Widget _p6(BuildContext context) {
+  Widget _campoObservacao(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: TextFormField(
@@ -704,7 +704,7 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _p1(context),
+          _conteudo(context),
         ],
       ),
     );

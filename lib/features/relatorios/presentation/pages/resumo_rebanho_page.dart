@@ -103,7 +103,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     super.dispose();
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -174,7 +174,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _tituloFiltro(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 0.0),
       child: Row(
@@ -209,7 +209,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _campoGrupo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 10.0),
       child: StreamBuilder<List<GrupoRecord>>(
@@ -312,7 +312,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _campoStatus(BuildContext context) {
     return StreamBuilder<List<StatusAnimaisRecord>>(
       stream: queryStatusAnimaisRecord(),
       builder: (context, snapshot) {
@@ -410,7 +410,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
-  Widget _p5(BuildContext context) {
+  Widget _tituloColunas(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 25.0, 0.0, 0.0),
       child: Text(
@@ -430,7 +430,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
-  Widget _p6(BuildContext context) {
+  Widget _colunaUltimoParto(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
       child: Row(
@@ -483,7 +483,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
-  Widget _p7(BuildContext context) {
+  Widget _colunaUltimaInseminacao(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
       child: Row(
@@ -536,7 +536,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
-  Widget _p8(BuildContext context) {
+  Widget _colunaDel(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
       child: Row(
@@ -589,7 +589,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
-  Widget _p9(BuildContext context) {
+  Widget _colunaTouro(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
       child: Row(
@@ -642,7 +642,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
-  Widget _p10(BuildContext context) {
+  Widget _colunaSecagem(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
       child: Row(
@@ -695,7 +695,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
-  Widget _p11(BuildContext context) {
+  Widget _colunaPreParto(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
       child: Row(
@@ -748,7 +748,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
-  Widget _p12(BuildContext context) {
+  Widget _colunaDiasEmAberto(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
       child: Row(
@@ -801,7 +801,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
-  Widget _p13(BuildContext context) {
+  Widget _colunaIntervaloPartos(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
       child: Row(
@@ -854,7 +854,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
-  Widget _p14(BuildContext context) {
+  Widget _colunaPrevisaoParto(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
       child: Row(
@@ -907,7 +907,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
-  Widget _p15(BuildContext context) {
+  Widget _colunaUltimaAcao(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
       child: Row(
@@ -960,7 +960,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
-  Widget _p16(BuildContext context) {
+  Widget _campoFormatoExportacao(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
       child: Column(
@@ -1028,7 +1028,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
-  Widget _p17(
+  Widget _botaoExportar(
       BuildContext context, dynamic resumoRebanhoAnimaisProdutoresRecordList) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 30.0),
@@ -1240,7 +1240,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _p1(context),
+                          _cabecalho(context),
                         ],
                       ),
                       centerTitle: true,
@@ -1256,22 +1256,22 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
                 children: [
-                  _p2(context),
-                  _p3(context),
-                  _p4(context),
-                  _p5(context),
-                  _p6(context),
-                  _p7(context),
-                  _p8(context),
-                  _p9(context),
-                  _p10(context),
-                  _p11(context),
-                  _p12(context),
-                  _p13(context),
-                  _p14(context),
-                  _p15(context),
-                  _p16(context),
-                  _p17(context, resumoRebanhoAnimaisProdutoresRecordList),
+                  _tituloFiltro(context),
+                  _campoGrupo(context),
+                  _campoStatus(context),
+                  _tituloColunas(context),
+                  _colunaUltimoParto(context),
+                  _colunaUltimaInseminacao(context),
+                  _colunaDel(context),
+                  _colunaTouro(context),
+                  _colunaSecagem(context),
+                  _colunaPreParto(context),
+                  _colunaDiasEmAberto(context),
+                  _colunaIntervaloPartos(context),
+                  _colunaPrevisaoParto(context),
+                  _colunaUltimaAcao(context),
+                  _campoFormatoExportacao(context),
+                  _botaoExportar(context, resumoRebanhoAnimaisProdutoresRecordList),
                 ],
               ),
             ),

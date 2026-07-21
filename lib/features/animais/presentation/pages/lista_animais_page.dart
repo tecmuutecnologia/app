@@ -6,7 +6,6 @@ import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/app_card.dart';
-import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/services/index.dart' as actions;
 import '/features/animais/presentation/pages/cadastrar_novo_animal_page.dart';
@@ -147,7 +146,7 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
     super.dispose();
   }
 
-  Widget _p1(BuildContext context) {
+  Widget topoPagina(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -218,7 +217,9 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
     );
   }
 
-  Widget _p2(BuildContext context) {
+  /// Conteúdo principal da tela: a barra de abas por grupo (Bezerras, Bezerros,
+  /// Novilhas, Sêmens, Touros, Vacas) e a lista de animais de cada aba.
+  Widget _abasDeAnimais(BuildContext context) {
     return Expanded(
       child: Column(
         children: [
@@ -491,12 +492,13 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
     );
   }
 
-  Widget _p3(BuildContext context) {
-    return Align(
-      alignment: AlignmentDirectional(0.0, 0.0),
-      child: FFButtonWidget(
-        onPressed: () async {
-          context.pushNamed(
+  Widget btnNovoAnimal(BuildContext context) {
+    return FloatingActionButton(
+      backgroundColor: const Color(0xFFEC3B5B),
+      foregroundColor: Colors.white,
+      tooltip: 'Novo animal',
+      onPressed: () async {
+        context.pushNamed(
             CadastrarNovoAnimalPage.routeName,
             queryParameters: {
               'uidPropriedade': serializeParam(
@@ -552,37 +554,7 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
 
           return;
         },
-        text: '',
-        icon: Icon(
-          Icons.add,
-          size: 35.0,
-        ),
-        options: FFButtonOptions(
-          width: 65.0,
-          height: 65.0,
-          padding: EdgeInsets.all(0.0),
-          iconPadding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
-          color: Color(0xFFEC3B5B),
-          textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                ),
-                color: Colors.white,
-                fontSize: 45.0,
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-              ),
-          elevation: 3.0,
-          borderSide: BorderSide(
-            color: Colors.transparent,
-            width: 1.0,
-          ),
-          borderRadius: BorderRadius.circular(100.0),
-        ),
-      ),
+      child: const Icon(Icons.add, size: 32.0),
     );
   }
 
@@ -598,6 +570,7 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        floatingActionButton: btnNovoAnimal(context),
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(100.0),
           child: AppBar(
@@ -611,7 +584,7 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _p1(context),
+                  topoPagina(context),
                 ],
               ),
               centerTitle: true,
@@ -622,11 +595,9 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
         ),
         body: Column(
           mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _p2(context),
-            _p3(context),
+            _abasDeAnimais(context),
           ],
         ),
       ),

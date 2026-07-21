@@ -45,7 +45,7 @@ class _PronAcoesPageState extends State<PronAcoesPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -88,7 +88,7 @@ class _PronAcoesPageState extends State<PronAcoesPage> {
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _secaoAcoes(BuildContext context) {
     return Container(
       width: 500.0,
       constraints: BoxConstraints(
@@ -107,8 +107,8 @@ class _PronAcoesPageState extends State<PronAcoesPage> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _p3(context),
-              _p4(context),
+              _tituloAcoes(context),
+              _listaAcoes(context),
             ],
           ),
         ),
@@ -116,7 +116,7 @@ class _PronAcoesPageState extends State<PronAcoesPage> {
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _tituloAcoes(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(5.0, 15.0, 5.0, 5.0),
       child: Row(
@@ -168,7 +168,7 @@ class _PronAcoesPageState extends State<PronAcoesPage> {
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _listaAcoes(BuildContext context) {
     return StreamBuilder<List<AcoesRecord>>(
       stream: queryAcoesRecord(
         parent: widget.uidTecnico,
@@ -471,7 +471,7 @@ class _PronAcoesPageState extends State<PronAcoesPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _p1(context),
+                        _cabecalho(context),
                       ],
                     ),
                     centerTitle: true,
@@ -485,7 +485,7 @@ class _PronAcoesPageState extends State<PronAcoesPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  _p2(context),
+                  _secaoAcoes(context),
                 ],
               ),
             ),

@@ -80,7 +80,7 @@ class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
     );
   }
 
-  Widget topo_menu(BuildContext context) {
+  Widget cabecalhoPropriedades(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -1012,7 +1012,7 @@ class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      topo_menu(context),
+                      cabecalhoPropriedades(context),
                     ],
                   ),
                   centerTitle: true,

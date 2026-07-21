@@ -63,6 +63,32 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
         .find();
   }
 
+  /// True se já existe um animal ATIVO (não descartado, não soft-deletado) na
+  /// propriedade com o MESMO par (nomeAnimal, brincoAnimal).
+  ///
+  /// A identidade de um animal é o par nome+brinco: `mimosa` sem brinco só pode
+  /// existir uma vez, mas `mimosa` + `123` e `mimosa` + `456` coexistem. Animais
+  /// descartados (`status == 'Descarte'`) liberam o par novamente.
+  ///
+  /// [excluirFirestoreId] / [excluirUidAnimalOffline] ignoram o próprio animal
+  /// (usado na edição, para não acusar duplicata contra si mesmo).
+  bool existeAnimalAtivoComNomeBrinco({
+    required String propriedadePath,
+    required String? nome,
+    required int brinco,
+    String? excluirFirestoreId,
+    String? excluirUidAnimalOffline,
+  }) {
+    return getAnimaisByPropriedade(propriedadePath).any((a) =>
+        a.status != 'Descarte' &&
+        !a.isDeleted &&
+        a.nomeAnimal == nome &&
+        a.brincoAnimal == brinco &&
+        !(excluirFirestoreId != null && a.firestoreId == excluirFirestoreId) &&
+        !(excluirUidAnimalOffline != null &&
+            a.uidAnimalOffline == excluirUidAnimalOffline));
+  }
+
   /// Obtém um animal pelo ID do Firestore.
   AnimalEntity? getByFirestoreId(String firestoreId) {
     return box

@@ -76,7 +76,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     super.dispose();
   }
 
-  Widget _p1(
+  Widget _cabecalho(
       BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
     return Row(
       mainAxisSize: MainAxisSize.max,
@@ -148,7 +148,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _listaRecomendacoes(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: FlutterFlowTheme.of(context).secondaryBackground,
@@ -208,7 +208,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     );
   }
 
-  Widget _p3(
+  Widget _conteudo(
       BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
     return // Lista de Diagnóstico de Gestação
         Container(
@@ -227,7 +227,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     );
   }
 
-  Widget _p4(
+  Widget _botaoAdicionarRecomendacao(
       BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
     return Expanded(
       child: Padding(
@@ -379,7 +379,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     );
   }
 
-  Widget _p5(
+  Widget _secaoObservacoes(
       BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
     return Expanded(
       child: Padding(
@@ -389,17 +389,17 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _p6(context),
-            _p7(context),
-            _p8(context, resumoVisitaAtualResumoDaVisitaRecord),
-            _p9(context, resumoVisitaAtualResumoDaVisitaRecord),
+            _tituloObservacoes(context),
+            _campoObservacoes(context),
+            _botaoConcluirVisita(context, resumoVisitaAtualResumoDaVisitaRecord),
+            _botaoConcluirVisita2(context, resumoVisitaAtualResumoDaVisitaRecord),
           ],
         ),
       ),
     );
   }
 
-  Widget _p6(BuildContext context) {
+  Widget _tituloObservacoes(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -428,7 +428,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     );
   }
 
-  Widget _p7(BuildContext context) {
+  Widget _campoObservacoes(BuildContext context) {
     return TextFormField(
       controller: _obsGeralTextController,
       focusNode: _obsGeralFocusNode,
@@ -505,7 +505,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     );
   }
 
-  Widget _p8(
+  Widget _botaoConcluirVisita(
       BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
@@ -620,7 +620,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     );
   }
 
-  Widget _p9(
+  Widget _botaoConcluirVisita2(
       BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 16.0),
@@ -764,7 +764,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     );
   }
 
-  Widget _p10(
+  Widget _botaoGerarPdf(
       BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
     return Expanded(
       child: Padding(
@@ -902,7 +902,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _p1(context, resumoVisitaAtualResumoDaVisitaRecord),
+                        _cabecalho(context, resumoVisitaAtualResumoDaVisitaRecord),
                       ],
                     ),
                     centerTitle: true,
@@ -917,8 +917,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _p2(context),
-                  _p3(context, resumoVisitaAtualResumoDaVisitaRecord),
+                  _listaRecomendacoes(context),
+                  _conteudo(context, resumoVisitaAtualResumoDaVisitaRecord),
                   if ((resumoVisitaAtualResumoDaVisitaRecord
                               .assinaturaProdutor !=
                           '') ||
@@ -1149,7 +1149,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          _p4(context, resumoVisitaAtualResumoDaVisitaRecord),
+                          _botaoAdicionarRecomendacao(context, resumoVisitaAtualResumoDaVisitaRecord),
                         ],
                       ),
                     ),
@@ -1168,7 +1168,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          _p5(context, resumoVisitaAtualResumoDaVisitaRecord),
+                          _secaoObservacoes(context, resumoVisitaAtualResumoDaVisitaRecord),
                         ],
                       ),
                     ),
@@ -1189,7 +1189,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          _p10(context, resumoVisitaAtualResumoDaVisitaRecord),
+                          _botaoGerarPdf(context, resumoVisitaAtualResumoDaVisitaRecord),
                         ],
                       ),
                     ),

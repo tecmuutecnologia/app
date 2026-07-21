@@ -217,7 +217,7 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     }
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _conteudo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 2.0, 16.0, 16.0),
       child: Container(
@@ -244,9 +244,9 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _p2(context),
-              _p3(context),
-              _p4(context),
+              _cabecalhoAnimal(context),
+              _formularioBezerro(context),
+              _botoesAcao(context),
             ],
           ),
         ),
@@ -254,7 +254,7 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _cabecalhoAnimal(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(24.0, 16.0, 0.0, 0.0),
       child: Text(
@@ -278,23 +278,23 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _formularioBezerro(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _p5(context),
-        _p6(context),
-        _p7(context),
-        _p8(context),
-        _p9(context),
-        _p10(context),
-        _p11(context),
+        _campoNome(context),
+        _campoBrinco(context),
+        _campoSexo(context),
+        _campoRaca(context),
+        _campoDataParto(context),
+        _campoPesoNascimento(context),
+        _switchRegistrarBezerro(context),
       ],
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _botoesAcao(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(24.0, 12.0, 24.0, 24.0),
       child: Row(
@@ -504,7 +504,7 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     );
   }
 
-  Widget _p5(BuildContext context) {
+  Widget _campoNome(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: TextFormField(
@@ -583,7 +583,7 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     );
   }
 
-  Widget _p6(BuildContext context) {
+  Widget _campoBrinco(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: TextFormField(
@@ -662,7 +662,7 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     );
   }
 
-  Widget _p7(BuildContext context) {
+  Widget _campoSexo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: FlutterFlowDropDown<String>(
@@ -702,7 +702,7 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     );
   }
 
-  Widget _p8(BuildContext context) {
+  Widget _campoRaca(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: StreamBuilder<List<RacasRecord>>(
@@ -792,7 +792,7 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     );
   }
 
-  Widget _p9(BuildContext context) {
+  Widget _campoDataParto(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: Row(
@@ -998,7 +998,7 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     );
   }
 
-  Widget _p10(BuildContext context) {
+  Widget _campoPesoNascimento(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: TextFormField(
@@ -1077,7 +1077,7 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
     );
   }
 
-  Widget _p11(BuildContext context) {
+  Widget _switchRegistrarBezerro(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: Material(
@@ -1126,7 +1126,7 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _p1(context),
+            _conteudo(context),
           ],
         ),
       ),

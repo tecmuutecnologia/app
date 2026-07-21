@@ -55,7 +55,7 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -126,7 +126,7 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _proximasAcoes(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 20.0),
       child: StreamBuilder<List<AcoesSanitarioRecord>>(
@@ -236,7 +236,7 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _botaoNovaAcao(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 0.0),
       child: FFButtonWidget(
@@ -295,7 +295,7 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _acoesRealizadas(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 10.0),
       child: StreamBuilder<List<AcoesSanitarioRecord>>(
@@ -589,7 +589,7 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _p1(context),
+                      _cabecalho(context),
                     ],
                   ),
                   centerTitle: true,
@@ -602,9 +602,9 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              _p2(context),
-              _p3(context),
-              _p4(context),
+              _proximasAcoes(context),
+              _botaoNovaAcao(context),
+              _acoesRealizadas(context),
             ],
           ),
         ),

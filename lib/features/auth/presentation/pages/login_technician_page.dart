@@ -102,7 +102,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
     super.dispose();
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _conteudo(BuildContext context) {
     return Expanded(
       flex: 6,
       child: Container(
@@ -129,8 +129,8 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _p2(context),
-              _p3(context),
+              _logo(context),
+              _formulario(context),
             ],
           ),
         ),
@@ -138,7 +138,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _logo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 70.0, 0.0, 32.0),
       child: Container(
@@ -161,7 +161,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _formulario(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(16.0),
       child: Container(
@@ -182,13 +182,13 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                _p4(context),
-                _p5(context),
-                _p6(context),
-                _p7(context),
-                _p8(context),
-                _p9(context),
-                _p10(context),
+                _titulo(context),
+                _subtitulo(context),
+                _campoEmail(context),
+                _campoSenha(context),
+                _botaoEntrar(context),
+                _botaoBiometria(context),
+                _linkCadastro(context),
               ],
             ),
           ),
@@ -197,7 +197,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _titulo(BuildContext context) {
     return Text(
       'Login',
       textAlign: TextAlign.center,
@@ -213,7 +213,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
     );
   }
 
-  Widget _p5(BuildContext context) {
+  Widget _subtitulo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 24.0),
       child: Text(
@@ -232,7 +232,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
     );
   }
 
-  Widget _p6(BuildContext context) {
+  Widget _campoEmail(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: Container(
@@ -303,7 +303,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
     );
   }
 
-  Widget _p7(BuildContext context) {
+  Widget _campoSenha(BuildContext context) {
     final passwordVisibility =
         ref.watch(loginTechnicianControllerProvider).passwordVisibility;
     return Padding(
@@ -388,7 +388,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
     );
   }
 
-  Widget _p8(BuildContext context) {
+  Widget _botaoEntrar(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: FFButtonWidget(
@@ -435,7 +435,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
     );
   }
 
-  Widget _p9(BuildContext context) {
+  Widget _botaoBiometria(BuildContext context) {
     return // Login offline por biometria/PIN: só aparece se
         // há sessão salva no cofre e o aparelho suporta.
         FutureBuilder<bool>(
@@ -479,7 +479,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
     );
   }
 
-  Widget _p10(BuildContext context) {
+  Widget _linkCadastro(BuildContext context) {
     return // You will have to add an action on this rich text to go to your login page.
         Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 12.0),
@@ -551,7 +551,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
         body: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
-            _p1(context),
+            _conteudo(context),
           ],
         ),
       ),

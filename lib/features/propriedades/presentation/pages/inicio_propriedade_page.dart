@@ -429,7 +429,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     super.dispose();
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(24.0, 25.0, 0.0, 0.0),
       child: Text(
@@ -448,7 +448,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     );
   }
 
-  Widget _p2(BuildContext context,
+  Widget _gradeMenu(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
@@ -469,16 +469,16 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
         children: [
-          _p3(context),
-          _p4(context),
-          _p5(context),
-          _p6(context, inicioPropriedadeAnimaisProdutoresRecordList),
-          _p7(context, inicioPropriedadeAnimaisProdutoresRecordList),
-          _p8(context, inicioPropriedadeAnimaisProdutoresRecordList),
-          _p9(context, inicioPropriedadeAnimaisProdutoresRecordList),
-          _p10(context, inicioPropriedadeAnimaisProdutoresRecordList),
-          _p11(context, inicioPropriedadeAnimaisProdutoresRecordList),
-          _p12(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _cardInicio(context),
+          _cardTrocarProdutor(context),
+          _cardAnimais(context),
+          _cardInseminacoes(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _cardDiagnosticoGestacao(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _cardPrenhas(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _cardSecas(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _cardExameGinecologico(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _cardRecria(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _cardListaCompleta(context, inicioPropriedadeAnimaisProdutoresRecordList),
           if (_respostaNet ?? true)
             Container(
               width: MediaQuery.sizeOf(context).width * 0.3,
@@ -533,7 +533,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                       color: Color(0xFFEC3B5B),
                       size: 30.0,
                     ),
-                    _p14(context),
+                    _rotuloReceituario(context),
                   ],
                 ),
               ),
@@ -593,7 +593,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                       color: Color(0xFFEC3B5B),
                       size: 30.0,
                     ),
-                    _p15(context),
+                    _rotuloResumoRebanho(context),
                   ],
                 ),
               ),
@@ -653,13 +653,13 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                       color: Color(0xFFEC3B5B),
                       size: 28.0,
                     ),
-                    _p16(context),
+                    _rotuloCalendarioSanitario(context),
                   ],
                 ),
               ),
             ).animateOnPageLoad(
                 animationsMap['containerOnPageLoadAnimation13']!),
-          _p13(context),
+          _cardIndicesZootecnicos(context),
           if (_respostaNet ?? true)
             Container(
               width: MediaQuery.sizeOf(context).width * 0.3,
@@ -798,7 +798,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _cardInicio(BuildContext context) {
     return Container(
       width: MediaQuery.sizeOf(context).width * 0.3,
       height: 120.0,
@@ -848,7 +848,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation1']!);
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _cardTrocarProdutor(BuildContext context) {
     return Container(
       width: MediaQuery.sizeOf(context).width * 0.3,
       height: 120.0,
@@ -907,7 +907,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation2']!);
   }
 
-  Widget _p5(BuildContext context) {
+  Widget _cardAnimais(BuildContext context) {
     return Container(
       width: MediaQuery.sizeOf(context).width * 0.3,
       height: 120.0,
@@ -1023,7 +1023,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation3']!);
   }
 
-  Widget _p6(BuildContext context,
+  Widget _cardInseminacoes(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return Container(
       width: MediaQuery.sizeOf(context).width * 0.3,
@@ -1193,7 +1193,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation4']!);
   }
 
-  Widget _p7(BuildContext context,
+  Widget _cardDiagnosticoGestacao(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return Container(
       width: MediaQuery.sizeOf(context).width * 0.3,
@@ -1342,7 +1342,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation5']!);
   }
 
-  Widget _p8(BuildContext context,
+  Widget _cardPrenhas(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return Container(
       width: MediaQuery.sizeOf(context).width * 0.3,
@@ -1481,7 +1481,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation6']!);
   }
 
-  Widget _p9(BuildContext context,
+  Widget _cardSecas(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return Container(
       width: MediaQuery.sizeOf(context).width * 0.3,
@@ -1622,7 +1622,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation7']!);
   }
 
-  Widget _p10(BuildContext context,
+  Widget _cardExameGinecologico(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return Container(
       width: MediaQuery.sizeOf(context).width * 0.3,
@@ -1773,7 +1773,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation8']!);
   }
 
-  Widget _p11(BuildContext context,
+  Widget _cardRecria(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return Container(
       width: MediaQuery.sizeOf(context).width * 0.3,
@@ -1933,7 +1933,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation9']!);
   }
 
-  Widget _p12(BuildContext context,
+  Widget _cardListaCompleta(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return Container(
       width: MediaQuery.sizeOf(context).width * 0.3,
@@ -2071,7 +2071,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation10']!);
   }
 
-  Widget _p13(BuildContext context) {
+  Widget _cardIndicesZootecnicos(BuildContext context) {
     return Container(
       width: MediaQuery.sizeOf(context).width * 0.3,
       height: 120.0,
@@ -2147,7 +2147,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation14']!);
   }
 
-  Widget _p14(BuildContext context) {
+  Widget _rotuloReceituario(BuildContext context) {
     return Text(
       'Receituário',
       textAlign: TextAlign.center,
@@ -2164,7 +2164,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     );
   }
 
-  Widget _p15(BuildContext context) {
+  Widget _rotuloResumoRebanho(BuildContext context) {
     return Text(
       'Resumo Rebanho',
       textAlign: TextAlign.center,
@@ -2181,7 +2181,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     );
   }
 
-  Widget _p16(BuildContext context) {
+  Widget _rotuloCalendarioSanitario(BuildContext context) {
     return Text(
       'Calendário Sanitário',
       textAlign: TextAlign.center,
@@ -2316,8 +2316,8 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _p1(context),
-                    _p2(context, inicioPropriedadeAnimaisProdutoresRecordList),
+                    _cabecalho(context),
+                    _gradeMenu(context, inicioPropriedadeAnimaisProdutoresRecordList),
                     if (!valueOrDefault<bool>(
                       _respostaNet,
                       true,

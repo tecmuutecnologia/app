@@ -57,7 +57,7 @@ class _SubscriptionPlanTecnicoPageState
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -82,7 +82,7 @@ class _SubscriptionPlanTecnicoPageState
     );
   }
 
-  Widget _p2(BuildContext context,
+  Widget _conteudo(BuildContext context,
       dynamic subscriptionPlanTecnicoPlanosTecnicosRecordList) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 24.0),
@@ -96,13 +96,13 @@ class _SubscriptionPlanTecnicoPageState
         verticalDirection: VerticalDirection.down,
         clipBehavior: Clip.none,
         children: [
-          _p3(context, subscriptionPlanTecnicoPlanosTecnicosRecordList),
+          _cartaoPlano(context, subscriptionPlanTecnicoPlanosTecnicosRecordList),
         ],
       ),
     );
   }
 
-  Widget _p3(BuildContext context,
+  Widget _cartaoPlano(BuildContext context,
       dynamic subscriptionPlanTecnicoPlanosTecnicosRecordList) {
     return Container(
       width: double.infinity,
@@ -120,24 +120,24 @@ class _SubscriptionPlanTecnicoPageState
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _p4(context),
-            _p5(context),
-            _p6(context),
-            _p7(context, subscriptionPlanTecnicoPlanosTecnicosRecordList),
+            _titulo(context),
+            _subtitulo(context),
+            _campoTipoAssinatura(context),
+            _campoPlano(context, subscriptionPlanTecnicoPlanosTecnicosRecordList),
             Divider(
               height: 32.0,
               thickness: 2.0,
               color: FlutterFlowTheme.of(context).alternate,
             ),
-            _p8(context),
-            _p9(context),
+            _totalValor(context),
+            _botaoAssinar(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _titulo(BuildContext context) {
     return Text(
       'Assinatura de plano',
       style: FlutterFlowTheme.of(context).titleLarge.override(
@@ -152,7 +152,7 @@ class _SubscriptionPlanTecnicoPageState
     );
   }
 
-  Widget _p5(BuildContext context) {
+  Widget _subtitulo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 12.0),
       child: Text(
@@ -170,7 +170,7 @@ class _SubscriptionPlanTecnicoPageState
     );
   }
 
-  Widget _p6(BuildContext context) {
+  Widget _campoTipoAssinatura(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: FlutterFlowDropDown<int>(
@@ -207,7 +207,7 @@ class _SubscriptionPlanTecnicoPageState
     );
   }
 
-  Widget _p7(BuildContext context,
+  Widget _campoPlano(BuildContext context,
       dynamic subscriptionPlanTecnicoPlanosTecnicosRecordList) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
@@ -250,7 +250,7 @@ class _SubscriptionPlanTecnicoPageState
     );
   }
 
-  Widget _p8(BuildContext context) {
+  Widget _totalValor(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 24.0),
       child: Column(
@@ -334,7 +334,7 @@ class _SubscriptionPlanTecnicoPageState
     );
   }
 
-  Widget _p9(BuildContext context) {
+  Widget _botaoAssinar(BuildContext context) {
     return FFButtonWidget(
       onPressed: () async {
         var _shouldSetState = false;
@@ -630,7 +630,7 @@ class _SubscriptionPlanTecnicoPageState
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _p1(context),
+                          _cabecalho(context),
                         ],
                       ),
                       centerTitle: true,
@@ -645,7 +645,7 @@ class _SubscriptionPlanTecnicoPageState
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    _p2(context,
+                    _conteudo(context,
                         subscriptionPlanTecnicoPlanosTecnicosRecordList),
                   ],
                 ),

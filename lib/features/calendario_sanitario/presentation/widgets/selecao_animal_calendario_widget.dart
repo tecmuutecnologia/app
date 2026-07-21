@@ -131,7 +131,7 @@ class _SelecaoAnimalCalendarioWidgetState
     super.dispose();
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _conteudo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 2.0, 16.0, 16.0),
       child: Container(
@@ -159,9 +159,9 @@ class _SelecaoAnimalCalendarioWidgetState
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _p2(context),
-              _p3(context),
-              _p4(context),
+              _cabecalho(context),
+              _instrucoes(context),
+              _secaoAbas(context),
               if (((_checkboxGroupTodosValues != null &&
                           (_checkboxGroupTodosValues)!.isNotEmpty) &&
                       (_checkboxGroupTodosValues!.length >= 1)) ||
@@ -282,7 +282,7 @@ class _SelecaoAnimalCalendarioWidgetState
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(24.0, 5.0, 5.0, 12.0),
       child: Row(
@@ -308,7 +308,7 @@ class _SelecaoAnimalCalendarioWidgetState
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _instrucoes(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: Text(
@@ -330,7 +330,7 @@ class _SelecaoAnimalCalendarioWidgetState
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _secaoAbas(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: Form(
@@ -341,8 +341,8 @@ class _SelecaoAnimalCalendarioWidgetState
           decoration: BoxDecoration(),
           child: Column(
             children: [
-              _p5(context),
-              _p6(context),
+              _barraAbas(context),
+              _listasPorAba(context),
             ],
           ),
         ),
@@ -350,7 +350,7 @@ class _SelecaoAnimalCalendarioWidgetState
     );
   }
 
-  Widget _p5(BuildContext context) {
+  Widget _barraAbas(BuildContext context) {
     return Align(
       alignment: Alignment(-1.0, 0),
       child: FlutterFlowButtonTabBar(
@@ -411,23 +411,23 @@ class _SelecaoAnimalCalendarioWidgetState
     );
   }
 
-  Widget _p6(BuildContext context) {
+  Widget _listasPorAba(BuildContext context) {
     return Expanded(
       child: TabBarView(
         controller: _tabBarController,
         children: [
-          _p7(context),
-          _p8(context),
-          _p9(context),
-          _p10(context),
-          _p11(context),
-          _p12(context),
+          _listaTodos(context),
+          _listaBezerros(context),
+          _listaNovilhas(context),
+          _listaTouros(context),
+          _listaVacas(context),
+          _listaBezerras(context),
         ],
       ),
     );
   }
 
-  Widget _p7(BuildContext context) {
+  Widget _listaTodos(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -605,7 +605,7 @@ class _SelecaoAnimalCalendarioWidgetState
     );
   }
 
-  Widget _p8(BuildContext context) {
+  Widget _listaBezerros(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -788,7 +788,7 @@ class _SelecaoAnimalCalendarioWidgetState
     );
   }
 
-  Widget _p9(BuildContext context) {
+  Widget _listaNovilhas(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -971,7 +971,7 @@ class _SelecaoAnimalCalendarioWidgetState
     );
   }
 
-  Widget _p10(BuildContext context) {
+  Widget _listaTouros(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -1154,7 +1154,7 @@ class _SelecaoAnimalCalendarioWidgetState
     );
   }
 
-  Widget _p11(BuildContext context) {
+  Widget _listaVacas(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -1336,7 +1336,7 @@ class _SelecaoAnimalCalendarioWidgetState
     );
   }
 
-  Widget _p12(BuildContext context) {
+  Widget _listaBezerras(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -1531,7 +1531,7 @@ class _SelecaoAnimalCalendarioWidgetState
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _p1(context),
+          _conteudo(context),
         ],
       ),
     );

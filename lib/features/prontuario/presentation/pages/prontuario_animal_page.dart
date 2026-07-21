@@ -1734,7 +1734,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -1777,7 +1777,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _conteudo(BuildContext context) {
     return Container(
       width: 500.0,
       constraints: BoxConstraints(
@@ -1795,35 +1795,35 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _p3(context),
+            _tituloRegistro(context),
             Divider(
               height: 2.0,
               thickness: 1.0,
               color: Color(0xFFE5E7EB),
             ),
-            _p4(context),
-            _p5(context),
-            _p6(context),
-            _p7(context),
-            _p8(context),
-            _p9(context),
-            _p10(context),
-            _p11(context),
-            _p12(context),
-            _p13(context),
-            _p14(context),
-            _p15(context),
-            _p16(context),
-            _p17(context),
-            _p18(context),
-            _p19(context),
+            _tituloInseminacoes(context),
+            _listaInseminacoes(context),
+            _tituloAcoes(context),
+            _listaAcoes(context),
+            _tituloAbortos(context),
+            _listaAbortos(context),
+            _tituloDiagGestacao(context),
+            _listaDiagGestacao(context),
+            _tituloCios(context),
+            _listaCios(context),
+            _tituloVacinas(context),
+            _listaVacinas(context),
+            _tituloExames(context),
+            _listaExames(context),
+            _tituloDoencas(context),
+            _listaDoencas(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _tituloRegistro(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(15.0, 15.0, 15.0, 15.0),
       child: Row(
@@ -1857,7 +1857,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _tituloInseminacoes(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(5.0, 15.0, 5.0, 5.0),
       child: Row(
@@ -1972,7 +1972,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p5(BuildContext context) {
+  Widget _listaInseminacoes(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -2027,7 +2027,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p6(BuildContext context) {
+  Widget _tituloAcoes(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(5.0, 15.0, 5.0, 5.0),
       child: Row(
@@ -2142,7 +2142,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p7(BuildContext context) {
+  Widget _listaAcoes(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -2195,7 +2195,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p8(BuildContext context) {
+  Widget _tituloAbortos(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(5.0, 15.0, 5.0, 5.0),
       child: Row(
@@ -2310,7 +2310,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p9(BuildContext context) {
+  Widget _listaAbortos(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -2363,7 +2363,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p10(BuildContext context) {
+  Widget _tituloDiagGestacao(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(5.0, 15.0, 5.0, 5.0),
       child: Row(
@@ -2478,7 +2478,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p11(BuildContext context) {
+  Widget _listaDiagGestacao(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -2531,7 +2531,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p12(BuildContext context) {
+  Widget _tituloCios(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(5.0, 15.0, 5.0, 5.0),
       child: Row(
@@ -2646,7 +2646,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p13(BuildContext context) {
+  Widget _listaCios(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -2702,7 +2702,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p14(BuildContext context) {
+  Widget _tituloVacinas(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(5.0, 15.0, 5.0, 5.0),
       child: Row(
@@ -2800,7 +2800,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p15(BuildContext context) {
+  Widget _listaVacinas(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -2857,7 +2857,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p16(BuildContext context) {
+  Widget _tituloExames(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(5.0, 15.0, 5.0, 5.0),
       child: Row(
@@ -2955,7 +2955,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p17(BuildContext context) {
+  Widget _listaExames(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -3012,7 +3012,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p18(BuildContext context) {
+  Widget _tituloDoencas(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(5.0, 15.0, 5.0, 5.0),
       child: Row(
@@ -3110,7 +3110,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p19(BuildContext context) {
+  Widget _listaDoencas(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -3167,7 +3167,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p20(
+  Widget _rotuloNomeBrinco(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(15.0, 15.0, 15.0, 15.0),
@@ -3266,7 +3266,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p21(BuildContext context) {
+  Widget _tituloInfoGerais(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(15.0, 25.0, 15.0, 15.0),
       child: Row(
@@ -3316,21 +3316,21 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p22(
+  Widget _listaInfoGerais(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return ListView(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
       children: [
-        _p25(context, prontuarioAnimalAnimaisProdutoresRecord),
-        _p26(context, prontuarioAnimalAnimaisProdutoresRecord),
-        _p27(context, prontuarioAnimalAnimaisProdutoresRecord),
+        _linhaMae(context, prontuarioAnimalAnimaisProdutoresRecord),
+        _linhaGrupo(context, prontuarioAnimalAnimaisProdutoresRecord),
+        _linhaNumeroRegistro(context, prontuarioAnimalAnimaisProdutoresRecord),
       ],
     );
   }
 
-  Widget _p23(BuildContext context) {
+  Widget _tituloReproducao(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(15.0, 25.0, 15.0, 15.0),
       child: Row(
@@ -3364,7 +3364,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p24(
+  Widget _listaReproducao(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return ListView(
       padding: EdgeInsets.zero,
@@ -3372,14 +3372,14 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
       children: [
-        _p28(context, prontuarioAnimalAnimaisProdutoresRecord),
-        _p29(context, prontuarioAnimalAnimaisProdutoresRecord),
-        _p30(context, prontuarioAnimalAnimaisProdutoresRecord),
+        _linhaUltimoParto(context, prontuarioAnimalAnimaisProdutoresRecord),
+        _linhaTotalPartos(context, prontuarioAnimalAnimaisProdutoresRecord),
+        _linhaDel(context, prontuarioAnimalAnimaisProdutoresRecord),
       ],
     );
   }
 
-  Widget _p25(
+  Widget _linhaMae(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
@@ -3470,7 +3470,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p26(
+  Widget _linhaGrupo(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
@@ -3561,7 +3561,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p27(
+  Widget _linhaNumeroRegistro(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
@@ -3655,7 +3655,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p28(
+  Widget _linhaUltimoParto(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
@@ -3746,7 +3746,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p29(
+  Widget _linhaTotalPartos(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
@@ -3839,7 +3839,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p30(
+  Widget _linhaDel(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
@@ -3936,7 +3936,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p31(
+  Widget _rotuloNomeBrinco2(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(15.0, 15.0, 15.0, 15.0),
@@ -4035,7 +4035,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p32(BuildContext context) {
+  Widget _tituloInfoGerais2(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(15.0, 25.0, 15.0, 15.0),
       child: Row(
@@ -4085,21 +4085,21 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p33(
+  Widget _listaInfoGerais2(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return ListView(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
       children: [
-        _p36(context, prontuarioAnimalAnimaisProdutoresRecord),
-        _p37(context, prontuarioAnimalAnimaisProdutoresRecord),
-        _p38(context, prontuarioAnimalAnimaisProdutoresRecord),
+        _linhaMae2(context, prontuarioAnimalAnimaisProdutoresRecord),
+        _linhaGrupo2(context, prontuarioAnimalAnimaisProdutoresRecord),
+        _linhaNumeroRegistro2(context, prontuarioAnimalAnimaisProdutoresRecord),
       ],
     );
   }
 
-  Widget _p34(BuildContext context) {
+  Widget _tituloReproducao2(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(15.0, 25.0, 15.0, 15.0),
       child: Row(
@@ -4133,7 +4133,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p35(
+  Widget _listaReproducao2(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return ListView(
       padding: EdgeInsets.zero,
@@ -4141,14 +4141,14 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
       children: [
-        _p39(context, prontuarioAnimalAnimaisProdutoresRecord),
-        _p40(context, prontuarioAnimalAnimaisProdutoresRecord),
-        _p41(context, prontuarioAnimalAnimaisProdutoresRecord),
+        _linhaUltimoParto2(context, prontuarioAnimalAnimaisProdutoresRecord),
+        _linhaTotalPartos2(context, prontuarioAnimalAnimaisProdutoresRecord),
+        _linhaDel2(context, prontuarioAnimalAnimaisProdutoresRecord),
       ],
     );
   }
 
-  Widget _p36(
+  Widget _linhaMae2(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
@@ -4239,7 +4239,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p37(
+  Widget _linhaGrupo2(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
@@ -4330,7 +4330,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p38(
+  Widget _linhaNumeroRegistro2(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
@@ -4424,7 +4424,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p39(
+  Widget _linhaUltimoParto2(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
@@ -4515,7 +4515,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p40(
+  Widget _linhaTotalPartos2(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
@@ -4608,7 +4608,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _p41(
+  Widget _linhaDel2(
       BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
@@ -4764,7 +4764,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _p1(context),
+                        _cabecalho(context),
                       ],
                     ),
                     centerTitle: true,
@@ -4798,33 +4798,33 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _p20(context,
+                            _rotuloNomeBrinco(context,
                                 prontuarioAnimalAnimaisProdutoresRecord),
                             Divider(
                               height: 2.0,
                               thickness: 1.0,
                               color: Color(0xFFE5E7EB),
                             ),
-                            _p21(context),
+                            _tituloInfoGerais(context),
                             Divider(
                               height: 2.0,
                               thickness: 1.0,
                               color: Color(0xFFE5E7EB),
                             ),
-                            _p22(context,
+                            _listaInfoGerais(context,
                                 prontuarioAnimalAnimaisProdutoresRecord),
                             Divider(
                               height: 2.0,
                               thickness: 1.0,
                               color: Color(0xFFE5E7EB),
                             ),
-                            _p23(context),
+                            _tituloReproducao(context),
                             Divider(
                               height: 2.0,
                               thickness: 1.0,
                               color: Color(0xFFE5E7EB),
                             ),
-                            _p24(context,
+                            _listaReproducao(context,
                                 prontuarioAnimalAnimaisProdutoresRecord),
                           ],
                         ),
@@ -4850,39 +4850,39 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _p31(context,
+                            _rotuloNomeBrinco2(context,
                                 prontuarioAnimalAnimaisProdutoresRecord),
                             Divider(
                               height: 2.0,
                               thickness: 1.0,
                               color: Color(0xFFE5E7EB),
                             ),
-                            _p32(context),
+                            _tituloInfoGerais2(context),
                             Divider(
                               height: 2.0,
                               thickness: 1.0,
                               color: Color(0xFFE5E7EB),
                             ),
-                            _p33(context,
+                            _listaInfoGerais2(context,
                                 prontuarioAnimalAnimaisProdutoresRecord),
                             Divider(
                               height: 2.0,
                               thickness: 1.0,
                               color: Color(0xFFE5E7EB),
                             ),
-                            _p34(context),
+                            _tituloReproducao2(context),
                             Divider(
                               height: 2.0,
                               thickness: 1.0,
                               color: Color(0xFFE5E7EB),
                             ),
-                            _p35(context,
+                            _listaReproducao2(context,
                                 prontuarioAnimalAnimaisProdutoresRecord),
                           ],
                         ),
                       ),
                     ),
-                  _p2(context),
+                  _conteudo(context),
                 ],
               ),
             ),

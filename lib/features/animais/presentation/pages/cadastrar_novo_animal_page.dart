@@ -4,7 +4,6 @@ import '/data/backend.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/success_overlay.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
-import '/core/constants/grupos_racas_constantes.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -12,7 +11,6 @@ import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
 import '/core/ui/instant_timer.dart';
-import '/core/ui/request_manager.dart';
 import '/data/objectbox/repositories/index.dart';
 import 'dart:ui';
 import '/core/services/index.dart' as actions;
@@ -71,6 +69,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     if (id == null) return false;
     return PropriedadeRepository().getByFirestoreId(id)?.contaCriada == false;
   }
+
   FocusNode? _nomeFocusNode;
   TextEditingController? _nomeTextController;
   final String? Function(BuildContext, String?)? _nomeTextControllerValidator =
@@ -125,23 +124,6 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
   FormFieldController<String>? _touroInseminacaoValueController;
   String? _statusAnimalValue;
   FormFieldController<String>? _statusAnimalValueController;
-  List<AnimaisProdutoresRecord>? _outListaAnimaisVerificaNome;
-  List<AnimaisProdutoresRecord>? _outListaAnimaisVerificaBrinco;
-  List<AnimaisProdutoresRecord>? _outListaAnimaisVerificaNomeOff;
-  List<AnimaisProdutoresRecord>? _outListaAnimaisVerificaBrincoOff;
-
-  final _animaisLiberaoParaInseminarManager =
-      StreamRequestManager<List<AnimaisProdutoresRecord>>();
-  Stream<List<AnimaisProdutoresRecord>> _animaisLiberaoParaInseminar({
-    String? uniqueQueryKey,
-    bool? overrideCache,
-    required Stream<List<AnimaisProdutoresRecord>> Function() requestFn,
-  }) =>
-      _animaisLiberaoParaInseminarManager.performRequest(
-        uniqueQueryKey: uniqueQueryKey,
-        overrideCache: overrideCache,
-        requestFn: requestFn,
-      );
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -220,7 +202,6 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     _dataUltimoPartoTextController?.dispose();
     _dataUltimaInseminacaoFocusNode?.dispose();
     _dataUltimaInseminacaoTextController?.dispose();
-    _animaisLiberaoParaInseminarManager.clear();
 
     super.dispose();
   }
@@ -244,40 +225,26 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
         if (_grupoValue == null) {
           return;
         }
-        _outListaAnimaisVerificaNome = await queryAnimaisProdutoresRecordOnce(
-          parent: widget.uidTecnico,
-          queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
-              .where(
-                'uidTecnicoPropriedade',
-                isEqualTo: widget.uidPropriedade,
-              )
-              .where(
-                'nomeAnimal',
-                isEqualTo: _nomeTextController.text,
-              ),
-        );
+        // Checagem de duplicidade pelo PAR (nome + brinco) no ObjectBox,
+        // considerando apenas animais ativos (não descartados). Brinco vazio é
+        // normalizado para -1, igual à persistência.
         _shouldSetState = true;
-        _outListaAnimaisVerificaBrinco = await queryAnimaisProdutoresRecordOnce(
-          parent: widget.uidTecnico,
-          queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
-              .where(
-                'uidTecnicoPropriedade',
-                isEqualTo: widget.uidPropriedade,
-              )
-              .where(
-                'brincoAnimal',
-                isEqualTo: int.tryParse(_brincoTextController.text),
-              ),
-        );
-        _shouldSetState = true;
-        if ((_outListaAnimaisVerificaNome!.length > 0) &&
-            (_outListaAnimaisVerificaBrinco!.length > 0)) {
+        final brincoNovo = _brincoTextController.text != ''
+            ? (int.tryParse(_brincoTextController.text) ?? -1)
+            : -1;
+        final duplicado = widget.uidPropriedade != null &&
+            AnimalRepository().existeAnimalAtivoComNomeBrinco(
+              propriedadePath: widget.uidPropriedade!.path,
+              nome: _nomeTextController.text,
+              brinco: brincoNovo,
+            );
+        if (duplicado) {
           await showDialog(
             context: context,
             builder: (alertDialogContext) {
               return AlertDialog(
-                title: Text('Nome ou brinco já existe.'),
-                content: Text('Digite outro nome ou brinco.'),
+                title: Text('Animal já cadastrado.'),
+                content: Text('Já existe um animal ativo com este nome e brinco.'),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(alertDialogContext),
@@ -1466,41 +1433,26 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
       if (_grupoValue == null) {
         return;
       }
-      _outListaAnimaisVerificaNomeOff = await queryAnimaisProdutoresRecordOnce(
-        parent: widget.uidTecnico,
-        queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
-            .where(
-              'uidTecnicoPropriedade',
-              isEqualTo: widget.uidPropriedade,
-            )
-            .where(
-              'nomeAnimal',
-              isEqualTo: _nomeTextController.text,
-            ),
-      );
+      // Checagem de duplicidade pelo PAR (nome + brinco) no ObjectBox,
+      // considerando apenas animais ativos (não descartados). Brinco vazio é
+      // normalizado para -1, igual à persistência.
       _shouldSetState = true;
-      _outListaAnimaisVerificaBrincoOff =
-          await queryAnimaisProdutoresRecordOnce(
-        parent: widget.uidTecnico,
-        queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
-            .where(
-              'uidTecnicoPropriedade',
-              isEqualTo: widget.uidPropriedade,
-            )
-            .where(
-              'brincoAnimal',
-              isEqualTo: int.tryParse(_brincoTextController.text),
-            ),
-      );
-      _shouldSetState = true;
-      if ((_outListaAnimaisVerificaNomeOff!.length > 0) &&
-          (_outListaAnimaisVerificaBrincoOff!.length > 0)) {
+      final brincoNovo = _brincoTextController.text != ''
+          ? (int.tryParse(_brincoTextController.text) ?? -1)
+          : -1;
+      final duplicado = widget.uidPropriedade != null &&
+          AnimalRepository().existeAnimalAtivoComNomeBrinco(
+            propriedadePath: widget.uidPropriedade!.path,
+            nome: _nomeTextController.text,
+            brinco: brincoNovo,
+          );
+      if (duplicado) {
         await showDialog(
           context: context,
           builder: (alertDialogContext) {
             return AlertDialog(
-              title: Text('Nome ou brinco já existe.'),
-              content: Text('Digite outro nome ou brinco.'),
+              title: Text('Animal já cadastrado.'),
+              content: Text('Já existe um animal ativo com este nome e brinco.'),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(alertDialogContext),
@@ -2591,7 +2543,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     if (_shouldSetState) safeSetState(() {});
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -2666,7 +2618,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     );
   }
 
-  Widget _p2(BuildContext context,
+  Widget _formularioCadastro(BuildContext context,
       dynamic cadastrarNovoAnimalStatusAnimaisRecordList) {
     return Form(
       key: _formKey,
@@ -2677,10 +2629,10 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              _p3(context),
-              _p4(context),
-              _p5(context),
-              _p6(context),
+              _campoNome(context),
+              _campoBrinco(context),
+              _campoRaca(context),
+              _campoGrupo(context),
               if (((widget.grupoPredominante == 'Sêmens') ||
                       (widget.grupoPredominante == 'Touros')) ||
                   ((_grupoValue == 'Touros') || (_grupoValue == 'Sêmens')))
@@ -2688,8 +2640,8 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _p11(context),
-                    _p12(context),
+                    _rotuloLiberarInseminacao(context),
+                    _switchLiberarInseminacao(context),
                   ],
                 ),
               if (_grupoValue != 'Sêmens')
@@ -2805,17 +2757,17 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                       }),
                   ],
                 ),
-              _p7(context),
-              _p8(context),
-              _p9(context),
+              _campoDataNascimento(context),
+              _campoTouroPai(context),
+              _campoVacaMae(context),
               if (((_grupoValue == 'Vacas') ||
                       (widget.grupoPredominante == 'Vacas')) &&
                   (_statusAnimalValue != 'Seca'))
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    _p13(context),
-                    _p14(context),
+                    _campoDataUltimoParto(context),
+                    _seletorDataUltimoParto(context),
                   ],
                 ),
               if (((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) ||
@@ -2824,55 +2776,27 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                 Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    _p15(context),
-                    _p16(context),
+                    _campoDataUltimaInseminacao(context),
+                    _seletorDataUltimaInseminacao(context),
                   ],
                 ),
               if (((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) &&
                   (_dataUltimaInseminacaoTextController.text != ''))
-                StreamBuilder<List<AnimaisProdutoresRecord>>(
-                  stream: _animaisLiberaoParaInseminar(
-                    requestFn: () => queryAnimaisProdutoresRecord(
-                      parent: widget.uidTecnico,
-                      queryBuilder: (animaisProdutoresRecord) =>
-                          animaisProdutoresRecord
-                              .where(
-                                'uidTecnicoPropriedade',
-                                isEqualTo: widget.uidPropriedade,
-                              )
-                              .where(
-                                'liberaInseminacao',
-                                isEqualTo: true,
-                              ),
-                    ),
-                  ),
-                  builder: (context, snapshot) {
-                    // Customize what your widget looks like when it's loading.
-                    if (!snapshot.hasData) {
-                      return Center(
-                        child: SizedBox(
-                          width: 50.0,
-                          height: 50.0,
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Color(0xFFF75E38),
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-                    List<AnimaisProdutoresRecord>
-                        touroInseminacaoAnimaisProdutoresRecordList =
-                        snapshot.data!;
-
-                    return FlutterFlowDropDown<String>(
+                FlutterFlowDropDown<String>(
                       controller: _touroInseminacaoValueController ??=
                           FormFieldController<String>(null),
-                      options: functions.duasListasEmUma(
-                          touroInseminacaoAnimaisProdutoresRecordList
-                              .map((e) => e.nomeBrincoConcat)
-                              .toList(),
-                          <String>[])!,
+                      // Touros/candidatos a pai lidos do ObjectBox (offline-first):
+                      // animais da propriedade liberados para inseminação.
+                      options: (widget.uidPropriedade == null
+                              ? const <String>[]
+                              : AnimalRepository()
+                                  .getAnimaisByPropriedade(
+                                      widget.uidPropriedade!.path)
+                                  .where((a) => a.liberaInseminacao)
+                                  .map((a) => a.nomeBrincoConcat ?? '')
+                                  .where((s) => s.isNotEmpty)
+                                  .toList())
+                          .cast<String>(),
                       onChanged: (val) =>
                           safeSetState(() => _touroInseminacaoValue = val),
                       width: double.infinity,
@@ -2949,9 +2873,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                       hidesUnderline: true,
                       isSearchable: true,
                       isMultiSelect: false,
-                    );
-                  },
-                ),
+                    ),
               if (((widget.grupoPredominante == 'Novilhas') ||
                       (widget.grupoPredominante == 'Vacas')) ||
                   ((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')))
@@ -3036,7 +2958,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                   isSearchable: false,
                   isMultiSelect: false,
                 ),
-              _p10(context),
+              _botaoCadastrar(context),
             ].divide(SizedBox(height: 12.0)),
           ),
         ),
@@ -3044,7 +2966,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _campoNome(BuildContext context) {
     return TextFormField(
       controller: _nomeTextController,
       focusNode: _nomeFocusNode,
@@ -3116,7 +3038,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _campoBrinco(BuildContext context) {
     return TextFormField(
       controller: _brincoTextController,
       focusNode: _brincoFocusNode,
@@ -3189,35 +3111,13 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     );
   }
 
-  Widget _p5(BuildContext context) {
-    return StreamBuilder<List<RacasRecord>>(
-      stream: FFAppState().racasGeral(
-        requestFn: () => queryRacasRecord(),
-      ),
-      builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
-          return Center(
-            child: SizedBox(
-              width: 50.0,
-              height: 50.0,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Color(0xFFF75E38),
-                ),
-              ),
-            ),
-          );
-        }
-        List<RacasRecord> racaRacasRecordList = snapshot.data!;
-
-        return FlutterFlowDropDown<String>(
+  Widget _campoRaca(BuildContext context) {
+    // Raças do ObjectBox (offline-first) — sem StreamBuilder de rede.
+    return FlutterFlowDropDown<String>(
           controller: _racaValueController ??= FormFieldController<String>(
             _racaValue ??= 'Holandesa',
           ),
-          options: _respostaNet!
-              ? racaRacasRecordList.map((e) => e.descricao).toList()
-              : kRacasDescricoes.toList(),
+          options: ReferenciaRepository().racas(),
           onChanged: (val) => safeSetState(() => _racaValue = val),
           width: double.infinity,
           height: 50.0,
@@ -3270,40 +3170,17 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
           isOverButton: true,
           isSearchable: true,
           isMultiSelect: false,
-        );
-      },
     );
   }
 
-  Widget _p6(BuildContext context) {
-    return StreamBuilder<List<GrupoRecord>>(
-      stream: FFAppState().gruposGeral(
-        requestFn: () => queryGrupoRecord(),
-      ),
-      builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
-          return Center(
-            child: SizedBox(
-              width: 50.0,
-              height: 50.0,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Color(0xFFF75E38),
-                ),
-              ),
-            ),
-          );
-        }
-        List<GrupoRecord> grupoGrupoRecordList = snapshot.data!;
-
-        return FlutterFlowDropDown<String>(
+  Widget _campoGrupo(BuildContext context) {
+    // Grupos do ObjectBox (offline-first) — sem StreamBuilder de rede, que
+    // fazia o valor pré-selecionado (grupo predominante) piscar/sumir offline.
+    return FlutterFlowDropDown<String>(
           controller: _grupoValueController ??= FormFieldController<String>(
             _grupoValue ??= widget.grupoPredominante,
           ),
-          options: _respostaNet!
-              ? grupoGrupoRecordList.map((e) => e.descricao).toList()
-              : kGruposDescricoes.toList(),
+          options: ReferenciaRepository().grupos(),
           onChanged: (val) => safeSetState(() => _grupoValue = val),
           width: double.infinity,
           height: 50.0,
@@ -3332,12 +3209,10 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
           hidesUnderline: true,
           isSearchable: false,
           isMultiSelect: false,
-        );
-      },
     );
   }
 
-  Widget _p7(BuildContext context) {
+  Widget _campoDataNascimento(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -3538,7 +3413,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     );
   }
 
-  Widget _p8(BuildContext context) {
+  Widget _campoTouroPai(BuildContext context) {
     return TextFormField(
       controller: _touroPaiTextController,
       focusNode: _touroPaiFocusNode,
@@ -3610,7 +3485,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     );
   }
 
-  Widget _p9(BuildContext context) {
+  Widget _campoVacaMae(BuildContext context) {
     return TextFormField(
       controller: _vacaMaeTextController,
       focusNode: _vacaMaeFocusNode,
@@ -3683,14 +3558,14 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     );
   }
 
-  Widget _p10(BuildContext context) {
+  Widget _botaoCadastrar(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 12.0),
       child: FFButtonWidget(
         onPressed: () async {
           await _cadastrarAnimal(context);
         },
-        text: 'Adicionar Novo',
+        text: 'Salvar Animal',
         icon: Icon(
           Icons.save,
           size: 15.0,
@@ -3700,7 +3575,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
           height: 48.0,
           padding: EdgeInsets.all(0.0),
           iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-          color: Color(0xFFEC3B5B),
+          color: FlutterFlowTheme.of(context).salvar,
           textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                 font: GoogleFonts.readexPro(
                   fontWeight:
@@ -3723,7 +3598,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     );
   }
 
-  Widget _p11(BuildContext context) {
+  Widget _rotuloLiberarInseminacao(BuildContext context) {
     return Text(
       'Liberar para inseminações:',
       style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -3738,7 +3613,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     );
   }
 
-  Widget _p12(BuildContext context) {
+  Widget _switchLiberarInseminacao(BuildContext context) {
     return Switch.adaptive(
       value: _switchValue!,
       onChanged: (newValue) async {
@@ -3751,7 +3626,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     );
   }
 
-  Widget _p13(BuildContext context) {
+  Widget _campoDataUltimoParto(BuildContext context) {
     return Expanded(
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
@@ -3851,7 +3726,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     );
   }
 
-  Widget _p14(BuildContext context) {
+  Widget _seletorDataUltimoParto(BuildContext context) {
     return InkWell(
       splashColor: Colors.transparent,
       focusColor: Colors.transparent,
@@ -3966,7 +3841,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     );
   }
 
-  Widget _p15(BuildContext context) {
+  Widget _campoDataUltimaInseminacao(BuildContext context) {
     return Expanded(
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
@@ -4078,7 +3953,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     );
   }
 
-  Widget _p16(BuildContext context) {
+  Widget _seletorDataUltimaInseminacao(BuildContext context) {
     return InkWell(
       splashColor: Colors.transparent,
       focusColor: Colors.transparent,
@@ -4191,32 +4066,12 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
 
-    return StreamBuilder<List<StatusAnimaisRecord>>(
-      stream: FFAppState().statusAnimaisGeral(
-        requestFn: () => queryStatusAnimaisRecord(),
-      ),
-      builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
-          return Scaffold(
-            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-            body: Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Color(0xFFF75E38),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
-        List<StatusAnimaisRecord> cadastrarNovoAnimalStatusAnimaisRecordList =
-            snapshot.data!;
+    // Status de animal lido do ObjectBox (offline-first) — antes vinha de um
+    // StreamBuilder do Firestore que piscava/perdia o valor quando offline.
+    final cadastrarNovoAnimalStatusAnimaisRecordList =
+        ReferenciaRepository().statusAnimais();
 
-        return GestureDetector(
+    return GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
             FocusManager.instance.primaryFocus?.unfocus();
@@ -4237,7 +4092,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _p1(context),
+                      _cabecalho(context),
                     ],
                   ),
                   centerTitle: true,
@@ -4255,7 +4110,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _p2(context, cadastrarNovoAnimalStatusAnimaisRecordList),
+                      _formularioCadastro(context, cadastrarNovoAnimalStatusAnimaisRecordList),
                     ],
                   ),
                 ),
@@ -4263,7 +4118,5 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
             ),
           ),
         );
-      },
-    );
   }
 }

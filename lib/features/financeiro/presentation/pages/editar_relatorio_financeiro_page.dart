@@ -179,7 +179,7 @@ class _EditarRelatorioFinanceiroPageState
     super.dispose();
   }
 
-  Widget _p1(
+  Widget _cabecalho(
       BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
     return Row(
       mainAxisSize: MainAxisSize.max,
@@ -223,7 +223,7 @@ class _EditarRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p2(
+  Widget _camposEntrada(
       BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
@@ -231,30 +231,30 @@ class _EditarRelatorioFinanceiroPageState
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            _p4(context, editarRelatorioFinanceiroFinanceiroRecord),
-            _p5(context, editarRelatorioFinanceiroFinanceiroRecord),
-            _p6(context, editarRelatorioFinanceiroFinanceiroRecord),
-            _p7(context, editarRelatorioFinanceiroFinanceiroRecord),
-            _p8(context),
-            _p9(context, editarRelatorioFinanceiroFinanceiroRecord),
-            _p10(context),
-            _p11(context, editarRelatorioFinanceiroFinanceiroRecord),
-            _p12(context),
+            _campoData(context, editarRelatorioFinanceiroFinanceiroRecord),
+            _campoVacasLactacao(context, editarRelatorioFinanceiroFinanceiroRecord),
+            _campoLitrosLeiteDia(context, editarRelatorioFinanceiroFinanceiroRecord),
+            _campoLitrosLeiteMes(context, editarRelatorioFinanceiroFinanceiroRecord),
+            _labelPrecoLitro(context),
+            _campoPrecoLitro(context, editarRelatorioFinanceiroFinanceiroRecord),
+            _labelDespesasMes(context),
+            _campoDespesasMes(context, editarRelatorioFinanceiroFinanceiroRecord),
+            _botaoCalcular(context),
           ].divide(SizedBox(height: 12.0)),
         ),
       ),
     );
   }
 
-  Widget _p3(
+  Widget _camposCalculados(
       BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        _p13(context, editarRelatorioFinanceiroFinanceiroRecord),
-        _p14(context, editarRelatorioFinanceiroFinanceiroRecord),
-        _p15(context, editarRelatorioFinanceiroFinanceiroRecord),
-        _p16(context, editarRelatorioFinanceiroFinanceiroRecord),
+        _campoTotalRecebido(context, editarRelatorioFinanceiroFinanceiroRecord),
+        _campoFaturamentoLiquido(context, editarRelatorioFinanceiroFinanceiroRecord),
+        _campoMediaProducaoVaca(context, editarRelatorioFinanceiroFinanceiroRecord),
+        _campoCustoLitroLeite(context, editarRelatorioFinanceiroFinanceiroRecord),
         if ((_totalRecebidoTextController.text != '') &&
             (_faturamentoLiquidoTextController.text != '') &&
             (_mediaProducaoVacaTextController.text != '') &&
@@ -351,7 +351,7 @@ class _EditarRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p4(
+  Widget _campoData(
       BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
     return Row(
       mainAxisSize: MainAxisSize.max,
@@ -458,7 +458,7 @@ class _EditarRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p5(
+  Widget _campoVacasLactacao(
       BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
     return StreamBuilder<List<AnimaisProdutoresRecord>>(
       stream: queryAnimaisProdutoresRecord(
@@ -581,7 +581,7 @@ class _EditarRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p6(
+  Widget _campoLitrosLeiteDia(
       BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
     return TextFormField(
       controller: _litrosLeiteDiaTextController ??= TextEditingController(
@@ -684,7 +684,7 @@ class _EditarRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p7(
+  Widget _campoLitrosLeiteMes(
       BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
     return TextFormField(
       controller: _litrosLeiteMesTextController ??= TextEditingController(
@@ -781,7 +781,7 @@ class _EditarRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p8(BuildContext context) {
+  Widget _labelPrecoLitro(BuildContext context) {
     return Align(
       alignment: AlignmentDirectional(-1.0, 0.0),
       child: Text(
@@ -800,7 +800,7 @@ class _EditarRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p9(
+  Widget _campoPrecoLitro(
       BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
     return Container(
       width: MediaQuery.sizeOf(context).width * 1.0,
@@ -817,7 +817,7 @@ class _EditarRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p10(BuildContext context) {
+  Widget _labelDespesasMes(BuildContext context) {
     return Align(
       alignment: AlignmentDirectional(-1.0, 0.0),
       child: Text(
@@ -836,7 +836,7 @@ class _EditarRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p11(
+  Widget _campoDespesasMes(
       BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
     return Container(
       width: MediaQuery.sizeOf(context).width * 1.0,
@@ -852,7 +852,7 @@ class _EditarRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p12(BuildContext context) {
+  Widget _botaoCalcular(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -978,7 +978,7 @@ class _EditarRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p13(
+  Widget _campoTotalRecebido(
       BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 10.0),
@@ -1093,7 +1093,7 @@ class _EditarRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p14(
+  Widget _campoFaturamentoLiquido(
       BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
     return Container(
       decoration: BoxDecoration(),
@@ -1204,7 +1204,7 @@ class _EditarRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p15(
+  Widget _campoMediaProducaoVaca(
       BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 10.0),
@@ -1304,7 +1304,7 @@ class _EditarRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p16(
+  Widget _campoCustoLitroLeite(
       BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 10.0),
@@ -1473,7 +1473,7 @@ class _EditarRelatorioFinanceiroPageState
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _p1(context,
+                          _cabecalho(context,
                               editarRelatorioFinanceiroFinanceiroRecord),
                         ],
                       ),
@@ -1498,9 +1498,9 @@ class _EditarRelatorioFinanceiroPageState
                         mainAxisSize: MainAxisSize.max,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _p2(context,
+                          _camposEntrada(context,
                               editarRelatorioFinanceiroFinanceiroRecord),
-                          _p3(context,
+                          _camposCalculados(context,
                               editarRelatorioFinanceiroFinanceiroRecord),
                         ],
                       ),

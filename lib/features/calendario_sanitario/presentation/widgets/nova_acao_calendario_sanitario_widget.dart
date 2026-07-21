@@ -158,7 +158,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
     super.dispose();
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _conteudo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 2.0, 16.0, 16.0),
       child: Container(
@@ -184,15 +184,15 @@ class _NovaAcaoCalendarioSanitarioWidgetState
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _p2(context),
-            _p3(context),
+            _cabecalho(context),
+            _formulario(context),
           ],
         ),
       ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation']!),
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(24.0, 16.0, 0.0, 0.0),
       child: Text(
@@ -213,49 +213,49 @@ class _NovaAcaoCalendarioSanitarioWidgetState
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _formulario(BuildContext context) {
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.disabled,
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          _p4(context),
-          _p5(context),
+          _camposFormulario(context),
+          _botoesAcao(context),
         ],
       ),
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _camposFormulario(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _p6(context),
-        _p7(context),
-        _p8(context),
-        _p9(context),
-        _p10(context),
+        _campoChips(context),
+        _campoTipo(context),
+        _campoValoracao(context),
+        _campoData(context),
+        _campoObservacao(context),
       ],
     );
   }
 
-  Widget _p5(BuildContext context) {
+  Widget _botoesAcao(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(24.0, 12.0, 24.0, 24.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _p11(context),
-          _p12(context),
+          _botaoCancelar(context),
+          _botaoSalvar(context),
         ],
       ),
     );
   }
 
-  Widget _p6(BuildContext context) {
+  Widget _campoChips(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: FlutterFlowChoiceChips(
@@ -315,7 +315,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
     );
   }
 
-  Widget _p7(BuildContext context) {
+  Widget _campoTipo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: FlutterFlowDropDown<String>(
@@ -355,7 +355,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
     );
   }
 
-  Widget _p8(BuildContext context) {
+  Widget _campoValoracao(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: StreamBuilder<List<CalendarioSanitarioRecord>>(
@@ -503,7 +503,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
     );
   }
 
-  Widget _p9(BuildContext context) {
+  Widget _campoData(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: Row(
@@ -724,7 +724,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
     );
   }
 
-  Widget _p10(BuildContext context) {
+  Widget _campoObservacao(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
       child: TextFormField(
@@ -807,7 +807,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
     );
   }
 
-  Widget _p11(BuildContext context) {
+  Widget _botaoCancelar(BuildContext context) {
     return Align(
       alignment: AlignmentDirectional(0.0, 0.05),
       child: FFButtonWidget(
@@ -848,7 +848,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
     );
   }
 
-  Widget _p12(BuildContext context) {
+  Widget _botaoSalvar(BuildContext context) {
     return Align(
       alignment: AlignmentDirectional(0.0, 0.05),
       child: FFButtonWidget(
@@ -1218,7 +1218,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _p1(context),
+          _conteudo(context),
         ],
       ),
     );

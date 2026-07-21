@@ -45,7 +45,7 @@ class _PronAbortosPageState extends State<PronAbortosPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -88,7 +88,7 @@ class _PronAbortosPageState extends State<PronAbortosPage> {
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _secaoAbortos(BuildContext context) {
     return Container(
       width: 500.0,
       constraints: BoxConstraints(
@@ -479,7 +479,7 @@ class _PronAbortosPageState extends State<PronAbortosPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _p1(context),
+                        _cabecalho(context),
                       ],
                     ),
                     centerTitle: true,
@@ -493,7 +493,7 @@ class _PronAbortosPageState extends State<PronAbortosPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  _p2(context),
+                  _secaoAbortos(context),
                 ],
               ),
             ),

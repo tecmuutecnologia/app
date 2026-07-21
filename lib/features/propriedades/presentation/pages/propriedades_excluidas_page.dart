@@ -55,7 +55,7 @@ class _PropriedadesExcluiasPageState
     super.dispose();
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -98,7 +98,7 @@ class _PropriedadesExcluiasPageState
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _campoBusca(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
       child: TextFormField(
@@ -189,17 +189,17 @@ class _PropriedadesExcluiasPageState
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _secaoLista(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _p4(context),
+        _listaExcluidas(context),
       ],
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _listaExcluidas(BuildContext context) {
     // Lixeira lida do ObjectBox: aparece mesmo offline, e restaurar/excluir
     // refletem na hora (a query deixa de casar com o registro).
     final tecnicoPath =
@@ -255,8 +255,8 @@ class _PropriedadesExcluiasPageState
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _p5(context, entity),
-                      _p6(context, entity),
+                      _infoPropriedade(context, entity),
+                      _botoesAcao(context, entity),
                     ],
                   ),
                 ),
@@ -285,7 +285,7 @@ class _PropriedadesExcluiasPageState
     );
   }
 
-  Widget _p5(BuildContext context, PropriedadeEntity listViewPropriedadesRecord) {
+  Widget _infoPropriedade(BuildContext context, PropriedadeEntity listViewPropriedadesRecord) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -361,7 +361,7 @@ class _PropriedadesExcluiasPageState
     );
   }
 
-  Widget _p6(BuildContext context, PropriedadeEntity listViewPropriedadesRecord) {
+  Widget _botoesAcao(BuildContext context, PropriedadeEntity listViewPropriedadesRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
       child: Row(
@@ -582,7 +582,7 @@ class _PropriedadesExcluiasPageState
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _p1(context),
+                      _cabecalho(context),
                     ],
                   ),
                   centerTitle: true,
@@ -599,8 +599,8 @@ class _PropriedadesExcluiasPageState
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              _p2(context),
-              _p3(context),
+              _campoBusca(context),
+              _secaoLista(context),
             ],
           ),
         ),

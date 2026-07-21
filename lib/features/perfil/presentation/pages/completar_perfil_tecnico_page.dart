@@ -181,7 +181,7 @@ class _CompletarPerfilTecnicoPageState
     super.dispose();
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _conteudo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 32.0, 0.0, 32.0),
       child: Container(
@@ -204,7 +204,7 @@ class _CompletarPerfilTecnicoPageState
     );
   }
 
-  Widget _p2(BuildContext context, dynamic completarPerfilTecnicoPersonRecord) {
+  Widget _formulario(BuildContext context, dynamic completarPerfilTecnicoPersonRecord) {
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.always,
@@ -229,16 +229,16 @@ class _CompletarPerfilTecnicoPageState
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  _p3(context),
-                  _p4(context),
-                  _p5(context),
-                  _p6(context),
-                  _p7(context),
-                  _p8(context),
-                  _p9(context),
-                  _p10(context),
-                  _p11(context),
-                  _p12(context, completarPerfilTecnicoPersonRecord),
+                  _titulo(context),
+                  _campoNome(context),
+                  _campoEmpresa(context),
+                  _campoCpf(context),
+                  _campoDataNascimento(context),
+                  _campoCelular(context),
+                  _campoCidadeUf(context),
+                  _campoEndereco(context),
+                  _campoBairro(context),
+                  _secaoPlano(context, completarPerfilTecnicoPersonRecord),
                 ],
               ),
             ),
@@ -248,7 +248,7 @@ class _CompletarPerfilTecnicoPageState
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _titulo(BuildContext context) {
     return Text(
       'Complete seu cadastro Técnico',
       textAlign: TextAlign.center,
@@ -265,7 +265,7 @@ class _CompletarPerfilTecnicoPageState
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _campoNome(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 16.0),
       child: Container(
@@ -357,7 +357,7 @@ class _CompletarPerfilTecnicoPageState
     );
   }
 
-  Widget _p5(BuildContext context) {
+  Widget _campoEmpresa(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: Container(
@@ -449,7 +449,7 @@ class _CompletarPerfilTecnicoPageState
     );
   }
 
-  Widget _p6(BuildContext context) {
+  Widget _campoCpf(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: Container(
@@ -544,7 +544,7 @@ class _CompletarPerfilTecnicoPageState
     );
   }
 
-  Widget _p7(BuildContext context) {
+  Widget _campoDataNascimento(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: Container(
@@ -639,7 +639,7 @@ class _CompletarPerfilTecnicoPageState
     );
   }
 
-  Widget _p8(BuildContext context) {
+  Widget _campoCelular(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: Container(
@@ -734,7 +734,7 @@ class _CompletarPerfilTecnicoPageState
     );
   }
 
-  Widget _p9(BuildContext context) {
+  Widget _campoCidadeUf(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: Container(
@@ -826,7 +826,7 @@ class _CompletarPerfilTecnicoPageState
     );
   }
 
-  Widget _p10(BuildContext context) {
+  Widget _campoEndereco(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: Container(
@@ -918,7 +918,7 @@ class _CompletarPerfilTecnicoPageState
     );
   }
 
-  Widget _p11(BuildContext context) {
+  Widget _campoBairro(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: Container(
@@ -1010,7 +1010,7 @@ class _CompletarPerfilTecnicoPageState
     );
   }
 
-  Widget _p12(
+  Widget _secaoPlano(
       BuildContext context, dynamic completarPerfilTecnicoPersonRecord) {
     return Align(
       alignment: AlignmentDirectional(0.0, 0.0),
@@ -1248,8 +1248,8 @@ class _CompletarPerfilTecnicoPageState
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _p1(context),
-                      _p2(context, completarPerfilTecnicoPersonRecord),
+                      _conteudo(context),
+                      _formulario(context, completarPerfilTecnicoPersonRecord),
                     ],
                   ),
                 ),

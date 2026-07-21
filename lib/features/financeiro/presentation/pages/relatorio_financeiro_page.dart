@@ -51,7 +51,7 @@ class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage> {
     super.dispose();
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -156,7 +156,7 @@ class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _p1(context),
+                      _cabecalho(context),
                     ],
                   ),
                   centerTitle: true,

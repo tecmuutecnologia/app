@@ -183,7 +183,7 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
     }
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _conteudo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 2.0, 16.0, 16.0),
       child: Container(
@@ -209,16 +209,16 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _p2(context),
-            _p3(context),
-            _p4(context),
+            _cabecalho(context),
+            _campoDataSecagem(context),
+            _botoesAcao(context),
           ],
         ),
       ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation']!),
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(24.0, 16.0, 0.0, 0.0),
       child: Text(
@@ -239,7 +239,7 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _campoDataSecagem(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -481,7 +481,7 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _botoesAcao(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 24.0),
       child: Row(
@@ -766,7 +766,7 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _p1(context),
+          _conteudo(context),
         ],
       ),
     );

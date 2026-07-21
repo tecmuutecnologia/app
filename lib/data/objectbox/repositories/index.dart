@@ -12,3 +12,4 @@ export 'recomendacao_repository.dart';
 export 'person_repository.dart';
 export 'tecnico_repository.dart';
 export 'produtor_repository.dart';
+export 'referencia_repository.dart';

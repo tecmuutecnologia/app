@@ -194,7 +194,7 @@ class _NovoRelatorioFinanceiroPageState
     super.dispose();
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -237,18 +237,18 @@ class _NovoRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _camposEntrada(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            _p4(context),
-            _p5(context),
-            _p6(context),
-            _p7(context),
-            _p8(context),
+            _campoData(context),
+            _campoVacasLactacao(context),
+            _campoLitrosLeiteDia(context),
+            _campoLitrosLeiteMes(context),
+            _campoPrecoLitro(context),
             Container(
               width: MediaQuery.sizeOf(context).width * 1.0,
               height: 45.0,
@@ -261,7 +261,7 @@ class _NovoRelatorioFinanceiroPageState
                 onChanged: (v) => _precoRecebidoLitro = v,
               ),
             ),
-            _p9(context),
+            _campoDespesasMes(context),
             Container(
               width: MediaQuery.sizeOf(context).width * 1.0,
               height: 45.0,
@@ -274,21 +274,21 @@ class _NovoRelatorioFinanceiroPageState
                 onChanged: (v) => _despesasNoMes = v,
               ),
             ),
-            _p10(context),
+            _botaoCalcular(context),
           ].divide(SizedBox(height: 12.0)),
         ),
       ),
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _camposCalculados(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        _p11(context),
-        _p12(context),
-        _p13(context),
-        _p14(context),
+        _campoTotalRecebido(context),
+        _campoFaturamentoLiquido(context),
+        _campoMediaProducaoVaca(context),
+        _campoCustoLitroLeite(context),
         if ((_totalRecebidoTextController.text != '') &&
             (_faturamentoLiquidoTextController.text != '') &&
             (_mediaProducaoVacaTextController.text != '') &&
@@ -389,7 +389,7 @@ class _NovoRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _campoData(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -589,7 +589,7 @@ class _NovoRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p5(BuildContext context) {
+  Widget _campoVacasLactacao(BuildContext context) {
     return StreamBuilder<List<AnimaisProdutoresRecord>>(
       stream: queryAnimaisProdutoresRecord(
         parent: widget.uidTecnico,
@@ -718,7 +718,7 @@ class _NovoRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p6(BuildContext context) {
+  Widget _campoLitrosLeiteDia(BuildContext context) {
     return TextFormField(
       controller: _litrosLeiteDiaTextController,
       focusNode: _litrosLeiteDiaFocusNode,
@@ -817,7 +817,7 @@ class _NovoRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p7(BuildContext context) {
+  Widget _campoLitrosLeiteMes(BuildContext context) {
     return TextFormField(
       controller: _litrosLeiteMesTextController,
       focusNode: _litrosLeiteMesFocusNode,
@@ -910,7 +910,7 @@ class _NovoRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p8(BuildContext context) {
+  Widget _campoPrecoLitro(BuildContext context) {
     return Align(
       alignment: AlignmentDirectional(-1.0, 0.0),
       child: Text(
@@ -929,7 +929,7 @@ class _NovoRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p9(BuildContext context) {
+  Widget _campoDespesasMes(BuildContext context) {
     return Align(
       alignment: AlignmentDirectional(-1.0, 0.0),
       child: Text(
@@ -948,7 +948,7 @@ class _NovoRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p10(BuildContext context) {
+  Widget _botaoCalcular(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -1074,7 +1074,7 @@ class _NovoRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p11(BuildContext context) {
+  Widget _campoTotalRecebido(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 10.0),
       child: Container(
@@ -1186,7 +1186,7 @@ class _NovoRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p12(BuildContext context) {
+  Widget _campoFaturamentoLiquido(BuildContext context) {
     return Container(
       decoration: BoxDecoration(),
       child: TextFormField(
@@ -1294,7 +1294,7 @@ class _NovoRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p13(BuildContext context) {
+  Widget _campoMediaProducaoVaca(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 10.0),
       child: Container(
@@ -1390,7 +1390,7 @@ class _NovoRelatorioFinanceiroPageState
     );
   }
 
-  Widget _p14(BuildContext context) {
+  Widget _campoCustoLitroLeite(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 10.0),
       child: Container(
@@ -1533,7 +1533,7 @@ class _NovoRelatorioFinanceiroPageState
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _p1(context),
+                      _cabecalho(context),
                     ],
                   ),
                   centerTitle: true,
@@ -1556,8 +1556,8 @@ class _NovoRelatorioFinanceiroPageState
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _p2(context),
-                      _p3(context),
+                      _camposEntrada(context),
+                      _camposCalculados(context),
                     ],
                   ),
                 ),

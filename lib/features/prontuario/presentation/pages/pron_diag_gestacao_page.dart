@@ -43,7 +43,7 @@ class _PronDiagGestacaoPageState extends State<PronDiagGestacaoPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -86,7 +86,7 @@ class _PronDiagGestacaoPageState extends State<PronDiagGestacaoPage> {
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _secaoDiagGestacao(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(12.0),
       child: SingleChildScrollView(
@@ -458,7 +458,7 @@ class _PronDiagGestacaoPageState extends State<PronDiagGestacaoPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _p1(context),
+                        _cabecalho(context),
                       ],
                     ),
                     centerTitle: true,
@@ -472,7 +472,7 @@ class _PronDiagGestacaoPageState extends State<PronDiagGestacaoPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  _p2(context),
+                  _secaoDiagGestacao(context),
                 ],
               ),
             ),

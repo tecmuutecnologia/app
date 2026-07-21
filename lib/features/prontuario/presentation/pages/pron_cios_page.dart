@@ -44,7 +44,7 @@ class _PronCiosPageState extends State<PronCiosPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _cabecalho(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -87,7 +87,7 @@ class _PronCiosPageState extends State<PronCiosPage> {
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _secaoCios(BuildContext context) {
     return Container(
       width: 500.0,
       constraints: BoxConstraints(
@@ -472,7 +472,7 @@ class _PronCiosPageState extends State<PronCiosPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _p1(context),
+                        _cabecalho(context),
                       ],
                     ),
                     centerTitle: true,
@@ -486,7 +486,7 @@ class _PronCiosPageState extends State<PronCiosPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  _p2(context),
+                  _secaoCios(context),
                 ],
               ),
             ),

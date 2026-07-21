@@ -116,7 +116,7 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
     super.dispose();
   }
 
-  Widget _p1(BuildContext context) {
+  Widget _conteudo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 2.0, 16.0, 16.0),
       child: Container(
@@ -142,18 +142,18 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _p2(context),
-            _p3(context),
-            _p4(context),
-            _p5(context),
-            _p6(context),
+            _titulo(context),
+            _descricao(context),
+            _campoMotivoDescarte(context),
+            _campoDataDescarte(context),
+            _botoesAcao(context),
           ],
         ),
       ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation']!),
     );
   }
 
-  Widget _p2(BuildContext context) {
+  Widget _titulo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(24.0, 16.0, 0.0, 0.0),
       child: Text(
@@ -174,7 +174,7 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
     );
   }
 
-  Widget _p3(BuildContext context) {
+  Widget _descricao(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,7 +202,7 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
     );
   }
 
-  Widget _p4(BuildContext context) {
+  Widget _campoMotivoDescarte(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -293,7 +293,7 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
     );
   }
 
-  Widget _p5(BuildContext context) {
+  Widget _campoDataDescarte(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,7 +393,7 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
     );
   }
 
-  Widget _p6(BuildContext context) {
+  Widget _botoesAcao(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(24.0, 12.0, 24.0, 24.0),
       child: Row(
@@ -557,7 +557,7 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          _p1(context),
+          _conteudo(context),
         ],
       ),
     );
