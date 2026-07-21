@@ -180,7 +180,8 @@ class PropriedadeMenuGrid extends StatelessWidget {
     String getBadgeCount() {
       if (isOnline) {
         return animaisRecordList
-            .where((e) => (ehPrenha(e.status)) && (ehVaca(e.grupoAnimal)))
+            .where(
+                (e) => (ehPrenha(e.status)) && (ehVacaOuNovilha(e.grupoAnimal)))
             .toList()
             .length
             .toString();
@@ -188,7 +189,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
         final existentesCount = animaisProdutoresExistentesObjectBox()
             .where((e) =>
                 (e.uidTecnicoPropriedade == navigationParams.uidPropriedade) &&
-                (ehVaca(e.grupoAnimal)) &&
+                (ehVacaOuNovilha(e.grupoAnimal)) &&
                 (ehPrenha(e.status)))
             .toList()
             .length;
@@ -200,7 +201,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
     return MenuItemCardWithBadge(
       icon: Icons.monitor_heart_outlined,
       accent: AppTokens.secondary,
-      label: 'Vacas Prenhas',
+      label: 'Prenhas',
       badgeCount: getBadgeCount(),
       onTap: () {
         context.pushNamed(

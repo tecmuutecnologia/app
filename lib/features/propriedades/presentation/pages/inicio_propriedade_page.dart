@@ -1411,7 +1411,8 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                       child: Text(
                         inicioPropriedadeAnimaisProdutoresRecordList
                             .where((e) =>
-                                (ehPrenha(e.status)) && (ehVaca(e.grupoAnimal)))
+                                (ehPrenha(e.status)) &&
+                                (ehVacaOuNovilha(e.grupoAnimal)))
                             .toList()
                             .length
                             .toString(),
@@ -1449,7 +1450,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                           accent: AppTokens.secondary),
                       const SizedBox(height: 8.0),
                       AutoSizeText(
-                        'Vacas Prenhas',
+                        'Prenhas',
                         textAlign: TextAlign.center,
                         maxLines: 1,
                         minFontSize: 8.0,
