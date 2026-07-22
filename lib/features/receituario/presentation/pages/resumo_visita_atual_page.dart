@@ -391,8 +391,10 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
           children: [
             _tituloObservacoes(context),
             _campoObservacoes(context),
-            _botaoConcluirVisita(context, resumoVisitaAtualResumoDaVisitaRecord),
-            _botaoConcluirVisita2(context, resumoVisitaAtualResumoDaVisitaRecord),
+            _botaoConcluirVisita(
+                context, resumoVisitaAtualResumoDaVisitaRecord),
+            _botaoConcluirVisita2(
+                context, resumoVisitaAtualResumoDaVisitaRecord),
           ],
         ),
       ),
@@ -902,7 +904,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _cabecalho(context, resumoVisitaAtualResumoDaVisitaRecord),
+                        _cabecalho(
+                            context, resumoVisitaAtualResumoDaVisitaRecord),
                       ],
                     ),
                     centerTitle: true,
@@ -1149,7 +1152,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          _botaoAdicionarRecomendacao(context, resumoVisitaAtualResumoDaVisitaRecord),
+                          _botaoAdicionarRecomendacao(
+                              context, resumoVisitaAtualResumoDaVisitaRecord),
                         ],
                       ),
                     ),
@@ -1168,7 +1172,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          _secaoObservacoes(context, resumoVisitaAtualResumoDaVisitaRecord),
+                          _secaoObservacoes(
+                              context, resumoVisitaAtualResumoDaVisitaRecord),
                         ],
                       ),
                     ),
@@ -1189,7 +1194,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                       child: Row(
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          _botaoGerarPdf(context, resumoVisitaAtualResumoDaVisitaRecord),
+                          _botaoGerarPdf(
+                              context, resumoVisitaAtualResumoDaVisitaRecord),
                         ],
                       ),
                     ),

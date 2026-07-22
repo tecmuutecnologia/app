@@ -577,15 +577,21 @@ class OfflineFirstSyncService {
         debugPrint('⚠️ Erro ao baixar ações sanitárias: $e');
       }
 
-      // Baixa resumos de visitas
+      // Baixa resumos de visitas. `resumo_da_visita` é TOP-LEVEL no
+      // Firestore (o app grava com FirebaseFirestore.instance.collection),
+      // não subcoleção da propriedade — antes o download procurava aninhado e
+      // por isso a tabela local ficava vazia. O recorte por propriedade vira
+      // filtro na query.
       try {
-        final visitasSnapshot =
-            await propRef.collection('resumo_da_visita').get();
+        final visitasSnapshot = await _firestore
+            .collection('resumo_da_visita')
+            .where('uidPropriedade', isEqualTo: propRef)
+            .get();
         for (final doc in visitasSnapshot.docs) {
           final entity = ResumoVisitaEntity.fromFirestore(
             doc.data(),
             doc.id,
-            parentPath: propRef.path,
+            parentPath: 'resumo_da_visita',
           );
           _objectBox.resumoVisitaBox.put(entity);
           totalVisitas++;
@@ -963,6 +969,20 @@ class OfflineFirstSyncService {
     }
   }
 
+  /// Reanexa referências e Timestamps que o entity guarda como caminho/data.
+  Map<String, dynamic> _payloadVisita(ResumoVisitaEntity v) => {
+        ...v.toFirestore(),
+        if (v.uidPropriedadePath != null)
+          'uidPropriedade': _firestore.doc(v.uidPropriedadePath!),
+        if (v.uidTecnicoPath != null)
+          'uidTecnico': _firestore.doc(v.uidTecnicoPath!),
+        if (v.uidResumoDaVisitaPath != null)
+          'uidResumoDaVisita': _firestore.doc(v.uidResumoDaVisitaPath!),
+        if (v.dtVisita != null) 'dtVisita': Timestamp.fromDate(v.dtVisita!),
+        if (v.dtAssinatura != null)
+          'dtAssinatura': Timestamp.fromDate(v.dtAssinatura!),
+      };
+
   /// Sincroniza visitas modificadas
   Future<void> _syncModifiedVisitas() async {
     final modified = _objectBox.resumoVisitaBox
@@ -973,10 +993,9 @@ class OfflineFirstSyncService {
     for (final visita in modified) {
       try {
         if (visita.firestoreId != null && visita.parentPath != null) {
-          final docRef = _firestore.doc(
-            '${visita.parentPath}/resumo_da_visita/${visita.firestoreId}',
-          );
-          await docRef.update(visita.toFirestore());
+          final docRef =
+              _firestore.doc('resumo_da_visita/${visita.firestoreId}');
+          await docRef.update(_payloadVisita(visita));
           visita.needsSync = false;
           visita.lastSynced = DateTime.now();
           _objectBox.resumoVisitaBox.put(visita);
@@ -984,9 +1003,8 @@ class OfflineFirstSyncService {
             visita.parentPath != null &&
             !visita.isDeleted) {
           // Nova visita (criada offline) - criar no Firestore e reconciliar.
-          final collectionRef =
-              _firestore.collection('${visita.parentPath}/resumo_da_visita');
-          final docRef = await collectionRef.add(visita.toFirestore());
+          final collectionRef = _firestore.collection('resumo_da_visita');
+          final docRef = await collectionRef.add(_payloadVisita(visita));
           visita.firestoreId = docRef.id;
           visita.needsSync = false;
           visita.lastSynced = DateTime.now();

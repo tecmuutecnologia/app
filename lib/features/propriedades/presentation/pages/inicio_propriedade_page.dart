@@ -483,66 +483,66 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
           _cardRecria(context, inicioPropriedadeAnimaisProdutoresRecordList),
           _cardListaCompleta(
               context, inicioPropriedadeAnimaisProdutoresRecordList),
-          if (_respostaNet ?? true)
-            Container(
-              width: MediaQuery.sizeOf(context).width * 0.3,
-              height: 120.0,
-              decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).secondaryBackground,
-                borderRadius: BorderRadius.circular(18.0),
-                boxShadow: AppTokens.softShadow(context),
-              ),
-              child: InkWell(
-                splashColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                onTap: () async {
-                  context.pushNamed(
-                    ReceituariosListaPage.routeName,
-                    queryParameters: {
-                      'uidPropriedade': serializeParam(
-                        widget.uidPropriedade,
-                        ParamType.DocumentReference,
-                      ),
-                      'nomePropriedade': serializeParam(
-                        widget.nomePropriedade,
-                        ParamType.String,
-                      ),
-                      'uidTecnico': serializeParam(
-                        widget.uidTecnico,
-                        ParamType.DocumentReference,
-                      ),
-                      'emailPropriedade': serializeParam(
-                        widget.emailPropriedade,
-                        ParamType.String,
-                      ),
-                      'visitaPresencial': serializeParam(
-                        widget.visitaPresencial,
-                        ParamType.bool,
-                      ),
-                      'diasDg': serializeParam(
-                        widget.diasDg,
-                        ParamType.String,
-                      ),
-                    }.withoutNulls,
-                  );
-                },
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.summarize,
-                      color: Color(0xFFEC3B5B),
-                      size: 30.0,
+          // Receituario agora le do ObjectBox (offline-first); a emissao
+          // segue online, mas consultar receituarios ja emitidos nao.
+          Container(
+            width: MediaQuery.sizeOf(context).width * 0.3,
+            height: 120.0,
+            decoration: BoxDecoration(
+              color: FlutterFlowTheme.of(context).secondaryBackground,
+              borderRadius: BorderRadius.circular(18.0),
+              boxShadow: AppTokens.softShadow(context),
+            ),
+            child: InkWell(
+              splashColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              onTap: () async {
+                context.pushNamed(
+                  ReceituariosListaPage.routeName,
+                  queryParameters: {
+                    'uidPropriedade': serializeParam(
+                      widget.uidPropriedade,
+                      ParamType.DocumentReference,
                     ),
-                    _rotuloReceituario(context),
-                  ],
-                ),
+                    'nomePropriedade': serializeParam(
+                      widget.nomePropriedade,
+                      ParamType.String,
+                    ),
+                    'uidTecnico': serializeParam(
+                      widget.uidTecnico,
+                      ParamType.DocumentReference,
+                    ),
+                    'emailPropriedade': serializeParam(
+                      widget.emailPropriedade,
+                      ParamType.String,
+                    ),
+                    'visitaPresencial': serializeParam(
+                      widget.visitaPresencial,
+                      ParamType.bool,
+                    ),
+                    'diasDg': serializeParam(
+                      widget.diasDg,
+                      ParamType.String,
+                    ),
+                  }.withoutNulls,
+                );
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.summarize,
+                    color: Color(0xFFEC3B5B),
+                    size: 30.0,
+                  ),
+                  _rotuloReceituario(context),
+                ],
               ),
-            ).animateOnPageLoad(
-                animationsMap['containerOnPageLoadAnimation11']!),
+            ),
+          ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation11']!),
           if (_respostaNet ?? true)
             Container(
               width: MediaQuery.sizeOf(context).width * 0.3,

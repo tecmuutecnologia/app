@@ -1682,7 +1682,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(17, 7309209184507572377),
     name: 'ResumoVisitaEntity',
-    lastPropertyId: const obx_int.IdUid(26, 2081912893931730180),
+    lastPropertyId: const obx_int.IdUid(33, 2562260015356817973),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -1705,66 +1705,6 @@ final _entities = <obx_int.ModelEntity>[
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(4, 2787385871577792531),
-        name: 'uidVisita',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(5, 8864586019553924144),
-        name: 'uidPropriedade',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(6, 874600756111721448),
-        name: 'nomePropriedade',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(7, 479530027478595388),
-        name: 'uidTecnico',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(8, 6693441450120150730),
-        name: 'nomeTecnico',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(9, 8562083519793787540),
-        name: 'uidProdutor',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(10, 4816610961408770541),
-        name: 'nomeProdutor',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(11, 2808579238366059248),
-        name: 'resumo',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(12, 2543680110866368332),
-        name: 'observacoes',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(13, 9085407108432952212),
-        name: 'proximosPassos',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
         id: const obx_int.IdUid(14, 8853414013170220778),
         name: 'assinaturaTecnico',
         type: 9,
@@ -1777,44 +1717,8 @@ final _entities = <obx_int.ModelEntity>[
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(16, 4323931264807626316),
-        name: 'status',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
         id: const obx_int.IdUid(17, 869006497477908049),
         name: 'dtVisita',
-        type: 10,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(18, 8267599668779459069),
-        name: 'dtInicio',
-        type: 10,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(19, 5249657267200789632),
-        name: 'dtFim',
-        type: 10,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(20, 3089340030945837623),
-        name: 'createdBy',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(21, 1862026747626609028),
-        name: 'lastModifiedBy',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(22, 818963482519171880),
-        name: 'createdAt',
         type: 10,
         flags: 0,
       ),
@@ -1840,6 +1744,48 @@ final _entities = <obx_int.ModelEntity>[
         id: const obx_int.IdUid(26, 2081912893931730180),
         name: 'isDeleted',
         type: 1,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(27, 6055579649592069327),
+        name: 'uidPropriedadePath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(28, 6774656874342766816),
+        name: 'uidTecnicoPath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(29, 3636801924384204680),
+        name: 'uidResumoDaVisitaPath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(30, 7821940879048821942),
+        name: 'dtVisitaFormatado',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(31, 5948372020894120739),
+        name: 'dtAssinatura',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(32, 6348825997567999626),
+        name: 'dtAssinaturaFormatado',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(33, 2562260015356817973),
+        name: 'obsGeralVisita',
+        type: 9,
         flags: 0,
       ),
     ],
@@ -2286,6 +2232,22 @@ obx_int.ModelDefinition getObjectBoxModel() {
       1454275181538133751,
       3614118878437257753,
       7719527315459308213,
+      2787385871577792531,
+      8864586019553924144,
+      874600756111721448,
+      479530027478595388,
+      6693441450120150730,
+      8562083519793787540,
+      4816610961408770541,
+      2808579238366059248,
+      2543680110866368332,
+      9085407108432952212,
+      4323931264807626316,
+      8267599668779459069,
+      5249657267200789632,
+      3089340030945837623,
+      1862026747626609028,
+      818963482519171880,
     ],
     retiredRelationUids: const [],
     modelVersion: 5,
@@ -4579,78 +4541,48 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final parentPathOffset = object.parentPath == null
             ? null
             : fbb.writeString(object.parentPath!);
-        final uidVisitaOffset = object.uidVisita == null
-            ? null
-            : fbb.writeString(object.uidVisita!);
-        final uidPropriedadeOffset = object.uidPropriedade == null
-            ? null
-            : fbb.writeString(object.uidPropriedade!);
-        final nomePropriedadeOffset = object.nomePropriedade == null
-            ? null
-            : fbb.writeString(object.nomePropriedade!);
-        final uidTecnicoOffset = object.uidTecnico == null
-            ? null
-            : fbb.writeString(object.uidTecnico!);
-        final nomeTecnicoOffset = object.nomeTecnico == null
-            ? null
-            : fbb.writeString(object.nomeTecnico!);
-        final uidProdutorOffset = object.uidProdutor == null
-            ? null
-            : fbb.writeString(object.uidProdutor!);
-        final nomeProdutorOffset = object.nomeProdutor == null
-            ? null
-            : fbb.writeString(object.nomeProdutor!);
-        final resumoOffset = object.resumo == null
-            ? null
-            : fbb.writeString(object.resumo!);
-        final observacoesOffset = object.observacoes == null
-            ? null
-            : fbb.writeString(object.observacoes!);
-        final proximosPassosOffset = object.proximosPassos == null
-            ? null
-            : fbb.writeString(object.proximosPassos!);
         final assinaturaTecnicoOffset = object.assinaturaTecnico == null
             ? null
             : fbb.writeString(object.assinaturaTecnico!);
         final assinaturaProdutorOffset = object.assinaturaProdutor == null
             ? null
             : fbb.writeString(object.assinaturaProdutor!);
-        final statusOffset = object.status == null
+        final uidPropriedadePathOffset = object.uidPropriedadePath == null
             ? null
-            : fbb.writeString(object.status!);
-        final createdByOffset = object.createdBy == null
+            : fbb.writeString(object.uidPropriedadePath!);
+        final uidTecnicoPathOffset = object.uidTecnicoPath == null
             ? null
-            : fbb.writeString(object.createdBy!);
-        final lastModifiedByOffset = object.lastModifiedBy == null
+            : fbb.writeString(object.uidTecnicoPath!);
+        final uidResumoDaVisitaPathOffset = object.uidResumoDaVisitaPath == null
             ? null
-            : fbb.writeString(object.lastModifiedBy!);
-        fbb.startTable(27);
+            : fbb.writeString(object.uidResumoDaVisitaPath!);
+        final dtVisitaFormatadoOffset = object.dtVisitaFormatado == null
+            ? null
+            : fbb.writeString(object.dtVisitaFormatado!);
+        final dtAssinaturaFormatadoOffset = object.dtAssinaturaFormatado == null
+            ? null
+            : fbb.writeString(object.dtAssinaturaFormatado!);
+        final obsGeralVisitaOffset = object.obsGeralVisita == null
+            ? null
+            : fbb.writeString(object.obsGeralVisita!);
+        fbb.startTable(34);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, firestoreIdOffset);
         fbb.addOffset(2, parentPathOffset);
-        fbb.addOffset(3, uidVisitaOffset);
-        fbb.addOffset(4, uidPropriedadeOffset);
-        fbb.addOffset(5, nomePropriedadeOffset);
-        fbb.addOffset(6, uidTecnicoOffset);
-        fbb.addOffset(7, nomeTecnicoOffset);
-        fbb.addOffset(8, uidProdutorOffset);
-        fbb.addOffset(9, nomeProdutorOffset);
-        fbb.addOffset(10, resumoOffset);
-        fbb.addOffset(11, observacoesOffset);
-        fbb.addOffset(12, proximosPassosOffset);
         fbb.addOffset(13, assinaturaTecnicoOffset);
         fbb.addOffset(14, assinaturaProdutorOffset);
-        fbb.addOffset(15, statusOffset);
         fbb.addInt64(16, object.dtVisita?.millisecondsSinceEpoch);
-        fbb.addInt64(17, object.dtInicio?.millisecondsSinceEpoch);
-        fbb.addInt64(18, object.dtFim?.millisecondsSinceEpoch);
-        fbb.addOffset(19, createdByOffset);
-        fbb.addOffset(20, lastModifiedByOffset);
-        fbb.addInt64(21, object.createdAt?.millisecondsSinceEpoch);
         fbb.addInt64(22, object.lastModified?.millisecondsSinceEpoch);
         fbb.addInt64(23, object.lastSynced?.millisecondsSinceEpoch);
         fbb.addBool(24, object.needsSync);
         fbb.addBool(25, object.isDeleted);
+        fbb.addOffset(26, uidPropriedadePathOffset);
+        fbb.addOffset(27, uidTecnicoPathOffset);
+        fbb.addOffset(28, uidResumoDaVisitaPathOffset);
+        fbb.addOffset(29, dtVisitaFormatadoOffset);
+        fbb.addInt64(30, object.dtAssinatura?.millisecondsSinceEpoch);
+        fbb.addOffset(31, dtAssinaturaFormatadoOffset);
+        fbb.addOffset(32, obsGeralVisitaOffset);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -4662,21 +4594,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
           rootOffset,
           36,
         );
-        final dtInicioValue = const fb.Int64Reader().vTableGetNullable(
-          buffer,
-          rootOffset,
-          38,
-        );
-        final dtFimValue = const fb.Int64Reader().vTableGetNullable(
-          buffer,
-          rootOffset,
-          40,
-        );
-        final createdAtValue = const fb.Int64Reader().vTableGetNullable(
-          buffer,
-          rootOffset,
-          46,
-        );
         final lastModifiedValue = const fb.Int64Reader().vTableGetNullable(
           buffer,
           rootOffset,
@@ -4687,69 +4604,47 @@ obx_int.ModelDefinition getObjectBoxModel() {
           rootOffset,
           50,
         );
+        final dtAssinaturaValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          64,
+        );
         final firestoreIdParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGetNullable(buffer, rootOffset, 6);
         final parentPathParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGetNullable(buffer, rootOffset, 8);
-        final uidVisitaParam = const fb.StringReader(
+        final uidPropriedadePathParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 10);
-        final uidPropriedadeParam = const fb.StringReader(
+        ).vTableGetNullable(buffer, rootOffset, 56);
+        final uidTecnicoPathParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 12);
-        final nomePropriedadeParam = const fb.StringReader(
+        ).vTableGetNullable(buffer, rootOffset, 58);
+        final uidResumoDaVisitaPathParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 14);
-        final uidTecnicoParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 16);
-        final nomeTecnicoParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 18);
-        final uidProdutorParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 20);
-        final nomeProdutorParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 22);
-        final resumoParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 24);
-        final observacoesParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 26);
-        final proximosPassosParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 28);
-        final assinaturaTecnicoParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 30);
-        final assinaturaProdutorParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 32);
-        final statusParam = const fb.StringReader(
-          asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 34);
+        ).vTableGetNullable(buffer, rootOffset, 60);
         final dtVisitaParam = dtVisitaValue == null
             ? null
             : DateTime.fromMillisecondsSinceEpoch(dtVisitaValue);
-        final dtInicioParam = dtInicioValue == null
-            ? null
-            : DateTime.fromMillisecondsSinceEpoch(dtInicioValue);
-        final dtFimParam = dtFimValue == null
-            ? null
-            : DateTime.fromMillisecondsSinceEpoch(dtFimValue);
-        final createdByParam = const fb.StringReader(
+        final dtVisitaFormatadoParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 42);
-        final createdAtParam = createdAtValue == null
+        ).vTableGetNullable(buffer, rootOffset, 62);
+        final dtAssinaturaParam = dtAssinaturaValue == null
             ? null
-            : DateTime.fromMillisecondsSinceEpoch(createdAtValue);
-        final lastModifiedByParam = const fb.StringReader(
+            : DateTime.fromMillisecondsSinceEpoch(dtAssinaturaValue);
+        final dtAssinaturaFormatadoParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 44);
+        ).vTableGetNullable(buffer, rootOffset, 66);
+        final assinaturaProdutorParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 32);
+        final assinaturaTecnicoParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 30);
+        final obsGeralVisitaParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 68);
         final lastModifiedParam = lastModifiedValue == null
             ? null
             : DateTime.fromMillisecondsSinceEpoch(lastModifiedValue);
@@ -4771,25 +4666,16 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final object = ResumoVisitaEntity(
           firestoreId: firestoreIdParam,
           parentPath: parentPathParam,
-          uidVisita: uidVisitaParam,
-          uidPropriedade: uidPropriedadeParam,
-          nomePropriedade: nomePropriedadeParam,
-          uidTecnico: uidTecnicoParam,
-          nomeTecnico: nomeTecnicoParam,
-          uidProdutor: uidProdutorParam,
-          nomeProdutor: nomeProdutorParam,
-          resumo: resumoParam,
-          observacoes: observacoesParam,
-          proximosPassos: proximosPassosParam,
-          assinaturaTecnico: assinaturaTecnicoParam,
-          assinaturaProdutor: assinaturaProdutorParam,
-          status: statusParam,
+          uidPropriedadePath: uidPropriedadePathParam,
+          uidTecnicoPath: uidTecnicoPathParam,
+          uidResumoDaVisitaPath: uidResumoDaVisitaPathParam,
           dtVisita: dtVisitaParam,
-          dtInicio: dtInicioParam,
-          dtFim: dtFimParam,
-          createdBy: createdByParam,
-          createdAt: createdAtParam,
-          lastModifiedBy: lastModifiedByParam,
+          dtVisitaFormatado: dtVisitaFormatadoParam,
+          dtAssinatura: dtAssinaturaParam,
+          dtAssinaturaFormatado: dtAssinaturaFormatadoParam,
+          assinaturaProdutor: assinaturaProdutorParam,
+          assinaturaTecnico: assinaturaTecnicoParam,
+          obsGeralVisita: obsGeralVisitaParam,
           lastModified: lastModifiedParam,
           lastSynced: lastSyncedParam,
           needsSync: needsSyncParam,
@@ -6573,119 +6459,72 @@ class ResumoVisitaEntity_ {
     _entities[16].properties[2],
   );
 
-  /// See [ResumoVisitaEntity.uidVisita].
-  static final uidVisita = obx.QueryStringProperty<ResumoVisitaEntity>(
-    _entities[16].properties[3],
-  );
-
-  /// See [ResumoVisitaEntity.uidPropriedade].
-  static final uidPropriedade = obx.QueryStringProperty<ResumoVisitaEntity>(
-    _entities[16].properties[4],
-  );
-
-  /// See [ResumoVisitaEntity.nomePropriedade].
-  static final nomePropriedade = obx.QueryStringProperty<ResumoVisitaEntity>(
-    _entities[16].properties[5],
-  );
-
-  /// See [ResumoVisitaEntity.uidTecnico].
-  static final uidTecnico = obx.QueryStringProperty<ResumoVisitaEntity>(
-    _entities[16].properties[6],
-  );
-
-  /// See [ResumoVisitaEntity.nomeTecnico].
-  static final nomeTecnico = obx.QueryStringProperty<ResumoVisitaEntity>(
-    _entities[16].properties[7],
-  );
-
-  /// See [ResumoVisitaEntity.uidProdutor].
-  static final uidProdutor = obx.QueryStringProperty<ResumoVisitaEntity>(
-    _entities[16].properties[8],
-  );
-
-  /// See [ResumoVisitaEntity.nomeProdutor].
-  static final nomeProdutor = obx.QueryStringProperty<ResumoVisitaEntity>(
-    _entities[16].properties[9],
-  );
-
-  /// See [ResumoVisitaEntity.resumo].
-  static final resumo = obx.QueryStringProperty<ResumoVisitaEntity>(
-    _entities[16].properties[10],
-  );
-
-  /// See [ResumoVisitaEntity.observacoes].
-  static final observacoes = obx.QueryStringProperty<ResumoVisitaEntity>(
-    _entities[16].properties[11],
-  );
-
-  /// See [ResumoVisitaEntity.proximosPassos].
-  static final proximosPassos = obx.QueryStringProperty<ResumoVisitaEntity>(
-    _entities[16].properties[12],
-  );
-
   /// See [ResumoVisitaEntity.assinaturaTecnico].
   static final assinaturaTecnico = obx.QueryStringProperty<ResumoVisitaEntity>(
-    _entities[16].properties[13],
+    _entities[16].properties[3],
   );
 
   /// See [ResumoVisitaEntity.assinaturaProdutor].
   static final assinaturaProdutor = obx.QueryStringProperty<ResumoVisitaEntity>(
-    _entities[16].properties[14],
-  );
-
-  /// See [ResumoVisitaEntity.status].
-  static final status = obx.QueryStringProperty<ResumoVisitaEntity>(
-    _entities[16].properties[15],
+    _entities[16].properties[4],
   );
 
   /// See [ResumoVisitaEntity.dtVisita].
   static final dtVisita = obx.QueryDateProperty<ResumoVisitaEntity>(
-    _entities[16].properties[16],
-  );
-
-  /// See [ResumoVisitaEntity.dtInicio].
-  static final dtInicio = obx.QueryDateProperty<ResumoVisitaEntity>(
-    _entities[16].properties[17],
-  );
-
-  /// See [ResumoVisitaEntity.dtFim].
-  static final dtFim = obx.QueryDateProperty<ResumoVisitaEntity>(
-    _entities[16].properties[18],
-  );
-
-  /// See [ResumoVisitaEntity.createdBy].
-  static final createdBy = obx.QueryStringProperty<ResumoVisitaEntity>(
-    _entities[16].properties[19],
-  );
-
-  /// See [ResumoVisitaEntity.lastModifiedBy].
-  static final lastModifiedBy = obx.QueryStringProperty<ResumoVisitaEntity>(
-    _entities[16].properties[20],
-  );
-
-  /// See [ResumoVisitaEntity.createdAt].
-  static final createdAt = obx.QueryDateProperty<ResumoVisitaEntity>(
-    _entities[16].properties[21],
+    _entities[16].properties[5],
   );
 
   /// See [ResumoVisitaEntity.lastModified].
   static final lastModified = obx.QueryDateProperty<ResumoVisitaEntity>(
-    _entities[16].properties[22],
+    _entities[16].properties[6],
   );
 
   /// See [ResumoVisitaEntity.lastSynced].
   static final lastSynced = obx.QueryDateProperty<ResumoVisitaEntity>(
-    _entities[16].properties[23],
+    _entities[16].properties[7],
   );
 
   /// See [ResumoVisitaEntity.needsSync].
   static final needsSync = obx.QueryBooleanProperty<ResumoVisitaEntity>(
-    _entities[16].properties[24],
+    _entities[16].properties[8],
   );
 
   /// See [ResumoVisitaEntity.isDeleted].
   static final isDeleted = obx.QueryBooleanProperty<ResumoVisitaEntity>(
-    _entities[16].properties[25],
+    _entities[16].properties[9],
+  );
+
+  /// See [ResumoVisitaEntity.uidPropriedadePath].
+  static final uidPropriedadePath = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[10],
+  );
+
+  /// See [ResumoVisitaEntity.uidTecnicoPath].
+  static final uidTecnicoPath = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[11],
+  );
+
+  /// See [ResumoVisitaEntity.uidResumoDaVisitaPath].
+  static final uidResumoDaVisitaPath =
+      obx.QueryStringProperty<ResumoVisitaEntity>(_entities[16].properties[12]);
+
+  /// See [ResumoVisitaEntity.dtVisitaFormatado].
+  static final dtVisitaFormatado = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[13],
+  );
+
+  /// See [ResumoVisitaEntity.dtAssinatura].
+  static final dtAssinatura = obx.QueryDateProperty<ResumoVisitaEntity>(
+    _entities[16].properties[14],
+  );
+
+  /// See [ResumoVisitaEntity.dtAssinaturaFormatado].
+  static final dtAssinaturaFormatado =
+      obx.QueryStringProperty<ResumoVisitaEntity>(_entities[16].properties[15]);
+
+  /// See [ResumoVisitaEntity.obsGeralVisita].
+  static final obsGeralVisita = obx.QueryStringProperty<ResumoVisitaEntity>(
+    _entities[16].properties[16],
   );
 }
 

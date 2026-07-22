@@ -1,4 +1,5 @@
 import '/data/backend.dart';
+import '/data/objectbox/index.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -114,6 +115,21 @@ class _ReceituariosListaPageState extends State<ReceituariosListaPage> {
     );
   }
 
+  /// `resumo_da_visita` é coleção TOP-LEVEL, então a referência é reconstruída
+  /// só com o `firestoreId`.
+  DocumentReference? _refDoResumo(ResumoVisitaEntity e) {
+    if (e.firestoreId == null) return null;
+    return FirebaseFirestore.instance.doc('resumo_da_visita/${e.firestoreId}');
+  }
+
+  /// Receituário assinado: tem ao menos uma assinatura E a data de assinatura.
+  /// Campos são nullable no entity, daí o `?? ''`.
+  bool _assinado(ResumoVisitaEntity e) {
+    final temAssinatura =
+        (e.assinaturaProdutor ?? '') != '' || (e.assinaturaTecnico ?? '') != '';
+    return temAssinatura && (e.dtAssinaturaFormatado ?? '') != '';
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -157,36 +173,19 @@ class _ReceituariosListaPageState extends State<ReceituariosListaPage> {
                 elevation: 0.0,
               )),
         ),
-        body: StreamBuilder<List<ResumoDaVisitaRecord>>(
-          stream: queryResumoDaVisitaRecord(
-            queryBuilder: (resumoDaVisitaRecord) => resumoDaVisitaRecord
-                .where(
-                  'uidPropriedade',
-                  isEqualTo: widget.uidPropriedade,
-                )
-                .where(
-                  'uidTecnico',
-                  isEqualTo: widget.uidTecnico,
-                )
-                .orderBy('dtVisita', descending: true),
-          ),
+        // Fonte única ObjectBox (offline-first): permite consultar receituários
+        // já emitidos sem rede. A EMISSÃO continua online, pois nasce do
+        // bookkeeping de visita (ResumoDaVisita + Tratamentos + Recomendações).
+        body: StreamBuilder<List<ResumoVisitaEntity>>(
+          stream: ResumoVisitaRepository()
+              .watchByPropriedade(widget.uidPropriedade?.path ?? ''),
           builder: (context, snapshot) {
-            // Customize what your widget looks like when it's loading.
-            if (!snapshot.hasData) {
-              return Center(
-                child: SizedBox(
-                  width: 50.0,
-                  height: 50.0,
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      Color(0xFFF75E38),
-                    ),
-                  ),
-                ),
-              );
-            }
-            List<ResumoDaVisitaRecord> listViewResumoDaVisitaRecordList =
-                snapshot.data!;
+            final listViewResumoDaVisitaRecordList = (snapshot.data ??
+                    <ResumoVisitaEntity>[])
+                .where((e) => !e.isDeleted)
+                .toList()
+              ..sort((a, b) => (b.dtVisita ?? DateTime(1900))
+                  .compareTo(a.dtVisita ?? DateTime(1900)));
 
             return ListView.builder(
               padding: EdgeInsets.zero,
@@ -232,7 +231,7 @@ class _ReceituariosListaPageState extends State<ReceituariosListaPage> {
                               ParamType.bool,
                             ),
                             'uidResumoVisita': serializeParam(
-                              listViewResumoDaVisitaRecord.reference,
+                              _refDoResumo(listViewResumoDaVisitaRecord),
                               ParamType.DocumentReference,
                             ),
                             'diasDg': serializeParam(
@@ -245,15 +244,7 @@ class _ReceituariosListaPageState extends State<ReceituariosListaPage> {
                       child: Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: ((listViewResumoDaVisitaRecord
-                                              .assinaturaProdutor !=
-                                          '') ||
-                                      (listViewResumoDaVisitaRecord
-                                              .assinaturaTecnico !=
-                                          '')) &&
-                                  (listViewResumoDaVisitaRecord
-                                          .dtAssinaturaFormatado !=
-                                      '')
+                          color: _assinado(listViewResumoDaVisitaRecord)
                               ? FlutterFlowTheme.of(context).secondaryBackground
                               : Color(0xFFFFB0B0),
                           borderRadius: BorderRadius.circular(16.0),
@@ -430,8 +421,8 @@ class _ReceituariosListaPageState extends State<ReceituariosListaPage> {
                                                 ),
                                                 'uidResumoVisita':
                                                     serializeParam(
-                                                  listViewResumoDaVisitaRecord
-                                                      .reference,
+                                                  _refDoResumo(
+                                                      listViewResumoDaVisitaRecord),
                                                   ParamType.DocumentReference,
                                                 ),
                                                 'diasDg': serializeParam(

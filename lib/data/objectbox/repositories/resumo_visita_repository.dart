@@ -22,6 +22,19 @@ class ResumoVisitaRepository extends BaseSyncRepository<ResumoVisitaEntity> {
   @override
   String get collectionName => 'resumo_da_visita';
 
+  /// Coleção top-level: todos os resumos compartilham o mesmo `parentPath`.
+  /// O recorte por propriedade é feito pelo campo `uidPropriedadePath`.
+  List<ResumoVisitaEntity> getByPropriedade(String propriedadePath) => box
+      .query(ResumoVisitaEntity_.uidPropriedadePath.equals(propriedadePath))
+      .build()
+      .find();
+
+  Stream<List<ResumoVisitaEntity>> watchByPropriedade(String propriedadePath) =>
+      box
+          .query(ResumoVisitaEntity_.uidPropriedadePath.equals(propriedadePath))
+          .watch(triggerImmediately: true)
+          .map((q) => q.find());
+
   /// O CREATE/UPDATE é feito por `_syncModifiedVisitas` (que reconcilia o
   /// `firestoreId`). Não enfileirar evita dupla-sync e o furo de reconcile.
   @override

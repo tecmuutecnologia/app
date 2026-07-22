@@ -15,42 +15,29 @@ class ResumoVisitaEntity implements SyncableEntity {
   @Unique()
   String? firestoreId;
 
+  /// `resumo_da_visita` é uma coleção TOP-LEVEL no Firestore, então não há
+  /// documento pai. Mantido pelo contrato do SyncableEntity e usado como
+  /// prefixo pelo serviço de sync.
   @override
   String? parentPath;
 
-  String? uidVisita;
-  String? uidPropriedade;
-  String? nomePropriedade;
-  String? uidTecnico;
-  String? nomeTecnico;
-  String? uidProdutor;
-  String? nomeProdutor;
-
-  String? resumo;
-  String? observacoes;
-  String? proximosPassos;
-
-  /// Assinaturas em base64
-  String? assinaturaTecnico;
-  String? assinaturaProdutor;
-
-  /// Status da visita
-  String? status;
+  /// Campos gravados pelo app (ver `createResumoDaVisitaRecordData`).
+  /// Referências viram caminho, como no `AnimalEntity`.
+  String? uidPropriedadePath;
+  String? uidTecnicoPath;
+  String? uidResumoDaVisitaPath;
 
   @Property(type: PropertyType.date)
   DateTime? dtVisita;
+  String? dtVisitaFormatado;
 
   @Property(type: PropertyType.date)
-  DateTime? dtInicio;
+  DateTime? dtAssinatura;
+  String? dtAssinaturaFormatado;
 
-  @Property(type: PropertyType.date)
-  DateTime? dtFim;
-
-  String? createdBy;
-  String? lastModifiedBy;
-
-  @Property(type: PropertyType.date)
-  DateTime? createdAt;
+  String? assinaturaProdutor;
+  String? assinaturaTecnico;
+  String? obsGeralVisita;
 
   @override
   @Property(type: PropertyType.date)
@@ -62,31 +49,23 @@ class ResumoVisitaEntity implements SyncableEntity {
 
   @override
   bool needsSync;
+
   @override
   bool isDeleted;
 
   ResumoVisitaEntity({
     this.firestoreId,
     this.parentPath,
-    this.uidVisita,
-    this.uidPropriedade,
-    this.nomePropriedade,
-    this.uidTecnico,
-    this.nomeTecnico,
-    this.uidProdutor,
-    this.nomeProdutor,
-    this.resumo,
-    this.observacoes,
-    this.proximosPassos,
-    this.assinaturaTecnico,
-    this.assinaturaProdutor,
-    this.status,
+    this.uidPropriedadePath,
+    this.uidTecnicoPath,
+    this.uidResumoDaVisitaPath,
     this.dtVisita,
-    this.dtInicio,
-    this.dtFim,
-    this.createdBy,
-    this.createdAt,
-    this.lastModifiedBy,
+    this.dtVisitaFormatado,
+    this.dtAssinatura,
+    this.dtAssinaturaFormatado,
+    this.assinaturaProdutor,
+    this.assinaturaTecnico,
+    this.obsGeralVisita,
     this.lastModified,
     this.lastSynced,
     this.needsSync = false,
@@ -98,68 +77,59 @@ class ResumoVisitaEntity implements SyncableEntity {
     String docId, {
     String? parentPath,
   }) {
+    String? caminho(dynamic ref) {
+      if (ref == null) return null;
+      if (ref is String) return ref;
+      try {
+        return (ref as dynamic).path as String?;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    DateTime? data_(dynamic v) {
+      if (v == null) return null;
+      if (v is DateTime) return v;
+      try {
+        return (v as dynamic).toDate() as DateTime?;
+      } catch (_) {
+        return null;
+      }
+    }
+
     return ResumoVisitaEntity(
       firestoreId: docId,
       parentPath: parentPath,
-      uidVisita: data['uid_visita'] as String?,
-      uidPropriedade: data['uid_propriedade'] as String?,
-      nomePropriedade: data['nome_propriedade'] as String?,
-      uidTecnico: data['uid_tecnico'] as String?,
-      nomeTecnico: data['nome_tecnico'] as String?,
-      uidProdutor: data['uid_produtor'] as String?,
-      nomeProdutor: data['nome_produtor'] as String?,
-      resumo: data['resumo'] as String?,
-      observacoes: data['observacoes'] as String?,
-      proximosPassos: data['proximos_passos'] as String?,
-      assinaturaTecnico: data['assinatura_tecnico'] as String?,
-      assinaturaProdutor: data['assinatura_produtor'] as String?,
-      status: data['status'] as String?,
-      dtVisita: (data['dt_visita'] as Timestamp?)?.toDate(),
-      dtInicio: (data['dt_inicio'] as Timestamp?)?.toDate(),
-      dtFim: (data['dt_fim'] as Timestamp?)?.toDate(),
-      createdBy: data['created_by'] as String?,
-      createdAt: (data['created_at'] as Timestamp?)?.toDate(),
-      lastModifiedBy: data['last_modified_by'] as String?,
-      lastModified: (data['last_modified'] as Timestamp?)?.toDate(),
+      uidPropriedadePath: caminho(data['uidPropriedade']),
+      uidTecnicoPath: caminho(data['uidTecnico']),
+      uidResumoDaVisitaPath: caminho(data['uidResumoDaVisita']),
+      dtVisita: data_(data['dtVisita']),
+      dtVisitaFormatado: data['dtVisitaFormatado'] as String?,
+      dtAssinatura: data_(data['dtAssinatura']),
+      dtAssinaturaFormatado: data['dtAssinaturaFormatado'] as String?,
+      assinaturaProdutor: data['assinaturaProdutor'] as String?,
+      assinaturaTecnico: data['assinaturaTecnico'] as String?,
+      obsGeralVisita: data['obsGeralVisita'] as String?,
       lastSynced: DateTime.now(),
       needsSync: false,
     );
   }
 
+  /// Campos planos. As referências e Timestamps são reanexados pelo
+  /// repositório de sync, que tem acesso ao FirebaseFirestore.
   @override
   Map<String, dynamic> toFirestore() {
-    final data = <String, dynamic>{};
-
-    if (uidVisita != null) data['uid_visita'] = uidVisita;
-    if (uidPropriedade != null) data['uid_propriedade'] = uidPropriedade;
-    if (nomePropriedade != null) data['nome_propriedade'] = nomePropriedade;
-    if (uidTecnico != null) data['uid_tecnico'] = uidTecnico;
-    if (nomeTecnico != null) data['nome_tecnico'] = nomeTecnico;
-    if (uidProdutor != null) data['uid_produtor'] = uidProdutor;
-    if (nomeProdutor != null) data['nome_produtor'] = nomeProdutor;
-    if (resumo != null) data['resumo'] = resumo;
-    if (observacoes != null) data['observacoes'] = observacoes;
-    if (proximosPassos != null) data['proximos_passos'] = proximosPassos;
-    if (assinaturaTecnico != null)
-      data['assinatura_tecnico'] = assinaturaTecnico;
-    if (assinaturaProdutor != null)
-      data['assinatura_produtor'] = assinaturaProdutor;
-    if (status != null) data['status'] = status;
-    if (dtVisita != null) data['dt_visita'] = Timestamp.fromDate(dtVisita!);
-    if (dtInicio != null) data['dt_inicio'] = Timestamp.fromDate(dtInicio!);
-    if (dtFim != null) data['dt_fim'] = Timestamp.fromDate(dtFim!);
-    if (createdBy != null) data['created_by'] = createdBy;
-    if (createdAt != null) data['created_at'] = Timestamp.fromDate(createdAt!);
-    if (lastModifiedBy != null) data['last_modified_by'] = lastModifiedBy;
-    if (lastModified != null)
-      data['last_modified'] = Timestamp.fromDate(lastModified!);
-
-    return data;
+    return <String, dynamic>{
+      'dtVisitaFormatado': dtVisitaFormatado,
+      'dtAssinaturaFormatado': dtAssinaturaFormatado,
+      'assinaturaProdutor': assinaturaProdutor,
+      'assinaturaTecnico': assinaturaTecnico,
+      'obsGeralVisita': obsGeralVisita,
+    };
   }
 
   @override
   void markAsModified([String? userId]) {
-    if (userId != null) lastModifiedBy = userId;
     lastModified = DateTime.now();
     needsSync = true;
   }
