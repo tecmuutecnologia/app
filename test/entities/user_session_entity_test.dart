@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecmuu/backend/objectbox/entities/user_session_entity.dart';
+import 'package:tecmuu/data/objectbox/entities/user_session_entity.dart';
 
 /// Testes de caracterização da `UserSessionEntity` (login offline).
 ///

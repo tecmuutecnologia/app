@@ -21,16 +21,51 @@ um widget novo — passar por repositório.
 ```
 core/            infra transversal: connectivity/, sync/ (codec, ConflictResolver),
                  security/ (PasswordHasher), result/ (Result<T>)
-backend/objectbox/
-  entities/      entidades ObjectBox (implementam SyncableEntity)
-  repositories/  1 repo por agregado, sobre BaseSyncRepository<E>
-  offline_first_sync_service.dart   o "SyncEngine" (download + push + fila)
-  remote_sync_listeners_service.dart  listeners Firestore->ObjectBox (HOJE INATIVO)
+data/            camada de dados (ex-backend/ do FlutterFlow):
+  objectbox/
+    entities/      entidades ObjectBox (implementam SyncableEntity)
+    repositories/  1 repo por agregado, sobre BaseSyncRepository<E>
+    offline_first_sync_service.dart   o "SyncEngine" (download + push + fila)
+    remote_sync_listeners_service.dart  listeners Firestore->ObjectBox (HOJE INATIVO)
+  schema/        record classes Firestore (geradas); backend.dart (queries); firebase*/, stripe/
 domain/          regras puras testáveis (ex.: animais/classificacao_animal.dart)
-features/        adaptadores/lógica por feature (ex.: animal_struct_adapter)
-pages/           telas FlutterFlow legadas (vão sendo esvaziadas)
-flutter_flow/    utilitários gerados (mantidos)
+features/        feature-first: <feature>/presentation/{pages,widgets,controllers},
+                 application/, domain/, data/
+app/             app-shell: bootstrap.dart (init+runApp), app.dart (MaterialApp.router),
+                 router/ (nav.dart, serialization_util.dart), theme/ (flutter_flow_theme.dart)
+core/ui/         utilitários ex-flutter_flow (util, widgets, model, i18n, dropdowns, etc.)
 ```
+
+> `main.dart` é fino (só chama `bootstrap()`). O antigo `lib/flutter_flow/` foi relocado
+> (Fase 1): nav→`app/router`, theme→`app/theme`, o resto→`core/ui`.
+>
+> **Migração da UI CONCLUÍDA:** todas as telas estão em `features/<f>/presentation/`. Os resíduos
+> FlutterFlow `lib/pages/` e o barrel `lib/index.dart` foram **removidos** — referências de tela
+> são por import direto. Único resíduo estrutural restante: `lib/app_state.dart` (`FFAppState`,
+> ainda um `Provider` lido por algumas telas; decomposição é trabalho à parte de médio risco).
+
+## Migração da UI (FlutterFlow → feature-first)
+
+Programa **incremental por feature** (ver plano completo no histórico) — **concluído**: toda a
+apresentação migrou do padrão FlutterFlow (`pages/<área>/<tela>/<tela>_widget.dart` + `_model.dart`
+extends `FlutterFlowModel`) para `features/<feature>/presentation/`. A receita abaixo fica
+documentada como referência (padrão do repo para novas telas / eventual migração de resíduos).
+Cada tela compila e passa no gate isoladamente.
+
+**Receita por tela** (referência-ouro: `features/auth/presentation/` — login do técnico):
+1. `X_widget.dart` → `features/<f>/presentation/pages/x_page.dart`; classe `XWidget`→`XPage`
+   `extends ConsumerStatefulWidget` (ou `ConsumerWidget`).
+2. Controllers/`FocusNode`/validators de `TextField` → `State` da page (ciclo de vida de UI).
+   Remover `createModel`/`_model.` e o `export '..._model.dart'`.
+3. **Estado efêmero de UI** (visibilidade de senha, índice de aba, toggles locais) fica no
+   `State` com `setState` — `ConsumerStatefulWidget` só é necessário quando a tela usa `ref`.
+   **Estado de negócio/app** (o que estava no `FlutterFlowModel` com lógica ou lia `FFAppState`) →
+   `presentation/controllers/x_controller.dart`: `XController extends Notifier<XState>`
+   (estado imutável + `copyWith`), consumido via `ref.watch`/`ref.read`. Escritas passam pelos
+   repositórios offline-first — nunca Firestore/`currentUserUid` direto.
+4. Imports: **sem** `import '/index.dart'` (o barrel foi removido); referenciar telas/route names
+   por import direto. Tema/i18n via `core/ui/flutter_flow_util.dart`.
+5. Atualizar a rota em `app/router/nav.dart`; deletar `X_model.dart` e a pasta antiga.
 
 ## Repositórios (`BaseSyncRepository<E>`)
 

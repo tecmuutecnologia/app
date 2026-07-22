@@ -17,25 +17,40 @@ class SyncStatusBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Otimista: assume online enquanto a primeira leitura do stream não chega,
-    // para não piscar o banner no startup.
+    // para não piscar o banner no startup. (O status reflete a INTERFACE de
+    // rede — não a sonda profunda — então não dá falso "offline" estando online.)
     final isOnline = ref.watch(isOnlineProvider).valueOrNull ?? true;
 
+    // Online: zero altura e zero inset — não desloca nada na tela.
     if (isOnline) return const SizedBox.shrink();
 
-    return Container(
-      width: double.infinity,
-      color: Colors.orange.shade700,
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.cloud_off, color: Colors.white, size: 18),
-          SizedBox(width: 8),
-          Text(
-            'Sem conexão — trabalhando offline',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+    // Offline: barra fina com inset próprio da status bar (o app.dart NÃO
+    // envolve mais em SafeArea, p/ não reservar espaço quando online).
+    return Material(
+      color: const Color(0xFFF2886E), // tom suave do laranja do app
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Icon(Icons.cloud_off_rounded, color: Colors.white, size: 18.0),
+              SizedBox(width: 8.0),
+              Flexible(
+                child: Text(
+                  'Sem conexão — trabalhando offline',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13.0,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

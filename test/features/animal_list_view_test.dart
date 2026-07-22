@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecmuu/backend/objectbox/entities/index.dart';
+import 'package:tecmuu/data/objectbox/entities/index.dart';
 import 'package:tecmuu/features/animais/application/animais_providers.dart';
 import 'package:tecmuu/features/animais/presentation/animal_list_view.dart';
 

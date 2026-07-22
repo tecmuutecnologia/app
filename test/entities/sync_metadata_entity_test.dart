@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecmuu/backend/objectbox/entities/sync_metadata_entity.dart';
+import 'package:tecmuu/data/objectbox/entities/sync_metadata_entity.dart';
 
 /// Testes de caracterização de `SyncMetadataEntity`.
 ///

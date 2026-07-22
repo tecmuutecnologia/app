@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecmuu/backend/objectbox/entities/pending_operation_entity.dart';
+import 'package:tecmuu/data/objectbox/entities/pending_operation_entity.dart';
 
 /// Testes da `PendingOperationEntity` (fila de operações pendentes de sync).
 ///

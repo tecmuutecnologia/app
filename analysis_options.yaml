@@ -12,11 +12,10 @@ include: package:flutter_lints/flutter.yaml
 
 analyzer:
   exclude:
-    - lib/custom_code/**
-    - lib/flutter_flow/custom_functions.dart
+    - lib/core/ui/custom_functions.dart
     - "**/*.g.dart"
     - lib/objectbox.g.dart
-    - lib/backend/schema/**
+    - lib/data/schema/**
     - build/**
 
 linter:

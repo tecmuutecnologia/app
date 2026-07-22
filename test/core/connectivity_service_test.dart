@@ -42,32 +42,29 @@ void main() {
   });
 
   group('ConnectivityService.onStatusChange', () {
-    test('emite estado inicial e reage a mudanças da interface', () async {
+    test(
+        'status reflete a INTERFACE (não a sonda profunda), p/ não dar '
+        'falso-offline estando online', () async {
       final changes = StreamController<ConnectivityResult>();
-      var hasInternet = true;
 
       final service = ConnectivityService(
         probeConnectivity: () async => ConnectivityResult.wifi,
-        probeInternetAccess: () async => hasInternet,
+        // Sonda profunda SEMPRE falsa: simula hosts de checagem bloqueados na
+        // rede do usuário. NÃO deve pintar a UI de offline havendo interface.
+        probeInternetAccess: () async => false,
         connectivityChanges: changes.stream,
       );
 
       final emitted = <bool>[];
       final sub = service.onStatusChange.listen(emitted.add);
 
-      await service.start(); // estado inicial: online (true)
+      await service.start(); // interface wifi -> online (true), apesar da sonda
 
-      // Cai a conexão (sem interface) -> false, sem checar acesso real.
+      // Cai a interface -> offline.
       changes.add(ConnectivityResult.none);
       await Future<void>.delayed(Duration.zero);
 
-      // Volta interface, mas sem internet real -> continua false (sem emissão).
-      hasInternet = false;
-      changes.add(ConnectivityResult.mobile);
-      await Future<void>.delayed(Duration.zero);
-
-      // Volta interface com internet real -> true.
-      hasInternet = true;
+      // Volta a interface (dados) -> online de novo, MESMO com a sonda falsa.
       changes.add(ConnectivityResult.mobile);
       await Future<void>.delayed(Duration.zero);
 

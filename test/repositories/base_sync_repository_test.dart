@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecmuu/backend/objectbox/entities/index.dart';
-import 'package:tecmuu/backend/objectbox/repositories/base_sync_repository.dart';
+import 'package:tecmuu/data/objectbox/entities/index.dart';
+import 'package:tecmuu/data/objectbox/repositories/base_sync_repository.dart';
 
 /// Testa o predicado puro de purga de soft-deletes (Fase 1.5), sem depender do
 /// ObjectBox em runtime.

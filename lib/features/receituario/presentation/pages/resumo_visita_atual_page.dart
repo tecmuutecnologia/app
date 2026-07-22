@@ -1,0 +1,1203 @@
+// ignore_for_file: dead_code
+
+import '/data/backend.dart';
+import '/data/objectbox/index.dart';
+import '/core/ui/flutter_flow_icon_button.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/app_card.dart';
+import '/core/ui/flutter_flow_widgets.dart';
+import '../widgets/assinatura_produtor_widget.dart';
+import '../widgets/assinatura_tecnico_widget.dart';
+import '../widgets/lista_animais_tratamentos_widget.dart';
+import '../widgets/lista_diagnostico_gestacao_widget.dart';
+import 'receituarios_lista_page.dart';
+import '/core/services/index.dart' as actions;
+import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class ResumoVisitaAtualPage extends StatefulWidget {
+  const ResumoVisitaAtualPage({
+    super.key,
+    required this.uidPropriedade,
+    required this.nomePropriedade,
+    required this.uidTecnico,
+    required this.emailPropriedade,
+    required this.visitaPresencial,
+    required this.uidResumoVisita,
+    required this.diasDg,
+  });
+
+  final DocumentReference? uidPropriedade;
+  final String? nomePropriedade;
+  final DocumentReference? uidTecnico;
+  final String? emailPropriedade;
+  final bool? visitaPresencial;
+  final DocumentReference? uidResumoVisita;
+  final String? diasDg;
+
+  static String routeName = 'resumoVisitaAtual';
+  static String routePath = '/resumoVisitaAtual';
+
+  @override
+  State<ResumoVisitaAtualPage> createState() => _ResumoVisitaAtualPageState();
+}
+
+class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
+  FocusNode? _obsGeralFocusNode;
+  TextEditingController? _obsGeralTextController;
+  final String? Function(BuildContext, String?)?
+      _obsGeralTextControllerValidator = null;
+  PropriedadesRecord? _outUidPropriedade2;
+  TecnicoRecord? _outUidTecnico2;
+  PersonRecord? _outUidPersonTecnico2;
+  PropriedadesRecord? _outUidPropriedade;
+  TecnicoRecord? _outUidTecnico;
+  PersonRecord? _outUidPersonTecnico;
+
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _obsGeralTextController ??= TextEditingController();
+    _obsGeralFocusNode ??= FocusNode();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _obsGeralFocusNode?.dispose();
+    _obsGeralTextController?.dispose();
+
+    super.dispose();
+  }
+
+  Widget _cabecalho(
+      BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
+          child: FlutterFlowIconButton(
+            borderColor: Colors.transparent,
+            borderRadius: 30.0,
+            borderWidth: 1.0,
+            buttonSize: 50.0,
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              color: Colors.white,
+              size: 30.0,
+            ),
+            onPressed: () async {
+              context.goNamed(
+                ReceituariosListaPage.routeName,
+                queryParameters: {
+                  'uidPropriedade': serializeParam(
+                    widget.uidPropriedade,
+                    ParamType.DocumentReference,
+                  ),
+                  'nomePropriedade': serializeParam(
+                    widget.nomePropriedade,
+                    ParamType.String,
+                  ),
+                  'uidTecnico': serializeParam(
+                    widget.uidTecnico,
+                    ParamType.DocumentReference,
+                  ),
+                  'emailPropriedade': serializeParam(
+                    widget.emailPropriedade,
+                    ParamType.String,
+                  ),
+                  'visitaPresencial': serializeParam(
+                    false,
+                    ParamType.bool,
+                  ),
+                  'diasDg': serializeParam(
+                    widget.diasDg,
+                    ParamType.String,
+                  ),
+                }.withoutNulls,
+              );
+            },
+          ),
+        ),
+        Text(
+          'Visita ${resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado}',
+          style: FlutterFlowTheme.of(context).headlineMedium.override(
+                font: GoogleFonts.outfit(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).headlineMedium.fontWeight,
+                  fontStyle:
+                      FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                ),
+                color: Colors.white,
+                fontSize: 22.0,
+                letterSpacing: 0.0,
+                fontWeight:
+                    FlutterFlowTheme.of(context).headlineMedium.fontWeight,
+                fontStyle:
+                    FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+              ),
+        ),
+      ],
+    );
+  }
+
+  Widget _listaRecomendacoes(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+      ),
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(10.0, 10.0, 10.0, 0.0),
+        // Recomendações do ObjectBox, ligadas pelo CAMPO uidResumoDaVisita.
+        child: Builder(
+          builder: (context) {
+            final listViewRecomendacoesRecordList = RecomendacaoRepository()
+                .getAll()
+                .where((e) =>
+                    !e.isDeleted &&
+                    e.uidResumoDaVisitaPath ==
+                        'resumo_da_visita/${widget.uidResumoVisita?.id}')
+                .toList();
+
+            return ListView.builder(
+              padding: EdgeInsets.zero,
+              primary: false,
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              itemCount: listViewRecomendacoesRecordList.length,
+              itemBuilder: (context, listViewIndex) {
+                final listViewRecomendacoesRecord =
+                    listViewRecomendacoesRecordList[listViewIndex];
+                return ListaAnimaisTratamentosWidget(
+                  key: Key(
+                      'Keydky_${listViewIndex}_of_${listViewRecomendacoesRecordList.length}'),
+                  parameter1: listViewRecomendacoesRecord.tituloRecomendacao,
+                  parameter2: widget.uidResumoVisita!,
+                  obsRecomendacao:
+                      listViewRecomendacoesRecord.descricaoRecomendacao,
+                );
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _conteudo(
+      BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
+    return // Lista de Diagnóstico de Gestação
+        Container(
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+      ),
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 0.0),
+        child: ListaDiagnosticoGestacaoWidget(
+          uidResumoVisita: widget.uidResumoVisita!,
+          uidTecnico: widget.uidTecnico!,
+          uidPropriedade: widget.uidPropriedade!,
+          dtVisita: resumoVisitaAtualResumoDaVisitaRecord.dtVisita!,
+        ),
+      ),
+    );
+  }
+
+  Widget _botaoAdicionarRecomendacao(
+      BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if ((resumoVisitaAtualResumoDaVisitaRecord.assinaturaProdutor ==
+                    '') &&
+                (resumoVisitaAtualResumoDaVisitaRecord.dtAssinaturaFormatado ==
+                    ''))
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+                child: FFButtonWidget(
+                  onPressed: () async {
+                    await showModalBottomSheet(
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      enableDrag: false,
+                      context: context,
+                      builder: (context) {
+                        return GestureDetector(
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          },
+                          child: Padding(
+                            padding: MediaQuery.viewInsetsOf(context),
+                            child: AssinaturaProdutorWidget(
+                              uidResumoVisita: widget.uidResumoVisita!,
+                            ),
+                          ),
+                        );
+                      },
+                    ).then((value) => safeSetState(() {}));
+                  },
+                  text: 'Assinatura Produtor Pendente',
+                  icon: Icon(
+                    Icons.assignment,
+                    size: 22.0,
+                  ),
+                  options: FFButtonOptions(
+                    width: MediaQuery.sizeOf(context).width * 1.0,
+                    height: 40.0,
+                    padding:
+                        EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                    iconPadding:
+                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                    color: FlutterFlowTheme.of(context).tertiary,
+                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                          font: GoogleFonts.readexPro(
+                            fontWeight: FlutterFlowTheme.of(context)
+                                .titleSmall
+                                .fontWeight,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .titleSmall
+                                .fontStyle,
+                          ),
+                          color: Colors.white,
+                          letterSpacing: 0.0,
+                          fontWeight: FlutterFlowTheme.of(context)
+                              .titleSmall
+                              .fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                        ),
+                    elevation: 3.0,
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                      width: 1.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+              ),
+            if ((resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico ==
+                    '') &&
+                (resumoVisitaAtualResumoDaVisitaRecord.dtAssinaturaFormatado ==
+                    ''))
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+                child: FFButtonWidget(
+                  onPressed: () async {
+                    await showModalBottomSheet(
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      enableDrag: false,
+                      context: context,
+                      builder: (context) {
+                        return GestureDetector(
+                          onTap: () {
+                            FocusScope.of(context).unfocus();
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          },
+                          child: Padding(
+                            padding: MediaQuery.viewInsetsOf(context),
+                            child: AssinaturaTecnicoWidget(
+                              uidResumoVisita: widget.uidResumoVisita!,
+                            ),
+                          ),
+                        );
+                      },
+                    ).then((value) => safeSetState(() {}));
+                  },
+                  text: 'Assinatura Técnico Pendente',
+                  icon: Icon(
+                    Icons.assignment,
+                    size: 22.0,
+                  ),
+                  options: FFButtonOptions(
+                    width: MediaQuery.sizeOf(context).width * 1.0,
+                    height: 40.0,
+                    padding:
+                        EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                    iconPadding:
+                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                    color: Color(0xFFBE6740),
+                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                          font: GoogleFonts.readexPro(
+                            fontWeight: FlutterFlowTheme.of(context)
+                                .titleSmall
+                                .fontWeight,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .titleSmall
+                                .fontStyle,
+                          ),
+                          color: Colors.white,
+                          letterSpacing: 0.0,
+                          fontWeight: FlutterFlowTheme.of(context)
+                              .titleSmall
+                              .fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                        ),
+                    elevation: 3.0,
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                      width: 1.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _secaoObservacoes(
+      BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(12.0, 10.0, 12.0, 0.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _tituloObservacoes(context),
+            _campoObservacoes(context),
+            _botaoConcluirVisita(
+                context, resumoVisitaAtualResumoDaVisitaRecord),
+            _botaoConcluirVisita2(
+                context, resumoVisitaAtualResumoDaVisitaRecord),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _tituloObservacoes(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Icon(Icons.notes_rounded, color: AppTokens.secondary, size: 20.0),
+        const SizedBox(width: 8.0),
+        Flexible(
+          child: Text(
+            'Observações gerais:',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                  font: GoogleFonts.readexPro(
+                    fontWeight:
+                        FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                    fontStyle:
+                        FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                  ),
+                  letterSpacing: 0.0,
+                  fontWeight:
+                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _campoObservacoes(BuildContext context) {
+    return TextFormField(
+      controller: _obsGeralTextController,
+      focusNode: _obsGeralFocusNode,
+      autofocus: false,
+      obscureText: false,
+      decoration: InputDecoration(
+        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+        hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: AppTokens.secondary,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).error,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).error,
+            width: 2.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
+        contentPadding: EdgeInsetsDirectional.fromSTEB(20.0, 24.0, 20.0, 24.0),
+      ),
+      style: FlutterFlowTheme.of(context).bodyMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+          ),
+      maxLines: 3,
+      maxLength: 100,
+      maxLengthEnforcement: MaxLengthEnforcement.none,
+      buildCounter: (context,
+              {required currentLength, required isFocused, maxLength}) =>
+          null,
+      cursorColor: FlutterFlowTheme.of(context).primary,
+      validator: _obsGeralTextControllerValidator.asValidator(context),
+    );
+  }
+
+  Widget _botaoConcluirVisita(
+      BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+      child: FFButtonWidget(
+        onPressed: () async {
+          if ((resumoVisitaAtualResumoDaVisitaRecord.assinaturaProdutor !=
+                  '') ||
+              (resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico != '')) {
+            await _assinarOfflineFirst();
+            await showDialog(
+              context: context,
+              builder: (alertDialogContext) {
+                return AlertDialog(
+                  title: Text('Visita concluída!'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(alertDialogContext),
+                      child: Text('Ok'),
+                    ),
+                  ],
+                );
+              },
+            );
+
+            context.goNamed(
+              ReceituariosListaPage.routeName,
+              queryParameters: {
+                'uidPropriedade': serializeParam(
+                  widget.uidPropriedade,
+                  ParamType.DocumentReference,
+                ),
+                'nomePropriedade': serializeParam(
+                  widget.nomePropriedade,
+                  ParamType.String,
+                ),
+                'uidTecnico': serializeParam(
+                  widget.uidTecnico,
+                  ParamType.DocumentReference,
+                ),
+                'emailPropriedade': serializeParam(
+                  widget.emailPropriedade,
+                  ParamType.String,
+                ),
+                'visitaPresencial': serializeParam(
+                  widget.visitaPresencial,
+                  ParamType.bool,
+                ),
+                'diasDg': serializeParam(
+                  '',
+                  ParamType.String,
+                ),
+              }.withoutNulls,
+            );
+
+            return;
+          } else {
+            await showDialog(
+              context: context,
+              builder: (alertDialogContext) {
+                return AlertDialog(
+                  title: Text('Assinatura(s) pendente(s)!'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(alertDialogContext),
+                      child: Text('Ok'),
+                    ),
+                  ],
+                );
+              },
+            );
+            return;
+          }
+        },
+        text: 'Apenas Salvar',
+        icon: Icon(
+          Icons.check,
+          size: 22.0,
+        ),
+        options: FFButtonOptions(
+          width: MediaQuery.sizeOf(context).width * 1.0,
+          height: 40.0,
+          padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+          iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+          color: Color(0xFF048508),
+          textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                ),
+                color: Colors.white,
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+              ),
+          elevation: 3.0,
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+      ),
+    );
+  }
+
+  Widget _botaoConcluirVisita2(
+      BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 16.0),
+      child: FFButtonWidget(
+        onPressed: () async {
+          var _shouldSetState = false;
+          if ((resumoVisitaAtualResumoDaVisitaRecord.assinaturaProdutor !=
+                  '') ||
+              (resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico != '')) {
+            _outUidPropriedade2 = await PropriedadesRecord.getDocumentOnce(
+                widget.uidPropriedade!);
+            _shouldSetState = true;
+            _outUidTecnico2 =
+                await TecnicoRecord.getDocumentOnce(widget.uidTecnico!);
+            _shouldSetState = true;
+            _outUidPersonTecnico2 = await queryPersonRecordOnce(
+              queryBuilder: (personRecord) => personRecord.where(
+                'uid',
+                isEqualTo: _outUidTecnico2?.uidPerson,
+              ),
+              singleRecord: true,
+            ).then((s) => s.firstOrNull);
+            _shouldSetState = true;
+
+            await _assinarOfflineFirst();
+            await showDialog(
+              context: context,
+              builder: (alertDialogContext) {
+                return AlertDialog(
+                  title: Text('Visita concluída!'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(alertDialogContext),
+                      child: Text('Ok'),
+                    ),
+                  ],
+                );
+              },
+            );
+
+            context.goNamed(
+              ReceituariosListaPage.routeName,
+              queryParameters: {
+                'uidPropriedade': serializeParam(
+                  widget.uidPropriedade,
+                  ParamType.DocumentReference,
+                ),
+                'nomePropriedade': serializeParam(
+                  widget.nomePropriedade,
+                  ParamType.String,
+                ),
+                'uidTecnico': serializeParam(
+                  widget.uidTecnico,
+                  ParamType.DocumentReference,
+                ),
+                'emailPropriedade': serializeParam(
+                  widget.emailPropriedade,
+                  ParamType.String,
+                ),
+                'visitaPresencial': serializeParam(
+                  widget.visitaPresencial,
+                  ParamType.bool,
+                ),
+                'diasDg': serializeParam(
+                  '',
+                  ParamType.String,
+                ),
+              }.withoutNulls,
+            );
+
+            await actions.createReceituario(
+              widget.uidResumoVisita!,
+              _outUidPropriedade2?.displayName,
+              _outUidPropriedade2?.endereco,
+              _outUidPersonTecnico2?.displayName,
+              _outUidPersonTecnico2?.phoneNumber,
+              resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado ?? '',
+              _outUidPersonTecnico2?.email,
+              _outUidPersonTecnico2?.empresa,
+            );
+            if (_shouldSetState) safeSetState(() {});
+            return;
+          } else {
+            await showDialog(
+              context: context,
+              builder: (alertDialogContext) {
+                return AlertDialog(
+                  title: Text('Assinatura(s) pendente(s)!'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(alertDialogContext),
+                      child: Text('Ok'),
+                    ),
+                  ],
+                );
+              },
+            );
+            if (_shouldSetState) safeSetState(() {});
+            return;
+          }
+        },
+        text: 'Salvar e gerar PDF',
+        icon: Icon(
+          Icons.playlist_add_check_rounded,
+          size: 22.0,
+        ),
+        options: FFButtonOptions(
+          width: MediaQuery.sizeOf(context).width * 1.0,
+          height: 40.0,
+          padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+          iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+          color: FlutterFlowTheme.of(context).secondary,
+          textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                font: GoogleFonts.readexPro(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                  fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                ),
+                color: Colors.white,
+                letterSpacing: 0.0,
+                fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+              ),
+          elevation: 3.0,
+          borderSide: BorderSide(
+            color: Colors.transparent,
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+      ),
+    );
+  }
+
+  Widget _botaoGerarPdf(
+      BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 16.0),
+              child: FFButtonWidget(
+                onPressed: () async {
+                  _outUidPropriedade = await PropriedadesRecord.getDocumentOnce(
+                      widget.uidPropriedade!);
+                  _outUidTecnico =
+                      await TecnicoRecord.getDocumentOnce(widget.uidTecnico!);
+                  _outUidPersonTecnico = await queryPersonRecordOnce(
+                    queryBuilder: (personRecord) => personRecord.where(
+                      'uid',
+                      isEqualTo: _outUidTecnico?.uidPerson,
+                    ),
+                    singleRecord: true,
+                  ).then((s) => s.firstOrNull);
+                  await actions.createReceituario(
+                    widget.uidResumoVisita!,
+                    _outUidPropriedade?.displayName,
+                    _outUidPropriedade?.endereco,
+                    _outUidPersonTecnico?.displayName,
+                    _outUidPersonTecnico?.phoneNumber,
+                    resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado ??
+                        '',
+                    _outUidPersonTecnico?.email,
+                    _outUidPersonTecnico?.empresa,
+                  );
+
+                  safeSetState(() {});
+                },
+                text: 'Gerar PDF',
+                icon: Icon(
+                  Icons.playlist_add_check_rounded,
+                  size: 22.0,
+                ),
+                options: FFButtonOptions(
+                  width: MediaQuery.sizeOf(context).width * 1.0,
+                  height: 40.0,
+                  padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                  iconPadding:
+                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                  color: FlutterFlowTheme.of(context).secondary,
+                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                        font: GoogleFonts.readexPro(
+                          fontWeight: FlutterFlowTheme.of(context)
+                              .titleSmall
+                              .fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                        ),
+                        color: Colors.white,
+                        letterSpacing: 0.0,
+                        fontWeight:
+                            FlutterFlowTheme.of(context).titleSmall.fontWeight,
+                        fontStyle:
+                            FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                      ),
+                  elevation: 3.0,
+                  borderSide: BorderSide(
+                    color: Colors.transparent,
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Registra a assinatura no ObjectBox e deixa o sync subir. Antes era um
+  /// `update` direto no Firestore, que offline não concluía.
+  Future<void> _assinarOfflineFirst() async {
+    final repo = ResumoVisitaRepository();
+    final resumo = repo
+        .getByPropriedade(widget.uidPropriedade?.path ?? '')
+        .where((e) => e.firestoreId == widget.uidResumoVisita?.id)
+        .firstOrNull;
+    if (resumo == null) return;
+
+    resumo.dtAssinatura = DateTime.now();
+    resumo.dtAssinaturaFormatado = dateTimeFormat(
+      "dd/MM/yyyy",
+      getCurrentTimestamp,
+      locale: FFLocalizations.of(context).languageCode,
+    );
+    resumo.obsGeralVisita = _obsGeralTextController.text;
+    await repo.save(resumo);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Fonte única ObjectBox (offline-first): abrir e assinar o receituário
+    // deixa de exigir rede.
+    return StreamBuilder<List<ResumoVisitaEntity>>(
+      stream: ResumoVisitaRepository()
+          .watchByPropriedade(widget.uidPropriedade?.path ?? ''),
+      builder: (context, snapshot) {
+        final resumoVisitaAtualResumoDaVisitaRecord = (snapshot.data ??
+                ResumoVisitaRepository()
+                    .getByPropriedade(widget.uidPropriedade?.path ?? ''))
+            .where((e) =>
+                !e.isDeleted && e.firestoreId == widget.uidResumoVisita?.id)
+            .firstOrNull;
+
+        if (resumoVisitaAtualResumoDaVisitaRecord == null) {
+          return Scaffold(
+            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+            body: Center(
+              child: Text(
+                'Receituário não encontrado.',
+                style: FlutterFlowTheme.of(context).bodyMedium,
+              ),
+            ),
+          );
+        }
+
+        return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
+          child: Scaffold(
+            key: scaffoldKey,
+            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+            appBar: PreferredSize(
+              preferredSize: Size.fromHeight(100.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFFF75E38), Color(0xFFEC3B5B)],
+                    begin: AlignmentDirectional(-1.0, -1.0),
+                    end: AlignmentDirectional(1.0, 1.0),
+                  ),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(24.0),
+                    bottomRight: Radius.circular(24.0),
+                  ),
+                ),
+                child: AppBar(
+                  backgroundColor: Colors.transparent,
+                  automaticallyImplyLeading: false,
+                  actions: [],
+                  flexibleSpace: FlexibleSpaceBar(
+                    title: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _cabecalho(
+                            context, resumoVisitaAtualResumoDaVisitaRecord),
+                      ],
+                    ),
+                    centerTitle: true,
+                    expandedTitleScale: 1.0,
+                  ),
+                  elevation: 0.0,
+                ),
+              ),
+            ),
+            body: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _listaRecomendacoes(context),
+                  _conteudo(context, resumoVisitaAtualResumoDaVisitaRecord),
+                  if ((resumoVisitaAtualResumoDaVisitaRecord
+                              .assinaturaProdutor !=
+                          '') ||
+                      (resumoVisitaAtualResumoDaVisitaRecord
+                              .assinaturaTecnico !=
+                          ''))
+                    Container(
+                      decoration: BoxDecoration(
+                        color: FlutterFlowTheme.of(context).secondaryBackground,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(
+                            12.0, 0.0, 12.0, 0.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            if (resumoVisitaAtualResumoDaVisitaRecord
+                                    .dtAssinaturaFormatado !=
+                                '')
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 4.0, 0.0, 0.0),
+                                child: Text(
+                                  'Visita concluída e assinada em:',
+                                  style: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .override(
+                                        font: GoogleFonts.plusJakartaSans(
+                                          fontWeight: FontWeight.w500,
+                                          fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .labelMedium
+                                                  .fontStyle,
+                                        ),
+                                        color: Color(0xFF606A85),
+                                        fontSize: 14.0,
+                                        letterSpacing: 0.0,
+                                        fontWeight: FontWeight.w500,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .labelMedium
+                                            .fontStyle,
+                                      ),
+                                ),
+                              ),
+                            if (resumoVisitaAtualResumoDaVisitaRecord
+                                    .dtAssinaturaFormatado !=
+                                '')
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 4.0, 0.0, 12.0),
+                                child: Text(
+                                  resumoVisitaAtualResumoDaVisitaRecord
+                                          .dtAssinaturaFormatado ??
+                                      '',
+                                  style: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .override(
+                                        font: GoogleFonts.plusJakartaSans(
+                                          fontWeight: FontWeight.w500,
+                                          fontStyle: FontStyle.italic,
+                                        ),
+                                        color: Color(0xFF606A85),
+                                        fontSize: 14.0,
+                                        letterSpacing: 0.0,
+                                        fontWeight: FontWeight.w500,
+                                        fontStyle: FontStyle.italic,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                ),
+                              ),
+                            if (resumoVisitaAtualResumoDaVisitaRecord
+                                    .assinaturaTecnico !=
+                                '')
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 4.0, 0.0, 0.0),
+                                child: Text(
+                                  'Assinatura Técnico:',
+                                  style: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .override(
+                                        font: GoogleFonts.plusJakartaSans(
+                                          fontWeight: FontWeight.w500,
+                                          fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .labelMedium
+                                                  .fontStyle,
+                                        ),
+                                        color: Color(0xFF606A85),
+                                        fontSize: 14.0,
+                                        letterSpacing: 0.0,
+                                        fontWeight: FontWeight.w500,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .labelMedium
+                                            .fontStyle,
+                                      ),
+                                ),
+                              ),
+                            if (resumoVisitaAtualResumoDaVisitaRecord
+                                    .assinaturaTecnico !=
+                                '')
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 0.0, 0.0, 10.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: Image.network(
+                                    resumoVisitaAtualResumoDaVisitaRecord
+                                            .assinaturaTecnico ??
+                                        '',
+                                    width: 250.0,
+                                    height: 80.0,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                              ),
+                            if (resumoVisitaAtualResumoDaVisitaRecord
+                                    .assinaturaProdutor !=
+                                '')
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 4.0, 0.0, 0.0),
+                                child: Text(
+                                  'Assinatura Produtor:',
+                                  style: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .override(
+                                        font: GoogleFonts.plusJakartaSans(
+                                          fontWeight: FontWeight.w500,
+                                          fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .labelMedium
+                                                  .fontStyle,
+                                        ),
+                                        color: Color(0xFF606A85),
+                                        fontSize: 14.0,
+                                        letterSpacing: 0.0,
+                                        fontWeight: FontWeight.w500,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .labelMedium
+                                            .fontStyle,
+                                      ),
+                                ),
+                              ),
+                            if (resumoVisitaAtualResumoDaVisitaRecord
+                                    .assinaturaProdutor !=
+                                '')
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 0.0, 0.0, 10.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: Image.network(
+                                    resumoVisitaAtualResumoDaVisitaRecord
+                                            .assinaturaProdutor ??
+                                        '',
+                                    width: 250.0,
+                                    height: 80.0,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                              ),
+                            if (resumoVisitaAtualResumoDaVisitaRecord
+                                    .obsGeralVisita !=
+                                '')
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 10.0, 0.0, 0.0),
+                                child: Text(
+                                  'Observação geral visita:',
+                                  style: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .override(
+                                        font: GoogleFonts.plusJakartaSans(
+                                          fontWeight: FontWeight.w500,
+                                          fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .labelMedium
+                                                  .fontStyle,
+                                        ),
+                                        color: Color(0xFF606A85),
+                                        fontSize: 14.0,
+                                        letterSpacing: 0.0,
+                                        fontWeight: FontWeight.w500,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .labelMedium
+                                            .fontStyle,
+                                      ),
+                                ),
+                              ),
+                            if (resumoVisitaAtualResumoDaVisitaRecord
+                                    .obsGeralVisita !=
+                                '')
+                              Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 4.0, 0.0, 12.0),
+                                child: Text(
+                                  resumoVisitaAtualResumoDaVisitaRecord
+                                          .obsGeralVisita ??
+                                      '',
+                                  style: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .override(
+                                        font: GoogleFonts.plusJakartaSans(
+                                          fontWeight: FontWeight.w500,
+                                          fontStyle: FontStyle.italic,
+                                        ),
+                                        color: Color(0xFF606A85),
+                                        fontSize: 14.0,
+                                        letterSpacing: 0.0,
+                                        fontWeight: FontWeight.w500,
+                                        fontStyle: FontStyle.italic,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  if ((resumoVisitaAtualResumoDaVisitaRecord
+                              .assinaturaProdutor ==
+                          '') ||
+                      (resumoVisitaAtualResumoDaVisitaRecord
+                              .assinaturaTecnico ==
+                          ''))
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          _botaoAdicionarRecomendacao(
+                              context, resumoVisitaAtualResumoDaVisitaRecord),
+                        ],
+                      ),
+                    ),
+                  if (((resumoVisitaAtualResumoDaVisitaRecord
+                                  .assinaturaProdutor !=
+                              '') ||
+                          (resumoVisitaAtualResumoDaVisitaRecord
+                                  .assinaturaTecnico !=
+                              '')) &&
+                      (resumoVisitaAtualResumoDaVisitaRecord.obsGeralVisita ==
+                          ''))
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          _secaoObservacoes(
+                              context, resumoVisitaAtualResumoDaVisitaRecord),
+                        ],
+                      ),
+                    ),
+                  if (((resumoVisitaAtualResumoDaVisitaRecord
+                                  .assinaturaProdutor !=
+                              '') ||
+                          (resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico !=
+                              '')) &&
+                      (resumoVisitaAtualResumoDaVisitaRecord.obsGeralVisita !=
+                          '') &&
+                      (resumoVisitaAtualResumoDaVisitaRecord
+                              .dtAssinaturaFormatado !=
+                          ''))
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          _botaoGerarPdf(
+                              context, resumoVisitaAtualResumoDaVisitaRecord),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

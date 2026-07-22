@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'flutter_flow/request_manager.dart';
-import '/backend/backend.dart';
+import '/core/ui/request_manager.dart';
+import '/data/backend.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'flutter_flow/flutter_flow_util.dart';
 
 class FFAppState extends ChangeNotifier {
   static FFAppState _instance = FFAppState._internal();
@@ -20,22 +19,6 @@ class FFAppState extends ChangeNotifier {
   Future initializePersistedState() async {
     prefs = await SharedPreferences.getInstance();
     _safeInit(() {
-      _animaisProdutoresOffline = prefs
-              .getStringList('ff_animaisProdutoresOffline')
-              ?.map((x) {
-                try {
-                  return AnimaisProdutoresStruct.fromSerializableMap(
-                      jsonDecode(x));
-                } catch (e) {
-                  print("Can't decode persisted data type. Error: $e.");
-                  return null;
-                }
-              })
-              .withoutNulls
-              .toList() ??
-          _animaisProdutoresOffline;
-    });
-    _safeInit(() {
       _acoesPreferidas =
           prefs.getStringList('ff_acoesPreferidas') ?? _acoesPreferidas;
     });
@@ -47,62 +30,6 @@ class FFAppState extends ChangeNotifier {
   }
 
   late SharedPreferences prefs;
-
-  double _despesasNoMes = 0.0;
-  double get despesasNoMes => _despesasNoMes;
-  set despesasNoMes(double value) {
-    _despesasNoMes = value;
-  }
-
-  double _precoRecebidoLitro = 0.0;
-  double get precoRecebidoLitro => _precoRecebidoLitro;
-  set precoRecebidoLitro(double value) {
-    _precoRecebidoLitro = value;
-  }
-
-  List<AnimaisProdutoresStruct> _animaisProdutoresOffline = [];
-  List<AnimaisProdutoresStruct> get animaisProdutoresOffline =>
-      _animaisProdutoresOffline;
-  set animaisProdutoresOffline(List<AnimaisProdutoresStruct> value) {
-    _animaisProdutoresOffline = value;
-    prefs.setStringList('ff_animaisProdutoresOffline',
-        value.map((x) => x.serialize()).toList());
-  }
-
-  void addToAnimaisProdutoresOffline(AnimaisProdutoresStruct value) {
-    animaisProdutoresOffline.add(value);
-    prefs.setStringList('ff_animaisProdutoresOffline',
-        _animaisProdutoresOffline.map((x) => x.serialize()).toList());
-  }
-
-  void removeFromAnimaisProdutoresOffline(AnimaisProdutoresStruct value) {
-    animaisProdutoresOffline.remove(value);
-    prefs.setStringList('ff_animaisProdutoresOffline',
-        _animaisProdutoresOffline.map((x) => x.serialize()).toList());
-  }
-
-  void removeAtIndexFromAnimaisProdutoresOffline(int index) {
-    animaisProdutoresOffline.removeAt(index);
-    prefs.setStringList('ff_animaisProdutoresOffline',
-        _animaisProdutoresOffline.map((x) => x.serialize()).toList());
-  }
-
-  void updateAnimaisProdutoresOfflineAtIndex(
-    int index,
-    AnimaisProdutoresStruct Function(AnimaisProdutoresStruct) updateFn,
-  ) {
-    animaisProdutoresOffline[index] =
-        updateFn(_animaisProdutoresOffline[index]);
-    prefs.setStringList('ff_animaisProdutoresOffline',
-        _animaisProdutoresOffline.map((x) => x.serialize()).toList());
-  }
-
-  void insertAtIndexInAnimaisProdutoresOffline(
-      int index, AnimaisProdutoresStruct value) {
-    animaisProdutoresOffline.insert(index, value);
-    prefs.setStringList('ff_animaisProdutoresOffline',
-        _animaisProdutoresOffline.map((x) => x.serialize()).toList());
-  }
 
   List<String> _acoesPreferidas = [];
   List<String> get acoesPreferidas => _acoesPreferidas;

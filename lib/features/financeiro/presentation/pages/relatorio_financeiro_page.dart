@@ -1,0 +1,440 @@
+import '/data/backend.dart';
+import '/data/objectbox/index.dart';
+import '/core/ui/app_card.dart';
+import '/core/ui/flutter_flow_icon_button.dart';
+import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_util.dart';
+import '/core/ui/flutter_flow_widgets.dart';
+import '/features/financeiro/presentation/pages/editar_relatorio_financeiro_page.dart';
+import '/features/financeiro/presentation/pages/novo_relatorio_financeiro_page.dart';
+import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+class RelatorioFinanceiroPage extends StatefulWidget {
+  const RelatorioFinanceiroPage({
+    super.key,
+    required this.uidPropriedade,
+    required this.nomePropriedade,
+    required this.uidTecnico,
+    required this.emailPropriedade,
+    required this.visitaPresencial,
+    required this.diasDg,
+  });
+
+  final DocumentReference? uidPropriedade;
+  final String? nomePropriedade;
+  final DocumentReference? uidTecnico;
+  final String? emailPropriedade;
+  final bool? visitaPresencial;
+  final String? diasDg;
+
+  static String routeName = 'relatorioFinanceiro';
+  static String routePath = '/relatorioFinanceiro';
+
+  @override
+  State<RelatorioFinanceiroPage> createState() =>
+      _RelatorioFinanceiroPageState();
+}
+
+class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  Widget _cabecalho(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
+          child: FlutterFlowIconButton(
+            borderColor: Colors.transparent,
+            borderRadius: 30.0,
+            borderWidth: 1.0,
+            buttonSize: 50.0,
+            icon: Icon(
+              Icons.arrow_back_rounded,
+              color: Colors.white,
+              size: 30.0,
+            ),
+            onPressed: () async {
+              context.pushNamed(
+                InicioPropriedadePage.routeName,
+                queryParameters: {
+                  'nomePropriedade': serializeParam(
+                    widget.nomePropriedade,
+                    ParamType.String,
+                  ),
+                  'uidPropriedade': serializeParam(
+                    widget.uidPropriedade,
+                    ParamType.DocumentReference,
+                  ),
+                  'uidTecnico': serializeParam(
+                    widget.uidTecnico,
+                    ParamType.DocumentReference,
+                  ),
+                  'emailPropriedade': serializeParam(
+                    widget.emailPropriedade,
+                    ParamType.String,
+                  ),
+                  'visitaPresencial': serializeParam(
+                    widget.visitaPresencial,
+                    ParamType.bool,
+                  ),
+                  'diasDg': serializeParam(
+                    widget.diasDg,
+                    ParamType.String,
+                  ),
+                }.withoutNulls,
+              );
+            },
+          ),
+        ),
+        Text(
+          'Relatório financeiro',
+          style: FlutterFlowTheme.of(context).headlineMedium.override(
+                font: GoogleFonts.outfit(
+                  fontWeight:
+                      FlutterFlowTheme.of(context).headlineMedium.fontWeight,
+                  fontStyle:
+                      FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+                ),
+                color: Colors.white,
+                fontSize: 22.0,
+                letterSpacing: 0.0,
+                fontWeight:
+                    FlutterFlowTheme.of(context).headlineMedium.fontWeight,
+                fontStyle:
+                    FlutterFlowTheme.of(context).headlineMedium.fontStyle,
+              ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        key: scaffoldKey,
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(100.0),
+          child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFFF75E38), Color(0xFFEC3B5B)],
+                  begin: AlignmentDirectional(-1.0, -1.0),
+                  end: AlignmentDirectional(1.0, 1.0),
+                ),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(24.0),
+                  bottomRight: Radius.circular(24.0),
+                ),
+              ),
+              child: AppBar(
+                backgroundColor: Colors.transparent,
+                automaticallyImplyLeading: false,
+                actions: [],
+                flexibleSpace: FlexibleSpaceBar(
+                  title: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _cabecalho(context),
+                    ],
+                  ),
+                  centerTitle: true,
+                  expandedTitleScale: 1.0,
+                ),
+                elevation: 0.0,
+              )),
+        ),
+        body: SingleChildScrollView(
+          primary: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              // Fonte única ObjectBox (offline-first): a lista vem do banco
+              // local e o Firestore serve só para sincronizar. Antes era um
+              // StreamBuilder do Firestore, que offline ficava preso no
+              // CircularProgressIndicator — motivo do card ser escondido sem
+              // internet na tela de início da propriedade.
+              StreamBuilder<List<FinanceiroEntity>>(
+                stream: FinanceiroRepository()
+                    .watchByParentPath(widget.uidPropriedade!.path),
+                builder: (context, snapshot) {
+                  final listViewFinanceiroRecordList = (snapshot.data ??
+                          <FinanceiroEntity>[])
+                      .where((e) => !e.isDeleted)
+                      .toList()
+                    ..sort((a, b) =>
+                        (b.dtRelatorio ?? '').compareTo(a.dtRelatorio ?? ''));
+
+                  return ListView.builder(
+                    padding: EdgeInsets.zero,
+                    primary: false,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: listViewFinanceiroRecordList.length,
+                    itemBuilder: (context, listViewIndex) {
+                      final listViewFinanceiroRecord =
+                          listViewFinanceiroRecordList[listViewIndex];
+                      return Align(
+                        alignment: AlignmentDirectional(0.0, 0.0),
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              12.0, 0.0, 12.0, 10.0),
+                          child: InkWell(
+                            splashColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            onTap: () async {
+                              context.pushNamed(
+                                EditarRelatorioFinanceiroPage.routeName,
+                                queryParameters: {
+                                  'uidPropriedade': serializeParam(
+                                    widget.uidPropriedade,
+                                    ParamType.DocumentReference,
+                                  ),
+                                  'nomePropriedade': serializeParam(
+                                    widget.nomePropriedade,
+                                    ParamType.String,
+                                  ),
+                                  'uidTecnico': serializeParam(
+                                    widget.uidTecnico,
+                                    ParamType.DocumentReference,
+                                  ),
+                                  'emailPropriedade': serializeParam(
+                                    widget.emailPropriedade,
+                                    ParamType.String,
+                                  ),
+                                  'visitaPresencial': serializeParam(
+                                    widget.visitaPresencial,
+                                    ParamType.bool,
+                                  ),
+                                  'diasDg': serializeParam(
+                                    widget.diasDg,
+                                    ParamType.String,
+                                  ),
+                                  'financeiroLocalId': serializeParam(
+                                    listViewFinanceiroRecord.id,
+                                    ParamType.int,
+                                  ),
+                                }.withoutNulls,
+                              );
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: FlutterFlowTheme.of(context)
+                                    .secondaryBackground,
+                                borderRadius: BorderRadius.circular(16.0),
+                                boxShadow: AppTokens.softShadow(context),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsetsDirectional.fromSTEB(
+                                    16.0, 12.0, 16.0, 12.0),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Expanded(
+                                      child: GridView(
+                                        padding: EdgeInsets.zero,
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          crossAxisSpacing: 10.0,
+                                          mainAxisSpacing: 0.0,
+                                          childAspectRatio: 2.0,
+                                        ),
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.vertical,
+                                        children: [
+                                          Column(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsetsDirectional
+                                                    .fromSTEB(
+                                                        5.0, 0.0, 0.0, 0.0),
+                                                child: Text(
+                                                  listViewFinanceiroRecord
+                                                          .dtRelatorio ??
+                                                      '',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyLarge
+                                                      .override(
+                                                        font: GoogleFonts
+                                                            .readexPro(
+                                                          fontWeight:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .bodyLarge
+                                                                  .fontWeight,
+                                                          fontStyle:
+                                                              FlutterFlowTheme.of(
+                                                                      context)
+                                                                  .bodyLarge
+                                                                  .fontStyle,
+                                                        ),
+                                                        fontSize: 18.0,
+                                                        letterSpacing: 0.0,
+                                                        fontWeight:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyLarge
+                                                                .fontWeight,
+                                                        fontStyle:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .bodyLarge
+                                                                .fontStyle,
+                                                      ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Column(
+                                            mainAxisSize: MainAxisSize.max,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            children: [
+                                              FlutterFlowIconButton(
+                                                borderRadius: 20.0,
+                                                borderWidth: 1.0,
+                                                buttonSize: 40.0,
+                                                icon: Icon(
+                                                  Icons.keyboard_arrow_right,
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .primaryText,
+                                                  size: 30.0,
+                                                ),
+                                                onPressed: () {
+                                                  print(
+                                                      'IconButton pressed ...');
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(25.0, 24.0, 24.0, 12.0),
+                child: FFButtonWidget(
+                  onPressed: () async {
+                    context.pushNamed(
+                      NovoRelatorioFinanceiroPage.routeName,
+                      queryParameters: {
+                        'uidPropriedade': serializeParam(
+                          widget.uidPropriedade,
+                          ParamType.DocumentReference,
+                        ),
+                        'nomePropriedade': serializeParam(
+                          widget.nomePropriedade,
+                          ParamType.String,
+                        ),
+                        'uidTecnico': serializeParam(
+                          widget.uidTecnico,
+                          ParamType.DocumentReference,
+                        ),
+                        'emailPropriedade': serializeParam(
+                          widget.emailPropriedade,
+                          ParamType.String,
+                        ),
+                        'visitaPresencial': serializeParam(
+                          widget.visitaPresencial,
+                          ParamType.bool,
+                        ),
+                        'diasDg': serializeParam(
+                          widget.diasDg,
+                          ParamType.String,
+                        ),
+                      }.withoutNulls,
+                    );
+                  },
+                  text: 'Novo relatório',
+                  icon: Icon(
+                    Icons.add_box,
+                    size: 15.0,
+                  ),
+                  options: FFButtonOptions(
+                    width: double.infinity,
+                    height: 48.0,
+                    padding: EdgeInsets.all(0.0),
+                    iconPadding:
+                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                    color: Color(0xFFEC3B5B),
+                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                          font: GoogleFonts.readexPro(
+                            fontWeight: FlutterFlowTheme.of(context)
+                                .titleSmall
+                                .fontWeight,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .titleSmall
+                                .fontStyle,
+                          ),
+                          color: Colors.white,
+                          letterSpacing: 0.0,
+                          fontWeight: FlutterFlowTheme.of(context)
+                              .titleSmall
+                              .fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
+                        ),
+                    elevation: 4.0,
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                      width: 1.0,
+                    ),
+                    borderRadius: BorderRadius.circular(60.0),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -51,6 +51,24 @@ void main() {
       expect(ehVacaOuNovilha('Touros'), false);
       expect(ehVacaOuNovilha(null), false);
     });
+
+    test('ehSemens casa as duas grafias legadas', () {
+      expect(ehSemens('Sêmens'), true); // canônico das telas
+      expect(ehSemens('Semêns'), true); // grafia da constante de dropdown
+      expect(ehSemens('Touros'), false);
+      expect(ehSemens('Vacas'), false);
+      expect(ehSemens(null), false);
+      expect(ehSemens(''), false);
+    });
+
+    test('ehTouroOuSemem = Touros || Sêmens', () {
+      expect(ehTouroOuSemem('Touros'), true);
+      expect(ehTouroOuSemem('Sêmens'), true);
+      expect(ehTouroOuSemem('Semêns'), true);
+      expect(ehTouroOuSemem('Vacas'), false);
+      expect(ehTouroOuSemem('Novilhas'), false);
+      expect(ehTouroOuSemem(null), false);
+    });
   });
 
   group('predicado composto', () {

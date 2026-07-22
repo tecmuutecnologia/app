@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../auth/auth_repository.dart';
+import '/core/auth/auth_repository.dart';
 import '../connectivity/connectivity_service.dart';
-import '../../backend/objectbox/index.dart';
+import '../../data/objectbox/index.dart';
 
 /// Injeção de dependência (Riverpod) da camada offline-first.
 ///
@@ -25,9 +25,16 @@ final connectivityServiceProvider = Provider<ConnectivityService>(
 );
 
 /// Estado online/offline reativo (`true` = há internet real).
-final isOnlineProvider = StreamProvider<bool>(
-  (ref) => ref.watch(connectivityServiceProvider).onStatusChange,
-);
+///
+/// Emite o estado ATUAL imediatamente e só então segue as transições. O
+/// `onStatusChange` é um broadcast stream que não reemite o último valor, então
+/// quem começa a observar depois do boot perderia o estado inicial e ficaria em
+/// `loading` (lido como offline) até a próxima mudança de rede.
+final isOnlineProvider = StreamProvider<bool>((ref) async* {
+  final service = ref.watch(connectivityServiceProvider);
+  yield service.isOnline;
+  yield* service.onStatusChange;
+});
 
 /// Estado da sincronização (idle/syncing/completed/error/offline).
 final syncStatusProvider = StreamProvider<SyncStatus>((ref) {

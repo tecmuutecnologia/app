@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.25+93
+version: 1.0.26+97
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -146,6 +146,12 @@ dependencies:
   video_player_web: 2.3.5
   objectbox: ^4.0.0
   objectbox_flutter_libs: ^4.3.1
+  # ObjectBox Admin: UI web (http://127.0.0.1:8090) p/ inspecionar o banco em
+  # debug. A classe `Admin` vem do core `objectbox`; NÃO existe pacote Dart
+  # `objectbox_flutter_admin`. Para `Admin.isAvailable()` retornar true no
+  # Android, troque a native lib por `objectbox-android-objectbrowser` no
+  # android/app/build.gradle (debugImplementation). Guardado por kDebugMode no
+  # menu de debug, inerte em release.
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -156,6 +162,7 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   local_auth: ^2.3.0
 
+  http: any
 dependency_overrides:
   http: 1.4.0
   intl: 0.20.2

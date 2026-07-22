@@ -1,0 +1,115 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
+
+class DespesasNoMes extends StatefulWidget {
+  const DespesasNoMes({
+    super.key,
+    this.width,
+    this.height,
+    required this.bordercolor,
+    required this.borderRadius,
+    required this.initialValue,
+    this.onChanged,
+  });
+
+  final double? width;
+  final double? height;
+  final Color bordercolor;
+  final double borderRadius;
+  final String initialValue;
+  final void Function(double)? onChanged;
+
+  @override
+  _PriceFieldState createState() => _PriceFieldState();
+}
+
+class _PriceFieldState extends State<DespesasNoMes> {
+  late TextEditingController _priceEditingController;
+  final currencyFormat = NumberFormat("#,##0.00", "pt_BR");
+
+  @override
+  void initState() {
+    super.initState();
+    _priceEditingController = TextEditingController();
+    _priceEditingController.text = widget.initialValue;
+  }
+
+  @override
+  void dispose() {
+    _priceEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: widget.width,
+      height: widget.height,
+      child: TextField(
+        controller: _priceEditingController,
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+          TextInputFormatter.withFunction((oldValue, newValue) {
+            final text = newValue.text;
+            final selection = newValue.selection;
+            if (text.isEmpty) {
+              return TextEditingValue(text: '', selection: selection);
+            } else if (text.length == 1) {
+              final number = int.tryParse(text);
+              if (number == null) {
+                return oldValue;
+              } else {
+                final newText = '0.${number.toString()}';
+                return TextEditingValue(
+                  text: newText,
+                  selection: TextSelection.collapsed(offset: newText.length),
+                );
+              }
+            } else {
+              final price = double.parse(text.replaceAll('.', '')) / 100;
+              final newText = currencyFormat.format(price);
+              widget.onChanged?.call(price);
+              final newSelectionIndex =
+                  newText.length - (text.length - selection.end);
+              return TextEditingValue(
+                text: newText,
+                selection: TextSelection.collapsed(offset: newSelectionIndex),
+              );
+            }
+          })
+        ],
+        onChanged: (value) {},
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+        ),
+        decoration: InputDecoration(
+          hintText: '1.000,00',
+          hintStyle: const TextStyle(
+            color: Color.fromARGB(255, 35, 35, 35),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(
+              color: Color.fromARGB(255, 35, 35, 35),
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: widget.bordercolor),
+          ),
+          prefix: const Text(
+            'R\$ ',
+            style: TextStyle(
+              color: Color.fromARGB(255, 35, 35, 35),
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

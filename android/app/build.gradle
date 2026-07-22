@@ -33,7 +33,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace "br.app.tecmuu"
-    compileSdkVersion 35
+    compileSdkVersion 36
     
 
     compileOptions {
@@ -59,7 +59,7 @@ android {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "br.app.tecmuu"
         minSdkVersion 23
-        targetSdkVersion 35
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -87,7 +87,20 @@ flutter {
     source '../..'
 }
 
+// ObjectBox Admin (UI web de inspeção em http://127.0.0.1:8090): só em debug.
+// O plugin objectbox_flutter_libs adiciona `objectbox-android` (sem Admin);
+// precisamos excluí-lo no debug e usar a variante `-objectbrowser`, senão dá
+// conflito de classes duplicadas. Versão casa com objectbox-android do plugin.
+configurations {
+    debugImplementation {
+        exclude group: "io.objectbox", module: "objectbox-android"
+    }
+}
+
 dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.1.0"
+
+    // ObjectBox Admin: habilita Admin.isAvailable() em debug no Android.
+    debugImplementation "io.objectbox:objectbox-android-objectbrowser:4.3.1"
 }

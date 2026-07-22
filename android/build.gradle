@@ -23,8 +23,11 @@ subprojects {
     afterEvaluate { project ->
         if (project.plugins.hasPlugin("com.android.application") ||
                 project.plugins.hasPlugin("com.android.library")) {
+            // Uniformiza o compileSdk de TODOS os módulos (app + plugins).
+            // Roda em afterEvaluate, então sobrepõe o valor do app/build.gradle —
+            // era por isso que subir só o app não surtia efeito.
             project.android {
-                compileSdkVersion 35
+                compileSdkVersion 36
             }
         }
         if (project.hasProperty('android')) {

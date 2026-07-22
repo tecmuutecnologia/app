@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecmuu/backend/objectbox/entities/index.dart';
+import 'package:tecmuu/data/objectbox/entities/index.dart';
 import 'package:tecmuu/features/animais/application/animais_providers.dart';
 import 'package:tecmuu/features/animais/presentation/animal_group_list_view.dart';
 
@@ -51,7 +51,8 @@ void main() {
 
     expect(find.text('Mimosa #12'), findsOneWidget);
     expect(find.text('Brinco 12 • Prenha'), findsOneWidget);
-    expect(find.byType(Card), findsOneWidget);
+    // Reskin: cada animal é uma linha ListTile dentro de um AppCard.
+    expect(find.byType(ListTile), findsOneWidget);
   });
 
   testWidgets('estado vazio menciona o grupo', (tester) async {
@@ -75,8 +76,8 @@ void main() {
       onEdit: (id) => edited = id,
     );
 
-    expect(find.byIcon(Icons.edit), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.edit));
+    expect(find.byIcon(Icons.edit_outlined), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.edit_outlined));
     expect(edited, 'a1');
   });
 
@@ -84,6 +85,6 @@ void main() {
     await pump(tester, [
       AnimalEntity(firestoreId: 'a1', nomeAnimal: 'X', grupoAnimal: 'Vacas'),
     ]);
-    expect(find.byIcon(Icons.edit), findsNothing);
+    expect(find.byIcon(Icons.edit_outlined), findsNothing);
   });
 }

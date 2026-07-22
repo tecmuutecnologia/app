@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecmuu/backend/objectbox/entities/acao_entity.dart';
+import 'package:tecmuu/data/objectbox/entities/acao_entity.dart';
 
 /// Fake mínimo de Timestamp do Firestore: expõe apenas `toDate()`, que é o
 /// único método usado por `AcaoEntity.fromFirestore`. Evita dependência de
