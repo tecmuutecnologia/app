@@ -40,6 +40,17 @@ class ResumoVisitaRepository extends BaseSyncRepository<ResumoVisitaEntity> {
   @override
   bool get syncedByModifiedLoop => true;
 
+  /// Gera o `firestoreId` REAL já na criação local. Sem isso, um resumo criado
+  /// offline só ganharia id no sync — e os tratamentos/recomendações filhos,
+  /// que o referenciam por `uidResumoDaVisita`, ficariam órfãos.
+  @override
+  bool get preGeneratesFirestoreId => true;
+
+  /// `resumo_da_visita` é TOP-LEVEL: o caminho da coleção não deriva de um
+  /// documento pai (o `collectionPathFor` padrão concatenaria o parentPath).
+  @override
+  String collectionPathFor(ResumoVisitaEntity entity) => 'resumo_da_visita';
+
   ResumoVisitaEntity? getByFirestoreId(String firestoreId) => box
       .query(ResumoVisitaEntity_.firestoreId.equals(firestoreId))
       .build()

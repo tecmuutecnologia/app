@@ -1003,7 +1003,9 @@ class OfflineFirstSyncService {
         if (visita.firestoreId != null && visita.parentPath != null) {
           final docRef =
               _firestore.doc('resumo_da_visita/${visita.firestoreId}');
-          await docRef.update(_payloadVisita(visita));
+          // `set(merge)` e não `update`: com id pré-gerado o documento pode
+          // ainda não existir no Firestore na primeira subida.
+          await docRef.set(_payloadVisita(visita), SetOptions(merge: true));
           visita.needsSync = false;
           visita.lastSynced = DateTime.now();
           _objectBox.resumoVisitaBox.put(visita);
