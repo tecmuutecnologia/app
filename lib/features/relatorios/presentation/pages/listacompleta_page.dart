@@ -228,7 +228,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).secondaryBackground,
+        color: FlutterFlowTheme.of(context).primaryBackground,
         borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
       padding: const EdgeInsetsDirectional.fromSTEB(12.0, 10.0, 12.0, 10.0),
@@ -390,63 +390,75 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
 
   Widget _front1(
       BuildContext context, AnimaisProdutoresStruct item, int index) {
-    return Card(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      color: FlutterFlowTheme.of(context).secondaryBackground,
-      elevation: 4.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 44.0,
-                            height: 44.0,
-                            decoration: BoxDecoration(
-                              color: () {
-                                if (ehVaca(item.grupoAnimal)) {
-                                  return AppTokens.brand;
-                                } else if (ehNovilha(item.grupoAnimal)) {
-                                  return AppTokens.secondary;
-                                } else {
-                                  return FlutterFlowTheme.of(context)
-                                      .secondaryText;
-                                }
-                              }(),
-                              shape: BoxShape.circle,
-                            ),
-                            alignment: AlignmentDirectional(0.0, 0.0),
-                            child: Text(
-                              () {
-                                if (ehVaca(item.grupoAnimal)) {
-                                  return 'VAC';
-                                } else if (ehNovilha(item.grupoAnimal)) {
-                                  return 'NOV';
-                                } else {
-                                  return 'N/C';
-                                }
-                              }(),
-                              style: FlutterFlowTheme.of(context)
-                                  .titleMedium
-                                  .override(
-                                    font: GoogleFonts.readexPro(
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(12.0, 6.0, 12.0, 6.0),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: FlutterFlowTheme.of(context).secondaryBackground,
+          boxShadow: AppTokens.softShadow(context),
+          borderRadius: BorderRadius.circular(AppTokens.radius),
+        ),
+        child: Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 44.0,
+                              height: 44.0,
+                              decoration: BoxDecoration(
+                                color: () {
+                                  if (ehVaca(item.grupoAnimal)) {
+                                    return AppTokens.brand;
+                                  } else if (ehNovilha(item.grupoAnimal)) {
+                                    return AppTokens.secondary;
+                                  } else {
+                                    return FlutterFlowTheme.of(context)
+                                        .secondaryText;
+                                  }
+                                }(),
+                                shape: BoxShape.circle,
+                              ),
+                              alignment: AlignmentDirectional(0.0, 0.0),
+                              child: Text(
+                                () {
+                                  if (ehVaca(item.grupoAnimal)) {
+                                    return 'VAC';
+                                  } else if (ehNovilha(item.grupoAnimal)) {
+                                    return 'NOV';
+                                  } else {
+                                    return 'N/C';
+                                  }
+                                }(),
+                                style: FlutterFlowTheme.of(context)
+                                    .titleMedium
+                                    .override(
+                                      font: GoogleFonts.readexPro(
+                                        fontWeight: FlutterFlowTheme.of(context)
+                                            .titleMedium
+                                            .fontWeight,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .titleMedium
+                                            .fontStyle,
+                                      ),
+                                      color: Colors.white,
+                                      fontSize: 13.0,
+                                      letterSpacing: 0.0,
                                       fontWeight: FlutterFlowTheme.of(context)
                                           .titleMedium
                                           .fontWeight,
@@ -454,167 +466,162 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                                           .titleMedium
                                           .fontStyle,
                                     ),
-                                    color: Colors.white,
-                                    fontSize: 13.0,
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .titleMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleMedium
-                                        .fontStyle,
-                                  ),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              12.0, 0.0, 8.0, 0.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${() {
-                                  if ((item.nomeAnimal != '') &&
-                                      (item.brincoAnimal != null) &&
-                                      (item.brincoAnimal != -1)) {
-                                    return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
-                                  } else if (item.nomeAnimal != '') {
-                                    return item.nomeAnimal;
-                                  } else {
-                                    return item.brincoAnimal.toString();
-                                  }
-                                }()}',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyLarge
-                                    .override(
-                                      font: GoogleFonts.readexPro(
+                          ],
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                                12.0, 0.0, 8.0, 0.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${() {
+                                    if ((item.nomeAnimal != '') &&
+                                        (item.brincoAnimal != null) &&
+                                        (item.brincoAnimal != -1)) {
+                                      return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
+                                    } else if (item.nomeAnimal != '') {
+                                      return item.nomeAnimal;
+                                    } else {
+                                      return item.brincoAnimal.toString();
+                                    }
+                                  }()}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyLarge
+                                      .override(
+                                        font: GoogleFonts.readexPro(
+                                          fontWeight: FontWeight.w600,
+                                          fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .bodyLarge
+                                                  .fontStyle,
+                                        ),
+                                        letterSpacing: 0.0,
                                         fontWeight: FontWeight.w600,
                                         fontStyle: FlutterFlowTheme.of(context)
                                             .bodyLarge
                                             .fontStyle,
                                       ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.w600,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyLarge
-                                          .fontStyle,
-                                    ),
-                              ),
-                              // Status em linha propria: antes vinha concatenado
-                              // no nome ("Mimosa - 12 - Prenha").
-                              if (item.status != '')
-                                Text(
-                                  item.status,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .override(
-                                        font: GoogleFonts.readexPro(),
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
-                                        letterSpacing: 0.0,
-                                      ),
                                 ),
-                              if (ehDescarte(item.status))
-                                _selo(context, 'Descartado', Color(0xFFFE0000),
-                                    Icons.delete_forever_rounded),
-                            ],
+                                // Status em linha propria: antes vinha concatenado
+                                // no nome ("Mimosa - 12 - Prenha").
+                                if (item.status != '')
+                                  Text(
+                                    item.status,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .override(
+                                          font: GoogleFonts.readexPro(),
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                          letterSpacing: 0.0,
+                                        ),
+                                  ),
+                                if (ehDescarte(item.status))
+                                  _selo(
+                                      context,
+                                      'Descartado',
+                                      Color(0xFFFE0000),
+                                      Icons.delete_forever_rounded),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Align(
-                                alignment: AlignmentDirectional(0.0, 0.0),
-                                child: Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      5.0, 0.0, 0.0, 0.0),
-                                  child: InkWell(
-                                    splashColor: Colors.transparent,
-                                    focusColor: Colors.transparent,
-                                    hoverColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    onTap: () async {
-                                      context.pushNamed(
-                                        ProntuarioAnimalPage.routeName,
-                                        queryParameters: {
-                                          'uidPropriedade': serializeParam(
-                                            widget.uidPropriedade,
-                                            ParamType.DocumentReference,
-                                          ),
-                                          'nomePropriedade': serializeParam(
-                                            widget.nomePropriedade,
-                                            ParamType.String,
-                                          ),
-                                          'uidTecnico': serializeParam(
-                                            widget.uidTecnico,
-                                            ParamType.DocumentReference,
-                                          ),
-                                          'emailPropriedade': serializeParam(
-                                            widget.emailPropriedade,
-                                            ParamType.String,
-                                          ),
-                                          'uidAnimaisProdutores':
-                                              serializeParam(
-                                            item.uidAnimal,
-                                            ParamType.DocumentReference,
-                                          ),
-                                          'grupoPredominante': serializeParam(
-                                            item.grupoAnimal,
-                                            ParamType.String,
-                                          ),
-                                          'visitaPresencial': serializeParam(
-                                            widget.visitaPresencial,
-                                            ParamType.bool,
-                                          ),
-                                          'diasDg': serializeParam(
-                                            widget.diasDg,
-                                            ParamType.String,
-                                          ),
-                                        }.withoutNulls,
-                                      );
-                                    },
-                                    child: _chipProntuario(context),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Align(
+                                  alignment: AlignmentDirectional(0.0, 0.0),
+                                  child: Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        5.0, 0.0, 0.0, 0.0),
+                                    child: InkWell(
+                                      splashColor: Colors.transparent,
+                                      focusColor: Colors.transparent,
+                                      hoverColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      onTap: () async {
+                                        context.pushNamed(
+                                          ProntuarioAnimalPage.routeName,
+                                          queryParameters: {
+                                            'uidPropriedade': serializeParam(
+                                              widget.uidPropriedade,
+                                              ParamType.DocumentReference,
+                                            ),
+                                            'nomePropriedade': serializeParam(
+                                              widget.nomePropriedade,
+                                              ParamType.String,
+                                            ),
+                                            'uidTecnico': serializeParam(
+                                              widget.uidTecnico,
+                                              ParamType.DocumentReference,
+                                            ),
+                                            'emailPropriedade': serializeParam(
+                                              widget.emailPropriedade,
+                                              ParamType.String,
+                                            ),
+                                            'uidAnimaisProdutores':
+                                                serializeParam(
+                                              item.uidAnimal,
+                                              ParamType.DocumentReference,
+                                            ),
+                                            'grupoPredominante': serializeParam(
+                                              item.grupoAnimal,
+                                              ParamType.String,
+                                            ),
+                                            'visitaPresencial': serializeParam(
+                                              widget.visitaPresencial,
+                                              ParamType.bool,
+                                            ),
+                                            'diasDg': serializeParam(
+                                              widget.diasDg,
+                                              ParamType.String,
+                                            ),
+                                          }.withoutNulls,
+                                        );
+                                      },
+                                      child: _chipProntuario(context),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              if ((item.dtUltimaAcao != '') &&
-                                  (functions.verificaDataAcaoDataAtual(
-                                          item.dtUltimaAcao) ==
-                                      true))
-                                Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      5.0, 0.0, 0.0, 0.0),
-                                  child: _selo(context, 'Hoje',
-                                      Color(0xFF048508), Icons.check_circle),
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
+                                if ((item.dtUltimaAcao != '') &&
+                                    (functions.verificaDataAcaoDataAtual(
+                                            item.dtUltimaAcao) ==
+                                        true))
+                                  Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        5.0, 0.0, 0.0, 0.0),
+                                    child: _selo(context, 'Hoje',
+                                        Color(0xFF048508), Icons.check_circle),
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            // Acoes que antes ficavam no VERSO do cartao (FlipCard).
-            _back3(context, item, index),
-          ],
+                ],
+              ),
+              // Acoes que antes ficavam no VERSO do cartao (FlipCard).
+              _back3(context, item, index),
+            ],
+          ),
         ),
       ),
     );
@@ -661,63 +668,75 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
 
   Widget _front2(
       BuildContext context, AnimaisProdutoresStruct item, int index) {
-    return Card(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      color: FlutterFlowTheme.of(context).secondaryBackground,
-      elevation: 4.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 44.0,
-                            height: 44.0,
-                            decoration: BoxDecoration(
-                              color: () {
-                                if (ehVaca(item.grupoAnimal)) {
-                                  return AppTokens.brand;
-                                } else if (ehNovilha(item.grupoAnimal)) {
-                                  return AppTokens.secondary;
-                                } else {
-                                  return FlutterFlowTheme.of(context)
-                                      .secondaryText;
-                                }
-                              }(),
-                              shape: BoxShape.circle,
-                            ),
-                            alignment: AlignmentDirectional(0.0, 0.0),
-                            child: Text(
-                              () {
-                                if (ehVaca(item.grupoAnimal)) {
-                                  return 'VAC';
-                                } else if (ehNovilha(item.grupoAnimal)) {
-                                  return 'NOV';
-                                } else {
-                                  return 'N/C';
-                                }
-                              }(),
-                              style: FlutterFlowTheme.of(context)
-                                  .titleMedium
-                                  .override(
-                                    font: GoogleFonts.readexPro(
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(12.0, 6.0, 12.0, 6.0),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: FlutterFlowTheme.of(context).secondaryBackground,
+          boxShadow: AppTokens.softShadow(context),
+          borderRadius: BorderRadius.circular(AppTokens.radius),
+        ),
+        child: Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 44.0,
+                              height: 44.0,
+                              decoration: BoxDecoration(
+                                color: () {
+                                  if (ehVaca(item.grupoAnimal)) {
+                                    return AppTokens.brand;
+                                  } else if (ehNovilha(item.grupoAnimal)) {
+                                    return AppTokens.secondary;
+                                  } else {
+                                    return FlutterFlowTheme.of(context)
+                                        .secondaryText;
+                                  }
+                                }(),
+                                shape: BoxShape.circle,
+                              ),
+                              alignment: AlignmentDirectional(0.0, 0.0),
+                              child: Text(
+                                () {
+                                  if (ehVaca(item.grupoAnimal)) {
+                                    return 'VAC';
+                                  } else if (ehNovilha(item.grupoAnimal)) {
+                                    return 'NOV';
+                                  } else {
+                                    return 'N/C';
+                                  }
+                                }(),
+                                style: FlutterFlowTheme.of(context)
+                                    .titleMedium
+                                    .override(
+                                      font: GoogleFonts.readexPro(
+                                        fontWeight: FlutterFlowTheme.of(context)
+                                            .titleMedium
+                                            .fontWeight,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .titleMedium
+                                            .fontStyle,
+                                      ),
+                                      color: Colors.white,
+                                      fontSize: 13.0,
+                                      letterSpacing: 0.0,
                                       fontWeight: FlutterFlowTheme.of(context)
                                           .titleMedium
                                           .fontWeight,
@@ -725,167 +744,162 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                                           .titleMedium
                                           .fontStyle,
                                     ),
-                                    color: Colors.white,
-                                    fontSize: 13.0,
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .titleMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .titleMedium
-                                        .fontStyle,
-                                  ),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              12.0, 0.0, 8.0, 0.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${() {
-                                  if ((item.nomeAnimal != '') &&
-                                      (item.brincoAnimal != null) &&
-                                      (item.brincoAnimal != -1)) {
-                                    return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
-                                  } else if (item.nomeAnimal != '') {
-                                    return item.nomeAnimal;
-                                  } else {
-                                    return item.brincoAnimal.toString();
-                                  }
-                                }()}',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyLarge
-                                    .override(
-                                      font: GoogleFonts.readexPro(
+                          ],
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(
+                                12.0, 0.0, 8.0, 0.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${() {
+                                    if ((item.nomeAnimal != '') &&
+                                        (item.brincoAnimal != null) &&
+                                        (item.brincoAnimal != -1)) {
+                                      return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
+                                    } else if (item.nomeAnimal != '') {
+                                      return item.nomeAnimal;
+                                    } else {
+                                      return item.brincoAnimal.toString();
+                                    }
+                                  }()}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyLarge
+                                      .override(
+                                        font: GoogleFonts.readexPro(
+                                          fontWeight: FontWeight.w600,
+                                          fontStyle:
+                                              FlutterFlowTheme.of(context)
+                                                  .bodyLarge
+                                                  .fontStyle,
+                                        ),
+                                        letterSpacing: 0.0,
                                         fontWeight: FontWeight.w600,
                                         fontStyle: FlutterFlowTheme.of(context)
                                             .bodyLarge
                                             .fontStyle,
                                       ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.w600,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyLarge
-                                          .fontStyle,
-                                    ),
-                              ),
-                              // Status em linha propria: antes vinha concatenado
-                              // no nome ("Mimosa - 12 - Prenha").
-                              if (item.status != '')
-                                Text(
-                                  item.status,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .override(
-                                        font: GoogleFonts.readexPro(),
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryText,
-                                        letterSpacing: 0.0,
-                                      ),
                                 ),
-                              if (ehDescarte(item.status))
-                                _selo(context, 'Descartado', Color(0xFFFE0000),
-                                    Icons.delete_forever_rounded),
-                            ],
+                                // Status em linha propria: antes vinha concatenado
+                                // no nome ("Mimosa - 12 - Prenha").
+                                if (item.status != '')
+                                  Text(
+                                    item.status,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: FlutterFlowTheme.of(context)
+                                        .labelMedium
+                                        .override(
+                                          font: GoogleFonts.readexPro(),
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryText,
+                                          letterSpacing: 0.0,
+                                        ),
+                                  ),
+                                if (ehDescarte(item.status))
+                                  _selo(
+                                      context,
+                                      'Descartado',
+                                      Color(0xFFFE0000),
+                                      Icons.delete_forever_rounded),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Align(
-                                alignment: AlignmentDirectional(0.0, 0.0),
-                                child: Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      5.0, 0.0, 0.0, 0.0),
-                                  child: InkWell(
-                                    splashColor: Colors.transparent,
-                                    focusColor: Colors.transparent,
-                                    hoverColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    onTap: () async {
-                                      context.pushNamed(
-                                        ProntuarioAnimalPage.routeName,
-                                        queryParameters: {
-                                          'uidPropriedade': serializeParam(
-                                            widget.uidPropriedade,
-                                            ParamType.DocumentReference,
-                                          ),
-                                          'nomePropriedade': serializeParam(
-                                            widget.nomePropriedade,
-                                            ParamType.String,
-                                          ),
-                                          'uidTecnico': serializeParam(
-                                            widget.uidTecnico,
-                                            ParamType.DocumentReference,
-                                          ),
-                                          'emailPropriedade': serializeParam(
-                                            widget.emailPropriedade,
-                                            ParamType.String,
-                                          ),
-                                          'uidAnimaisProdutores':
-                                              serializeParam(
-                                            item.uidAnimal,
-                                            ParamType.DocumentReference,
-                                          ),
-                                          'grupoPredominante': serializeParam(
-                                            item.grupoAnimal,
-                                            ParamType.String,
-                                          ),
-                                          'visitaPresencial': serializeParam(
-                                            widget.visitaPresencial,
-                                            ParamType.bool,
-                                          ),
-                                          'diasDg': serializeParam(
-                                            widget.diasDg,
-                                            ParamType.String,
-                                          ),
-                                        }.withoutNulls,
-                                      );
-                                    },
-                                    child: _chipProntuario(context),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Align(
+                                  alignment: AlignmentDirectional(0.0, 0.0),
+                                  child: Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        5.0, 0.0, 0.0, 0.0),
+                                    child: InkWell(
+                                      splashColor: Colors.transparent,
+                                      focusColor: Colors.transparent,
+                                      hoverColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      onTap: () async {
+                                        context.pushNamed(
+                                          ProntuarioAnimalPage.routeName,
+                                          queryParameters: {
+                                            'uidPropriedade': serializeParam(
+                                              widget.uidPropriedade,
+                                              ParamType.DocumentReference,
+                                            ),
+                                            'nomePropriedade': serializeParam(
+                                              widget.nomePropriedade,
+                                              ParamType.String,
+                                            ),
+                                            'uidTecnico': serializeParam(
+                                              widget.uidTecnico,
+                                              ParamType.DocumentReference,
+                                            ),
+                                            'emailPropriedade': serializeParam(
+                                              widget.emailPropriedade,
+                                              ParamType.String,
+                                            ),
+                                            'uidAnimaisProdutores':
+                                                serializeParam(
+                                              item.uidAnimal,
+                                              ParamType.DocumentReference,
+                                            ),
+                                            'grupoPredominante': serializeParam(
+                                              item.grupoAnimal,
+                                              ParamType.String,
+                                            ),
+                                            'visitaPresencial': serializeParam(
+                                              widget.visitaPresencial,
+                                              ParamType.bool,
+                                            ),
+                                            'diasDg': serializeParam(
+                                              widget.diasDg,
+                                              ParamType.String,
+                                            ),
+                                          }.withoutNulls,
+                                        );
+                                      },
+                                      child: _chipProntuario(context),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              if ((item.dtUltimaAcao != '') &&
-                                  (functions.verificaDataAcaoDataAtual(
-                                          item.dtUltimaAcao) ==
-                                      true))
-                                Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      5.0, 0.0, 0.0, 0.0),
-                                  child: _selo(context, 'Hoje',
-                                      Color(0xFF048508), Icons.check_circle),
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
+                                if ((item.dtUltimaAcao != '') &&
+                                    (functions.verificaDataAcaoDataAtual(
+                                            item.dtUltimaAcao) ==
+                                        true))
+                                  Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        5.0, 0.0, 0.0, 0.0),
+                                    child: _selo(context, 'Hoje',
+                                        Color(0xFF048508), Icons.check_circle),
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            // Acoes que antes ficavam no VERSO do cartao (FlipCard).
-            _back4(context, item, index),
-          ],
+                ],
+              ),
+              // Acoes que antes ficavam no VERSO do cartao (FlipCard).
+              _back4(context, item, index),
+            ],
+          ),
         ),
       ),
     );
@@ -933,10 +947,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   Widget _part1(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1066,10 +1076,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   Widget _part2(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1207,10 +1213,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   Widget _part3(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1325,10 +1327,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   Widget _part4(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1491,10 +1489,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   Widget _part5(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1654,10 +1648,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   Widget _part6(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1812,10 +1802,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   Widget _part7(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -1973,10 +1959,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   Widget _part8(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -2106,10 +2088,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   Widget _part9(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -2248,10 +2226,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
       BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -2367,10 +2341,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
       BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -2534,10 +2504,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
       BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -2698,10 +2664,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
       BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -2857,10 +2819,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
       BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
