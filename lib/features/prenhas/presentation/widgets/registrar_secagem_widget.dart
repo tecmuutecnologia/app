@@ -1,19 +1,17 @@
 // ignore_for_file: dead_code
 
 import '/data/backend.dart';
+import '/features/receituario/application/bookkeeping_visita.dart';
 import '/core/ui/app_card.dart';
 import '/data/objectbox/entities/index.dart';
 import '/data/objectbox/repositories/acao_repository.dart';
 import '/data/objectbox/repositories/animal_repository.dart';
-import '/core/connectivity/connectivity_service.dart';
 import 'dart:async';
 import '/core/ui/flutter_flow_animations.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import 'dart:ui';
-import '/core/ui/custom_functions.dart' as functions;
-import 'package:collection/collection.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -74,12 +72,6 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
   DateTime? _datePicked;
 
   // Outputs de query/criação (antes no FlutterFlowModel).
-  ResumoDaVisitaRecord? _outUidResumoDaVisita;
-  AnimaisProdutoresRecord? _uidAnimalRecebeAcao1;
-  RecomendacoesRecord? _outUidRecomendacoes;
-  ResumoDaVisitaRecord? _outNewUidResumoDaVisita;
-  AnimaisProdutoresRecord? _uidAnimalRecebeAcao;
-  RecomendacoesRecord? _outUidRecomendacoes2;
 
   @override
   void initState() {
@@ -563,149 +555,23 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                 // Bookkeeping de visita/tratamento/recomendação roda
                 // só online — offline a variante original também o omite
                 // (evita travar em queries sem rede).
-                if (ConnectivityService.instance.isOnline) {
-                  _outUidResumoDaVisita = await queryResumoDaVisitaRecordOnce(
-                    queryBuilder: (resumoDaVisitaRecord) => resumoDaVisitaRecord
-                        .where(
-                          'uidPropriedade',
-                          isEqualTo: widget.uidPropriedade,
-                        )
-                        .where(
-                          'uidTecnico',
-                          isEqualTo: widget.uidTecnico,
-                        )
-                        .where(
-                          'dtVisitaFormatado',
-                          isEqualTo: dateTimeFormat(
-                            "dd/MM/yyyy",
-                            getCurrentTimestamp,
-                            locale: FFLocalizations.of(context).languageCode,
-                          ),
-                        ),
-                    singleRecord: true,
-                  ).then((s) => s.firstOrNull);
-                  _shouldSetState = true;
-                  if (_outUidResumoDaVisita != null) {
-                    _uidAnimalRecebeAcao1 =
-                        await AnimaisProdutoresRecord.getDocumentOnce(
-                            widget.uidAnimaisProdutores!);
-                    _shouldSetState = true;
-
-                    await TratamentosRecord.createDoc(
-                            _outUidResumoDaVisita!.reference)
-                        .set(createTratamentosRecordData(
-                      uidAnimal: widget.uidAnimaisProdutores,
-                      tipoAcao: 'Secagem',
-                      uidResumoDaVisita: _outUidResumoDaVisita?.reference,
-                      observacaoAcao: _dtSecagemTextController.text,
-                      brincoAnimal: widget.brincoAnimal,
-                      nomeAnimal: widget.nomeAnimal,
-                      grupoAnimal: widget.grupoAnimal,
-                      brincoAnimalOrder:
-                          functions.converterStringToInt(widget.brincoAnimal!),
-                      compararDtUltimaInseminacao:
-                          _uidAnimalRecebeAcao1?.compararDtUltimaInseminacao,
-                    ));
-                    _outUidRecomendacoes = await queryRecomendacoesRecordOnce(
-                      parent: _outUidResumoDaVisita?.reference,
-                      queryBuilder: (recomendacoesRecord) => recomendacoesRecord
-                          .where(
-                            'uidResumoDaVisita',
-                            isEqualTo: _outUidResumoDaVisita?.reference,
-                          )
-                          .where(
-                            'tituloRecomendacao',
-                            isEqualTo: 'Secagem',
-                          ),
-                      singleRecord: true,
-                    ).then((s) => s.firstOrNull);
-                    _shouldSetState = true;
-                    if (_outUidRecomendacoes?.reference == null) {
-                      await RecomendacoesRecord.createDoc(
-                              _outUidResumoDaVisita!.reference)
-                          .set(createRecomendacoesRecordData(
-                        tituloRecomendacao: 'Secagem',
-                        uidResumoDaVisita: _outUidResumoDaVisita?.reference,
-                      ));
-                    }
-                  } else {
-                    var resumoDaVisitaRecordReference =
-                        ResumoDaVisitaRecord.collection.doc();
-                    await resumoDaVisitaRecordReference
-                        .set(createResumoDaVisitaRecordData(
-                      uidPropriedade: widget.uidPropriedade,
-                      uidTecnico: widget.uidTecnico,
-                      dtVisita: getCurrentTimestamp,
-                      dtVisitaFormatado: dateTimeFormat(
-                        "dd/MM/yyyy",
-                        getCurrentTimestamp,
-                        locale: FFLocalizations.of(context).languageCode,
-                      ),
-                    ));
-                    _outNewUidResumoDaVisita =
-                        ResumoDaVisitaRecord.getDocumentFromData(
-                            createResumoDaVisitaRecordData(
-                              uidPropriedade: widget.uidPropriedade,
-                              uidTecnico: widget.uidTecnico,
-                              dtVisita: getCurrentTimestamp,
-                              dtVisitaFormatado: dateTimeFormat(
-                                "dd/MM/yyyy",
-                                getCurrentTimestamp,
-                                locale:
-                                    FFLocalizations.of(context).languageCode,
-                              ),
-                            ),
-                            resumoDaVisitaRecordReference);
-                    _shouldSetState = true;
-
-                    await _outNewUidResumoDaVisita!.reference
-                        .update(createResumoDaVisitaRecordData(
-                      uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
-                    ));
-                    _uidAnimalRecebeAcao =
-                        await AnimaisProdutoresRecord.getDocumentOnce(
-                            widget.uidAnimaisProdutores!);
-                    _shouldSetState = true;
-
-                    await TratamentosRecord.createDoc(
-                            _outNewUidResumoDaVisita!.reference)
-                        .set(createTratamentosRecordData(
-                      uidAnimal: widget.uidAnimaisProdutores,
-                      tipoAcao: 'Secagem',
-                      uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
-                      observacaoAcao: _dtSecagemTextController.text,
-                      brincoAnimal: widget.brincoAnimal,
-                      nomeAnimal: widget.nomeAnimal,
-                      grupoAnimal: widget.grupoAnimal,
-                      brincoAnimalOrder:
-                          functions.converterStringToInt(widget.brincoAnimal!),
-                      compararDtUltimaInseminacao:
-                          _uidAnimalRecebeAcao?.compararDtUltimaInseminacao,
-                    ));
-                    _outUidRecomendacoes2 = await queryRecomendacoesRecordOnce(
-                      parent: _outNewUidResumoDaVisita?.reference,
-                      queryBuilder: (recomendacoesRecord) => recomendacoesRecord
-                          .where(
-                            'uidResumoDaVisita',
-                            isEqualTo: _outNewUidResumoDaVisita?.reference,
-                          )
-                          .where(
-                            'tituloRecomendacao',
-                            isEqualTo: 'Secagem',
-                          ),
-                      singleRecord: true,
-                    ).then((s) => s.firstOrNull);
-                    _shouldSetState = true;
-                    if (_outUidRecomendacoes2?.reference == null) {
-                      await RecomendacoesRecord.createDoc(
-                              _outNewUidResumoDaVisita!.reference)
-                          .set(createRecomendacoesRecordData(
-                        tituloRecomendacao: 'Secagem',
-                        uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
-                      ));
-                    }
-                  }
-                }
+                // Bookkeeping do receituário, agora offline-first.
+                await registrarBookkeepingVisita(
+                  uidPropriedade: widget.uidPropriedade,
+                  uidTecnico: widget.uidTecnico,
+                  dataFormatada: dateTimeFormat(
+                    "dd/MM/yyyy",
+                    getCurrentTimestamp,
+                    locale: FFLocalizations.of(context).languageCode,
+                  ),
+                  tituloRecomendacao: 'Secagem',
+                  descricaoRecomendacao: null,
+                  uidAnimal: widget.uidAnimaisProdutores,
+                  observacaoAcao: null,
+                  nomeAnimal: widget.nomeAnimal,
+                  brincoAnimal: widget.brincoAnimal,
+                  grupoAnimal: widget.grupoAnimal,
+                );
 
                 Navigator.pop(context);
                 if (_shouldSetState) safeSetState(() {});

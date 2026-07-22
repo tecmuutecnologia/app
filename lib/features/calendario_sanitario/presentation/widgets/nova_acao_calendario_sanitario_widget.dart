@@ -1,9 +1,9 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
 import '/data/backend.dart';
+import '/features/receituario/application/bookkeeping_visita.dart';
 import '/data/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
-import '/core/connectivity/connectivity_service.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_choice_chips.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
@@ -61,10 +61,6 @@ class _NovaAcaoCalendarioSanitarioWidgetState
   // Estado local (antes no FlutterFlowModel).
   int _qtdInicialAnimais = 0;
   int _qtdMaxAnimais = 0;
-  int _qtdInicialAnimais1 = 0;
-  int _qtdMaxAnimais1 = 0;
-  int _qtdInicialAnimais2 = 0;
-  int _qtdMaxAnimais2 = 0;
 
   final _formKey = GlobalKey<FormState>();
   FormFieldController<List<String>>? _choiceChipsValueController;
@@ -86,12 +82,6 @@ class _NovaAcaoCalendarioSanitarioWidgetState
       null;
 
   // Outputs de query/criação.
-  ResumoDaVisitaRecord? _outUidResumoDaVisita;
-  AnimaisProdutoresRecord? _outPesquisaAnimalSelecionado1;
-  RecomendacoesRecord? _outUidRecomendacoes;
-  ResumoDaVisitaRecord? _outNewUidResumoDaVisita;
-  AnimaisProdutoresRecord? _outPesquisaAnimalSelecionado2;
-  RecomendacoesRecord? _outUidRecomendacoes2;
 
   @override
   void initState() {
@@ -100,8 +90,6 @@ class _NovaAcaoCalendarioSanitarioWidgetState
     // On component load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       _qtdMaxAnimais = widget.qtdAnimaisSelecionados!;
-      _qtdMaxAnimais1 = widget.qtdAnimaisSelecionados!;
-      _qtdMaxAnimais2 = widget.qtdAnimaisSelecionados!;
       safeSetState(() {});
     });
 
@@ -903,6 +891,20 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                 dataVisita: _dtAcaoTextController.text,
                 dataDaAcao: getCurrentTimestamp,
               ));
+              await registrarBookkeepingVisita(
+                uidPropriedade: widget.uidPropriedade,
+                uidTecnico: widget.uidTecnico,
+                dataFormatada: _dtAcaoTextController.text,
+                tituloRecomendacao: _valoracaoValue,
+                descricaoRecomendacao: null,
+                uidAnimal: animalRef,
+                observacaoAcao: _obsTextController.text,
+                nomeAnimal: animalSel?.nomeAnimal,
+                brincoAnimal: animalSel?.brincoAnimal.toString(),
+                grupoAnimal: animalSel?.grupoAnimal,
+                brincoAnimalOrder: animalSel?.brincoAnimalOrder ?? 0,
+              );
+
               _qtdInicialAnimais = _qtdInicialAnimais + 1;
               safeSetState(() {});
             }
@@ -910,257 +912,18 @@ class _NovaAcaoCalendarioSanitarioWidgetState
             // ONLINE: são queries no Firestore que offline nunca
             // resolvem. O núcleo (ação sanitária + ação) já foi gravado
             // no ObjectBox acima, entao nada se perde.
-            if (ConnectivityService.instance.isOnline) {
-              _outUidResumoDaVisita = await queryResumoDaVisitaRecordOnce(
-                queryBuilder: (resumoDaVisitaRecord) => resumoDaVisitaRecord
-                    .where(
-                      'uidPropriedade',
-                      isEqualTo: widget.uidPropriedade,
-                    )
-                    .where(
-                      'uidTecnico',
-                      isEqualTo: widget.uidTecnico,
-                    )
-                    .where(
-                      'dtVisitaFormatado',
-                      isEqualTo: dateTimeFormat(
-                        "dd/MM/yyyy",
-                        getCurrentTimestamp,
-                        locale: FFLocalizations.of(context).languageCode,
-                      ),
-                    ),
-                singleRecord: true,
-              ).then((s) => s.firstOrNull);
-              _shouldSetState = true;
-              if (_outUidResumoDaVisita != null) {
-                if (_tipoValue == 'Doença') {
-                  while (_qtdMaxAnimais1 > _qtdInicialAnimais1) {
-                    _outPesquisaAnimalSelecionado1 =
-                        await queryAnimaisProdutoresRecordOnce(
-                      parent: widget.uidTecnico,
-                      queryBuilder: (animaisProdutoresRecord) =>
-                          animaisProdutoresRecord
-                              .where(
-                                'uidTecnicoPropriedade',
-                                isEqualTo: widget.uidPropriedade,
-                              )
-                              .where(
-                                'nomeBrincoConcat',
-                                isEqualTo: widget.listaAnimaisSelecionados
-                                    ?.elementAtOrNull(_qtdInicialAnimais1),
-                              ),
-                      singleRecord: true,
-                    ).then((s) => s.firstOrNull);
-                    _shouldSetState = true;
-
-                    await TratamentosRecord.createDoc(
-                            _outUidResumoDaVisita!.reference)
-                        .set(createTratamentosRecordData(
-                      uidAnimal: _outPesquisaAnimalSelecionado1?.reference,
-                      tipoAcao: _valoracaoValue,
-                      uidResumoDaVisita: _outUidResumoDaVisita?.reference,
-                      observacaoAcao: _obsTextController.text,
-                      brincoAnimal: _outPesquisaAnimalSelecionado1
-                          ?.brincoAnimalOrder
-                          .toString(),
-                      nomeAnimal: _outPesquisaAnimalSelecionado1?.nomeAnimal,
-                      grupoAnimal: _outPesquisaAnimalSelecionado1?.grupoAnimal,
-                    ));
-                    _qtdInicialAnimais1 = _qtdInicialAnimais1 + 1;
-                    safeSetState(() {});
-                  }
-                } else {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Sucesso!',
-                        style: TextStyle(
-                          color: FlutterFlowTheme.of(context).primaryText,
-                        ),
-                      ),
-                      duration: Duration(milliseconds: 4000),
-                      backgroundColor: FlutterFlowTheme.of(context).secondary,
-                    ),
-                  );
-                  if (_shouldSetState) safeSetState(() {});
-                  return;
-                }
-
-                _outUidRecomendacoes = await queryRecomendacoesRecordOnce(
-                  parent: _outUidResumoDaVisita?.reference,
-                  queryBuilder: (recomendacoesRecord) => recomendacoesRecord
-                      .where(
-                        'uidResumoDaVisita',
-                        isEqualTo: _outUidResumoDaVisita?.reference,
-                      )
-                      .where(
-                        'tituloRecomendacao',
-                        isEqualTo: _valoracaoValue,
-                      ),
-                  singleRecord: true,
-                ).then((s) => s.firstOrNull);
-                _shouldSetState = true;
-                if (_outUidRecomendacoes?.reference == null) {
-                  await RecomendacoesRecord.createDoc(
-                          _outUidResumoDaVisita!.reference)
-                      .set(createRecomendacoesRecordData(
-                    tituloRecomendacao: _valoracaoValue,
-                    uidResumoDaVisita: _outUidResumoDaVisita?.reference,
-                  ));
-                }
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Sucesso!',
-                      style: TextStyle(
-                        color: FlutterFlowTheme.of(context).primaryText,
-                      ),
-                    ),
-                    duration: Duration(milliseconds: 4000),
-                    backgroundColor: FlutterFlowTheme.of(context).secondary,
-                  ),
-                );
-                if (_shouldSetState) safeSetState(() {});
-                return;
-              } else {
-                var resumoDaVisitaRecordReference =
-                    ResumoDaVisitaRecord.collection.doc();
-                await resumoDaVisitaRecordReference
-                    .set(createResumoDaVisitaRecordData(
-                  uidPropriedade: widget.uidPropriedade,
-                  uidTecnico: widget.uidTecnico,
-                  dtVisita: getCurrentTimestamp,
-                  dtVisitaFormatado: dateTimeFormat(
-                    "dd/MM/yyyy",
-                    getCurrentTimestamp,
-                    locale: FFLocalizations.of(context).languageCode,
-                  ),
-                ));
-                _outNewUidResumoDaVisita =
-                    ResumoDaVisitaRecord.getDocumentFromData(
-                        createResumoDaVisitaRecordData(
-                          uidPropriedade: widget.uidPropriedade,
-                          uidTecnico: widget.uidTecnico,
-                          dtVisita: getCurrentTimestamp,
-                          dtVisitaFormatado: dateTimeFormat(
-                            "dd/MM/yyyy",
-                            getCurrentTimestamp,
-                            locale: FFLocalizations.of(context).languageCode,
-                          ),
-                        ),
-                        resumoDaVisitaRecordReference);
-                _shouldSetState = true;
-
-                await _outNewUidResumoDaVisita!.reference
-                    .update(createResumoDaVisitaRecordData(
-                  uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
-                ));
-                if (_tipoValue == 'Doença') {
-                  while (_qtdMaxAnimais2 > _qtdInicialAnimais2) {
-                    _outPesquisaAnimalSelecionado2 =
-                        await queryAnimaisProdutoresRecordOnce(
-                      parent: widget.uidTecnico,
-                      queryBuilder: (animaisProdutoresRecord) =>
-                          animaisProdutoresRecord
-                              .where(
-                                'uidTecnicoPropriedade',
-                                isEqualTo: widget.uidPropriedade,
-                              )
-                              .where(
-                                'nomeBrincoConcat',
-                                isEqualTo: widget.listaAnimaisSelecionados
-                                    ?.elementAtOrNull(_qtdInicialAnimais2),
-                              ),
-                      singleRecord: true,
-                    ).then((s) => s.firstOrNull);
-                    _shouldSetState = true;
-
-                    await TratamentosRecord.createDoc(
-                            _outNewUidResumoDaVisita!.reference)
-                        .set(createTratamentosRecordData(
-                      uidAnimal: _outPesquisaAnimalSelecionado2?.reference,
-                      tipoAcao: _valoracaoValue,
-                      uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
-                      observacaoAcao: _obsTextController.text,
-                      brincoAnimal: _outPesquisaAnimalSelecionado2
-                          ?.brincoAnimalOrder
-                          .toString(),
-                      nomeAnimal: _outPesquisaAnimalSelecionado2?.nomeAnimal,
-                      grupoAnimal: _outPesquisaAnimalSelecionado2?.grupoAnimal,
-                    ));
-                    _qtdInicialAnimais2 = _qtdInicialAnimais2 + 1;
-                    safeSetState(() {});
-                  }
-                } else {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Sucesso!',
-                        style: TextStyle(
-                          color: FlutterFlowTheme.of(context).primaryText,
-                        ),
-                      ),
-                      duration: Duration(milliseconds: 4000),
-                      backgroundColor: FlutterFlowTheme.of(context).secondary,
-                    ),
-                  );
-                  if (_shouldSetState) safeSetState(() {});
-                  return;
-                }
-
-                _outUidRecomendacoes2 = await queryRecomendacoesRecordOnce(
-                  parent: _outNewUidResumoDaVisita?.reference,
-                  queryBuilder: (recomendacoesRecord) => recomendacoesRecord
-                      .where(
-                        'uidResumoDaVisita',
-                        isEqualTo: _outNewUidResumoDaVisita?.reference,
-                      )
-                      .where(
-                        'tituloRecomendacao',
-                        isEqualTo: _valoracaoValue,
-                      ),
-                  singleRecord: true,
-                ).then((s) => s.firstOrNull);
-                _shouldSetState = true;
-                if (_outUidRecomendacoes2?.reference == null) {
-                  await RecomendacoesRecord.createDoc(
-                          _outNewUidResumoDaVisita!.reference)
-                      .set(createRecomendacoesRecordData(
-                    tituloRecomendacao: _valoracaoValue,
-                    uidResumoDaVisita: _outNewUidResumoDaVisita?.reference,
-                  ));
-                }
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Sucesso!',
-                      style: TextStyle(
-                        color: FlutterFlowTheme.of(context).primaryText,
-                      ),
-                    ),
-                    duration: Duration(milliseconds: 4000),
-                    backgroundColor: FlutterFlowTheme.of(context).secondary,
-                  ),
-                );
-                if (_shouldSetState) safeSetState(() {});
-                return;
-              }
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                      'Ação registrada. Será sincronizada quando houver conexão.'),
-                  duration: Duration(milliseconds: 4000),
-                  backgroundColor: FlutterFlowTheme.of(context).secondary,
-                ),
-              );
-              if (_shouldSetState) safeSetState(() {});
-              return;
-            }
+            // O bookkeeping do receituário virou offline-first e roda uma vez
+            // POR ANIMAL, dentro do laço acima.
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Ação registrada com sucesso!'),
+                duration: Duration(milliseconds: 4000),
+                backgroundColor: FlutterFlowTheme.of(context).secondary,
+              ),
+            );
+            Navigator.pop(context);
+            if (_shouldSetState) safeSetState(() {});
+            return;
           } else {
             await showDialog(
               context: context,
