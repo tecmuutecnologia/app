@@ -2,6 +2,7 @@ import '/data/backend.dart';
 import '/core/ui/flutter_flow_choice_chips.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/form_field_controller.dart';
@@ -10,7 +11,6 @@ import '/core/services/index.dart' as actions;
 import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../widgets/animal_list_widget.dart';
@@ -295,24 +295,35 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
     );
   }
 
+  /// Alterna a ordem alfabética da lista. Antes era um botão só com um ícone de
+  /// seta (duas variantes muito parecidas), sem indicar o que ordenava nem em
+  /// que ordem estava. Agora mostra o estado ATUAL por extenso ("A-Z"/"Z-A").
   Widget _buildSortButton(BuildContext context, bool isAscending) {
-    return FlutterFlowIconButton(
-      borderRadius: 8.0,
-      buttonSize: 40.0,
-      fillColor: FlutterFlowTheme.of(context).tertiary,
-      icon: FaIcon(
-        isAscending
-            ? FontAwesomeIcons.arrowUpWideShort
-            : FontAwesomeIcons.arrowDownWideShort,
-        color: isAscending
-            ? FlutterFlowTheme.of(context).info
-            : FlutterFlowTheme.of(context).secondaryBackground,
-        size: 24.0,
-      ),
+    return FFButtonWidget(
       onPressed: () {
         _ordenacaoQuery = !isAscending;
         safeSetState(() {});
       },
+      text: isAscending ? 'A-Z' : 'Z-A',
+      icon: Icon(
+        isAscending ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
+        size: 15.0,
+      ),
+      options: FFButtonOptions(
+        height: 40.0,
+        padding: const EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
+        iconPadding: EdgeInsets.zero,
+        color: AppTokens.secondary,
+        textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+              font: GoogleFonts.readexPro(),
+              color: Colors.white,
+              fontSize: 12.0,
+              letterSpacing: 0.0,
+            ),
+        elevation: 0.0,
+        borderSide: const BorderSide(color: Colors.transparent, width: 1.0),
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
+      ),
     );
   }
 
