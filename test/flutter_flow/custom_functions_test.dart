@@ -12,8 +12,8 @@ void main() {
 
   group('soma de datas previstas (usadas nos forms de ação)', () {
     test('somarDataParto = +280 dias', () {
-      expect(diasEntre('01/01/2026', functions.somarDataParto('01/01/2026')),
-          280);
+      expect(
+          diasEntre('01/01/2026', functions.somarDataParto('01/01/2026')), 280);
     });
 
     test('somarDataSecagem = +220 dias', () {
@@ -27,8 +27,8 @@ void main() {
     });
 
     test('atravessa ano bissexto (fev/2024) corretamente', () {
-      expect(diasEntre('01/12/2023', functions.somarDataParto('01/12/2023')),
-          280);
+      expect(
+          diasEntre('01/12/2023', functions.somarDataParto('01/12/2023')), 280);
     });
 
     test('data inválida retorna a própria entrada (fallback seguro)', () {
@@ -72,14 +72,6 @@ void main() {
     test('retornaGruposUnicos: únicos, ordem alfabética', () {
       expect(functions.retornaGruposUnicos(['Vacas', 'Novilhas', 'Vacas']),
           ['Novilhas', 'Vacas']);
-    });
-
-    test('retornaContagemGrupos: contagens (>0) na ordem canônica', () {
-      // ordem do mapa: Novilhas, Sêmens, Bezerras, Touros, Bezerros, Vacas
-      expect(functions.retornaContagemGrupos(['Vacas', 'Vacas', 'Novilhas']),
-          [1, 2]);
-      // grupo desconhecido é ignorado
-      expect(functions.retornaContagemGrupos(['Vacas', 'Inexistente']), [1]);
     });
 
     test('retornaGruposComContagem: "Grupo - N" ordenado', () {

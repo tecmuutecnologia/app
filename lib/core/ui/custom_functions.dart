@@ -647,33 +647,6 @@ List<String> retornaReproducaoString(List<String> animalStatuses) {
   }
 }
 
-List<int> retornaRebanhoProdutivoId(List<String> animalStatuses) {
-  List<String> orderedStatuses = ["Lactação", "Seca", "Pré Parto"];
-
-  Map<String, int> statusCount = {};
-
-  // Contar os status na lista de entrada
-  for (String status in animalStatuses) {
-    String newStatus = status;
-    if (["Vazia", "Inseminada", "Inseminada PP", "Prenha"].contains(status)) {
-      newStatus = "Lactação";
-    }
-    if (statusCount.containsKey(newStatus)) {
-      statusCount[newStatus] = statusCount[newStatus]! + 1;
-    } else {
-      statusCount[newStatus] = 1;
-    }
-  }
-
-  // Criar uma lista completa com as contagens dos status, preenchendo com zeros para os que não estão presentes
-  List<int> result = [];
-  for (String status in orderedStatuses) {
-    result.add(statusCount.containsKey(status) ? statusCount[status]! : 0);
-  }
-
-  return result;
-}
-
 List<String> retornaRebanhoProdutivoComContagem(List<String> animalStatuses) {
   List<String> orderedStatuses = ["Lactação", "Seca", "Pré Parto"];
 
@@ -702,31 +675,6 @@ List<String> retornaRebanhoProdutivoComContagem(List<String> animalStatuses) {
   }
 
   return result;
-}
-
-List<int> retornaContagemGrupos(List<String> animalGroups) {
-  // Criar um mapa para contar cada grupo de animais esperado
-  Map<String, int> groupCount = {
-    "Novilhas": 0,
-    "Sêmens": 0,
-    "Bezerras": 0,
-    "Touros": 0,
-    "Bezerros": 0,
-    "Vacas": 0,
-  };
-
-  // Contar os grupos na lista de entrada
-  for (String group in animalGroups) {
-    if (groupCount.containsKey(group)) {
-      groupCount[group] = (groupCount[group] ?? 0) +
-          1; // Incrementar a contagem apenas se o grupo estiver presente
-    }
-  }
-
-  // Montar a lista de contagens na ordem correta
-  List<int> result = groupCount.values.where((value) => value > 0).toList();
-
-  return result; // Retornar a lista de contagens
 }
 
 List<String> retornaGruposUnicos(List<String> animalGroups) {
@@ -798,36 +746,6 @@ List<String> retornaReproducaoStringHold(List<String> animalStatuses) {
   }
 
   return uniqueStatusList;
-}
-
-List<int> retornaReproducaoQuantidade(List<String> animalStatuses) {
-  List<String> orderedStatuses = ["Vazia", "Inseminada", "Prenha"];
-
-  // Inicializa o mapa para contar as ocorrências
-  Map<String, int> statusCount = {"Vazia": 0, "Inseminada": 0, "Prenha": 0};
-
-  // Define os status que devem ser agrupados como "Prenha"
-  Set<String> prenhaStatuses = {"Inseminada PP", "Prenha", "Seca", "Pré Parto"};
-
-  // Itera sobre a lista e conta os status
-  for (String status in animalStatuses) {
-    if (prenhaStatuses.contains(status)) {
-      statusCount["Prenha"] = statusCount["Prenha"]! + 1;
-    } else if (statusCount.containsKey(status)) {
-      statusCount[status] = statusCount[status]! + 1;
-    }
-  }
-
-  // Criar a lista de contagens seguindo a ordem padrão e removendo zeros
-  List<int> countList = [];
-  for (String status in orderedStatuses) {
-    int count = statusCount[status]!;
-    if (count > 0) {
-      countList.add(count);
-    }
-  }
-
-  return countList;
 }
 
 List<String> retornaReproducaoComContagem(List<String> animalStatuses) {
