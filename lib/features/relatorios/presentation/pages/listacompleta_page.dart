@@ -29,7 +29,6 @@ import 'package:flip_card/flip_card.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -122,6 +121,66 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
 
   /// Card (frente/verso) de um animal na lista completa. Extraído do build
   /// (Fase 4): era ~3600 linhas inline no itemBuilder.
+  /// Selo textual para indicadores de estado. Substitui os ícones soltos de
+  /// 24-30px que não diziam a que se referiam (um check verde podia ser
+  /// "ação feita hoje" ou "inseminada", dependendo de onde estava).
+  Widget _selo(BuildContext context, String texto, Color cor, IconData icone) {
+    return Container(
+      padding: const EdgeInsetsDirectional.fromSTEB(8.0, 3.0, 8.0, 3.0),
+      decoration: BoxDecoration(
+        color: cor.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icone, color: cor, size: 13.0),
+          const SizedBox(width: 4.0),
+          Text(
+            texto,
+            style: FlutterFlowTheme.of(context).labelSmall.override(
+                  font: GoogleFonts.readexPro(fontWeight: FontWeight.w600),
+                  color: cor,
+                  fontSize: 11.0,
+                  letterSpacing: 0.0,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Atalho para o prontuário. Antes era so um icone do FontAwesome (pollH),
+  /// sem rotulo — nada indicava que abria o prontuario do animal.
+  Widget _chipProntuario(BuildContext context) {
+    return Container(
+      padding: const EdgeInsetsDirectional.fromSTEB(10.0, 5.0, 10.0, 5.0),
+      decoration: BoxDecoration(
+        color: AppTokens.secondary.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.assignment_outlined,
+              color: AppTokens.secondary, size: 15.0),
+          const SizedBox(width: 5.0),
+          Text(
+            'Prontuário',
+            style: FlutterFlowTheme.of(context).labelSmall.override(
+                  font: GoogleFonts.readexPro(fontWeight: FontWeight.w600),
+                  color: AppTokens.secondary,
+                  fontSize: 11.0,
+                  letterSpacing: 0.0,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildAnimalCard(
       BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Visibility(
@@ -278,11 +337,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                             ),
                       ),
                       if (ehDescarte(item.status))
-                        Icon(
-                          Icons.delete_forever_rounded,
-                          color: Color(0xFFFE0000),
-                          size: 24.0,
-                        ),
+                        _selo(context, 'Descartado', Color(0xFFFE0000),
+                            Icons.delete_forever_rounded),
                     ],
                   ),
                   Column(
@@ -294,15 +350,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                5.0, 0.0, 0.0, 0.0),
-                            child: Icon(
-                              Icons.add_circle_sharp,
-                              color: FlutterFlowTheme.of(context).tertiary,
-                              size: 30.0,
-                            ),
-                          ),
                           Align(
                             alignment: AlignmentDirectional(0.0, 0.0),
                             child: Padding(
@@ -352,11 +399,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                                     }.withoutNulls,
                                   );
                                 },
-                                child: FaIcon(
-                                  FontAwesomeIcons.pollH,
-                                  color: FlutterFlowTheme.of(context).tertiary,
-                                  size: 30.0,
-                                ),
+                                child: _chipProntuario(context),
                               ),
                             ),
                           ),
@@ -367,11 +410,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                             Padding(
                               padding: EdgeInsetsDirectional.fromSTEB(
                                   5.0, 0.0, 0.0, 0.0),
-                              child: Icon(
-                                Icons.check_circle,
-                                color: Color(0xFF048508),
-                                size: 30.0,
-                              ),
+                              child: _selo(context, 'Hoje', Color(0xFF048508),
+                                  Icons.check_circle),
                             ),
                         ],
                       ),
@@ -545,11 +585,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                             ),
                       ),
                       if (ehDescarte(item.status))
-                        Icon(
-                          Icons.delete_forever_rounded,
-                          color: Color(0xFFFE0000),
-                          size: 24.0,
-                        ),
+                        _selo(context, 'Descartado', Color(0xFFFE0000),
+                            Icons.delete_forever_rounded),
                     ],
                   ),
                   Column(
@@ -561,15 +598,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                5.0, 0.0, 0.0, 0.0),
-                            child: Icon(
-                              Icons.add_circle_sharp,
-                              color: FlutterFlowTheme.of(context).tertiary,
-                              size: 30.0,
-                            ),
-                          ),
                           Align(
                             alignment: AlignmentDirectional(0.0, 0.0),
                             child: Padding(
@@ -619,11 +647,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                                     }.withoutNulls,
                                   );
                                 },
-                                child: FaIcon(
-                                  FontAwesomeIcons.pollH,
-                                  color: FlutterFlowTheme.of(context).tertiary,
-                                  size: 30.0,
-                                ),
+                                child: _chipProntuario(context),
                               ),
                             ),
                           ),
@@ -634,11 +658,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                             Padding(
                               padding: EdgeInsetsDirectional.fromSTEB(
                                   5.0, 0.0, 0.0, 0.0),
-                              child: Icon(
-                                Icons.check_circle,
-                                color: Color(0xFF048508),
-                                size: 30.0,
-                              ),
+                              child: _selo(context, 'Hoje', Color(0xFF048508),
+                                  Icons.check_circle),
                             ),
                         ],
                       ),
@@ -904,11 +925,11 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                   Padding(
                     padding:
                         EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
-                    child: Icon(
-                      Icons.check_sharp,
-                      color: FlutterFlowTheme.of(context).success,
-                      size: 24.0,
-                    ),
+                    child: _selo(
+                        context,
+                        'Inseminada',
+                        FlutterFlowTheme.of(context).success,
+                        Icons.check_sharp),
                   ),
               ],
             ),
@@ -1150,11 +1171,11 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                   Padding(
                     padding:
                         EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
-                    child: Icon(
-                      Icons.check_sharp,
-                      color: FlutterFlowTheme.of(context).success,
-                      size: 24.0,
-                    ),
+                    child: _selo(
+                        context,
+                        'Inseminada',
+                        FlutterFlowTheme.of(context).success,
+                        Icons.check_sharp),
                   ),
               ],
             ),
@@ -2803,11 +2824,11 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                   Padding(
                     padding:
                         EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
-                    child: Icon(
-                      Icons.check_sharp,
-                      color: FlutterFlowTheme.of(context).success,
-                      size: 24.0,
-                    ),
+                    child: _selo(
+                        context,
+                        'Inseminada',
+                        FlutterFlowTheme.of(context).success,
+                        Icons.check_sharp),
                   ),
               ],
             ),
@@ -3049,11 +3070,11 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                   Padding(
                     padding:
                         EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
-                    child: Icon(
-                      Icons.check_sharp,
-                      color: FlutterFlowTheme.of(context).success,
-                      size: 24.0,
-                    ),
+                    child: _selo(
+                        context,
+                        'Inseminada',
+                        FlutterFlowTheme.of(context).success,
+                        Icons.check_sharp),
                   ),
               ],
             ),
