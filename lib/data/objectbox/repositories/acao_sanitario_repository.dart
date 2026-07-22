@@ -22,6 +22,26 @@ class AcaoSanitarioRepository extends BaseSyncRepository<AcaoSanitarioEntity> {
   @override
   String get collectionName => 'acoesSanitario';
 
+  /// O entity guarda os CAMINHOS das referências; o Firestore espera
+  /// DocumentReference. Sem reanexar, o documento subiria sem `uidPropriedade`
+  /// e `uidAnimalAnimaisProdutores` (mesmo tratamento do AcaoRepository).
+  @override
+  Map<String, dynamic> firestorePayloadFor(AcaoSanitarioEntity entity) {
+    final data = entity.toFirestore();
+    if (entity.uidAnimalAnimaisProdutoresPath != null) {
+      data['uidAnimalAnimaisProdutores'] =
+          firestore.doc(entity.uidAnimalAnimaisProdutoresPath!);
+    }
+    if (entity.uidPropriedadePath != null) {
+      data['uidPropriedade'] = firestore.doc(entity.uidPropriedadePath!);
+    }
+    if (entity.uidPersonProdutorPath != null) {
+      data['uidPersonProdutor'] =
+          firestore.doc(entity.uidPersonProdutorPath!);
+    }
+    return data;
+  }
+
   AcaoSanitarioEntity? getByFirestoreId(String firestoreId) => box
       .query(AcaoSanitarioEntity_.firestoreId.equals(firestoreId))
       .build()
