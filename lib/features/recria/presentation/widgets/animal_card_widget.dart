@@ -357,7 +357,10 @@ class AnimalCardWidget extends StatelessWidget {
   /// Datas relevantes conforme grupo/status, na faixa padrão das demais telas.
   List<Widget> _infoTiles(BuildContext context) {
     if (ehBezerros(animal.grupoAnimal) || ehBezerras(animal.grupoAnimal)) {
-      return [_tileInfo(context, 'Nascimento', animal.dtNascimento ?? '')];
+      return [
+        _tileInfo(context, 'Nascimento', animal.dtNascimento ?? '',
+            alinhaInicio: true),
+      ];
     }
     if (ehNovilha(animal.grupoAnimal)) {
       switch (animal.status) {
@@ -376,7 +379,8 @@ class AnimalCardWidget extends StatelessWidget {
         case 'Inseminada':
         case 'Inseminada PP':
           return [
-            _tileInfo(context, 'Inseminada', animal.dtUltimaInseminacao ?? ''),
+            _tileInfo(context, 'Inseminada', animal.dtUltimaInseminacao ?? '',
+                alinhaInicio: true),
           ];
         case 'Prenha':
         case 'Seca':
@@ -423,18 +427,21 @@ class AnimalCardWidget extends StatelessWidget {
 
   /// Rótulo pequeno + valor destacado; vazio vira '—'. `FittedBox` faz a data
   /// encolher em vez de perder o ano.
+  /// [alinhaInicio] alinha à esquerda — usado quando o cartão tem um único
+  /// tile, em que centralizar na largura toda fica solto. NÃO derive isso de
+  /// `_infoTiles`: é `_infoTiles` que constrói os tiles, então consultá-la aqui
+  /// cria recursão infinita (stack overflow ao renderizar o cartão).
   Widget _tileInfo(BuildContext context, String rotulo, String valor,
-      {bool destaque = false}) {
-    final unico = _infoTiles(context).length == 1;
+      {bool destaque = false, bool alinhaInicio = false}) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment:
-          unico ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+          alinhaInicio ? CrossAxisAlignment.start : CrossAxisAlignment.center,
       children: [
         Text(
           rotulo,
           maxLines: 1,
-          textAlign: unico ? TextAlign.start : TextAlign.center,
+          textAlign: alinhaInicio ? TextAlign.start : TextAlign.center,
           overflow: TextOverflow.ellipsis,
           style: FlutterFlowTheme.of(context).labelSmall.override(
                 font: GoogleFonts.readexPro(),
