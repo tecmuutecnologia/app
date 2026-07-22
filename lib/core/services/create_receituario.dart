@@ -1,5 +1,6 @@
 // Automatic FlutterFlow imports
 import '/data/backend.dart';
+import '/data/objectbox/index.dart';
 import '/core/ui/flutter_flow_util.dart';
 // Imports other custom actions
 // Imports custom functions
@@ -37,16 +38,24 @@ Future<void> createReceituario(
     // Cria um documento PDF
     final pdf = pw.Document();
 
-    // Busca o resumo da visita no banco de dados
-    final resumoVisitaSnapshot = await uidResumoVisita.get();
-    if (!resumoVisitaSnapshot.exists) {
+    // Resumo da visita do ObjectBox (fonte única offline-first).
+    final resumoEntity =
+        ResumoVisitaRepository().getByFirestoreId(uidResumoVisita.id);
+    if (resumoEntity == null) {
       throw Exception('Resumo da visita não encontrado');
     }
-    final resumoVisitaData =
-        resumoVisitaSnapshot.data() as Map<String, dynamic>?;
-    if (resumoVisitaData == null) {
-      throw Exception('Dados do resumo da visita não encontrados');
-    }
+    final resumoVisitaData = <String, dynamic>{
+      'assinaturaProdutor': resumoEntity.assinaturaProdutor,
+      'assinaturaTecnico': resumoEntity.assinaturaTecnico,
+      'dtVisita': resumoEntity.dtVisita,
+      'uidPropriedade': resumoEntity.uidPropriedadePath == null
+          ? null
+          : FirebaseFirestore.instance.doc(resumoEntity.uidPropriedadePath!),
+      'uidTecnico': resumoEntity.uidTecnicoPath == null
+          ? null
+          : FirebaseFirestore.instance.doc(resumoEntity.uidTecnicoPath!),
+    };
+    final resumoPath = 'resumo_da_visita/${uidResumoVisita.id}';
     print('Resumo da visita encontrado: $resumoVisitaData');
 
     bool hasValidBrinco(dynamic brinco) {
@@ -69,23 +78,19 @@ Future<void> createReceituario(
     }
 
     // Busca recomendações relacionadas ao resumo da visita
-    final recomendacoesSnapshot = await FirebaseFirestore.instance
-        .collection('resumo_da_visita')
-        .doc(uidResumoVisita.id)
-        .collection('recomendacoes')
-        .where('uidResumoDaVisita', isEqualTo: uidResumoVisita)
-        .get();
-
-    print('Recomendações encontradas: ${recomendacoesSnapshot.docs.length}');
-
-    // Ordena as recomendações
-    List<QueryDocumentSnapshot> sortedRecomendacoes =
-        recomendacoesSnapshot.docs.toList();
+    // Recomendações do ObjectBox, ligadas pelo CAMPO uidResumoDaVisita
+    // (elas passaram a ser subcoleção da propriedade, não do resumo).
+    final sortedRecomendacoes = RecomendacaoRepository()
+        .getAll()
+        .where((e) => !e.isDeleted && e.uidResumoDaVisitaPath == resumoPath)
+        .map((e) => <String, dynamic>{
+              'tituloRecomendacao': e.tituloRecomendacao,
+              'descricaoRecomendacao': e.descricaoRecomendacao,
+            })
+        .toList();
     sortedRecomendacoes.sort((a, b) {
-      String tituloA =
-          (a.data() as Map<String, dynamic>)['tituloRecomendacao'] ?? '';
-      String tituloB =
-          (b.data() as Map<String, dynamic>)['tituloRecomendacao'] ?? '';
+      String tituloA = a['tituloRecomendacao'] ?? '';
+      String tituloB = b['tituloRecomendacao'] ?? '';
       if (tituloA == 'Secagem' || tituloA == 'Pré Parto') {
         return 1;
       }
@@ -99,35 +104,34 @@ Future<void> createReceituario(
     final List<pw.Widget> recomendacoesWidgets = [];
     final List<pw.Widget> diagnosticoWidgets = [];
 
-    for (final recomendacaoDoc in sortedRecomendacoes) {
-      final recomendacaoData = recomendacaoDoc.data() as Map<String, dynamic>?;
-      if (recomendacaoData == null) continue;
+    for (final recomendacaoData in sortedRecomendacoes) {
       print('Recomendação: ${recomendacaoData['tituloRecomendacao']}');
 
       // Busca tratamentos relacionados à recomendação atual dentro de resumo_da_visita
-      final tratamentosSnapshot = await FirebaseFirestore.instance
-          .collection('resumo_da_visita')
-          .doc(uidResumoVisita.id)
-          .collection('tratamentos')
-          .where('tipoAcao', isEqualTo: recomendacaoData['tituloRecomendacao'])
-          .get();
-
-      print(
-          'Tratamentos encontrados para ${recomendacaoData['tituloRecomendacao']}: ${tratamentosSnapshot.docs.length}');
+      final tratamentosDoTipo = TratamentoRepository()
+          .getAll()
+          .where((e) =>
+              !e.isDeleted &&
+              e.uidResumoDaVisitaPath == resumoPath &&
+              e.tipoAcao == recomendacaoData['tituloRecomendacao'])
+          .map((e) => <String, dynamic>{
+                'nomeAnimal': e.nomeAnimal,
+                'brincoAnimal': e.brincoAnimal,
+                'grupoAnimal': e.grupoAnimal,
+                'observacaoAcao': e.observacaoAcao,
+              })
+          .toList();
 
       // Ordena os tratamentos
-      List<QueryDocumentSnapshot> sortedTratamentos =
-          tratamentosSnapshot.docs.toList();
+      final sortedTratamentos = tratamentosDoTipo;
 
       String tipoAcaoAtual = recomendacaoData['tituloRecomendacao'] ?? '';
 
       if (tipoAcaoAtual == 'Secagem' || tipoAcaoAtual == 'Pré Parto') {
         // Ordena por data (observacaoAcao contém a data no formato dd/MM/yyyy), se não conseguir, ordena por nomeAnimal
         sortedTratamentos.sort((a, b) {
-          String dataA =
-              (a.data() as Map<String, dynamic>)['observacaoAcao'] ?? '';
-          String dataB =
-              (b.data() as Map<String, dynamic>)['observacaoAcao'] ?? '';
+          String dataA = a['observacaoAcao'] ?? '';
+          String dataB = b['observacaoAcao'] ?? '';
           DateTime? dateA;
           DateTime? dateB;
           try {
@@ -152,22 +156,16 @@ Future<void> createReceituario(
             return 1;
           } else {
             // Se não conseguir converter para data, ordena por nomeAnimal
-            String nomeA =
-                ((a.data() as Map<String, dynamic>)['nomeAnimal'] ?? '')
-                    .toString()
-                    .toLowerCase();
-            String nomeB =
-                ((b.data() as Map<String, dynamic>)['nomeAnimal'] ?? '')
-                    .toString()
-                    .toLowerCase();
+            String nomeA = (a['nomeAnimal'] ?? '').toString().toLowerCase();
+            String nomeB = (b['nomeAnimal'] ?? '').toString().toLowerCase();
             return nomeA.compareTo(nomeB);
           }
         });
       } else {
         // Ordena por brincoAnimalOrder (ordem crescente) e depois por nomeAnimal
         sortedTratamentos.sort((a, b) {
-          var dataA = a.data() as Map<String, dynamic>;
-          var dataB = b.data() as Map<String, dynamic>;
+          var dataA = a;
+          var dataB = b;
 
           // Primeiro tenta ordenar por brincoAnimalOrder
           int? orderA = dataA['brincoAnimalOrder'] as int?;
@@ -248,9 +246,7 @@ Future<void> createReceituario(
         ),
       );
 
-      for (final tratamentoDoc in sortedTratamentos) {
-        final tratamentoData = tratamentoDoc.data() as Map<String, dynamic>?;
-        if (tratamentoData == null) continue;
+      for (final tratamentoData in sortedTratamentos) {
         print('Tratamento: ${tratamentoData['observacaoAcao']}');
 
         String brincoNomeAnimal;
@@ -399,85 +395,59 @@ Future<void> createReceituario(
           dtVisitaDate.year, dtVisitaDate.month, dtVisitaDate.day, 23, 59, 59);
 
       // Buscar todas as ações do técnico no dia da visita usando dataDaAcao
-      final acoesSnapshot = await FirebaseFirestore.instance
-          .collection('tecnico')
-          .doc(uidTecnico.id)
-          .collection('acoes')
-          .where('dataDaAcao', isGreaterThanOrEqualTo: dtInicioDia)
-          .where('dataDaAcao', isLessThanOrEqualTo: dtFimDia)
-          .get();
-
-      // Filtrar apenas PP, DG+, DG- e Aborto que tenham animal vinculado
-      final acoesDiagnosticoTemp = acoesSnapshot.docs.where((doc) {
-        final data = doc.data();
-        final acao = data['acao'] as String? ?? '';
-        final uidAnimal = data['uidAnimalAnimaisProdutores'];
-        return (acao == 'PP' ||
-                acao == 'DG+' ||
-                acao == 'DG-' ||
-                acao == 'Aborto') &&
-            uidAnimal != null;
-      }).toList();
+      // Ações do dia da visita, do ObjectBox. Só PP/DG+/DG-/Aborto com
+      // animal vinculado.
+      const diagnosticos = {'PP', 'DG+', 'DG-', 'Aborto'};
+      final acoesDiagnosticoTemp = AcaoRepository()
+          .getAll()
+          .where((e) =>
+              !e.isDeleted &&
+              e.dataDaAcao != null &&
+              !e.dataDaAcao!.isBefore(dtInicioDia) &&
+              !e.dataDaAcao!.isAfter(dtFimDia) &&
+              diagnosticos.contains(e.acao ?? '') &&
+              e.uidAnimalAnimaisProdutoresPath != null)
+          .map((e) => <String, dynamic>{
+                'acao': e.acao,
+                'uidAnimalAnimaisProdutoresPath':
+                    e.uidAnimalAnimaisProdutoresPath,
+              })
+          .toList();
 
       // Filtrar apenas animais que pertencem à propriedade atual
-      final List<QueryDocumentSnapshot> acoesDiagnostico = [];
-      for (final acaoDoc in acoesDiagnosticoTemp) {
-        final acaoData = acaoDoc.data();
-        final uidAnimal =
-            acaoData['uidAnimalAnimaisProdutores'] as DocumentReference?;
-        if (uidAnimal != null) {
-          try {
-            final animalSnapshot = await uidAnimal.get();
-            if (animalSnapshot.exists) {
-              final animalData = animalSnapshot.data() as Map<String, dynamic>?;
-              if (animalData != null) {
-                final uidTecnicoPropriedade =
-                    animalData['uidTecnicoPropriedade'] as DocumentReference?;
-                if (uidTecnicoPropriedade != null &&
-                    uidTecnicoPropriedade.path == uidPropriedade.path) {
-                  acoesDiagnostico.add(acaoDoc);
-                }
-              }
-            }
-          } catch (e) {
-            print('Erro ao verificar propriedade do animal: $e');
-          }
-        }
-      }
+      // Mantém só as ações de animais DESTA propriedade.
+      final acoesDiagnostico = acoesDiagnosticoTemp.where((acaoData) {
+        final caminho = acaoData['uidAnimalAnimaisProdutoresPath'] as String?;
+        if (caminho == null) return false;
+        final animal =
+            AnimalRepository().getByFirestoreId(caminho.split('/').last);
+        return animal != null &&
+            animal.uidTecnicoPropriedadePath == uidPropriedade.path;
+      }).toList();
 
       if (acoesDiagnostico.isNotEmpty) {
         // Separar em duas listas
-        final acoesPPDGMais = acoesDiagnostico.where((doc) {
-          final data = doc.data() as Map<String, dynamic>;
+        final acoesPPDGMais = acoesDiagnostico.where((data) {
           final acao = data['acao'] as String? ?? '';
           return acao == 'PP' || acao == 'DG+';
         }).toList();
 
-        final acoesDGMenos = acoesDiagnostico.where((doc) {
-          final data = doc.data() as Map<String, dynamic>;
+        final acoesDGMenos = acoesDiagnostico.where((data) {
           final acao = data['acao'] as String? ?? '';
           return acao == 'DG-';
         }).toList();
 
-        final acoesAbortos = acoesDiagnostico.where((doc) {
-          final data = doc.data() as Map<String, dynamic>;
+        final acoesAbortos = acoesDiagnostico.where((data) {
           final acao = data['acao'] as String? ?? '';
           return acao == 'Aborto';
         }).toList();
 
         // Função auxiliar para buscar dados do animal
-        Future<Map<String, dynamic>?> getAnimalData(
-            DocumentReference? animalRef) async {
-          if (animalRef == null) return null;
-          try {
-            final animalSnapshot = await animalRef.get();
-            if (animalSnapshot.exists) {
-              return animalSnapshot.data() as Map<String, dynamic>?;
-            }
-          } catch (e) {
-            print('Erro ao buscar animal: $e');
-          }
-          return null;
+        Map<String, dynamic>? getAnimalData(String? animalPath) {
+          if (animalPath == null) return null;
+          final animal =
+              AnimalRepository().getByFirestoreId(animalPath.split('/').last);
+          return animal == null ? null : animal.toFirestore();
         }
 
         // Função para buscar a última data de inseminação do animal (do próprio documento do animal)
@@ -489,14 +459,12 @@ Future<void> createReceituario(
 
         // Função para construir linhas da tabela de diagnóstico
         Future<List<pw.TableRow>> buildDiagnosticoRows(
-            List<QueryDocumentSnapshot> acoes) async {
+            List<Map<String, dynamic>> acoes) async {
           final List<Map<String, dynamic>> animaisData = [];
 
-          for (final acaoDoc in acoes) {
-            final acaoData = acaoDoc.data() as Map<String, dynamic>;
-            final uidAnimal =
-                acaoData['uidAnimalAnimaisProdutores'] as DocumentReference?;
-            final animalData = await getAnimalData(uidAnimal);
+          for (final acaoData in acoes) {
+            final animalData = getAnimalData(
+                acaoData['uidAnimalAnimaisProdutoresPath'] as String?);
             final ultimaInseminacao =
                 getUltimaInseminacaoFromAnimal(animalData);
 
@@ -757,16 +725,14 @@ Future<void> createReceituario(
 
         // Seção de Abortos
         if (acoesAbortos.isNotEmpty) {
-          final List<QueryDocumentSnapshot> acoesAbortosVacas = [];
+          final List<Map<String, dynamic>> acoesAbortosVacas = [];
 
-          for (final acaoDoc in acoesAbortos) {
-            final acaoData = acaoDoc.data() as Map<String, dynamic>;
-            final uidAnimal =
-                acaoData['uidAnimalAnimaisProdutores'] as DocumentReference?;
-            final animalData = await getAnimalData(uidAnimal);
+          for (final acaoData in acoesAbortos) {
+            final animalData = getAnimalData(
+                acaoData['uidAnimalAnimaisProdutoresPath'] as String?);
 
             if (animalData != null && animalData['grupoAnimal'] == 'Vacas') {
-              acoesAbortosVacas.add(acaoDoc);
+              acoesAbortosVacas.add(acaoData);
             }
           }
 
