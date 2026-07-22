@@ -1134,7 +1134,7 @@
     },
     {
       "id": "13:8662284862026381314",
-      "lastPropertyId": "28:858160306604825002",
+      "lastPropertyId": "38:6184724978821005566",
       "name": "FinanceiroEntity",
       "properties": [
         {
@@ -1161,104 +1161,9 @@
           "type": 6
         },
         {
-          "id": "5:3891978856761378551",
-          "name": "vacasSecas",
-          "type": 6
-        },
-        {
           "id": "6:1328391692789421673",
           "name": "litrosLeiteMes",
           "type": 6
-        },
-        {
-          "id": "7:7773042198183451305",
-          "name": "precoLitroLeite",
-          "type": 8
-        },
-        {
-          "id": "8:877937712170606037",
-          "name": "valorLeiteTotal",
-          "type": 8
-        },
-        {
-          "id": "9:8057285219858469664",
-          "name": "outrasReceitas",
-          "type": 8
-        },
-        {
-          "id": "10:1093235948816824157",
-          "name": "custoRacao",
-          "type": 8
-        },
-        {
-          "id": "11:2438193650364422264",
-          "name": "custoMaoDeObra",
-          "type": 8
-        },
-        {
-          "id": "12:1455866986167657189",
-          "name": "custoMedicamentos",
-          "type": 8
-        },
-        {
-          "id": "13:4979692353759694540",
-          "name": "custoInsumos",
-          "type": 8
-        },
-        {
-          "id": "14:6591854026089724422",
-          "name": "custoManutencao",
-          "type": 8
-        },
-        {
-          "id": "15:376077123831494791",
-          "name": "outrosCustos",
-          "type": 8
-        },
-        {
-          "id": "16:3996372210829150413",
-          "name": "custoTotal",
-          "type": 8
-        },
-        {
-          "id": "17:9194306083320327354",
-          "name": "lucroLiquido",
-          "type": 8
-        },
-        {
-          "id": "18:8375895444281958556",
-          "name": "custoLitro",
-          "type": 8
-        },
-        {
-          "id": "19:5638291359302706846",
-          "name": "mes",
-          "type": 6
-        },
-        {
-          "id": "20:3016579340863185005",
-          "name": "ano",
-          "type": 6
-        },
-        {
-          "id": "21:6879441325564192889",
-          "name": "uidPropriedade",
-          "type": 9
-        },
-        {
-          "id": "22:4063456477417213574",
-          "name": "createdBy",
-          "type": 9
-        },
-        {
-          "id": "23:3277511602553208496",
-          "name": "lastModifiedBy",
-          "type": 9
-        },
-        {
-          "id": "24:7116670104126295118",
-          "name": "createdAt",
-          "type": 10
         },
         {
           "id": "25:3357101847461239078",
@@ -1279,6 +1184,56 @@
           "id": "28:858160306604825002",
           "name": "isDeleted",
           "type": 1
+        },
+        {
+          "id": "29:8813628173568046217",
+          "name": "uidPropriedadePath",
+          "type": 9
+        },
+        {
+          "id": "30:3388311973797842069",
+          "name": "uidTecnicoPath",
+          "type": 9
+        },
+        {
+          "id": "31:2527025376362301296",
+          "name": "dtRelatorio",
+          "type": 9
+        },
+        {
+          "id": "32:599535253423050131",
+          "name": "litrosLeitePorDia",
+          "type": 6
+        },
+        {
+          "id": "33:5576049508270553476",
+          "name": "precoRecebidoPorLitro",
+          "type": 9
+        },
+        {
+          "id": "34:8241567432372622262",
+          "name": "despesasNoMes",
+          "type": 9
+        },
+        {
+          "id": "35:9222008833139020729",
+          "name": "faturamentoLiquido",
+          "type": 9
+        },
+        {
+          "id": "36:5509172100722756315",
+          "name": "mediaProducaoVaca",
+          "type": 9
+        },
+        {
+          "id": "37:475617142256704253",
+          "name": "custoLitroLeite",
+          "type": 9
+        },
+        {
+          "id": "38:6184724978821005566",
+          "name": "totalRecebidoMes",
+          "type": 9
         }
       ],
       "relations": []
@@ -1926,7 +1881,27 @@
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    3891978856761378551,
+    7773042198183451305,
+    877937712170606037,
+    8057285219858469664,
+    1093235948816824157,
+    2438193650364422264,
+    1455866986167657189,
+    4979692353759694540,
+    6591854026089724422,
+    376077123831494791,
+    3996372210829150413,
+    9194306083320327354,
+    8375895444281958556,
+    5638291359302706846,
+    3016579340863185005,
+    6879441325564192889,
+    4063456477417213574,
+    3277511602553208496,
+    7116670104126295118
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

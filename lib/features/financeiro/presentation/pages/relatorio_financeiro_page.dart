@@ -172,7 +172,7 @@ class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage> {
             children: [
               StreamBuilder<List<FinanceiroRecord>>(
                 stream: queryFinanceiroRecord(
-                  parent: widget.uidTecnico,
+                  parent: widget.uidPropriedade,
                   queryBuilder: (financeiroRecord) => financeiroRecord
                       .where(
                         'uidPropriedade',

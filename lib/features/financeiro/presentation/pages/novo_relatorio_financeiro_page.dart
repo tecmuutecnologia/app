@@ -302,7 +302,7 @@ class _NovoRelatorioFinanceiroPageState
                   return;
                 }
 
-                await FinanceiroRecord.createDoc(widget.uidTecnico!)
+                await FinanceiroRecord.createDoc(widget.uidPropriedade!)
                     .set(createFinanceiroRecordData(
                   uidPropriedade: widget.uidPropriedade,
                   uidTecnico: widget.uidTecnico,

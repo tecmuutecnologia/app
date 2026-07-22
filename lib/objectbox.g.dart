@@ -1362,7 +1362,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(13, 8662284862026381314),
     name: 'FinanceiroEntity',
-    lastPropertyId: const obx_int.IdUid(28, 858160306604825002),
+    lastPropertyId: const obx_int.IdUid(38, 6184724978821005566),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -1391,123 +1391,9 @@ final _entities = <obx_int.ModelEntity>[
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(5, 3891978856761378551),
-        name: 'vacasSecas',
-        type: 6,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
         id: const obx_int.IdUid(6, 1328391692789421673),
         name: 'litrosLeiteMes',
         type: 6,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(7, 7773042198183451305),
-        name: 'precoLitroLeite',
-        type: 8,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(8, 877937712170606037),
-        name: 'valorLeiteTotal',
-        type: 8,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(9, 8057285219858469664),
-        name: 'outrasReceitas',
-        type: 8,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(10, 1093235948816824157),
-        name: 'custoRacao',
-        type: 8,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(11, 2438193650364422264),
-        name: 'custoMaoDeObra',
-        type: 8,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(12, 1455866986167657189),
-        name: 'custoMedicamentos',
-        type: 8,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(13, 4979692353759694540),
-        name: 'custoInsumos',
-        type: 8,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(14, 6591854026089724422),
-        name: 'custoManutencao',
-        type: 8,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(15, 376077123831494791),
-        name: 'outrosCustos',
-        type: 8,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(16, 3996372210829150413),
-        name: 'custoTotal',
-        type: 8,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(17, 9194306083320327354),
-        name: 'lucroLiquido',
-        type: 8,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(18, 8375895444281958556),
-        name: 'custoLitro',
-        type: 8,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(19, 5638291359302706846),
-        name: 'mes',
-        type: 6,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(20, 3016579340863185005),
-        name: 'ano',
-        type: 6,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(21, 6879441325564192889),
-        name: 'uidPropriedade',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(22, 4063456477417213574),
-        name: 'createdBy',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(23, 3277511602553208496),
-        name: 'lastModifiedBy',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(24, 7116670104126295118),
-        name: 'createdAt',
-        type: 10,
         flags: 0,
       ),
       obx_int.ModelProperty(
@@ -1532,6 +1418,66 @@ final _entities = <obx_int.ModelEntity>[
         id: const obx_int.IdUid(28, 858160306604825002),
         name: 'isDeleted',
         type: 1,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(29, 8813628173568046217),
+        name: 'uidPropriedadePath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(30, 3388311973797842069),
+        name: 'uidTecnicoPath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(31, 2527025376362301296),
+        name: 'dtRelatorio',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(32, 599535253423050131),
+        name: 'litrosLeitePorDia',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(33, 5576049508270553476),
+        name: 'precoRecebidoPorLitro',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(34, 8241567432372622262),
+        name: 'despesasNoMes',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(35, 9222008833139020729),
+        name: 'faturamentoLiquido',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(36, 5509172100722756315),
+        name: 'mediaProducaoVaca',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(37, 475617142256704253),
+        name: 'custoLitroLeite',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(38, 6184724978821005566),
+        name: 'totalRecebidoMes',
+        type: 9,
         flags: 0,
       ),
     ],
@@ -2325,7 +2271,27 @@ obx_int.ModelDefinition getObjectBoxModel() {
     lastSequenceId: const obx_int.IdUid(0, 0),
     retiredEntityUids: const [],
     retiredIndexUids: const [],
-    retiredPropertyUids: const [],
+    retiredPropertyUids: const [
+      3891978856761378551,
+      7773042198183451305,
+      877937712170606037,
+      8057285219858469664,
+      1093235948816824157,
+      2438193650364422264,
+      1455866986167657189,
+      4979692353759694540,
+      6591854026089724422,
+      376077123831494791,
+      3996372210829150413,
+      9194306083320327354,
+      8375895444281958556,
+      5638291359302706846,
+      3016579340863185005,
+      6879441325564192889,
+      4063456477417213574,
+      3277511602553208496,
+      7116670104126295118,
+    ],
     retiredRelationUids: const [],
     modelVersion: 5,
     modelVersionParserMinimum: 5,
@@ -4175,55 +4141,59 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final parentPathOffset = object.parentPath == null
             ? null
             : fbb.writeString(object.parentPath!);
-        final uidPropriedadeOffset = object.uidPropriedade == null
+        final uidPropriedadePathOffset = object.uidPropriedadePath == null
             ? null
-            : fbb.writeString(object.uidPropriedade!);
-        final createdByOffset = object.createdBy == null
+            : fbb.writeString(object.uidPropriedadePath!);
+        final uidTecnicoPathOffset = object.uidTecnicoPath == null
             ? null
-            : fbb.writeString(object.createdBy!);
-        final lastModifiedByOffset = object.lastModifiedBy == null
+            : fbb.writeString(object.uidTecnicoPath!);
+        final dtRelatorioOffset = object.dtRelatorio == null
             ? null
-            : fbb.writeString(object.lastModifiedBy!);
-        fbb.startTable(29);
+            : fbb.writeString(object.dtRelatorio!);
+        final precoRecebidoPorLitroOffset = object.precoRecebidoPorLitro == null
+            ? null
+            : fbb.writeString(object.precoRecebidoPorLitro!);
+        final despesasNoMesOffset = object.despesasNoMes == null
+            ? null
+            : fbb.writeString(object.despesasNoMes!);
+        final faturamentoLiquidoOffset = object.faturamentoLiquido == null
+            ? null
+            : fbb.writeString(object.faturamentoLiquido!);
+        final mediaProducaoVacaOffset = object.mediaProducaoVaca == null
+            ? null
+            : fbb.writeString(object.mediaProducaoVaca!);
+        final custoLitroLeiteOffset = object.custoLitroLeite == null
+            ? null
+            : fbb.writeString(object.custoLitroLeite!);
+        final totalRecebidoMesOffset = object.totalRecebidoMes == null
+            ? null
+            : fbb.writeString(object.totalRecebidoMes!);
+        fbb.startTable(39);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, firestoreIdOffset);
         fbb.addOffset(2, parentPathOffset);
         fbb.addInt64(3, object.vacasLactacao);
-        fbb.addInt64(4, object.vacasSecas);
         fbb.addInt64(5, object.litrosLeiteMes);
-        fbb.addFloat64(6, object.precoLitroLeite);
-        fbb.addFloat64(7, object.valorLeiteTotal);
-        fbb.addFloat64(8, object.outrasReceitas);
-        fbb.addFloat64(9, object.custoRacao);
-        fbb.addFloat64(10, object.custoMaoDeObra);
-        fbb.addFloat64(11, object.custoMedicamentos);
-        fbb.addFloat64(12, object.custoInsumos);
-        fbb.addFloat64(13, object.custoManutencao);
-        fbb.addFloat64(14, object.outrosCustos);
-        fbb.addFloat64(15, object.custoTotal);
-        fbb.addFloat64(16, object.lucroLiquido);
-        fbb.addFloat64(17, object.custoLitro);
-        fbb.addInt64(18, object.mes);
-        fbb.addInt64(19, object.ano);
-        fbb.addOffset(20, uidPropriedadeOffset);
-        fbb.addOffset(21, createdByOffset);
-        fbb.addOffset(22, lastModifiedByOffset);
-        fbb.addInt64(23, object.createdAt?.millisecondsSinceEpoch);
         fbb.addInt64(24, object.lastModified?.millisecondsSinceEpoch);
         fbb.addInt64(25, object.lastSynced?.millisecondsSinceEpoch);
         fbb.addBool(26, object.needsSync);
         fbb.addBool(27, object.isDeleted);
+        fbb.addOffset(28, uidPropriedadePathOffset);
+        fbb.addOffset(29, uidTecnicoPathOffset);
+        fbb.addOffset(30, dtRelatorioOffset);
+        fbb.addInt64(31, object.litrosLeitePorDia);
+        fbb.addOffset(32, precoRecebidoPorLitroOffset);
+        fbb.addOffset(33, despesasNoMesOffset);
+        fbb.addOffset(34, faturamentoLiquidoOffset);
+        fbb.addOffset(35, mediaProducaoVacaOffset);
+        fbb.addOffset(36, custoLitroLeiteOffset);
+        fbb.addOffset(37, totalRecebidoMesOffset);
         fbb.finish(fbb.endTable());
         return object.id;
       },
       objectFromFB: (obx.Store store, ByteData fbData) {
         final buffer = fb.BufferContext(fbData);
         final rootOffset = buffer.derefObject(0);
-        final createdAtValue = const fb.Int64Reader().vTableGetNullable(
-          buffer,
-          rootOffset,
-          50,
-        );
         final lastModifiedValue = const fb.Int64Reader().vTableGetNullable(
           buffer,
           rootOffset,
@@ -4240,16 +4210,19 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final parentPathParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGetNullable(buffer, rootOffset, 8);
+        final uidPropriedadePathParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 60);
+        final uidTecnicoPathParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 62);
+        final dtRelatorioParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 64);
         final vacasLactacaoParam = const fb.Int64Reader().vTableGet(
           buffer,
           rootOffset,
           10,
-          0,
-        );
-        final vacasSecasParam = const fb.Int64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          12,
           0,
         );
         final litrosLeiteMesParam = const fb.Int64Reader().vTableGet(
@@ -4258,102 +4231,30 @@ obx_int.ModelDefinition getObjectBoxModel() {
           14,
           0,
         );
-        final precoLitroLeiteParam = const fb.Float64Reader().vTableGet(
+        final litrosLeitePorDiaParam = const fb.Int64Reader().vTableGet(
           buffer,
           rootOffset,
-          16,
+          66,
           0,
         );
-        final valorLeiteTotalParam = const fb.Float64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          18,
-          0,
-        );
-        final outrasReceitasParam = const fb.Float64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          20,
-          0,
-        );
-        final custoRacaoParam = const fb.Float64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          22,
-          0,
-        );
-        final custoMaoDeObraParam = const fb.Float64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          24,
-          0,
-        );
-        final custoMedicamentosParam = const fb.Float64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          26,
-          0,
-        );
-        final custoInsumosParam = const fb.Float64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          28,
-          0,
-        );
-        final custoManutencaoParam = const fb.Float64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          30,
-          0,
-        );
-        final outrosCustosParam = const fb.Float64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          32,
-          0,
-        );
-        final custoTotalParam = const fb.Float64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          34,
-          0,
-        );
-        final lucroLiquidoParam = const fb.Float64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          36,
-          0,
-        );
-        final custoLitroParam = const fb.Float64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          38,
-          0,
-        );
-        final mesParam = const fb.Int64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          40,
-          0,
-        );
-        final anoParam = const fb.Int64Reader().vTableGet(
-          buffer,
-          rootOffset,
-          42,
-          0,
-        );
-        final uidPropriedadeParam = const fb.StringReader(
+        final precoRecebidoPorLitroParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 44);
-        final createdByParam = const fb.StringReader(
+        ).vTableGetNullable(buffer, rootOffset, 68);
+        final despesasNoMesParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 46);
-        final createdAtParam = createdAtValue == null
-            ? null
-            : DateTime.fromMillisecondsSinceEpoch(createdAtValue);
-        final lastModifiedByParam = const fb.StringReader(
+        ).vTableGetNullable(buffer, rootOffset, 70);
+        final faturamentoLiquidoParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 48);
+        ).vTableGetNullable(buffer, rootOffset, 72);
+        final mediaProducaoVacaParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 74);
+        final custoLitroLeiteParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 76);
+        final totalRecebidoMesParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 78);
         final lastModifiedParam = lastModifiedValue == null
             ? null
             : DateTime.fromMillisecondsSinceEpoch(lastModifiedValue);
@@ -4375,27 +4276,18 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final object = FinanceiroEntity(
           firestoreId: firestoreIdParam,
           parentPath: parentPathParam,
+          uidPropriedadePath: uidPropriedadePathParam,
+          uidTecnicoPath: uidTecnicoPathParam,
+          dtRelatorio: dtRelatorioParam,
           vacasLactacao: vacasLactacaoParam,
-          vacasSecas: vacasSecasParam,
           litrosLeiteMes: litrosLeiteMesParam,
-          precoLitroLeite: precoLitroLeiteParam,
-          valorLeiteTotal: valorLeiteTotalParam,
-          outrasReceitas: outrasReceitasParam,
-          custoRacao: custoRacaoParam,
-          custoMaoDeObra: custoMaoDeObraParam,
-          custoMedicamentos: custoMedicamentosParam,
-          custoInsumos: custoInsumosParam,
-          custoManutencao: custoManutencaoParam,
-          outrosCustos: outrosCustosParam,
-          custoTotal: custoTotalParam,
-          lucroLiquido: lucroLiquidoParam,
-          custoLitro: custoLitroParam,
-          mes: mesParam,
-          ano: anoParam,
-          uidPropriedade: uidPropriedadeParam,
-          createdBy: createdByParam,
-          createdAt: createdAtParam,
-          lastModifiedBy: lastModifiedByParam,
+          litrosLeitePorDia: litrosLeitePorDiaParam,
+          precoRecebidoPorLitro: precoRecebidoPorLitroParam,
+          despesasNoMes: despesasNoMesParam,
+          faturamentoLiquido: faturamentoLiquidoParam,
+          mediaProducaoVaca: mediaProducaoVacaParam,
+          custoLitroLeite: custoLitroLeiteParam,
+          totalRecebidoMes: totalRecebidoMesParam,
           lastModified: lastModifiedParam,
           lastSynced: lastSyncedParam,
           needsSync: needsSyncParam,
@@ -6475,124 +6367,78 @@ class FinanceiroEntity_ {
     _entities[12].properties[3],
   );
 
-  /// See [FinanceiroEntity.vacasSecas].
-  static final vacasSecas = obx.QueryIntegerProperty<FinanceiroEntity>(
-    _entities[12].properties[4],
-  );
-
   /// See [FinanceiroEntity.litrosLeiteMes].
   static final litrosLeiteMes = obx.QueryIntegerProperty<FinanceiroEntity>(
-    _entities[12].properties[5],
-  );
-
-  /// See [FinanceiroEntity.precoLitroLeite].
-  static final precoLitroLeite = obx.QueryDoubleProperty<FinanceiroEntity>(
-    _entities[12].properties[6],
-  );
-
-  /// See [FinanceiroEntity.valorLeiteTotal].
-  static final valorLeiteTotal = obx.QueryDoubleProperty<FinanceiroEntity>(
-    _entities[12].properties[7],
-  );
-
-  /// See [FinanceiroEntity.outrasReceitas].
-  static final outrasReceitas = obx.QueryDoubleProperty<FinanceiroEntity>(
-    _entities[12].properties[8],
-  );
-
-  /// See [FinanceiroEntity.custoRacao].
-  static final custoRacao = obx.QueryDoubleProperty<FinanceiroEntity>(
-    _entities[12].properties[9],
-  );
-
-  /// See [FinanceiroEntity.custoMaoDeObra].
-  static final custoMaoDeObra = obx.QueryDoubleProperty<FinanceiroEntity>(
-    _entities[12].properties[10],
-  );
-
-  /// See [FinanceiroEntity.custoMedicamentos].
-  static final custoMedicamentos = obx.QueryDoubleProperty<FinanceiroEntity>(
-    _entities[12].properties[11],
-  );
-
-  /// See [FinanceiroEntity.custoInsumos].
-  static final custoInsumos = obx.QueryDoubleProperty<FinanceiroEntity>(
-    _entities[12].properties[12],
-  );
-
-  /// See [FinanceiroEntity.custoManutencao].
-  static final custoManutencao = obx.QueryDoubleProperty<FinanceiroEntity>(
-    _entities[12].properties[13],
-  );
-
-  /// See [FinanceiroEntity.outrosCustos].
-  static final outrosCustos = obx.QueryDoubleProperty<FinanceiroEntity>(
-    _entities[12].properties[14],
-  );
-
-  /// See [FinanceiroEntity.custoTotal].
-  static final custoTotal = obx.QueryDoubleProperty<FinanceiroEntity>(
-    _entities[12].properties[15],
-  );
-
-  /// See [FinanceiroEntity.lucroLiquido].
-  static final lucroLiquido = obx.QueryDoubleProperty<FinanceiroEntity>(
-    _entities[12].properties[16],
-  );
-
-  /// See [FinanceiroEntity.custoLitro].
-  static final custoLitro = obx.QueryDoubleProperty<FinanceiroEntity>(
-    _entities[12].properties[17],
-  );
-
-  /// See [FinanceiroEntity.mes].
-  static final mes = obx.QueryIntegerProperty<FinanceiroEntity>(
-    _entities[12].properties[18],
-  );
-
-  /// See [FinanceiroEntity.ano].
-  static final ano = obx.QueryIntegerProperty<FinanceiroEntity>(
-    _entities[12].properties[19],
-  );
-
-  /// See [FinanceiroEntity.uidPropriedade].
-  static final uidPropriedade = obx.QueryStringProperty<FinanceiroEntity>(
-    _entities[12].properties[20],
-  );
-
-  /// See [FinanceiroEntity.createdBy].
-  static final createdBy = obx.QueryStringProperty<FinanceiroEntity>(
-    _entities[12].properties[21],
-  );
-
-  /// See [FinanceiroEntity.lastModifiedBy].
-  static final lastModifiedBy = obx.QueryStringProperty<FinanceiroEntity>(
-    _entities[12].properties[22],
-  );
-
-  /// See [FinanceiroEntity.createdAt].
-  static final createdAt = obx.QueryDateProperty<FinanceiroEntity>(
-    _entities[12].properties[23],
+    _entities[12].properties[4],
   );
 
   /// See [FinanceiroEntity.lastModified].
   static final lastModified = obx.QueryDateProperty<FinanceiroEntity>(
-    _entities[12].properties[24],
+    _entities[12].properties[5],
   );
 
   /// See [FinanceiroEntity.lastSynced].
   static final lastSynced = obx.QueryDateProperty<FinanceiroEntity>(
-    _entities[12].properties[25],
+    _entities[12].properties[6],
   );
 
   /// See [FinanceiroEntity.needsSync].
   static final needsSync = obx.QueryBooleanProperty<FinanceiroEntity>(
-    _entities[12].properties[26],
+    _entities[12].properties[7],
   );
 
   /// See [FinanceiroEntity.isDeleted].
   static final isDeleted = obx.QueryBooleanProperty<FinanceiroEntity>(
-    _entities[12].properties[27],
+    _entities[12].properties[8],
+  );
+
+  /// See [FinanceiroEntity.uidPropriedadePath].
+  static final uidPropriedadePath = obx.QueryStringProperty<FinanceiroEntity>(
+    _entities[12].properties[9],
+  );
+
+  /// See [FinanceiroEntity.uidTecnicoPath].
+  static final uidTecnicoPath = obx.QueryStringProperty<FinanceiroEntity>(
+    _entities[12].properties[10],
+  );
+
+  /// See [FinanceiroEntity.dtRelatorio].
+  static final dtRelatorio = obx.QueryStringProperty<FinanceiroEntity>(
+    _entities[12].properties[11],
+  );
+
+  /// See [FinanceiroEntity.litrosLeitePorDia].
+  static final litrosLeitePorDia = obx.QueryIntegerProperty<FinanceiroEntity>(
+    _entities[12].properties[12],
+  );
+
+  /// See [FinanceiroEntity.precoRecebidoPorLitro].
+  static final precoRecebidoPorLitro =
+      obx.QueryStringProperty<FinanceiroEntity>(_entities[12].properties[13]);
+
+  /// See [FinanceiroEntity.despesasNoMes].
+  static final despesasNoMes = obx.QueryStringProperty<FinanceiroEntity>(
+    _entities[12].properties[14],
+  );
+
+  /// See [FinanceiroEntity.faturamentoLiquido].
+  static final faturamentoLiquido = obx.QueryStringProperty<FinanceiroEntity>(
+    _entities[12].properties[15],
+  );
+
+  /// See [FinanceiroEntity.mediaProducaoVaca].
+  static final mediaProducaoVaca = obx.QueryStringProperty<FinanceiroEntity>(
+    _entities[12].properties[16],
+  );
+
+  /// See [FinanceiroEntity.custoLitroLeite].
+  static final custoLitroLeite = obx.QueryStringProperty<FinanceiroEntity>(
+    _entities[12].properties[17],
+  );
+
+  /// See [FinanceiroEntity.totalRecebidoMes].
+  static final totalRecebidoMes = obx.QueryStringProperty<FinanceiroEntity>(
+    _entities[12].properties[18],
   );
 }
 

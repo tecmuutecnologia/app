@@ -1420,7 +1420,7 @@ class _IndicesZootecnicosPageState extends State<IndicesZootecnicosPage> {
               children: [
                 StreamBuilder<List<FinanceiroRecord>>(
                   stream: queryFinanceiroRecord(
-                    parent: widget.uidTecnico,
+                    parent: widget.uidPropriedade,
                     queryBuilder: (financeiroRecord) => financeiroRecord
                         .where(
                           'uidPropriedade',
@@ -1551,7 +1551,7 @@ class _IndicesZootecnicosPageState extends State<IndicesZootecnicosPage> {
               children: [
                 StreamBuilder<List<FinanceiroRecord>>(
                   stream: queryFinanceiroRecord(
-                    parent: widget.uidTecnico,
+                    parent: widget.uidPropriedade,
                     queryBuilder: (financeiroRecord) => financeiroRecord
                         .where(
                           'uidPropriedade',
