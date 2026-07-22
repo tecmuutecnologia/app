@@ -232,13 +232,18 @@ class _EditarRelatorioFinanceiroPageState
           mainAxisSize: MainAxisSize.max,
           children: [
             _campoData(context, editarRelatorioFinanceiroFinanceiroRecord),
-            _campoVacasLactacao(context, editarRelatorioFinanceiroFinanceiroRecord),
-            _campoLitrosLeiteDia(context, editarRelatorioFinanceiroFinanceiroRecord),
-            _campoLitrosLeiteMes(context, editarRelatorioFinanceiroFinanceiroRecord),
+            _campoVacasLactacao(
+                context, editarRelatorioFinanceiroFinanceiroRecord),
+            _campoLitrosLeiteDia(
+                context, editarRelatorioFinanceiroFinanceiroRecord),
+            _campoLitrosLeiteMes(
+                context, editarRelatorioFinanceiroFinanceiroRecord),
             _labelPrecoLitro(context),
-            _campoPrecoLitro(context, editarRelatorioFinanceiroFinanceiroRecord),
+            _campoPrecoLitro(
+                context, editarRelatorioFinanceiroFinanceiroRecord),
             _labelDespesasMes(context),
-            _campoDespesasMes(context, editarRelatorioFinanceiroFinanceiroRecord),
+            _campoDespesasMes(
+                context, editarRelatorioFinanceiroFinanceiroRecord),
             _botaoCalcular(context),
           ].divide(SizedBox(height: 12.0)),
         ),
@@ -252,9 +257,12 @@ class _EditarRelatorioFinanceiroPageState
       mainAxisSize: MainAxisSize.max,
       children: [
         _campoTotalRecebido(context, editarRelatorioFinanceiroFinanceiroRecord),
-        _campoFaturamentoLiquido(context, editarRelatorioFinanceiroFinanceiroRecord),
-        _campoMediaProducaoVaca(context, editarRelatorioFinanceiroFinanceiroRecord),
-        _campoCustoLitroLeite(context, editarRelatorioFinanceiroFinanceiroRecord),
+        _campoFaturamentoLiquido(
+            context, editarRelatorioFinanceiroFinanceiroRecord),
+        _campoMediaProducaoVaca(
+            context, editarRelatorioFinanceiroFinanceiroRecord),
+        _campoCustoLitroLeite(
+            context, editarRelatorioFinanceiroFinanceiroRecord),
         if ((_totalRecebidoTextController.text != '') &&
             (_faturamentoLiquidoTextController.text != '') &&
             (_mediaProducaoVacaTextController.text != '') &&

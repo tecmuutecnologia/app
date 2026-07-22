@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison, dead_null_aware_expression
 
 import '/data/backend.dart';
+import '/data/objectbox/index.dart';
 import '/core/ui/app_card.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
@@ -302,17 +303,21 @@ class _NovoRelatorioFinanceiroPageState
                   return;
                 }
 
-                await FinanceiroRecord.createDoc(widget.uidPropriedade!)
-                    .set(createFinanceiroRecordData(
-                  uidPropriedade: widget.uidPropriedade,
-                  uidTecnico: widget.uidTecnico,
+                // Offline-first: grava no ObjectBox e deixa o sync subir o
+                // documento (o `_syncModifiedFinanceiro` reconcilia o
+                // firestoreId ao reconectar). Antes era um `set` direto no
+                // Firestore, que sem rede nao concluia.
+                await FinanceiroRepository().add(FinanceiroEntity(
+                  parentPath: widget.uidPropriedade!.path,
+                  uidPropriedadePath: widget.uidPropriedade?.path,
+                  uidTecnicoPath: widget.uidTecnico?.path,
                   dtRelatorio: _dtRelatorioTextController.text,
                   vacasLactacao:
-                      int.tryParse(_vacasLactacaoTextController.text),
+                      int.tryParse(_vacasLactacaoTextController.text) ?? 0,
                   litrosLeiteMes:
-                      int.tryParse(_litrosLeiteMesTextController.text),
+                      int.tryParse(_litrosLeiteMesTextController.text) ?? 0,
                   litrosLeitePorDia:
-                      int.tryParse(_litrosLeiteDiaTextController.text),
+                      int.tryParse(_litrosLeiteDiaTextController.text) ?? 0,
                   precoRecebidoPorLitro: _precoRecebidoLitro.toString(),
                   despesasNoMes: _despesasNoMes.toString(),
                   totalRecebidoMes: _totalRecebidoTextController.text,

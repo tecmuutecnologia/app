@@ -919,11 +919,22 @@ class OfflineFirstSyncService {
 
     for (final fin in modified) {
       try {
+        // O entity guarda os caminhos; o Firestore espera DocumentReference.
+        // Sem reanexar, as telas que filtram por `uidPropriedade` (indices
+        // zootecnicos) nao encontrariam o documento.
+        Map<String, dynamic> payload(FinanceiroEntity e) => {
+              ...e.toFirestore(),
+              if (e.uidPropriedadePath != null)
+                'uidPropriedade': _firestore.doc(e.uidPropriedadePath!),
+              if (e.uidTecnicoPath != null)
+                'uidTecnico': _firestore.doc(e.uidTecnicoPath!),
+            };
+
         if (fin.firestoreId != null && fin.parentPath != null) {
           final docRef = _firestore.doc(
             '${fin.parentPath}/financeiro/${fin.firestoreId}',
           );
-          await docRef.update(fin.toFirestore());
+          await docRef.update(payload(fin));
           fin.needsSync = false;
           fin.lastSynced = DateTime.now();
           _objectBox.financeiroBox.put(fin);
@@ -933,7 +944,7 @@ class OfflineFirstSyncService {
           // Novo registro (criado offline) - criar no Firestore e reconciliar.
           final collectionRef =
               _firestore.collection('${fin.parentPath}/financeiro');
-          final docRef = await collectionRef.add(fin.toFirestore());
+          final docRef = await collectionRef.add(payload(fin));
           fin.firestoreId = docRef.id;
           fin.needsSync = false;
           fin.lastSynced = DateTime.now();
@@ -1141,8 +1152,8 @@ class OfflineFirstSyncService {
     if (!_isOnline) return;
 
     final marca = _objectBox.syncMetadataBox
-        .query(SyncMetadataEntity_.collectionName
-            .equals(_kReparoPathPropriedades))
+        .query(
+            SyncMetadataEntity_.collectionName.equals(_kReparoPathPropriedades))
         .build()
         .findFirst();
     if (marca != null && marca.initialSyncComplete) return;

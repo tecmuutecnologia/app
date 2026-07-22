@@ -472,13 +472,17 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
           _cardInicio(context),
           _cardTrocarProdutor(context),
           _cardAnimais(context),
-          _cardInseminacoes(context, inicioPropriedadeAnimaisProdutoresRecordList),
-          _cardDiagnosticoGestacao(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _cardInseminacoes(
+              context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _cardDiagnosticoGestacao(
+              context, inicioPropriedadeAnimaisProdutoresRecordList),
           _cardPrenhas(context, inicioPropriedadeAnimaisProdutoresRecordList),
           _cardSecas(context, inicioPropriedadeAnimaisProdutoresRecordList),
-          _cardExameGinecologico(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _cardExameGinecologico(
+              context, inicioPropriedadeAnimaisProdutoresRecordList),
           _cardRecria(context, inicioPropriedadeAnimaisProdutoresRecordList),
-          _cardListaCompleta(context, inicioPropriedadeAnimaisProdutoresRecordList),
+          _cardListaCompleta(
+              context, inicioPropriedadeAnimaisProdutoresRecordList),
           if (_respostaNet ?? true)
             Container(
               width: MediaQuery.sizeOf(context).width * 0.3,
@@ -660,83 +664,83 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
             ).animateOnPageLoad(
                 animationsMap['containerOnPageLoadAnimation13']!),
           _cardIndicesZootecnicos(context),
-          if (_respostaNet ?? true)
-            Container(
-              width: MediaQuery.sizeOf(context).width * 0.3,
-              height: 120.0,
-              decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).secondaryBackground,
-                borderRadius: BorderRadius.circular(18.0),
-                boxShadow: AppTokens.softShadow(context),
-              ),
-              child: InkWell(
-                splashColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                onTap: () async {
-                  context.pushNamed(
-                    RelatorioFinanceiroPage.routeName,
-                    queryParameters: {
-                      'uidPropriedade': serializeParam(
-                        widget.uidPropriedade,
-                        ParamType.DocumentReference,
-                      ),
-                      'nomePropriedade': serializeParam(
-                        widget.nomePropriedade,
-                        ParamType.String,
-                      ),
-                      'uidTecnico': serializeParam(
-                        widget.uidTecnico,
-                        ParamType.DocumentReference,
-                      ),
-                      'emailPropriedade': serializeParam(
-                        widget.emailPropriedade,
-                        ParamType.String,
-                      ),
-                      'visitaPresencial': serializeParam(
-                        widget.visitaPresencial,
-                        ParamType.bool,
-                      ),
-                      'diasDg': serializeParam(
-                        widget.diasDg,
-                        ParamType.String,
-                      ),
-                    }.withoutNulls,
-                  );
-                },
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    MenuIconTile(icon: Icons.attach_money_sharp),
-                    const SizedBox(height: 8.0),
-                    AutoSizeText(
-                      'Financeiro',
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      minFontSize: 8.0,
-                      overflow: TextOverflow.ellipsis,
-                      style: FlutterFlowTheme.of(context).labelMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                            color: Color(0xFF14181B),
-                            letterSpacing: 0.0,
+          // Financeiro agora le do ObjectBox (offline-first), entao o card
+          // nao depende mais de conexao.
+          Container(
+            width: MediaQuery.sizeOf(context).width * 0.3,
+            height: 120.0,
+            decoration: BoxDecoration(
+              color: FlutterFlowTheme.of(context).secondaryBackground,
+              borderRadius: BorderRadius.circular(18.0),
+              boxShadow: AppTokens.softShadow(context),
+            ),
+            child: InkWell(
+              splashColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              onTap: () async {
+                context.pushNamed(
+                  RelatorioFinanceiroPage.routeName,
+                  queryParameters: {
+                    'uidPropriedade': serializeParam(
+                      widget.uidPropriedade,
+                      ParamType.DocumentReference,
+                    ),
+                    'nomePropriedade': serializeParam(
+                      widget.nomePropriedade,
+                      ParamType.String,
+                    ),
+                    'uidTecnico': serializeParam(
+                      widget.uidTecnico,
+                      ParamType.DocumentReference,
+                    ),
+                    'emailPropriedade': serializeParam(
+                      widget.emailPropriedade,
+                      ParamType.String,
+                    ),
+                    'visitaPresencial': serializeParam(
+                      widget.visitaPresencial,
+                      ParamType.bool,
+                    ),
+                    'diasDg': serializeParam(
+                      widget.diasDg,
+                      ParamType.String,
+                    ),
+                  }.withoutNulls,
+                );
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  MenuIconTile(icon: Icons.attach_money_sharp),
+                  const SizedBox(height: 8.0),
+                  AutoSizeText(
+                    'Financeiro',
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    minFontSize: 8.0,
+                    overflow: TextOverflow.ellipsis,
+                    style: FlutterFlowTheme.of(context).labelMedium.override(
+                          font: GoogleFonts.readexPro(
                             fontWeight: FontWeight.w600,
                             fontStyle: FlutterFlowTheme.of(context)
                                 .labelMedium
                                 .fontStyle,
                           ),
-                    ),
-                  ],
-                ),
+                          color: Color(0xFF14181B),
+                          letterSpacing: 0.0,
+                          fontWeight: FontWeight.w600,
+                          fontStyle: FlutterFlowTheme.of(context)
+                              .labelMedium
+                              .fontStyle,
+                        ),
+                  ),
+                ],
               ),
-            ).animateOnPageLoad(
-                animationsMap['containerOnPageLoadAnimation15']!),
+            ),
+          ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation15']!),
           if (responsiveVisibility(
             context: context,
             phone: false,
@@ -1416,21 +1420,20 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                             .toList()
                             .length
                             .toString(),
-                        style:
-                            FlutterFlowTheme.of(context).bodyMedium.override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  color: AppTokens.secondary,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
+                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontStyle,
+                              ),
+                              color: AppTokens.secondary,
+                              letterSpacing: 0.0,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                            ),
                       ),
                     ),
                   ),
@@ -2207,8 +2210,8 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     // Antes vinham de um StreamBuilder do Firestore — que ficava no spinner
     // offline e não enxergava a propriedade pendente. A ordenação por nome é
     // aplicada localmente (a lista alimenta apenas contadores).
-    final animaisAsync =
-        ref.watch(animaisByPropriedadeProvider(widget.uidPropriedade?.path ?? ''));
+    final animaisAsync = ref
+        .watch(animaisByPropriedadeProvider(widget.uidPropriedade?.path ?? ''));
 
     return animaisAsync.when(
       loading: () => Scaffold(
@@ -2318,7 +2321,8 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _cabecalho(context),
-                    _gradeMenu(context, inicioPropriedadeAnimaisProdutoresRecordList),
+                    _gradeMenu(
+                        context, inicioPropriedadeAnimaisProdutoresRecordList),
                     if (!valueOrDefault<bool>(
                       _respostaNet,
                       true,

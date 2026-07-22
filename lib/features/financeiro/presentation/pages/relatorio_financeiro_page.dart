@@ -1,4 +1,5 @@
 import '/data/backend.dart';
+import '/data/objectbox/index.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -122,6 +123,16 @@ class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage> {
     );
   }
 
+  /// Reconstrói a `DocumentReference` do relatório a partir do que o ObjectBox
+  /// guarda (`parentPath` + `firestoreId`). Retorna null enquanto o relatório
+  /// criado offline ainda não subiu — nesse caso o `firestoreId` só existe
+  /// depois que o sync reconcilia.
+  DocumentReference? _refDoRelatorio(FinanceiroEntity e) {
+    if (e.firestoreId == null || e.parentPath == null) return null;
+    return FirebaseFirestore.instance
+        .doc('${e.parentPath}/financeiro/${e.firestoreId}');
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -170,36 +181,21 @@ class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              StreamBuilder<List<FinanceiroRecord>>(
-                stream: queryFinanceiroRecord(
-                  parent: widget.uidPropriedade,
-                  queryBuilder: (financeiroRecord) => financeiroRecord
-                      .where(
-                        'uidPropriedade',
-                        isEqualTo: widget.uidPropriedade,
-                      )
-                      .where(
-                        'uidTecnico',
-                        isEqualTo: widget.uidTecnico,
-                      ),
-                ),
+              // Fonte única ObjectBox (offline-first): a lista vem do banco
+              // local e o Firestore serve só para sincronizar. Antes era um
+              // StreamBuilder do Firestore, que offline ficava preso no
+              // CircularProgressIndicator — motivo do card ser escondido sem
+              // internet na tela de início da propriedade.
+              StreamBuilder<List<FinanceiroEntity>>(
+                stream: FinanceiroRepository()
+                    .watchByParentPath(widget.uidPropriedade!.path),
                 builder: (context, snapshot) {
-                  // Customize what your widget looks like when it's loading.
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: SizedBox(
-                        width: 50.0,
-                        height: 50.0,
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Color(0xFFF75E38),
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-                  List<FinanceiroRecord> listViewFinanceiroRecordList =
-                      snapshot.data!;
+                  final listViewFinanceiroRecordList = (snapshot.data ??
+                          <FinanceiroEntity>[])
+                      .where((e) => !e.isDeleted)
+                      .toList()
+                    ..sort((a, b) =>
+                        (b.dtRelatorio ?? '').compareTo(a.dtRelatorio ?? ''));
 
                   return ListView.builder(
                     padding: EdgeInsets.zero,
@@ -249,7 +245,7 @@ class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage> {
                                     ParamType.String,
                                   ),
                                   'uidFinanceiro': serializeParam(
-                                    listViewFinanceiroRecord.reference,
+                                    _refDoRelatorio(listViewFinanceiroRecord),
                                     ParamType.DocumentReference,
                                   ),
                                 }.withoutNulls,
@@ -298,7 +294,8 @@ class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage> {
                                                         5.0, 0.0, 0.0, 0.0),
                                                 child: Text(
                                                   listViewFinanceiroRecord
-                                                      .dtRelatorio,
+                                                          .dtRelatorio ??
+                                                      '',
                                                   style: FlutterFlowTheme.of(
                                                           context)
                                                       .bodyLarge
