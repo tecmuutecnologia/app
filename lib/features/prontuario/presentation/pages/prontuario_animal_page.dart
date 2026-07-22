@@ -271,7 +271,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 5.0, 0.0, 0.0, 0.0),
                             child: Text(
-                              item.dtAcao ?? '',
+                              item.dtAcaoFormatada ?? '',
                               style: FlutterFlowTheme.of(context)
                                   .bodyLarge
                                   .override(
@@ -496,7 +496,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 5.0, 0.0, 0.0, 0.0),
                             child: Text(
-                              item.dtAcao ?? '',
+                              item.dtAcaoFormatada ?? '',
                               style: FlutterFlowTheme.of(context)
                                   .bodyLarge
                                   .override(
@@ -702,7 +702,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 5.0, 0.0, 0.0, 0.0),
                             child: Text(
-                              item.dtAcao ?? '',
+                              item.dtAcaoFormatada ?? '',
                               style: FlutterFlowTheme.of(context)
                                   .bodyLarge
                                   .override(

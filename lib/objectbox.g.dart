@@ -1125,7 +1125,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(10, 7897657918415060101),
     name: 'AcaoSanitarioEntity',
-    lastPropertyId: const obx_int.IdUid(29, 7299772586486918517),
+    lastPropertyId: const obx_int.IdUid(31, 6669133587048296272),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -1196,18 +1196,6 @@ final _entities = <obx_int.ModelEntity>[
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(18, 8807068632205555430),
-        name: 'dtAcao',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
-        id: const obx_int.IdUid(19, 5958341963162955603),
-        name: 'dtCarencia',
-        type: 9,
-        flags: 0,
-      ),
-      obx_int.ModelProperty(
         id: const obx_int.IdUid(21, 2405313882071949768),
         name: 'lastModified',
         type: 10,
@@ -1258,6 +1246,18 @@ final _entities = <obx_int.ModelEntity>[
       obx_int.ModelProperty(
         id: const obx_int.IdUid(29, 7299772586486918517),
         name: 'brincoAnimal',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(30, 4733908148134413261),
+        name: 'dtAcaoFormatada',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(31, 6669133587048296272),
+        name: 'dtCarenciaFormatada',
         type: 9,
         flags: 0,
       ),
@@ -2184,6 +2184,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
       4872234371887632450,
       5371424766435373146,
       8017630778206028698,
+      8807068632205555430,
+      5958341963162955603,
     ],
     retiredRelationUids: const [],
     modelVersion: 5,
@@ -3726,12 +3728,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final resultadoOffset = object.resultado == null
             ? null
             : fbb.writeString(object.resultado!);
-        final dtAcaoOffset = object.dtAcao == null
-            ? null
-            : fbb.writeString(object.dtAcao!);
-        final dtCarenciaOffset = object.dtCarencia == null
-            ? null
-            : fbb.writeString(object.dtCarencia!);
         final uidAnimalAnimaisProdutoresPathOffset =
             object.uidAnimalAnimaisProdutoresPath == null
             ? null
@@ -3748,7 +3744,13 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final brincoAnimalOffset = object.brincoAnimal == null
             ? null
             : fbb.writeString(object.brincoAnimal!);
-        fbb.startTable(30);
+        final dtAcaoFormatadaOffset = object.dtAcaoFormatada == null
+            ? null
+            : fbb.writeString(object.dtAcaoFormatada!);
+        final dtCarenciaFormatadaOffset = object.dtCarenciaFormatada == null
+            ? null
+            : fbb.writeString(object.dtCarenciaFormatada!);
+        fbb.startTable(32);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, firestoreIdOffset);
         fbb.addOffset(2, parentPathOffset);
@@ -3760,8 +3762,6 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addOffset(11, loteOffset);
         fbb.addOffset(12, laboratorioOffset);
         fbb.addOffset(13, resultadoOffset);
-        fbb.addOffset(17, dtAcaoOffset);
-        fbb.addOffset(18, dtCarenciaOffset);
         fbb.addInt64(20, object.lastModified?.millisecondsSinceEpoch);
         fbb.addInt64(21, object.lastSynced?.millisecondsSinceEpoch);
         fbb.addBool(22, object.needsSync);
@@ -3771,6 +3771,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addOffset(26, uidPropriedadePathOffset);
         fbb.addOffset(27, obsVisitaOffset);
         fbb.addOffset(28, brincoAnimalOffset);
+        fbb.addOffset(29, dtAcaoFormatadaOffset);
+        fbb.addOffset(30, dtCarenciaFormatadaOffset);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -3811,9 +3813,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final obsVisitaParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGetNullable(buffer, rootOffset, 58);
-        final dtAcaoParam = const fb.StringReader(
+        final dtAcaoFormatadaParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 38);
+        ).vTableGetNullable(buffer, rootOffset, 62);
         final nomeAnimalParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGetNullable(buffer, rootOffset, 14);
@@ -3835,9 +3837,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final resultadoParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGetNullable(buffer, rootOffset, 30);
-        final dtCarenciaParam = const fb.StringReader(
+        final dtCarenciaFormatadaParam = const fb.StringReader(
           asciiOptimization: true,
-        ).vTableGetNullable(buffer, rootOffset, 40);
+        ).vTableGetNullable(buffer, rootOffset, 64);
         final lastModifiedParam = lastModifiedValue == null
             ? null
             : DateTime.fromMillisecondsSinceEpoch(lastModifiedValue);
@@ -3865,7 +3867,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           tipoAcao: tipoAcaoParam,
           acao: acaoParam,
           obsVisita: obsVisitaParam,
-          dtAcao: dtAcaoParam,
+          dtAcaoFormatada: dtAcaoFormatadaParam,
           nomeAnimal: nomeAnimalParam,
           brincoAnimal: brincoAnimalParam,
           medicamento: medicamentoParam,
@@ -3873,7 +3875,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           lote: loteParam,
           laboratorio: laboratorioParam,
           resultado: resultadoParam,
-          dtCarencia: dtCarenciaParam,
+          dtCarenciaFormatada: dtCarenciaFormatadaParam,
           lastModified: lastModifiedParam,
           lastSynced: lastSyncedParam,
           needsSync: needsSyncParam,
@@ -5890,57 +5892,56 @@ class AcaoSanitarioEntity_ {
     _entities[9].properties[10],
   );
 
-  /// See [AcaoSanitarioEntity.dtAcao].
-  static final dtAcao = obx.QueryStringProperty<AcaoSanitarioEntity>(
-    _entities[9].properties[11],
-  );
-
-  /// See [AcaoSanitarioEntity.dtCarencia].
-  static final dtCarencia = obx.QueryStringProperty<AcaoSanitarioEntity>(
-    _entities[9].properties[12],
-  );
-
   /// See [AcaoSanitarioEntity.lastModified].
   static final lastModified = obx.QueryDateProperty<AcaoSanitarioEntity>(
-    _entities[9].properties[13],
+    _entities[9].properties[11],
   );
 
   /// See [AcaoSanitarioEntity.lastSynced].
   static final lastSynced = obx.QueryDateProperty<AcaoSanitarioEntity>(
-    _entities[9].properties[14],
+    _entities[9].properties[12],
   );
 
   /// See [AcaoSanitarioEntity.needsSync].
   static final needsSync = obx.QueryBooleanProperty<AcaoSanitarioEntity>(
-    _entities[9].properties[15],
+    _entities[9].properties[13],
   );
 
   /// See [AcaoSanitarioEntity.isDeleted].
   static final isDeleted = obx.QueryBooleanProperty<AcaoSanitarioEntity>(
-    _entities[9].properties[16],
+    _entities[9].properties[14],
   );
 
   /// See [AcaoSanitarioEntity.uidAnimalAnimaisProdutoresPath].
   static final uidAnimalAnimaisProdutoresPath =
-      obx.QueryStringProperty<AcaoSanitarioEntity>(_entities[9].properties[17]);
+      obx.QueryStringProperty<AcaoSanitarioEntity>(_entities[9].properties[15]);
 
   /// See [AcaoSanitarioEntity.uidPersonProdutorPath].
   static final uidPersonProdutorPath =
-      obx.QueryStringProperty<AcaoSanitarioEntity>(_entities[9].properties[18]);
+      obx.QueryStringProperty<AcaoSanitarioEntity>(_entities[9].properties[16]);
 
   /// See [AcaoSanitarioEntity.uidPropriedadePath].
   static final uidPropriedadePath =
-      obx.QueryStringProperty<AcaoSanitarioEntity>(_entities[9].properties[19]);
+      obx.QueryStringProperty<AcaoSanitarioEntity>(_entities[9].properties[17]);
 
   /// See [AcaoSanitarioEntity.obsVisita].
   static final obsVisita = obx.QueryStringProperty<AcaoSanitarioEntity>(
-    _entities[9].properties[20],
+    _entities[9].properties[18],
   );
 
   /// See [AcaoSanitarioEntity.brincoAnimal].
   static final brincoAnimal = obx.QueryStringProperty<AcaoSanitarioEntity>(
-    _entities[9].properties[21],
+    _entities[9].properties[19],
   );
+
+  /// See [AcaoSanitarioEntity.dtAcaoFormatada].
+  static final dtAcaoFormatada = obx.QueryStringProperty<AcaoSanitarioEntity>(
+    _entities[9].properties[20],
+  );
+
+  /// See [AcaoSanitarioEntity.dtCarenciaFormatada].
+  static final dtCarenciaFormatada =
+      obx.QueryStringProperty<AcaoSanitarioEntity>(_entities[9].properties[21]);
 }
 
 /// [CalendarioSanitarioEntity] entity fields to define ObjectBox queries.

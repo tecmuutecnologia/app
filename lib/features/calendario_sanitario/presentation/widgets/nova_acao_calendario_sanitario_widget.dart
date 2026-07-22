@@ -876,7 +876,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                 obsVisita: _obsTextController.text,
                 tipoAcao: _tipoValue,
                 acao: _valoracaoValue,
-                dtAcao: _dtAcaoTextController.text,
+                dtAcaoFormatada: _dtAcaoTextController.text,
                 nomeAnimal: animalSel?.nomeAnimal,
                 brincoAnimal: animalSel?.brincoAnimal.toString(),
               ));

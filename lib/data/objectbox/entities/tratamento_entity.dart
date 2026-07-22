@@ -180,7 +180,14 @@ class AcaoSanitarioEntity implements SyncableEntity {
   String? obsVisita;
 
   /// Data no formato `dd/MM/yyyy` (é string no Firestore).
-  String? dtAcao;
+  /// Data no formato `dd/MM/yyyy`.
+  ///
+  /// ⚠️ Chamava-se `dtAcao` e era `DateTime`. O ObjectBox NÃO permite trocar o
+  /// tipo de uma propriedade existente ("Existing Property dtAcao (Date) is
+  /// not compatible with the new type String"), então foi renomeada: a antiga
+  /// é aposentada e esta nasce como propriedade nova. A chave no Firestore
+  /// continua `dtAcao`.
+  String? dtAcaoFormatada;
   String? nomeAnimal;
   String? brincoAnimal;
 
@@ -191,7 +198,7 @@ class AcaoSanitarioEntity implements SyncableEntity {
   String? lote;
   String? laboratorio;
   String? resultado;
-  String? dtCarencia;
+  String? dtCarenciaFormatada;
 
   @override
   @Property(type: PropertyType.date)
@@ -216,7 +223,7 @@ class AcaoSanitarioEntity implements SyncableEntity {
     this.tipoAcao,
     this.acao,
     this.obsVisita,
-    this.dtAcao,
+    this.dtAcaoFormatada,
     this.nomeAnimal,
     this.brincoAnimal,
     this.medicamento,
@@ -224,7 +231,7 @@ class AcaoSanitarioEntity implements SyncableEntity {
     this.lote,
     this.laboratorio,
     this.resultado,
-    this.dtCarencia,
+    this.dtCarenciaFormatada,
     this.lastModified,
     this.lastSynced,
     this.needsSync = false,
@@ -256,7 +263,7 @@ class AcaoSanitarioEntity implements SyncableEntity {
       tipoAcao: data['tipoAcao'] as String?,
       acao: data['acao'] as String?,
       obsVisita: data['obsVisita'] as String?,
-      dtAcao: data['dtAcao'] as String?,
+      dtAcaoFormatada: data['dtAcao'] as String?,
       nomeAnimal: data['nomeAnimal'] as String?,
       brincoAnimal: data['brincoAnimal'] as String?,
       medicamento: data['medicamento'] as String?,
@@ -264,7 +271,7 @@ class AcaoSanitarioEntity implements SyncableEntity {
       lote: data['lote'] as String?,
       laboratorio: data['laboratorio'] as String?,
       resultado: data['resultado'] as String?,
-      dtCarencia: data['dtCarencia'] as String?,
+      dtCarenciaFormatada: data['dtCarencia'] as String?,
       lastSynced: DateTime.now(),
       needsSync: false,
     );
@@ -278,7 +285,7 @@ class AcaoSanitarioEntity implements SyncableEntity {
       'tipoAcao': tipoAcao,
       'acao': acao,
       'obsVisita': obsVisita,
-      'dtAcao': dtAcao,
+      'dtAcao': dtAcaoFormatada,
       'nomeAnimal': nomeAnimal,
       'brincoAnimal': brincoAnimal,
     };
@@ -287,7 +294,9 @@ class AcaoSanitarioEntity implements SyncableEntity {
     if (lote != null) data['lote'] = lote;
     if (laboratorio != null) data['laboratorio'] = laboratorio;
     if (resultado != null) data['resultado'] = resultado;
-    if (dtCarencia != null) data['dtCarencia'] = dtCarencia;
+    if (dtCarenciaFormatada != null) {
+      data['dtCarencia'] = dtCarenciaFormatada;
+    }
     return data;
   }
 

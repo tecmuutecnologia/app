@@ -298,7 +298,7 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
           );
           final listaAcoesAcoesSanitarioRecordList =
               (snapshot.data ?? <AcaoSanitarioEntity>[])
-                  .where((e) => !e.isDeleted && e.dtAcao == diaSelecionado)
+                  .where((e) => !e.isDeleted && e.dtAcaoFormatada == diaSelecionado)
                   .toList();
           if (listaAcoesAcoesSanitarioRecordList.isEmpty) {
             return Image.asset(
