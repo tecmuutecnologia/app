@@ -15,7 +15,6 @@ class AnimalListWidget extends StatelessWidget {
   final bool? visitaPresencial;
   final String? diasDg;
   final String? filterCategory;
-  final bool isOnline;
   final bool ascending;
   final VoidCallback? onAcaoConcluida;
 
@@ -28,111 +27,21 @@ class AnimalListWidget extends StatelessWidget {
     required this.visitaPresencial,
     required this.diasDg,
     this.filterCategory,
-    this.isOnline = true,
     this.ascending = true,
     this.onAcaoConcluida,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return isOnline ? _buildOnlineList(context) : _buildOfflineList(context);
-  }
+  Widget build(BuildContext context) => _buildLista(context);
 
-  Widget _buildOnlineList(BuildContext context) {
-    return StreamBuilder<List<AnimaisProdutoresRecord>>(
-      stream: queryAnimaisProdutoresRecord(
-        parent: uidTecnico,
-        queryBuilder: (animaisProdutoresRecord) {
-          var query = animaisProdutoresRecord.where(
-            'uidTecnicoPropriedade',
-            isEqualTo: uidPropriedade,
-          );
-
-          if (filterCategory != null && filterCategory != 'Todos') {
-            query = query.where('grupoAnimal', isEqualTo: filterCategory);
-          }
-
-          return query;
-        },
-      ),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return _buildLoadingIndicator();
-        }
-
-        List<AnimaisProdutoresRecord> records = snapshot.data!.toList();
-
-        // Ordenação: Novilhas por data de inseminação (a mais antiga primeiro
-        // é o que interessa no manejo); demais grupos, alfabética por
-        // nome+brinco. Antes só as Novilhas eram ordenadas, e só aqui no modo
-        // online — o modo offline saía na ordem crua do banco.
-        if (filterCategory == 'Novilhas') {
-          records.sort((a, b) =>
-              _compareNovilhasByInseminacao(a, b, ascending: ascending));
-        } else {
-          records.sort((a, b) {
-            final c = a.nomeBrincoConcat
-                .toLowerCase()
-                .compareTo(b.nomeBrincoConcat.toLowerCase());
-            return ascending ? c : -c;
-          });
-        }
-
-        if (records.isEmpty) {
-          return _buildEmptyState(context);
-        }
-
-        return ListView.builder(
-          padding: EdgeInsets.zero,
-          primary: false,
-          shrinkWrap: true,
-          scrollDirection: Axis.vertical,
-          itemCount: records.length,
-          itemBuilder: (context, index) {
-            final record = records[index];
-            final animal = AnimalData(
-              grupoAnimal: record.grupoAnimal,
-              nomeAnimal: record.nomeAnimal,
-              brincoAnimal: record.brincoAnimal,
-              nomeBrincoConcat: record.nomeBrincoConcat,
-              status: record.status,
-              dtNascimento: record.dtNascimento,
-              dtUltimaInseminacao: record.dtUltimaInseminacao,
-              dtUltimoPartoContingencia: record.dtUltimoPartoContingencia,
-              dtUltimoParto: record.dtUltimoParto,
-              dtPrePartoPrevista: record.dtPrePartoPrevista,
-              dtPartoPrevisto: record.dtPartoPrevisto,
-              dtUltimaAcao: record.dtUltimaAcao,
-              dtInducaoLactacao: record.dtInducaoLactacao != null
-                  ? DateFormat('dd/MM/yyyy').format(record.dtInducaoLactacao!)
-                  : null,
-              nomeTouroUltimaInseminacao: record.nomeTouroUltimaInseminacao,
-              brincoAnimalOrder: record.brincoAnimalOrder,
-              liberaInseminacao: record.liberaInseminacao,
-              reference: record.reference,
-            );
-
-            return AnimalCardWidget(
-              animal: animal,
-              uidPropriedade: uidPropriedade,
-              nomePropriedade: nomePropriedade,
-              uidTecnico: uidTecnico,
-              emailPropriedade: emailPropriedade,
-              visitaPresencial: visitaPresencial,
-              diasDg: diasDg,
-              isOnline: true,
-              onAcaoConcluida: onAcaoConcluida,
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildOfflineList(BuildContext context) {
+  /// Fonte única ObjectBox (offline-first), igual às demais telas.
+  ///
+  /// Antes o modo online usava um `StreamBuilder` do Firestore: as ações
+  /// gravavam primeiro no ObjectBox, mas a lista lia do Firestore, então só
+  /// refletia a mudança depois que o sync subisse.
+  Widget _buildLista(BuildContext context) {
     return Builder(
       builder: (context) {
-        // Processar animais existentes (offline)
         final existingAnimals = animaisProdutoresExistentesObjectBox()
             .asMap()
             .entries
@@ -172,7 +81,6 @@ class AnimalListWidget extends StatelessWidget {
               emailPropriedade: emailPropriedade,
               visitaPresencial: visitaPresencial,
               diasDg: diasDg,
-              isOnline: false,
               onAcaoConcluida: onAcaoConcluida,
             );
           },
@@ -225,21 +133,12 @@ class AnimalListWidget extends StatelessWidget {
       nomeTouroUltimaInseminacao: item.nomeTouroUltimaInseminacao,
       brincoAnimalOrder: item.brincoAnimalOrder,
       liberaInseminacao: item.liberaInseminacao ?? false,
+      // Sem isto `reference` ficava sempre null: o prontuário não abria e o
+      // desmame roteava todo animal como "criado offline".
+      reference: item.uidAnimal,
       itemIndex: index,
       uidAnimalOffline: item.uidAnimalOffline,
       uidTecnicoPropriedade: item.uidTecnicoPropriedade,
-    );
-  }
-
-  Widget _buildLoadingIndicator() {
-    return const Center(
-      child: SizedBox(
-        width: 50.0,
-        height: 50.0,
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFF75E38)),
-        ),
-      ),
     );
   }
 
@@ -273,25 +172,5 @@ class AnimalListWidget extends StatelessWidget {
     } catch (_) {
       return null;
     }
-  }
-
-  int _compareNovilhasByInseminacao(
-    AnimaisProdutoresRecord a,
-    AnimaisProdutoresRecord b, {
-    required bool ascending,
-  }) {
-    final dateA = _parseInseminacaoDate(a.dtUltimaInseminacao);
-    final dateB = _parseInseminacaoDate(b.dtUltimaInseminacao);
-
-    if (dateA == null && dateB == null) {
-      return a.nomeBrincoConcat
-          .toLowerCase()
-          .compareTo(b.nomeBrincoConcat.toLowerCase());
-    }
-    if (dateA == null) return 1;
-    if (dateB == null) return -1;
-
-    final dateComparison = dateA.compareTo(dateB);
-    return ascending ? dateComparison : -dateComparison;
   }
 }

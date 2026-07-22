@@ -312,8 +312,6 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
   }
 
   Widget _buildAnimalList(BuildContext context) {
-    final isOnline = _respostaNet ?? true;
-
     return ListView(
       // Espaço no fim para o FAB de ordenação não cobrir o último cartão.
       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 88.0),
@@ -330,7 +328,6 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
           diasDg: widget.diasDg,
           filterCategory: _choiceChipsValue,
           onAcaoConcluida: () => safeSetState(() {}),
-          isOnline: isOnline,
           ascending: _ordenacaoQuery,
         ),
       ],

@@ -93,7 +93,6 @@ class AnimalCardWidget extends StatelessWidget {
   final String? emailPropriedade;
   final bool? visitaPresencial;
   final String? diasDg;
-  final bool isOnline;
 
   /// Disparado ao fechar o modal de qualquer ação. Sem isto a lista nunca era
   /// reconstruída e o animal permanecia no card mesmo depois de, por exemplo,
@@ -110,7 +109,6 @@ class AnimalCardWidget extends StatelessWidget {
     required this.emailPropriedade,
     required this.visitaPresencial,
     required this.diasDg,
-    this.isOnline = true,
     this.onAcaoConcluida,
   });
 
@@ -486,7 +484,9 @@ class AnimalCardWidget extends StatelessWidget {
   }
 
   void _navigateToProntuario(BuildContext context) {
-    if (isOnline && animal.reference != null) {
+    // Depende de o animal TER referência no Firestore, não de haver conexão:
+    // antes, offline, o prontuário simplesmente não abria.
+    if (animal.reference != null) {
       context.pushNamed(
         ProntuarioAnimalPage.routeName,
         queryParameters: {
@@ -671,9 +671,11 @@ class AnimalCardWidget extends StatelessWidget {
     // O modo "online" agora é offline-first (grava no ObjectBox e enfileira o
     // sync), então cobre tanto o caso online quanto o de animal existente
     // offline. Só o animal criado offline (sem ref Firestore) usa offlineNew.
-    final DesmameMode mode = (isOnline || animal.isExistingOffline)
-        ? DesmameMode.online
-        : DesmameMode.offlineNew;
+    // Discriminante é a identidade do animal (tem ref Firestore ou já existe
+    // localmente), não a conectividade — o modo "online" é offline-first.
+    final temIdentidade = animal.reference != null || animal.isExistingOffline;
+    final DesmameMode mode =
+        temIdentidade ? DesmameMode.online : DesmameMode.offlineNew;
 
     return DesmameWidget(
       mode: mode,
@@ -687,12 +689,9 @@ class AnimalCardWidget extends StatelessWidget {
       brincoAnimal: animal.brincoAnimal?.toString() ?? '',
       grupoAnimal: animal.grupoAnimal,
       // Parâmetros condicionais
-      uidAnimaisProdutores:
-          isOnline || animal.isExistingOffline ? animal.reference : null,
-      uidAnimalOffline: !isOnline && !animal.isExistingOffline
-          ? animal.uidAnimalOffline
-          : null,
-      itemUidIndex: !isOnline ? animal.itemIndex : null,
+      uidAnimaisProdutores: animal.reference,
+      uidAnimalOffline: temIdentidade ? null : animal.uidAnimalOffline,
+      itemUidIndex: temIdentidade ? null : animal.itemIndex,
     );
   }
 
