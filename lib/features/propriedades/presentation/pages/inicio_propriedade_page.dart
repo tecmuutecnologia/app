@@ -603,66 +603,66 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
               ),
             ).animateOnPageLoad(
                 animationsMap['containerOnPageLoadAnimation12']!),
-          if (_respostaNet ?? true)
-            Container(
-              width: MediaQuery.sizeOf(context).width * 0.3,
-              height: 120.0,
-              decoration: BoxDecoration(
-                color: FlutterFlowTheme.of(context).secondaryBackground,
-                borderRadius: BorderRadius.circular(18.0),
-                boxShadow: AppTokens.softShadow(context),
-              ),
-              child: InkWell(
-                splashColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                onTap: () async {
-                  context.pushNamed(
-                    CalendarioSanitarioPage.routeName,
-                    queryParameters: {
-                      'uidPropriedade': serializeParam(
-                        widget.uidPropriedade,
-                        ParamType.DocumentReference,
-                      ),
-                      'nomePropriedade': serializeParam(
-                        widget.nomePropriedade,
-                        ParamType.String,
-                      ),
-                      'uidTecnico': serializeParam(
-                        widget.uidTecnico,
-                        ParamType.DocumentReference,
-                      ),
-                      'emailPropriedade': serializeParam(
-                        widget.emailPropriedade,
-                        ParamType.String,
-                      ),
-                      'visitaPresencial': serializeParam(
-                        widget.visitaPresencial,
-                        ParamType.bool,
-                      ),
-                      'diasDg': serializeParam(
-                        widget.diasDg,
-                        ParamType.String,
-                      ),
-                    }.withoutNulls,
-                  );
-                },
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.calendar_today,
-                      color: Color(0xFFEC3B5B),
-                      size: 28.0,
+          // Calendario sanitario agora le do ObjectBox (offline-first),
+          // entao o card nao depende mais de conexao.
+          Container(
+            width: MediaQuery.sizeOf(context).width * 0.3,
+            height: 120.0,
+            decoration: BoxDecoration(
+              color: FlutterFlowTheme.of(context).secondaryBackground,
+              borderRadius: BorderRadius.circular(18.0),
+              boxShadow: AppTokens.softShadow(context),
+            ),
+            child: InkWell(
+              splashColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              onTap: () async {
+                context.pushNamed(
+                  CalendarioSanitarioPage.routeName,
+                  queryParameters: {
+                    'uidPropriedade': serializeParam(
+                      widget.uidPropriedade,
+                      ParamType.DocumentReference,
                     ),
-                    _rotuloCalendarioSanitario(context),
-                  ],
-                ),
+                    'nomePropriedade': serializeParam(
+                      widget.nomePropriedade,
+                      ParamType.String,
+                    ),
+                    'uidTecnico': serializeParam(
+                      widget.uidTecnico,
+                      ParamType.DocumentReference,
+                    ),
+                    'emailPropriedade': serializeParam(
+                      widget.emailPropriedade,
+                      ParamType.String,
+                    ),
+                    'visitaPresencial': serializeParam(
+                      widget.visitaPresencial,
+                      ParamType.bool,
+                    ),
+                    'diasDg': serializeParam(
+                      widget.diasDg,
+                      ParamType.String,
+                    ),
+                  }.withoutNulls,
+                );
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.calendar_today,
+                    color: Color(0xFFEC3B5B),
+                    size: 28.0,
+                  ),
+                  _rotuloCalendarioSanitario(context),
+                ],
               ),
-            ).animateOnPageLoad(
-                animationsMap['containerOnPageLoadAnimation13']!),
+            ),
+          ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation13']!),
           _cardIndicesZootecnicos(context),
           // Financeiro agora le do ObjectBox (offline-first), entao o card
           // nao depende mais de conexao.

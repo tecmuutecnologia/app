@@ -1002,8 +1002,8 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
     // carregada pelo id local; propriedade já ativa é carregada pelo firestoreId.
     final AsyncValue<PropriedadeEntity?> propriedadeAsync;
     if (widget.propriedadePendenteId != null) {
-      propriedadeAsync =
-          ref.watch(propriedadeByLocalIdProvider(widget.propriedadePendenteId!));
+      propriedadeAsync = ref
+          .watch(propriedadeByLocalIdProvider(widget.propriedadePendenteId!));
     } else {
       final firestoreId = widget.uidPropriedade?.id;
       if (firestoreId == null) {
@@ -1081,7 +1081,8 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
                     _campoNome(context, editarPropriedadePropriedadesRecord),
                     _campoCpf(context, editarPropriedadePropriedadesRecord),
                     _campoCelular(context, editarPropriedadePropriedadesRecord),
-                    _campoEndereco(context, editarPropriedadePropriedadesRecord),
+                    _campoEndereco(
+                        context, editarPropriedadePropriedadesRecord),
                     _campoDiasDg(context, editarPropriedadePropriedadesRecord),
                     _campoEmail(context),
                     _botaoExcluir(context, editarPropriedadePropriedadesRecord),

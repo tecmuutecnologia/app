@@ -285,7 +285,8 @@ class _PropriedadesExcluiasPageState
     );
   }
 
-  Widget _infoPropriedade(BuildContext context, PropriedadeEntity listViewPropriedadesRecord) {
+  Widget _infoPropriedade(
+      BuildContext context, PropriedadeEntity listViewPropriedadesRecord) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -361,7 +362,8 @@ class _PropriedadesExcluiasPageState
     );
   }
 
-  Widget _botoesAcao(BuildContext context, PropriedadeEntity listViewPropriedadesRecord) {
+  Widget _botoesAcao(
+      BuildContext context, PropriedadeEntity listViewPropriedadesRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
       child: Row(

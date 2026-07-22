@@ -23,29 +23,30 @@ final tecnicoPathProvider = Provider<String?>((ref) {
 
 /// Propriedades ativas do técnico (conta criada, não excluídas).
 final propriedadesAtivasProvider =
-    StreamProvider.family<List<PropriedadeEntity>, String>(
-        (ref, tecnicoPath) => ref
+    StreamProvider.family<List<PropriedadeEntity>, String>((ref, tecnicoPath) =>
+        ref
             .watch(propriedadeRepositoryProvider)
             .watchAtivasByTecnico(tecnicoPath));
 
 /// Lixeira do técnico (soft-deletes, restauráveis).
 final propriedadesExcluidasProvider =
-    StreamProvider.family<List<PropriedadeEntity>, String>(
-        (ref, tecnicoPath) => ref
+    StreamProvider.family<List<PropriedadeEntity>, String>((ref, tecnicoPath) =>
+        ref
             .watch(propriedadeRepositoryProvider)
             .watchExcluidasByTecnico(tecnicoPath));
 
 /// Propriedades criadas offline, aguardando ativação da conta do produtor.
 final propriedadesPendentesProvider =
-    StreamProvider.family<List<PropriedadeEntity>, String>(
-        (ref, tecnicoPath) => ref
+    StreamProvider.family<List<PropriedadeEntity>, String>((ref, tecnicoPath) =>
+        ref
             .watch(propriedadeRepositoryProvider)
             .watchPendingActivation(tecnicoPath));
 
 /// Uma propriedade pelo id do Firestore (tela de edição).
 final propriedadeByIdProvider =
-    StreamProvider.family<PropriedadeEntity?, String>((ref, firestoreId) =>
-        ref.watch(propriedadeRepositoryProvider).watchByFirestoreId(firestoreId));
+    StreamProvider.family<PropriedadeEntity?, String>((ref, firestoreId) => ref
+        .watch(propriedadeRepositoryProvider)
+        .watchByFirestoreId(firestoreId));
 
 /// Uma propriedade pelo id LOCAL do ObjectBox (edição de propriedade pendente,
 /// que ainda não tem firestoreId).

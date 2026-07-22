@@ -1,6 +1,8 @@
 // ignore_for_file: unnecessary_null_comparison, unused_local_variable
 
 import '/data/backend.dart';
+import '/data/objectbox/index.dart';
+import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/ui/flutter_flow_calendar.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -129,31 +131,16 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
   Widget _proximasAcoes(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 20.0),
-      child: StreamBuilder<List<AcoesSanitarioRecord>>(
-        stream: queryAcoesSanitarioRecord(
-          parent: widget.uidTecnico,
-          queryBuilder: (acoesSanitarioRecord) => acoesSanitarioRecord.where(
-            'uidPropriedade',
-            isEqualTo: widget.uidPropriedade,
-          ),
-        ),
+      // Fonte única ObjectBox (offline-first). Antes era um StreamBuilder do
+      // Firestore, que sem rede prendia a tela no CircularProgressIndicator.
+      child: StreamBuilder<List<AcaoSanitarioEntity>>(
+        stream: AcaoSanitarioRepository()
+            .watchByParentPath(widget.uidPropriedade!.path),
         builder: (context, snapshot) {
-          // Customize what your widget looks like when it's loading.
-          if (!snapshot.hasData) {
-            return Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Color(0xFFF75E38),
-                  ),
-                ),
-              ),
-            );
-          }
-          List<AcoesSanitarioRecord> calendarAcoesSanitarioRecordList =
-              snapshot.data!;
+          final calendarAcoesSanitarioRecordList =
+              (snapshot.data ?? <AcaoSanitarioEntity>[])
+                  .where((e) => !e.isDeleted)
+                  .toList();
 
           return FlutterFlowCalendar(
             color: FlutterFlowTheme.of(context).tertiary,
@@ -298,40 +285,21 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
   Widget _acoesRealizadas(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 10.0),
-      child: StreamBuilder<List<AcoesSanitarioRecord>>(
-        stream: queryAcoesSanitarioRecord(
-          parent: widget.uidTecnico,
-          queryBuilder: (acoesSanitarioRecord) => acoesSanitarioRecord
-              .where(
-                'uidPropriedade',
-                isEqualTo: widget.uidPropriedade,
-              )
-              .where(
-                'dtAcao',
-                isEqualTo: dateTimeFormat(
-                  "dd/MM/yyyy",
-                  _calendarSelectedDay?.start,
-                  locale: FFLocalizations.of(context).languageCode,
-                ),
-              ),
-        ),
+      // Mesma fonte local; o filtro por dia deixa de ser um `where` do
+      // Firestore e vira um filtro em memória sobre a lista do ObjectBox.
+      child: StreamBuilder<List<AcaoSanitarioEntity>>(
+        stream: AcaoSanitarioRepository()
+            .watchByParentPath(widget.uidPropriedade!.path),
         builder: (context, snapshot) {
-          // Customize what your widget looks like when it's loading.
-          if (!snapshot.hasData) {
-            return Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Color(0xFFF75E38),
-                  ),
-                ),
-              ),
-            );
-          }
-          List<AcoesSanitarioRecord> listaAcoesAcoesSanitarioRecordList =
-              snapshot.data!;
+          final diaSelecionado = dateTimeFormat(
+            "dd/MM/yyyy",
+            _calendarSelectedDay?.start,
+            locale: FFLocalizations.of(context).languageCode,
+          );
+          final listaAcoesAcoesSanitarioRecordList =
+              (snapshot.data ?? <AcaoSanitarioEntity>[])
+                  .where((e) => !e.isDeleted && e.dtAcao == diaSelecionado)
+                  .toList();
           if (listaAcoesAcoesSanitarioRecordList.isEmpty) {
             return Image.asset(
               'assets/images/lista-vazia.png',
@@ -369,28 +337,17 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
                       Padding(
                         padding:
                             EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
-                        child: StreamBuilder<AnimaisProdutoresRecord>(
-                          stream: AnimaisProdutoresRecord.getDocument(
-                              listaAcoesAcoesSanitarioRecord
-                                  .uidAnimalAnimaisProdutores!),
-                          builder: (context, snapshot) {
-                            // Customize what your widget looks like when it's loading.
-                            if (!snapshot.hasData) {
-                              return Center(
-                                child: SizedBox(
-                                  width: 50.0,
-                                  height: 50.0,
-                                  child: CircularProgressIndicator(
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                      Color(0xFFF75E38),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }
-
+                        // Animal resolvido do ObjectBox pelo caminho guardado
+                        // na ação. Antes era um StreamBuilder do Firestore
+                        // aninhado POR ITEM da lista — uma leitura de rede por
+                        // linha, que offline nunca resolvia.
+                        child: Builder(
+                          builder: (context) {
                             final columnAnimaisProdutoresRecord =
-                                snapshot.data!;
+                                _animalDaAcao(listaAcoesAcoesSanitarioRecord);
+                            if (columnAnimaisProdutoresRecord == null) {
+                              return const SizedBox.shrink();
+                            }
 
                             return Column(
                               mainAxisSize: MainAxisSize.max,
@@ -471,7 +428,7 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            listaAcoesAcoesSanitarioRecord.tipoAcao,
+                            listaAcoesAcoesSanitarioRecord.tipoAcao ?? '',
                             style: FlutterFlowTheme.of(context)
                                 .bodyMedium
                                 .override(
@@ -493,7 +450,7 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
                                 ),
                           ),
                           Text(
-                            listaAcoesAcoesSanitarioRecord.acao,
+                            listaAcoesAcoesSanitarioRecord.acao ?? '',
                             style: FlutterFlowTheme.of(context)
                                 .bodyMedium
                                 .override(
@@ -553,6 +510,17 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
         },
       ),
     );
+  }
+
+  /// Resolve o animal da ação no ObjectBox. O entity guarda o CAMINHO da
+  /// referência; o id do Firestore é o último segmento. Convertido para struct
+  /// porque `AnimaisProdutoresStruct` expõe `nomeAnimal`/`brincoAnimal` com a
+  /// mesma API do antigo `AnimaisProdutoresRecord`.
+  AnimaisProdutoresStruct? _animalDaAcao(AcaoSanitarioEntity acao) {
+    final caminho = acao.uidAnimalAnimaisProdutoresPath;
+    if (caminho == null || caminho.isEmpty) return null;
+    final entity = AnimalRepository().getByFirestoreId(caminho.split('/').last);
+    return entity == null ? null : animalEntityToStruct(entity);
   }
 
   @override

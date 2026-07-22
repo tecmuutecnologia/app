@@ -5,7 +5,7 @@ import '../entities/index.dart';
 import '../../../objectbox.g.dart';
 import 'base_sync_repository.dart';
 
-/// Repositório de Ações Sanitárias (subcoleção `acoes_sanitario` de cada animal).
+/// Repositório de Ações Sanitárias (subcoleção `acoesSanitario` da PROPRIEDADE).
 /// A sincronização é herdada de [BaseSyncRepository].
 class AcaoSanitarioRepository extends BaseSyncRepository<AcaoSanitarioEntity> {
   AcaoSanitarioRepository({
@@ -20,7 +20,7 @@ class AcaoSanitarioRepository extends BaseSyncRepository<AcaoSanitarioEntity> {
   Box<AcaoSanitarioEntity> get box => _objectBox.acaoSanitarioBox;
 
   @override
-  String get collectionName => 'acoes_sanitario';
+  String get collectionName => 'acoesSanitario';
 
   AcaoSanitarioEntity? getByFirestoreId(String firestoreId) => box
       .query(AcaoSanitarioEntity_.firestoreId.equals(firestoreId))

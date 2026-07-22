@@ -884,7 +884,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
               ).then((s) => s.firstOrNull);
               _shouldSetState = true;
 
-              await AcoesSanitarioRecord.createDoc(widget.uidTecnico!)
+              await AcoesSanitarioRecord.createDoc(widget.uidPropriedade!)
                   .set(createAcoesSanitarioRecordData(
                 obsVisita: _obsTextController.text,
                 tipoAcao: _tipoValue,

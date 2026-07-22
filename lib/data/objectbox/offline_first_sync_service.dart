@@ -525,21 +525,6 @@ class OfflineFirstSyncService {
             '⚠️ Erro ao baixar tratamentos do animal ${animal.firestoreId}: $e');
       }
 
-      // Baixa ações sanitárias
-      try {
-        final sanitarioSnapshot =
-            await animalRef.collection('acoes_sanitario').get();
-        for (final doc in sanitarioSnapshot.docs) {
-          final entity = AcaoSanitarioEntity.fromFirestore(
-            doc.data(),
-            doc.id,
-            parentPath: animalRef.path,
-          );
-          _objectBox.acaoSanitarioBox.put(entity);
-        }
-      } catch (e) {
-        debugPrint('⚠️ Erro ao baixar ações sanitárias: $e');
-      }
     }
 
     debugPrint(
@@ -573,6 +558,23 @@ class OfflineFirstSyncService {
         }
       } catch (e) {
         debugPrint('⚠️ Erro ao baixar financeiro: $e');
+      }
+
+      // Baixa ações sanitárias (subcoleção da PROPRIEDADE; antes o download
+      // varria `animal/acoes_sanitario`, coleção que nada escreve).
+      try {
+        final sanitarioSnapshot =
+            await propRef.collection('acoesSanitario').get();
+        for (final doc in sanitarioSnapshot.docs) {
+          final entity = AcaoSanitarioEntity.fromFirestore(
+            doc.data(),
+            doc.id,
+            parentPath: propRef.path,
+          );
+          _objectBox.acaoSanitarioBox.put(entity);
+        }
+      } catch (e) {
+        debugPrint('⚠️ Erro ao baixar ações sanitárias: $e');
       }
 
       // Baixa resumos de visitas
@@ -1122,7 +1124,7 @@ class OfflineFirstSyncService {
           get: _objectBox.acaoDaVisitaBox.get,
           put: (e) => _objectBox.acaoDaVisitaBox.put(e as AcaoDaVisitaEntity),
         );
-      case 'acoes_sanitario':
+      case 'acoesSanitario':
         return (
           get: _objectBox.acaoSanitarioBox.get,
           put: (e) => _objectBox.acaoSanitarioBox.put(e as AcaoSanitarioEntity),

@@ -150,8 +150,18 @@ class TratamentoEntity implements SyncableEntity {
   }
 }
 
-/// Entidade AcaoSanitario para armazenamento local
-/// Representa ações sanitárias realizadas
+/// Entidade AcaoSanitario para armazenamento local (ação do calendário
+/// sanitário).
+///
+/// ⚠️ Schema REESCRITO para bater com o `AcoesSanitarioRecord` — o que o app
+/// realmente grava. A versão anterior lia chaves em `snake_case`
+/// (`uid_animal`, `tipo_acao`, ...) enquanto o app grava `camelCase`, e
+/// esperava a coleção sob o ANIMAL. Nada casava, então a tabela local ficava
+/// vazia e a tela nunca pôde sair do Firestore.
+///
+/// Documentos vivem em
+/// `tecnico/{idTecnico}/propriedades/{idPropriedade}/acoesSanitario/{id}`;
+/// `parentPath` é o caminho da PROPRIEDADE e o animal é um campo.
 @Entity()
 class AcaoSanitarioEntity implements SyncableEntity {
   @override
@@ -162,32 +172,32 @@ class AcaoSanitarioEntity implements SyncableEntity {
   @Unique()
   String? firestoreId;
 
+  /// Caminho da propriedade dona da ação.
   @override
   String? parentPath;
 
-  String? uidAnimal;
+  /// Campos gravados pelo app (ver `createAcoesSanitarioRecordData`).
+  /// Referências viram caminho, como no `AnimalEntity`.
+  String? uidAnimalAnimaisProdutoresPath;
+  String? uidPersonProdutorPath;
+  String? uidPropriedadePath;
   String? tipoAcao;
-  String? nomeAnimal;
-  String? uidPropriedade;
-  String? nomePropriedade;
   String? acao;
-  String? posologia;
+  String? obsVisita;
+
+  /// Data no formato `dd/MM/yyyy` (é string no Firestore).
+  String? dtAcao;
+  String? nomeAnimal;
+  String? brincoAnimal;
+
+  /// Campos previstos para o módulo sanitário, ainda não capturados pelo
+  /// formulário. Mantidos (nullable) para não perder a modelagem.
   String? medicamento;
+  String? posologia;
   String? lote;
   String? laboratorio;
   String? resultado;
-  String? obs;
-  String? createdBy;
-  String? lastModifiedBy;
-
-  @Property(type: PropertyType.date)
-  DateTime? dtAcao;
-
-  @Property(type: PropertyType.date)
-  DateTime? dtCarencia;
-
-  @Property(type: PropertyType.date)
-  DateTime? createdAt;
+  String? dtCarencia;
 
   @override
   @Property(type: PropertyType.date)
@@ -199,29 +209,28 @@ class AcaoSanitarioEntity implements SyncableEntity {
 
   @override
   bool needsSync;
+
   @override
   bool isDeleted;
 
   AcaoSanitarioEntity({
     this.firestoreId,
     this.parentPath,
-    this.uidAnimal,
+    this.uidAnimalAnimaisProdutoresPath,
+    this.uidPersonProdutorPath,
+    this.uidPropriedadePath,
     this.tipoAcao,
-    this.nomeAnimal,
-    this.uidPropriedade,
-    this.nomePropriedade,
     this.acao,
-    this.posologia,
+    this.obsVisita,
+    this.dtAcao,
+    this.nomeAnimal,
+    this.brincoAnimal,
     this.medicamento,
+    this.posologia,
     this.lote,
     this.laboratorio,
     this.resultado,
-    this.obs,
-    this.dtAcao,
     this.dtCarencia,
-    this.createdBy,
-    this.createdAt,
-    this.lastModifiedBy,
     this.lastModified,
     this.lastSynced,
     this.needsSync = false,
@@ -233,64 +242,63 @@ class AcaoSanitarioEntity implements SyncableEntity {
     String docId, {
     String? parentPath,
   }) {
+    String? caminho(dynamic ref) {
+      if (ref == null) return null;
+      if (ref is String) return ref;
+      try {
+        return (ref as dynamic).path as String?;
+      } catch (_) {
+        return null;
+      }
+    }
+
     return AcaoSanitarioEntity(
       firestoreId: docId,
       parentPath: parentPath,
-      uidAnimal: data['uid_animal'] as String?,
-      tipoAcao: data['tipo_acao'] as String?,
-      nomeAnimal: data['nome_animal'] as String?,
-      uidPropriedade: data['uid_propriedade'] as String?,
-      nomePropriedade: data['nome_propriedade'] =
-          data['nome_propriedade'] as String?,
+      uidAnimalAnimaisProdutoresPath:
+          caminho(data['uidAnimalAnimaisProdutores']),
+      uidPersonProdutorPath: caminho(data['uidPersonProdutor']),
+      uidPropriedadePath: caminho(data['uidPropriedade']),
+      tipoAcao: data['tipoAcao'] as String?,
       acao: data['acao'] as String?,
-      posologia: data['posologia'] as String?,
+      obsVisita: data['obsVisita'] as String?,
+      dtAcao: data['dtAcao'] as String?,
+      nomeAnimal: data['nomeAnimal'] as String?,
+      brincoAnimal: data['brincoAnimal'] as String?,
       medicamento: data['medicamento'] as String?,
+      posologia: data['posologia'] as String?,
       lote: data['lote'] as String?,
       laboratorio: data['laboratorio'] as String?,
       resultado: data['resultado'] as String?,
-      obs: data['obs'] as String?,
-      dtAcao: (data['dt_acao'] as Timestamp?)?.toDate(),
-      dtCarencia: (data['dt_carencia'] as Timestamp?)?.toDate(),
-      createdBy: data['created_by'] as String?,
-      createdAt: (data['created_at'] as Timestamp?)?.toDate(),
-      lastModifiedBy: data['last_modified_by'] as String?,
-      lastModified: (data['last_modified'] as Timestamp?)?.toDate(),
+      dtCarencia: data['dtCarencia'] as String?,
       lastSynced: DateTime.now(),
       needsSync: false,
     );
   }
 
+  /// Campos planos. As referências são reanexadas pelo serviço de sync, que
+  /// tem acesso ao FirebaseFirestore.
   @override
   Map<String, dynamic> toFirestore() {
-    final data = <String, dynamic>{};
-
-    if (uidAnimal != null) data['uid_animal'] = uidAnimal;
-    if (tipoAcao != null) data['tipo_acao'] = tipoAcao;
-    if (nomeAnimal != null) data['nome_animal'] = nomeAnimal;
-    if (uidPropriedade != null) data['uid_propriedade'] = uidPropriedade;
-    if (nomePropriedade != null) data['nome_propriedade'] = nomePropriedade;
-    if (acao != null) data['acao'] = acao;
-    if (posologia != null) data['posologia'] = posologia;
+    final data = <String, dynamic>{
+      'tipoAcao': tipoAcao,
+      'acao': acao,
+      'obsVisita': obsVisita,
+      'dtAcao': dtAcao,
+      'nomeAnimal': nomeAnimal,
+      'brincoAnimal': brincoAnimal,
+    };
     if (medicamento != null) data['medicamento'] = medicamento;
+    if (posologia != null) data['posologia'] = posologia;
     if (lote != null) data['lote'] = lote;
     if (laboratorio != null) data['laboratorio'] = laboratorio;
     if (resultado != null) data['resultado'] = resultado;
-    if (obs != null) data['obs'] = obs;
-    if (dtAcao != null) data['dt_acao'] = Timestamp.fromDate(dtAcao!);
-    if (dtCarencia != null)
-      data['dt_carencia'] = Timestamp.fromDate(dtCarencia!);
-    if (createdBy != null) data['created_by'] = createdBy;
-    if (createdAt != null) data['created_at'] = Timestamp.fromDate(createdAt!);
-    if (lastModifiedBy != null) data['last_modified_by'] = lastModifiedBy;
-    if (lastModified != null)
-      data['last_modified'] = Timestamp.fromDate(lastModified!);
-
+    if (dtCarencia != null) data['dtCarencia'] = dtCarencia;
     return data;
   }
 
   @override
   void markAsModified([String? userId]) {
-    if (userId != null) lastModifiedBy = userId;
     lastModified = DateTime.now();
     needsSync = true;
   }
