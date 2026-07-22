@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' show ProviderScope;
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,21 @@ import 'app.dart';
 /// Stripe e sobe o `runApp`. Antes era o corpo de `main()` em `main.dart`.
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Edge-to-edge declarado explicitamente. A partir do Android 16 (API 36) o
+  // sistema IGNORA `windowOptOutEdgeToEdgeEnforcement`, então o app desenha
+  // atrás das barras querendo ou não — melhor assumir e deixá-las
+  // transparentes do que receber o comportamento por acidente, com barras
+  // opacas cobrindo conteúdo.
+  if (!kIsWeb) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+    ));
+  }
+
   GoRouter.optionURLReflectsImperativeAPIs = true;
   usePathUrlStrategy();
 

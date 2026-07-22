@@ -126,7 +126,24 @@ class _MyAppState extends State<MyApp> {
       builder: (context, child) => Column(
         children: [
           const SyncStatusBanner(),
-          Expanded(child: child ?? const SizedBox.shrink()),
+          // `bottom: true` isola o conteúdo da barra de navegação do sistema.
+          //
+          // Com o target em API 36 o app é edge-to-edge à força, e só 18 das
+          // 43 telas tinham SafeArea próprio — o resto ficaria com conteúdo
+          // sob a barra. O topo NÃO é protegido de propósito: a AppBar já
+          // aplica o inset do status bar sozinha, e um SafeArea superior aqui
+          // criaria uma faixa vazia acima dela.
+          //
+          // SafeArea aninhado é idempotente: nas telas que já têm o seu, o
+          // interno vê padding zero e não duplica o espaçamento.
+          Expanded(
+            child: SafeArea(
+              top: false,
+              left: false,
+              right: false,
+              child: child ?? const SizedBox.shrink(),
+            ),
+          ),
         ],
       ),
     );
