@@ -286,7 +286,8 @@ class _IndicesZootecnicosPageState extends State<IndicesZootecnicosPage> {
     );
   }
 
-  Widget _tituloCategorias(BuildContext context, dynamic chartPieChartColorsList1) {
+  Widget _tituloCategorias(
+      BuildContext context, dynamic chartPieChartColorsList1) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 0.0),
       child: Row(
@@ -457,7 +458,8 @@ class _IndicesZootecnicosPageState extends State<IndicesZootecnicosPage> {
     );
   }
 
-  Widget _tituloReproducao(BuildContext context, dynamic chartPieChartColorsList2) {
+  Widget _tituloReproducao(
+      BuildContext context, dynamic chartPieChartColorsList2) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 0.0),
       child: Row(
@@ -646,7 +648,8 @@ class _IndicesZootecnicosPageState extends State<IndicesZootecnicosPage> {
     );
   }
 
-  Widget _tituloRebanhoProdutivo(BuildContext context, dynamic chartPieChartColorsList3) {
+  Widget _tituloRebanhoProdutivo(
+      BuildContext context, dynamic chartPieChartColorsList3) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 10.0),
       child: Row(

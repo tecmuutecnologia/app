@@ -1,6 +1,9 @@
 // ignore_for_file: dead_code, unnecessary_null_comparison, dead_null_aware_expression, unused_import
 
 import '/data/backend.dart';
+import '/features/animais/application/animal_struct_adapter.dart';
+import '/domain/animais/classificacao_animal.dart';
+import '/data/objectbox/index.dart';
 import '/core/constants/grupos_racas_constantes.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
@@ -70,9 +73,6 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
   bool? _checkUltimaAcaoValue;
   String? _formatoExportacaoValue;
   FormFieldController<String>? _formatoExportacaoValueController;
-  PropriedadesRecord? _outUidPropriedade;
-  TecnicoRecord? _outUidTecnico;
-  PersonRecord? _outUidPersonTecnico;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -212,41 +212,24 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
   Widget _campoGrupo(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 10.0),
-      child: StreamBuilder<List<GrupoRecord>>(
-        stream: queryGrupoRecord(
-          queryBuilder: (grupoRecord) => grupoRecord.where(
-            'descricao',
-            isNotEqualTo: 'Sêmens',
-          ),
-        ),
-        builder: (context, snapshot) {
-          // Customize what your widget looks like when it's loading.
-          if (!snapshot.hasData) {
-            return Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Color(0xFFF75E38),
-                  ),
-                ),
-              ),
-            );
-          }
-          List<GrupoRecord> categoriaAnimalGrupoRecordList = snapshot.data!;
+      // Grupos vêm das tabelas de referência do ObjectBox (com fallback para
+      // as constantes). Antes era um StreamBuilder do Firestore, que offline
+      // prendia a tela no CircularProgressIndicator.
+      child: Builder(
+        builder: (context) {
+          final categoriaAnimalGrupoRecordList = ReferenciaRepository()
+              .grupos()
+              .where((d) => !ehSemens(d))
+              .toList();
 
           return FlutterFlowDropDown<String>(
             multiSelectController: _categoriaAnimalValueController ??=
                 FormListFieldController<String>(
                     _categoriaAnimalValue ??= List<String>.from(
-              categoriaAnimalGrupoRecordList.map((e) => e.descricao).toList() ??
-                  [],
+              categoriaAnimalGrupoRecordList,
             )),
             options: _respostaNet!
                 ? categoriaAnimalGrupoRecordList
-                    .map((e) => e.descricao)
-                    .toList()
                 : kGruposDescricoes.toList(),
             width: double.infinity,
             height: 50.0,
@@ -313,25 +296,14 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
   }
 
   Widget _campoStatus(BuildContext context) {
-    return StreamBuilder<List<StatusAnimaisRecord>>(
-      stream: queryStatusAnimaisRecord(),
-      builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
-          return Center(
-            child: SizedBox(
-              width: 50.0,
-              height: 50.0,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Color(0xFFF75E38),
-                ),
-              ),
-            ),
-          );
-        }
-        List<StatusAnimaisRecord> statusAnimalStatusAnimaisRecordList =
-            snapshot.data!;
+    return Builder(
+      builder: (context) {
+        // `descricao` é nullable na entity; normaliza para List<String>.
+        final statusAnimalStatusAnimaisRecordList = ReferenciaRepository()
+            .statusAnimais()
+            .map((e) => e.descricao ?? '')
+            .where((d) => d.isNotEmpty)
+            .toList();
 
         return FlutterFlowDropDown<String>(
           multiSelectController: _statusAnimalValueController ??=
@@ -339,18 +311,14 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
                   _statusAnimalValue ??= List<String>.from(
             functions.combinarListas(
                     statusAnimalStatusAnimaisRecordList
-                        .where((e) => e.descricao != 'Parto Induzido')
-                        .toList()
-                        .map((e) => e.descricao)
+                        .where((d) => d != 'Parto Induzido')
                         .toList(),
                     kStatusExtrasFixos.toList()) ??
                 [],
           )),
           options: functions.combinarListas(
               statusAnimalStatusAnimaisRecordList
-                  .where((e) => e.descricao != 'Parto Induzido')
-                  .toList()
-                  .map((e) => e.descricao)
+                  .where((d) => d != 'Parto Induzido')
                   .toList(),
               kStatusExtrasFixos.toList())!,
           width: double.infinity,
@@ -1040,19 +1008,16 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
             onPressed: () async {
               var _shouldSetState = false;
               if (_categoriaAnimalValue!.length >= 1) {
-                _outUidPropriedade = await PropriedadesRecord.getDocumentOnce(
-                    widget.uidPropriedade!);
-                _shouldSetState = true;
-                _outUidTecnico =
-                    await TecnicoRecord.getDocumentOnce(widget.uidTecnico!);
-                _shouldSetState = true;
-                _outUidPersonTecnico = await queryPersonRecordOnce(
-                  queryBuilder: (personRecord) => personRecord.where(
-                    'uid',
-                    isEqualTo: _outUidTecnico?.uidPerson,
-                  ),
-                  singleRecord: true,
-                ).then((s) => s.firstOrNull);
+                // Cabeçalho do relatório (propriedade e técnico) lido do
+                // ObjectBox. Antes eram três idas ao Firestore, que offline
+                // não retornavam e abortavam a exportação.
+                final propriedade = PropriedadeRepository()
+                    .getByFirestoreId(widget.uidPropriedade!.id);
+                final tecnico =
+                    TecnicoRepository().getByFirestoreId(widget.uidTecnico!.id);
+                final personTecnico = tecnico?.uidPerson == null
+                    ? null
+                    : PersonRepository().getByUid(tecnico!.uidPerson!);
                 _shouldSetState = true;
 
                 // Verificar qual formato foi selecionado
@@ -1073,12 +1038,12 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
                     _checkIntervaloEntrePartosValue!,
                     _categoriaAnimalValue!.toList(),
                     _statusAnimalValue?.toList(),
-                    _outUidPropriedade!.displayName,
-                    '${_outUidPropriedade?.endereco} - ${_outUidPropriedade?.cidade}',
-                    _outUidPersonTecnico!.displayName,
-                    _outUidPersonTecnico!.phoneNumber,
-                    _outUidPersonTecnico!.email,
-                    _outUidPersonTecnico!.empresa,
+                    propriedade?.displayName ?? '',
+                    '${propriedade?.endereco ?? ''} - ${propriedade?.cidade ?? ''}',
+                    personTecnico?.displayName ?? '',
+                    personTecnico?.phoneNumber ?? '',
+                    personTecnico?.email ?? '',
+                    personTecnico?.empresa ?? '',
                     'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/tecmuu-xingpe/assets/mjfv0ghrztrz/logo-2.png',
                     _checkUltimaAcaoValue ?? false,
                     widget.uidTecnico!,
@@ -1100,12 +1065,12 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
                     _checkIntervaloEntrePartosValue!,
                     _categoriaAnimalValue!.toList(),
                     _statusAnimalValue?.toList(),
-                    _outUidPropriedade!.displayName,
-                    '${_outUidPropriedade?.endereco} - ${_outUidPropriedade?.cidade}',
-                    _outUidPersonTecnico!.displayName,
-                    _outUidPersonTecnico!.phoneNumber,
-                    _outUidPersonTecnico!.email,
-                    _outUidPersonTecnico!.empresa,
+                    propriedade?.displayName ?? '',
+                    '${propriedade?.endereco ?? ''} - ${propriedade?.cidade ?? ''}',
+                    personTecnico?.displayName ?? '',
+                    personTecnico?.phoneNumber ?? '',
+                    personTecnico?.email ?? '',
+                    personTecnico?.empresa ?? '',
                     'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/tecmuu-xingpe/assets/mjfv0ghrztrz/logo-2.png',
                     _checkUltimaAcaoValue ?? false,
                     widget.uidTecnico!,
@@ -1178,35 +1143,19 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
   Widget build(BuildContext context) {
     // context.watch<FFAppState>();
 
-    return StreamBuilder<List<AnimaisProdutoresRecord>>(
-      stream: queryAnimaisProdutoresRecord(
-        parent: widget.uidTecnico,
-        queryBuilder: (animaisProdutoresRecord) =>
-            animaisProdutoresRecord.where(
-          'uidTecnicoPropriedade',
-          isEqualTo: widget.uidPropriedade,
-        ),
-      ),
-      builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
-          return Scaffold(
-            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-            body: Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Color(0xFFF75E38),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
-        List<AnimaisProdutoresRecord> resumoRebanhoAnimaisProdutoresRecordList =
-            snapshot.data!;
+    // Animais da propriedade direto do ObjectBox — é essa lista que alimenta
+    // a exportação do relatório.
+    return Builder(
+      builder: (context) {
+        final resumoRebanhoAnimaisProdutoresRecordList =
+            (widget.uidPropriedade == null
+                    ? <AnimaisProdutoresStruct>[]
+                    : AnimalRepository()
+                        .getAnimaisByPropriedade(widget.uidPropriedade!.path)
+                        .where((a) => !a.isDeleted)
+                        .map(animalEntityToStruct)
+                        .toList())
+                .toList();
 
         return GestureDetector(
           onTap: () {
@@ -1271,7 +1220,8 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
                   _colunaPrevisaoParto(context),
                   _colunaUltimaAcao(context),
                   _campoFormatoExportacao(context),
-                  _botaoExportar(context, resumoRebanhoAnimaisProdutoresRecordList),
+                  _botaoExportar(
+                      context, resumoRebanhoAnimaisProdutoresRecordList),
                 ],
               ),
             ),

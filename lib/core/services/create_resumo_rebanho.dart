@@ -1,5 +1,6 @@
 // Automatic FlutterFlow imports
 import '/data/backend.dart';
+import '/data/objectbox/index.dart';
 import '/core/ui/flutter_flow_util.dart';
 // Imports other custom actions
 import '/core/ui/custom_functions.dart'; // Imports custom functions
@@ -40,20 +41,29 @@ Future<void> createResumoRebanho(
 ) async {
   try {
     // Baixar a imagem da URL
-    final http.Response response = await http.get(Uri.parse(logoUrl));
-    if (response.statusCode != 200) {
-      throw Exception('Falha ao carregar a imagem');
+    // O logo vem de uma URL: offline a busca falha. Em vez de abortar o
+    // relatório inteiro, segue sem logo.
+    Uint8List? logoImage;
+    try {
+      final http.Response response = await http.get(Uri.parse(logoUrl));
+      if (response.statusCode == 200) {
+        logoImage = response.bodyBytes;
+      }
+    } catch (_) {
+      logoImage = null;
     }
-    final Uint8List logoImage = response.bodyBytes;
 
     // Lista para armazenar os dados dos animais filtrados
     List<Map<String, dynamic>> animaisData = [];
 
     // Filtrar os animais produtores de acordo com as categorias selecionadas
     for (var animalRef in animaisProdutores) {
-      DocumentSnapshot documentSnapshot = await animalRef.get();
-      if (documentSnapshot.exists) {
-        var data = documentSnapshot.data() as Map<String, dynamic>;
+      // Animal lido do ObjectBox (fonte única offline-first). Antes era um
+      // `await animalRef.get()` POR ANIMAL — o relatório não saía sem rede e
+      // custava uma ida ao Firestore por linha.
+      final animalEntity = AnimalRepository().getByFirestoreId(animalRef.id);
+      if (animalEntity != null && !animalEntity.isDeleted) {
+        final data = animalEntity.toFirestore();
 
         // Filtrar por Categoria
         if (!categorias.contains(data['grupoAnimal'])) {
@@ -112,54 +122,36 @@ Future<void> createResumoRebanho(
             (data['grupoAnimal'] == 'Vacas' ||
                 data['grupoAnimal'] == 'Novilhas')) {
           try {
-            // Buscar todas as ações do animal (sem orderBy para evitar necessidade de índice composto)
-            final acoesSnapshot = await FirebaseFirestore.instance
-                .collection('tecnico')
-                .doc(uidTecnico.id)
-                .collection('acoes')
-                .where('uidAnimalAnimaisProdutores', isEqualTo: animalRef)
-                .get();
+            // Ações lidas do ObjectBox, filtradas pelo caminho do animal.
+            final acoes = AcaoRepository()
+                .getAll()
+                .where((e) =>
+                    !e.isDeleted &&
+                    e.uidAnimalAnimaisProdutoresPath == animalRef.path &&
+                    e.dataDaAcao != null)
+                .toList()
+              ..sort((x, y) => y.dataDaAcao!.compareTo(x.dataDaAcao!));
 
-            if (acoesSnapshot.docs.isNotEmpty) {
-              // Filtrar ações que têm dataDaAcao e ordenar manualmente
-              final acoesComData = acoesSnapshot.docs.where((doc) {
-                final docData = doc.data();
-                return docData['dataDaAcao'] != null;
-              }).toList();
+            // Exclui as ações de ciclo reprodutivo, mantendo as do exame
+            // ginecológico (IATF, CGI, CGII, Liberada, ...).
+            const excluidas = {
+              'Inseminada',
+              'Cio',
+              'PP',
+              'DG+',
+              'DG-',
+              'Inseminada PP',
+            };
+            final acoesValidas =
+                acoes.where((e) => !excluidas.contains(e.acao ?? '')).toList();
 
-              // Ordenar por dataDaAcao (mais recente primeiro)
-              acoesComData.sort((a, b) {
-                final dataA = (a.data()['dataDaAcao'] as Timestamp).toDate();
-                final dataB = (b.data()['dataDaAcao'] as Timestamp).toDate();
-                return dataB.compareTo(dataA); // Ordem decrescente
-              });
-
-              // Filtrar ações válidas do exame ginecológico (IATF, CGI, CGII, Liberada, etc.)
-              // Excluir: Inseminada, Cio, PP, DG+, DG-, Inseminada PP
-              final acoesValidas = acoesComData.where((doc) {
-                final acaoNome = (doc.data())['acao'] as String? ?? '';
-                return acaoNome != 'Inseminada' &&
-                    acaoNome != 'Cio' &&
-                    acaoNome != 'PP' &&
-                    acaoNome != 'DG+' &&
-                    acaoNome != 'DG-' &&
-                    acaoNome != 'Inseminada PP';
-              }).toList();
-
-              if (acoesValidas.isNotEmpty) {
-                final acaoData = acoesValidas.first.data();
-                ultimaAcaoAnimal = acaoData['acao'] ?? '';
-
-                // Adicionar a data da ação para melhor contexto
-                final dataAcao = acaoData['dataDaAcao'] as Timestamp?;
-                if (dataAcao != null) {
-                  final dataFormatada =
-                      DateFormat('dd/MM').format(dataAcao.toDate());
-                  ultimaAcaoAnimal = '$ultimaAcaoAnimal ($dataFormatada)';
-                }
-
-                print(
-                    'Última ação encontrada para ${data['nomeAnimal']}: $ultimaAcaoAnimal');
+            if (acoesValidas.isNotEmpty) {
+              final primeira = acoesValidas.first;
+              ultimaAcaoAnimal = primeira.acao ?? '';
+              if (primeira.dataDaAcao != null) {
+                final dataFormatada =
+                    DateFormat('dd/MM').format(primeira.dataDaAcao!);
+                ultimaAcaoAnimal = '$ultimaAcaoAnimal ($dataFormatada)';
               }
             }
           } catch (e) {
@@ -451,15 +443,17 @@ Future<void> createResumoRebanho(
                       flex: 1,
                       child: pw.Container(
                         alignment: pw.Alignment.center,
-                        child: pw.Transform.rotate(
-                          angle: 0,
-                          child: pw.Image(
-                            pw.MemoryImage(logoImage),
-                            fit: pw.BoxFit.cover,
-                            width: 80,
-                            height: 80,
-                          ),
-                        ),
+                        child: logoImage == null
+                            ? pw.SizedBox(width: 80, height: 80)
+                            : pw.Transform.rotate(
+                                angle: 0,
+                                child: pw.Image(
+                                  pw.MemoryImage(logoImage),
+                                  fit: pw.BoxFit.cover,
+                                  width: 80,
+                                  height: 80,
+                                ),
+                              ),
                       ),
                     ),
                     pw.Expanded(
