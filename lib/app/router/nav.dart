@@ -1177,11 +1177,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               'diasDg',
               ParamType.String,
             ),
-            uidFinanceiro: params.getParam(
-              'uidFinanceiro',
-              ParamType.DocumentReference,
-              isList: false,
-              collectionNamePath: ['tecnico', 'financeiro'],
+            financeiroLocalId: params.getParam(
+              'financeiroLocalId',
+              ParamType.int,
             ),
           ),
         ),

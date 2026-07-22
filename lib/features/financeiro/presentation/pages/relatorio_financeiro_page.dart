@@ -123,16 +123,6 @@ class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage> {
     );
   }
 
-  /// Reconstrói a `DocumentReference` do relatório a partir do que o ObjectBox
-  /// guarda (`parentPath` + `firestoreId`). Retorna null enquanto o relatório
-  /// criado offline ainda não subiu — nesse caso o `firestoreId` só existe
-  /// depois que o sync reconcilia.
-  DocumentReference? _refDoRelatorio(FinanceiroEntity e) {
-    if (e.firestoreId == null || e.parentPath == null) return null;
-    return FirebaseFirestore.instance
-        .doc('${e.parentPath}/financeiro/${e.firestoreId}');
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -244,9 +234,9 @@ class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage> {
                                     widget.diasDg,
                                     ParamType.String,
                                   ),
-                                  'uidFinanceiro': serializeParam(
-                                    _refDoRelatorio(listViewFinanceiroRecord),
-                                    ParamType.DocumentReference,
+                                  'financeiroLocalId': serializeParam(
+                                    listViewFinanceiroRecord.id,
+                                    ParamType.int,
                                   ),
                                 }.withoutNulls,
                               );

@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison, unused_local_variable
 
 import '/data/backend.dart';
+import '/data/objectbox/index.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -25,7 +26,7 @@ class EditarRelatorioFinanceiroPage extends StatefulWidget {
     required this.emailPropriedade,
     required this.visitaPresencial,
     required this.diasDg,
-    required this.uidFinanceiro,
+    required this.financeiroLocalId,
   });
 
   final DocumentReference? uidPropriedade;
@@ -34,7 +35,10 @@ class EditarRelatorioFinanceiroPage extends StatefulWidget {
   final String? emailPropriedade;
   final bool? visitaPresencial;
   final String? diasDg;
-  final DocumentReference? uidFinanceiro;
+
+  /// Id local do ObjectBox. Antes era a `DocumentReference` do Firestore, que
+  /// só existe depois do sync — relatório criado offline não podia ser editado.
+  final int? financeiroLocalId;
 
   static String routeName = 'editarRelatorioFinanceiro';
   static String routePath = '/editarRelatorioFinanceiro';
@@ -202,7 +206,7 @@ class _EditarRelatorioFinanceiroPageState
           ),
         ),
         Text(
-          'Editar relatório - ${editarRelatorioFinanceiroFinanceiroRecord.dtRelatorio}',
+          'Editar relatório - ${editarRelatorioFinanceiroFinanceiroRecord.dtRelatorio ?? ''}',
           style: FlutterFlowTheme.of(context).headlineMedium.override(
                 font: GoogleFonts.outfit(
                   fontWeight:
@@ -276,7 +280,7 @@ class _EditarRelatorioFinanceiroPageState
                   return;
                 }
 
-                await widget.uidFinanceiro!.update(createFinanceiroRecordData(
+                await _salvarOfflineFirst(
                   vacasLactacao:
                       int.tryParse(_vacasLactacaoTextController.text),
                   litrosLeiteMes:
@@ -289,7 +293,7 @@ class _EditarRelatorioFinanceiroPageState
                   mediaProducaoVaca: _mediaProducaoVacaTextController.text,
                   custoLitroLeite: _custoLitroLeiteTextController.text,
                   totalRecebidoMes: _totalRecebidoTextController.text,
-                ));
+                );
 
                 context.goNamed(
                   RelatorioFinanceiroPage.routeName,
@@ -367,7 +371,7 @@ class _EditarRelatorioFinanceiroPageState
         Expanded(
           child: TextFormField(
             controller: _dtRelatorioTextController ??= TextEditingController(
-              text: editarRelatorioFinanceiroFinanceiroRecord.dtRelatorio,
+              text: editarRelatorioFinanceiroFinanceiroRecord.dtRelatorio ?? '',
             ),
             focusNode: _dtRelatorioFocusNode,
             onChanged: (_) => EasyDebounce.debounce(
@@ -819,7 +823,8 @@ class _EditarRelatorioFinanceiroPageState
         bordercolor: FlutterFlowTheme.of(context).primary,
         borderRadius: 10.0,
         initialValue:
-            editarRelatorioFinanceiroFinanceiroRecord.precoRecebidoPorLitro,
+            editarRelatorioFinanceiroFinanceiroRecord.precoRecebidoPorLitro ??
+                '',
         onChanged: (v) => _precoRecebidoLitro = v,
       ),
     );
@@ -854,7 +859,8 @@ class _EditarRelatorioFinanceiroPageState
         height: 45.0,
         bordercolor: FlutterFlowTheme.of(context).primary,
         borderRadius: 10.0,
-        initialValue: editarRelatorioFinanceiroFinanceiroRecord.despesasNoMes,
+        initialValue:
+            editarRelatorioFinanceiroFinanceiroRecord.despesasNoMes ?? '',
         onChanged: (v) => _despesasNoMes = v,
       ),
     );
@@ -994,7 +1000,8 @@ class _EditarRelatorioFinanceiroPageState
         decoration: BoxDecoration(),
         child: TextFormField(
           controller: _totalRecebidoTextController ??= TextEditingController(
-            text: editarRelatorioFinanceiroFinanceiroRecord.totalRecebidoMes,
+            text: editarRelatorioFinanceiroFinanceiroRecord.totalRecebidoMes ??
+                '',
           ),
           focusNode: _totalRecebidoFocusNode,
           onChanged: (_) => EasyDebounce.debounce(
@@ -1107,7 +1114,8 @@ class _EditarRelatorioFinanceiroPageState
       decoration: BoxDecoration(),
       child: TextFormField(
         controller: _faturamentoLiquidoTextController ??= TextEditingController(
-          text: editarRelatorioFinanceiroFinanceiroRecord.faturamentoLiquido,
+          text: editarRelatorioFinanceiroFinanceiroRecord.faturamentoLiquido ??
+              '',
         ),
         focusNode: _faturamentoLiquidoFocusNode,
         onChanged: (_) => EasyDebounce.debounce(
@@ -1221,7 +1229,8 @@ class _EditarRelatorioFinanceiroPageState
         child: TextFormField(
           controller: _mediaProducaoVacaTextController ??=
               TextEditingController(
-            text: editarRelatorioFinanceiroFinanceiroRecord.mediaProducaoVaca,
+            text: editarRelatorioFinanceiroFinanceiroRecord.mediaProducaoVaca ??
+                '',
           ),
           focusNode: _mediaProducaoVacaFocusNode,
           autofocus: false,
@@ -1320,7 +1329,8 @@ class _EditarRelatorioFinanceiroPageState
         decoration: BoxDecoration(),
         child: TextFormField(
           controller: _custoLitroLeiteTextController ??= TextEditingController(
-            text: editarRelatorioFinanceiroFinanceiroRecord.custoLitroLeite,
+            text:
+                editarRelatorioFinanceiroFinanceiroRecord.custoLitroLeite ?? '',
           ),
           focusNode: _custoLitroLeiteFocusNode,
           onChanged: (_) => EasyDebounce.debounce(
@@ -1422,33 +1432,63 @@ class _EditarRelatorioFinanceiroPageState
     );
   }
 
+  /// Salva a edição offline-first: aplica no ObjectBox e deixa o sync subir
+  /// (`_syncModifiedFinanceiro` faz o update no Firestore ao reconectar).
+  Future<void> _salvarOfflineFirst({
+    int? vacasLactacao,
+    int? litrosLeiteMes,
+    int? litrosLeitePorDia,
+    String? precoRecebidoPorLitro,
+    String? despesasNoMes,
+    String? faturamentoLiquido,
+    String? mediaProducaoVaca,
+    String? custoLitroLeite,
+    String? totalRecebidoMes,
+  }) async {
+    final repo = FinanceiroRepository();
+    final entity = widget.financeiroLocalId == null
+        ? null
+        : repo.box.get(widget.financeiroLocalId!);
+    if (entity == null) return;
+
+    entity.vacasLactacao = vacasLactacao ?? entity.vacasLactacao;
+    entity.litrosLeiteMes = litrosLeiteMes ?? entity.litrosLeiteMes;
+    entity.litrosLeitePorDia = litrosLeitePorDia ?? entity.litrosLeitePorDia;
+    entity.precoRecebidoPorLitro =
+        precoRecebidoPorLitro ?? entity.precoRecebidoPorLitro;
+    entity.despesasNoMes = despesasNoMes ?? entity.despesasNoMes;
+    entity.faturamentoLiquido = faturamentoLiquido ?? entity.faturamentoLiquido;
+    entity.mediaProducaoVaca = mediaProducaoVaca ?? entity.mediaProducaoVaca;
+    entity.custoLitroLeite = custoLitroLeite ?? entity.custoLitroLeite;
+    entity.totalRecebidoMes = totalRecebidoMes ?? entity.totalRecebidoMes;
+
+    await repo.save(entity);
+  }
+
   @override
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
 
-    return StreamBuilder<FinanceiroRecord>(
-      stream: FinanceiroRecord.getDocument(widget.uidFinanceiro!),
-      builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
-          return Scaffold(
-            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-            body: Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Color(0xFFF75E38),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
+    // Fonte única ObjectBox: leitura local e sincrona, sem espera de rede.
+    final editarRelatorioFinanceiroFinanceiroRecord =
+        widget.financeiroLocalId == null
+            ? null
+            : FinanceiroRepository().box.get(widget.financeiroLocalId!);
 
-        final editarRelatorioFinanceiroFinanceiroRecord = snapshot.data!;
+    if (editarRelatorioFinanceiroFinanceiroRecord == null) {
+      return Scaffold(
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        body: Center(
+          child: Text(
+            'Relatório não encontrado.',
+            style: FlutterFlowTheme.of(context).bodyMedium,
+          ),
+        ),
+      );
+    }
 
+    return Builder(
+      builder: (context) {
         return GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
