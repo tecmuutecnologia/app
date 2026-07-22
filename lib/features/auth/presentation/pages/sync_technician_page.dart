@@ -70,9 +70,9 @@ class _SyncTechnicianPageState extends State<SyncTechnicianPage> {
         await queryAcoesRecordOnce(
           parent: _uidTecnico?.reference,
         );
-        await queryAcoesSanitarioRecordOnce(
-          parent: _uidTecnico?.reference,
-        );
+        // Ações sanitárias saíram de tecnico/acoesSanitario para a subcoleção
+        // da propriedade e agora são baixadas pelo offline_first_sync_service;
+        // este aquecimento de cache apontava para coleção que ninguém escreve.
         await queryResumoDaVisitaRecordOnce(
           queryBuilder: (resumoDaVisitaRecord) => resumoDaVisitaRecord.where(
             'uidTecnico',

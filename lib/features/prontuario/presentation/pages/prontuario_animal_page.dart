@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison, dead_code
 
 import '/data/backend.dart';
+import '/data/objectbox/index.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
@@ -85,7 +86,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   /// Card extraído do build (Fase 4).
   Widget _buildCard8(
-      BuildContext context, AcoesSanitarioRecord item, int index) {
+      BuildContext context, AcaoSanitarioEntity item, int index) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       color: FlutterFlowTheme.of(context).secondaryBackground,
@@ -185,7 +186,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                         padding:
                             EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 0.0, 0.0),
                         child: Text(
-                          item.acao,
+                          item.acao ?? '',
                           style:
                               FlutterFlowTheme.of(context).bodyLarge.override(
                                     font: GoogleFonts.readexPro(
@@ -214,7 +215,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                           padding: EdgeInsetsDirectional.fromSTEB(
                               5.0, 0.0, 0.0, 0.0),
                           child: Text(
-                            item.obsVisita,
+                            item.obsVisita ?? '',
                             style:
                                 FlutterFlowTheme.of(context).bodyLarge.override(
                                       font: GoogleFonts.readexPro(
@@ -272,7 +273,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 5.0, 0.0, 0.0, 0.0),
                             child: Text(
-                              item.dtAcao,
+                              item.dtAcao ?? '',
                               style: FlutterFlowTheme.of(context)
                                   .bodyLarge
                                   .override(
@@ -310,7 +311,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   /// Card extraído do build (Fase 4).
   Widget _buildCard7(
-      BuildContext context, AcoesSanitarioRecord item, int index) {
+      BuildContext context, AcaoSanitarioEntity item, int index) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       color: FlutterFlowTheme.of(context).secondaryBackground,
@@ -410,7 +411,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                         padding:
                             EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 0.0, 0.0),
                         child: Text(
-                          item.acao,
+                          item.acao ?? '',
                           style:
                               FlutterFlowTheme.of(context).bodyLarge.override(
                                     font: GoogleFonts.readexPro(
@@ -439,7 +440,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                           padding: EdgeInsetsDirectional.fromSTEB(
                               5.0, 0.0, 0.0, 0.0),
                           child: Text(
-                            item.obsVisita,
+                            item.obsVisita ?? '',
                             style:
                                 FlutterFlowTheme.of(context).bodyLarge.override(
                                       font: GoogleFonts.readexPro(
@@ -497,7 +498,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 5.0, 0.0, 0.0, 0.0),
                             child: Text(
-                              item.dtAcao,
+                              item.dtAcao ?? '',
                               style: FlutterFlowTheme.of(context)
                                   .bodyLarge
                                   .override(
@@ -535,7 +536,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   /// Card extraído do build (Fase 4).
   Widget _buildCard6(
-      BuildContext context, AcoesSanitarioRecord item, int index) {
+      BuildContext context, AcaoSanitarioEntity item, int index) {
     return Card(
       clipBehavior: Clip.antiAliasWithSaveLayer,
       color: FlutterFlowTheme.of(context).secondaryBackground,
@@ -627,7 +628,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                       width: 250.0,
                       decoration: BoxDecoration(),
                       child: Text(
-                        item.acao,
+                        item.acao ?? '',
                         style: FlutterFlowTheme.of(context).bodyLarge.override(
                               font: GoogleFonts.readexPro(
                                 fontWeight: FontWeight.w800,
@@ -651,7 +652,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                         width: 250.0,
                         decoration: BoxDecoration(),
                         child: Text(
-                          item.obsVisita,
+                          item.obsVisita ?? '',
                           style:
                               FlutterFlowTheme.of(context).bodyLarge.override(
                                     font: GoogleFonts.readexPro(
@@ -703,7 +704,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 5.0, 0.0, 0.0, 0.0),
                             child: Text(
-                              item.dtAcao,
+                              item.dtAcao ?? '',
                               style: FlutterFlowTheme.of(context)
                                   .bodyLarge
                                   .override(
@@ -2805,37 +2806,15 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          StreamBuilder<List<AcoesSanitarioRecord>>(
-            stream: queryAcoesSanitarioRecord(
-              parent: widget.uidTecnico,
-              queryBuilder: (acoesSanitarioRecord) => acoesSanitarioRecord
-                  .where(
-                    'uidAnimalAnimaisProdutores',
-                    isEqualTo: widget.uidAnimaisProdutores,
-                  )
-                  .where(
-                    'tipoAcao',
-                    isEqualTo: 'Vacina',
-                  ),
-              limit: 3,
-            ),
+          // Fonte única ObjectBox: ações da propriedade filtradas por animal e
+          // tipo. Antes apontava para tecnico/acoesSanitario, path que deixou
+          // de existir com a mudanca da colecao para a propriedade.
+          StreamBuilder<List<AcaoSanitarioEntity>>(
+            stream: AcaoSanitarioRepository()
+                .watchByParentPath(widget.uidPropriedade?.path ?? ''),
             builder: (context, snapshot) {
-              // Customize what your widget looks like when it's loading.
-              if (!snapshot.hasData) {
-                return Center(
-                  child: SizedBox(
-                    width: 50.0,
-                    height: 50.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFFF75E38),
-                      ),
-                    ),
-                  ),
-                );
-              }
-              List<AcoesSanitarioRecord> listViewAcoesSanitarioRecordList =
-                  snapshot.data!;
+              final listViewAcoesSanitarioRecordList =
+                  _sanitariasDoAnimal(snapshot.data, 'Vacina');
 
               return ListView.builder(
                 padding: EdgeInsets.zero,
@@ -2960,37 +2939,15 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          StreamBuilder<List<AcoesSanitarioRecord>>(
-            stream: queryAcoesSanitarioRecord(
-              parent: widget.uidTecnico,
-              queryBuilder: (acoesSanitarioRecord) => acoesSanitarioRecord
-                  .where(
-                    'uidAnimalAnimaisProdutores',
-                    isEqualTo: widget.uidAnimaisProdutores,
-                  )
-                  .where(
-                    'tipoAcao',
-                    isEqualTo: 'Exame',
-                  ),
-              limit: 3,
-            ),
+          // Fonte única ObjectBox: ações da propriedade filtradas por animal e
+          // tipo. Antes apontava para tecnico/acoesSanitario, path que deixou
+          // de existir com a mudanca da colecao para a propriedade.
+          StreamBuilder<List<AcaoSanitarioEntity>>(
+            stream: AcaoSanitarioRepository()
+                .watchByParentPath(widget.uidPropriedade?.path ?? ''),
             builder: (context, snapshot) {
-              // Customize what your widget looks like when it's loading.
-              if (!snapshot.hasData) {
-                return Center(
-                  child: SizedBox(
-                    width: 50.0,
-                    height: 50.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFFF75E38),
-                      ),
-                    ),
-                  ),
-                );
-              }
-              List<AcoesSanitarioRecord> listViewAcoesSanitarioRecordList =
-                  snapshot.data!;
+              final listViewAcoesSanitarioRecordList =
+                  _sanitariasDoAnimal(snapshot.data, 'Exame');
 
               return ListView.builder(
                 padding: EdgeInsets.zero,
@@ -3115,37 +3072,15 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          StreamBuilder<List<AcoesSanitarioRecord>>(
-            stream: queryAcoesSanitarioRecord(
-              parent: widget.uidTecnico,
-              queryBuilder: (acoesSanitarioRecord) => acoesSanitarioRecord
-                  .where(
-                    'uidAnimalAnimaisProdutores',
-                    isEqualTo: widget.uidAnimaisProdutores,
-                  )
-                  .where(
-                    'tipoAcao',
-                    isEqualTo: 'Doença',
-                  ),
-              limit: 3,
-            ),
+          // Fonte única ObjectBox: ações da propriedade filtradas por animal e
+          // tipo. Antes apontava para tecnico/acoesSanitario, path que deixou
+          // de existir com a mudanca da colecao para a propriedade.
+          StreamBuilder<List<AcaoSanitarioEntity>>(
+            stream: AcaoSanitarioRepository()
+                .watchByParentPath(widget.uidPropriedade?.path ?? ''),
             builder: (context, snapshot) {
-              // Customize what your widget looks like when it's loading.
-              if (!snapshot.hasData) {
-                return Center(
-                  child: SizedBox(
-                    width: 50.0,
-                    height: 50.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFFF75E38),
-                      ),
-                    ),
-                  ),
-                );
-              }
-              List<AcoesSanitarioRecord> listViewAcoesSanitarioRecordList =
-                  snapshot.data!;
+              final listViewAcoesSanitarioRecordList =
+                  _sanitariasDoAnimal(snapshot.data, 'Doença');
 
               return ListView.builder(
                 padding: EdgeInsets.zero,
@@ -4703,6 +4638,22 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
         ],
       ),
     );
+  }
+
+  /// Ações sanitárias DESTE animal, do tipo pedido, limitadas a 3 (mesmo
+  /// `limit` da query antiga). O animal é comparado pelo caminho da referência,
+  /// que é o que a ação guarda no ObjectBox.
+  List<AcaoSanitarioEntity> _sanitariasDoAnimal(
+      List<AcaoSanitarioEntity>? todas, String tipoAcao) {
+    final caminhoAnimal = widget.uidAnimaisProdutores?.path;
+    if (caminhoAnimal == null) return const [];
+    final filtradas = (todas ?? const <AcaoSanitarioEntity>[])
+        .where((e) =>
+            !e.isDeleted &&
+            e.tipoAcao == tipoAcao &&
+            e.uidAnimalAnimaisProdutoresPath == caminhoAnimal)
+        .toList();
+    return filtradas.length > 3 ? filtradas.sublist(0, 3) : filtradas;
   }
 
   @override
