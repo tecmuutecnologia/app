@@ -95,6 +95,12 @@ class AnimalCardWidget extends StatelessWidget {
   final String? diasDg;
   final bool isOnline;
 
+  /// Disparado ao fechar o modal de qualquer ação. Sem isto a lista nunca era
+  /// reconstruída e o animal permanecia no card mesmo depois de, por exemplo,
+  /// ser desmamado (bezerra vira Novilha, bezerro vira Touro) — parecendo que
+  /// o botão não tinha efeito.
+  final VoidCallback? onAcaoConcluida;
+
   const AnimalCardWidget({
     super.key,
     required this.animal,
@@ -105,6 +111,7 @@ class AnimalCardWidget extends StatelessWidget {
     required this.visitaPresencial,
     required this.diasDg,
     this.isOnline = true,
+    this.onAcaoConcluida,
   });
 
   @override
@@ -114,8 +121,11 @@ class AnimalCardWidget extends StatelessWidget {
   }
 
   bool _shouldShowAnimal() {
-    final isValidGroup = (ehTouros(animal.grupoAnimal) &&
-            !animal.liberaInseminacao) ||
+    // Touros entram independentemente de `liberaInseminacao` (antes o liberado
+    // era escondido, o que na prática sumia com todos) e sêmens passam a ser
+    // listados, com filtro próprio.
+    final isValidGroup = ehTouros(animal.grupoAnimal) ||
+        ehSemens(animal.grupoAnimal) ||
         (ehNovilha(animal.grupoAnimal) && animal.dtInducaoLactacao == null) ||
         ehBezerras(animal.grupoAnimal) ||
         ehBezerros(animal.grupoAnimal);
@@ -294,6 +304,10 @@ class AnimalCardWidget extends StatelessWidget {
     switch (animal.grupoAnimal) {
       case 'Touros':
         abbreviation = 'TOU';
+        break;
+      case 'Sêmens':
+      case 'Semêns':
+        abbreviation = 'SEM';
         break;
       case 'Bezerras':
         abbreviation = 'BZA';
@@ -635,7 +649,7 @@ class AnimalCardWidget extends StatelessWidget {
         },
         child: Padding(padding: MediaQuery.viewInsetsOf(ctx), child: child),
       ),
-    );
+    ).then((_) => onAcaoConcluida?.call());
   }
 
   Widget _getExameGinecologicoWidget() {

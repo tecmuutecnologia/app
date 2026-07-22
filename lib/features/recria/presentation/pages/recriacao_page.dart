@@ -2,7 +2,6 @@ import '/data/backend.dart';
 import '/core/ui/flutter_flow_choice_chips.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
-import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/form_field_controller.dart';
@@ -112,6 +111,9 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
         backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
         appBar: _buildAppBar(context),
         body: _buildBody(context),
+        // Ordenação como FAB: disponível em TODOS os filtros (antes só aparecia
+        // em Novilhas) e fora do fluxo dos chips, que ela sobrepunha.
+        floatingActionButton: _buildSortButton(context, _ordenacaoQuery),
       ),
     );
   }
@@ -201,9 +203,6 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
   }
 
   Widget _buildFilterSection(BuildContext context) {
-    final isNovilhasSelected = _choiceChipsValue == 'Novilhas';
-    final isAscending = _ordenacaoQuery;
-
     // Uma única faixa: chips rolando na horizontal + ordenação fixa à direita.
     //
     // Antes eram DUAS faixas empilhadas — um cabeçalho "Filtragem:" (rótulo
@@ -222,10 +221,6 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
               child: _buildChoiceChips(context),
             ),
           ),
-          if (isNovilhasSelected) ...[
-            const SizedBox(width: 8.0),
-            _buildSortButton(context, isAscending),
-          ],
         ],
       ),
     );
@@ -241,6 +236,7 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
         ChipData('Bezerras'),
         ChipData('Touros'),
         ChipData('Novilhas'),
+        ChipData('Sêmens'),
       ],
       onChanged: (val) =>
           safeSetState(() => _choiceChipsValue = val?.firstOrNull),
@@ -282,34 +278,35 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
     );
   }
 
-  /// Alterna a ordem alfabética da lista. Antes era um botão só com um ícone de
-  /// seta (duas variantes muito parecidas), sem indicar o que ordenava nem em
-  /// que ordem estava. Agora mostra o estado ATUAL por extenso ("A-Z"/"Z-A").
+  /// Alterna a ordem da lista. Fica como FAB no canto inferior direito, longe
+  /// dos chips. O rótulo reflete o CRITÉRIO em uso: Novilhas ordenam por data
+  /// de inseminação (o que importa no manejo), os demais grupos, por nome.
   Widget _buildSortButton(BuildContext context, bool isAscending) {
-    return FFButtonWidget(
+    final porData = _choiceChipsValue == 'Novilhas';
+    final rotulo = porData
+        ? (isAscending ? 'Mais antigas' : 'Mais recentes')
+        : (isAscending ? 'A-Z' : 'Z-A');
+
+    return FloatingActionButton.extended(
       onPressed: () {
         _ordenacaoQuery = !isAscending;
         safeSetState(() {});
       },
-      text: isAscending ? 'A-Z' : 'Z-A',
+      backgroundColor: AppTokens.secondary,
+      foregroundColor: Colors.white,
+      elevation: 4.0,
       icon: Icon(
         isAscending ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
-        size: 15.0,
+        size: 18.0,
       ),
-      options: FFButtonOptions(
-        height: 40.0,
-        padding: const EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
-        iconPadding: EdgeInsets.zero,
-        color: AppTokens.secondary,
-        textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+      label: Text(
+        rotulo,
+        style: FlutterFlowTheme.of(context).titleSmall.override(
               font: GoogleFonts.readexPro(),
               color: Colors.white,
-              fontSize: 12.0,
+              fontSize: 13.0,
               letterSpacing: 0.0,
             ),
-        elevation: 0.0,
-        borderSide: const BorderSide(color: Colors.transparent, width: 1.0),
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
     );
   }
@@ -318,7 +315,8 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
     final isOnline = _respostaNet ?? true;
 
     return ListView(
-      padding: EdgeInsets.zero,
+      // Espaço no fim para o FAB de ordenação não cobrir o último cartão.
+      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 88.0),
       primary: false,
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
@@ -331,6 +329,7 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
           visitaPresencial: widget.visitaPresencial,
           diasDg: widget.diasDg,
           filterCategory: _choiceChipsValue,
+          onAcaoConcluida: () => safeSetState(() {}),
           isOnline: isOnline,
           ascending: _ordenacaoQuery,
         ),

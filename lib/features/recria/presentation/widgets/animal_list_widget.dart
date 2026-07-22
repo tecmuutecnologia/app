@@ -17,6 +17,7 @@ class AnimalListWidget extends StatelessWidget {
   final String? filterCategory;
   final bool isOnline;
   final bool ascending;
+  final VoidCallback? onAcaoConcluida;
 
   const AnimalListWidget({
     super.key,
@@ -29,6 +30,7 @@ class AnimalListWidget extends StatelessWidget {
     this.filterCategory,
     this.isOnline = true,
     this.ascending = true,
+    this.onAcaoConcluida,
   });
 
   @override
@@ -60,10 +62,20 @@ class AnimalListWidget extends StatelessWidget {
 
         List<AnimaisProdutoresRecord> records = snapshot.data!.toList();
 
-        // Ordenação para Novilhas
+        // Ordenação: Novilhas por data de inseminação (a mais antiga primeiro
+        // é o que interessa no manejo); demais grupos, alfabética por
+        // nome+brinco. Antes só as Novilhas eram ordenadas, e só aqui no modo
+        // online — o modo offline saía na ordem crua do banco.
         if (filterCategory == 'Novilhas') {
           records.sort((a, b) =>
               _compareNovilhasByInseminacao(a, b, ascending: ascending));
+        } else {
+          records.sort((a, b) {
+            final c = a.nomeBrincoConcat
+                .toLowerCase()
+                .compareTo(b.nomeBrincoConcat.toLowerCase());
+            return ascending ? c : -c;
+          });
         }
 
         if (records.isEmpty) {
@@ -109,6 +121,7 @@ class AnimalListWidget extends StatelessWidget {
               visitaPresencial: visitaPresencial,
               diasDg: diasDg,
               isOnline: true,
+              onAcaoConcluida: onAcaoConcluida,
             );
           },
         );
@@ -137,6 +150,7 @@ class AnimalListWidget extends StatelessWidget {
         // Animais criados offline agora entram no ObjectBox (vêm em
         // existingAnimals via getAll), não há mais lista separada no FFAppState.
         final allAnimals = existingAnimals;
+        _ordenar(allAnimals);
 
         if (allAnimals.isEmpty) {
           return _buildEmptyState(context);
@@ -159,11 +173,38 @@ class AnimalListWidget extends StatelessWidget {
               visitaPresencial: visitaPresencial,
               diasDg: diasDg,
               isOnline: false,
+              onAcaoConcluida: onAcaoConcluida,
             );
           },
         );
       },
     );
+  }
+
+  /// Mesma regra de ordenação do modo online, aplicada sobre `AnimalData`.
+  void _ordenar(List<AnimalData> animais) {
+    if (filterCategory == 'Novilhas') {
+      animais.sort((a, b) {
+        final dateA = _parseInseminacaoDate(a.dtUltimaInseminacao);
+        final dateB = _parseInseminacaoDate(b.dtUltimaInseminacao);
+        if (dateA == null && dateB == null) {
+          return a.nomeBrincoConcat
+              .toLowerCase()
+              .compareTo(b.nomeBrincoConcat.toLowerCase());
+        }
+        if (dateA == null) return 1;
+        if (dateB == null) return -1;
+        final c = dateA.compareTo(dateB);
+        return ascending ? c : -c;
+      });
+    } else {
+      animais.sort((a, b) {
+        final c = a.nomeBrincoConcat
+            .toLowerCase()
+            .compareTo(b.nomeBrincoConcat.toLowerCase());
+        return ascending ? c : -c;
+      });
+    }
   }
 
   AnimalData _mapExistingToAnimalData(dynamic item, int index) {
