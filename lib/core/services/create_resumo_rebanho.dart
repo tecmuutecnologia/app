@@ -8,12 +8,12 @@ import '/core/ui/custom_functions.dart'; // Imports custom functions
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
 import 'dart:async';
+import 'package:flutter/services.dart' show rootBundle;
 import 'dart:io';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:http/http.dart' as http;
 // Certifique-se de importar o pacote intl
 
 Future<void> createResumoRebanho(
@@ -35,23 +35,17 @@ Future<void> createResumoRebanho(
   String telefoneTecnico,
   String emailTecnico,
   String nomeEmpresaTecnico, // Campo opcional
-  String logoUrl,
   bool ultimaAcao, // Novo parâmetro para coluna Última Ação
   DocumentReference uidTecnico, // Referência do técnico para buscar ações
 ) async {
   try {
-    // Baixar a imagem da URL
-    // O logo vem de uma URL: offline a busca falha. Em vez de abortar o
-    // relatório inteiro, segue sem logo.
-    Uint8List? logoImage;
-    try {
-      final http.Response response = await http.get(Uri.parse(logoUrl));
-      if (response.statusCode == 200) {
-        logoImage = response.bodyBytes;
-      }
-    } catch (_) {
-      logoImage = null;
-    }
+    // Logo empacotado como asset: o relatório sai idêntico offline. Antes
+    // vinha por HTTP de uma URL do Storage, o que sem rede saía sem logo (e,
+    // antes disso, abortava o relatório inteiro).
+    final Uint8List logoImage =
+        (await rootBundle.load('assets/images/logo-2.png'))
+            .buffer
+            .asUint8List();
 
     // Lista para armazenar os dados dos animais filtrados
     List<Map<String, dynamic>> animaisData = [];
@@ -443,17 +437,15 @@ Future<void> createResumoRebanho(
                       flex: 1,
                       child: pw.Container(
                         alignment: pw.Alignment.center,
-                        child: logoImage == null
-                            ? pw.SizedBox(width: 80, height: 80)
-                            : pw.Transform.rotate(
-                                angle: 0,
-                                child: pw.Image(
-                                  pw.MemoryImage(logoImage),
-                                  fit: pw.BoxFit.cover,
-                                  width: 80,
-                                  height: 80,
-                                ),
-                              ),
+                        child: pw.Transform.rotate(
+                          angle: 0,
+                          child: pw.Image(
+                            pw.MemoryImage(logoImage),
+                            fit: pw.BoxFit.cover,
+                            width: 80,
+                            height: 80,
+                          ),
+                        ),
                       ),
                     ),
                     pw.Expanded(

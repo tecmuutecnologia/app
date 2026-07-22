@@ -33,7 +33,6 @@ Future<void> createResumoRebanhoExcel(
   String telefoneTecnico,
   String emailTecnico,
   String nomeEmpresaTecnico, // Campo opcional
-  String logoUrl,
   bool ultimaAcao, // Novo parâmetro para coluna Última Ação
   DocumentReference uidTecnico, // Referência do técnico para buscar ações
 ) async {

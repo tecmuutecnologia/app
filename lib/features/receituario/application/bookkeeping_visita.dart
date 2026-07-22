@@ -81,12 +81,10 @@ Future<void> registrarBookkeepingVisita({
   // 3) Recomendação só se ainda não houver uma com o mesmo título nesta
   //    visita (mesma checagem que a query original fazia).
   final recomendacaoRepo = RecomendacaoRepository();
-  final jaTem = recomendacaoRepo
-      .getByParentPath(propriedadePath)
-      .any((e) =>
-          !e.isDeleted &&
-          e.uidResumoDaVisitaPath == resumoPath &&
-          e.tituloRecomendacao == tituloRecomendacao);
+  final jaTem = recomendacaoRepo.getByParentPath(propriedadePath).any((e) =>
+      !e.isDeleted &&
+      e.uidResumoDaVisitaPath == resumoPath &&
+      e.tituloRecomendacao == tituloRecomendacao);
 
   if (!jaTem) {
     await recomendacaoRepo.add(RecomendacaoEntity(

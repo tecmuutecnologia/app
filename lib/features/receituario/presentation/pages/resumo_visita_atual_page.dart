@@ -710,7 +710,6 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
               resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado,
               _outUidPersonTecnico2?.email,
               _outUidPersonTecnico2?.empresa,
-              'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/tecmuu-xingpe/assets/mjfv0ghrztrz/logo-2.png',
             );
             if (_shouldSetState) safeSetState(() {});
             return;
@@ -800,7 +799,6 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                     resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado,
                     _outUidPersonTecnico?.email,
                     _outUidPersonTecnico?.empresa,
-                    'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/tecmuu-xingpe/assets/mjfv0ghrztrz/logo-2.png',
                   );
 
                   safeSetState(() {});

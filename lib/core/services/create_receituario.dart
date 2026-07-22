@@ -7,6 +7,7 @@ import '/core/ui/flutter_flow_util.dart';
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
 import 'dart:async';
+import 'package:flutter/services.dart' show rootBundle;
 import 'dart:io';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -24,15 +25,14 @@ Future<void> createReceituario(
   String dtVisitaFormatado,
   String? emailTecnico,
   String? nomeEmpresaTecnico, // Campo opcional
-  String logoUrl,
 ) async {
   try {
-    // Baixar a imagem da URL
-    final http.Response response = await http.get(Uri.parse(logoUrl));
-    if (response.statusCode != 200) {
-      throw Exception('Falha ao carregar a imagem');
-    }
-    final Uint8List logoImage = response.bodyBytes;
+    // Logo empacotado como asset. Antes vinha por HTTP e, se a busca
+    // falhasse (offline), lançava exceção e abortava o receituário inteiro.
+    final Uint8List logoImage =
+        (await rootBundle.load('assets/images/logo-2.png'))
+            .buffer
+            .asUint8List();
 
     // Cria um documento PDF
     final pdf = pw.Document();

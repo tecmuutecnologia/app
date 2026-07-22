@@ -1044,7 +1044,6 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
                     personTecnico?.phoneNumber ?? '',
                     personTecnico?.email ?? '',
                     personTecnico?.empresa ?? '',
-                    'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/tecmuu-xingpe/assets/mjfv0ghrztrz/logo-2.png',
                     _checkUltimaAcaoValue ?? false,
                     widget.uidTecnico!,
                   );
@@ -1071,7 +1070,6 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
                     personTecnico?.phoneNumber ?? '',
                     personTecnico?.email ?? '',
                     personTecnico?.empresa ?? '',
-                    'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/tecmuu-xingpe/assets/mjfv0ghrztrz/logo-2.png',
                     _checkUltimaAcaoValue ?? false,
                     widget.uidTecnico!,
                   );
