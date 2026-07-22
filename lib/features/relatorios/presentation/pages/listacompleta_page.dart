@@ -226,33 +226,25 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
-                  child: GridView(
-                    padding: EdgeInsets.zero,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 0.0,
-                      mainAxisSpacing: 0.0,
-                      childAspectRatio: 2.0,
-                    ),
-                    primary: false,
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            width: 50.0,
-                            height: 50.0,
+                            width: 44.0,
+                            height: 44.0,
                             decoration: BoxDecoration(
                               color: () {
                                 if (ehVaca(item.grupoAnimal)) {
-                                  return Color(0xFF048508);
+                                  return AppTokens.brand;
                                 } else if (ehNovilha(item.grupoAnimal)) {
-                                  return Color(0xFFFF0076);
+                                  return AppTokens.secondary;
                                 } else {
-                                  return Color(0x00000000);
+                                  return FlutterFlowTheme.of(context)
+                                      .secondaryText;
                                 }
                               }(),
                               shape: BoxShape.circle,
@@ -293,51 +285,72 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                           ),
                         ],
                       ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${() {
-                              if ((item.nomeAnimal != '') &&
-                                  (item.brincoAnimal != null) &&
-                                  (item.brincoAnimal != -1)) {
-                                return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
-                              } else if (item.nomeAnimal != '') {
-                                return item.nomeAnimal;
-                              } else {
-                                return item.brincoAnimal.toString();
-                              }
-                            }()} - ${item.status}',
-                            style:
-                                FlutterFlowTheme.of(context).bodyLarge.override(
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              12.0, 0.0, 8.0, 0.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${() {
+                                  if ((item.nomeAnimal != '') &&
+                                      (item.brincoAnimal != null) &&
+                                      (item.brincoAnimal != -1)) {
+                                    return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
+                                  } else if (item.nomeAnimal != '') {
+                                    return item.nomeAnimal;
+                                  } else {
+                                    return item.brincoAnimal.toString();
+                                  }
+                                }()}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyLarge
+                                    .override(
                                       font: GoogleFonts.readexPro(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontWeight,
+                                        fontWeight: FontWeight.w600,
                                         fontStyle: FlutterFlowTheme.of(context)
                                             .bodyLarge
                                             .fontStyle,
                                       ),
                                       letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyLarge
-                                          .fontWeight,
+                                      fontWeight: FontWeight.w600,
                                       fontStyle: FlutterFlowTheme.of(context)
                                           .bodyLarge
                                           .fontStyle,
                                     ),
+                              ),
+                              // Status em linha propria: antes vinha concatenado
+                              // no nome ("Mimosa - 12 - Prenha").
+                              if (item.status != '')
+                                Text(
+                                  item.status,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .override(
+                                        font: GoogleFonts.readexPro(),
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        letterSpacing: 0.0,
+                                      ),
+                                ),
+                              if (ehDescarte(item.status))
+                                _selo(context, 'Descartado', Color(0xFFFE0000),
+                                    Icons.delete_forever_rounded),
+                            ],
                           ),
-                          if (ehDescarte(item.status))
-                            _selo(context, 'Descartado', Color(0xFFFE0000),
-                                Icons.delete_forever_rounded),
-                        ],
+                        ),
                       ),
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Row(
                             mainAxisSize: MainAxisSize.max,
@@ -484,33 +497,25 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
-                  child: GridView(
-                    padding: EdgeInsets.zero,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 0.0,
-                      mainAxisSpacing: 0.0,
-                      childAspectRatio: 2.0,
-                    ),
-                    primary: false,
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            width: 50.0,
-                            height: 50.0,
+                            width: 44.0,
+                            height: 44.0,
                             decoration: BoxDecoration(
                               color: () {
                                 if (ehVaca(item.grupoAnimal)) {
-                                  return Color(0xFF048508);
+                                  return AppTokens.brand;
                                 } else if (ehNovilha(item.grupoAnimal)) {
-                                  return Color(0xFFFF0076);
+                                  return AppTokens.secondary;
                                 } else {
-                                  return Color(0x00000000);
+                                  return FlutterFlowTheme.of(context)
+                                      .secondaryText;
                                 }
                               }(),
                               shape: BoxShape.circle,
@@ -551,51 +556,72 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                           ),
                         ],
                       ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${() {
-                              if ((item.nomeAnimal != '') &&
-                                  (item.brincoAnimal != null) &&
-                                  (item.brincoAnimal != -1)) {
-                                return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
-                              } else if (item.nomeAnimal != '') {
-                                return item.nomeAnimal;
-                              } else {
-                                return item.brincoAnimal.toString();
-                              }
-                            }()} - ${item.status}',
-                            style:
-                                FlutterFlowTheme.of(context).bodyLarge.override(
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              12.0, 0.0, 8.0, 0.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${() {
+                                  if ((item.nomeAnimal != '') &&
+                                      (item.brincoAnimal != null) &&
+                                      (item.brincoAnimal != -1)) {
+                                    return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
+                                  } else if (item.nomeAnimal != '') {
+                                    return item.nomeAnimal;
+                                  } else {
+                                    return item.brincoAnimal.toString();
+                                  }
+                                }()}',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyLarge
+                                    .override(
                                       font: GoogleFonts.readexPro(
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontWeight,
+                                        fontWeight: FontWeight.w600,
                                         fontStyle: FlutterFlowTheme.of(context)
                                             .bodyLarge
                                             .fontStyle,
                                       ),
                                       letterSpacing: 0.0,
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyLarge
-                                          .fontWeight,
+                                      fontWeight: FontWeight.w600,
                                       fontStyle: FlutterFlowTheme.of(context)
                                           .bodyLarge
                                           .fontStyle,
                                     ),
+                              ),
+                              // Status em linha propria: antes vinha concatenado
+                              // no nome ("Mimosa - 12 - Prenha").
+                              if (item.status != '')
+                                Text(
+                                  item.status,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: FlutterFlowTheme.of(context)
+                                      .labelMedium
+                                      .override(
+                                        font: GoogleFonts.readexPro(),
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        letterSpacing: 0.0,
+                                      ),
+                                ),
+                              if (ehDescarte(item.status))
+                                _selo(context, 'Descartado', Color(0xFFFE0000),
+                                    Icons.delete_forever_rounded),
+                            ],
                           ),
-                          if (ehDescarte(item.status))
-                            _selo(context, 'Descartado', Color(0xFFFE0000),
-                                Icons.delete_forever_rounded),
-                        ],
+                        ),
                       ),
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Row(
                             mainAxisSize: MainAxisSize.max,
