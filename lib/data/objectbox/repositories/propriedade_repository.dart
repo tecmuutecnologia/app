@@ -47,10 +47,8 @@ class PropriedadeRepository extends BaseSyncRepository<PropriedadeEntity> {
 
   /// Gera um firestoreId real (offline) para uma propriedade que ainda não tem
   /// — usado no backfill de pendentes legadas (criadas antes deste mecanismo).
-  String gerarFirestoreId(PropriedadeEntity entity) => firestore
-      .collection('${entity.parentPath}/propriedades')
-      .doc()
-      .id;
+  String gerarFirestoreId(PropriedadeEntity entity) =>
+      firestore.collection('${entity.parentPath}/propriedades').doc().id;
 
   /// Garante um firestoreId (backfill de pendente legada). Persiste e marca
   /// `needsSync` para a propriedade subir sozinha. Retorna o id garantido.
@@ -87,17 +85,19 @@ class PropriedadeRepository extends BaseSyncRepository<PropriedadeEntity> {
 
   /// Propriedades ATIVAS de um técnico: conta já criada e não excluídas,
   /// ordenadas por nome (espelha o `orderBy('display_name')` do Firestore).
-  Stream<List<PropriedadeEntity>> watchAtivasByTecnico(String tecnicoPath) => box
-      .query(PropriedadeEntity_.parentPath
-          .equals(tecnicoPath)
-          .and(PropriedadeEntity_.isDeleted.equals(false))
-          .and(PropriedadeEntity_.contaCriada.equals(true)))
-      .order(PropriedadeEntity_.displayName)
-      .watch(triggerImmediately: true)
-      .map((query) => query.find());
+  Stream<List<PropriedadeEntity>> watchAtivasByTecnico(String tecnicoPath) =>
+      box
+          .query(PropriedadeEntity_.parentPath
+              .equals(tecnicoPath)
+              .and(PropriedadeEntity_.isDeleted.equals(false))
+              .and(PropriedadeEntity_.contaCriada.equals(true)))
+          .order(PropriedadeEntity_.displayName)
+          .watch(triggerImmediately: true)
+          .map((query) => query.find());
 
   /// Lixeira: propriedades soft-deletadas, mais recentes primeiro.
-  Stream<List<PropriedadeEntity>> watchExcluidasByTecnico(String tecnicoPath) =>
+  Stream<List<PropriedadeEntity>> watchExcluidasByTecnico(
+          String tecnicoPath) =>
       box
           .query(PropriedadeEntity_.parentPath
               .equals(tecnicoPath)
@@ -145,13 +145,14 @@ class PropriedadeRepository extends BaseSyncRepository<PropriedadeEntity> {
       .find();
 
   /// Stream reativa das propriedades pendentes de ativação de um técnico.
-  Stream<List<PropriedadeEntity>> watchPendingActivation(String parentPath) => box
-      .query(PropriedadeEntity_.parentPath
-          .equals(parentPath)
-          .and(PropriedadeEntity_.contaCriada.equals(false))
-          .and(PropriedadeEntity_.isDeleted.equals(false)))
-      .watch(triggerImmediately: true)
-      .map((query) => query.find());
+  Stream<List<PropriedadeEntity>> watchPendingActivation(String parentPath) =>
+      box
+          .query(PropriedadeEntity_.parentPath
+              .equals(parentPath)
+              .and(PropriedadeEntity_.contaCriada.equals(false))
+              .and(PropriedadeEntity_.isDeleted.equals(false)))
+          .watch(triggerImmediately: true)
+          .map((query) => query.find());
 
   /// Restaura uma propriedade da lixeira (offline-first: vira um UPDATE no
   /// Firestore, enfileirado se estiver sem internet).

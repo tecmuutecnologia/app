@@ -353,7 +353,7 @@ class RemoteSyncListenersService {
         );
         _objectBox.tratamentoBox.put(entity);
         debugPrint(
-          '✨ Novo tratamento remoto adicionado: ${entity.medicamento}',
+          '✨ Novo tratamento remoto adicionado: ${entity.nomeAnimal}',
         );
       }
     } catch (e) {

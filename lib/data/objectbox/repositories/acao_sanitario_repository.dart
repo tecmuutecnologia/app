@@ -36,8 +36,7 @@ class AcaoSanitarioRepository extends BaseSyncRepository<AcaoSanitarioEntity> {
       data['uidPropriedade'] = firestore.doc(entity.uidPropriedadePath!);
     }
     if (entity.uidPersonProdutorPath != null) {
-      data['uidPersonProdutor'] =
-          firestore.doc(entity.uidPersonProdutorPath!);
+      data['uidPersonProdutor'] = firestore.doc(entity.uidPersonProdutorPath!);
     }
     return data;
   }

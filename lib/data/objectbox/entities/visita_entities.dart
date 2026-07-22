@@ -1,5 +1,4 @@
 import 'package:objectbox/objectbox.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'syncable_entity.dart';
 
@@ -147,31 +146,15 @@ class RecomendacaoEntity implements SyncableEntity {
   @Unique()
   String? firestoreId;
 
+  /// Caminho da propriedade dona da recomendação.
   @override
   String? parentPath;
 
-  String? uidVisita;
-  String? uidPropriedade;
+  /// Vínculo com a visita: CAMPO, não hierarquia.
+  String? uidResumoDaVisitaPath;
+
   String? tituloRecomendacao;
   String? descricaoRecomendacao;
-  String? categoria;
-  String? prioridade;
-  String? status;
-
-  @Property(type: PropertyType.date)
-  DateTime? dtRecomendacao;
-
-  @Property(type: PropertyType.date)
-  DateTime? dtPrazo;
-
-  @Property(type: PropertyType.date)
-  DateTime? dtConclusao;
-
-  String? createdBy;
-  String? lastModifiedBy;
-
-  @Property(type: PropertyType.date)
-  DateTime? createdAt;
 
   @override
   @Property(type: PropertyType.date)
@@ -183,25 +166,16 @@ class RecomendacaoEntity implements SyncableEntity {
 
   @override
   bool needsSync;
+
   @override
   bool isDeleted;
 
   RecomendacaoEntity({
     this.firestoreId,
     this.parentPath,
-    this.uidVisita,
-    this.uidPropriedade,
+    this.uidResumoDaVisitaPath,
     this.tituloRecomendacao,
     this.descricaoRecomendacao,
-    this.categoria,
-    this.prioridade,
-    this.status,
-    this.dtRecomendacao,
-    this.dtPrazo,
-    this.dtConclusao,
-    this.createdBy,
-    this.createdAt,
-    this.lastModifiedBy,
     this.lastModified,
     this.lastSynced,
     this.needsSync = false,
@@ -213,23 +187,22 @@ class RecomendacaoEntity implements SyncableEntity {
     String docId, {
     String? parentPath,
   }) {
+    String? caminho(dynamic r) {
+      if (r == null) return null;
+      if (r is String) return r;
+      try {
+        return (r as dynamic).path as String?;
+      } catch (_) {
+        return null;
+      }
+    }
+
     return RecomendacaoEntity(
       firestoreId: docId,
       parentPath: parentPath,
-      uidVisita: data['uid_visita'] as String?,
-      uidPropriedade: data['uid_propriedade'] as String?,
-      tituloRecomendacao: data['titulo_recomendacao'] as String?,
-      descricaoRecomendacao: data['descricao_recomendacao'] as String?,
-      categoria: data['categoria'] as String?,
-      prioridade: data['prioridade'] as String?,
-      status: data['status'] as String?,
-      dtRecomendacao: (data['dt_recomendacao'] as Timestamp?)?.toDate(),
-      dtPrazo: (data['dt_prazo'] as Timestamp?)?.toDate(),
-      dtConclusao: (data['dt_conclusao'] as Timestamp?)?.toDate(),
-      createdBy: data['created_by'] as String?,
-      createdAt: (data['created_at'] as Timestamp?)?.toDate(),
-      lastModifiedBy: data['last_modified_by'] as String?,
-      lastModified: (data['last_modified'] as Timestamp?)?.toDate(),
+      uidResumoDaVisitaPath: caminho(data['uidResumoDaVisita']),
+      tituloRecomendacao: data['tituloRecomendacao'] as String?,
+      descricaoRecomendacao: data['descricaoRecomendacao'] as String?,
       lastSynced: DateTime.now(),
       needsSync: false,
     );
@@ -237,34 +210,14 @@ class RecomendacaoEntity implements SyncableEntity {
 
   @override
   Map<String, dynamic> toFirestore() {
-    final data = <String, dynamic>{};
-
-    if (uidVisita != null) data['uid_visita'] = uidVisita;
-    if (uidPropriedade != null) data['uid_propriedade'] = uidPropriedade;
-    if (tituloRecomendacao != null)
-      data['titulo_recomendacao'] = tituloRecomendacao;
-    if (descricaoRecomendacao != null)
-      data['descricao_recomendacao'] = descricaoRecomendacao;
-    if (categoria != null) data['categoria'] = categoria;
-    if (prioridade != null) data['prioridade'] = prioridade;
-    if (status != null) data['status'] = status;
-    if (dtRecomendacao != null)
-      data['dt_recomendacao'] = Timestamp.fromDate(dtRecomendacao!);
-    if (dtPrazo != null) data['dt_prazo'] = Timestamp.fromDate(dtPrazo!);
-    if (dtConclusao != null)
-      data['dt_conclusao'] = Timestamp.fromDate(dtConclusao!);
-    if (createdBy != null) data['created_by'] = createdBy;
-    if (createdAt != null) data['created_at'] = Timestamp.fromDate(createdAt!);
-    if (lastModifiedBy != null) data['last_modified_by'] = lastModifiedBy;
-    if (lastModified != null)
-      data['last_modified'] = Timestamp.fromDate(lastModified!);
-
-    return data;
+    return <String, dynamic>{
+      'tituloRecomendacao': tituloRecomendacao,
+      'descricaoRecomendacao': descricaoRecomendacao,
+    };
   }
 
   @override
   void markAsModified([String? userId]) {
-    if (userId != null) lastModifiedBy = userId;
     lastModified = DateTime.now();
     needsSync = true;
   }

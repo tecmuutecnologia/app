@@ -19,6 +19,16 @@ class RecomendacaoRepository extends BaseSyncRepository<RecomendacaoEntity> {
   @override
   Box<RecomendacaoEntity> get box => _objectBox.recomendacaoBox;
 
+  /// O entity guarda o caminho da visita; o Firestore espera a referência.
+  @override
+  Map<String, dynamic> firestorePayloadFor(RecomendacaoEntity entity) {
+    final data = entity.toFirestore();
+    if (entity.uidResumoDaVisitaPath != null) {
+      data['uidResumoDaVisita'] = firestore.doc(entity.uidResumoDaVisitaPath!);
+    }
+    return data;
+  }
+
   @override
   String get collectionName => 'recomendacoes';
 

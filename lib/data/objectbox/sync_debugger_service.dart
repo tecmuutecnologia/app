@@ -210,7 +210,7 @@ class SyncDebuggerService {
 
       for (final tratamento in pendingTratamentos) {
         debugPrint(
-          '  💊 Tratamento: ${tratamento.medicamento} (${tratamento.firestoreId ?? 'novo'})',
+          '  💊 Tratamento: ${tratamento.nomeAnimal} (${tratamento.firestoreId ?? 'novo'})',
         );
       }
     } catch (e) {

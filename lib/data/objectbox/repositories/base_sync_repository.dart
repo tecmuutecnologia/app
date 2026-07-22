@@ -181,8 +181,9 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
     // definitivo — sem auto-id nem reconciliação. O path da fila também usa o
     // firestoreId (não o objectboxId).
     final preId = entity.firestoreId;
-    final queuePath =
-        preId != null ? '$collectionPath/$preId' : '$collectionPath/${entity.id}';
+    final queuePath = preId != null
+        ? '$collectionPath/$preId'
+        : '$collectionPath/${entity.id}';
 
     if (isOnline) {
       try {

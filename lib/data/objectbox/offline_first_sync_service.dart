@@ -178,7 +178,7 @@ class OfflineFirstSyncService {
       _reportProgress('Animais baixados', 0.70);
 
       // 7. Baixa ações e tratamentos
-      await _downloadAcoesETratamentos(tecnicoRef);
+      await _downloadAcoes(tecnicoRef);
       _reportProgress('Ações e tratamentos baixados', 0.85);
 
       // 8. Baixa dados financeiros e visitas
@@ -479,11 +479,11 @@ class OfflineFirstSyncService {
   /// As AÇÕES vivem na subcoleção `acoes` do TÉCNICO
   /// (`tecnico/{id}/acoes`), cada uma com `uidAnimalAnimaisProdutores` e
   /// `uidPropriedade` ligando ao animal/propriedade — por isso o `parentPath`
-  /// da AcaoEntity é o path do técnico. Tratamentos e ações sanitárias seguem
-  /// como subcoleções do animal.
-  Future<void> _downloadAcoesETratamentos(DocumentReference? tecnicoRef) async {
+  /// da AcaoEntity é o path do técnico. Tratamentos, ações sanitárias e
+  /// recomendações são subcoleções da PROPRIEDADE e vêm em
+  /// `_downloadFinanceiroEVisitas`.
+  Future<void> _downloadAcoes(DocumentReference? tecnicoRef) async {
     int totalAcoes = 0;
-    int totalTratamentos = 0;
 
     // Ações do técnico.
     if (tecnicoRef != null) {
@@ -500,35 +500,7 @@ class OfflineFirstSyncService {
       }
     }
 
-    final animais = _objectBox.animalBox.getAll();
-    for (final animal in animais) {
-      if (animal.firestoreId == null || animal.parentPath == null) continue;
-
-      final animalRef = _firestore
-          .doc('${animal.parentPath}/animaisProdutores/${animal.firestoreId}');
-
-      // Baixa tratamentos do animal
-      try {
-        final tratamentosSnapshot =
-            await animalRef.collection('tratamentos').get();
-        for (final doc in tratamentosSnapshot.docs) {
-          final entity = TratamentoEntity.fromFirestore(
-            doc.data(),
-            doc.id,
-            parentPath: animalRef.path,
-          );
-          _objectBox.tratamentoBox.put(entity);
-          totalTratamentos++;
-        }
-      } catch (e) {
-        debugPrint(
-            '⚠️ Erro ao baixar tratamentos do animal ${animal.firestoreId}: $e');
-      }
-
-    }
-
-    debugPrint(
-        '📋 $totalAcoes ação(ões) e $totalTratamentos tratamento(s) baixados');
+    debugPrint('📋 $totalAcoes ação(ões) baixada(s)');
   }
 
   /// Baixa dados financeiros e visitas
@@ -536,6 +508,7 @@ class OfflineFirstSyncService {
     final propriedades = _objectBox.propriedadeBox.getAll();
     int totalFinanceiro = 0;
     int totalVisitas = 0;
+    int totalTratamentos = 0;
     int totalRecomendacoes = 0;
 
     for (final prop in propriedades) {
@@ -600,6 +573,25 @@ class OfflineFirstSyncService {
         debugPrint('⚠️ Erro ao baixar visitas: $e');
       }
 
+      // Baixa tratamentos. Passam a ser subcoleção da PROPRIEDADE (antes o
+      // download varria animal/tratamentos); o vínculo com a visita é o campo
+      // `uidResumoDaVisita`.
+      try {
+        final tratamentosSnapshot =
+            await propRef.collection('tratamentos').get();
+        for (final doc in tratamentosSnapshot.docs) {
+          final entity = TratamentoEntity.fromFirestore(
+            doc.data(),
+            doc.id,
+            parentPath: propRef.path,
+          );
+          _objectBox.tratamentoBox.put(entity);
+          totalTratamentos++;
+        }
+      } catch (e) {
+        debugPrint('⚠️ Erro ao baixar tratamentos: $e');
+      }
+
       // Baixa recomendações
       try {
         final recomendacoesSnapshot =
@@ -635,6 +627,7 @@ class OfflineFirstSyncService {
     }
 
     debugPrint('💰 $totalFinanceiro registro(s) financeiro(s) baixados');
+    debugPrint('💊 $totalTratamentos tratamento(s) baixados');
     debugPrint(
         '📝 $totalVisitas visita(s) e $totalRecomendacoes recomendação(ões) baixadas');
   }
@@ -892,7 +885,7 @@ class OfflineFirstSyncService {
           final docRef = _firestore.doc(
             '${tratamento.parentPath}/tratamentos/${tratamento.firestoreId}',
           );
-          await docRef.update(tratamento.toFirestore());
+          await docRef.update(_payloadTratamento(tratamento));
           tratamento.needsSync = false;
           tratamento.lastSynced = DateTime.now();
           _objectBox.tratamentoBox.put(tratamento);
@@ -901,7 +894,8 @@ class OfflineFirstSyncService {
             !tratamento.isDeleted) {
           final collectionRef =
               _firestore.collection('${tratamento.parentPath}/tratamentos');
-          final docRef = await collectionRef.add(tratamento.toFirestore());
+          final docRef =
+              await collectionRef.add(_payloadTratamento(tratamento));
           tratamento.firestoreId = docRef.id;
           tratamento.needsSync = false;
           tratamento.lastSynced = DateTime.now();
@@ -968,6 +962,20 @@ class OfflineFirstSyncService {
           '💰 ${modified.length} registro(s) financeiro(s) sincronizado(s)');
     }
   }
+
+  /// Reanexa as referências do tratamento (guardadas como caminho).
+  Map<String, dynamic> _payloadTratamento(TratamentoEntity t) => {
+        ...t.toFirestore(),
+        if (t.uidAnimalPath != null)
+          'uidAnimal': _firestore.doc(t.uidAnimalPath!),
+        if (t.uidResumoDaVisitaPath != null)
+          'uidResumoDaVisita': _firestore.doc(t.uidResumoDaVisitaPath!),
+        if (t.uidAcaoLancadaPath != null)
+          'uidAcaoLancada': _firestore.doc(t.uidAcaoLancadaPath!),
+        if (t.compararDtUltimaInseminacao != null)
+          'compararDtUltimaInseminacao':
+              Timestamp.fromDate(t.compararDtUltimaInseminacao!),
+      };
 
   /// Reanexa referências e Timestamps que o entity guarda como caminho/data.
   Map<String, dynamic> _payloadVisita(ResumoVisitaEntity v) => {
