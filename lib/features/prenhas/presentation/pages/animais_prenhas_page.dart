@@ -646,7 +646,7 @@ class _AnimaisPrenhasPageState extends State<AnimaisPrenhasPage> {
             Icons.search_rounded,
             color: FlutterFlowTheme.of(context).secondaryText,
           ),
-          suffixIcon: _searchListTextController!.text.isNotEmpty
+          suffixIcon: _searchListTextController.text.isNotEmpty
               ? InkWell(
                   onTap: () {
                     _searchListTextController?.clear();

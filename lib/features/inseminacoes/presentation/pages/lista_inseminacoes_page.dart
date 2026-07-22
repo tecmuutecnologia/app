@@ -631,7 +631,7 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
             Icons.search_rounded,
             color: FlutterFlowTheme.of(context).secondaryText,
           ),
-          suffixIcon: _searchListTextController!.text.isNotEmpty
+          suffixIcon: _searchListTextController.text.isNotEmpty
               ? InkWell(
                   onTap: () {
                     _searchListTextController?.clear();
