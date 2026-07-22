@@ -25,7 +25,6 @@ import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
 import '/features/prontuario/presentation/pages/prontuario_animal_page.dart';
 import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
-import 'package:flip_card/flip_card.dart';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -186,13 +185,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
     return Visibility(
       visible: (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
           ((ehNovilha(item.grupoAnimal)) || (ehVaca(item.grupoAnimal))),
-      child: FlipCard(
-        fill: Fill.fillBack,
-        direction: FlipDirection.VERTICAL,
-        speed: 100,
-        front: _front1(context, item, index),
-        back: _back3(context, item, index),
-      ),
+      child: _front1(context, item, index),
     );
   }
 
@@ -208,13 +201,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
       visible: (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
           matchesSearch &&
           ((ehNovilha(item.grupoAnimal)) || (ehVaca(item.grupoAnimal))),
-      child: FlipCard(
-        fill: Fill.fillBack,
-        direction: FlipDirection.VERTICAL,
-        speed: 100,
-        front: _front2(context, item, index),
-        back: _back4(context, item, index),
-      ),
+      child: _front2(context, item, index),
     );
   }
 
@@ -229,56 +216,61 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
       ),
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.end,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: GridView(
-                padding: EdgeInsets.zero,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 0.0,
-                  mainAxisSpacing: 0.0,
-                  childAspectRatio: 2.0,
-                ),
-                primary: false,
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: GridView(
+                    padding: EdgeInsets.zero,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 0.0,
+                      mainAxisSpacing: 0.0,
+                      childAspectRatio: 2.0,
+                    ),
+                    primary: false,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
                     children: [
-                      Container(
-                        width: 50.0,
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                          color: () {
-                            if (ehVaca(item.grupoAnimal)) {
-                              return Color(0xFF048508);
-                            } else if (ehNovilha(item.grupoAnimal)) {
-                              return Color(0xFFFF0076);
-                            } else {
-                              return Color(0x00000000);
-                            }
-                          }(),
-                          shape: BoxShape.circle,
-                        ),
-                        alignment: AlignmentDirectional(0.0, 0.0),
-                        child: Text(
-                          () {
-                            if (ehVaca(item.grupoAnimal)) {
-                              return 'VAC';
-                            } else if (ehNovilha(item.grupoAnimal)) {
-                              return 'NOV';
-                            } else {
-                              return 'N/C';
-                            }
-                          }(),
-                          style:
-                              FlutterFlowTheme.of(context).titleMedium.override(
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 50.0,
+                            height: 50.0,
+                            decoration: BoxDecoration(
+                              color: () {
+                                if (ehVaca(item.grupoAnimal)) {
+                                  return Color(0xFF048508);
+                                } else if (ehNovilha(item.grupoAnimal)) {
+                                  return Color(0xFFFF0076);
+                                } else {
+                                  return Color(0x00000000);
+                                }
+                              }(),
+                              shape: BoxShape.circle,
+                            ),
+                            alignment: AlignmentDirectional(0.0, 0.0),
+                            child: Text(
+                              () {
+                                if (ehVaca(item.grupoAnimal)) {
+                                  return 'VAC';
+                                } else if (ehNovilha(item.grupoAnimal)) {
+                                  return 'NOV';
+                                } else {
+                                  return 'N/C';
+                                }
+                              }(),
+                              style: FlutterFlowTheme.of(context)
+                                  .titleMedium
+                                  .override(
                                     font: GoogleFonts.readexPro(
                                       fontWeight: FlutterFlowTheme.of(context)
                                           .titleMedium
@@ -297,129 +289,135 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                                         .titleMedium
                                         .fontStyle,
                                   ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${() {
-                          if ((item.nomeAnimal != '') &&
-                              (item.brincoAnimal != null) &&
-                              (item.brincoAnimal != -1)) {
-                            return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
-                          } else if (item.nomeAnimal != '') {
-                            return item.nomeAnimal;
-                          } else {
-                            return item.brincoAnimal.toString();
-                          }
-                        }()} - ${item.status}',
-                        style: FlutterFlowTheme.of(context).bodyLarge.override(
-                              font: GoogleFonts.readexPro(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .bodyLarge
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .bodyLarge
-                                    .fontStyle,
-                              ),
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .bodyLarge
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyLarge
-                                  .fontStyle,
-                            ),
-                      ),
-                      if (ehDescarte(item.status))
-                        _selo(context, 'Descartado', Color(0xFFFE0000),
-                            Icons.delete_forever_rounded),
-                    ],
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Align(
-                            alignment: AlignmentDirectional(0.0, 0.0),
-                            child: Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                  5.0, 0.0, 0.0, 0.0),
-                              child: InkWell(
-                                splashColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () async {
-                                  context.pushNamed(
-                                    ProntuarioAnimalPage.routeName,
-                                    queryParameters: {
-                                      'uidPropriedade': serializeParam(
-                                        widget.uidPropriedade,
-                                        ParamType.DocumentReference,
-                                      ),
-                                      'nomePropriedade': serializeParam(
-                                        widget.nomePropriedade,
-                                        ParamType.String,
-                                      ),
-                                      'uidTecnico': serializeParam(
-                                        widget.uidTecnico,
-                                        ParamType.DocumentReference,
-                                      ),
-                                      'emailPropriedade': serializeParam(
-                                        widget.emailPropriedade,
-                                        ParamType.String,
-                                      ),
-                                      'uidAnimaisProdutores': serializeParam(
-                                        item.uidAnimal,
-                                        ParamType.DocumentReference,
-                                      ),
-                                      'grupoPredominante': serializeParam(
-                                        item.grupoAnimal,
-                                        ParamType.String,
-                                      ),
-                                      'visitaPresencial': serializeParam(
-                                        widget.visitaPresencial,
-                                        ParamType.bool,
-                                      ),
-                                      'diasDg': serializeParam(
-                                        widget.diasDg,
-                                        ParamType.String,
-                                      ),
-                                    }.withoutNulls,
-                                  );
-                                },
-                                child: _chipProntuario(context),
-                              ),
                             ),
                           ),
-                          if ((item.dtUltimaAcao != '') &&
-                              (functions.verificaDataAcaoDataAtual(
-                                      item.dtUltimaAcao) ==
-                                  true))
-                            Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                  5.0, 0.0, 0.0, 0.0),
-                              child: _selo(context, 'Hoje', Color(0xFF048508),
-                                  Icons.check_circle),
-                            ),
+                        ],
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${() {
+                              if ((item.nomeAnimal != '') &&
+                                  (item.brincoAnimal != null) &&
+                                  (item.brincoAnimal != -1)) {
+                                return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
+                              } else if (item.nomeAnimal != '') {
+                                return item.nomeAnimal;
+                              } else {
+                                return item.brincoAnimal.toString();
+                              }
+                            }()} - ${item.status}',
+                            style:
+                                FlutterFlowTheme.of(context).bodyLarge.override(
+                                      font: GoogleFonts.readexPro(
+                                        fontWeight: FlutterFlowTheme.of(context)
+                                            .bodyLarge
+                                            .fontWeight,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .bodyLarge
+                                            .fontStyle,
+                                      ),
+                                      letterSpacing: 0.0,
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .bodyLarge
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .bodyLarge
+                                          .fontStyle,
+                                    ),
+                          ),
+                          if (ehDescarte(item.status))
+                            _selo(context, 'Descartado', Color(0xFFFE0000),
+                                Icons.delete_forever_rounded),
+                        ],
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Align(
+                                alignment: AlignmentDirectional(0.0, 0.0),
+                                child: Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      5.0, 0.0, 0.0, 0.0),
+                                  child: InkWell(
+                                    splashColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () async {
+                                      context.pushNamed(
+                                        ProntuarioAnimalPage.routeName,
+                                        queryParameters: {
+                                          'uidPropriedade': serializeParam(
+                                            widget.uidPropriedade,
+                                            ParamType.DocumentReference,
+                                          ),
+                                          'nomePropriedade': serializeParam(
+                                            widget.nomePropriedade,
+                                            ParamType.String,
+                                          ),
+                                          'uidTecnico': serializeParam(
+                                            widget.uidTecnico,
+                                            ParamType.DocumentReference,
+                                          ),
+                                          'emailPropriedade': serializeParam(
+                                            widget.emailPropriedade,
+                                            ParamType.String,
+                                          ),
+                                          'uidAnimaisProdutores':
+                                              serializeParam(
+                                            item.uidAnimal,
+                                            ParamType.DocumentReference,
+                                          ),
+                                          'grupoPredominante': serializeParam(
+                                            item.grupoAnimal,
+                                            ParamType.String,
+                                          ),
+                                          'visitaPresencial': serializeParam(
+                                            widget.visitaPresencial,
+                                            ParamType.bool,
+                                          ),
+                                          'diasDg': serializeParam(
+                                            widget.diasDg,
+                                            ParamType.String,
+                                          ),
+                                        }.withoutNulls,
+                                      );
+                                    },
+                                    child: _chipProntuario(context),
+                                  ),
+                                ),
+                              ),
+                              if ((item.dtUltimaAcao != '') &&
+                                  (functions.verificaDataAcaoDataAtual(
+                                          item.dtUltimaAcao) ==
+                                      true))
+                                Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      5.0, 0.0, 0.0, 0.0),
+                                  child: _selo(context, 'Hoje',
+                                      Color(0xFF048508), Icons.check_circle),
+                                ),
+                            ],
+                          ),
                         ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+            // Acoes que antes ficavam no VERSO do cartao (FlipCard).
+            _back3(context, item, index),
           ],
         ),
       ),
@@ -427,10 +425,9 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   }
 
   Widget _back3(BuildContext context, AnimaisProdutoresStruct item, int index) {
-    return ListView(
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if ((ehVazia(item.status)) &&
             ((ehBezerras(item.grupoAnimal)) || (ehBezerros(item.grupoAnimal))))
@@ -477,56 +474,61 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
       ),
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.end,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: GridView(
-                padding: EdgeInsets.zero,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 0.0,
-                  mainAxisSpacing: 0.0,
-                  childAspectRatio: 2.0,
-                ),
-                primary: false,
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                children: [
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: GridView(
+                    padding: EdgeInsets.zero,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 0.0,
+                      mainAxisSpacing: 0.0,
+                      childAspectRatio: 2.0,
+                    ),
+                    primary: false,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
                     children: [
-                      Container(
-                        width: 50.0,
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                          color: () {
-                            if (ehVaca(item.grupoAnimal)) {
-                              return Color(0xFF048508);
-                            } else if (ehNovilha(item.grupoAnimal)) {
-                              return Color(0xFFFF0076);
-                            } else {
-                              return Color(0x00000000);
-                            }
-                          }(),
-                          shape: BoxShape.circle,
-                        ),
-                        alignment: AlignmentDirectional(0.0, 0.0),
-                        child: Text(
-                          () {
-                            if (ehVaca(item.grupoAnimal)) {
-                              return 'VAC';
-                            } else if (ehNovilha(item.grupoAnimal)) {
-                              return 'NOV';
-                            } else {
-                              return 'N/C';
-                            }
-                          }(),
-                          style:
-                              FlutterFlowTheme.of(context).titleMedium.override(
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 50.0,
+                            height: 50.0,
+                            decoration: BoxDecoration(
+                              color: () {
+                                if (ehVaca(item.grupoAnimal)) {
+                                  return Color(0xFF048508);
+                                } else if (ehNovilha(item.grupoAnimal)) {
+                                  return Color(0xFFFF0076);
+                                } else {
+                                  return Color(0x00000000);
+                                }
+                              }(),
+                              shape: BoxShape.circle,
+                            ),
+                            alignment: AlignmentDirectional(0.0, 0.0),
+                            child: Text(
+                              () {
+                                if (ehVaca(item.grupoAnimal)) {
+                                  return 'VAC';
+                                } else if (ehNovilha(item.grupoAnimal)) {
+                                  return 'NOV';
+                                } else {
+                                  return 'N/C';
+                                }
+                              }(),
+                              style: FlutterFlowTheme.of(context)
+                                  .titleMedium
+                                  .override(
                                     font: GoogleFonts.readexPro(
                                       fontWeight: FlutterFlowTheme.of(context)
                                           .titleMedium
@@ -545,129 +547,135 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                                         .titleMedium
                                         .fontStyle,
                                   ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${() {
-                          if ((item.nomeAnimal != '') &&
-                              (item.brincoAnimal != null) &&
-                              (item.brincoAnimal != -1)) {
-                            return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
-                          } else if (item.nomeAnimal != '') {
-                            return item.nomeAnimal;
-                          } else {
-                            return item.brincoAnimal.toString();
-                          }
-                        }()} - ${item.status}',
-                        style: FlutterFlowTheme.of(context).bodyLarge.override(
-                              font: GoogleFonts.readexPro(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .bodyLarge
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .bodyLarge
-                                    .fontStyle,
-                              ),
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .bodyLarge
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyLarge
-                                  .fontStyle,
-                            ),
-                      ),
-                      if (ehDescarte(item.status))
-                        _selo(context, 'Descartado', Color(0xFFFE0000),
-                            Icons.delete_forever_rounded),
-                    ],
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Align(
-                            alignment: AlignmentDirectional(0.0, 0.0),
-                            child: Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                  5.0, 0.0, 0.0, 0.0),
-                              child: InkWell(
-                                splashColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () async {
-                                  context.pushNamed(
-                                    ProntuarioAnimalPage.routeName,
-                                    queryParameters: {
-                                      'uidPropriedade': serializeParam(
-                                        widget.uidPropriedade,
-                                        ParamType.DocumentReference,
-                                      ),
-                                      'nomePropriedade': serializeParam(
-                                        widget.nomePropriedade,
-                                        ParamType.String,
-                                      ),
-                                      'uidTecnico': serializeParam(
-                                        widget.uidTecnico,
-                                        ParamType.DocumentReference,
-                                      ),
-                                      'emailPropriedade': serializeParam(
-                                        widget.emailPropriedade,
-                                        ParamType.String,
-                                      ),
-                                      'uidAnimaisProdutores': serializeParam(
-                                        item.uidAnimal,
-                                        ParamType.DocumentReference,
-                                      ),
-                                      'grupoPredominante': serializeParam(
-                                        item.grupoAnimal,
-                                        ParamType.String,
-                                      ),
-                                      'visitaPresencial': serializeParam(
-                                        widget.visitaPresencial,
-                                        ParamType.bool,
-                                      ),
-                                      'diasDg': serializeParam(
-                                        widget.diasDg,
-                                        ParamType.String,
-                                      ),
-                                    }.withoutNulls,
-                                  );
-                                },
-                                child: _chipProntuario(context),
-                              ),
                             ),
                           ),
-                          if ((item.dtUltimaAcao != '') &&
-                              (functions.verificaDataAcaoDataAtual(
-                                      item.dtUltimaAcao) ==
-                                  true))
-                            Padding(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                  5.0, 0.0, 0.0, 0.0),
-                              child: _selo(context, 'Hoje', Color(0xFF048508),
-                                  Icons.check_circle),
-                            ),
+                        ],
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${() {
+                              if ((item.nomeAnimal != '') &&
+                                  (item.brincoAnimal != null) &&
+                                  (item.brincoAnimal != -1)) {
+                                return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
+                              } else if (item.nomeAnimal != '') {
+                                return item.nomeAnimal;
+                              } else {
+                                return item.brincoAnimal.toString();
+                              }
+                            }()} - ${item.status}',
+                            style:
+                                FlutterFlowTheme.of(context).bodyLarge.override(
+                                      font: GoogleFonts.readexPro(
+                                        fontWeight: FlutterFlowTheme.of(context)
+                                            .bodyLarge
+                                            .fontWeight,
+                                        fontStyle: FlutterFlowTheme.of(context)
+                                            .bodyLarge
+                                            .fontStyle,
+                                      ),
+                                      letterSpacing: 0.0,
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .bodyLarge
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .bodyLarge
+                                          .fontStyle,
+                                    ),
+                          ),
+                          if (ehDescarte(item.status))
+                            _selo(context, 'Descartado', Color(0xFFFE0000),
+                                Icons.delete_forever_rounded),
+                        ],
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Align(
+                                alignment: AlignmentDirectional(0.0, 0.0),
+                                child: Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      5.0, 0.0, 0.0, 0.0),
+                                  child: InkWell(
+                                    splashColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () async {
+                                      context.pushNamed(
+                                        ProntuarioAnimalPage.routeName,
+                                        queryParameters: {
+                                          'uidPropriedade': serializeParam(
+                                            widget.uidPropriedade,
+                                            ParamType.DocumentReference,
+                                          ),
+                                          'nomePropriedade': serializeParam(
+                                            widget.nomePropriedade,
+                                            ParamType.String,
+                                          ),
+                                          'uidTecnico': serializeParam(
+                                            widget.uidTecnico,
+                                            ParamType.DocumentReference,
+                                          ),
+                                          'emailPropriedade': serializeParam(
+                                            widget.emailPropriedade,
+                                            ParamType.String,
+                                          ),
+                                          'uidAnimaisProdutores':
+                                              serializeParam(
+                                            item.uidAnimal,
+                                            ParamType.DocumentReference,
+                                          ),
+                                          'grupoPredominante': serializeParam(
+                                            item.grupoAnimal,
+                                            ParamType.String,
+                                          ),
+                                          'visitaPresencial': serializeParam(
+                                            widget.visitaPresencial,
+                                            ParamType.bool,
+                                          ),
+                                          'diasDg': serializeParam(
+                                            widget.diasDg,
+                                            ParamType.String,
+                                          ),
+                                        }.withoutNulls,
+                                      );
+                                    },
+                                    child: _chipProntuario(context),
+                                  ),
+                                ),
+                              ),
+                              if ((item.dtUltimaAcao != '') &&
+                                  (functions.verificaDataAcaoDataAtual(
+                                          item.dtUltimaAcao) ==
+                                      true))
+                                Padding(
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      5.0, 0.0, 0.0, 0.0),
+                                  child: _selo(context, 'Hoje',
+                                      Color(0xFF048508), Icons.check_circle),
+                                ),
+                            ],
+                          ),
                         ],
                       ),
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+            // Acoes que antes ficavam no VERSO do cartao (FlipCard).
+            _back4(context, item, index),
           ],
         ),
       ),
@@ -675,10 +683,9 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   }
 
   Widget _back4(BuildContext context, AnimaisProdutoresStruct item, int index) {
-    return ListView(
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if ((ehVazia(item.status)) &&
             ((ehBezerras(item.grupoAnimal)) || (ehBezerros(item.grupoAnimal))))
