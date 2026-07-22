@@ -120,6 +120,27 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
 
   /// Card (frente/verso) de um animal na lista completa. Extraído do build
   /// (Fase 4): era ~3600 linhas inline no itemBuilder.
+  /// Estilo padrao dos botoes de acao (altura 40, texto branco 12, cantos
+  /// `radiusSmall`) — mesma metrica das demais telas. Antes cada um dos 34
+  /// botoes trazia seu proprio FFButtonOptions com altura 25 e largura fixa.
+  FFButtonOptions _opcoesBotao(BuildContext context, Color cor) {
+    return FFButtonOptions(
+      height: 40.0,
+      padding: const EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 0.0),
+      iconPadding: EdgeInsets.zero,
+      color: cor,
+      textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+            font: GoogleFonts.readexPro(),
+            color: Colors.white,
+            fontSize: 12.0,
+            letterSpacing: 0.0,
+          ),
+      elevation: 0.0,
+      borderSide: const BorderSide(color: Colors.transparent, width: 1.0),
+      borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
+    );
+  }
+
   /// Selo textual para indicadores de estado. Substitui os ícones soltos de
   /// 24-30px que não diziam a que se referiam (um check verde podia ser
   /// "ação feita hoje" ou "inseminada", dependendo de onde estava).
@@ -749,16 +770,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
 
   Widget _part1(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
-      width: 100.0,
-      height: 100.0,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFEDEDED),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(12.0),
-          bottomRight: Radius.circular(12.0),
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -844,38 +859,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                     Icons.pause,
                     size: 15.0,
                   ),
-                  options: FFButtonOptions(
-                    height: 25.0,
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: Color(0xFF048508),
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          color: Colors.white,
-                          fontSize: 12.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                    elevation: 3.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  options: _opcoesBotao(context, Color(0xFF048508)),
                 ),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
@@ -917,40 +901,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.add_alert,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      width: 100.0,
-                      height: 25.0,
-                      padding: EdgeInsets.all(0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFF1A03E9),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 4.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(context, AppTokens.secondary),
                   ),
                 ),
                 if ((ehInseminada(item.status)) ||
@@ -974,16 +925,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
 
   Widget _part2(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
-      width: 100.0,
-      height: 100.0,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFEDEDED),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(12.0),
-          bottomRight: Radius.circular(12.0),
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1092,40 +1037,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.playlist_add,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      height: 25.0,
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFF7E39EF),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 3.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(context, AppTokens.brand),
                   ),
                 ),
                 FFButtonWidget(
@@ -1166,38 +1078,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                     Icons.add_alert,
                     size: 15.0,
                   ),
-                  options: FFButtonOptions(
-                    width: 100.0,
-                    height: 25.0,
-                    padding: EdgeInsets.all(0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: Color(0xFF1A03E9),
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          color: Colors.white,
-                          fontSize: 12.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                    elevation: 4.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  options: _opcoesBotao(context, AppTokens.secondary),
                 ),
                 if ((ehInseminada(item.status)) ||
                     (ehInseminadaPP(item.status)))
@@ -1220,16 +1101,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
 
   Widget _part3(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
-      width: 100.0,
-      height: 100.0,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFEDEDED),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(12.0),
-          bottomRight: Radius.circular(12.0),
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1349,36 +1224,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                   Icons.add_alert,
                   size: 15.0,
                 ),
-                options: FFButtonOptions(
-                  width: 100.0,
-                  height: 25.0,
-                  padding: EdgeInsets.all(0.0),
-                  iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  color: Color(0xFF12BE24),
-                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                        color: Colors.white,
-                        fontSize: 12.0,
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                      ),
-                  elevation: 3.0,
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 1.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+                options: _opcoesBotao(context, Color(0xFF048508)),
               ),
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
@@ -1418,38 +1264,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                     Icons.cancel_sharp,
                     size: 15.0,
                   ),
-                  options: FFButtonOptions(
-                    width: 100.0,
-                    height: 25.0,
-                    padding: EdgeInsets.all(0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: Color(0xFFAE0303),
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          color: Colors.white,
-                          fontSize: 12.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                    elevation: 3.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  options:
+                      _opcoesBotao(context, FlutterFlowTheme.of(context).error),
                 ),
               ),
             ],
@@ -1461,16 +1277,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
 
   Widget _part4(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
-      width: 100.0,
-      height: 100.0,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFEDEDED),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(12.0),
-          bottomRight: Radius.circular(12.0),
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1589,38 +1399,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                     Icons.cancel_sharp,
                     size: 15.0,
                   ),
-                  options: FFButtonOptions(
-                    width: 100.0,
-                    height: 25.0,
-                    padding: EdgeInsets.all(0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: Color(0xFFAE0303),
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          color: Colors.white,
-                          fontSize: 12.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                    elevation: 3.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  options:
+                      _opcoesBotao(context, FlutterFlowTheme.of(context).error),
                 ),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
@@ -1663,40 +1443,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.add_alert,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      width: 100.0,
-                      height: 25.0,
-                      padding: EdgeInsets.all(0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFF12BE24),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 3.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(context, Color(0xFF048508)),
                   ),
                 ),
                 Padding(
@@ -1741,40 +1488,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.check,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      width: 100.0,
-                      height: 25.0,
-                      padding: EdgeInsets.all(0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFF1A03E9),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 3.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(context, AppTokens.secondary),
                   ),
                 ),
               ],
@@ -1787,16 +1501,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
 
   Widget _part5(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
-      width: 100.0,
-      height: 100.0,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFEDEDED),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(12.0),
-          bottomRight: Radius.circular(12.0),
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1918,38 +1626,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                     Icons.add_alert,
                     size: 15.0,
                   ),
-                  options: FFButtonOptions(
-                    width: 100.0,
-                    height: 25.0,
-                    padding: EdgeInsets.all(0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: Color(0xFF12BE24),
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          color: Colors.white,
-                          fontSize: 12.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                    elevation: 3.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  options: _opcoesBotao(context, Color(0xFF048508)),
                 ),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 0.0),
@@ -1993,40 +1670,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.check,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      width: 100.0,
-                      height: 25.0,
-                      padding: EdgeInsets.all(0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFF1A03E9),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 3.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(context, AppTokens.secondary),
                   ),
                 ),
                 FFButtonWidget(
@@ -2065,38 +1709,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                     Icons.cancel_sharp,
                     size: 15.0,
                   ),
-                  options: FFButtonOptions(
-                    width: 100.0,
-                    height: 25.0,
-                    padding: EdgeInsets.all(0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: Color(0xFFAE0303),
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          color: Colors.white,
-                          fontSize: 12.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                    elevation: 3.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  options:
+                      _opcoesBotao(context, FlutterFlowTheme.of(context).error),
                 ),
               ],
             ),
@@ -2108,16 +1722,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
 
   Widget _part6(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
-      width: 100.0,
-      height: 100.0,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFEDEDED),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(12.0),
-          bottomRight: Radius.circular(12.0),
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -2238,40 +1846,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.check_circle_outline_sharp,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      width: 100.0,
-                      height: 25.0,
-                      padding: EdgeInsets.all(0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFFAE0303),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 3.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(
+                        context, FlutterFlowTheme.of(context).error),
                   ),
                 ),
                 Padding(
@@ -2316,40 +1892,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.cancel_rounded,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      width: 100.0,
-                      height: 25.0,
-                      padding: EdgeInsets.all(0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFFE9AB05),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 3.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(context, AppTokens.secondary),
                   ),
                 ),
               ],
@@ -2362,16 +1905,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
 
   Widget _part7(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
-      width: 100.0,
-      height: 100.0,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFEDEDED),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(12.0),
-          bottomRight: Radius.circular(12.0),
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -2454,40 +1991,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                     Icons.check_circle,
                     size: 15.0,
                   ),
-                  options: FFButtonOptions(
-                    width: 80.0,
-                    height: 25.0,
-                    padding: EdgeInsets.all(0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: Color(0xFF00FF09),
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          color: Colors.white,
-                          fontSize: 12.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                    elevation: 3.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                    disabledColor:
-                        FlutterFlowTheme.of(context).primaryBackground,
-                  ),
+                  options: _opcoesBotao(context, Color(0xFF048508)),
                 ),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
@@ -2528,40 +2032,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.notifications,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      width: 80.0,
-                      height: 25.0,
-                      padding: EdgeInsets.all(0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFF1A03E9),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 4.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(context, AppTokens.secondary),
                   ),
                 ),
                 Padding(
@@ -2602,40 +2073,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.cancel_rounded,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      width: 80.0,
-                      height: 25.0,
-                      padding: EdgeInsets.all(0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFFAE0303),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 3.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(
+                        context, FlutterFlowTheme.of(context).error),
                   ),
                 ),
               ],
@@ -2648,16 +2087,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
 
   Widget _part8(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
-      width: 100.0,
-      height: 100.0,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFEDEDED),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(12.0),
-          bottomRight: Radius.circular(12.0),
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -2743,38 +2176,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                     Icons.pause,
                     size: 15.0,
                   ),
-                  options: FFButtonOptions(
-                    height: 25.0,
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: Color(0xFF048508),
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          color: Colors.white,
-                          fontSize: 12.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                    elevation: 3.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  options: _opcoesBotao(context, Color(0xFF048508)),
                 ),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
@@ -2816,40 +2218,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.add_alert,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      width: 100.0,
-                      height: 25.0,
-                      padding: EdgeInsets.all(0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFF1A03E9),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 4.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(context, AppTokens.secondary),
                   ),
                 ),
                 if ((ehInseminada(item.status)) ||
@@ -2873,16 +2242,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
 
   Widget _part9(BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
-      width: 100.0,
-      height: 100.0,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFEDEDED),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(12.0),
-          bottomRight: Radius.circular(12.0),
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -2991,40 +2354,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.playlist_add,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      height: 25.0,
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFF7E39EF),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 3.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(context, AppTokens.brand),
                   ),
                 ),
                 FFButtonWidget(
@@ -3065,38 +2395,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                     Icons.add_alert,
                     size: 15.0,
                   ),
-                  options: FFButtonOptions(
-                    width: 100.0,
-                    height: 25.0,
-                    padding: EdgeInsets.all(0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: Color(0xFF1A03E9),
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          color: Colors.white,
-                          fontSize: 12.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                    elevation: 4.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  options: _opcoesBotao(context, AppTokens.secondary),
                 ),
                 if ((ehInseminada(item.status)) ||
                     (ehInseminadaPP(item.status)))
@@ -3120,16 +2419,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   Widget _part10(
       BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
-      width: 100.0,
-      height: 100.0,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFEDEDED),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(12.0),
-          bottomRight: Radius.circular(12.0),
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -3249,36 +2542,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                   Icons.add_alert,
                   size: 15.0,
                 ),
-                options: FFButtonOptions(
-                  width: 100.0,
-                  height: 25.0,
-                  padding: EdgeInsets.all(0.0),
-                  iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  color: Color(0xFF12BE24),
-                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                        color: Colors.white,
-                        fontSize: 12.0,
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                      ),
-                  elevation: 3.0,
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 1.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+                options: _opcoesBotao(context, Color(0xFF048508)),
               ),
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
@@ -3318,38 +2582,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                     Icons.cancel_sharp,
                     size: 15.0,
                   ),
-                  options: FFButtonOptions(
-                    width: 100.0,
-                    height: 25.0,
-                    padding: EdgeInsets.all(0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: Color(0xFFAE0303),
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          color: Colors.white,
-                          fontSize: 12.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                    elevation: 3.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  options:
+                      _opcoesBotao(context, FlutterFlowTheme.of(context).error),
                 ),
               ),
             ],
@@ -3362,16 +2596,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   Widget _part11(
       BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
-      width: 100.0,
-      height: 100.0,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFEDEDED),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(12.0),
-          bottomRight: Radius.circular(12.0),
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -3490,38 +2718,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                     Icons.cancel_sharp,
                     size: 15.0,
                   ),
-                  options: FFButtonOptions(
-                    width: 100.0,
-                    height: 25.0,
-                    padding: EdgeInsets.all(0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: Color(0xFFAE0303),
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          color: Colors.white,
-                          fontSize: 12.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                    elevation: 3.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  options:
+                      _opcoesBotao(context, FlutterFlowTheme.of(context).error),
                 ),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
@@ -3564,40 +2762,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.add_alert,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      width: 100.0,
-                      height: 25.0,
-                      padding: EdgeInsets.all(0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFF12BE24),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 3.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(context, Color(0xFF048508)),
                   ),
                 ),
                 Padding(
@@ -3642,40 +2807,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.check,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      width: 100.0,
-                      height: 25.0,
-                      padding: EdgeInsets.all(0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFF1A03E9),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 3.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(context, AppTokens.secondary),
                   ),
                 ),
               ],
@@ -3689,16 +2821,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   Widget _part12(
       BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
-      width: 100.0,
-      height: 100.0,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFEDEDED),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(12.0),
-          bottomRight: Radius.circular(12.0),
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -3820,38 +2946,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                     Icons.add_alert,
                     size: 15.0,
                   ),
-                  options: FFButtonOptions(
-                    width: 100.0,
-                    height: 25.0,
-                    padding: EdgeInsets.all(0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: Color(0xFF12BE24),
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          color: Colors.white,
-                          fontSize: 12.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                    elevation: 3.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  options: _opcoesBotao(context, Color(0xFF048508)),
                 ),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 0.0),
@@ -3895,40 +2990,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.check,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      width: 100.0,
-                      height: 25.0,
-                      padding: EdgeInsets.all(0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFF1A03E9),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 3.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(context, AppTokens.secondary),
                   ),
                 ),
                 FFButtonWidget(
@@ -3967,38 +3029,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                     Icons.cancel_sharp,
                     size: 15.0,
                   ),
-                  options: FFButtonOptions(
-                    width: 100.0,
-                    height: 25.0,
-                    padding: EdgeInsets.all(0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: Color(0xFFAE0303),
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          color: Colors.white,
-                          fontSize: 12.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                    elevation: 3.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  options:
+                      _opcoesBotao(context, FlutterFlowTheme.of(context).error),
                 ),
               ],
             ),
@@ -4011,16 +3043,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   Widget _part13(
       BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
-      width: 100.0,
-      height: 100.0,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFEDEDED),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(12.0),
-          bottomRight: Radius.circular(12.0),
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -4141,40 +3167,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.check_circle_outline_sharp,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      width: 100.0,
-                      height: 25.0,
-                      padding: EdgeInsets.all(0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFFAE0303),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 3.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(
+                        context, FlutterFlowTheme.of(context).error),
                   ),
                 ),
                 Padding(
@@ -4219,40 +3213,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.cancel_rounded,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      width: 100.0,
-                      height: 25.0,
-                      padding: EdgeInsets.all(0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFFE9AB05),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 3.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(context, AppTokens.secondary),
                   ),
                 ),
               ],
@@ -4266,16 +3227,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   Widget _part14(
       BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Container(
-      width: 100.0,
-      height: 100.0,
+      width: double.infinity,
       decoration: BoxDecoration(
-        color: Color(0xFFEDEDED),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(12.0),
-          bottomRight: Radius.circular(12.0),
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
+        color: FlutterFlowTheme.of(context).primaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -4358,40 +3313,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                     Icons.check_circle,
                     size: 15.0,
                   ),
-                  options: FFButtonOptions(
-                    width: 80.0,
-                    height: 25.0,
-                    padding: EdgeInsets.all(0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: Color(0xFF00FF09),
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          color: Colors.white,
-                          fontSize: 12.0,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                    elevation: 3.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                    disabledColor:
-                        FlutterFlowTheme.of(context).primaryBackground,
-                  ),
+                  options: _opcoesBotao(context, Color(0xFF048508)),
                 ),
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
@@ -4432,40 +3354,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.notifications,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      width: 80.0,
-                      height: 25.0,
-                      padding: EdgeInsets.all(0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFF1A03E9),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 4.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(context, AppTokens.secondary),
                   ),
                 ),
                 Padding(
@@ -4506,40 +3395,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                       Icons.cancel_rounded,
                       size: 15.0,
                     ),
-                    options: FFButtonOptions(
-                      width: 80.0,
-                      height: 25.0,
-                      padding: EdgeInsets.all(0.0),
-                      iconPadding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                      color: Color(0xFFAE0303),
-                      textStyle:
-                          FlutterFlowTheme.of(context).titleSmall.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .titleSmall
-                                      .fontStyle,
-                                ),
-                                color: Colors.white,
-                                fontSize: 12.0,
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .fontStyle,
-                              ),
-                      elevation: 3.0,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
+                    options: _opcoesBotao(
+                        context, FlutterFlowTheme.of(context).error),
                   ),
                 ),
               ],
@@ -4728,17 +3585,12 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                   padding:
                       EdgeInsetsDirectional.fromSTEB(10.0, 10.0, 10.0, 10.0),
                   child: Container(
-                    width: 100.0,
-                    height: 100.0,
+                    width: double.infinity,
                     decoration: BoxDecoration(
                       color: FlutterFlowTheme.of(context).secondaryBackground,
                       boxShadow: AppTokens.softShadow(context),
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(10.0),
-                        bottomRight: Radius.circular(10.0),
-                        topLeft: Radius.circular(10.0),
-                        topRight: Radius.circular(10.0),
-                      ),
+                      borderRadius:
+                          BorderRadius.circular(AppTokens.radiusSmall),
                     ),
                     child: Padding(
                       padding:
