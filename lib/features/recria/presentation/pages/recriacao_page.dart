@@ -204,59 +204,43 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
     final isNovilhasSelected = _choiceChipsValue == 'Novilhas';
     final isAscending = _ordenacaoQuery;
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 0.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.filter_list_rounded,
-                  color: AppTokens.secondary, size: 22.0),
-              const SizedBox(width: 8.0),
-              Flexible(
-                child: Text(
-                  'Filtragem:',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: FlutterFlowTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.readexPro(),
-                        fontSize: 18.0,
-                        letterSpacing: 0.0,
-                      ),
-                ),
-              ),
-            ],
+    // Uma única faixa: chips rolando na horizontal + ordenação fixa à direita.
+    //
+    // Antes eram DUAS faixas empilhadas — um cabeçalho "Filtragem:" (rótulo
+    // redundante: os chips já se explicam) e, abaixo, os chips em `Wrap`, que
+    // quebravam em 2-3 linhas em telas estreitas. Somando cabeçalho, quebras e
+    // paddings de 15px, os filtros comiam ~160px antes da lista começar.
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 12.0, 4.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Expanded(
+            child: Padding(
+              padding:
+                  const EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
+              child: _buildChoiceChips(context),
+            ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(15.0, 5.0, 15.0, 5.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(
-                      15.0, 5.0, 15.0, 15.0),
-                  child: _buildChoiceChips(context),
-                ),
-              ),
-              if (isNovilhasSelected) _buildSortButton(context, isAscending),
-            ],
-          ),
-        ),
-      ],
+          if (isNovilhasSelected) ...[
+            const SizedBox(width: 8.0),
+            _buildSortButton(context, isAscending),
+          ],
+        ],
+      ),
     );
   }
 
   Widget _buildChoiceChips(BuildContext context) {
     return FlutterFlowChoiceChips(
+      // "Todos" primeiro: é o padrão inicial e o "limpar filtro" — quem quer
+      // voltar à lista completa acha sem precisar rolar até o fim.
       options: const [
+        ChipData('Todos'),
         ChipData('Bezerros'),
         ChipData('Bezerras'),
         ChipData('Touros'),
         ChipData('Novilhas'),
-        ChipData('Todos'),
       ],
       onChanged: (val) =>
           safeSetState(() => _choiceChipsValue = val?.firstOrNull),
@@ -269,11 +253,11 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
             ),
         iconColor: Colors.white,
         iconSize: 18.0,
-        elevation: 4.0,
-        borderRadius: BorderRadius.circular(16.0),
+        elevation: 0.0,
+        borderRadius: BorderRadius.circular(20.0),
       ),
       unselectedChipStyle: ChipStyle(
-        backgroundColor: FlutterFlowTheme.of(context).alternate,
+        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
               font: GoogleFonts.readexPro(),
               color: FlutterFlowTheme.of(context).secondaryText,
@@ -282,16 +266,19 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
         iconColor: FlutterFlowTheme.of(context).secondaryText,
         iconSize: 18.0,
         elevation: 0.0,
-        borderRadius: BorderRadius.circular(16.0),
+        borderRadius: BorderRadius.circular(20.0),
       ),
-      chipSpacing: 12.0,
-      rowSpacing: 12.0,
+      chipSpacing: 8.0,
+      rowSpacing: 8.0,
       multiselect: false,
       initialized: _choiceChipsValue != null,
-      alignment: WrapAlignment.center,
+      alignment: WrapAlignment.start,
       controller: _choiceChipsValueController ??=
           FormFieldController<List<String>>(['Todos']),
-      wrapped: true,
+      // Rolagem horizontal em vez de `Wrap`: mantém os filtros em UMA linha
+      // (~40px) independente de quantas opções existam, em vez de quebrar em
+      // 2-3 linhas nas telas estreitas.
+      wrapped: false,
     );
   }
 
