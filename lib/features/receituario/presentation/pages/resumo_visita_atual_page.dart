@@ -1,6 +1,7 @@
 // ignore_for_file: dead_code
 
 import '/data/backend.dart';
+import '/data/objectbox/index.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
@@ -155,33 +156,16 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
       ),
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(10.0, 10.0, 10.0, 0.0),
-        child: StreamBuilder<List<RecomendacoesRecord>>(
-          stream: queryRecomendacoesRecord(
-            parent: widget.uidResumoVisita,
-            queryBuilder: (recomendacoesRecord) => recomendacoesRecord
-                .where(
-                  'uidResumoDaVisita',
-                  isEqualTo: widget.uidResumoVisita,
-                )
-                .orderBy('tituloRecomendacao'),
-          ),
-          builder: (context, snapshot) {
-            // Customize what your widget looks like when it's loading.
-            if (!snapshot.hasData) {
-              return Center(
-                child: SizedBox(
-                  width: 50.0,
-                  height: 50.0,
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      Color(0xFFF75E38),
-                    ),
-                  ),
-                ),
-              );
-            }
-            List<RecomendacoesRecord> listViewRecomendacoesRecordList =
-                snapshot.data!;
+        // Recomendações do ObjectBox, ligadas pelo CAMPO uidResumoDaVisita.
+        child: Builder(
+          builder: (context) {
+            final listViewRecomendacoesRecordList = RecomendacaoRepository()
+                .getAll()
+                .where((e) =>
+                    !e.isDeleted &&
+                    e.uidResumoDaVisitaPath ==
+                        'resumo_da_visita/${widget.uidResumoVisita?.id}')
+                .toList();
 
             return ListView.builder(
               padding: EdgeInsets.zero,
@@ -516,15 +500,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
           if ((resumoVisitaAtualResumoDaVisitaRecord.assinaturaProdutor !=
                   '') ||
               (resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico != '')) {
-            await widget.uidResumoVisita!.update(createResumoDaVisitaRecordData(
-              dtAssinatura: getCurrentTimestamp,
-              obsGeralVisita: _obsGeralTextController.text,
-              dtAssinaturaFormatado: dateTimeFormat(
-                "dd/MM/yyyy",
-                getCurrentTimestamp,
-                locale: FFLocalizations.of(context).languageCode,
-              ),
-            ));
+            await _assinarOfflineFirst();
             await showDialog(
               context: context,
               builder: (alertDialogContext) {
@@ -647,15 +623,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
             ).then((s) => s.firstOrNull);
             _shouldSetState = true;
 
-            await widget.uidResumoVisita!.update(createResumoDaVisitaRecordData(
-              dtAssinatura: getCurrentTimestamp,
-              dtAssinaturaFormatado: dateTimeFormat(
-                "dd/MM/yyyy",
-                getCurrentTimestamp,
-                locale: FFLocalizations.of(context).languageCode,
-              ),
-              obsGeralVisita: _obsGeralTextController.text,
-            ));
+            await _assinarOfflineFirst();
             await showDialog(
               context: context,
               builder: (alertDialogContext) {
@@ -707,7 +675,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
               _outUidPropriedade2?.endereco,
               _outUidPersonTecnico2?.displayName,
               _outUidPersonTecnico2?.phoneNumber,
-              resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado,
+              resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado ?? '',
               _outUidPersonTecnico2?.email,
               _outUidPersonTecnico2?.empresa,
             );
@@ -796,7 +764,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                     _outUidPropriedade?.endereco,
                     _outUidPersonTecnico?.displayName,
                     _outUidPersonTecnico?.phoneNumber,
-                    resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado,
+                    resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado ??
+                        '',
                     _outUidPersonTecnico?.email,
                     _outUidPersonTecnico?.empresa,
                   );
@@ -845,30 +814,52 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     );
   }
 
+  /// Registra a assinatura no ObjectBox e deixa o sync subir. Antes era um
+  /// `update` direto no Firestore, que offline não concluía.
+  Future<void> _assinarOfflineFirst() async {
+    final repo = ResumoVisitaRepository();
+    final resumo = repo
+        .getByPropriedade(widget.uidPropriedade?.path ?? '')
+        .where((e) => e.firestoreId == widget.uidResumoVisita?.id)
+        .firstOrNull;
+    if (resumo == null) return;
+
+    resumo.dtAssinatura = DateTime.now();
+    resumo.dtAssinaturaFormatado = dateTimeFormat(
+      "dd/MM/yyyy",
+      getCurrentTimestamp,
+      locale: FFLocalizations.of(context).languageCode,
+    );
+    resumo.obsGeralVisita = _obsGeralTextController.text;
+    await repo.save(resumo);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<ResumoDaVisitaRecord>(
-      stream: ResumoDaVisitaRecord.getDocument(widget.uidResumoVisita!),
+    // Fonte única ObjectBox (offline-first): abrir e assinar o receituário
+    // deixa de exigir rede.
+    return StreamBuilder<List<ResumoVisitaEntity>>(
+      stream: ResumoVisitaRepository()
+          .watchByPropriedade(widget.uidPropriedade?.path ?? ''),
       builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
+        final resumoVisitaAtualResumoDaVisitaRecord = (snapshot.data ??
+                ResumoVisitaRepository()
+                    .getByPropriedade(widget.uidPropriedade?.path ?? ''))
+            .where((e) =>
+                !e.isDeleted && e.firestoreId == widget.uidResumoVisita?.id)
+            .firstOrNull;
+
+        if (resumoVisitaAtualResumoDaVisitaRecord == null) {
           return Scaffold(
             backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
             body: Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Color(0xFFF75E38),
-                  ),
-                ),
+              child: Text(
+                'Receituário não encontrado.',
+                style: FlutterFlowTheme.of(context).bodyMedium,
               ),
             ),
           );
         }
-
-        final resumoVisitaAtualResumoDaVisitaRecord = snapshot.data!;
 
         return GestureDetector(
           onTap: () {
@@ -973,7 +964,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                                     0.0, 4.0, 0.0, 12.0),
                                 child: Text(
                                   resumoVisitaAtualResumoDaVisitaRecord
-                                      .dtAssinaturaFormatado,
+                                          .dtAssinaturaFormatado ??
+                                      '',
                                   style: FlutterFlowTheme.of(context)
                                       .labelMedium
                                       .override(
@@ -1028,7 +1020,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                                   borderRadius: BorderRadius.circular(8.0),
                                   child: Image.network(
                                     resumoVisitaAtualResumoDaVisitaRecord
-                                        .assinaturaTecnico,
+                                            .assinaturaTecnico ??
+                                        '',
                                     width: 250.0,
                                     height: 80.0,
                                     fit: BoxFit.contain,
@@ -1073,7 +1066,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                                   borderRadius: BorderRadius.circular(8.0),
                                   child: Image.network(
                                     resumoVisitaAtualResumoDaVisitaRecord
-                                        .assinaturaProdutor,
+                                            .assinaturaProdutor ??
+                                        '',
                                     width: 250.0,
                                     height: 80.0,
                                     fit: BoxFit.contain,
@@ -1116,7 +1110,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                                     0.0, 4.0, 0.0, 12.0),
                                 child: Text(
                                   resumoVisitaAtualResumoDaVisitaRecord
-                                      .obsGeralVisita,
+                                          .obsGeralVisita ??
+                                      '',
                                   style: FlutterFlowTheme.of(context)
                                       .labelMedium
                                       .override(

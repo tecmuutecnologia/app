@@ -1,6 +1,8 @@
 // ignore_for_file: unnecessary_null_comparison
 
 import '/data/backend.dart';
+import '/data/objectbox/index.dart';
+import '/features/animais/application/animal_struct_adapter.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
@@ -32,7 +34,6 @@ class _ListaAnimaisTratamentosWidgetState
   TextEditingController? _tratamentoRecomendacaoTextController;
   final String? Function(BuildContext, String?)?
       _tratamentoRecomendacaoTextControllerValidator = null;
-  RecomendacoesRecord? _outUidRecomendacaoObs;
 
   @override
   void initState() {
@@ -66,6 +67,46 @@ class _ListaAnimaisTratamentosWidgetState
     _tratamentoRecomendacaoTextController?.dispose();
 
     super.dispose();
+  }
+
+  /// Animal do tratamento, resolvido do ObjectBox pelo caminho guardado.
+  /// Antes cada item da lista abria um StreamBuilder do Firestore — uma
+  /// leitura de rede por linha, que offline nunca resolvia.
+  AnimaisProdutoresStruct? _animalDoTratamento(TratamentoEntity t) {
+    final caminho = t.uidAnimalPath;
+    if (caminho == null || caminho.isEmpty) return null;
+    final entity = AnimalRepository().getByFirestoreId(caminho.split('/').last);
+    return entity == null ? null : animalEntityToStruct(entity);
+  }
+
+  /// Caminho do resumo da visita — é por ele que tratamentos e recomendações
+  /// se ligam à visita agora (campo, não hierarquia).
+  String? get _resumoPath => widget.parameter2 == null
+      ? null
+      : 'resumo_da_visita/${widget.parameter2!.id}';
+
+  /// Tratamentos desta visita e deste tipo de ação, ordenados como a query
+  /// original: data de inseminação, depois brinco, depois nome.
+  List<TratamentoEntity> _tratamentosDaVisita() {
+    final lista = TratamentoRepository()
+        .getAll()
+        .where((e) =>
+            !e.isDeleted &&
+            e.uidResumoDaVisitaPath == _resumoPath &&
+            e.tipoAcao == widget.parameter1)
+        .toList();
+    lista.sort((a, b) {
+      final da = a.compararDtUltimaInseminacao;
+      final db = b.compararDtUltimaInseminacao;
+      if (da != null && db != null) {
+        final c = da.compareTo(db);
+        if (c != 0) return c;
+      }
+      final c = a.brincoAnimalOrder.compareTo(b.brincoAnimalOrder);
+      if (c != 0) return c;
+      return (a.nomeAnimal ?? '').compareTo(b.nomeAnimal ?? '');
+    });
+    return lista;
   }
 
   @override
@@ -106,39 +147,11 @@ class _ListaAnimaisTratamentosWidgetState
               (widget.parameter1 == 'Pré Parto'))
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
-              child: StreamBuilder<List<TratamentosRecord>>(
-                stream: queryTratamentosRecord(
-                  parent: widget.parameter2,
-                  queryBuilder: (tratamentosRecord) => tratamentosRecord
-                      .where(
-                        'tipoAcao',
-                        isEqualTo: widget.parameter1,
-                      )
-                      .where(
-                        'uidResumoDaVisita',
-                        isEqualTo: widget.parameter2,
-                      )
-                      .orderBy('compararDtUltimaInseminacao')
-                      .orderBy('brincoAnimalOrder')
-                      .orderBy('nomeAnimal'),
-                ),
-                builder: (context, snapshot) {
-                  // Customize what your widget looks like when it's loading.
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: SizedBox(
-                        width: 50.0,
-                        height: 50.0,
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Color(0xFFF75E38),
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-                  List<TratamentosRecord> listViewTratamentosRecordList =
-                      snapshot.data!;
+              // Tratamentos do ObjectBox, ligados pelo CAMPO uidResumoDaVisita
+              // (viraram subcoleção da propriedade, não do resumo).
+              child: Builder(
+                builder: (context) {
+                  final listViewTratamentosRecordList = _tratamentosDaVisita();
 
                   return ListView.builder(
                     padding: EdgeInsets.zero,
@@ -155,28 +168,14 @@ class _ListaAnimaisTratamentosWidgetState
                           Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 0.0, 10.0, 0.0),
-                            child: StreamBuilder<AnimaisProdutoresRecord>(
-                              stream: AnimaisProdutoresRecord.getDocument(
-                                  listViewTratamentosRecord.uidAnimal!),
-                              builder: (context, snapshot) {
-                                // Customize what your widget looks like when it's loading.
-                                if (!snapshot.hasData) {
-                                  return Center(
-                                    child: SizedBox(
-                                      width: 50.0,
-                                      height: 50.0,
-                                      child: CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                          Color(0xFFF75E38),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }
-
+                            child: Builder(
+                              builder: (context) {
                                 final iconAnimaisProdutoresRecord =
-                                    snapshot.data!;
+                                    _animalDoTratamento(
+                                        listViewTratamentosRecord);
+                                if (iconAnimaisProdutoresRecord == null) {
+                                  return const SizedBox.shrink();
+                                }
 
                                 return Icon(
                                   Icons.circle_sharp,
@@ -198,27 +197,14 @@ class _ListaAnimaisTratamentosWidgetState
                               },
                             ),
                           ),
-                          StreamBuilder<AnimaisProdutoresRecord>(
-                            stream: AnimaisProdutoresRecord.getDocument(
-                                listViewTratamentosRecord.uidAnimal!),
-                            builder: (context, snapshot) {
-                              // Customize what your widget looks like when it's loading.
-                              if (!snapshot.hasData) {
-                                return Center(
-                                  child: SizedBox(
-                                    width: 50.0,
-                                    height: 50.0,
-                                    child: CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        Color(0xFFF75E38),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }
-
+                          Builder(
+                            builder: (context) {
                               final textAnimaisProdutoresRecord =
-                                  snapshot.data!;
+                                  _animalDoTratamento(
+                                      listViewTratamentosRecord);
+                              if (textAnimaisProdutoresRecord == null) {
+                                return const SizedBox.shrink();
+                              }
 
                               return Text(
                                 () {
@@ -267,28 +253,14 @@ class _ListaAnimaisTratamentosWidgetState
                           Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 0.0, 10.0, 0.0),
-                            child: StreamBuilder<AnimaisProdutoresRecord>(
-                              stream: AnimaisProdutoresRecord.getDocument(
-                                  listViewTratamentosRecord.uidAnimal!),
-                              builder: (context, snapshot) {
-                                // Customize what your widget looks like when it's loading.
-                                if (!snapshot.hasData) {
-                                  return Center(
-                                    child: SizedBox(
-                                      width: 50.0,
-                                      height: 50.0,
-                                      child: CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                          Color(0xFFF75E38),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }
-
+                            child: Builder(
+                              builder: (context) {
                                 final textAnimaisProdutoresRecord =
-                                    snapshot.data!;
+                                    _animalDoTratamento(
+                                        listViewTratamentosRecord);
+                                if (textAnimaisProdutoresRecord == null) {
+                                  return const SizedBox.shrink();
+                                }
 
                                 return Text(
                                   () {
@@ -337,38 +309,11 @@ class _ListaAnimaisTratamentosWidgetState
               (widget.parameter1 != 'Pré Parto'))
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
-              child: StreamBuilder<List<TratamentosRecord>>(
-                stream: queryTratamentosRecord(
-                  parent: widget.parameter2,
-                  queryBuilder: (tratamentosRecord) => tratamentosRecord
-                      .where(
-                        'tipoAcao',
-                        isEqualTo: widget.parameter1,
-                      )
-                      .where(
-                        'uidResumoDaVisita',
-                        isEqualTo: widget.parameter2,
-                      )
-                      .orderBy('brincoAnimalOrder')
-                      .orderBy('nomeAnimal'),
-                ),
-                builder: (context, snapshot) {
-                  // Customize what your widget looks like when it's loading.
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: SizedBox(
-                        width: 50.0,
-                        height: 50.0,
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Color(0xFFF75E38),
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-                  List<TratamentosRecord> listViewTratamentosRecordList =
-                      snapshot.data!;
+              // Tratamentos do ObjectBox, ligados pelo CAMPO uidResumoDaVisita
+              // (viraram subcoleção da propriedade, não do resumo).
+              child: Builder(
+                builder: (context) {
+                  final listViewTratamentosRecordList = _tratamentosDaVisita();
 
                   return ListView.builder(
                     padding: EdgeInsets.zero,
@@ -385,28 +330,14 @@ class _ListaAnimaisTratamentosWidgetState
                           Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 0.0, 10.0, 0.0),
-                            child: StreamBuilder<AnimaisProdutoresRecord>(
-                              stream: AnimaisProdutoresRecord.getDocument(
-                                  listViewTratamentosRecord.uidAnimal!),
-                              builder: (context, snapshot) {
-                                // Customize what your widget looks like when it's loading.
-                                if (!snapshot.hasData) {
-                                  return Center(
-                                    child: SizedBox(
-                                      width: 50.0,
-                                      height: 50.0,
-                                      child: CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                          Color(0xFFF75E38),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }
-
+                            child: Builder(
+                              builder: (context) {
                                 final iconAnimaisProdutoresRecord =
-                                    snapshot.data!;
+                                    _animalDoTratamento(
+                                        listViewTratamentosRecord);
+                                if (iconAnimaisProdutoresRecord == null) {
+                                  return const SizedBox.shrink();
+                                }
 
                                 return Icon(
                                   Icons.circle_sharp,
@@ -428,27 +359,14 @@ class _ListaAnimaisTratamentosWidgetState
                               },
                             ),
                           ),
-                          StreamBuilder<AnimaisProdutoresRecord>(
-                            stream: AnimaisProdutoresRecord.getDocument(
-                                listViewTratamentosRecord.uidAnimal!),
-                            builder: (context, snapshot) {
-                              // Customize what your widget looks like when it's loading.
-                              if (!snapshot.hasData) {
-                                return Center(
-                                  child: SizedBox(
-                                    width: 50.0,
-                                    height: 50.0,
-                                    child: CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        Color(0xFFF75E38),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }
-
+                          Builder(
+                            builder: (context) {
                               final textAnimaisProdutoresRecord =
-                                  snapshot.data!;
+                                  _animalDoTratamento(
+                                      listViewTratamentosRecord);
+                              if (textAnimaisProdutoresRecord == null) {
+                                return const SizedBox.shrink();
+                              }
 
                               return Text(
                                 () {
@@ -497,28 +415,14 @@ class _ListaAnimaisTratamentosWidgetState
                           Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 0.0, 10.0, 0.0),
-                            child: StreamBuilder<AnimaisProdutoresRecord>(
-                              stream: AnimaisProdutoresRecord.getDocument(
-                                  listViewTratamentosRecord.uidAnimal!),
-                              builder: (context, snapshot) {
-                                // Customize what your widget looks like when it's loading.
-                                if (!snapshot.hasData) {
-                                  return Center(
-                                    child: SizedBox(
-                                      width: 50.0,
-                                      height: 50.0,
-                                      child: CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                          Color(0xFFF75E38),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }
-
+                            child: Builder(
+                              builder: (context) {
                                 final textAnimaisProdutoresRecord =
-                                    snapshot.data!;
+                                    _animalDoTratamento(
+                                        listViewTratamentosRecord);
+                                if (textAnimaisProdutoresRecord == null) {
+                                  return const SizedBox.shrink();
+                                }
 
                                 return Text(
                                   () {
@@ -577,22 +481,22 @@ class _ListaAnimaisTratamentosWidgetState
                       '_tratamentoRecomendacaoTextController',
                       Duration(milliseconds: 2000),
                       () async {
-                        _outUidRecomendacaoObs =
-                            await queryRecomendacoesRecordOnce(
-                          parent: widget.parameter2,
-                          queryBuilder: (recomendacoesRecord) =>
-                              recomendacoesRecord.where(
-                            'tituloRecomendacao',
-                            isEqualTo: widget.parameter1,
-                          ),
-                          singleRecord: true,
-                        ).then((s) => s.firstOrNull);
-
-                        await _outUidRecomendacaoObs!.reference
-                            .update(createRecomendacoesRecordData(
-                          descricaoRecomendacao:
-                              _tratamentoRecomendacaoTextController.text,
-                        ));
+                        // Recomendação atualizada no ObjectBox (offline-first).
+                        // Antes era uma query + update no Firestore, com `!`
+                        // sobre um resultado que podia ser null.
+                        final repo = RecomendacaoRepository();
+                        final rec = repo
+                            .getAll()
+                            .where((e) =>
+                                !e.isDeleted &&
+                                e.uidResumoDaVisitaPath == _resumoPath &&
+                                e.tituloRecomendacao == widget.parameter1)
+                            .firstOrNull;
+                        if (rec != null) {
+                          rec.descricaoRecomendacao =
+                              _tratamentoRecomendacaoTextController.text;
+                          await repo.save(rec);
+                        }
 
                         safeSetState(() {});
                       },

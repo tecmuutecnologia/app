@@ -1,4 +1,5 @@
 import '/data/backend.dart';
+import '/data/objectbox/index.dart';
 import '/data/firebase_storage/storage.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
@@ -95,10 +96,17 @@ class _AssinaturaProdutorWidgetState extends State<AssinaturaProdutorWidget> {
                 }
 
                 if (_uploadedSignatureUrl != '') {
-                  await widget.uidResumoVisita!
-                      .update(createResumoDaVisitaRecordData(
-                    assinaturaProdutor: _uploadedSignatureUrl,
-                  ));
+                  // Offline-first: grava a assinatura no ObjectBox e deixa
+                  // o sync subir. Antes era um update direto no Firestore.
+                  final repo = ResumoVisitaRepository();
+                  final resumo = repo
+                      .getAll()
+                      .where((e) => e.firestoreId == widget.uidResumoVisita?.id)
+                      .firstOrNull;
+                  if (resumo != null) {
+                    resumo.assinaturaProdutor = _uploadedSignatureUrl;
+                    await repo.save(resumo);
+                  }
                   Navigator.pop(context);
                   return;
                 } else {

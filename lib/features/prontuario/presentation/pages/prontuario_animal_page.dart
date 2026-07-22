@@ -15,7 +15,6 @@ import '/features/prontuario/presentation/pages/pron_acoes_page.dart';
 import '/features/prontuario/presentation/pages/pron_cios_page.dart';
 import '/features/prontuario/presentation/pages/pron_diag_gestacao_page.dart';
 import '/features/prontuario/presentation/pages/pron_inseminacoes_page.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -53,7 +52,6 @@ class ProntuarioAnimalPage extends StatefulWidget {
 class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
   InstantTimer? _instantTimer;
   bool? _respostaNet = true;
-  TratamentosRecord? _deleteAcaoUidTratamentos;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -1290,16 +1288,22 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               ) ??
               false;
           if (confirmDialogResponse) {
-            _deleteAcaoUidTratamentos = await queryTratamentosRecordOnce(
-              queryBuilder: (tratamentosRecord) => tratamentosRecord.where(
-                'uidAcaoLancada',
-                isEqualTo: item.reference,
-              ),
-              singleRecord: true,
-            ).then((s) => s.firstOrNull);
+            // Exclusão offline-first. A busca anterior era um
+            // `queryTratamentosRecordOnce` SEM parent — ou seja, na coleção
+            // raiz `tratamentos`, que não existe — seguida de
+            // `_deleteAcaoUidTratamentos!.reference.delete()`. O `!` sobre um
+            // resultado sempre null fazia a exclusão lançar exceção.
+            final tratamentoRepo = TratamentoRepository();
+            for (final t in tratamentoRepo.getAll().where((e) =>
+                !e.isDeleted && e.uidAcaoLancadaPath == item.reference.path)) {
+              await tratamentoRepo.softDelete(t);
+            }
+            final acaoRepo = AcaoRepository();
+            final acaoLocal = acaoRepo.getByFirestoreId(item.reference.id);
+            if (acaoLocal != null) {
+              await acaoRepo.softDelete(acaoLocal);
+            }
             _shouldSetState = true;
-            await _deleteAcaoUidTratamentos!.reference.delete();
-            await item.reference.delete();
             if (_shouldSetState) safeSetState(() {});
             return;
           } else {

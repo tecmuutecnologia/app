@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'objectbox_service.dart';
+import 'repositories/propriedade_repository.dart';
 import 'entities/index.dart';
 import '../../core/sync/conflict_resolver.dart';
 import '../../objectbox.g.dart';
@@ -294,20 +295,26 @@ class RemoteSyncListenersService {
   // LISTENERS DE TRATAMENTOS
   // =========================================================================
 
-  /// Inicia listener para mudanças de tratamentos
-  void listenToTratamentosChanges(String animalParentPath) {
-    final listenerId = 'tratamentos_$animalParentPath';
+  /// Inicia listener para mudanças de tratamentos de UMA propriedade.
+  ///
+  /// Tratamentos são subcoleção da PROPRIEDADE. Antes este listener recebia o
+  /// caminho do TÉCNICO (o parâmetro chamava-se `animalParentPath`, mas
+  /// `startAllListeners` passava o técnico), ou seja escutava
+  /// `tecnico/{id}/tratamentos` — coleção que nunca existiu. Nunca disparava;
+  /// se disparasse, gravaria `parentPath` errado.
+  void listenToTratamentosChanges(String propriedadePath) {
+    final listenerId = 'tratamentos_$propriedadePath';
 
     if (_listeners.containsKey(listenerId)) {
       return;
     }
 
-    final ref = _firestore.doc(animalParentPath);
+    final ref = _firestore.doc(propriedadePath);
 
     _listeners[listenerId] = ref.collection('tratamentos').snapshots().listen(
       (snapshot) {
         for (final change in snapshot.docChanges) {
-          _processTratamentoChange(change, animalParentPath);
+          _processTratamentoChange(change, propriedadePath);
         }
       },
       onError: (error) {
@@ -315,7 +322,7 @@ class RemoteSyncListenersService {
       },
     );
 
-    debugPrint('👂 Listener iniciado para tratamentos em $animalParentPath');
+    debugPrint('👂 Listener iniciado para tratamentos em $propriedadePath');
   }
 
   void _processTratamentoChange(DocumentChange change, String parentPath) {
@@ -444,7 +451,12 @@ class RemoteSyncListenersService {
     if (tecnicoPath.isEmpty) return;
     listenToAnimalsChanges(tecnicoPath);
     listenToAcoesChanges(tecnicoPath);
-    listenToTratamentosChanges(tecnicoPath);
+    // Animais e ações ficam sob o técnico; tratamentos, sob cada propriedade.
+    for (final prop in PropriedadeRepository().getAll()) {
+      if (prop.firestoreId == null || prop.parentPath == null) continue;
+      listenToTratamentosChanges(
+          '${prop.parentPath}/propriedades/${prop.firestoreId}');
+    }
     debugPrint('👂 Listeners remotos iniciados para $tecnicoPath');
   }
 

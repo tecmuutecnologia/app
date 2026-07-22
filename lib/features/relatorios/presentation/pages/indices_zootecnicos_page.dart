@@ -1,4 +1,5 @@
 import '/data/backend.dart';
+import '/data/objectbox/index.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/core/ui/flutter_flow_charts.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
@@ -1421,36 +1422,18 @@ class _IndicesZootecnicosPageState extends State<IndicesZootecnicosPage> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                StreamBuilder<List<FinanceiroRecord>>(
-                  stream: queryFinanceiroRecord(
-                    parent: widget.uidPropriedade,
-                    queryBuilder: (financeiroRecord) => financeiroRecord
-                        .where(
-                          'uidPropriedade',
-                          isEqualTo: widget.uidPropriedade,
-                        )
-                        .orderBy('dtRelatorio', descending: true),
-                    singleRecord: true,
-                  ),
+                StreamBuilder<List<FinanceiroEntity>>(
+                  stream: FinanceiroRepository()
+                      .watchByParentPath(widget.uidPropriedade?.path ?? ''),
                   builder: (context, snapshot) {
-                    // Customize what your widget looks like when it's loading.
-                    if (!snapshot.hasData) {
-                      return Center(
-                        child: SizedBox(
-                          width: 50.0,
-                          height: 50.0,
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Color(0xFFF75E38),
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-                    List<FinanceiroRecord> textFinanceiroRecordList =
-                        snapshot.data!;
-                    // Return an empty Container when the item does not exist.
-                    if (snapshot.data!.isEmpty) {
+                    // Relatório mais recente da propriedade, do ObjectBox.
+                    final textFinanceiroRecordList = (snapshot.data ??
+                            <FinanceiroEntity>[])
+                        .where((e) => !e.isDeleted)
+                        .toList()
+                      ..sort((a, b) =>
+                          (b.dtRelatorio ?? '').compareTo(a.dtRelatorio ?? ''));
+                    if (textFinanceiroRecordList.isEmpty) {
                       return Container();
                     }
                     final textFinanceiroRecord =
@@ -1552,36 +1535,18 @@ class _IndicesZootecnicosPageState extends State<IndicesZootecnicosPage> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                StreamBuilder<List<FinanceiroRecord>>(
-                  stream: queryFinanceiroRecord(
-                    parent: widget.uidPropriedade,
-                    queryBuilder: (financeiroRecord) => financeiroRecord
-                        .where(
-                          'uidPropriedade',
-                          isEqualTo: widget.uidPropriedade,
-                        )
-                        .orderBy('dtRelatorio', descending: true),
-                    singleRecord: true,
-                  ),
+                StreamBuilder<List<FinanceiroEntity>>(
+                  stream: FinanceiroRepository()
+                      .watchByParentPath(widget.uidPropriedade?.path ?? ''),
                   builder: (context, snapshot) {
-                    // Customize what your widget looks like when it's loading.
-                    if (!snapshot.hasData) {
-                      return Center(
-                        child: SizedBox(
-                          width: 50.0,
-                          height: 50.0,
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Color(0xFFF75E38),
-                            ),
-                          ),
-                        ),
-                      );
-                    }
-                    List<FinanceiroRecord> textFinanceiroRecordList =
-                        snapshot.data!;
-                    // Return an empty Container when the item does not exist.
-                    if (snapshot.data!.isEmpty) {
+                    // Relatório mais recente da propriedade, do ObjectBox.
+                    final textFinanceiroRecordList = (snapshot.data ??
+                            <FinanceiroEntity>[])
+                        .where((e) => !e.isDeleted)
+                        .toList()
+                      ..sort((a, b) =>
+                          (b.dtRelatorio ?? '').compareTo(a.dtRelatorio ?? ''));
+                    if (textFinanceiroRecordList.isEmpty) {
                       return Container();
                     }
                     final textFinanceiroRecord =
