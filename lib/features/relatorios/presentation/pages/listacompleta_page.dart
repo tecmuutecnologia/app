@@ -120,6 +120,27 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
 
   /// Card (frente/verso) de um animal na lista completa. Extraído do build
   /// (Fase 4): era ~3600 linhas inline no itemBuilder.
+  /// Lista já filtrada — só os animais que de fato aparecem.
+  ///
+  /// Antes o filtro vivia num `Visibility` DENTRO do card: o `child:` era
+  /// avaliado de qualquer forma, então cada bezerro/touro/sêmen montava a
+  /// árvore inteira do cartão (avatar, selos e ate 14 grupos de botoes) só para
+  /// ser escondido em seguida. Somado ao `shrinkWrap` da lista, que constroi
+  /// TODOS os itens de uma vez, o resultado era a tela travar em rebanhos
+  /// grandes — independente de conexao.
+  List<AnimaisProdutoresStruct> _animaisVisiveis() {
+    final busca = _searchListTextController.text.toLowerCase();
+    return _animaisExistentes.where((item) {
+      if (item.uidTecnicoPropriedade != widget.uidPropriedade) return false;
+      if (!(ehNovilha(item.grupoAnimal) || ehVaca(item.grupoAnimal))) {
+        return false;
+      }
+      if (busca.isEmpty) return true;
+      return item.nomeAnimal.toLowerCase().contains(busca) ||
+          item.brincoAnimal.toString().contains(busca);
+    }).toList();
+  }
+
   /// Campo de busca no mesmo padrao das telas de inseminacoes, diagnostico de
   /// gestacao e prenhas.
   ///
@@ -3105,94 +3126,25 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
           decoration: BoxDecoration(
             color: FlutterFlowTheme.of(context).secondaryBackground,
           ),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            primary: false,
-            scrollDirection: Axis.vertical,
+          child: Column(
             children: [
               _campoBusca(context),
-              if (_searchListTextController.text == '')
-                Container(
-                  width: MediaQuery.sizeOf(context).width * 1.0,
-                  height: MediaQuery.sizeOf(context).height * 0.85,
-                  decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
-                  ),
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    primary: false,
-                    scrollDirection: Axis.vertical,
-                    children: [
-                      Builder(
-                        builder: (context) {
-                          final animaisProdutoresExistentesOffline =
-                              _animaisExistentes.toList();
-
-                          return ListView.builder(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 120.0),
-                            primary: false,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount:
-                                animaisProdutoresExistentesOffline.length,
-                            itemBuilder: (context,
-                                animaisProdutoresExistentesOfflineIndex) {
-                              final animaisProdutoresExistentesOfflineItem =
-                                  animaisProdutoresExistentesOffline[
-                                      animaisProdutoresExistentesOfflineIndex];
-                              return _buildAnimalCard(
-                                  context,
-                                  animaisProdutoresExistentesOfflineItem,
-                                  animaisProdutoresExistentesOfflineIndex);
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+              Expanded(
+                child: Builder(
+                  builder: (context) {
+                    final lista = _animaisVisiveis();
+                    final buscando = _searchListTextController.text.isNotEmpty;
+                    return ListView.builder(
+                      padding: const EdgeInsetsDirectional.fromSTEB(
+                          0.0, 0.0, 0.0, 120.0),
+                      itemCount: lista.length,
+                      itemBuilder: (context, i) => buscando
+                          ? _buildAnimalCardFiltrado(context, lista[i], i)
+                          : _buildAnimalCard(context, lista[i], i),
+                    );
+                  },
                 ),
-              if (_searchListTextController.text != '')
-                Container(
-                  width: MediaQuery.sizeOf(context).width * 1.0,
-                  height: MediaQuery.sizeOf(context).height * 0.85,
-                  decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
-                  ),
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    primary: false,
-                    scrollDirection: Axis.vertical,
-                    children: [
-                      Builder(
-                        builder: (context) {
-                          final animaisProdutoresExistentesOffline =
-                              _animaisExistentes.toList();
-
-                          return ListView.builder(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 120.0),
-                            primary: false,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount:
-                                animaisProdutoresExistentesOffline.length,
-                            itemBuilder: (context,
-                                animaisProdutoresExistentesOfflineIndex) {
-                              final animaisProdutoresExistentesOfflineItem =
-                                  animaisProdutoresExistentesOffline[
-                                      animaisProdutoresExistentesOfflineIndex];
-                              return _buildAnimalCardFiltrado(
-                                  context,
-                                  animaisProdutoresExistentesOfflineItem,
-                                  animaisProdutoresExistentesOfflineIndex);
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
+              ),
             ],
           ),
         ),
