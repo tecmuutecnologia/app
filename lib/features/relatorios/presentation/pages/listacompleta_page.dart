@@ -947,9 +947,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _faixaInfo(context, [
+                Expanded(
+                    child: _faixaInfo(context, [
                   _tileInfo(context, 'Nascimento', item.dtNascimento),
-                ]),
+                ])),
               ],
             ),
           ),
@@ -1079,7 +1080,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _faixaInfo(context, [
+                Expanded(
+                    child: _faixaInfo(context, [
                   _tileInfo(
                       context,
                       'DEL',
@@ -1089,7 +1091,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                               .toString()
                           : ''),
                   _tileInfo(context, 'Último parto', item.dtUltimoParto),
-                ]),
+                ])),
               ],
             ),
           ),
@@ -1217,12 +1219,13 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _faixaInfo(context, [
+              Expanded(
+                  child: _faixaInfo(context, [
                 _tileInfo(context, 'Inseminada', item.dtUltimaInseminacao),
                 _tileInfo(context, 'Pré parto prev.', item.dtPrePartoPrevista),
                 _tileInfo(context, 'Parto previsto', item.dtPartoPrevisto,
                     destaque: true),
-              ]),
+              ])),
             ],
           ),
           Row(
@@ -1334,12 +1337,13 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _faixaInfo(context, [
+              Expanded(
+                  child: _faixaInfo(context, [
                 _tileInfo(context, 'Inseminada', item.dtUltimaInseminacao),
                 _tileInfo(context, 'Pré parto prev.', item.dtPrePartoPrevista),
                 _tileInfo(context, 'Parto previsto', item.dtPartoPrevisto,
                     destaque: true),
-              ]),
+              ])),
             ],
           ),
           Padding(
@@ -1499,12 +1503,13 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _faixaInfo(context, [
+              Expanded(
+                  child: _faixaInfo(context, [
                 _tileInfo(context, 'Inseminada', item.dtUltimaInseminacao),
                 _tileInfo(context, 'Pré parto prev.', item.dtPrePartoPrevista),
                 _tileInfo(context, 'Parto previsto', item.dtPartoPrevisto,
                     destaque: true),
-              ]),
+              ])),
             ],
           ),
           Padding(
@@ -1661,7 +1666,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _faixaInfo(context, [
+              Expanded(
+                  child: _faixaInfo(context, [
                 _tileInfo(context, 'Inseminada', item.dtUltimaInseminacao),
                 Text(
                   'Prev. do Parto: ${item.dtPartoPrevisto}',
@@ -1699,7 +1705,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                             FlutterFlowTheme.of(context).bodyMedium.fontStyle,
                       ),
                 ),
-              ]),
+              ])),
             ],
           ),
           Padding(
@@ -1818,9 +1824,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _faixaInfo(context, [
+              Expanded(
+                  child: _faixaInfo(context, [
                 _tileInfo(context, 'Inseminada', item.dtUltimaInseminacao),
-              ]),
+              ])),
             ],
           ),
           Padding(
@@ -1980,9 +1987,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _faixaInfo(context, [
+                Expanded(
+                    child: _faixaInfo(context, [
                   _tileInfo(context, 'Nascimento', item.dtNascimento),
-                ]),
+                ])),
               ],
             ),
           ),
@@ -2112,7 +2120,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _faixaInfo(context, [
+                Expanded(
+                    child: _faixaInfo(context, [
                   _tileInfo(
                       context,
                       'DEL',
@@ -2122,7 +2131,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                               .toString()
                           : ''),
                   _tileInfo(context, 'Último parto', item.dtUltimoParto),
-                ]),
+                ])),
               ],
             ),
           ),
@@ -2251,12 +2260,13 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _faixaInfo(context, [
+              Expanded(
+                  child: _faixaInfo(context, [
                 _tileInfo(context, 'Inseminada', item.dtUltimaInseminacao),
                 _tileInfo(context, 'Pré parto prev.', item.dtPrePartoPrevista),
                 _tileInfo(context, 'Parto previsto', item.dtPartoPrevisto,
                     destaque: true),
-              ]),
+              ])),
             ],
           ),
           Row(
@@ -2369,12 +2379,13 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _faixaInfo(context, [
+              Expanded(
+                  child: _faixaInfo(context, [
                 _tileInfo(context, 'Inseminada', item.dtUltimaInseminacao),
                 _tileInfo(context, 'Pré parto prev.', item.dtPrePartoPrevista),
                 _tileInfo(context, 'Parto previsto', item.dtPartoPrevisto,
                     destaque: true),
-              ]),
+              ])),
             ],
           ),
           Padding(
@@ -2535,12 +2546,13 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _faixaInfo(context, [
+              Expanded(
+                  child: _faixaInfo(context, [
                 _tileInfo(context, 'Inseminada', item.dtUltimaInseminacao),
                 _tileInfo(context, 'Pré parto prev.', item.dtPrePartoPrevista),
                 _tileInfo(context, 'Parto previsto', item.dtPartoPrevisto,
                     destaque: true),
-              ]),
+              ])),
             ],
           ),
           Padding(
@@ -2698,7 +2710,8 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _faixaInfo(context, [
+              Expanded(
+                  child: _faixaInfo(context, [
                 _tileInfo(context, 'Inseminada', item.dtUltimaInseminacao),
                 Text(
                   'Prev. do Parto: ${item.dtPartoPrevisto}',
@@ -2736,7 +2749,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                             FlutterFlowTheme.of(context).bodyMedium.fontStyle,
                       ),
                 ),
-              ]),
+              ])),
             ],
           ),
           Padding(
@@ -2856,9 +2869,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _faixaInfo(context, [
+              Expanded(
+                  child: _faixaInfo(context, [
                 _tileInfo(context, 'Inseminada', item.dtUltimaInseminacao),
-              ]),
+              ])),
             ],
           ),
           Padding(
