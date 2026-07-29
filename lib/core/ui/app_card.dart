@@ -19,8 +19,18 @@ class AppTokens {
   /// Versão translúcida do acento secundário (fundo de avatar/chip).
   static const Color secondaryTint = Color(0x1A7B61FF);
 
-  /// Versão translúcida da marca (fundo de avatar/chip).
+  /// Versão translúcida da marca (fundo de avatar/chip, splash de toque).
   static const Color brandTint = Color(0x1AF75E38);
+
+  /// Marca ainda mais diluída — usada no highlight de toque, que fica na tela
+  /// enquanto o dedo está pressionado e por isso precisa ser mais discreto
+  /// que o splash.
+  static const Color brandTintSoft = Color(0x0DF75E38);
+
+  /// Fio de contorno na cor da marca. A sombra difusa some num LCD sob sol
+  /// forte (o app é usado a campo); a hairline garante que a borda do alvo de
+  /// toque continue legível nessa condição.
+  static const Color brandHairline = Color(0x24F75E38);
 
   /// Raio padrão dos cards/superfícies.
   static const double radius = 16.0;
@@ -37,6 +47,33 @@ class AppTokens {
           color: Color(0x14000000), // ~8% preto
           blurRadius: 16.0,
           offset: Offset(0.0, 6.0),
+        ),
+      ];
+
+  /// Sombra "quente" dos cards de ação: um halo laranja difuso (a marca
+  /// iluminando o card por baixo) apoiado numa sombra de contato neutra e
+  /// curta. Duas camadas — ambiente larga + contato curta — leem como volume
+  /// real; um blur único só borra o card.
+  ///
+  /// A hairline entra aqui como sombra de spread 1px e blur zero, e não como
+  /// `border` do BoxDecoration, de propósito: `border` recuaria o conteúdo em
+  /// 1px de cada lado, e os cards com badge já usam a altura de 120px inteira.
+  /// Como sombra ela é pintada FORA da caixa e não custa layout nenhum.
+  static List<BoxShadow> brandShadow(BuildContext context) => const [
+        BoxShadow(
+          color: brandHairline, // o fio de contorno
+          spreadRadius: 1.0,
+          blurRadius: 0.0,
+        ),
+        BoxShadow(
+          color: Color(0x1FF75E38), // ~12% laranja — o halo
+          blurRadius: 20.0,
+          offset: Offset(0.0, 8.0),
+        ),
+        BoxShadow(
+          color: Color(0x0F000000), // ~6% preto — o contato
+          blurRadius: 4.0,
+          offset: Offset(0.0, 2.0),
         ),
       ];
 }
