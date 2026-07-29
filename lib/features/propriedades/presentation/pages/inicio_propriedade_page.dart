@@ -42,6 +42,26 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
+/// Famílias do menu de ações. A cor de cada card sai daqui, e não é enfeite:
+/// ela divide a grade em zonas que se reconhecem batendo o olho, sem ler os
+/// rótulos. Com dezesseis itens de peso idêntico, o técnico precisa varrer
+/// tudo toda vez; com as zonas, ele vai direto ao bloco certo.
+enum _GrupoMenu {
+  /// Trabalho no rebanho — o miolo do app.
+  rebanho(AppTokens.rebanho),
+
+  /// Papel e número: relatório, receituário, calendário, financeiro.
+  relatorio(AppTokens.relatorio),
+
+  /// Sair desta tela. Fala mais baixo de propósito: é uma saída, não uma ação
+  /// sobre o rebanho, e não deveria disputar atenção com quem tem pendência.
+  navegacao(AppTokens.navegacao);
+
+  const _GrupoMenu(this.cor);
+
+  final Color cor;
+}
+
 class InicioPropriedadePage extends ConsumerStatefulWidget {
   const InicioPropriedadePage({
     super.key,
@@ -450,11 +470,11 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     );
   }
 
-  /// Ícone padrão dos cards do menu de ações: quadrado arredondado com fundo
-  /// roxo claro (acento secundário translúcido) e o ícone em roxo cheio.
-  /// Todos os cards da grade usam este mesmo tile — mesma cor e mesmo tamanho.
-  Widget _iconeMenu(IconData icone) =>
-      MenuIconTile(icon: icone, accent: AppTokens.secondary);
+  /// Tile do ícone, tonalizado com o acento do grupo: fundo na cor do grupo a
+  /// 12% e o ícone na cor cheia. Mesmo tamanho nos 16 cards — o que varia é a
+  /// cor, e ela varia por um motivo.
+  Widget _iconeMenu(IconData icone, _GrupoMenu grupo) =>
+      MenuIconTile(icon: icone, accent: grupo.cor);
 
   /// Tile do ícone com o contador preso no canto, como badge de app.
   ///
@@ -462,11 +482,16 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
   /// do card — branco sobre branco, lendo como borrão e sem vínculo visual
   /// com aquilo que ele conta. Preso ao tile, o número pertence ao ícone.
   ///
+  /// O badge é o único elemento quente da tela, e é de propósito: ele carrega
+  /// a informação mais importante daqui — quantos animais estão esperando o
+  /// técnico. É o laranja da marca finalmente informando em vez de decorar,
+  /// e ele amarra a grade à barra do topo.
+  ///
   /// Contador zero não vira badge: zero significa "não há nada a fazer aqui",
   /// e um badge saturado chamando atenção para o nada é ruído. Some o badge,
   /// sobra só o que realmente pede ação.
-  Widget _tileComContador(IconData icone, int? contador) {
-    final tile = _iconeMenu(icone);
+  Widget _tileComContador(IconData icone, _GrupoMenu grupo, int? contador) {
+    final tile = _iconeMenu(icone, grupo);
     if (contador == null || contador == 0) return tile;
 
     return Stack(
@@ -482,9 +507,9 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
             padding: const EdgeInsets.symmetric(horizontal: 6.0),
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: AppTokens.secondary,
+              color: AppTokens.brandDeep,
               borderRadius: BorderRadius.circular(11.0),
-              // O anel branco descola o badge do tile roxo por baixo.
+              // O anel branco descola o badge do tile por baixo.
               border: Border.all(
                 color: FlutterFlowTheme.of(context).secondaryBackground,
                 width: 2.0,
@@ -528,6 +553,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     required BuildContext context,
     required IconData icone,
     required String rotulo,
+    required _GrupoMenu grupo,
     required VoidCallback onTap,
     int? contador,
   }) {
@@ -551,7 +577,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _tileComContador(icone, contador),
+                _tileComContador(icone, grupo, contador),
                 const SizedBox(height: 10.0),
                 SizedBox(
                   height: 34.0,
@@ -679,6 +705,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       context: context,
       icone: Icons.home,
       rotulo: 'Início',
+      grupo: _GrupoMenu.navegacao,
       onTap: () async {
         context.pushNamed(DashboardTecnicoPage.routeName);
 
@@ -692,6 +719,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       context: context,
       icone: Icons.supervisor_account_rounded,
       rotulo: 'Trocar Produtor',
+      grupo: _GrupoMenu.navegacao,
       onTap: () async {
         context.pushNamed(
           ListaPropriedadePage.routeName,
@@ -713,6 +741,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       context: context,
       icone: Icons.format_list_numbered,
       rotulo: 'Animais',
+      grupo: _GrupoMenu.rebanho,
       // Animais criados offline vão direto ao ObjectBox e sincronizam ao
       // reconectar — a navegação não depende de conexão. (Havia aqui um
       // if/else sobre `_respostaNet!` cujos dois ramos eram idênticos.)
@@ -731,6 +760,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       context: context,
       icone: Icons.vaccines,
       rotulo: 'Inseminações',
+      grupo: _GrupoMenu.rebanho,
       contador: inicioPropriedadeAnimaisProdutoresRecordList
           .where((e) =>
               ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
@@ -754,6 +784,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       context: context,
       icone: Icons.medical_information_outlined,
       rotulo: 'Diagnóstico Gestação',
+      grupo: _GrupoMenu.rebanho,
       contador: inicioPropriedadeAnimaisProdutoresRecordList
           .where((e) => valueOrDefault<bool>(
                 (e.dtUltimaInseminacao != '') &&
@@ -781,6 +812,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       context: context,
       icone: Icons.monitor_heart_outlined,
       rotulo: 'Prenhas',
+      grupo: _GrupoMenu.rebanho,
       contador: inicioPropriedadeAnimaisProdutoresRecordList
           .where(
               (e) => (ehPrenha(e.status)) && (ehVacaOuNovilha(e.grupoAnimal)))
@@ -801,6 +833,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       context: context,
       icone: Icons.alarm_add_sharp,
       rotulo: 'Secas',
+      grupo: _GrupoMenu.rebanho,
       contador: inicioPropriedadeAnimaisProdutoresRecordList
           .where((e) =>
               ((ehVaca(e.grupoAnimal)) && (ehSeca(e.status))) ||
@@ -824,6 +857,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       context: context,
       icone: Icons.medical_services,
       rotulo: 'Exame Ginecológico',
+      grupo: _GrupoMenu.rebanho,
       contador: inicioPropriedadeAnimaisProdutoresRecordList
           .where((e) =>
               (ehVazia(e.status)) &&
@@ -846,6 +880,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       context: context,
       icone: Icons.compare_arrows_sharp,
       rotulo: 'Recria',
+      grupo: _GrupoMenu.rebanho,
       contador: inicioPropriedadeAnimaisProdutoresRecordList
           .where((e) =>
               (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) ||
@@ -871,6 +906,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       context: context,
       icone: Icons.list_alt_sharp,
       rotulo: 'Lista completa',
+      grupo: _GrupoMenu.rebanho,
       contador: inicioPropriedadeAnimaisProdutoresRecordList
           .where((e) =>
               ((ehNovilha(e.grupoAnimal)) || (ehVaca(e.grupoAnimal))) &&
@@ -893,6 +929,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       context: context,
       icone: Icons.summarize,
       rotulo: 'Receituário',
+      grupo: _GrupoMenu.relatorio,
       onTap: () async {
         context.pushNamed(
           ReceituariosListaPage.routeName,
@@ -909,6 +946,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       context: context,
       icone: Icons.summarize_outlined,
       rotulo: 'Resumo Rebanho',
+      grupo: _GrupoMenu.relatorio,
       onTap: () async {
         context.pushNamed(
           ResumoRebanhoPage.routeName,
@@ -925,6 +963,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       context: context,
       icone: Icons.calendar_today,
       rotulo: 'Calendário Sanitário',
+      grupo: _GrupoMenu.relatorio,
       onTap: () async {
         context.pushNamed(
           CalendarioSanitarioPage.routeName,
@@ -939,6 +978,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       context: context,
       icone: Icons.folder_copy_outlined,
       rotulo: 'Índices Zootécnicos',
+      grupo: _GrupoMenu.relatorio,
       onTap: () async {
         context.pushNamed(
           IndicesZootecnicosPage.routeName,
@@ -955,6 +995,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       context: context,
       icone: Icons.attach_money_sharp,
       rotulo: 'Financeiro',
+      grupo: _GrupoMenu.relatorio,
       onTap: () async {
         context.pushNamed(
           RelatorioFinanceiroPage.routeName,
@@ -969,6 +1010,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       context: context,
       icone: FontAwesomeIcons.fileImport,
       rotulo: 'Importar animais',
+      grupo: _GrupoMenu.relatorio,
       onTap: () async {},
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation16']!);
   }
