@@ -431,18 +431,20 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
 
   Widget _cabecalho(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(24.0, 25.0, 0.0, 0.0),
+      padding: EdgeInsetsDirectional.fromSTEB(20.0, 24.0, 20.0, 4.0),
       child: Text(
         'Menu de Ações',
         textAlign: TextAlign.start,
-        style: FlutterFlowTheme.of(context).labelMedium.override(
+        style: FlutterFlowTheme.of(context).titleSmall.override(
               font: GoogleFonts.readexPro(
                 fontWeight: FontWeight.w600,
-                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+                fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
               ),
+              color: FlutterFlowTheme.of(context).primaryText,
+              fontSize: 17.0,
               letterSpacing: 0.0,
               fontWeight: FontWeight.w600,
-              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
             ),
       ),
     );
@@ -454,20 +456,82 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
   Widget _iconeMenu(IconData icone) =>
       MenuIconTile(icon: icone, accent: AppTokens.secondary);
 
-  /// Card padrão do menu de ações. Superfície branca com halo laranja da marca
-  /// e fio de contorno na mesma cor — o laranja é a moldura do app, o roxo do
-  /// ícone é o dado. O toque tem ripple quente recortado no raio do card (a
-  /// grade nasceu do FlutterFlow com todos os feedbacks em `transparent`, ou
-  /// seja, sem retorno visual nenhum ao tocar).
+  /// Tile do ícone com o contador preso no canto, como badge de app.
+  ///
+  /// Antes o número ficava num `Card` branco com `elevation: 4` solto no topo
+  /// do card — branco sobre branco, lendo como borrão e sem vínculo visual
+  /// com aquilo que ele conta. Preso ao tile, o número pertence ao ícone.
+  ///
+  /// Contador zero não vira badge: zero significa "não há nada a fazer aqui",
+  /// e um badge saturado chamando atenção para o nada é ruído. Some o badge,
+  /// sobra só o que realmente pede ação.
+  Widget _tileComContador(IconData icone, int? contador) {
+    final tile = _iconeMenu(icone);
+    if (contador == null || contador == 0) return tile;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        tile,
+        Positioned(
+          top: -6.0,
+          right: -8.0,
+          child: Container(
+            height: 22.0,
+            constraints: const BoxConstraints(minWidth: 22.0),
+            padding: const EdgeInsets.symmetric(horizontal: 6.0),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: AppTokens.secondary,
+              borderRadius: BorderRadius.circular(11.0),
+              // O anel branco descola o badge do tile roxo por baixo.
+              border: Border.all(
+                color: FlutterFlowTheme.of(context).secondaryBackground,
+                width: 2.0,
+              ),
+            ),
+            child: Text(
+              contador.toString(),
+              style: FlutterFlowTheme.of(context).bodySmall.override(
+                    font: GoogleFonts.readexPro(
+                      fontWeight: FontWeight.w700,
+                      fontStyle:
+                          FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                    ),
+                    color: Colors.white,
+                    fontSize: 11.0,
+                    letterSpacing: 0.0,
+                    fontWeight: FontWeight.w700,
+                    fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
+                  ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Card padrão do menu de ações — a estrutura é idêntica nos 16, e é isso
+  /// que faz a grade ler como grade: ícone, rótulo e badge caem sempre na
+  /// mesma altura, independente do rótulo ter uma ou duas linhas.
+  ///
+  /// A caixa do rótulo tem altura fixa e o texto é ancorado no topo dela. Sem
+  /// isso, um rótulo de duas linhas ("Trocar Produtor") empurrava o ícone para
+  /// cima e ele saía do alinhamento dos vizinhos de uma linha — o desalinho
+  /// mais visível da tela antes desta mudança.
+  ///
+  /// Laranja é a moldura (halo + fio do card), roxo é o dado (ícone, badge).
+  /// O toque tem ripple quente recortado no raio: a grade nasceu do FlutterFlow
+  /// com splash/focus/hover/highlight todos em `transparent`, ou seja, sem
+  /// retorno visual nenhum ao tocar.
   Widget _cardMenu({
     required BuildContext context,
+    required IconData icone,
+    required String rotulo,
     required VoidCallback onTap,
-    required Widget child,
-    EdgeInsetsGeometry? padding,
+    int? contador,
   }) {
     return Container(
-      width: MediaQuery.sizeOf(context).width * 0.3,
-      height: 120.0,
       decoration: BoxDecoration(
         color: FlutterFlowTheme.of(context).secondaryBackground,
         borderRadius: BorderRadius.circular(18.0),
@@ -481,29 +545,102 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
           borderRadius: BorderRadius.circular(18.0),
           splashColor: AppTokens.brandTint,
           highlightColor: AppTokens.brandTintSoft,
-          child:
-              padding == null ? child : Padding(padding: padding, child: child),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(6.0, 14.0, 6.0, 10.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _tileComContador(icone, contador),
+                const SizedBox(height: 10.0),
+                SizedBox(
+                  height: 34.0,
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: AutoSizeText(
+                      rotulo,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      minFontSize: 8.0,
+                      // Sem isto o AutoSizeText prefere quebrar DENTRO da
+                      // palavra a diminuir a fonte, e "Inseminações" virava
+                      // "Inseminaçõe / s". Palavra longa agora encolhe.
+                      wrapWords: false,
+                      overflow: TextOverflow.ellipsis,
+                      style: FlutterFlowTheme.of(context).labelMedium.override(
+                            font: GoogleFonts.readexPro(
+                              fontWeight: FontWeight.w600,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontStyle,
+                            ),
+                            color: FlutterFlowTheme.of(context).primaryText,
+                            fontSize: 13.0,
+                            letterSpacing: 0.0,
+                            lineHeight: 1.25,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .labelMedium
+                                .fontStyle,
+                          ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
   }
 
+  /// Os seis parâmetros de rota que praticamente toda tela da propriedade
+  /// recebe. Estavam copiados literalmente em catorze cards.
+  Map<String, String> _paramsPropriedade() => {
+        'uidPropriedade': serializeParam(
+          widget.uidPropriedade,
+          ParamType.DocumentReference,
+        ),
+        'nomePropriedade': serializeParam(
+          widget.nomePropriedade,
+          ParamType.String,
+        ),
+        'uidTecnico': serializeParam(
+          widget.uidTecnico,
+          ParamType.DocumentReference,
+        ),
+        'emailPropriedade': serializeParam(
+          widget.emailPropriedade,
+          ParamType.String,
+        ),
+        'visitaPresencial': serializeParam(
+          widget.visitaPresencial,
+          ParamType.bool,
+        ),
+        'diasDg': serializeParam(
+          widget.diasDg,
+          ParamType.String,
+        ),
+      }.withoutNulls;
+
   Widget _gradeMenu(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
+    final animais = inicioPropriedadeAnimaisProdutoresRecordList;
+
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+      padding: EdgeInsetsDirectional.fromSTEB(16.0, 8.0, 16.0, 16.0),
       child: GridView(
         padding: EdgeInsets.zero,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,
-          crossAxisSpacing: 10.0,
-          mainAxisSpacing: 10.0,
-          // Altura de célula FIXA (não derivada da largura): o conteúdo dos
-          // cards é de tamanho fixo (ícone + badge + label de até 2 linhas),
-          // então uma altura constante cabe em qualquer largura de tela e
-          // elimina o overflow que ocorria com childAspectRatio: 1.0 (célula
-          // quadrada ~112px, menor que o conteúdo ~135px).
-          mainAxisExtent: 156.0,
+          crossAxisSpacing: 12.0,
+          mainAxisSpacing: 12.0,
+          // Altura de célula FIXA (não derivada da largura): o conteúdo do
+          // card tem tamanho conhecido — padding 14 + tile 48 + gap 10 +
+          // caixa do rótulo 34 + padding 10 = 116. A célula acompanha isso de
+          // perto em vez dos 156 antigos, que deixavam 40px de vazio em cada
+          // card e faziam a grade parecer inacabada.
+          mainAxisExtent: 122.0,
         ),
         primary: false,
         shrinkWrap: true,
@@ -512,217 +649,18 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
           _cardInicio(context),
           _cardTrocarProdutor(context),
           _cardAnimais(context),
-          _cardInseminacoes(
-              context, inicioPropriedadeAnimaisProdutoresRecordList),
-          _cardDiagnosticoGestacao(
-              context, inicioPropriedadeAnimaisProdutoresRecordList),
-          _cardPrenhas(context, inicioPropriedadeAnimaisProdutoresRecordList),
-          _cardSecas(context, inicioPropriedadeAnimaisProdutoresRecordList),
-          _cardExameGinecologico(
-              context, inicioPropriedadeAnimaisProdutoresRecordList),
-          _cardRecria(context, inicioPropriedadeAnimaisProdutoresRecordList),
-          _cardListaCompleta(
-              context, inicioPropriedadeAnimaisProdutoresRecordList),
-          // Receituario agora le do ObjectBox (offline-first); a emissao
-          // segue online, mas consultar receituarios ja emitidos nao.
-          _cardMenu(
-            context: context,
-            onTap: () async {
-              context.pushNamed(
-                ReceituariosListaPage.routeName,
-                queryParameters: {
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    widget.visitaPresencial,
-                    ParamType.bool,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                }.withoutNulls,
-              );
-            },
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _iconeMenu(Icons.summarize),
-                const SizedBox(height: 8.0),
-                _rotuloReceituario(context),
-              ],
-            ),
-          ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation11']!),
-          // Resumo do rebanho agora le tudo do ObjectBox e gera o relatorio
-          // offline (sem o logo, que vem de URL).
-          _cardMenu(
-            context: context,
-            onTap: () async {
-              context.pushNamed(
-                ResumoRebanhoPage.routeName,
-                queryParameters: {
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    widget.visitaPresencial,
-                    ParamType.bool,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                }.withoutNulls,
-              );
-            },
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _iconeMenu(Icons.summarize_outlined),
-                const SizedBox(height: 8.0),
-                _rotuloResumoRebanho(context),
-              ],
-            ),
-          ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation12']!),
-          // Calendario sanitario agora le do ObjectBox (offline-first),
-          // entao o card nao depende mais de conexao.
-          _cardMenu(
-            context: context,
-            onTap: () async {
-              context.pushNamed(
-                CalendarioSanitarioPage.routeName,
-                queryParameters: {
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    widget.visitaPresencial,
-                    ParamType.bool,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                }.withoutNulls,
-              );
-            },
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _iconeMenu(Icons.calendar_today),
-                const SizedBox(height: 8.0),
-                _rotuloCalendarioSanitario(context),
-              ],
-            ),
-          ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation13']!),
+          _cardInseminacoes(context, animais),
+          _cardDiagnosticoGestacao(context, animais),
+          _cardPrenhas(context, animais),
+          _cardSecas(context, animais),
+          _cardExameGinecologico(context, animais),
+          _cardRecria(context, animais),
+          _cardListaCompleta(context, animais),
+          _cardReceituario(context),
+          _cardResumoRebanho(context),
+          _cardCalendarioSanitario(context),
           _cardIndicesZootecnicos(context),
-          // Financeiro agora le do ObjectBox (offline-first), entao o card
-          // nao depende mais de conexao.
-          _cardMenu(
-            context: context,
-            onTap: () async {
-              context.pushNamed(
-                RelatorioFinanceiroPage.routeName,
-                queryParameters: {
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    widget.visitaPresencial,
-                    ParamType.bool,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                }.withoutNulls,
-              );
-            },
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _iconeMenu(Icons.attach_money_sharp),
-                const SizedBox(height: 8.0),
-                AutoSizeText(
-                  'Financeiro',
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  minFontSize: 8.0,
-                  overflow: TextOverflow.ellipsis,
-                  style: FlutterFlowTheme.of(context).labelMedium.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FontWeight.w600,
-                          fontStyle: FlutterFlowTheme.of(context)
-                              .labelMedium
-                              .fontStyle,
-                        ),
-                        color: Color(0xFF14181B),
-                        letterSpacing: 0.0,
-                        fontWeight: FontWeight.w600,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                      ),
-                ),
-              ],
-            ),
-          ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation15']!),
+          _cardFinanceiro(context),
           if (responsiveVisibility(
             context: context,
             phone: false,
@@ -730,40 +668,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
             tabletLandscape: false,
             desktop: false,
           ))
-            _cardMenu(
-              context: context,
-              onTap: () async {},
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _iconeMenu(FontAwesomeIcons.fileImport),
-                  const SizedBox(height: 8.0),
-                  AutoSizeText(
-                    'Importar animais',
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    minFontSize: 8.0,
-                    overflow: TextOverflow.ellipsis,
-                    style: FlutterFlowTheme.of(context).labelMedium.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .fontStyle,
-                          ),
-                          color: Color(0xFF14181B),
-                          letterSpacing: 0.0,
-                          fontWeight: FontWeight.w600,
-                          fontStyle: FlutterFlowTheme.of(context)
-                              .labelMedium
-                              .fontStyle,
-                        ),
-                  ),
-                ],
-              ),
-            ).animateOnPageLoad(
-                animationsMap['containerOnPageLoadAnimation16']!),
+            _cardImportarAnimais(context),
         ],
       ),
     );
@@ -772,43 +677,21 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
   Widget _cardInicio(BuildContext context) {
     return _cardMenu(
       context: context,
+      icone: Icons.home,
+      rotulo: 'Início',
       onTap: () async {
         context.pushNamed(DashboardTecnicoPage.routeName);
 
         FFAppState().clearAllAnimaisProdutorCache();
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _iconeMenu(Icons.home),
-          const SizedBox(height: 8.0),
-          AutoSizeText(
-            'Início',
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            minFontSize: 8.0,
-            overflow: TextOverflow.ellipsis,
-            style: FlutterFlowTheme.of(context).labelMedium.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight: FontWeight.w600,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                  ),
-                  color: Color(0xFF14181B),
-                  letterSpacing: 0.0,
-                  fontWeight: FontWeight.w600,
-                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                ),
-          ),
-        ],
-      ),
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation1']!);
   }
 
   Widget _cardTrocarProdutor(BuildContext context) {
     return _cardMenu(
       context: context,
+      icone: Icons.supervisor_account_rounded,
+      rotulo: 'Trocar Produtor',
       onTap: () async {
         context.pushNamed(
           ListaPropriedadePage.routeName,
@@ -822,136 +705,23 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
 
         FFAppState().clearAllAnimaisProdutorCache();
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _iconeMenu(Icons.supervisor_account_rounded),
-          const SizedBox(height: 8.0),
-          AutoSizeText(
-            'Trocar Produtor',
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            minFontSize: 8.0,
-            overflow: TextOverflow.ellipsis,
-            style: FlutterFlowTheme.of(context).labelMedium.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight: FontWeight.w600,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                  ),
-                  color: Color(0xFF14181B),
-                  fontSize: 14.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FontWeight.w600,
-                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                ),
-          ),
-        ],
-      ),
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation2']!);
   }
 
   Widget _cardAnimais(BuildContext context) {
     return _cardMenu(
       context: context,
+      icone: Icons.format_list_numbered,
+      rotulo: 'Animais',
+      // Animais criados offline vão direto ao ObjectBox e sincronizam ao
+      // reconectar — a navegação não depende de conexão. (Havia aqui um
+      // if/else sobre `_respostaNet!` cujos dois ramos eram idênticos.)
       onTap: () async {
-        if (_respostaNet!) {
-          // Animais criados offline vão direto ao ObjectBox e sincronizam ao
-          // reconectar — sem fila no FFAppState a bloquear a navegação.
-          {
-            context.pushNamed(
-              ListaAnimaisPage.routeName,
-              queryParameters: {
-                'uidPropriedade': serializeParam(
-                  widget.uidPropriedade,
-                  ParamType.DocumentReference,
-                ),
-                'nomePropriedade': serializeParam(
-                  widget.nomePropriedade,
-                  ParamType.String,
-                ),
-                'uidTecnico': serializeParam(
-                  widget.uidTecnico,
-                  ParamType.DocumentReference,
-                ),
-                'emailPropriedade': serializeParam(
-                  widget.emailPropriedade,
-                  ParamType.String,
-                ),
-                'visitaPresencial': serializeParam(
-                  widget.visitaPresencial,
-                  ParamType.bool,
-                ),
-                'diasDg': serializeParam(
-                  widget.diasDg,
-                  ParamType.String,
-                ),
-              }.withoutNulls,
-            );
-
-            return;
-          }
-        } else {
-          context.pushNamed(
-            ListaAnimaisPage.routeName,
-            queryParameters: {
-              'uidPropriedade': serializeParam(
-                widget.uidPropriedade,
-                ParamType.DocumentReference,
-              ),
-              'nomePropriedade': serializeParam(
-                widget.nomePropriedade,
-                ParamType.String,
-              ),
-              'uidTecnico': serializeParam(
-                widget.uidTecnico,
-                ParamType.DocumentReference,
-              ),
-              'emailPropriedade': serializeParam(
-                widget.emailPropriedade,
-                ParamType.String,
-              ),
-              'visitaPresencial': serializeParam(
-                widget.visitaPresencial,
-                ParamType.bool,
-              ),
-              'diasDg': serializeParam(
-                widget.diasDg,
-                ParamType.String,
-              ),
-            }.withoutNulls,
-          );
-
-          return;
-        }
+        context.pushNamed(
+          ListaAnimaisPage.routeName,
+          queryParameters: _paramsPropriedade(),
+        );
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _iconeMenu(Icons.format_list_numbered),
-          const SizedBox(height: 8.0),
-          AutoSizeText(
-            'Animais',
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            minFontSize: 8.0,
-            overflow: TextOverflow.ellipsis,
-            style: FlutterFlowTheme.of(context).labelMedium.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight: FontWeight.w600,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                  ),
-                  color: FlutterFlowTheme.of(context).primaryText,
-                  letterSpacing: 0.0,
-                  fontWeight: FontWeight.w600,
-                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                ),
-          ),
-        ],
-      ),
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation3']!);
   }
 
@@ -959,155 +729,22 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return _cardMenu(
       context: context,
-      padding: EdgeInsets.all(5.0),
+      icone: Icons.vaccines,
+      rotulo: 'Inseminações',
+      contador: inicioPropriedadeAnimaisProdutoresRecordList
+          .where((e) =>
+              ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
+              ((ehVazia(e.status)) ||
+                  (ehInseminada(e.status)) ||
+                  (ehInseminadaPP(e.status))))
+          .toList()
+          .length,
       onTap: () async {
         context.pushNamed(
           ListaInseminacoesPage.routeName,
-          queryParameters: {
-            'uidPropriedade': serializeParam(
-              widget.uidPropriedade,
-              ParamType.DocumentReference,
-            ),
-            'nomePropriedade': serializeParam(
-              widget.nomePropriedade,
-              ParamType.String,
-            ),
-            'uidTecnico': serializeParam(
-              widget.uidTecnico,
-              ParamType.DocumentReference,
-            ),
-            'emailPropriedade': serializeParam(
-              widget.emailPropriedade,
-              ParamType.String,
-            ),
-            'visitaPresencial': serializeParam(
-              widget.visitaPresencial,
-              ParamType.bool,
-            ),
-            'diasDg': serializeParam(
-              widget.diasDg,
-              ParamType.String,
-            ),
-          }.withoutNulls,
+          queryParameters: _paramsPropriedade(),
         );
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Align(
-            alignment: AlignmentDirectional(1.0, -1.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Align(
-                      alignment: AlignmentDirectional(1.0, -1.0),
-                      child: Card(
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        color: FlutterFlowTheme.of(context).secondaryBackground,
-                        elevation: 4.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              5.0, 5.0, 5.0, 5.0),
-                          child: Text(
-                            _respostaNet!
-                                ? inicioPropriedadeAnimaisProdutoresRecordList
-                                    .where((e) =>
-                                        ((ehVaca(e.grupoAnimal)) ||
-                                            (ehNovilha(e.grupoAnimal))) &&
-                                        ((ehVazia(e.status)) ||
-                                            (ehInseminada(e.status)) ||
-                                            (ehInseminadaPP(e.status))))
-                                    .toList()
-                                    .length
-                                    .toString()
-                                : (inicioPropriedadeAnimaisProdutoresRecordList
-                                        .where((e) =>
-                                            ((ehVaca(e.grupoAnimal)) ||
-                                                (ehNovilha(e.grupoAnimal))) &&
-                                            ((ehVazia(e.status)) ||
-                                                (ehInseminada(e.status)) ||
-                                                (ehInseminadaPP(e.status))))
-                                        .toList()
-                                        .length)
-                                    .toString(),
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  color: AppTokens.secondary,
-                                  letterSpacing: 0.0,
-                                  fontWeight: FontWeight.bold,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Align(
-            alignment: AlignmentDirectional(0.0, -1.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _iconeMenu(Icons.vaccines),
-                      const SizedBox(height: 8.0),
-                      AutoSizeText(
-                        'Inseminações',
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        minFontSize: 8.0,
-                        overflow: TextOverflow.ellipsis,
-                        style: FlutterFlowTheme.of(context)
-                            .labelMedium
-                            .override(
-                              font: GoogleFonts.readexPro(
-                                fontWeight: FontWeight.w600,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontStyle,
-                              ),
-                              color: FlutterFlowTheme.of(context).primaryText,
-                              letterSpacing: 0.0,
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation4']!);
   }
 
@@ -1115,131 +752,26 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return _cardMenu(
       context: context,
+      icone: Icons.medical_information_outlined,
+      rotulo: 'Diagnóstico Gestação',
+      contador: inicioPropriedadeAnimaisProdutoresRecordList
+          .where((e) => valueOrDefault<bool>(
+                (e.dtUltimaInseminacao != '') &&
+                    ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
+                    ((ehInseminada(e.status)) || (ehInseminadaPP(e.status))) &&
+                    (functions.converterStringParaData(
+                            e.dtUltimaInseminacao, widget.diasDg!) <=
+                        functions.obterDataAtual()),
+                true,
+              ))
+          .toList()
+          .length,
       onTap: () async {
         context.pushNamed(
           DiagnosticogestacaoPage.routeName,
-          queryParameters: {
-            'uidPropriedade': serializeParam(
-              widget.uidPropriedade,
-              ParamType.DocumentReference,
-            ),
-            'nomePropriedade': serializeParam(
-              widget.nomePropriedade,
-              ParamType.String,
-            ),
-            'uidTecnico': serializeParam(
-              widget.uidTecnico,
-              ParamType.DocumentReference,
-            ),
-            'emailPropriedade': serializeParam(
-              widget.emailPropriedade,
-              ParamType.String,
-            ),
-            'visitaPresencial': serializeParam(
-              widget.visitaPresencial,
-              ParamType.bool,
-            ),
-            'diasDg': serializeParam(
-              widget.diasDg,
-              ParamType.String,
-            ),
-          }.withoutNulls,
+          queryParameters: _paramsPropriedade(),
         );
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Align(
-                alignment: AlignmentDirectional(1.0, -1.0),
-                child: Card(
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                  elevation: 4.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(5.0, 5.0, 5.0, 5.0),
-                    child: Text(
-                      inicioPropriedadeAnimaisProdutoresRecordList
-                          .where((e) => valueOrDefault<bool>(
-                                (e.dtUltimaInseminacao != '') &&
-                                    ((ehVaca(e.grupoAnimal)) ||
-                                        (ehNovilha(e.grupoAnimal))) &&
-                                    ((ehInseminada(e.status)) ||
-                                        (ehInseminadaPP(e.status))) &&
-                                    (functions.converterStringParaData(
-                                            e.dtUltimaInseminacao,
-                                            widget.diasDg!) <=
-                                        functions.obterDataAtual()),
-                                true,
-                              ))
-                          .toList()
-                          .length
-                          .toString(),
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                            color: AppTokens.secondary,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    _iconeMenu(Icons.medical_information_outlined),
-                    const SizedBox(height: 8.0),
-                    AutoSizeText(
-                      'Diagnóstico\nGestação',
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      minFontSize: 8.0,
-                      overflow: TextOverflow.ellipsis,
-                      style: FlutterFlowTheme.of(context).labelMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                            color: FlutterFlowTheme.of(context).primaryText,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation5']!);
   }
 
@@ -1247,122 +779,19 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return _cardMenu(
       context: context,
+      icone: Icons.monitor_heart_outlined,
+      rotulo: 'Prenhas',
+      contador: inicioPropriedadeAnimaisProdutoresRecordList
+          .where(
+              (e) => (ehPrenha(e.status)) && (ehVacaOuNovilha(e.grupoAnimal)))
+          .toList()
+          .length,
       onTap: () async {
         context.pushNamed(
           AnimaisPrenhasPage.routeName,
-          queryParameters: {
-            'uidPropriedade': serializeParam(
-              widget.uidPropriedade,
-              ParamType.DocumentReference,
-            ),
-            'nomePropriedade': serializeParam(
-              widget.nomePropriedade,
-              ParamType.String,
-            ),
-            'uidTecnico': serializeParam(
-              widget.uidTecnico,
-              ParamType.DocumentReference,
-            ),
-            'emailPropriedade': serializeParam(
-              widget.emailPropriedade,
-              ParamType.String,
-            ),
-            'visitaPresencial': serializeParam(
-              widget.visitaPresencial,
-              ParamType.bool,
-            ),
-            'diasDg': serializeParam(
-              widget.diasDg,
-              ParamType.String,
-            ),
-          }.withoutNulls,
+          queryParameters: _paramsPropriedade(),
         );
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Align(
-                alignment: AlignmentDirectional(1.0, -1.0),
-                child: Card(
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                  elevation: 4.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(5.0, 5.0, 5.0, 5.0),
-                    child: Text(
-                      inicioPropriedadeAnimaisProdutoresRecordList
-                          .where((e) =>
-                              (ehPrenha(e.status)) &&
-                              (ehVacaOuNovilha(e.grupoAnimal)))
-                          .toList()
-                          .length
-                          .toString(),
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                            color: AppTokens.secondary,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    _iconeMenu(Icons.monitor_heart_outlined),
-                    const SizedBox(height: 8.0),
-                    AutoSizeText(
-                      'Prenhas',
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      minFontSize: 8.0,
-                      overflow: TextOverflow.ellipsis,
-                      style: FlutterFlowTheme.of(context).labelMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                            color: Color(0xFF14181B),
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation6']!);
   }
 
@@ -1370,125 +799,22 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return _cardMenu(
       context: context,
+      icone: Icons.alarm_add_sharp,
+      rotulo: 'Secas',
+      contador: inicioPropriedadeAnimaisProdutoresRecordList
+          .where((e) =>
+              ((ehVaca(e.grupoAnimal)) && (ehSeca(e.status))) ||
+              (e.status == 'Pré Parto') ||
+              (ehDescarte(e.status)) ||
+              ((ehVazia(e.status)) && (e.dtInducaoLactacao != null)))
+          .toList()
+          .length,
       onTap: () async {
         context.pushNamed(
           SecasPage.routeName,
-          queryParameters: {
-            'uidPropriedade': serializeParam(
-              widget.uidPropriedade,
-              ParamType.DocumentReference,
-            ),
-            'nomePropriedade': serializeParam(
-              widget.nomePropriedade,
-              ParamType.String,
-            ),
-            'uidTecnico': serializeParam(
-              widget.uidTecnico,
-              ParamType.DocumentReference,
-            ),
-            'emailPropriedade': serializeParam(
-              widget.emailPropriedade,
-              ParamType.String,
-            ),
-            'visitaPresencial': serializeParam(
-              widget.visitaPresencial,
-              ParamType.bool,
-            ),
-            'diasDg': serializeParam(
-              widget.diasDg,
-              ParamType.String,
-            ),
-          }.withoutNulls,
+          queryParameters: _paramsPropriedade(),
         );
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Align(
-                alignment: AlignmentDirectional(1.0, -1.0),
-                child: Card(
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                  elevation: 4.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(5.0, 5.0, 5.0, 5.0),
-                    child: Text(
-                      inicioPropriedadeAnimaisProdutoresRecordList
-                          .where((e) =>
-                              ((ehVaca(e.grupoAnimal)) && (ehSeca(e.status))) ||
-                              (e.status == 'Pré Parto') ||
-                              (ehDescarte(e.status)) ||
-                              ((ehVazia(e.status)) &&
-                                  (e.dtInducaoLactacao != null)))
-                          .toList()
-                          .length
-                          .toString(),
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                            color: AppTokens.secondary,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    _iconeMenu(Icons.alarm_add_sharp),
-                    const SizedBox(height: 8.0),
-                    AutoSizeText(
-                      'Secas',
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      minFontSize: 8.0,
-                      overflow: TextOverflow.ellipsis,
-                      style: FlutterFlowTheme.of(context).labelMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                            color: Color(0xFF14181B),
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation7']!);
   }
 
@@ -1496,134 +822,21 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return _cardMenu(
       context: context,
+      icone: Icons.medical_services,
+      rotulo: 'Exame Ginecológico',
+      contador: inicioPropriedadeAnimaisProdutoresRecordList
+          .where((e) =>
+              (ehVazia(e.status)) &&
+              ((ehNovilha(e.grupoAnimal)) || (ehVaca(e.grupoAnimal))) &&
+              (e.dtInducaoLactacao == null))
+          .toList()
+          .length,
       onTap: () async {
         context.pushNamed(
           ExameGinecologicoPage.routeName,
-          queryParameters: {
-            'uidPropriedade': serializeParam(
-              widget.uidPropriedade,
-              ParamType.DocumentReference,
-            ),
-            'nomePropriedade': serializeParam(
-              widget.nomePropriedade,
-              ParamType.String,
-            ),
-            'uidTecnico': serializeParam(
-              widget.uidTecnico,
-              ParamType.DocumentReference,
-            ),
-            'emailPropriedade': serializeParam(
-              widget.emailPropriedade,
-              ParamType.String,
-            ),
-            'visitaPresencial': serializeParam(
-              widget.visitaPresencial,
-              ParamType.bool,
-            ),
-            'diasDg': serializeParam(
-              widget.diasDg,
-              ParamType.String,
-            ),
-          }.withoutNulls,
+          queryParameters: _paramsPropriedade(),
         );
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Align(
-                alignment: AlignmentDirectional(1.0, -1.0),
-                child: Card(
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                  elevation: 4.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(5.0, 5.0, 5.0, 5.0),
-                    child: Text(
-                      _respostaNet!
-                          ? inicioPropriedadeAnimaisProdutoresRecordList
-                              .where((e) =>
-                                  (ehVazia(e.status)) &&
-                                  ((ehNovilha(e.grupoAnimal)) ||
-                                      (ehVaca(e.grupoAnimal))) &&
-                                  (e.dtInducaoLactacao == null))
-                              .toList()
-                              .length
-                              .toString()
-                          : (inicioPropriedadeAnimaisProdutoresRecordList
-                                  .where((e) =>
-                                      (ehVazia(e.status)) &&
-                                      ((ehNovilha(e.grupoAnimal)) ||
-                                          (ehVaca(e.grupoAnimal))) &&
-                                      (e.dtInducaoLactacao == null))
-                                  .toList()
-                                  .length)
-                              .toString(),
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                            color: AppTokens.secondary,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    _iconeMenu(Icons.medical_services),
-                    const SizedBox(height: 8.0),
-                    AutoSizeText(
-                      'Exame\nGinecológico',
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      minFontSize: 8.0,
-                      overflow: TextOverflow.ellipsis,
-                      style: FlutterFlowTheme.of(context).labelMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                            color: Color(0xFF14181B),
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation8']!);
   }
 
@@ -1631,142 +844,24 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return _cardMenu(
       context: context,
+      icone: Icons.compare_arrows_sharp,
+      rotulo: 'Recria',
+      contador: inicioPropriedadeAnimaisProdutoresRecordList
+          .where((e) =>
+              (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) ||
+                  ((ehNovilha(e.grupoAnimal)) &&
+                      (e.dtInducaoLactacao == null)) ||
+                  (ehBezerras(e.grupoAnimal)) ||
+                  (ehBezerros(e.grupoAnimal))) &&
+              ((!ehDescarte(e.status)) && (e.status != 'Pré Parto')))
+          .toList()
+          .length,
       onTap: () async {
         context.pushNamed(
           RecriacaoPage.routeName,
-          queryParameters: {
-            'uidPropriedade': serializeParam(
-              widget.uidPropriedade,
-              ParamType.DocumentReference,
-            ),
-            'nomePropriedade': serializeParam(
-              widget.nomePropriedade,
-              ParamType.String,
-            ),
-            'uidTecnico': serializeParam(
-              widget.uidTecnico,
-              ParamType.DocumentReference,
-            ),
-            'emailPropriedade': serializeParam(
-              widget.emailPropriedade,
-              ParamType.String,
-            ),
-            'visitaPresencial': serializeParam(
-              widget.visitaPresencial,
-              ParamType.bool,
-            ),
-            'diasDg': serializeParam(
-              widget.diasDg,
-              ParamType.String,
-            ),
-          }.withoutNulls,
+          queryParameters: _paramsPropriedade(),
         );
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Align(
-                alignment: AlignmentDirectional(1.0, -1.0),
-                child: Card(
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                  elevation: 4.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(5.0, 5.0, 5.0, 5.0),
-                    child: Text(
-                      _respostaNet!
-                          ? inicioPropriedadeAnimaisProdutoresRecordList
-                              .where((e) =>
-                                  (((ehTouros(e.grupoAnimal)) &&
-                                          (e.liberaInseminacao == false)) ||
-                                      ((ehNovilha(e.grupoAnimal)) &&
-                                          (e.dtInducaoLactacao == null)) ||
-                                      (ehBezerras(e.grupoAnimal)) ||
-                                      (ehBezerros(e.grupoAnimal))) &&
-                                  ((!ehDescarte(e.status)) &&
-                                      (e.status != 'Pré Parto')))
-                              .toList()
-                              .length
-                              .toString()
-                          : (inicioPropriedadeAnimaisProdutoresRecordList
-                                  .where((e) =>
-                                      (((ehTouros(e.grupoAnimal)) &&
-                                              (e.liberaInseminacao == false)) ||
-                                          ((ehNovilha(e.grupoAnimal)) &&
-                                              (e.dtInducaoLactacao == null)) ||
-                                          (ehBezerras(e.grupoAnimal)) ||
-                                          (ehBezerros(e.grupoAnimal))) &&
-                                      ((!ehDescarte(e.status)) &&
-                                          (e.status != 'Pré Parto')))
-                                  .toList()
-                                  .length)
-                              .toString(),
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                            color: AppTokens.secondary,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    _iconeMenu(Icons.compare_arrows_sharp),
-                    const SizedBox(height: 8.0),
-                    AutoSizeText(
-                      'Recria',
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      minFontSize: 8.0,
-                      overflow: TextOverflow.ellipsis,
-                      style: FlutterFlowTheme.of(context).labelMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                            color: FlutterFlowTheme.of(context).primaryText,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation9']!);
   }
 
@@ -1774,247 +869,108 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return _cardMenu(
       context: context,
+      icone: Icons.list_alt_sharp,
+      rotulo: 'Lista completa',
+      contador: inicioPropriedadeAnimaisProdutoresRecordList
+          .where((e) =>
+              ((ehNovilha(e.grupoAnimal)) || (ehVaca(e.grupoAnimal))) &&
+              (!ehDescarte(e.status)))
+          .toList()
+          .length,
       onTap: () async {
         context.pushNamed(
           ListacompletaPage.routeName,
-          queryParameters: {
-            'uidPropriedade': serializeParam(
-              widget.uidPropriedade,
-              ParamType.DocumentReference,
-            ),
-            'nomePropriedade': serializeParam(
-              widget.nomePropriedade,
-              ParamType.String,
-            ),
-            'uidTecnico': serializeParam(
-              widget.uidTecnico,
-              ParamType.DocumentReference,
-            ),
-            'emailPropriedade': serializeParam(
-              widget.emailPropriedade,
-              ParamType.String,
-            ),
-            'visitaPresencial': serializeParam(
-              widget.visitaPresencial,
-              ParamType.bool,
-            ),
-            'diasDg': serializeParam(
-              widget.diasDg,
-              ParamType.String,
-            ),
-          }.withoutNulls,
+          queryParameters: _paramsPropriedade(),
         );
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Align(
-                alignment: AlignmentDirectional(1.0, -1.0),
-                child: Card(
-                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                  elevation: 4.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(5.0, 5.0, 5.0, 5.0),
-                    child: Text(
-                      inicioPropriedadeAnimaisProdutoresRecordList
-                          .where((e) =>
-                              ((ehNovilha(e.grupoAnimal)) ||
-                                  (ehVaca(e.grupoAnimal))) &&
-                              (!ehDescarte(e.status)))
-                          .toList()
-                          .length
-                          .toString(),
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                            color: AppTokens.secondary,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _iconeMenu(Icons.list_alt_sharp),
-                    const SizedBox(height: 8.0),
-                    AutoSizeText(
-                      'Lista completa',
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      minFontSize: 8.0,
-                      overflow: TextOverflow.ellipsis,
-                      style: FlutterFlowTheme.of(context).labelMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                            color: Color(0xFF14181B),
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation10']!);
+  }
+
+  /// Receituario le do ObjectBox (offline-first); a emissao segue online, mas
+  /// consultar receituarios ja emitidos nao.
+  Widget _cardReceituario(BuildContext context) {
+    return _cardMenu(
+      context: context,
+      icone: Icons.summarize,
+      rotulo: 'Receituário',
+      onTap: () async {
+        context.pushNamed(
+          ReceituariosListaPage.routeName,
+          queryParameters: _paramsPropriedade(),
+        );
+      },
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation11']!);
+  }
+
+  /// Resumo do rebanho le tudo do ObjectBox e gera o relatorio offline (sem o
+  /// logo, que vem de URL).
+  Widget _cardResumoRebanho(BuildContext context) {
+    return _cardMenu(
+      context: context,
+      icone: Icons.summarize_outlined,
+      rotulo: 'Resumo Rebanho',
+      onTap: () async {
+        context.pushNamed(
+          ResumoRebanhoPage.routeName,
+          queryParameters: _paramsPropriedade(),
+        );
+      },
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation12']!);
+  }
+
+  /// Calendario sanitario le do ObjectBox (offline-first), entao o card nao
+  /// depende de conexao.
+  Widget _cardCalendarioSanitario(BuildContext context) {
+    return _cardMenu(
+      context: context,
+      icone: Icons.calendar_today,
+      rotulo: 'Calendário Sanitário',
+      onTap: () async {
+        context.pushNamed(
+          CalendarioSanitarioPage.routeName,
+          queryParameters: _paramsPropriedade(),
+        );
+      },
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation13']!);
   }
 
   Widget _cardIndicesZootecnicos(BuildContext context) {
     return _cardMenu(
       context: context,
+      icone: Icons.folder_copy_outlined,
+      rotulo: 'Índices Zootécnicos',
       onTap: () async {
         context.pushNamed(
           IndicesZootecnicosPage.routeName,
-          queryParameters: {
-            'uidPropriedade': serializeParam(
-              widget.uidPropriedade,
-              ParamType.DocumentReference,
-            ),
-            'nomePropriedade': serializeParam(
-              widget.nomePropriedade,
-              ParamType.String,
-            ),
-            'uidTecnico': serializeParam(
-              widget.uidTecnico,
-              ParamType.DocumentReference,
-            ),
-            'emailPropriedade': serializeParam(
-              widget.emailPropriedade,
-              ParamType.String,
-            ),
-            'visitaPresencial': serializeParam(
-              widget.visitaPresencial,
-              ParamType.bool,
-            ),
-            'diasDg': serializeParam(
-              widget.diasDg,
-              ParamType.String,
-            ),
-          }.withoutNulls,
+          queryParameters: _paramsPropriedade(),
         );
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _iconeMenu(Icons.folder_copy_outlined),
-          const SizedBox(height: 8.0),
-          AutoSizeText(
-            'Indíces Zootécnicos',
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            minFontSize: 8.0,
-            overflow: TextOverflow.ellipsis,
-            style: FlutterFlowTheme.of(context).labelMedium.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight: FontWeight.w600,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                  ),
-                  color: Color(0xFF14181B),
-                  letterSpacing: 0.0,
-                  fontWeight: FontWeight.w600,
-                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                ),
-          ),
-        ],
-      ),
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation14']!);
   }
 
-  Widget _rotuloReceituario(BuildContext context) {
-    return AutoSizeText(
-      'Receituário',
-      textAlign: TextAlign.center,
-      maxLines: 2,
-      minFontSize: 8.0,
-      overflow: TextOverflow.ellipsis,
-      style: FlutterFlowTheme.of(context).labelMedium.override(
-            font: GoogleFonts.readexPro(
-              fontWeight: FontWeight.w600,
-              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-            ),
-            color: Color(0xFF14181B),
-            letterSpacing: 0.0,
-            fontWeight: FontWeight.w600,
-            fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-          ),
-    );
+  /// Financeiro le do ObjectBox (offline-first), entao o card nao depende de
+  /// conexao.
+  Widget _cardFinanceiro(BuildContext context) {
+    return _cardMenu(
+      context: context,
+      icone: Icons.attach_money_sharp,
+      rotulo: 'Financeiro',
+      onTap: () async {
+        context.pushNamed(
+          RelatorioFinanceiroPage.routeName,
+          queryParameters: _paramsPropriedade(),
+        );
+      },
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation15']!);
   }
 
-  Widget _rotuloResumoRebanho(BuildContext context) {
-    return AutoSizeText(
-      'Resumo Rebanho',
-      textAlign: TextAlign.center,
-      maxLines: 2,
-      minFontSize: 8.0,
-      overflow: TextOverflow.ellipsis,
-      style: FlutterFlowTheme.of(context).labelMedium.override(
-            font: GoogleFonts.readexPro(
-              fontWeight: FontWeight.w600,
-              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-            ),
-            color: Color(0xFF14181B),
-            letterSpacing: 0.0,
-            fontWeight: FontWeight.w600,
-            fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-          ),
-    );
-  }
-
-  Widget _rotuloCalendarioSanitario(BuildContext context) {
-    return AutoSizeText(
-      'Calendário Sanitário',
-      textAlign: TextAlign.center,
-      maxLines: 2,
-      minFontSize: 8.0,
-      overflow: TextOverflow.ellipsis,
-      style: FlutterFlowTheme.of(context).labelMedium.override(
-            font: GoogleFonts.readexPro(
-              fontWeight: FontWeight.w600,
-              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-            ),
-            color: Color(0xFF14181B),
-            letterSpacing: 0.0,
-            fontWeight: FontWeight.w600,
-            fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-          ),
-    );
+  Widget _cardImportarAnimais(BuildContext context) {
+    return _cardMenu(
+      context: context,
+      icone: FontAwesomeIcons.fileImport,
+      rotulo: 'Importar animais',
+      onTap: () async {},
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation16']!);
   }
 
   @override
@@ -2030,11 +986,11 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
 
     return animaisAsync.when(
       loading: () => Scaffold(
-        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        backgroundColor: AppTokens.canvas(context),
         body: const Center(child: CircularProgressIndicator()),
       ),
       error: (_, __) => Scaffold(
-        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        backgroundColor: AppTokens.canvas(context),
         body: Center(child: Text('Erro ao carregar os animais.')),
       ),
       data: (inicioPropriedadeAnimaisProdutoresRecordList) {
@@ -2045,7 +1001,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
           },
           child: Scaffold(
             key: scaffoldKey,
-            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+            backgroundColor: AppTokens.canvas(context),
             appBar: AppBar(
               backgroundColor:
                   _respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),

@@ -32,6 +32,15 @@ class AppTokens {
   /// toque continue legível nessa condição.
   static const Color brandHairline = Color(0x24F75E38);
 
+  /// Fundo de página das telas cujos cards têm acento laranja. É um off-white
+  /// QUENTE de propósito: o `primaryBackground` do tema (#F1F4F8) é um cinza
+  /// azulado, e sob ele o halo laranja dos cards lê como sujeira. Card branco
+  /// sobre página branca não lê como card nenhum — precisa de chão.
+  static Color canvas(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark
+          ? FlutterFlowTheme.of(context).primaryBackground
+          : const Color(0xFFF7F4F1);
+
   /// Raio padrão dos cards/superfícies.
   static const double radius = 16.0;
 
@@ -67,13 +76,13 @@ class AppTokens {
         ),
         BoxShadow(
           color: Color(0x1FF75E38), // ~12% laranja — o halo
-          blurRadius: 20.0,
-          offset: Offset(0.0, 8.0),
+          blurRadius: 14.0,
+          offset: Offset(0.0, 4.0),
         ),
         BoxShadow(
           color: Color(0x0F000000), // ~6% preto — o contato
-          blurRadius: 4.0,
-          offset: Offset(0.0, 2.0),
+          blurRadius: 3.0,
+          offset: Offset(0.0, 1.0),
         ),
       ];
 }
