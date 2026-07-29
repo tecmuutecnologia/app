@@ -27,11 +27,13 @@ class AppTokens {
   /// que o splash.
   static const Color brandTintSoft = Color(0x0DF75E38);
 
-  /// Fio de contorno na cor da marca — o único elemento que desenha a borda
-  /// dos cards de ação, já que eles não têm sombra nenhuma. Por ser sozinho,
-  /// tem alfa alto o bastante (35%) para ler como uma linha de verdade; nos
-  /// 14% de quando ainda havia halo por baixo, virava fantasma.
-  static const Color brandHairline = Color(0x59F75E38);
+  /// Contorno dos cards de ação: o laranja da marca CHEIO, sem alfa.
+  ///
+  /// Já foi translúcido (35%) e o resultado era um salmão dessaturado que num
+  /// LCD lia como bege — cor com alfa compõe com o fundo e perde a identidade
+  /// do matiz. Como aqui a linha é o único elemento que define o card, ela
+  /// precisa ser reconhecivelmente a cor da marca, a mesma da barra do topo.
+  static const Color brandHairline = brand;
 
   /// Fundo de página das telas cujos cards têm acento laranja. É um off-white
   /// QUENTE de propósito: o `primaryBackground` do tema (#F1F4F8) é um cinza
@@ -60,10 +62,13 @@ class AppTokens {
         ),
       ];
 
-  /// Contorno dos cards de ação: um fio laranja de 1px e nada mais. Sem
+  /// Contorno dos cards de ação: uma linha laranja de 1.5px e nada mais. Sem
   /// sombra — o card é definido pela linha, não por elevação.
+  ///
+  /// 1px na cor cheia sumia, 2px pesava; 1.5 é o meio-termo, e num LCD 2x ele
+  /// cai em 3 pixels físicos exatos, sem antialiasing borrando a linha.
   static Border brandBorder(BuildContext context) =>
-      Border.all(color: brandHairline, width: 1.0);
+      Border.all(color: brandHairline, width: 1.5);
 }
 
 /// "Tile" quadrado-arredondado com o ícone tonalizado — base visual dos cards

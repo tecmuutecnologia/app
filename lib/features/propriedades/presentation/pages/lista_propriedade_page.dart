@@ -39,6 +39,11 @@ class ListaPropriedadePage extends ConsumerStatefulWidget {
 }
 
 class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
+  /// Altura ocupada pelos botões flutuantes (botão de 65 + 15 de padding em
+  /// cima e embaixo). A lista reserva isso no rodapé para que o último card
+  /// consiga rolar até acima deles.
+  static const double _alturaBotoes = 95.0;
+
   late TextEditingController _searchController;
 
   /// Termo de busca. É um [ValueNotifier] (e não `setState`) de propósito: a
@@ -254,7 +259,10 @@ class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
         }
 
         return ListView.builder(
-          padding: const EdgeInsets.only(top: 4.0),
+          // O padding inferior é o que deixa a última propriedade alcançável:
+          // os botões flutuam por cima da lista, então sem ele o último card
+          // pararia embaixo deles.
+          padding: const EdgeInsets.only(top: 4.0, bottom: _alturaBotoes),
           itemCount: pendentesFiltradas.length + ativasFiltradas.length,
           itemBuilder: (context, index) => index < pendentesFiltradas.length
               ? _pendingCard(
@@ -1039,9 +1047,28 @@ class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   barraPesquisar(context),
-                  // Único scrollable da tela: a lista virtualiza de verdade.
-                  Expanded(child: _listaPropriedades(context, tecnico!)),
-                  barraBotoes(context, tecnico),
+                  // Os botões FLUTUAM sobre a lista em vez de ocuparem uma
+                  // faixa própria no Column. Como faixa, eles reservavam 95px
+                  // de altura onde aparecia o fundo cinza do Scaffold
+                  // (primaryBackground, #F1F4F8) — e contra os cards brancos
+                  // aquilo lia como uma barra cinza cobrindo a última
+                  // propriedade. Flutuando, a lista ocupa a tela inteira e o
+                  // padding inferior dela deixa o último card rolar até o fim.
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        // Único scrollable da tela: a lista virtualiza de
+                        // verdade.
+                        _listaPropriedades(context, tecnico!),
+                        Positioned(
+                          left: 0.0,
+                          right: 0.0,
+                          bottom: 0.0,
+                          child: barraBotoes(context, tecnico),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               );
             },

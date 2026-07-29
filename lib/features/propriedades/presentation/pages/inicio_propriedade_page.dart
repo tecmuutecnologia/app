@@ -636,10 +636,11 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
           mainAxisSpacing: 12.0,
           // Altura de célula FIXA (não derivada da largura): o conteúdo do
           // card tem tamanho conhecido — padding 14 + tile 48 + gap 10 +
-          // caixa do rótulo 34 + padding 10 = 116. A célula acompanha isso de
-          // perto em vez dos 156 antigos, que deixavam 40px de vazio em cada
-          // card e faziam a grade parecer inacabada.
-          mainAxisExtent: 122.0,
+          // caixa do rótulo 34 + padding 10 = 116, mais os 2px de borda em
+          // cima e embaixo. A célula acompanha isso de perto em vez dos 156
+          // antigos, que deixavam 40px de vazio em cada card e faziam a grade
+          // parecer inacabada.
+          mainAxisExtent: 124.0,
         ),
         primary: false,
         shrinkWrap: true,
