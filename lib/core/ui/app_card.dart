@@ -19,31 +19,6 @@ class AppTokens {
   /// Versão translúcida do acento secundário (fundo de avatar/chip).
   static const Color secondaryTint = Color(0x1A7B61FF);
 
-  // --- Acentos funcionais -------------------------------------------------
-  //
-  // Estas três cores não são "variedade visual": elas dividem uma grade de
-  // ações em zonas que se reconhecem de longe. Cor que não carrega informação
-  // é ruído, e com 16 itens iguais na tela o ruído é caro.
-  //
-  // A paleta sai do mundo do próprio usuário — pasto, ardósia, ferramenta — e
-  // não de uma rampa genérica de SaaS.
-
-  /// Trabalho no rebanho: o animal vivo. Verde-pasto.
-  static const Color rebanho = Color(0xFF1E7A55);
-
-  /// Papel e número: relatório, receituário, calendário, financeiro.
-  /// Azul-ardósia, deliberadamente frio para separar do verde.
-  static const Color relatorio = Color(0xFF2E5F8A);
-
-  /// Sair desta tela. Grafite dessaturado — é uma saída, não uma ação sobre o
-  /// rebanho, e por isso fala mais baixo que as outras duas.
-  static const Color navegacao = Color(0xFF5A6672);
-
-  /// Laranja da marca em tom profundo, para superfícies sólidas com texto
-  /// branco em cima. O brand puro (#F75E38) com texto branco dá contraste
-  /// 3.2:1 e reprova em AA; este dá 5.2:1.
-  static const Color brandDeep = Color(0xFFC2410C);
-
   /// Versão translúcida da marca (fundo de avatar/chip, splash de toque).
   static const Color brandTint = Color(0x1AF75E38);
 
@@ -52,10 +27,11 @@ class AppTokens {
   /// que o splash.
   static const Color brandTintSoft = Color(0x0DF75E38);
 
-  /// Fio de contorno na cor da marca. A sombra difusa some num LCD sob sol
-  /// forte (o app é usado a campo); a hairline garante que a borda do alvo de
-  /// toque continue legível nessa condição.
-  static const Color brandHairline = Color(0x24F75E38);
+  /// Fio de contorno na cor da marca — o único elemento que desenha a borda
+  /// dos cards de ação, já que eles não têm sombra nenhuma. Por ser sozinho,
+  /// tem alfa alto o bastante (35%) para ler como uma linha de verdade; nos
+  /// 14% de quando ainda havia halo por baixo, virava fantasma.
+  static const Color brandHairline = Color(0x59F75E38);
 
   /// Fundo de página das telas cujos cards têm acento laranja. É um off-white
   /// QUENTE de propósito: o `primaryBackground` do tema (#F1F4F8) é um cinza
@@ -84,32 +60,10 @@ class AppTokens {
         ),
       ];
 
-  /// Sombra "quente" dos cards de ação: um halo laranja difuso (a marca
-  /// iluminando o card por baixo) apoiado numa sombra de contato neutra e
-  /// curta. Duas camadas — ambiente larga + contato curta — leem como volume
-  /// real; um blur único só borra o card.
-  ///
-  /// A hairline entra aqui como sombra de spread 1px e blur zero, e não como
-  /// `border` do BoxDecoration, de propósito: `border` recuaria o conteúdo em
-  /// 1px de cada lado, e os cards com badge já usam a altura de 120px inteira.
-  /// Como sombra ela é pintada FORA da caixa e não custa layout nenhum.
-  static List<BoxShadow> brandShadow(BuildContext context) => const [
-        BoxShadow(
-          color: brandHairline, // o fio de contorno
-          spreadRadius: 1.0,
-          blurRadius: 0.0,
-        ),
-        BoxShadow(
-          color: Color(0x1FF75E38), // ~12% laranja — o halo
-          blurRadius: 14.0,
-          offset: Offset(0.0, 4.0),
-        ),
-        BoxShadow(
-          color: Color(0x0F000000), // ~6% preto — o contato
-          blurRadius: 3.0,
-          offset: Offset(0.0, 1.0),
-        ),
-      ];
+  /// Contorno dos cards de ação: um fio laranja de 1px e nada mais. Sem
+  /// sombra — o card é definido pela linha, não por elevação.
+  static Border brandBorder(BuildContext context) =>
+      Border.all(color: brandHairline, width: 1.0);
 }
 
 /// "Tile" quadrado-arredondado com o ícone tonalizado — base visual dos cards
