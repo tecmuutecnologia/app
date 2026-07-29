@@ -448,6 +448,12 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     );
   }
 
+  /// Ícone padrão dos cards do menu de ações: quadrado arredondado com fundo
+  /// roxo claro (acento secundário translúcido) e o ícone em roxo cheio.
+  /// Todos os cards da grade usam este mesmo tile — mesma cor e mesmo tamanho.
+  Widget _iconeMenu(IconData icone) =>
+      MenuIconTile(icon: icone, accent: AppTokens.secondary);
+
   Widget _gradeMenu(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
     return Padding(
@@ -533,11 +539,8 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.summarize,
-                    color: Color(0xFFEC3B5B),
-                    size: 30.0,
-                  ),
+                  _iconeMenu(Icons.summarize),
+                  const SizedBox(height: 8.0),
                   _rotuloReceituario(context),
                 ],
               ),
@@ -593,11 +596,8 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.summarize_outlined,
-                    color: Color(0xFFEC3B5B),
-                    size: 30.0,
-                  ),
+                  _iconeMenu(Icons.summarize_outlined),
+                  const SizedBox(height: 8.0),
                   _rotuloResumoRebanho(context),
                 ],
               ),
@@ -653,11 +653,8 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.calendar_today,
-                    color: Color(0xFFEC3B5B),
-                    size: 28.0,
-                  ),
+                  _iconeMenu(Icons.calendar_today),
+                  const SizedBox(height: 8.0),
                   _rotuloCalendarioSanitario(context),
                 ],
               ),
@@ -714,7 +711,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  MenuIconTile(icon: Icons.attach_money_sharp),
+                  _iconeMenu(Icons.attach_money_sharp),
                   const SizedBox(height: 8.0),
                   AutoSizeText(
                     'Financeiro',
@@ -766,11 +763,8 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    FaIcon(
-                      FontAwesomeIcons.fileImport,
-                      color: Color(0xFFEC3B5B),
-                      size: 22.0,
-                    ),
+                    _iconeMenu(FontAwesomeIcons.fileImport),
+                    const SizedBox(height: 8.0),
                     AutoSizeText(
                       'Importar animais',
                       textAlign: TextAlign.center,
@@ -825,14 +819,14 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.home,
-              color: Color(0xFFEC3B5B),
-              size: 22.0,
-            ),
-            Text(
+            _iconeMenu(Icons.home),
+            const SizedBox(height: 8.0),
+            AutoSizeText(
               'Início',
               textAlign: TextAlign.center,
+              maxLines: 2,
+              minFontSize: 8.0,
+              overflow: TextOverflow.ellipsis,
               style: FlutterFlowTheme.of(context).labelMedium.override(
                     font: GoogleFonts.readexPro(
                       fontWeight: FontWeight.w600,
@@ -883,14 +877,14 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.supervisor_account_rounded,
-              color: Color(0xFFEC3B5B),
-              size: 32.0,
-            ),
-            Text(
+            _iconeMenu(Icons.supervisor_account_rounded),
+            const SizedBox(height: 8.0),
+            AutoSizeText(
               'Trocar Produtor',
               textAlign: TextAlign.center,
+              maxLines: 2,
+              minFontSize: 8.0,
+              overflow: TextOverflow.ellipsis,
               style: FlutterFlowTheme.of(context).labelMedium.override(
                     font: GoogleFonts.readexPro(
                       fontWeight: FontWeight.w600,
@@ -1000,14 +994,14 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.format_list_numbered,
-              color: Color(0xFFEC3B5B),
-              size: 24.0,
-            ),
-            Text(
+            _iconeMenu(Icons.format_list_numbered),
+            const SizedBox(height: 8.0),
+            AutoSizeText(
               'Animais',
               textAlign: TextAlign.center,
+              maxLines: 2,
+              minFontSize: 8.0,
+              overflow: TextOverflow.ellipsis,
               style: FlutterFlowTheme.of(context).labelMedium.override(
                     font: GoogleFonts.readexPro(
                       fontWeight: FontWeight.w600,
@@ -1159,8 +1153,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        MenuIconTile(
-                            icon: Icons.vaccines, accent: AppTokens.secondary),
+                        _iconeMenu(Icons.vaccines),
                         const SizedBox(height: 8.0),
                         AutoSizeText(
                           'Inseminações',
@@ -1308,9 +1301,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      MenuIconTile(
-                          icon: Icons.medical_information_outlined,
-                          accent: AppTokens.secondary),
+                      _iconeMenu(Icons.medical_information_outlined),
                       const SizedBox(height: 8.0),
                       AutoSizeText(
                         'Diagnóstico\nGestação',
@@ -1448,9 +1439,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      MenuIconTile(
-                          icon: Icons.monitor_heart_outlined,
-                          accent: AppTokens.secondary),
+                      _iconeMenu(Icons.monitor_heart_outlined),
                       const SizedBox(height: 8.0),
                       AutoSizeText(
                         'Prenhas',
@@ -1591,7 +1580,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      MenuIconTile(icon: Icons.alarm_add_sharp),
+                      _iconeMenu(Icons.alarm_add_sharp),
                       const SizedBox(height: 8.0),
                       AutoSizeText(
                         'Secas',
@@ -1740,9 +1729,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      MenuIconTile(
-                          icon: Icons.medical_services,
-                          accent: AppTokens.secondary),
+                      _iconeMenu(Icons.medical_services),
                       const SizedBox(height: 8.0),
                       AutoSizeText(
                         'Exame\nGinecológico',
@@ -1901,7 +1888,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      MenuIconTile(icon: Icons.compare_arrows_sharp),
+                      _iconeMenu(Icons.compare_arrows_sharp),
                       const SizedBox(height: 8.0),
                       AutoSizeText(
                         'Recria',
@@ -2040,7 +2027,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      MenuIconTile(icon: Icons.list_alt_sharp),
+                      _iconeMenu(Icons.list_alt_sharp),
                       const SizedBox(height: 8.0),
                       AutoSizeText(
                         'Lista completa',
@@ -2124,14 +2111,14 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.folder_copy_outlined,
-              color: Color(0xFFEC3B5B),
-              size: 30.0,
-            ),
-            Text(
+            _iconeMenu(Icons.folder_copy_outlined),
+            const SizedBox(height: 8.0),
+            AutoSizeText(
               'Indíces Zootécnicos',
               textAlign: TextAlign.center,
+              maxLines: 2,
+              minFontSize: 8.0,
+              overflow: TextOverflow.ellipsis,
               style: FlutterFlowTheme.of(context).labelMedium.override(
                     font: GoogleFonts.readexPro(
                       fontWeight: FontWeight.w600,
@@ -2152,9 +2139,12 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
   }
 
   Widget _rotuloReceituario(BuildContext context) {
-    return Text(
+    return AutoSizeText(
       'Receituário',
       textAlign: TextAlign.center,
+      maxLines: 2,
+      minFontSize: 8.0,
+      overflow: TextOverflow.ellipsis,
       style: FlutterFlowTheme.of(context).labelMedium.override(
             font: GoogleFonts.readexPro(
               fontWeight: FontWeight.w600,
@@ -2169,9 +2159,12 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
   }
 
   Widget _rotuloResumoRebanho(BuildContext context) {
-    return Text(
+    return AutoSizeText(
       'Resumo Rebanho',
       textAlign: TextAlign.center,
+      maxLines: 2,
+      minFontSize: 8.0,
+      overflow: TextOverflow.ellipsis,
       style: FlutterFlowTheme.of(context).labelMedium.override(
             font: GoogleFonts.readexPro(
               fontWeight: FontWeight.w600,
@@ -2186,9 +2179,12 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
   }
 
   Widget _rotuloCalendarioSanitario(BuildContext context) {
-    return Text(
+    return AutoSizeText(
       'Calendário Sanitário',
       textAlign: TextAlign.center,
+      maxLines: 2,
+      minFontSize: 8.0,
+      overflow: TextOverflow.ellipsis,
       style: FlutterFlowTheme.of(context).labelMedium.override(
             font: GoogleFonts.readexPro(
               fontWeight: FontWeight.w600,
