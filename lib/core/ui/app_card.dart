@@ -62,13 +62,10 @@ class AppTokens {
         ),
       ];
 
-  /// Contorno dos cards de ação: uma linha laranja de 1.5px e nada mais. Sem
+  /// Contorno dos cards de ação: uma linha laranja de 1px e nada mais. Sem
   /// sombra — o card é definido pela linha, não por elevação.
-  ///
-  /// 1px na cor cheia sumia, 2px pesava; 1.5 é o meio-termo, e num LCD 2x ele
-  /// cai em 3 pixels físicos exatos, sem antialiasing borrando a linha.
   static Border brandBorder(BuildContext context) =>
-      Border.all(color: brandHairline, width: 1.5);
+      Border.all(color: brandHairline, width: 1.0);
 }
 
 /// "Tile" quadrado-arredondado com o ícone tonalizado — base visual dos cards
