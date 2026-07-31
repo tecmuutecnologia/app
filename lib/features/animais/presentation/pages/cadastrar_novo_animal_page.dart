@@ -60,14 +60,26 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
   InstantTimer? _instantTimer;
   bool? _respostaNet = true;
 
-  /// Propriedade ainda não ativada (sem produtor vinculado). Nela o cadastro vai
-  /// SEMPRE para o ObjectBox (mesmo online): tudo fica local e sincroniza junto
-  /// pelo mecanismo offline-first, mantendo as listas (ObjectBox) consistentes.
-  /// Detecta pelo registro local, via o firestoreId real da propriedade.
-  bool get _propriedadePendente {
-    final id = widget.uidPropriedade?.id;
-    if (id == null) return false;
-    return PropriedadeRepository().getByFirestoreId(id)?.contaCriada == false;
+  /// Cria o animal no ObjectBox — a fonte única de que todas as listas leem — e
+  /// debita a cota do técnico quando há internet.
+  ///
+  /// O débito da cota é a única coisa que o ramo online fazia e o do ObjectBox
+  /// não; por isso ele sobrevive aqui, num lugar só, em vez das dez cópias que
+  /// existiam. A gravação do animal em si não depende de conexão: sai daqui
+  /// marcada com `needsSync` e o OfflineFirstSyncService a envia ao Firestore.
+  Future<void> _criarAnimal(AnimaisProdutoresStruct s) async {
+    await criarAnimalOffline(s);
+
+    if ((_respostaNet ?? false) && widget.uidTecnico != null) {
+      await widget.uidTecnico!.update({
+        ...mapToFirestore(
+          {
+            'quantidadeAnimaisCadastrados': FieldValue.increment(1),
+            'restanteLimiteAnimais': FieldValue.increment(-(1)),
+          },
+        ),
+      });
+    }
   }
 
   FocusNode? _nomeFocusNode;
@@ -211,64 +223,372 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
   Future<void> _cadastrarAnimal(BuildContext context) async {
     var _shouldSetState = false;
     // Propriedade pendente força o ramo offline (ObjectBox), mesmo com internet.
-    if (_respostaNet! && !_propriedadePendente) {
-      // Animais criados offline agora vão direto ao ObjectBox (sem fila no
-      // FFAppState), então não há mais "pendentes" a bloquear o cadastro.
-      {
-        if (_formKey.currentState == null ||
-            !_formKey.currentState!.validate()) {
-          return;
-        }
-        if (_racaValue == null) {
-          return;
-        }
-        if (_grupoValue == null) {
-          return;
-        }
-        // Checagem de duplicidade pelo PAR (nome + brinco) no ObjectBox,
-        // considerando apenas animais ativos (não descartados). Brinco vazio é
-        // normalizado para -1, igual à persistência.
-        _shouldSetState = true;
-        final brincoNovo = _brincoTextController.text != ''
-            ? (int.tryParse(_brincoTextController.text) ?? -1)
-            : -1;
-        final duplicado = widget.uidPropriedade != null &&
-            AnimalRepository().existeAnimalAtivoComNomeBrinco(
-              propriedadePath: widget.uidPropriedade!.path,
-              nome: _nomeTextController.text,
-              brinco: brincoNovo,
-            );
-        if (duplicado) {
-          await showDialog(
-            context: context,
-            builder: (alertDialogContext) {
-              return AlertDialog(
-                title: Text('Animal já cadastrado.'),
-                content:
-                    Text('Já existe um animal ativo com este nome e brinco.'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(alertDialogContext),
-                    child: Text('Ok'),
-                  ),
-                ],
-              );
-            },
+    // Caminho ÚNICO de gravação: sempre ObjectBox, online ou offline.
+    //
+    // Havia aqui um ramo `if (online)` que gravava direto no Firestore com
+    // AnimaisProdutoresRecord.createDoc(...).set(...) e NUNCA tocava no
+    // ObjectBox. Como toda listagem de animais lê do ObjectBox
+    // (animaisByPropriedadeProvider -> watchAnimaisByPropriedade), o animal
+    // criado online simplesmente não existia para o app: nem na lista da aba,
+    // nem na lista completa, nem para o técnico nem para o produtor.
+    //
+    // O ramo do ObjectBox já servia aos dois casos: grava local (a lista
+    // atualiza na hora) e marca needsSync, e o _syncModifiedAnimals() do
+    // OfflineFirstSyncService cria o documento no Firestore. Os dois ramos
+    // cobriam exatamente os mesmos status e grupos — era duplicação pura.
+    if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
+      return;
+    }
+    if (_racaValue == null) {
+      return;
+    }
+    if (_grupoValue == null) {
+      return;
+    }
+    // Checagem de duplicidade pelo PAR (nome + brinco) no ObjectBox,
+    // considerando apenas animais ativos (não descartados). Brinco vazio é
+    // normalizado para -1, igual à persistência.
+    _shouldSetState = true;
+    final brincoNovo = _brincoTextController.text != ''
+        ? (int.tryParse(_brincoTextController.text) ?? -1)
+        : -1;
+    final duplicado = widget.uidPropriedade != null &&
+        AnimalRepository().existeAnimalAtivoComNomeBrinco(
+          propriedadePath: widget.uidPropriedade!.path,
+          nome: _nomeTextController.text,
+          brinco: brincoNovo,
+        );
+    if (duplicado) {
+      await showDialog(
+        context: context,
+        builder: (alertDialogContext) {
+          return AlertDialog(
+            title: Text('Animal já cadastrado.'),
+            content: Text('Já existe um animal ativo com este nome e brinco.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(alertDialogContext),
+                child: Text('Ok'),
+              ),
+            ],
           );
-          if (_shouldSetState) safeSetState(() {});
-          return;
-        }
-        if ((_nomeTextController.text != '') ||
-            (_brincoTextController.text != '')) {
-          if (_dataUltimaInseminacaoTextController.text != '') {
-            if (!(_touroInseminacaoValue != null &&
-                _touroInseminacaoValue != '')) {
+        },
+      );
+      if (_shouldSetState) safeSetState(() {});
+      return;
+    }
+    // O touro/sêmen da inseminação é OPCIONAL. Havia aqui um bloqueio que
+    // exigia selecioná-lo sempre que a data da última inseminação estivesse
+    // preenchida — o técnico nem sempre sabe ou registra qual foi, e a data
+    // sozinha já é informação útil.
+    if ((_nomeTextController.text == '') &&
+        (_brincoTextController.text == '')) {
+      await showDialog(
+        context: context,
+        builder: (alertDialogContext) {
+          return AlertDialog(
+            title: Text('Nome ou brinco obrigatório.'),
+            content: Text('Preencha ao menos um dos campos.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(alertDialogContext),
+                child: Text('Ok'),
+              ),
+            ],
+          );
+        },
+      );
+      if (_shouldSetState) safeSetState(() {});
+      return;
+    }
+
+    if ((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) {
+      if (_statusAnimalValue != null && _statusAnimalValue != '') {
+        if (_statusAnimalValue == 'Inseminada') {
+          if ((_dataUltimaInseminacaoTextController.text != '') &&
+              (_dataUltimoPartoTextController.text == '')) {
+            await _criarAnimal(AnimaisProdutoresStruct(
+              uidTecnicoPropriedade: widget.uidPropriedade,
+              nomeAnimal: _nomeTextController.text,
+              racaAnimal: _racaValue,
+              pesoAnimal: _pesoTextController.text,
+              dtNascimento: _dataNascimentoTextController.text,
+              touro: _touroPaiTextController.text,
+              vaca: _vacaMaeTextController.text,
+              status: _statusAnimalValue,
+              grupoAnimal: _grupoValue,
+              dtUltimaInseminacao: _dataUltimaInseminacaoTextController.text,
+              brincoAnimalOrder: _brincoTextController.text != ''
+                  ? int.tryParse(_brincoTextController.text)
+                  : 999999,
+              brincoAnimal: _brincoTextController.text != ''
+                  ? int.tryParse(_brincoTextController.text)
+                  : -1,
+              nomeTouroUltimaInseminacao: _touroInseminacaoValue,
+              dtPartoPrevisto: functions
+                  .somarDataParto(_dataUltimaInseminacaoTextController.text),
+              dtSecPrevista: functions
+                  .somarDataSecagem(_dataUltimaInseminacaoTextController.text),
+              dtPrePartoPrevista: functions
+                  .somarDataPreParto(_dataUltimaInseminacaoTextController.text),
+              totalInseminacoes: 1,
+              compararDtUltimaInseminacao:
+                  functions.converterDataUltimaInseminacao(
+                      _dataUltimaInseminacaoTextController.text),
+              nomeBrincoConcat: () {
+                if ((_nomeTextController.text != '') &&
+                    (_brincoTextController.text != '') &&
+                    (_brincoTextController.text != '-1')) {
+                  return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                } else if (_nomeTextController.text != '') {
+                  return _nomeTextController.text;
+                } else {
+                  return _brincoTextController.text;
+                }
+              }(),
+              idStatusAnimal: 3,
+              uidAnimalOffline: functions.criarUidRandom(),
+            ));
+            safeSetState(() {});
+            mostrarSucessoOverlay(context);
+            if (Navigator.of(context).canPop()) {
+              context.pop();
+            }
+            context.pushNamed(
+              ListaAnimaisPage.routeName,
+              queryParameters: {
+                'uidPropriedade': serializeParam(
+                  widget.uidPropriedade,
+                  ParamType.DocumentReference,
+                ),
+                'nomePropriedade': serializeParam(
+                  widget.nomePropriedade,
+                  ParamType.String,
+                ),
+                'uidTecnico': serializeParam(
+                  widget.uidTecnico,
+                  ParamType.DocumentReference,
+                ),
+                'emailPropriedade': serializeParam(
+                  widget.emailPropriedade,
+                  ParamType.String,
+                ),
+                'visitaPresencial': serializeParam(
+                  widget.visitaPresencial,
+                  ParamType.bool,
+                ),
+                'initialTabSelect': serializeParam(
+                  widget.initialTabSelect,
+                  ParamType.int,
+                ),
+                'diasDg': serializeParam(
+                  widget.diasDg,
+                  ParamType.String,
+                ),
+                'tabBarOpenSelected': serializeParam(
+                  0,
+                  ParamType.int,
+                ),
+              }.withoutNulls,
+            );
+
+            if (_shouldSetState) safeSetState(() {});
+            return;
+          } else {
+            if ((_dataUltimoPartoTextController.text != '') &&
+                (_dataUltimaInseminacaoTextController.text != '')) {
+              await _criarAnimal(AnimaisProdutoresStruct(
+                uidTecnicoPropriedade: widget.uidPropriedade,
+                nomeAnimal: _nomeTextController.text,
+                racaAnimal: _racaValue,
+                pesoAnimal: _pesoTextController.text,
+                dtNascimento: _dataNascimentoTextController.text,
+                touro: _touroPaiTextController.text,
+                vaca: _vacaMaeTextController.text,
+                grupoAnimal: _grupoValue,
+                brincoAnimalOrder: _brincoTextController.text != ''
+                    ? int.tryParse(_brincoTextController.text)
+                    : 999999,
+                brincoAnimal: _brincoTextController.text != ''
+                    ? int.tryParse(_brincoTextController.text)
+                    : -1,
+                nomeBrincoConcat: () {
+                  if ((_nomeTextController.text != '') &&
+                      (_brincoTextController.text != '') &&
+                      (_brincoTextController.text != '-1')) {
+                    return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                  } else if (_nomeTextController.text != '') {
+                    return _nomeTextController.text;
+                  } else {
+                    return _brincoTextController.text;
+                  }
+                }(),
+                status: _statusAnimalValue,
+                dtUltimaInseminacao: _dataUltimaInseminacaoTextController.text,
+                dtUltimoParto: _dataUltimoPartoTextController.text,
+                nomeTouroUltimaInseminacao: _touroInseminacaoValue,
+                dtPartoPrevisto: functions
+                    .somarDataParto(_dataUltimaInseminacaoTextController.text),
+                dtSecPrevista: functions.somarDataSecagem(
+                    _dataUltimaInseminacaoTextController.text),
+                dtPrePartoPrevista: functions.somarDataPreParto(
+                    _dataUltimaInseminacaoTextController.text),
+                totalInseminacoes: 1,
+                totalPartos: 1,
+                compararDtUltimaInseminacao:
+                    functions.converterDataUltimaInseminacao(
+                        _dataUltimaInseminacaoTextController.text),
+                idStatusAnimal: 3,
+                dtUltimoPartoContingencia: _dataUltimoPartoTextController.text,
+                uidAnimalOffline: functions.criarUidRandom(),
+              ));
+              safeSetState(() {});
+              mostrarSucessoOverlay(context);
+              if (Navigator.of(context).canPop()) {
+                context.pop();
+              }
+              context.pushNamed(
+                ListaAnimaisPage.routeName,
+                queryParameters: {
+                  'uidPropriedade': serializeParam(
+                    widget.uidPropriedade,
+                    ParamType.DocumentReference,
+                  ),
+                  'nomePropriedade': serializeParam(
+                    widget.nomePropriedade,
+                    ParamType.String,
+                  ),
+                  'uidTecnico': serializeParam(
+                    widget.uidTecnico,
+                    ParamType.DocumentReference,
+                  ),
+                  'emailPropriedade': serializeParam(
+                    widget.emailPropriedade,
+                    ParamType.String,
+                  ),
+                  'visitaPresencial': serializeParam(
+                    widget.visitaPresencial,
+                    ParamType.bool,
+                  ),
+                  'initialTabSelect': serializeParam(
+                    widget.initialTabSelect,
+                    ParamType.int,
+                  ),
+                  'diasDg': serializeParam(
+                    widget.diasDg,
+                    ParamType.String,
+                  ),
+                  'tabBarOpenSelected': serializeParam(
+                    0,
+                    ParamType.int,
+                  ),
+                }.withoutNulls,
+              );
+
+              if (_shouldSetState) safeSetState(() {});
+              return;
+            } else {
+              if (_shouldSetState) safeSetState(() {});
+              return;
+            }
+          }
+        } else {
+          if (_statusAnimalValue == 'Seca') {
+            if (_grupoValue == 'Vacas') {
+              await _criarAnimal(AnimaisProdutoresStruct(
+                uidTecnicoPropriedade: widget.uidPropriedade,
+                nomeAnimal: _nomeTextController.text,
+                racaAnimal: _racaValue,
+                pesoAnimal: _pesoTextController.text,
+                dtNascimento: _dataNascimentoTextController.text,
+                touro: _touroPaiTextController.text,
+                vaca: _vacaMaeTextController.text,
+                grupoAnimal: _grupoValue,
+                brincoAnimalOrder: _brincoTextController.text != ''
+                    ? int.tryParse(_brincoTextController.text)
+                    : 999999,
+                brincoAnimal: _brincoTextController.text != ''
+                    ? int.tryParse(_brincoTextController.text)
+                    : -1,
+                nomeBrincoConcat: () {
+                  if ((_nomeTextController.text != '') &&
+                      (_brincoTextController.text != '') &&
+                      (_brincoTextController.text != '-1')) {
+                    return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                  } else if (_nomeTextController.text != '') {
+                    return _nomeTextController.text;
+                  } else {
+                    return _brincoTextController.text;
+                  }
+                }(),
+                status: _statusAnimalValue,
+                dtUltimaInseminacao: _dataUltimaInseminacaoTextController.text,
+                dtPartoPrevisto: functions
+                    .somarDataParto(_dataUltimaInseminacaoTextController.text),
+                dtSecPrevista: functions.somarDataSecagem(
+                    _dataUltimaInseminacaoTextController.text),
+                dtPrePartoPrevista: functions.somarDataPreParto(
+                    _dataUltimaInseminacaoTextController.text),
+                nomeTouroUltimaInseminacao: _touroInseminacaoValue,
+                compararDtUltimaInseminacao:
+                    functions.converterDataUltimaInseminacao(
+                        _dataUltimaInseminacaoTextController.text),
+                idStatusAnimal: 4,
+                uidAnimalOffline: functions.criarUidRandom(),
+              ));
+              safeSetState(() {});
+              mostrarSucessoOverlay(context);
+              if (Navigator.of(context).canPop()) {
+                context.pop();
+              }
+              context.pushNamed(
+                ListaAnimaisPage.routeName,
+                queryParameters: {
+                  'uidPropriedade': serializeParam(
+                    widget.uidPropriedade,
+                    ParamType.DocumentReference,
+                  ),
+                  'nomePropriedade': serializeParam(
+                    widget.nomePropriedade,
+                    ParamType.String,
+                  ),
+                  'uidTecnico': serializeParam(
+                    widget.uidTecnico,
+                    ParamType.DocumentReference,
+                  ),
+                  'emailPropriedade': serializeParam(
+                    widget.emailPropriedade,
+                    ParamType.String,
+                  ),
+                  'visitaPresencial': serializeParam(
+                    widget.visitaPresencial,
+                    ParamType.bool,
+                  ),
+                  'initialTabSelect': serializeParam(
+                    widget.initialTabSelect,
+                    ParamType.int,
+                  ),
+                  'diasDg': serializeParam(
+                    widget.diasDg,
+                    ParamType.String,
+                  ),
+                  'tabBarOpenSelected': serializeParam(
+                    0,
+                    ParamType.int,
+                  ),
+                }.withoutNulls,
+              );
+
+              if (_shouldSetState) safeSetState(() {});
+              return;
+            } else {
               await showDialog(
                 context: context,
                 builder: (alertDialogContext) {
                   return AlertDialog(
-                    title: Text('Touro inseminação não selecionado.'),
-                    content: Text('Selecione o touro usado.'),
+                    title: Text(
+                        'O status de \"Seca\" é permitido somente em vacas.'),
+                    content: Text('Atualize o status.'),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(alertDialogContext),
@@ -281,152 +601,118 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
               if (_shouldSetState) safeSetState(() {});
               return;
             }
-          }
-        } else {
-          await showDialog(
-            context: context,
-            builder: (alertDialogContext) {
-              return AlertDialog(
-                title: Text('Nome ou brinco obrigatório.'),
-                content: Text('Preencha ao menos um dos campos.'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(alertDialogContext),
-                    child: Text('Ok'),
+          } else {
+            if (_statusAnimalValue == 'Vazia') {
+              await _criarAnimal(AnimaisProdutoresStruct(
+                uidTecnicoPropriedade: widget.uidPropriedade,
+                nomeAnimal: _nomeTextController.text,
+                racaAnimal: _racaValue,
+                pesoAnimal: _pesoTextController.text,
+                dtNascimento: _dataNascimentoTextController.text,
+                touro: _touroPaiTextController.text,
+                vaca: _vacaMaeTextController.text,
+                grupoAnimal: _grupoValue,
+                brincoAnimalOrder: _brincoTextController.text != ''
+                    ? int.tryParse(_brincoTextController.text)
+                    : 999999,
+                brincoAnimal: _brincoTextController.text != ''
+                    ? int.tryParse(_brincoTextController.text)
+                    : -1,
+                nomeBrincoConcat: () {
+                  if ((_nomeTextController.text != '') &&
+                      (_brincoTextController.text != '') &&
+                      (_brincoTextController.text != '-1')) {
+                    return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                  } else if (_nomeTextController.text != '') {
+                    return _nomeTextController.text;
+                  } else {
+                    return _brincoTextController.text;
+                  }
+                }(),
+                dtUltimoParto: _dataUltimoPartoTextController.text,
+                status: _statusAnimalValue,
+                totalPartos: _dataUltimoPartoTextController.text != '' ? 1 : 0,
+                idStatusAnimal: 2,
+                dtUltimoPartoContingencia: _dataUltimoPartoTextController.text,
+                uidAnimalOffline: functions.criarUidRandom(),
+              ));
+              safeSetState(() {});
+              mostrarSucessoOverlay(context);
+              if (Navigator.of(context).canPop()) {
+                context.pop();
+              }
+              context.pushNamed(
+                ListaAnimaisPage.routeName,
+                queryParameters: {
+                  'uidPropriedade': serializeParam(
+                    widget.uidPropriedade,
+                    ParamType.DocumentReference,
                   ),
-                ],
+                  'nomePropriedade': serializeParam(
+                    widget.nomePropriedade,
+                    ParamType.String,
+                  ),
+                  'uidTecnico': serializeParam(
+                    widget.uidTecnico,
+                    ParamType.DocumentReference,
+                  ),
+                  'emailPropriedade': serializeParam(
+                    widget.emailPropriedade,
+                    ParamType.String,
+                  ),
+                  'visitaPresencial': serializeParam(
+                    widget.visitaPresencial,
+                    ParamType.bool,
+                  ),
+                  'initialTabSelect': serializeParam(
+                    widget.initialTabSelect,
+                    ParamType.int,
+                  ),
+                  'diasDg': serializeParam(
+                    widget.diasDg,
+                    ParamType.String,
+                  ),
+                  'tabBarOpenSelected': serializeParam(
+                    0,
+                    ParamType.int,
+                  ),
+                }.withoutNulls,
               );
-            },
-          );
-          if (_shouldSetState) safeSetState(() {});
-          return;
-        }
 
-        if ((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) {
-          if (_statusAnimalValue != null && _statusAnimalValue != '') {
-            if (_statusAnimalValue == 'Inseminada') {
-              if ((_dataUltimaInseminacaoTextController.text != '') &&
-                  (_dataUltimoPartoTextController.text == '') &&
-                  (_touroInseminacaoValue != null &&
-                      _touroInseminacaoValue != '')) {
-                await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
-                    .set(createAnimaisProdutoresRecordData(
-                  uidTecnicoPropriedade: widget.uidPropriedade,
-                  nomeAnimal: _nomeTextController.text,
-                  brincoAnimal: _brincoTextController.text != ''
-                      ? int.tryParse(_brincoTextController.text)
-                      : -1,
-                  racaAnimal: _racaValue,
-                  pesoAnimal: _pesoTextController.text,
-                  dtNascimento: _dataNascimentoTextController.text,
-                  touro: _touroPaiTextController.text,
-                  vaca: _vacaMaeTextController.text,
-                  status: _statusAnimalValue,
-                  dtUltimaInseminacao:
-                      _dataUltimaInseminacaoTextController.text,
-                  grupoAnimal: _grupoValue,
-                  nomeTouroUltimaInseminacao: _touroInseminacaoValue,
-                  dtPartoPrevisto: functions.somarDataParto(
-                      _dataUltimaInseminacaoTextController.text),
-                  dtSecPrevista: functions.somarDataSecagem(
-                      _dataUltimaInseminacaoTextController.text),
-                  dtPrePartoPrevista: functions.somarDataPreParto(
-                      _dataUltimaInseminacaoTextController.text),
-                  totalInseminacoes: 1,
-                  compararDtUltimaInseminacao:
-                      functions.converterDataUltimaInseminacao(
-                          _dataUltimaInseminacaoTextController.text),
-                  nomeBrincoConcat: () {
-                    if ((_nomeTextController.text != '') &&
-                        (_brincoTextController.text != '') &&
-                        (_brincoTextController.text != '-1')) {
-                      return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                    } else if (_nomeTextController.text != '') {
-                      return _nomeTextController.text;
-                    } else {
-                      return _brincoTextController.text;
-                    }
-                  }(),
-                  idStatusAnimal: 3,
-                  brincoAnimalOrder: _brincoTextController.text != ''
-                      ? int.tryParse(_brincoTextController.text)
-                      : 999999,
-                ));
-
-                await widget.uidTecnico!.update({
-                  ...mapToFirestore(
-                    {
-                      'quantidadeAnimaisCadastrados': FieldValue.increment(1),
-                      'restanteLimiteAnimais': FieldValue.increment(-(1)),
-                    },
-                  ),
-                });
-                mostrarSucessoOverlay(context);
-                if (Navigator.of(context).canPop()) {
-                  context.pop();
-                }
-                context.pushNamed(
-                  ListaAnimaisPage.routeName,
-                  queryParameters: {
-                    'uidPropriedade': serializeParam(
-                      widget.uidPropriedade,
-                      ParamType.DocumentReference,
-                    ),
-                    'nomePropriedade': serializeParam(
-                      widget.nomePropriedade,
-                      ParamType.String,
-                    ),
-                    'uidTecnico': serializeParam(
-                      widget.uidTecnico,
-                      ParamType.DocumentReference,
-                    ),
-                    'emailPropriedade': serializeParam(
-                      widget.emailPropriedade,
-                      ParamType.String,
-                    ),
-                    'visitaPresencial': serializeParam(
-                      widget.visitaPresencial,
-                      ParamType.bool,
-                    ),
-                    'initialTabSelect': serializeParam(
-                      widget.initialTabSelect,
-                      ParamType.int,
-                    ),
-                    'diasDg': serializeParam(
-                      widget.diasDg,
-                      ParamType.String,
-                    ),
-                    'tabBarOpenSelected': serializeParam(
-                      0,
-                      ParamType.int,
-                    ),
-                  }.withoutNulls,
-                );
-
-                if (_shouldSetState) safeSetState(() {});
-                return;
-              } else {
-                if ((_dataUltimoPartoTextController.text != '') &&
-                    (_dataUltimaInseminacaoTextController.text != '') &&
-                    (_touroInseminacaoValue != null &&
-                        _touroInseminacaoValue != '')) {
-                  await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
-                      .set(createAnimaisProdutoresRecordData(
+              if (_shouldSetState) safeSetState(() {});
+              return;
+            } else {
+              if (_statusAnimalValue == 'Prenha') {
+                if ((_dataUltimaInseminacaoTextController.text != '')) {
+                  await _criarAnimal(AnimaisProdutoresStruct(
                     uidTecnicoPropriedade: widget.uidPropriedade,
                     nomeAnimal: _nomeTextController.text,
-                    brincoAnimal: _brincoTextController.text != ''
-                        ? int.tryParse(_brincoTextController.text)
-                        : -1,
                     racaAnimal: _racaValue,
                     pesoAnimal: _pesoTextController.text,
                     dtNascimento: _dataNascimentoTextController.text,
                     touro: _touroPaiTextController.text,
                     vaca: _vacaMaeTextController.text,
+                    grupoAnimal: _grupoValue,
+                    brincoAnimalOrder: _brincoTextController.text != ''
+                        ? int.tryParse(_brincoTextController.text)
+                        : 999999,
+                    brincoAnimal: _brincoTextController.text != ''
+                        ? int.tryParse(_brincoTextController.text)
+                        : -1,
+                    nomeBrincoConcat: () {
+                      if ((_nomeTextController.text != '') &&
+                          (_brincoTextController.text != '') &&
+                          (_brincoTextController.text != '-1')) {
+                        return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                      } else if (_nomeTextController.text != '') {
+                        return _nomeTextController.text;
+                      } else {
+                        return _brincoTextController.text;
+                      }
+                    }(),
                     status: _statusAnimalValue,
                     dtUltimaInseminacao:
                         _dataUltimaInseminacaoTextController.text,
-                    dtUltimoParto: _dataUltimoPartoTextController.text,
-                    grupoAnimal: _grupoValue,
                     nomeTouroUltimaInseminacao: _touroInseminacaoValue,
                     dtPartoPrevisto: functions.somarDataParto(
                         _dataUltimaInseminacaoTextController.text),
@@ -435,140 +721,21 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                     dtPrePartoPrevista: functions.somarDataPreParto(
                         _dataUltimaInseminacaoTextController.text),
                     totalInseminacoes: 1,
-                    totalPartos: 1,
+                    dtDgMais: dateTimeFormat(
+                      "dd/MM/yyyy",
+                      getCurrentTimestamp,
+                      locale: FFLocalizations.of(context).languageCode,
+                    ),
+                    dtUltimoParto: _dataUltimoPartoTextController.text,
                     compararDtUltimaInseminacao:
                         functions.converterDataUltimaInseminacao(
                             _dataUltimaInseminacaoTextController.text),
-                    nomeBrincoConcat: () {
-                      if ((_nomeTextController.text != '') &&
-                          (_brincoTextController.text != '') &&
-                          (_brincoTextController.text != '-1')) {
-                        return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                      } else if (_nomeTextController.text != '') {
-                        return _nomeTextController.text;
-                      } else {
-                        return _brincoTextController.text;
-                      }
-                    }(),
-                    idStatusAnimal: 3,
+                    idStatusAnimal: 6,
                     dtUltimoPartoContingencia:
                         _dataUltimoPartoTextController.text,
-                    brincoAnimalOrder: _brincoTextController.text != ''
-                        ? int.tryParse(_brincoTextController.text)
-                        : 999999,
+                    uidAnimalOffline: functions.criarUidRandom(),
                   ));
-
-                  await widget.uidTecnico!.update({
-                    ...mapToFirestore(
-                      {
-                        'quantidadeAnimaisCadastrados': FieldValue.increment(1),
-                        'restanteLimiteAnimais': FieldValue.increment(-(1)),
-                      },
-                    ),
-                  });
-                  mostrarSucessoOverlay(context);
-                  if (Navigator.of(context).canPop()) {
-                    context.pop();
-                  }
-                  context.pushNamed(
-                    ListaAnimaisPage.routeName,
-                    queryParameters: {
-                      'uidPropriedade': serializeParam(
-                        widget.uidPropriedade,
-                        ParamType.DocumentReference,
-                      ),
-                      'nomePropriedade': serializeParam(
-                        widget.nomePropriedade,
-                        ParamType.String,
-                      ),
-                      'uidTecnico': serializeParam(
-                        widget.uidTecnico,
-                        ParamType.DocumentReference,
-                      ),
-                      'emailPropriedade': serializeParam(
-                        widget.emailPropriedade,
-                        ParamType.String,
-                      ),
-                      'visitaPresencial': serializeParam(
-                        widget.visitaPresencial,
-                        ParamType.bool,
-                      ),
-                      'initialTabSelect': serializeParam(
-                        widget.initialTabSelect,
-                        ParamType.int,
-                      ),
-                      'diasDg': serializeParam(
-                        widget.diasDg,
-                        ParamType.String,
-                      ),
-                      'tabBarOpenSelected': serializeParam(
-                        0,
-                        ParamType.int,
-                      ),
-                    }.withoutNulls,
-                  );
-
-                  if (_shouldSetState) safeSetState(() {});
-                  return;
-                } else {
-                  if (_shouldSetState) safeSetState(() {});
-                  return;
-                }
-              }
-            } else {
-              if (_statusAnimalValue == 'Seca') {
-                if (_grupoValue == 'Vacas') {
-                  await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
-                      .set(createAnimaisProdutoresRecordData(
-                    uidTecnicoPropriedade: widget.uidPropriedade,
-                    nomeAnimal: _nomeTextController.text,
-                    brincoAnimal: _brincoTextController.text != ''
-                        ? int.tryParse(_brincoTextController.text)
-                        : -1,
-                    racaAnimal: _racaValue,
-                    pesoAnimal: _pesoTextController.text,
-                    dtNascimento: _dataNascimentoTextController.text,
-                    touro: _touroPaiTextController.text,
-                    vaca: _vacaMaeTextController.text,
-                    status: _statusAnimalValue,
-                    dtUltimaInseminacao:
-                        _dataUltimaInseminacaoTextController.text,
-                    grupoAnimal: _grupoValue,
-                    dtPartoPrevisto: functions.somarDataParto(
-                        _dataUltimaInseminacaoTextController.text),
-                    dtSecPrevista: functions.somarDataSecagem(
-                        _dataUltimaInseminacaoTextController.text),
-                    dtPrePartoPrevista: functions.somarDataPreParto(
-                        _dataUltimaInseminacaoTextController.text),
-                    nomeTouroUltimaInseminacao: _touroInseminacaoValue,
-                    compararDtUltimaInseminacao:
-                        functions.converterDataUltimaInseminacao(
-                            _dataUltimaInseminacaoTextController.text),
-                    nomeBrincoConcat: () {
-                      if ((_nomeTextController.text != '') &&
-                          (_brincoTextController.text != '') &&
-                          (_brincoTextController.text != '-1')) {
-                        return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                      } else if (_nomeTextController.text != '') {
-                        return _nomeTextController.text;
-                      } else {
-                        return _brincoTextController.text;
-                      }
-                    }(),
-                    idStatusAnimal: 4,
-                    brincoAnimalOrder: _brincoTextController.text != ''
-                        ? int.tryParse(_brincoTextController.text)
-                        : 999999,
-                  ));
-
-                  await widget.uidTecnico!.update({
-                    ...mapToFirestore(
-                      {
-                        'quantidadeAnimaisCadastrados': FieldValue.increment(1),
-                        'restanteLimiteAnimais': FieldValue.increment(-(1)),
-                      },
-                    ),
-                  });
+                  safeSetState(() {});
                   mostrarSucessoOverlay(context);
                   if (Navigator.of(context).canPop()) {
                     context.pop();
@@ -619,8 +786,8 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                     builder: (alertDialogContext) {
                       return AlertDialog(
                         title: Text(
-                            'O status de \"Seca\" é permitido somente em vacas.'),
-                        content: Text('Atualize o status.'),
+                            'Data última inseminação vazia ou Touro inseminação não selecionado.'),
+                        content: Text('Preencha os campos obrigatórios.'),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(alertDialogContext),
@@ -634,1277 +801,9 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                   return;
                 }
               } else {
-                if (_statusAnimalValue == 'Vazia') {
-                  await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
-                      .set(createAnimaisProdutoresRecordData(
-                    uidTecnicoPropriedade: widget.uidPropriedade,
-                    nomeAnimal: _nomeTextController.text,
-                    brincoAnimal: _brincoTextController.text != ''
-                        ? int.tryParse(_brincoTextController.text)
-                        : -1,
-                    racaAnimal: _racaValue,
-                    pesoAnimal: _pesoTextController.text,
-                    dtNascimento: _dataNascimentoTextController.text,
-                    touro: _touroPaiTextController.text,
-                    vaca: _vacaMaeTextController.text,
-                    status: _statusAnimalValue,
-                    grupoAnimal: _grupoValue,
-                    dtUltimoParto: _dataUltimoPartoTextController.text,
-                    totalPartos:
-                        _dataUltimoPartoTextController.text != '' ? 1 : 0,
-                    nomeBrincoConcat: () {
-                      if ((_nomeTextController.text != '') &&
-                          (_brincoTextController.text != '') &&
-                          (_brincoTextController.text != '-1')) {
-                        return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                      } else if (_nomeTextController.text != '') {
-                        return _nomeTextController.text;
-                      } else {
-                        return _brincoTextController.text;
-                      }
-                    }(),
-                    idStatusAnimal: 2,
-                    dtUltimoPartoContingencia:
-                        _dataUltimoPartoTextController.text,
-                    brincoAnimalOrder: _brincoTextController.text != ''
-                        ? int.tryParse(_brincoTextController.text)
-                        : 999999,
-                  ));
-
-                  await widget.uidTecnico!.update({
-                    ...mapToFirestore(
-                      {
-                        'quantidadeAnimaisCadastrados': FieldValue.increment(1),
-                        'restanteLimiteAnimais': FieldValue.increment(-(1)),
-                      },
-                    ),
-                  });
-                  mostrarSucessoOverlay(context);
-                  if (Navigator.of(context).canPop()) {
-                    context.pop();
-                  }
-                  context.pushNamed(
-                    ListaAnimaisPage.routeName,
-                    queryParameters: {
-                      'uidPropriedade': serializeParam(
-                        widget.uidPropriedade,
-                        ParamType.DocumentReference,
-                      ),
-                      'nomePropriedade': serializeParam(
-                        widget.nomePropriedade,
-                        ParamType.String,
-                      ),
-                      'uidTecnico': serializeParam(
-                        widget.uidTecnico,
-                        ParamType.DocumentReference,
-                      ),
-                      'emailPropriedade': serializeParam(
-                        widget.emailPropriedade,
-                        ParamType.String,
-                      ),
-                      'visitaPresencial': serializeParam(
-                        widget.visitaPresencial,
-                        ParamType.bool,
-                      ),
-                      'initialTabSelect': serializeParam(
-                        widget.initialTabSelect,
-                        ParamType.int,
-                      ),
-                      'diasDg': serializeParam(
-                        widget.diasDg,
-                        ParamType.String,
-                      ),
-                      'tabBarOpenSelected': serializeParam(
-                        0,
-                        ParamType.int,
-                      ),
-                    }.withoutNulls,
-                  );
-
-                  if (_shouldSetState) safeSetState(() {});
-                  return;
-                } else {
-                  if (_statusAnimalValue == 'Prenha') {
-                    if ((_dataUltimaInseminacaoTextController.text != '') &&
-                        (_touroInseminacaoValue != null &&
-                            _touroInseminacaoValue != '')) {
-                      await AnimaisProdutoresRecord.createDoc(
-                              widget.uidTecnico!)
-                          .set(createAnimaisProdutoresRecordData(
-                        uidTecnicoPropriedade: widget.uidPropriedade,
-                        nomeAnimal: _nomeTextController.text,
-                        brincoAnimal: _brincoTextController.text != ''
-                            ? int.tryParse(_brincoTextController.text)
-                            : -1,
-                        racaAnimal: _racaValue,
-                        pesoAnimal: _pesoTextController.text,
-                        dtNascimento: _dataNascimentoTextController.text,
-                        touro: _touroPaiTextController.text,
-                        vaca: _vacaMaeTextController.text,
-                        status: _statusAnimalValue,
-                        dtUltimaInseminacao:
-                            _dataUltimaInseminacaoTextController.text,
-                        grupoAnimal: _grupoValue,
-                        nomeTouroUltimaInseminacao: _touroInseminacaoValue,
-                        dtPartoPrevisto: functions.somarDataParto(
-                            _dataUltimaInseminacaoTextController.text),
-                        dtSecPrevista: functions.somarDataSecagem(
-                            _dataUltimaInseminacaoTextController.text),
-                        dtPrePartoPrevista: functions.somarDataPreParto(
-                            _dataUltimaInseminacaoTextController.text),
-                        totalInseminacoes: 1,
-                        dtDgMais: dateTimeFormat(
-                          "dd/MM/yyyy",
-                          getCurrentTimestamp,
-                          locale: FFLocalizations.of(context).languageCode,
-                        ),
-                        dtUltimoParto: _dataUltimoPartoTextController.text,
-                        compararDtUltimaInseminacao:
-                            functions.converterDataUltimaInseminacao(
-                                _dataUltimaInseminacaoTextController.text),
-                        nomeBrincoConcat: () {
-                          if ((_nomeTextController.text != '') &&
-                              (_brincoTextController.text != '') &&
-                              (_brincoTextController.text != '-1')) {
-                            return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                          } else if (_nomeTextController.text != '') {
-                            return _nomeTextController.text;
-                          } else {
-                            return _brincoTextController.text;
-                          }
-                        }(),
-                        idStatusAnimal: 6,
-                        dtUltimoPartoContingencia:
-                            _dataUltimoPartoTextController.text,
-                        brincoAnimalOrder: _brincoTextController.text != ''
-                            ? int.tryParse(_brincoTextController.text)
-                            : 999999,
-                      ));
-
-                      await widget.uidTecnico!.update({
-                        ...mapToFirestore(
-                          {
-                            'quantidadeAnimaisCadastrados':
-                                FieldValue.increment(1),
-                            'restanteLimiteAnimais': FieldValue.increment(-(1)),
-                          },
-                        ),
-                      });
-                      mostrarSucessoOverlay(context);
-                      if (Navigator.of(context).canPop()) {
-                        context.pop();
-                      }
-                      context.pushNamed(
-                        ListaAnimaisPage.routeName,
-                        queryParameters: {
-                          'uidPropriedade': serializeParam(
-                            widget.uidPropriedade,
-                            ParamType.DocumentReference,
-                          ),
-                          'nomePropriedade': serializeParam(
-                            widget.nomePropriedade,
-                            ParamType.String,
-                          ),
-                          'uidTecnico': serializeParam(
-                            widget.uidTecnico,
-                            ParamType.DocumentReference,
-                          ),
-                          'emailPropriedade': serializeParam(
-                            widget.emailPropriedade,
-                            ParamType.String,
-                          ),
-                          'visitaPresencial': serializeParam(
-                            widget.visitaPresencial,
-                            ParamType.bool,
-                          ),
-                          'initialTabSelect': serializeParam(
-                            widget.initialTabSelect,
-                            ParamType.int,
-                          ),
-                          'diasDg': serializeParam(
-                            widget.diasDg,
-                            ParamType.String,
-                          ),
-                          'tabBarOpenSelected': serializeParam(
-                            0,
-                            ParamType.int,
-                          ),
-                        }.withoutNulls,
-                      );
-
-                      if (_shouldSetState) safeSetState(() {});
-                      return;
-                    } else {
-                      await showDialog(
-                        context: context,
-                        builder: (alertDialogContext) {
-                          return AlertDialog(
-                            title: Text(
-                                'Data última inseminação vazia ou Touro inseminação não selecionado.'),
-                            content: Text('Preencha os campos obrigatórios.'),
-                            actions: [
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.pop(alertDialogContext),
-                                child: Text('Ok'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                      if (_shouldSetState) safeSetState(() {});
-                      return;
-                    }
-                  } else {
-                    if (_statusAnimalValue == 'Inseminada PP') {
-                      if ((_dataUltimaInseminacaoTextController.text != '') &&
-                          (_touroInseminacaoValue != null &&
-                              _touroInseminacaoValue != '')) {
-                        await AnimaisProdutoresRecord.createDoc(
-                                widget.uidTecnico!)
-                            .set(createAnimaisProdutoresRecordData(
-                          uidTecnicoPropriedade: widget.uidPropriedade,
-                          nomeAnimal: _nomeTextController.text,
-                          brincoAnimal: _brincoTextController.text != ''
-                              ? int.tryParse(_brincoTextController.text)
-                              : -1,
-                          racaAnimal: _racaValue,
-                          pesoAnimal: _pesoTextController.text,
-                          dtNascimento: _dataNascimentoTextController.text,
-                          touro: _touroPaiTextController.text,
-                          vaca: _vacaMaeTextController.text,
-                          status: _statusAnimalValue,
-                          dtUltimaInseminacao:
-                              _dataUltimaInseminacaoTextController.text,
-                          grupoAnimal: _grupoValue,
-                          nomeTouroUltimaInseminacao: _touroInseminacaoValue,
-                          dtPartoPrevisto: functions.somarDataParto(
-                              _dataUltimaInseminacaoTextController.text),
-                          dtSecPrevista: functions.somarDataSecagem(
-                              _dataUltimaInseminacaoTextController.text),
-                          dtPrePartoPrevista: functions.somarDataPreParto(
-                              _dataUltimaInseminacaoTextController.text),
-                          totalInseminacoes: 1,
-                          dtPP: dateTimeFormat(
-                            "dd/MM/yyyy",
-                            getCurrentTimestamp,
-                            locale: FFLocalizations.of(context).languageCode,
-                          ),
-                          dtUltimoPP: dateTimeFormat(
-                            "dd/MM/yyyy",
-                            getCurrentTimestamp,
-                            locale: FFLocalizations.of(context).languageCode,
-                          ),
-                          dtUltimoParto: _dataUltimoPartoTextController.text,
-                          compararDtUltimaInseminacao:
-                              functions.converterDataUltimaInseminacao(
-                                  _dataUltimaInseminacaoTextController.text),
-                          nomeBrincoConcat: () {
-                            if ((_nomeTextController.text != '') &&
-                                (_brincoTextController.text != '') &&
-                                (_brincoTextController.text != '-1')) {
-                              return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                            } else if (_nomeTextController.text != '') {
-                              return _nomeTextController.text;
-                            } else {
-                              return _brincoTextController.text;
-                            }
-                          }(),
-                          idStatusAnimal: 1,
-                          dtUltimoPartoContingencia:
-                              _dataUltimoPartoTextController.text,
-                          brincoAnimalOrder: _brincoTextController.text != ''
-                              ? int.tryParse(_brincoTextController.text)
-                              : 999999,
-                        ));
-
-                        await widget.uidTecnico!.update({
-                          ...mapToFirestore(
-                            {
-                              'quantidadeAnimaisCadastrados':
-                                  FieldValue.increment(1),
-                              'restanteLimiteAnimais':
-                                  FieldValue.increment(-(1)),
-                            },
-                          ),
-                        });
-                        mostrarSucessoOverlay(context);
-                        if (Navigator.of(context).canPop()) {
-                          context.pop();
-                        }
-                        context.pushNamed(
-                          ListaAnimaisPage.routeName,
-                          queryParameters: {
-                            'uidPropriedade': serializeParam(
-                              widget.uidPropriedade,
-                              ParamType.DocumentReference,
-                            ),
-                            'nomePropriedade': serializeParam(
-                              widget.nomePropriedade,
-                              ParamType.String,
-                            ),
-                            'uidTecnico': serializeParam(
-                              widget.uidTecnico,
-                              ParamType.DocumentReference,
-                            ),
-                            'emailPropriedade': serializeParam(
-                              widget.emailPropriedade,
-                              ParamType.String,
-                            ),
-                            'visitaPresencial': serializeParam(
-                              widget.visitaPresencial,
-                              ParamType.bool,
-                            ),
-                            'initialTabSelect': serializeParam(
-                              widget.initialTabSelect,
-                              ParamType.int,
-                            ),
-                            'diasDg': serializeParam(
-                              widget.diasDg,
-                              ParamType.String,
-                            ),
-                            'tabBarOpenSelected': serializeParam(
-                              0,
-                              ParamType.int,
-                            ),
-                          }.withoutNulls,
-                        );
-
-                        if (_shouldSetState) safeSetState(() {});
-                        return;
-                      } else {
-                        await showDialog(
-                          context: context,
-                          builder: (alertDialogContext) {
-                            return AlertDialog(
-                              title: Text(
-                                  'Data última inseminação vazia ou Touro inseminação não selecionado.'),
-                              content: Text('Preencha os campos obrigatórios.'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(alertDialogContext),
-                                  child: Text('Ok'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                        if (_shouldSetState) safeSetState(() {});
-                        return;
-                      }
-                    } else {
-                      if (_statusAnimalValue == 'Pré Parto') {
-                        if ((_dataUltimaInseminacaoTextController.text != '') &&
-                            (_touroInseminacaoValue != null &&
-                                _touroInseminacaoValue != '')) {
-                          await AnimaisProdutoresRecord.createDoc(
-                                  widget.uidTecnico!)
-                              .set(createAnimaisProdutoresRecordData(
-                            uidTecnicoPropriedade: widget.uidPropriedade,
-                            nomeAnimal: _nomeTextController.text,
-                            brincoAnimal: _brincoTextController.text != ''
-                                ? int.tryParse(_brincoTextController.text)
-                                : -1,
-                            racaAnimal: _racaValue,
-                            pesoAnimal: _pesoTextController.text,
-                            dtNascimento: _dataNascimentoTextController.text,
-                            touro: _touroPaiTextController.text,
-                            vaca: _vacaMaeTextController.text,
-                            status: _statusAnimalValue,
-                            dtUltimaInseminacao:
-                                _dataUltimaInseminacaoTextController.text,
-                            grupoAnimal: _grupoValue,
-                            nomeTouroUltimaInseminacao: _touroInseminacaoValue,
-                            dtPartoPrevisto: functions.somarDataParto(
-                                _dataUltimaInseminacaoTextController.text),
-                            dtSecPrevista: functions.somarDataSecagem(
-                                _dataUltimaInseminacaoTextController.text),
-                            dtPrePartoPrevista: functions.somarDataPreParto(
-                                _dataUltimaInseminacaoTextController.text),
-                            totalInseminacoes: 1,
-                            dtPP: dateTimeFormat(
-                              "dd/MM/yyyy",
-                              getCurrentTimestamp,
-                              locale: FFLocalizations.of(context).languageCode,
-                            ),
-                            dtUltimoPP: dateTimeFormat(
-                              "dd/MM/yyyy",
-                              getCurrentTimestamp,
-                              locale: FFLocalizations.of(context).languageCode,
-                            ),
-                            dtUltimoParto: _dataUltimoPartoTextController.text,
-                            compararDtUltimaInseminacao:
-                                functions.converterDataUltimaInseminacao(
-                                    _dataUltimaInseminacaoTextController.text),
-                            nomeBrincoConcat: () {
-                              if ((_nomeTextController.text != '') &&
-                                  (_brincoTextController.text != '') &&
-                                  (_brincoTextController.text != '-1')) {
-                                return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                              } else if (_nomeTextController.text != '') {
-                                return _nomeTextController.text;
-                              } else {
-                                return _brincoTextController.text;
-                              }
-                            }(),
-                            idStatusAnimal: 5,
-                            dtUltimoPartoContingencia:
-                                _dataUltimoPartoTextController.text,
-                            brincoAnimalOrder: _brincoTextController.text != ''
-                                ? int.tryParse(_brincoTextController.text)
-                                : 999999,
-                          ));
-
-                          await widget.uidTecnico!.update({
-                            ...mapToFirestore(
-                              {
-                                'quantidadeAnimaisCadastrados':
-                                    FieldValue.increment(1),
-                                'restanteLimiteAnimais':
-                                    FieldValue.increment(-(1)),
-                              },
-                            ),
-                          });
-                          mostrarSucessoOverlay(context);
-                          if (Navigator.of(context).canPop()) {
-                            context.pop();
-                          }
-                          context.pushNamed(
-                            ListaAnimaisPage.routeName,
-                            queryParameters: {
-                              'uidPropriedade': serializeParam(
-                                widget.uidPropriedade,
-                                ParamType.DocumentReference,
-                              ),
-                              'nomePropriedade': serializeParam(
-                                widget.nomePropriedade,
-                                ParamType.String,
-                              ),
-                              'uidTecnico': serializeParam(
-                                widget.uidTecnico,
-                                ParamType.DocumentReference,
-                              ),
-                              'emailPropriedade': serializeParam(
-                                widget.emailPropriedade,
-                                ParamType.String,
-                              ),
-                              'visitaPresencial': serializeParam(
-                                widget.visitaPresencial,
-                                ParamType.bool,
-                              ),
-                              'initialTabSelect': serializeParam(
-                                widget.initialTabSelect,
-                                ParamType.int,
-                              ),
-                              'diasDg': serializeParam(
-                                widget.diasDg,
-                                ParamType.String,
-                              ),
-                              'tabBarOpenSelected': serializeParam(
-                                0,
-                                ParamType.int,
-                              ),
-                            }.withoutNulls,
-                          );
-
-                          if (_shouldSetState) safeSetState(() {});
-                          return;
-                        } else {
-                          await showDialog(
-                            context: context,
-                            builder: (alertDialogContext) {
-                              return AlertDialog(
-                                title: Text(
-                                    'Data última inseminação vazia ou Touro inseminação não selecionado.'),
-                                content:
-                                    Text('Preencha os campos obrigatórios.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(alertDialogContext),
-                                    child: Text('Ok'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                          if (_shouldSetState) safeSetState(() {});
-                          return;
-                        }
-                      } else {
-                        if (_shouldSetState) safeSetState(() {});
-                        return;
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          } else {
-            await showDialog(
-              context: context,
-              builder: (alertDialogContext) {
-                return AlertDialog(
-                  title: Text('Status é obrigatório.'),
-                  content: Text('Selecione ao menos um status.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(alertDialogContext),
-                      child: Text('Ok'),
-                    ),
-                  ],
-                );
-              },
-            );
-            if (_shouldSetState) safeSetState(() {});
-            return;
-          }
-        } else {
-          if ((_grupoValue == 'Sêmens') || (_grupoValue == 'Touros')) {
-            if (_grupoValue == 'Touros') {
-              await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
-                  .set(createAnimaisProdutoresRecordData(
-                uidTecnicoPropriedade: widget.uidPropriedade,
-                nomeAnimal: _nomeTextController.text,
-                brincoAnimal: _brincoTextController.text != ''
-                    ? int.tryParse(_brincoTextController.text)
-                    : -1,
-                racaAnimal: _racaValue,
-                pesoAnimal: _pesoTextController.text,
-                dtNascimento: _dataNascimentoTextController.text,
-                touro: _touroPaiTextController.text,
-                vaca: _vacaMaeTextController.text,
-                grupoAnimal: _grupoValue,
-                liberaInseminacao: () {
-                  if (_grupoValue == 'Touros') {
-                    return _switchValue;
-                  } else if (_grupoValue == 'Sêmens') {
-                    return _switchValue;
-                  } else {
-                    return true;
-                  }
-                }(),
-                status: '',
-                nomeBrincoConcat: () {
-                  if ((_nomeTextController.text != '') &&
-                      (_brincoTextController.text != '') &&
-                      (_brincoTextController.text != '-1')) {
-                    return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                  } else if (_nomeTextController.text != '') {
-                    return _nomeTextController.text;
-                  } else {
-                    return _brincoTextController.text;
-                  }
-                }(),
-                brincoAnimalOrder: _brincoTextController.text != ''
-                    ? int.tryParse(_brincoTextController.text)
-                    : 999999,
-              ));
-
-              await widget.uidTecnico!.update({
-                ...mapToFirestore(
-                  {
-                    'quantidadeAnimaisCadastrados': FieldValue.increment(1),
-                    'restanteLimiteAnimais': FieldValue.increment(-(1)),
-                  },
-                ),
-              });
-              mostrarSucessoOverlay(context);
-              if (Navigator.of(context).canPop()) {
-                context.pop();
-              }
-              context.pushNamed(
-                ListaAnimaisPage.routeName,
-                queryParameters: {
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    widget.visitaPresencial,
-                    ParamType.bool,
-                  ),
-                  'initialTabSelect': serializeParam(
-                    widget.initialTabSelect,
-                    ParamType.int,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                }.withoutNulls,
-              );
-
-              if (_shouldSetState) safeSetState(() {});
-              return;
-            } else {
-              if (_grupoValue == 'Sêmens') {
-                await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
-                    .set(createAnimaisProdutoresRecordData(
-                  uidTecnicoPropriedade: widget.uidPropriedade,
-                  nomeAnimal: _nomeTextController.text,
-                  brincoAnimal: _brincoTextController.text != ''
-                      ? int.tryParse(_brincoTextController.text)
-                      : -1,
-                  racaAnimal: _racaValue,
-                  dtNascimento: _dataNascimentoTextController.text,
-                  touro: _touroPaiTextController.text,
-                  grupoAnimal: _grupoValue,
-                  liberaInseminacao: () {
-                    if (_grupoValue == 'Touros') {
-                      return _switchValue;
-                    } else if (_grupoValue == 'Sêmens') {
-                      return _switchValue;
-                    } else {
-                      return true;
-                    }
-                  }(),
-                  status: '',
-                  nomeBrincoConcat: () {
-                    if ((_nomeTextController.text != '') &&
-                        (_brincoTextController.text != '') &&
-                        (_brincoTextController.text != '-1')) {
-                      return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                    } else if (_nomeTextController.text != '') {
-                      return _nomeTextController.text;
-                    } else {
-                      return _brincoTextController.text;
-                    }
-                  }(),
-                  brincoAnimalOrder: _brincoTextController.text != ''
-                      ? int.tryParse(_brincoTextController.text)
-                      : 999999,
-                ));
-
-                await widget.uidTecnico!.update({
-                  ...mapToFirestore(
-                    {
-                      'quantidadeAnimaisCadastrados': FieldValue.increment(1),
-                      'restanteLimiteAnimais': FieldValue.increment(-(1)),
-                    },
-                  ),
-                });
-                mostrarSucessoOverlay(context);
-                if (Navigator.of(context).canPop()) {
-                  context.pop();
-                }
-                context.pushNamed(
-                  ListaAnimaisPage.routeName,
-                  queryParameters: {
-                    'uidPropriedade': serializeParam(
-                      widget.uidPropriedade,
-                      ParamType.DocumentReference,
-                    ),
-                    'nomePropriedade': serializeParam(
-                      widget.nomePropriedade,
-                      ParamType.String,
-                    ),
-                    'uidTecnico': serializeParam(
-                      widget.uidTecnico,
-                      ParamType.DocumentReference,
-                    ),
-                    'emailPropriedade': serializeParam(
-                      widget.emailPropriedade,
-                      ParamType.String,
-                    ),
-                    'visitaPresencial': serializeParam(
-                      widget.visitaPresencial,
-                      ParamType.bool,
-                    ),
-                    'initialTabSelect': serializeParam(
-                      widget.initialTabSelect,
-                      ParamType.int,
-                    ),
-                    'diasDg': serializeParam(
-                      widget.diasDg,
-                      ParamType.String,
-                    ),
-                  }.withoutNulls,
-                );
-
-                if (_shouldSetState) safeSetState(() {});
-                return;
-              } else {
-                if (_shouldSetState) safeSetState(() {});
-                return;
-              }
-            }
-          } else {
-            await AnimaisProdutoresRecord.createDoc(widget.uidTecnico!)
-                .set(createAnimaisProdutoresRecordData(
-              uidTecnicoPropriedade: widget.uidPropriedade,
-              nomeAnimal: _nomeTextController.text,
-              brincoAnimal: _brincoTextController.text != ''
-                  ? int.tryParse(_brincoTextController.text)
-                  : -1,
-              racaAnimal: _racaValue,
-              pesoAnimal: _pesoTextController.text,
-              dtNascimento: _dataNascimentoTextController.text,
-              touro: _touroPaiTextController.text,
-              vaca: _vacaMaeTextController.text,
-              grupoAnimal: _grupoValue,
-              status: '',
-              nomeBrincoConcat: () {
-                if ((_nomeTextController.text != '') &&
-                    (_brincoTextController.text != '') &&
-                    (_brincoTextController.text != '-1')) {
-                  return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                } else if (_nomeTextController.text != '') {
-                  return _nomeTextController.text;
-                } else {
-                  return _brincoTextController.text;
-                }
-              }(),
-              brincoAnimalOrder: _brincoTextController.text != ''
-                  ? int.tryParse(_brincoTextController.text)
-                  : 999999,
-            ));
-
-            await widget.uidTecnico!.update({
-              ...mapToFirestore(
-                {
-                  'quantidadeAnimaisCadastrados': FieldValue.increment(1),
-                  'restanteLimiteAnimais': FieldValue.increment(-(1)),
-                },
-              ),
-            });
-            mostrarSucessoOverlay(context);
-            if (Navigator.of(context).canPop()) {
-              context.pop();
-            }
-            context.pushNamed(
-              ListaAnimaisPage.routeName,
-              queryParameters: {
-                'uidPropriedade': serializeParam(
-                  widget.uidPropriedade,
-                  ParamType.DocumentReference,
-                ),
-                'nomePropriedade': serializeParam(
-                  widget.nomePropriedade,
-                  ParamType.String,
-                ),
-                'uidTecnico': serializeParam(
-                  widget.uidTecnico,
-                  ParamType.DocumentReference,
-                ),
-                'emailPropriedade': serializeParam(
-                  widget.emailPropriedade,
-                  ParamType.String,
-                ),
-                'visitaPresencial': serializeParam(
-                  widget.visitaPresencial,
-                  ParamType.bool,
-                ),
-                'initialTabSelect': serializeParam(
-                  widget.initialTabSelect,
-                  ParamType.int,
-                ),
-                'diasDg': serializeParam(
-                  widget.diasDg,
-                  ParamType.String,
-                ),
-              }.withoutNulls,
-            );
-
-            if (_shouldSetState) safeSetState(() {});
-            return;
-          }
-        }
-      }
-    } else {
-      if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
-        return;
-      }
-      if (_racaValue == null) {
-        return;
-      }
-      if (_grupoValue == null) {
-        return;
-      }
-      // Checagem de duplicidade pelo PAR (nome + brinco) no ObjectBox,
-      // considerando apenas animais ativos (não descartados). Brinco vazio é
-      // normalizado para -1, igual à persistência.
-      _shouldSetState = true;
-      final brincoNovo = _brincoTextController.text != ''
-          ? (int.tryParse(_brincoTextController.text) ?? -1)
-          : -1;
-      final duplicado = widget.uidPropriedade != null &&
-          AnimalRepository().existeAnimalAtivoComNomeBrinco(
-            propriedadePath: widget.uidPropriedade!.path,
-            nome: _nomeTextController.text,
-            brinco: brincoNovo,
-          );
-      if (duplicado) {
-        await showDialog(
-          context: context,
-          builder: (alertDialogContext) {
-            return AlertDialog(
-              title: Text('Animal já cadastrado.'),
-              content:
-                  Text('Já existe um animal ativo com este nome e brinco.'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(alertDialogContext),
-                  child: Text('Ok'),
-                ),
-              ],
-            );
-          },
-        );
-        if (_shouldSetState) safeSetState(() {});
-        return;
-      }
-      if ((_nomeTextController.text != '') ||
-          (_brincoTextController.text != '')) {
-        if (_dataUltimaInseminacaoTextController.text != '') {
-          if (!(_touroInseminacaoValue != null &&
-              _touroInseminacaoValue != '')) {
-            await showDialog(
-              context: context,
-              builder: (alertDialogContext) {
-                return AlertDialog(
-                  title: Text('Touro inseminação não selecionado.'),
-                  content: Text('Selecione o touro usado.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(alertDialogContext),
-                      child: Text('Ok'),
-                    ),
-                  ],
-                );
-              },
-            );
-            if (_shouldSetState) safeSetState(() {});
-            return;
-          }
-        }
-      } else {
-        await showDialog(
-          context: context,
-          builder: (alertDialogContext) {
-            return AlertDialog(
-              title: Text('Nome ou brinco obrigatório.'),
-              content: Text('Preencha ao menos um dos campos.'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(alertDialogContext),
-                  child: Text('Ok'),
-                ),
-              ],
-            );
-          },
-        );
-        if (_shouldSetState) safeSetState(() {});
-        return;
-      }
-
-      if ((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) {
-        if (_statusAnimalValue != null && _statusAnimalValue != '') {
-          if (_statusAnimalValue == 'Inseminada') {
-            if ((_dataUltimaInseminacaoTextController.text != '') &&
-                (_dataUltimoPartoTextController.text == '') &&
-                (_touroInseminacaoValue != null &&
-                    _touroInseminacaoValue != '')) {
-              await criarAnimalOffline(AnimaisProdutoresStruct(
-                uidTecnicoPropriedade: widget.uidPropriedade,
-                nomeAnimal: _nomeTextController.text,
-                racaAnimal: _racaValue,
-                pesoAnimal: _pesoTextController.text,
-                dtNascimento: _dataNascimentoTextController.text,
-                touro: _touroPaiTextController.text,
-                vaca: _vacaMaeTextController.text,
-                status: _statusAnimalValue,
-                grupoAnimal: _grupoValue,
-                dtUltimaInseminacao: _dataUltimaInseminacaoTextController.text,
-                brincoAnimalOrder: _brincoTextController.text != ''
-                    ? int.tryParse(_brincoTextController.text)
-                    : 999999,
-                brincoAnimal: _brincoTextController.text != ''
-                    ? int.tryParse(_brincoTextController.text)
-                    : -1,
-                nomeTouroUltimaInseminacao: _touroInseminacaoValue,
-                dtPartoPrevisto: functions
-                    .somarDataParto(_dataUltimaInseminacaoTextController.text),
-                dtSecPrevista: functions.somarDataSecagem(
-                    _dataUltimaInseminacaoTextController.text),
-                dtPrePartoPrevista: functions.somarDataPreParto(
-                    _dataUltimaInseminacaoTextController.text),
-                totalInseminacoes: 1,
-                compararDtUltimaInseminacao:
-                    functions.converterDataUltimaInseminacao(
-                        _dataUltimaInseminacaoTextController.text),
-                nomeBrincoConcat: () {
-                  if ((_nomeTextController.text != '') &&
-                      (_brincoTextController.text != '') &&
-                      (_brincoTextController.text != '-1')) {
-                    return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                  } else if (_nomeTextController.text != '') {
-                    return _nomeTextController.text;
-                  } else {
-                    return _brincoTextController.text;
-                  }
-                }(),
-                idStatusAnimal: 3,
-                uidAnimalOffline: functions.criarUidRandom(),
-              ));
-              safeSetState(() {});
-              mostrarSucessoOverlay(context);
-              if (Navigator.of(context).canPop()) {
-                context.pop();
-              }
-              context.pushNamed(
-                ListaAnimaisPage.routeName,
-                queryParameters: {
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    widget.visitaPresencial,
-                    ParamType.bool,
-                  ),
-                  'initialTabSelect': serializeParam(
-                    widget.initialTabSelect,
-                    ParamType.int,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                  'tabBarOpenSelected': serializeParam(
-                    0,
-                    ParamType.int,
-                  ),
-                }.withoutNulls,
-              );
-
-              if (_shouldSetState) safeSetState(() {});
-              return;
-            } else {
-              if ((_dataUltimoPartoTextController.text != '') &&
-                  (_dataUltimaInseminacaoTextController.text != '') &&
-                  (_touroInseminacaoValue != null &&
-                      _touroInseminacaoValue != '')) {
-                await criarAnimalOffline(AnimaisProdutoresStruct(
-                  uidTecnicoPropriedade: widget.uidPropriedade,
-                  nomeAnimal: _nomeTextController.text,
-                  racaAnimal: _racaValue,
-                  pesoAnimal: _pesoTextController.text,
-                  dtNascimento: _dataNascimentoTextController.text,
-                  touro: _touroPaiTextController.text,
-                  vaca: _vacaMaeTextController.text,
-                  grupoAnimal: _grupoValue,
-                  brincoAnimalOrder: _brincoTextController.text != ''
-                      ? int.tryParse(_brincoTextController.text)
-                      : 999999,
-                  brincoAnimal: _brincoTextController.text != ''
-                      ? int.tryParse(_brincoTextController.text)
-                      : -1,
-                  nomeBrincoConcat: () {
-                    if ((_nomeTextController.text != '') &&
-                        (_brincoTextController.text != '') &&
-                        (_brincoTextController.text != '-1')) {
-                      return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                    } else if (_nomeTextController.text != '') {
-                      return _nomeTextController.text;
-                    } else {
-                      return _brincoTextController.text;
-                    }
-                  }(),
-                  status: _statusAnimalValue,
-                  dtUltimaInseminacao:
-                      _dataUltimaInseminacaoTextController.text,
-                  dtUltimoParto: _dataUltimoPartoTextController.text,
-                  nomeTouroUltimaInseminacao: _touroInseminacaoValue,
-                  dtPartoPrevisto: functions.somarDataParto(
-                      _dataUltimaInseminacaoTextController.text),
-                  dtSecPrevista: functions.somarDataSecagem(
-                      _dataUltimaInseminacaoTextController.text),
-                  dtPrePartoPrevista: functions.somarDataPreParto(
-                      _dataUltimaInseminacaoTextController.text),
-                  totalInseminacoes: 1,
-                  totalPartos: 1,
-                  compararDtUltimaInseminacao:
-                      functions.converterDataUltimaInseminacao(
-                          _dataUltimaInseminacaoTextController.text),
-                  idStatusAnimal: 3,
-                  dtUltimoPartoContingencia:
-                      _dataUltimoPartoTextController.text,
-                  uidAnimalOffline: functions.criarUidRandom(),
-                ));
-                safeSetState(() {});
-                mostrarSucessoOverlay(context);
-                if (Navigator.of(context).canPop()) {
-                  context.pop();
-                }
-                context.pushNamed(
-                  ListaAnimaisPage.routeName,
-                  queryParameters: {
-                    'uidPropriedade': serializeParam(
-                      widget.uidPropriedade,
-                      ParamType.DocumentReference,
-                    ),
-                    'nomePropriedade': serializeParam(
-                      widget.nomePropriedade,
-                      ParamType.String,
-                    ),
-                    'uidTecnico': serializeParam(
-                      widget.uidTecnico,
-                      ParamType.DocumentReference,
-                    ),
-                    'emailPropriedade': serializeParam(
-                      widget.emailPropriedade,
-                      ParamType.String,
-                    ),
-                    'visitaPresencial': serializeParam(
-                      widget.visitaPresencial,
-                      ParamType.bool,
-                    ),
-                    'initialTabSelect': serializeParam(
-                      widget.initialTabSelect,
-                      ParamType.int,
-                    ),
-                    'diasDg': serializeParam(
-                      widget.diasDg,
-                      ParamType.String,
-                    ),
-                    'tabBarOpenSelected': serializeParam(
-                      0,
-                      ParamType.int,
-                    ),
-                  }.withoutNulls,
-                );
-
-                if (_shouldSetState) safeSetState(() {});
-                return;
-              } else {
-                if (_shouldSetState) safeSetState(() {});
-                return;
-              }
-            }
-          } else {
-            if (_statusAnimalValue == 'Seca') {
-              if (_grupoValue == 'Vacas') {
-                await criarAnimalOffline(AnimaisProdutoresStruct(
-                  uidTecnicoPropriedade: widget.uidPropriedade,
-                  nomeAnimal: _nomeTextController.text,
-                  racaAnimal: _racaValue,
-                  pesoAnimal: _pesoTextController.text,
-                  dtNascimento: _dataNascimentoTextController.text,
-                  touro: _touroPaiTextController.text,
-                  vaca: _vacaMaeTextController.text,
-                  grupoAnimal: _grupoValue,
-                  brincoAnimalOrder: _brincoTextController.text != ''
-                      ? int.tryParse(_brincoTextController.text)
-                      : 999999,
-                  brincoAnimal: _brincoTextController.text != ''
-                      ? int.tryParse(_brincoTextController.text)
-                      : -1,
-                  nomeBrincoConcat: () {
-                    if ((_nomeTextController.text != '') &&
-                        (_brincoTextController.text != '') &&
-                        (_brincoTextController.text != '-1')) {
-                      return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                    } else if (_nomeTextController.text != '') {
-                      return _nomeTextController.text;
-                    } else {
-                      return _brincoTextController.text;
-                    }
-                  }(),
-                  status: _statusAnimalValue,
-                  dtUltimaInseminacao:
-                      _dataUltimaInseminacaoTextController.text,
-                  dtPartoPrevisto: functions.somarDataParto(
-                      _dataUltimaInseminacaoTextController.text),
-                  dtSecPrevista: functions.somarDataSecagem(
-                      _dataUltimaInseminacaoTextController.text),
-                  dtPrePartoPrevista: functions.somarDataPreParto(
-                      _dataUltimaInseminacaoTextController.text),
-                  nomeTouroUltimaInseminacao: _touroInseminacaoValue,
-                  compararDtUltimaInseminacao:
-                      functions.converterDataUltimaInseminacao(
-                          _dataUltimaInseminacaoTextController.text),
-                  idStatusAnimal: 4,
-                  uidAnimalOffline: functions.criarUidRandom(),
-                ));
-                safeSetState(() {});
-                mostrarSucessoOverlay(context);
-                if (Navigator.of(context).canPop()) {
-                  context.pop();
-                }
-                context.pushNamed(
-                  ListaAnimaisPage.routeName,
-                  queryParameters: {
-                    'uidPropriedade': serializeParam(
-                      widget.uidPropriedade,
-                      ParamType.DocumentReference,
-                    ),
-                    'nomePropriedade': serializeParam(
-                      widget.nomePropriedade,
-                      ParamType.String,
-                    ),
-                    'uidTecnico': serializeParam(
-                      widget.uidTecnico,
-                      ParamType.DocumentReference,
-                    ),
-                    'emailPropriedade': serializeParam(
-                      widget.emailPropriedade,
-                      ParamType.String,
-                    ),
-                    'visitaPresencial': serializeParam(
-                      widget.visitaPresencial,
-                      ParamType.bool,
-                    ),
-                    'initialTabSelect': serializeParam(
-                      widget.initialTabSelect,
-                      ParamType.int,
-                    ),
-                    'diasDg': serializeParam(
-                      widget.diasDg,
-                      ParamType.String,
-                    ),
-                    'tabBarOpenSelected': serializeParam(
-                      0,
-                      ParamType.int,
-                    ),
-                  }.withoutNulls,
-                );
-
-                if (_shouldSetState) safeSetState(() {});
-                return;
-              } else {
-                await showDialog(
-                  context: context,
-                  builder: (alertDialogContext) {
-                    return AlertDialog(
-                      title: Text(
-                          'O status de \"Seca\" é permitido somente em vacas.'),
-                      content: Text('Atualize o status.'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(alertDialogContext),
-                          child: Text('Ok'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-                if (_shouldSetState) safeSetState(() {});
-                return;
-              }
-            } else {
-              if (_statusAnimalValue == 'Vazia') {
-                await criarAnimalOffline(AnimaisProdutoresStruct(
-                  uidTecnicoPropriedade: widget.uidPropriedade,
-                  nomeAnimal: _nomeTextController.text,
-                  racaAnimal: _racaValue,
-                  pesoAnimal: _pesoTextController.text,
-                  dtNascimento: _dataNascimentoTextController.text,
-                  touro: _touroPaiTextController.text,
-                  vaca: _vacaMaeTextController.text,
-                  grupoAnimal: _grupoValue,
-                  brincoAnimalOrder: _brincoTextController.text != ''
-                      ? int.tryParse(_brincoTextController.text)
-                      : 999999,
-                  brincoAnimal: _brincoTextController.text != ''
-                      ? int.tryParse(_brincoTextController.text)
-                      : -1,
-                  nomeBrincoConcat: () {
-                    if ((_nomeTextController.text != '') &&
-                        (_brincoTextController.text != '') &&
-                        (_brincoTextController.text != '-1')) {
-                      return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                    } else if (_nomeTextController.text != '') {
-                      return _nomeTextController.text;
-                    } else {
-                      return _brincoTextController.text;
-                    }
-                  }(),
-                  dtUltimoParto: _dataUltimoPartoTextController.text,
-                  status: _statusAnimalValue,
-                  totalPartos:
-                      _dataUltimoPartoTextController.text != '' ? 1 : 0,
-                  idStatusAnimal: 2,
-                  dtUltimoPartoContingencia:
-                      _dataUltimoPartoTextController.text,
-                  uidAnimalOffline: functions.criarUidRandom(),
-                ));
-                safeSetState(() {});
-                mostrarSucessoOverlay(context);
-                if (Navigator.of(context).canPop()) {
-                  context.pop();
-                }
-                context.pushNamed(
-                  ListaAnimaisPage.routeName,
-                  queryParameters: {
-                    'uidPropriedade': serializeParam(
-                      widget.uidPropriedade,
-                      ParamType.DocumentReference,
-                    ),
-                    'nomePropriedade': serializeParam(
-                      widget.nomePropriedade,
-                      ParamType.String,
-                    ),
-                    'uidTecnico': serializeParam(
-                      widget.uidTecnico,
-                      ParamType.DocumentReference,
-                    ),
-                    'emailPropriedade': serializeParam(
-                      widget.emailPropriedade,
-                      ParamType.String,
-                    ),
-                    'visitaPresencial': serializeParam(
-                      widget.visitaPresencial,
-                      ParamType.bool,
-                    ),
-                    'initialTabSelect': serializeParam(
-                      widget.initialTabSelect,
-                      ParamType.int,
-                    ),
-                    'diasDg': serializeParam(
-                      widget.diasDg,
-                      ParamType.String,
-                    ),
-                    'tabBarOpenSelected': serializeParam(
-                      0,
-                      ParamType.int,
-                    ),
-                  }.withoutNulls,
-                );
-
-                if (_shouldSetState) safeSetState(() {});
-                return;
-              } else {
-                if (_statusAnimalValue == 'Prenha') {
-                  if ((_dataUltimaInseminacaoTextController.text != '') &&
-                      (_touroInseminacaoValue != null &&
-                          _touroInseminacaoValue != '')) {
-                    await criarAnimalOffline(AnimaisProdutoresStruct(
+                if (_statusAnimalValue == 'Inseminada PP') {
+                  if ((_dataUltimaInseminacaoTextController.text != '')) {
+                    await _criarAnimal(AnimaisProdutoresStruct(
                       uidTecnicoPropriedade: widget.uidPropriedade,
                       nomeAnimal: _nomeTextController.text,
                       racaAnimal: _racaValue,
@@ -1941,7 +840,12 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                       dtPrePartoPrevista: functions.somarDataPreParto(
                           _dataUltimaInseminacaoTextController.text),
                       totalInseminacoes: 1,
-                      dtDgMais: dateTimeFormat(
+                      dtPP: dateTimeFormat(
+                        "dd/MM/yyyy",
+                        getCurrentTimestamp,
+                        locale: FFLocalizations.of(context).languageCode,
+                      ),
+                      dtUltimoPP: dateTimeFormat(
                         "dd/MM/yyyy",
                         getCurrentTimestamp,
                         locale: FFLocalizations.of(context).languageCode,
@@ -1950,7 +854,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                       compararDtUltimaInseminacao:
                           functions.converterDataUltimaInseminacao(
                               _dataUltimaInseminacaoTextController.text),
-                      idStatusAnimal: 6,
+                      idStatusAnimal: 1,
                       dtUltimoPartoContingencia:
                           _dataUltimoPartoTextController.text,
                       uidAnimalOffline: functions.criarUidRandom(),
@@ -2022,11 +926,9 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                     return;
                   }
                 } else {
-                  if (_statusAnimalValue == 'Inseminada PP') {
-                    if ((_dataUltimaInseminacaoTextController.text != '') &&
-                        (_touroInseminacaoValue != null &&
-                            _touroInseminacaoValue != '')) {
-                      await criarAnimalOffline(AnimaisProdutoresStruct(
+                  if (_statusAnimalValue == 'Pré Parto') {
+                    if ((_dataUltimaInseminacaoTextController.text != '')) {
+                      await _criarAnimal(AnimaisProdutoresStruct(
                         uidTecnicoPropriedade: widget.uidPropriedade,
                         nomeAnimal: _nomeTextController.text,
                         racaAnimal: _racaValue,
@@ -2077,7 +979,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                         compararDtUltimaInseminacao:
                             functions.converterDataUltimaInseminacao(
                                 _dataUltimaInseminacaoTextController.text),
-                        idStatusAnimal: 1,
+                        idStatusAnimal: 5,
                         dtUltimoPartoContingencia:
                             _dataUltimoPartoTextController.text,
                         uidAnimalOffline: functions.criarUidRandom(),
@@ -2149,171 +1051,123 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                       return;
                     }
                   } else {
-                    if (_statusAnimalValue == 'Pré Parto') {
-                      if ((_dataUltimaInseminacaoTextController.text != '') &&
-                          (_touroInseminacaoValue != null &&
-                              _touroInseminacaoValue != '')) {
-                        await criarAnimalOffline(AnimaisProdutoresStruct(
-                          uidTecnicoPropriedade: widget.uidPropriedade,
-                          nomeAnimal: _nomeTextController.text,
-                          racaAnimal: _racaValue,
-                          pesoAnimal: _pesoTextController.text,
-                          dtNascimento: _dataNascimentoTextController.text,
-                          touro: _touroPaiTextController.text,
-                          vaca: _vacaMaeTextController.text,
-                          grupoAnimal: _grupoValue,
-                          brincoAnimalOrder: _brincoTextController.text != ''
-                              ? int.tryParse(_brincoTextController.text)
-                              : 999999,
-                          brincoAnimal: _brincoTextController.text != ''
-                              ? int.tryParse(_brincoTextController.text)
-                              : -1,
-                          nomeBrincoConcat: () {
-                            if ((_nomeTextController.text != '') &&
-                                (_brincoTextController.text != '') &&
-                                (_brincoTextController.text != '-1')) {
-                              return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                            } else if (_nomeTextController.text != '') {
-                              return _nomeTextController.text;
-                            } else {
-                              return _brincoTextController.text;
-                            }
-                          }(),
-                          status: _statusAnimalValue,
-                          dtUltimaInseminacao:
-                              _dataUltimaInseminacaoTextController.text,
-                          nomeTouroUltimaInseminacao: _touroInseminacaoValue,
-                          dtPartoPrevisto: functions.somarDataParto(
-                              _dataUltimaInseminacaoTextController.text),
-                          dtSecPrevista: functions.somarDataSecagem(
-                              _dataUltimaInseminacaoTextController.text),
-                          dtPrePartoPrevista: functions.somarDataPreParto(
-                              _dataUltimaInseminacaoTextController.text),
-                          totalInseminacoes: 1,
-                          dtPP: dateTimeFormat(
-                            "dd/MM/yyyy",
-                            getCurrentTimestamp,
-                            locale: FFLocalizations.of(context).languageCode,
-                          ),
-                          dtUltimoPP: dateTimeFormat(
-                            "dd/MM/yyyy",
-                            getCurrentTimestamp,
-                            locale: FFLocalizations.of(context).languageCode,
-                          ),
-                          dtUltimoParto: _dataUltimoPartoTextController.text,
-                          compararDtUltimaInseminacao:
-                              functions.converterDataUltimaInseminacao(
-                                  _dataUltimaInseminacaoTextController.text),
-                          idStatusAnimal: 5,
-                          dtUltimoPartoContingencia:
-                              _dataUltimoPartoTextController.text,
-                          uidAnimalOffline: functions.criarUidRandom(),
-                        ));
-                        safeSetState(() {});
-                        mostrarSucessoOverlay(context);
-                        if (Navigator.of(context).canPop()) {
-                          context.pop();
-                        }
-                        context.pushNamed(
-                          ListaAnimaisPage.routeName,
-                          queryParameters: {
-                            'uidPropriedade': serializeParam(
-                              widget.uidPropriedade,
-                              ParamType.DocumentReference,
-                            ),
-                            'nomePropriedade': serializeParam(
-                              widget.nomePropriedade,
-                              ParamType.String,
-                            ),
-                            'uidTecnico': serializeParam(
-                              widget.uidTecnico,
-                              ParamType.DocumentReference,
-                            ),
-                            'emailPropriedade': serializeParam(
-                              widget.emailPropriedade,
-                              ParamType.String,
-                            ),
-                            'visitaPresencial': serializeParam(
-                              widget.visitaPresencial,
-                              ParamType.bool,
-                            ),
-                            'initialTabSelect': serializeParam(
-                              widget.initialTabSelect,
-                              ParamType.int,
-                            ),
-                            'diasDg': serializeParam(
-                              widget.diasDg,
-                              ParamType.String,
-                            ),
-                            'tabBarOpenSelected': serializeParam(
-                              0,
-                              ParamType.int,
-                            ),
-                          }.withoutNulls,
-                        );
-
-                        if (_shouldSetState) safeSetState(() {});
-                        return;
-                      } else {
-                        await showDialog(
-                          context: context,
-                          builder: (alertDialogContext) {
-                            return AlertDialog(
-                              title: Text(
-                                  'Data última inseminação vazia ou Touro inseminação não selecionado.'),
-                              content: Text('Preencha os campos obrigatórios.'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(alertDialogContext),
-                                  child: Text('Ok'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                        if (_shouldSetState) safeSetState(() {});
-                        return;
-                      }
-                    } else {
-                      if (_shouldSetState) safeSetState(() {});
-                      return;
-                    }
+                    if (_shouldSetState) safeSetState(() {});
+                    return;
                   }
                 }
               }
             }
           }
-        } else {
-          await showDialog(
-            context: context,
-            builder: (alertDialogContext) {
-              return AlertDialog(
-                title: Text('Status é obrigatório.'),
-                content: Text('Selecione ao menos um status.'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(alertDialogContext),
-                    child: Text('Ok'),
-                  ),
-                ],
-              );
-            },
-          );
-          if (_shouldSetState) safeSetState(() {});
-          return;
         }
       } else {
-        if ((_grupoValue == 'Sêmens') || (_grupoValue == 'Touros')) {
-          if (_grupoValue == 'Touros') {
-            await criarAnimalOffline(AnimaisProdutoresStruct(
+        await showDialog(
+          context: context,
+          builder: (alertDialogContext) {
+            return AlertDialog(
+              title: Text('Status é obrigatório.'),
+              content: Text('Selecione ao menos um status.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(alertDialogContext),
+                  child: Text('Ok'),
+                ),
+              ],
+            );
+          },
+        );
+        if (_shouldSetState) safeSetState(() {});
+        return;
+      }
+    } else {
+      if ((_grupoValue == 'Sêmens') || (_grupoValue == 'Touros')) {
+        if (_grupoValue == 'Touros') {
+          await _criarAnimal(AnimaisProdutoresStruct(
+            uidTecnicoPropriedade: widget.uidPropriedade,
+            nomeAnimal: _nomeTextController.text,
+            racaAnimal: _racaValue,
+            pesoAnimal: _pesoTextController.text,
+            dtNascimento: _dataNascimentoTextController.text,
+            touro: _touroPaiTextController.text,
+            vaca: _vacaMaeTextController.text,
+            grupoAnimal: _grupoValue,
+            brincoAnimalOrder: _brincoTextController.text != ''
+                ? int.tryParse(_brincoTextController.text)
+                : 999999,
+            brincoAnimal: _brincoTextController.text != ''
+                ? int.tryParse(_brincoTextController.text)
+                : -1,
+            nomeBrincoConcat: () {
+              if ((_nomeTextController.text != '') &&
+                  (_brincoTextController.text != '') &&
+                  (_brincoTextController.text != '-1')) {
+                return '${_nomeTextController.text} - ${_brincoTextController.text}';
+              } else if (_nomeTextController.text != '') {
+                return _nomeTextController.text;
+              } else {
+                return _brincoTextController.text;
+              }
+            }(),
+            liberaInseminacao: () {
+              if (_grupoValue == 'Touros') {
+                return _switchValue;
+              } else if (_grupoValue == 'Sêmens') {
+                return _switchValue;
+              } else {
+                return true;
+              }
+            }(),
+            uidAnimalOffline: functions.criarUidRandom(),
+          ));
+          safeSetState(() {});
+          mostrarSucessoOverlay(context);
+          if (Navigator.of(context).canPop()) {
+            context.pop();
+          }
+          context.pushNamed(
+            ListaAnimaisPage.routeName,
+            queryParameters: {
+              'uidPropriedade': serializeParam(
+                widget.uidPropriedade,
+                ParamType.DocumentReference,
+              ),
+              'nomePropriedade': serializeParam(
+                widget.nomePropriedade,
+                ParamType.String,
+              ),
+              'uidTecnico': serializeParam(
+                widget.uidTecnico,
+                ParamType.DocumentReference,
+              ),
+              'emailPropriedade': serializeParam(
+                widget.emailPropriedade,
+                ParamType.String,
+              ),
+              'visitaPresencial': serializeParam(
+                widget.visitaPresencial,
+                ParamType.bool,
+              ),
+              'initialTabSelect': serializeParam(
+                widget.initialTabSelect,
+                ParamType.int,
+              ),
+              'diasDg': serializeParam(
+                widget.diasDg,
+                ParamType.String,
+              ),
+            }.withoutNulls,
+          );
+
+          if (_shouldSetState) safeSetState(() {});
+          return;
+        } else {
+          if (_grupoValue == 'Sêmens') {
+            await _criarAnimal(AnimaisProdutoresStruct(
               uidTecnicoPropriedade: widget.uidPropriedade,
               nomeAnimal: _nomeTextController.text,
               racaAnimal: _racaValue,
               pesoAnimal: _pesoTextController.text,
               dtNascimento: _dataNascimentoTextController.text,
               touro: _touroPaiTextController.text,
-              vaca: _vacaMaeTextController.text,
               grupoAnimal: _grupoValue,
               brincoAnimalOrder: _brincoTextController.text != ''
                   ? int.tryParse(_brincoTextController.text)
@@ -2385,160 +1239,80 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
             if (_shouldSetState) safeSetState(() {});
             return;
           } else {
-            if (_grupoValue == 'Sêmens') {
-              await criarAnimalOffline(AnimaisProdutoresStruct(
-                uidTecnicoPropriedade: widget.uidPropriedade,
-                nomeAnimal: _nomeTextController.text,
-                racaAnimal: _racaValue,
-                pesoAnimal: _pesoTextController.text,
-                dtNascimento: _dataNascimentoTextController.text,
-                touro: _touroPaiTextController.text,
-                grupoAnimal: _grupoValue,
-                brincoAnimalOrder: _brincoTextController.text != ''
-                    ? int.tryParse(_brincoTextController.text)
-                    : 999999,
-                brincoAnimal: _brincoTextController.text != ''
-                    ? int.tryParse(_brincoTextController.text)
-                    : -1,
-                nomeBrincoConcat: () {
-                  if ((_nomeTextController.text != '') &&
-                      (_brincoTextController.text != '') &&
-                      (_brincoTextController.text != '-1')) {
-                    return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                  } else if (_nomeTextController.text != '') {
-                    return _nomeTextController.text;
-                  } else {
-                    return _brincoTextController.text;
-                  }
-                }(),
-                liberaInseminacao: () {
-                  if (_grupoValue == 'Touros') {
-                    return _switchValue;
-                  } else if (_grupoValue == 'Sêmens') {
-                    return _switchValue;
-                  } else {
-                    return true;
-                  }
-                }(),
-                uidAnimalOffline: functions.criarUidRandom(),
-              ));
-              safeSetState(() {});
-              mostrarSucessoOverlay(context);
-              if (Navigator.of(context).canPop()) {
-                context.pop();
-              }
-              context.pushNamed(
-                ListaAnimaisPage.routeName,
-                queryParameters: {
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    widget.visitaPresencial,
-                    ParamType.bool,
-                  ),
-                  'initialTabSelect': serializeParam(
-                    widget.initialTabSelect,
-                    ParamType.int,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                }.withoutNulls,
-              );
-
-              if (_shouldSetState) safeSetState(() {});
-              return;
-            } else {
-              if (_shouldSetState) safeSetState(() {});
-              return;
-            }
+            if (_shouldSetState) safeSetState(() {});
+            return;
           }
-        } else {
-          await criarAnimalOffline(AnimaisProdutoresStruct(
-            uidTecnicoPropriedade: widget.uidPropriedade,
-            nomeAnimal: _nomeTextController.text,
-            racaAnimal: _racaValue,
-            pesoAnimal: _pesoTextController.text,
-            dtNascimento: _dataNascimentoTextController.text,
-            touro: _touroPaiTextController.text,
-            vaca: _vacaMaeTextController.text,
-            grupoAnimal: _grupoValue,
-            brincoAnimalOrder: _brincoTextController.text != ''
-                ? int.tryParse(_brincoTextController.text)
-                : 999999,
-            brincoAnimal: _brincoTextController.text != ''
-                ? int.tryParse(_brincoTextController.text)
-                : -1,
-            nomeBrincoConcat: () {
-              if ((_nomeTextController.text != '') &&
-                  (_brincoTextController.text != '') &&
-                  (_brincoTextController.text != '-1')) {
-                return '${_nomeTextController.text} - ${_brincoTextController.text}';
-              } else if (_nomeTextController.text != '') {
-                return _nomeTextController.text;
-              } else {
-                return _brincoTextController.text;
-              }
-            }(),
-            uidAnimalOffline: functions.criarUidRandom(),
-          ));
-          safeSetState(() {});
-          mostrarSucessoOverlay(context);
-          if (Navigator.of(context).canPop()) {
-            context.pop();
-          }
-          context.pushNamed(
-            ListaAnimaisPage.routeName,
-            queryParameters: {
-              'uidPropriedade': serializeParam(
-                widget.uidPropriedade,
-                ParamType.DocumentReference,
-              ),
-              'nomePropriedade': serializeParam(
-                widget.nomePropriedade,
-                ParamType.String,
-              ),
-              'uidTecnico': serializeParam(
-                widget.uidTecnico,
-                ParamType.DocumentReference,
-              ),
-              'emailPropriedade': serializeParam(
-                widget.emailPropriedade,
-                ParamType.String,
-              ),
-              'visitaPresencial': serializeParam(
-                widget.visitaPresencial,
-                ParamType.bool,
-              ),
-              'initialTabSelect': serializeParam(
-                widget.initialTabSelect,
-                ParamType.int,
-              ),
-              'diasDg': serializeParam(
-                widget.diasDg,
-                ParamType.String,
-              ),
-            }.withoutNulls,
-          );
-
-          if (_shouldSetState) safeSetState(() {});
-          return;
         }
+      } else {
+        await _criarAnimal(AnimaisProdutoresStruct(
+          uidTecnicoPropriedade: widget.uidPropriedade,
+          nomeAnimal: _nomeTextController.text,
+          racaAnimal: _racaValue,
+          pesoAnimal: _pesoTextController.text,
+          dtNascimento: _dataNascimentoTextController.text,
+          touro: _touroPaiTextController.text,
+          vaca: _vacaMaeTextController.text,
+          grupoAnimal: _grupoValue,
+          brincoAnimalOrder: _brincoTextController.text != ''
+              ? int.tryParse(_brincoTextController.text)
+              : 999999,
+          brincoAnimal: _brincoTextController.text != ''
+              ? int.tryParse(_brincoTextController.text)
+              : -1,
+          nomeBrincoConcat: () {
+            if ((_nomeTextController.text != '') &&
+                (_brincoTextController.text != '') &&
+                (_brincoTextController.text != '-1')) {
+              return '${_nomeTextController.text} - ${_brincoTextController.text}';
+            } else if (_nomeTextController.text != '') {
+              return _nomeTextController.text;
+            } else {
+              return _brincoTextController.text;
+            }
+          }(),
+          uidAnimalOffline: functions.criarUidRandom(),
+        ));
+        safeSetState(() {});
+        mostrarSucessoOverlay(context);
+        if (Navigator.of(context).canPop()) {
+          context.pop();
+        }
+        context.pushNamed(
+          ListaAnimaisPage.routeName,
+          queryParameters: {
+            'uidPropriedade': serializeParam(
+              widget.uidPropriedade,
+              ParamType.DocumentReference,
+            ),
+            'nomePropriedade': serializeParam(
+              widget.nomePropriedade,
+              ParamType.String,
+            ),
+            'uidTecnico': serializeParam(
+              widget.uidTecnico,
+              ParamType.DocumentReference,
+            ),
+            'emailPropriedade': serializeParam(
+              widget.emailPropriedade,
+              ParamType.String,
+            ),
+            'visitaPresencial': serializeParam(
+              widget.visitaPresencial,
+              ParamType.bool,
+            ),
+            'initialTabSelect': serializeParam(
+              widget.initialTabSelect,
+              ParamType.int,
+            ),
+            'diasDg': serializeParam(
+              widget.diasDg,
+              ParamType.String,
+            ),
+          }.withoutNulls,
+        );
+
+        if (_shouldSetState) safeSetState(() {});
+        return;
       }
     }
 
