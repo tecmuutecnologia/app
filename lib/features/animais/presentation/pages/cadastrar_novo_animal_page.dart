@@ -61,24 +61,17 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
   bool? _respostaNet = true;
 
   /// Cria o animal no ObjectBox — a fonte única de que todas as listas leem — e
-  /// debita a cota do técnico quando há internet.
+  /// debita a cota do técnico.
   ///
-  /// O débito da cota é a única coisa que o ramo online fazia e o do ObjectBox
-  /// não; por isso ele sobrevive aqui, num lugar só, em vez das dez cópias que
-  /// existiam. A gravação do animal em si não depende de conexão: sai daqui
-  /// marcada com `needsSync` e o OfflineFirstSyncService a envia ao Firestore.
+  /// Nada aqui depende de conexão: o animal sai marcado com `needsSync` e a
+  /// cota vira um incremento na fila de operações pendentes. O
+  /// OfflineFirstSyncService leva os dois ao Firestore quando houver internet.
   Future<void> _criarAnimal(AnimaisProdutoresStruct s) async {
     await criarAnimalOffline(s);
 
-    if ((_respostaNet ?? false) && widget.uidTecnico != null) {
-      await widget.uidTecnico!.update({
-        ...mapToFirestore(
-          {
-            'quantidadeAnimaisCadastrados': FieldValue.increment(1),
-            'restanteLimiteAnimais': FieldValue.increment(-(1)),
-          },
-        ),
-      });
+    final tecnicoId = widget.uidTecnico?.id;
+    if (tecnicoId != null) {
+      TecnicoRepository().debitarCotaAnimais(tecnicoId);
     }
   }
 

@@ -13,11 +13,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 /// Este codec serializa datas como um marcador ISO-8601 (`{'__dt__': ...}`) e
 /// as reconstrói como `DateTime` na leitura. O Firestore converte `DateTime`
 /// em `Timestamp` ao gravar, então o tipo final no banco fica consistente.
+/// Incremento atômico a ser aplicado num campo numérico quando a operação sair
+/// da fila. Existe porque `FieldValue.increment` é opaco — não dá para lê-lo de
+/// volta para serializar. Este tipo carrega o delta pela fila e vira um
+/// `FieldValue.increment` só na hora de gravar.
+///
+/// Guardar o DELTA, e não o valor final, é o que mantém a contagem correta
+/// quando várias operações se acumulam offline ou quando outro dispositivo
+/// mexeu no mesmo contador nesse meio-tempo.
+class QueueIncrement {
+  const QueueIncrement(this.by);
+
+  final int by;
+
+  @override
+  bool operator ==(Object other) => other is QueueIncrement && other.by == by;
+
+  @override
+  int get hashCode => by.hashCode;
+}
+
 class QueuePayloadCodec {
   const QueuePayloadCodec._();
 
   static const String _dateKey = '__dt__';
   static const String _refKey = '__ref__';
+  static const String _incKey = '__inc__';
 
   /// Serializa [data] (que pode conter `DateTime`/`Timestamp`/`DocumentReference`)
   /// em JSON.
@@ -35,6 +56,7 @@ class QueuePayloadCodec {
       return {_dateKey: value.toDate().toIso8601String()};
     }
     if (value is DocumentReference) return {_refKey: value.path};
+    if (value is QueueIncrement) return {_incKey: value.by};
     return value; // tipos genuinamente não suportados ainda lançam (intencional)
   }
 
@@ -45,6 +67,9 @@ class QueuePayloadCodec {
       }
       if (value.length == 1 && value[_refKey] is String) {
         return FirebaseFirestore.instance.doc(value[_refKey] as String);
+      }
+      if (value.length == 1 && value[_incKey] is int) {
+        return FieldValue.increment(value[_incKey] as int);
       }
       return value.map((k, v) => MapEntry(k, _revive(v)));
     }

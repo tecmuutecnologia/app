@@ -4,6 +4,7 @@ import '/data/backend.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/success_overlay.dart';
 import '/data/objectbox/repositories/animal_repository.dart';
+import '/data/objectbox/repositories/tecnico_repository.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import 'dart:async';
 import '/core/ui/flutter_flow_animations.dart';
@@ -402,6 +403,17 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
                             : 999999,
                         uidAnimalOffline: functions.criarUidRandom(),
                       ));
+
+                      // O bezerro é um animal como outro qualquer e conta na
+                      // cota do técnico. Antes não contava: só a tela de
+                      // cadastro debitava, então todo parto registrado
+                      // cadastrava um animal de graça e a contagem do técnico
+                      // ia ficando abaixo do rebanho real.
+                      final tecnicoId = widget.uidTecnico?.id;
+                      if (tecnicoId != null) {
+                        TecnicoRepository().debitarCotaAnimais(tecnicoId);
+                      }
+
                       mostrarSucessoOverlay(context,
                           mensagem: 'Parto registrado com sucesso!');
                       Navigator.pop(context);
