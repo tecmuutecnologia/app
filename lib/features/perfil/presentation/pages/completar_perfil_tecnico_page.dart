@@ -204,7 +204,8 @@ class _CompletarPerfilTecnicoPageState
     );
   }
 
-  Widget _formulario(BuildContext context, dynamic completarPerfilTecnicoPersonRecord) {
+  Widget _formulario(
+      BuildContext context, dynamic completarPerfilTecnicoPersonRecord) {
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.always,

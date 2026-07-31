@@ -717,35 +717,7 @@ class _AnimaisPrenhasPageState extends State<AnimaisPrenhasPage> {
                             size: 30.0,
                           ),
                           onPressed: () async {
-                            context.pushNamed(
-                              InicioPropriedadePage.routeName,
-                              queryParameters: {
-                                'nomePropriedade': serializeParam(
-                                  widget.nomePropriedade,
-                                  ParamType.String,
-                                ),
-                                'uidPropriedade': serializeParam(
-                                  widget.uidPropriedade,
-                                  ParamType.DocumentReference,
-                                ),
-                                'uidTecnico': serializeParam(
-                                  widget.uidTecnico,
-                                  ParamType.DocumentReference,
-                                ),
-                                'emailPropriedade': serializeParam(
-                                  widget.emailPropriedade,
-                                  ParamType.String,
-                                ),
-                                'visitaPresencial': serializeParam(
-                                  widget.visitaPresencial,
-                                  ParamType.bool,
-                                ),
-                                'diasDg': serializeParam(
-                                  widget.diasDg,
-                                  ParamType.String,
-                                ),
-                              }.withoutNulls,
-                            );
+                            context.safePop();
                           },
                         ),
                       ),

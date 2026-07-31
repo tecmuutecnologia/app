@@ -7,7 +7,6 @@ import '/core/ui/app_card.dart';
 import '/core/ui/form_field_controller.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/services/index.dart' as actions;
-import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -171,22 +170,7 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
   }
 
   void _navigateBack() {
-    context.pushNamed(
-      InicioPropriedadePage.routeName,
-      queryParameters: {
-        'nomePropriedade':
-            serializeParam(widget.nomePropriedade, ParamType.String),
-        'uidPropriedade':
-            serializeParam(widget.uidPropriedade, ParamType.DocumentReference),
-        'uidTecnico':
-            serializeParam(widget.uidTecnico, ParamType.DocumentReference),
-        'emailPropriedade':
-            serializeParam(widget.emailPropriedade, ParamType.String),
-        'visitaPresencial':
-            serializeParam(widget.visitaPresencial, ParamType.bool),
-        'diasDg': serializeParam(widget.diasDg, ParamType.String),
-      }.withoutNulls,
-    );
+    context.safePop();
   }
 
   Widget _buildBody(BuildContext context) {

@@ -114,8 +114,7 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
 
   /// Item da lista de RESULTADOS DA BUSCA: exibe o cartão do animal apenas quando
   /// o nome/brinco casa com o texto pesquisado e o animal é elegível à inseminação.
-  Widget _itemAnimalBusca(
-      BuildContext context, AnimaisProdutoresStruct item) {
+  Widget _itemAnimalBusca(BuildContext context, AnimaisProdutoresStruct item) {
     return Visibility(
       visible: (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
           ((item.nomeAnimal
@@ -654,8 +653,7 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
               fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
             ),
-        validator:
-            _searchListTextControllerValidator.asValidator(context),
+        validator: _searchListTextControllerValidator.asValidator(context),
         maxLines: 1,
       ),
     );
@@ -703,35 +701,7 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
                             size: 30.0,
                           ),
                           onPressed: () async {
-                            context.pushNamed(
-                              InicioPropriedadePage.routeName,
-                              queryParameters: {
-                                'nomePropriedade': serializeParam(
-                                  widget.nomePropriedade,
-                                  ParamType.String,
-                                ),
-                                'uidPropriedade': serializeParam(
-                                  widget.uidPropriedade,
-                                  ParamType.DocumentReference,
-                                ),
-                                'uidTecnico': serializeParam(
-                                  widget.uidTecnico,
-                                  ParamType.DocumentReference,
-                                ),
-                                'emailPropriedade': serializeParam(
-                                  widget.emailPropriedade,
-                                  ParamType.String,
-                                ),
-                                'visitaPresencial': serializeParam(
-                                  widget.visitaPresencial,
-                                  ParamType.bool,
-                                ),
-                                'diasDg': serializeParam(
-                                  widget.diasDg,
-                                  ParamType.String,
-                                ),
-                              }.withoutNulls,
-                            );
+                            context.safePop();
                           },
                         ),
                       ),
@@ -810,8 +780,8 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
                               final listaAnimaisOfflineExistenteItem =
                                   listaAnimaisOfflineExistente[
                                       listaAnimaisOfflineExistenteIndex];
-                              return _itemAnimalElegivel(context,
-                                  listaAnimaisOfflineExistenteItem);
+                              return _itemAnimalElegivel(
+                                  context, listaAnimaisOfflineExistenteItem);
                             },
                           );
                         },
@@ -849,8 +819,8 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
                                 final listaAnimaisOfflineExistenteItem =
                                     listaAnimaisOfflineExistente[
                                         listaAnimaisOfflineExistenteIndex];
-                                return _itemAnimalBusca(context,
-                                    listaAnimaisOfflineExistenteItem);
+                                return _itemAnimalBusca(
+                                    context, listaAnimaisOfflineExistenteItem);
                               },
                             );
                           },

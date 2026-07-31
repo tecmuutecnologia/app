@@ -296,7 +296,8 @@ class _DashboardTecnicoPageState extends ConsumerState<DashboardTecnicoPage>
     // Conta as propriedades ATIVAS (o stream antigo do Firestore não filtrava
     // `isDeleted`, então incluía as da lixeira).
     final propriedades = ref
-            .watch(propriedadesAtivasProvider('tecnico/${tecnicoRecord.firestoreId}'))
+            .watch(propriedadesAtivasProvider(
+                'tecnico/${tecnicoRecord.firestoreId}'))
             .valueOrNull ??
         const <PropriedadeEntity>[];
 

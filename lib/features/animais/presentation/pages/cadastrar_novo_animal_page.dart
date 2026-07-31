@@ -244,7 +244,8 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
             builder: (alertDialogContext) {
               return AlertDialog(
                 title: Text('Animal já cadastrado.'),
-                content: Text('Já existe um animal ativo com este nome e brinco.'),
+                content:
+                    Text('Já existe um animal ativo com este nome e brinco.'),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(alertDialogContext),
@@ -1452,7 +1453,8 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
           builder: (alertDialogContext) {
             return AlertDialog(
               title: Text('Animal já cadastrado.'),
-              content: Text('Já existe um animal ativo com este nome e brinco.'),
+              content:
+                  Text('Já existe um animal ativo com este nome e brinco.'),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(alertDialogContext),
@@ -2783,97 +2785,88 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
               if (((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) &&
                   (_dataUltimaInseminacaoTextController.text != ''))
                 FlutterFlowDropDown<String>(
-                      controller: _touroInseminacaoValueController ??=
-                          FormFieldController<String>(null),
-                      // Touros/candidatos a pai lidos do ObjectBox (offline-first):
-                      // animais da propriedade liberados para inseminação.
-                      options: (widget.uidPropriedade == null
-                              ? const <String>[]
-                              : AnimalRepository()
-                                  .getAnimaisByPropriedade(
-                                      widget.uidPropriedade!.path)
-                                  .where((a) => a.liberaInseminacao)
-                                  .map((a) => a.nomeBrincoConcat ?? '')
-                                  .where((s) => s.isNotEmpty)
-                                  .toList())
-                          .cast<String>(),
-                      onChanged: (val) =>
-                          safeSetState(() => _touroInseminacaoValue = val),
-                      width: double.infinity,
-                      height: 50.0,
-                      searchHintTextStyle:
-                          FlutterFlowTheme.of(context).labelMedium.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .labelMedium
-                                      .fontStyle,
-                                ),
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .labelMedium
-                                    .fontStyle,
-                              ),
-                      searchTextStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontStyle,
-                              ),
-                      textStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.override(
-                                font: GoogleFonts.readexPro(
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
-                                letterSpacing: 0.0,
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontStyle,
-                              ),
-                      hintText: 'Touro/sêmen inseminação',
-                      searchHintText: 'Digite para pesquisar...',
-                      icon: Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: FlutterFlowTheme.of(context).secondaryText,
-                        size: 24.0,
+                  controller: _touroInseminacaoValueController ??=
+                      FormFieldController<String>(null),
+                  // Touros/candidatos a pai lidos do ObjectBox (offline-first):
+                  // animais da propriedade liberados para inseminação.
+                  options: (widget.uidPropriedade == null
+                          ? const <String>[]
+                          : AnimalRepository()
+                              .getAnimaisByPropriedade(
+                                  widget.uidPropriedade!.path)
+                              .where((a) => a.liberaInseminacao)
+                              .map((a) => a.nomeBrincoConcat ?? '')
+                              .where((s) => s.isNotEmpty)
+                              .toList())
+                      .cast<String>(),
+                  onChanged: (val) =>
+                      safeSetState(() => _touroInseminacaoValue = val),
+                  width: double.infinity,
+                  height: 50.0,
+                  searchHintTextStyle: FlutterFlowTheme.of(context)
+                      .labelMedium
+                      .override(
+                        font: GoogleFonts.readexPro(
+                          fontWeight: FlutterFlowTheme.of(context)
+                              .labelMedium
+                              .fontWeight,
+                          fontStyle: FlutterFlowTheme.of(context)
+                              .labelMedium
+                              .fontStyle,
+                        ),
+                        letterSpacing: 0.0,
+                        fontWeight:
+                            FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                        fontStyle:
+                            FlutterFlowTheme.of(context).labelMedium.fontStyle,
                       ),
-                      fillColor:
-                          FlutterFlowTheme.of(context).secondaryBackground,
-                      elevation: 2.0,
-                      borderColor: FlutterFlowTheme.of(context).alternate,
-                      borderWidth: 2.0,
-                      borderRadius: 8.0,
-                      margin:
-                          EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-                      hidesUnderline: true,
-                      isSearchable: true,
-                      isMultiSelect: false,
-                    ),
+                  searchTextStyle: FlutterFlowTheme.of(context)
+                      .bodyMedium
+                      .override(
+                        font: GoogleFonts.readexPro(
+                          fontWeight: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                        ),
+                        letterSpacing: 0.0,
+                        fontWeight:
+                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                        fontStyle:
+                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                      ),
+                  textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                        font: GoogleFonts.readexPro(
+                          fontWeight: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                        ),
+                        letterSpacing: 0.0,
+                        fontWeight:
+                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                        fontStyle:
+                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                      ),
+                  hintText: 'Touro/sêmen inseminação',
+                  searchHintText: 'Digite para pesquisar...',
+                  icon: Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: FlutterFlowTheme.of(context).secondaryText,
+                    size: 24.0,
+                  ),
+                  fillColor: FlutterFlowTheme.of(context).secondaryBackground,
+                  elevation: 2.0,
+                  borderColor: FlutterFlowTheme.of(context).alternate,
+                  borderWidth: 2.0,
+                  borderRadius: 8.0,
+                  margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+                  hidesUnderline: true,
+                  isSearchable: true,
+                  isMultiSelect: false,
+                ),
               if (((widget.grupoPredominante == 'Novilhas') ||
                       (widget.grupoPredominante == 'Vacas')) ||
                   ((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')))
@@ -3114,62 +3107,57 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
   Widget _campoRaca(BuildContext context) {
     // Raças do ObjectBox (offline-first) — sem StreamBuilder de rede.
     return FlutterFlowDropDown<String>(
-          controller: _racaValueController ??= FormFieldController<String>(
-            _racaValue ??= 'Holandesa',
+      controller: _racaValueController ??= FormFieldController<String>(
+        _racaValue ??= 'Holandesa',
+      ),
+      options: ReferenciaRepository().racas(),
+      onChanged: (val) => safeSetState(() => _racaValue = val),
+      width: double.infinity,
+      height: 50.0,
+      searchHintTextStyle: FlutterFlowTheme.of(context).labelMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
           ),
-          options: ReferenciaRepository().racas(),
-          onChanged: (val) => safeSetState(() => _racaValue = val),
-          width: double.infinity,
-          height: 50.0,
-          searchHintTextStyle: FlutterFlowTheme.of(context)
-              .labelMedium
-              .override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                ),
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-              ),
-          searchTextStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                ),
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-              ),
-          textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                ),
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-              ),
-          hintText: 'Raça predominante*',
-          searchHintText: 'Pesquise uma raça...',
-          icon: Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: FlutterFlowTheme.of(context).secondaryText,
-            size: 24.0,
+      searchTextStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
           ),
-          fillColor: FlutterFlowTheme.of(context).primaryBackground,
-          elevation: 2.0,
-          borderColor: FlutterFlowTheme.of(context).alternate,
-          borderWidth: 2.0,
-          borderRadius: 8.0,
-          margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-          hidesUnderline: true,
-          isOverButton: true,
-          isSearchable: true,
-          isMultiSelect: false,
+      textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+          ),
+      hintText: 'Raça predominante*',
+      searchHintText: 'Pesquise uma raça...',
+      icon: Icon(
+        Icons.keyboard_arrow_down_rounded,
+        color: FlutterFlowTheme.of(context).secondaryText,
+        size: 24.0,
+      ),
+      fillColor: FlutterFlowTheme.of(context).primaryBackground,
+      elevation: 2.0,
+      borderColor: FlutterFlowTheme.of(context).alternate,
+      borderWidth: 2.0,
+      borderRadius: 8.0,
+      margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+      hidesUnderline: true,
+      isOverButton: true,
+      isSearchable: true,
+      isMultiSelect: false,
     );
   }
 
@@ -3177,38 +3165,37 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     // Grupos do ObjectBox (offline-first) — sem StreamBuilder de rede, que
     // fazia o valor pré-selecionado (grupo predominante) piscar/sumir offline.
     return FlutterFlowDropDown<String>(
-          controller: _grupoValueController ??= FormFieldController<String>(
-            _grupoValue ??= widget.grupoPredominante,
+      controller: _grupoValueController ??= FormFieldController<String>(
+        _grupoValue ??= widget.grupoPredominante,
+      ),
+      options: ReferenciaRepository().grupos(),
+      onChanged: (val) => safeSetState(() => _grupoValue = val),
+      width: double.infinity,
+      height: 50.0,
+      textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
           ),
-          options: ReferenciaRepository().grupos(),
-          onChanged: (val) => safeSetState(() => _grupoValue = val),
-          width: double.infinity,
-          height: 50.0,
-          textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                ),
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-              ),
-          hintText: 'Grupo predominante*',
-          icon: Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: FlutterFlowTheme.of(context).secondaryText,
-            size: 24.0,
-          ),
-          fillColor: FlutterFlowTheme.of(context).primaryBackground,
-          elevation: 2.0,
-          borderColor: FlutterFlowTheme.of(context).alternate,
-          borderWidth: 2.0,
-          borderRadius: 8.0,
-          margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-          hidesUnderline: true,
-          isSearchable: false,
-          isMultiSelect: false,
+      hintText: 'Grupo predominante*',
+      icon: Icon(
+        Icons.keyboard_arrow_down_rounded,
+        color: FlutterFlowTheme.of(context).secondaryText,
+        size: 24.0,
+      ),
+      fillColor: FlutterFlowTheme.of(context).primaryBackground,
+      elevation: 2.0,
+      borderColor: FlutterFlowTheme.of(context).alternate,
+      borderWidth: 2.0,
+      borderRadius: 8.0,
+      margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+      hidesUnderline: true,
+      isSearchable: false,
+      isMultiSelect: false,
     );
   }
 
@@ -4072,51 +4059,52 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
         ReferenciaRepository().statusAnimais();
 
     return GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
-          child: Scaffold(
-            key: scaffoldKey,
-            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-            appBar: PreferredSize(
-              preferredSize: Size.fromHeight(100.0),
-              child: AppBar(
-                backgroundColor:
-                    _respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
-                automaticallyImplyLeading: false,
-                actions: [],
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _cabecalho(context),
-                    ],
-                  ),
-                  centerTitle: true,
-                  expandedTitleScale: 1.0,
-                ),
-                elevation: 0.0,
+      onTap: () {
+        FocusScope.of(context).unfocus();
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        key: scaffoldKey,
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(100.0),
+          child: AppBar(
+            backgroundColor:
+                _respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
+            automaticallyImplyLeading: false,
+            actions: [],
+            flexibleSpace: FlexibleSpaceBar(
+              title: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _cabecalho(context),
+                ],
               ),
+              centerTitle: true,
+              expandedTitleScale: 1.0,
             ),
-            body: SafeArea(
-              top: true,
-              child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _formularioCadastro(context, cadastrarNovoAnimalStatusAnimaisRecordList),
-                    ],
-                  ),
-                ),
+            elevation: 0.0,
+          ),
+        ),
+        body: SafeArea(
+          top: true,
+          child: Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _formularioCadastro(
+                      context, cadastrarNovoAnimalStatusAnimaisRecordList),
+                ],
               ),
             ),
           ),
-        );
+        ),
+      ),
+    );
   }
 }

@@ -7,7 +7,6 @@ import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/features/financeiro/presentation/pages/editar_relatorio_financeiro_page.dart';
 import '/features/financeiro/presentation/pages/novo_relatorio_financeiro_page.dart';
-import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -69,35 +68,7 @@ class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage> {
               size: 30.0,
             ),
             onPressed: () async {
-              context.pushNamed(
-                InicioPropriedadePage.routeName,
-                queryParameters: {
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    widget.visitaPresencial,
-                    ParamType.bool,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                }.withoutNulls,
-              );
+              context.safePop();
             },
           ),
         ),

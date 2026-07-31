@@ -10,7 +10,6 @@ import '/core/ui/instant_timer.dart';
 import '/core/services/index.dart' as actions;
 import '/features/animais/presentation/pages/cadastrar_novo_animal_page.dart';
 import '/features/animais/presentation/pages/editar_animal_page.dart';
-import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
 import '/features/animais/presentation/animal_group_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -163,35 +162,7 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
               size: 30.0,
             ),
             onPressed: () async {
-              context.pushNamed(
-                InicioPropriedadePage.routeName,
-                queryParameters: {
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    false,
-                    ParamType.bool,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                }.withoutNulls,
-              );
+              context.safePop();
             },
           ),
         ),
@@ -499,61 +470,61 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
       tooltip: 'Novo animal',
       onPressed: () async {
         context.pushNamed(
-            CadastrarNovoAnimalPage.routeName,
-            queryParameters: {
-              'uidPropriedade': serializeParam(
-                widget.uidPropriedade,
-                ParamType.DocumentReference,
-              ),
-              'nomePropriedade': serializeParam(
-                widget.nomePropriedade,
-                ParamType.String,
-              ),
-              'uidTecnico': serializeParam(
-                widget.uidTecnico,
-                ParamType.DocumentReference,
-              ),
-              'emailPropriedade': serializeParam(
-                widget.emailPropriedade,
-                ParamType.String,
-              ),
-              'grupoPredominante': serializeParam(
-                () {
-                  if (_tabBarCurrentIndex == 0) {
-                    return 'Bezerras';
-                  } else if (_tabBarCurrentIndex == 1) {
-                    return 'Bezerros';
-                  } else if (_tabBarCurrentIndex == 2) {
-                    return 'Novilhas';
-                  } else if (_tabBarCurrentIndex == 3) {
-                    return 'Sêmens';
-                  } else if (_tabBarCurrentIndex == 4) {
-                    return 'Touros';
-                  } else if (_tabBarCurrentIndex == 5) {
-                    return 'Vacas';
-                  } else {
-                    return 'Novilhas';
-                  }
-                }(),
-                ParamType.String,
-              ),
-              'visitaPresencial': serializeParam(
-                widget.visitaPresencial,
-                ParamType.bool,
-              ),
-              'initialTabSelect': serializeParam(
-                _tabBarCurrentIndex,
-                ParamType.int,
-              ),
-              'diasDg': serializeParam(
-                widget.diasDg,
-                ParamType.String,
-              ),
-            }.withoutNulls,
-          );
+          CadastrarNovoAnimalPage.routeName,
+          queryParameters: {
+            'uidPropriedade': serializeParam(
+              widget.uidPropriedade,
+              ParamType.DocumentReference,
+            ),
+            'nomePropriedade': serializeParam(
+              widget.nomePropriedade,
+              ParamType.String,
+            ),
+            'uidTecnico': serializeParam(
+              widget.uidTecnico,
+              ParamType.DocumentReference,
+            ),
+            'emailPropriedade': serializeParam(
+              widget.emailPropriedade,
+              ParamType.String,
+            ),
+            'grupoPredominante': serializeParam(
+              () {
+                if (_tabBarCurrentIndex == 0) {
+                  return 'Bezerras';
+                } else if (_tabBarCurrentIndex == 1) {
+                  return 'Bezerros';
+                } else if (_tabBarCurrentIndex == 2) {
+                  return 'Novilhas';
+                } else if (_tabBarCurrentIndex == 3) {
+                  return 'Sêmens';
+                } else if (_tabBarCurrentIndex == 4) {
+                  return 'Touros';
+                } else if (_tabBarCurrentIndex == 5) {
+                  return 'Vacas';
+                } else {
+                  return 'Novilhas';
+                }
+              }(),
+              ParamType.String,
+            ),
+            'visitaPresencial': serializeParam(
+              widget.visitaPresencial,
+              ParamType.bool,
+            ),
+            'initialTabSelect': serializeParam(
+              _tabBarCurrentIndex,
+              ParamType.int,
+            ),
+            'diasDg': serializeParam(
+              widget.diasDg,
+              ParamType.String,
+            ),
+          }.withoutNulls,
+        );
 
-          return;
-        },
+        return;
+      },
       child: const Icon(Icons.add, size: 32.0),
     );
   }

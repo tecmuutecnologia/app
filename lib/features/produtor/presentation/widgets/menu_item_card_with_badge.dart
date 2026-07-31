@@ -50,6 +50,15 @@ class _MenuCardBody extends StatelessWidget {
 }
 
 /// Badge "pill" roxo (acento secundário) no canto superior direito.
+///
+/// O centramento do número vem de um [Center] com `widthFactor`/`heightFactor`
+/// em 1.0, e NÃO da propriedade `alignment` do [Container]. A diferença não é
+/// cosmética: um Container com `alignment` sob constraints limitadas se expande
+/// para preencher o pai (está na doc do Container). Como o pai aqui é um
+/// [Align] que repassa o tamanho do card inteiro, a pílula crescia até cobrir
+/// card, ícone e rótulo — sobrava um bloco roxo com o número no meio. Com os
+/// fatores em 1.0, o Center se dimensiona pelo filho e a pílula volta a
+/// envolver só o número.
 class _BadgePill extends StatelessWidget {
   const _BadgePill({required this.child});
   final Widget child;
@@ -63,8 +72,11 @@ class _BadgePill extends StatelessWidget {
         color: AppTokens.secondary,
         borderRadius: BorderRadius.circular(12.0),
       ),
-      alignment: Alignment.center,
-      child: child,
+      child: Center(
+        widthFactor: 1.0,
+        heightFactor: 1.0,
+        child: child,
+      ),
     );
   }
 }

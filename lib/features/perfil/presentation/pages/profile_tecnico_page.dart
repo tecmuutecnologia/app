@@ -215,7 +215,8 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _campoEmpresa(BuildContext context, dynamic profileTecnicoPersonRecord) {
+  Widget _campoEmpresa(
+      BuildContext context, dynamic profileTecnicoPersonRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
@@ -305,7 +306,8 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _campoDataNascimento(BuildContext context, dynamic profileTecnicoPersonRecord) {
+  Widget _campoDataNascimento(
+      BuildContext context, dynamic profileTecnicoPersonRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
@@ -389,7 +391,8 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _campoCelular(BuildContext context, dynamic profileTecnicoPersonRecord) {
+  Widget _campoCelular(
+      BuildContext context, dynamic profileTecnicoPersonRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
@@ -473,7 +476,8 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _campoEndereco(BuildContext context, dynamic profileTecnicoPersonRecord) {
+  Widget _campoEndereco(
+      BuildContext context, dynamic profileTecnicoPersonRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
@@ -563,7 +567,8 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _campoBairro(BuildContext context, dynamic profileTecnicoPersonRecord) {
+  Widget _campoBairro(
+      BuildContext context, dynamic profileTecnicoPersonRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 16.0),
       child: TextFormField(
@@ -653,7 +658,8 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _botaoSalvar(BuildContext context, dynamic profileTecnicoPersonRecord) {
+  Widget _botaoSalvar(
+      BuildContext context, dynamic profileTecnicoPersonRecord) {
     return Align(
       alignment: AlignmentDirectional(0.0, 0.05),
       child: Padding(
@@ -725,7 +731,8 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
-  Widget _botaoMeuPlano(BuildContext context, dynamic profileTecnicoPersonRecord) {
+  Widget _botaoMeuPlano(
+      BuildContext context, dynamic profileTecnicoPersonRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
       child: Row(

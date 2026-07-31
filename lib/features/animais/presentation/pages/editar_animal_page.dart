@@ -408,7 +408,8 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                   cursorColor: FlutterFlowTheme.of(context).primary,
                   validator: _pesoTextControllerValidator.asValidator(context),
                 ),
-              _campoDataNascimento(context, editarAnimalAnimaisProdutoresRecord),
+              _campoDataNascimento(
+                  context, editarAnimalAnimaisProdutoresRecord),
               _campoTouro(context, editarAnimalAnimaisProdutoresRecord),
               _campoVaca(context, editarAnimalAnimaisProdutoresRecord),
             ].divide(SizedBox(height: 12.0)),
@@ -457,8 +458,8 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                 builder: (alertDialogContext) {
                   return AlertDialog(
                     title: Text('Animal já cadastrado.'),
-                    content:
-                        Text('Já existe um animal ativo com este nome e brinco.'),
+                    content: Text(
+                        'Já existe um animal ativo com este nome e brinco.'),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(alertDialogContext),
@@ -498,7 +499,8 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                     ? int.tryParse(_brincoTextController.text)
                     : 999999,
               ));
-              mostrarSucessoOverlay(context, mensagem: 'Animal atualizado com sucesso!');
+              mostrarSucessoOverlay(context,
+                  mensagem: 'Animal atualizado com sucesso!');
 
               context.goNamed(
                 ListaAnimaisPage.routeName,
@@ -565,7 +567,8 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                       : 999999,
                   liberaInseminacao: _switchValue,
                 ));
-                mostrarSucessoOverlay(context, mensagem: 'Animal atualizado com sucesso!');
+                mostrarSucessoOverlay(context,
+                    mensagem: 'Animal atualizado com sucesso!');
 
                 context.goNamed(
                   ListaAnimaisPage.routeName,
@@ -634,7 +637,8 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                         : 999999,
                     liberaInseminacao: _switchValue,
                   ));
-                  mostrarSucessoOverlay(context, mensagem: 'Animal atualizado com sucesso!');
+                  mostrarSucessoOverlay(context,
+                      mensagem: 'Animal atualizado com sucesso!');
 
                   context.goNamed(
                     ListaAnimaisPage.routeName,
@@ -702,7 +706,8 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                         ? int.tryParse(_brincoTextController.text)
                         : 999999,
                   ));
-                  mostrarSucessoOverlay(context, mensagem: 'Animal atualizado com sucesso!');
+                  mostrarSucessoOverlay(context,
+                      mensagem: 'Animal atualizado com sucesso!');
 
                   context.goNamed(
                     ListaAnimaisPage.routeName,
@@ -950,62 +955,57 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
       BuildContext context, dynamic editarAnimalAnimaisProdutoresRecord) {
     // Raças do ObjectBox (offline-first) — sem StreamBuilder de rede.
     return FlutterFlowDropDown<String>(
-          controller: _racaValueController ??= FormFieldController<String>(
-            _racaValue ??= editarAnimalAnimaisProdutoresRecord.racaAnimal,
+      controller: _racaValueController ??= FormFieldController<String>(
+        _racaValue ??= editarAnimalAnimaisProdutoresRecord.racaAnimal,
+      ),
+      options: ReferenciaRepository().racas(),
+      onChanged: (val) => safeSetState(() => _racaValue = val),
+      width: double.infinity,
+      height: 50.0,
+      searchHintTextStyle: FlutterFlowTheme.of(context).labelMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
           ),
-          options: ReferenciaRepository().racas(),
-          onChanged: (val) => safeSetState(() => _racaValue = val),
-          width: double.infinity,
-          height: 50.0,
-          searchHintTextStyle: FlutterFlowTheme.of(context)
-              .labelMedium
-              .override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                ),
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-              ),
-          searchTextStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                ),
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-              ),
-          textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                ),
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-              ),
-          hintText: 'Raça predominante*',
-          searchHintText: 'Pesquise uma raça...',
-          icon: Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: FlutterFlowTheme.of(context).secondaryText,
-            size: 24.0,
+      searchTextStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
           ),
-          fillColor: FlutterFlowTheme.of(context).primaryBackground,
-          elevation: 2.0,
-          borderColor: FlutterFlowTheme.of(context).alternate,
-          borderWidth: 2.0,
-          borderRadius: 8.0,
-          margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-          hidesUnderline: true,
-          isOverButton: true,
-          isSearchable: true,
-          isMultiSelect: false,
+      textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+          ),
+      hintText: 'Raça predominante*',
+      searchHintText: 'Pesquise uma raça...',
+      icon: Icon(
+        Icons.keyboard_arrow_down_rounded,
+        color: FlutterFlowTheme.of(context).secondaryText,
+        size: 24.0,
+      ),
+      fillColor: FlutterFlowTheme.of(context).primaryBackground,
+      elevation: 2.0,
+      borderColor: FlutterFlowTheme.of(context).alternate,
+      borderWidth: 2.0,
+      borderRadius: 8.0,
+      margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+      hidesUnderline: true,
+      isOverButton: true,
+      isSearchable: true,
+      isMultiSelect: false,
     );
   }
 
@@ -1013,38 +1013,37 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
       BuildContext context, dynamic editarAnimalAnimaisProdutoresRecord) {
     // Grupos do ObjectBox (offline-first) — sem StreamBuilder de rede.
     return FlutterFlowDropDown<String>(
-          controller: _grupoValueController ??= FormFieldController<String>(
-            _grupoValue ??= editarAnimalAnimaisProdutoresRecord.grupoAnimal,
+      controller: _grupoValueController ??= FormFieldController<String>(
+        _grupoValue ??= editarAnimalAnimaisProdutoresRecord.grupoAnimal,
+      ),
+      options: ReferenciaRepository().grupos(),
+      onChanged: (val) => safeSetState(() => _grupoValue = val),
+      width: double.infinity,
+      height: 50.0,
+      textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+            font: GoogleFonts.readexPro(
+              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+            ),
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
           ),
-          options: ReferenciaRepository().grupos(),
-          onChanged: (val) => safeSetState(() => _grupoValue = val),
-          width: double.infinity,
-          height: 50.0,
-          textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                ),
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-              ),
-          hintText: 'Grupo predominante*',
-          icon: Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: FlutterFlowTheme.of(context).secondaryText,
-            size: 24.0,
-          ),
-          fillColor: FlutterFlowTheme.of(context).primaryBackground,
-          elevation: 2.0,
-          borderColor: FlutterFlowTheme.of(context).alternate,
-          borderWidth: 2.0,
-          borderRadius: 8.0,
-          margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-          hidesUnderline: true,
-          isSearchable: false,
-          isMultiSelect: false,
+      hintText: 'Grupo predominante*',
+      icon: Icon(
+        Icons.keyboard_arrow_down_rounded,
+        color: FlutterFlowTheme.of(context).secondaryText,
+        size: 24.0,
+      ),
+      fillColor: FlutterFlowTheme.of(context).primaryBackground,
+      elevation: 2.0,
+      borderColor: FlutterFlowTheme.of(context).alternate,
+      borderWidth: 2.0,
+      borderRadius: 8.0,
+      margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+      hidesUnderline: true,
+      isSearchable: false,
+      isMultiSelect: false,
     );
   }
 
@@ -1483,8 +1482,10 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _formularioEdicao(context, editarAnimalAnimaisProdutoresRecord),
-                      _secaoSalvar(context, editarAnimalAnimaisProdutoresRecord),
+                      _formularioEdicao(
+                          context, editarAnimalAnimaisProdutoresRecord),
+                      _secaoSalvar(
+                          context, editarAnimalAnimaisProdutoresRecord),
                     ],
                   ),
                 ),

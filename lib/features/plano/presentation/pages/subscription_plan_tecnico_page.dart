@@ -96,7 +96,8 @@ class _SubscriptionPlanTecnicoPageState
         verticalDirection: VerticalDirection.down,
         clipBehavior: Clip.none,
         children: [
-          _cartaoPlano(context, subscriptionPlanTecnicoPlanosTecnicosRecordList),
+          _cartaoPlano(
+              context, subscriptionPlanTecnicoPlanosTecnicosRecordList),
         ],
       ),
     );
@@ -123,7 +124,8 @@ class _SubscriptionPlanTecnicoPageState
             _titulo(context),
             _subtitulo(context),
             _campoTipoAssinatura(context),
-            _campoPlano(context, subscriptionPlanTecnicoPlanosTecnicosRecordList),
+            _campoPlano(
+                context, subscriptionPlanTecnicoPlanosTecnicosRecordList),
             Divider(
               height: 32.0,
               thickness: 2.0,
