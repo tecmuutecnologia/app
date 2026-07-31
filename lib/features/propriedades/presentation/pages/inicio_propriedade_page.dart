@@ -11,6 +11,7 @@ import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/app_card.dart';
+import '/core/ui/menu_acao_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/ui/request_manager.dart';
@@ -429,170 +430,6 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     super.dispose();
   }
 
-  Widget _cabecalho(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(20.0, 24.0, 20.0, 4.0),
-      child: Text(
-        'Menu de Ações',
-        textAlign: TextAlign.start,
-        style: FlutterFlowTheme.of(context).titleSmall.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FontWeight.w600,
-                fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-              ),
-              color: FlutterFlowTheme.of(context).primaryText,
-              fontSize: 17.0,
-              letterSpacing: 0.0,
-              fontWeight: FontWeight.w600,
-              fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-            ),
-      ),
-    );
-  }
-
-  /// Ícone padrão dos cards do menu: quadrado arredondado com fundo roxo claro
-  /// (acento secundário a 12%) e o ícone em roxo cheio. Igual nos 16 cards.
-  Widget _iconeMenu(IconData icone) =>
-      MenuIconTile(icon: icone, accent: AppTokens.secondary);
-
-  /// Tile do ícone com o contador preso no canto, como badge de app.
-  ///
-  /// Antes o número ficava num `Card` branco com `elevation: 4` solto no topo
-  /// do card — branco sobre branco, lendo como borrão e sem vínculo visual
-  /// com aquilo que ele conta. Preso ao tile, o número pertence ao ícone.
-  ///
-  /// Contador zero não vira badge: zero significa "não há nada a fazer aqui",
-  /// e um badge saturado chamando atenção para o nada é ruído. Some o badge,
-  /// sobra só o que realmente pede ação.
-  Widget _tileComContador(IconData icone, int? contador) {
-    final tile = _iconeMenu(icone);
-    if (contador == null || contador == 0) return tile;
-
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        tile,
-        Positioned(
-          top: -6.0,
-          right: -8.0,
-          child: Container(
-            height: 22.0,
-            constraints: const BoxConstraints(minWidth: 22.0),
-            padding: const EdgeInsets.symmetric(horizontal: 6.0),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: AppTokens.secondary,
-              borderRadius: BorderRadius.circular(11.0),
-              // O anel branco descola o badge do tile por baixo.
-              border: Border.all(
-                color: FlutterFlowTheme.of(context).secondaryBackground,
-                width: 2.0,
-              ),
-            ),
-            child: Text(
-              contador.toString(),
-              style: FlutterFlowTheme.of(context).bodySmall.override(
-                    font: GoogleFonts.readexPro(
-                      fontWeight: FontWeight.w700,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodySmall.fontStyle,
-                    ),
-                    color: Colors.white,
-                    fontSize: 11.0,
-                    letterSpacing: 0.0,
-                    fontWeight: FontWeight.w700,
-                    fontStyle: FlutterFlowTheme.of(context).bodySmall.fontStyle,
-                  ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Card padrão do menu de ações — a estrutura é idêntica nos 16, e é isso
-  /// que faz a grade ler como grade: ícone, rótulo e badge caem sempre na
-  /// mesma altura, independente do rótulo ter uma ou duas linhas.
-  ///
-  /// A caixa do rótulo tem altura fixa e o texto é ancorado no topo dela. Sem
-  /// isso, um rótulo de duas linhas ("Trocar Produtor") empurrava o ícone para
-  /// cima e ele saía do alinhamento dos vizinhos de uma linha — o desalinho
-  /// mais visível da tela antes desta mudança.
-  ///
-  /// Laranja é a moldura (halo + fio do card), roxo é o dado (ícone, badge).
-  /// O toque tem ripple quente recortado no raio: a grade nasceu do FlutterFlow
-  /// com splash/focus/hover/highlight todos em `transparent`, ou seja, sem
-  /// retorno visual nenhum ao tocar.
-  Widget _cardMenu({
-    required BuildContext context,
-    required IconData icone,
-    required String rotulo,
-    required VoidCallback onTap,
-    int? contador,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).secondaryBackground,
-        borderRadius: BorderRadius.circular(18.0),
-        border: AppTokens.brandBorder(context),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(18.0),
-          splashColor: AppTokens.brandTint,
-          highlightColor: AppTokens.brandTintSoft,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(6.0, 14.0, 6.0, 10.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _tileComContador(icone, contador),
-                const SizedBox(height: 10.0),
-                SizedBox(
-                  height: 34.0,
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: AutoSizeText(
-                      rotulo,
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      minFontSize: 8.0,
-                      // Sem isto o AutoSizeText prefere quebrar DENTRO da
-                      // palavra a diminuir a fonte, e "Inseminações" virava
-                      // "Inseminaçõe / s". Palavra longa agora encolhe.
-                      wrapWords: false,
-                      overflow: TextOverflow.ellipsis,
-                      style: FlutterFlowTheme.of(context).labelMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .labelMedium
-                                  .fontStyle,
-                            ),
-                            color: FlutterFlowTheme.of(context).primaryText,
-                            fontSize: 13.0,
-                            letterSpacing: 0.0,
-                            lineHeight: 1.25,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .labelMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   /// Os seis parâmetros de rota que praticamente toda tela da propriedade
   /// recebe. Estavam copiados literalmente em catorze cards.
   Map<String, String> _paramsPropriedade() => {
@@ -630,18 +467,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       padding: EdgeInsetsDirectional.fromSTEB(16.0, 8.0, 16.0, 16.0),
       child: GridView(
         padding: EdgeInsets.zero,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 12.0,
-          mainAxisSpacing: 12.0,
-          // Altura de célula FIXA (não derivada da largura): o conteúdo do
-          // card tem tamanho conhecido — padding 14 + tile 48 + gap 10 +
-          // caixa do rótulo 34 + padding 10 = 116, mais os 2px de borda em
-          // cima e embaixo. A célula acompanha isso de perto em vez dos 156
-          // antigos, que deixavam 40px de vazio em cada card e faziam a grade
-          // parecer inacabada.
-          mainAxisExtent: 124.0,
-        ),
+        gridDelegate: menuAcaoGridDelegate,
         primary: false,
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
@@ -675,8 +501,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
   }
 
   Widget _cardInicio(BuildContext context) {
-    return _cardMenu(
-      context: context,
+    return MenuAcaoCard(
       icone: Icons.home,
       rotulo: 'Início',
       onTap: () async {
@@ -688,8 +513,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
   }
 
   Widget _cardTrocarProdutor(BuildContext context) {
-    return _cardMenu(
-      context: context,
+    return MenuAcaoCard(
       icone: Icons.supervisor_account_rounded,
       rotulo: 'Trocar Produtor',
       onTap: () async {
@@ -709,8 +533,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
   }
 
   Widget _cardAnimais(BuildContext context) {
-    return _cardMenu(
-      context: context,
+    return MenuAcaoCard(
       icone: Icons.format_list_numbered,
       rotulo: 'Animais',
       // Animais criados offline vão direto ao ObjectBox e sincronizam ao
@@ -727,8 +550,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
 
   Widget _cardInseminacoes(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
-    return _cardMenu(
-      context: context,
+    return MenuAcaoCard(
       icone: Icons.vaccines,
       rotulo: 'Inseminações',
       contador: inicioPropriedadeAnimaisProdutoresRecordList
@@ -750,8 +572,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
 
   Widget _cardDiagnosticoGestacao(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
-    return _cardMenu(
-      context: context,
+    return MenuAcaoCard(
       icone: Icons.medical_information_outlined,
       rotulo: 'Diagnóstico Gestação',
       contador: inicioPropriedadeAnimaisProdutoresRecordList
@@ -777,8 +598,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
 
   Widget _cardPrenhas(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
-    return _cardMenu(
-      context: context,
+    return MenuAcaoCard(
       icone: Icons.monitor_heart_outlined,
       rotulo: 'Prenhas',
       contador: inicioPropriedadeAnimaisProdutoresRecordList
@@ -797,8 +617,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
 
   Widget _cardSecas(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
-    return _cardMenu(
-      context: context,
+    return MenuAcaoCard(
       icone: Icons.alarm_add_sharp,
       rotulo: 'Secas',
       contador: inicioPropriedadeAnimaisProdutoresRecordList
@@ -820,8 +639,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
 
   Widget _cardExameGinecologico(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
-    return _cardMenu(
-      context: context,
+    return MenuAcaoCard(
       icone: Icons.medical_services,
       rotulo: 'Exame Ginecológico',
       contador: inicioPropriedadeAnimaisProdutoresRecordList
@@ -842,8 +660,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
 
   Widget _cardRecria(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
-    return _cardMenu(
-      context: context,
+    return MenuAcaoCard(
       icone: Icons.compare_arrows_sharp,
       rotulo: 'Recria',
       contador: inicioPropriedadeAnimaisProdutoresRecordList
@@ -867,8 +684,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
 
   Widget _cardListaCompleta(BuildContext context,
       dynamic inicioPropriedadeAnimaisProdutoresRecordList) {
-    return _cardMenu(
-      context: context,
+    return MenuAcaoCard(
       icone: Icons.list_alt_sharp,
       rotulo: 'Lista completa',
       contador: inicioPropriedadeAnimaisProdutoresRecordList
@@ -889,8 +705,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
   /// Receituario le do ObjectBox (offline-first); a emissao segue online, mas
   /// consultar receituarios ja emitidos nao.
   Widget _cardReceituario(BuildContext context) {
-    return _cardMenu(
-      context: context,
+    return MenuAcaoCard(
       icone: Icons.summarize,
       rotulo: 'Receituário',
       onTap: () async {
@@ -905,8 +720,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
   /// Resumo do rebanho le tudo do ObjectBox e gera o relatorio offline (sem o
   /// logo, que vem de URL).
   Widget _cardResumoRebanho(BuildContext context) {
-    return _cardMenu(
-      context: context,
+    return MenuAcaoCard(
       icone: Icons.summarize_outlined,
       rotulo: 'Resumo Rebanho',
       onTap: () async {
@@ -921,8 +735,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
   /// Calendario sanitario le do ObjectBox (offline-first), entao o card nao
   /// depende de conexao.
   Widget _cardCalendarioSanitario(BuildContext context) {
-    return _cardMenu(
-      context: context,
+    return MenuAcaoCard(
       icone: Icons.calendar_today,
       rotulo: 'Calendário Sanitário',
       onTap: () async {
@@ -935,8 +748,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
   }
 
   Widget _cardIndicesZootecnicos(BuildContext context) {
-    return _cardMenu(
-      context: context,
+    return MenuAcaoCard(
       icone: Icons.folder_copy_outlined,
       rotulo: 'Índices Zootécnicos',
       onTap: () async {
@@ -951,8 +763,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
   /// Financeiro le do ObjectBox (offline-first), entao o card nao depende de
   /// conexao.
   Widget _cardFinanceiro(BuildContext context) {
-    return _cardMenu(
-      context: context,
+    return MenuAcaoCard(
       icone: Icons.attach_money_sharp,
       rotulo: 'Financeiro',
       onTap: () async {
@@ -965,8 +776,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
   }
 
   Widget _cardImportarAnimais(BuildContext context) {
-    return _cardMenu(
-      context: context,
+    return MenuAcaoCard(
       icone: FontAwesomeIcons.fileImport,
       rotulo: 'Importar animais',
       onTap: () async {},
@@ -1091,7 +901,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _cabecalho(context),
+                    const MenuAcaoCabecalho(),
                     _gradeMenu(
                         context, inicioPropriedadeAnimaisProdutoresRecordList),
                     if (!valueOrDefault<bool>(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/core/ui/app_card.dart';
+import '/core/ui/menu_acao_card.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 
@@ -21,8 +21,6 @@ import '/features/relatorios/presentation/pages/listacompleta_page.dart';
 import '/features/relatorios/presentation/pages/resumo_rebanho_page.dart';
 import '/features/secas/presentation/pages/secas_page.dart';
 
-import 'menu_item_card.dart';
-import 'menu_item_card_with_badge.dart';
 import '../utils/navigation_params.dart';
 
 /// Widget que renderiza o grid completo de menu com todos os itens.
@@ -47,16 +45,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView(
       padding: EdgeInsets.zero,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 10.0,
-        mainAxisSpacing: 10.0,
-        // Altura de célula FIXA (não derivada da largura) — o conteúdo é de
-        // tamanho fixo (ícone + label de até 2 linhas + badge), então cabe em
-        // qualquer tela. Evita o overflow do childAspectRatio: 1.0 (célula
-        // quadrada ~112px < conteúdo ~135px).
-        mainAxisExtent: 142.0,
-      ),
+      gridDelegate: menuAcaoGridDelegate,
       primary: false,
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
@@ -104,9 +93,9 @@ class PropriedadeMenuGrid extends StatelessWidget {
   }
 
   Widget _buildAnimaisCard(BuildContext context) {
-    return MenuItemCard(
-      icon: Icons.format_list_numbered,
-      label: 'Animais',
+    return MenuAcaoCard(
+      icone: Icons.format_list_numbered,
+      rotulo: 'Animais',
       onTap: () => _navigateToAnimais(context),
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation1']!);
   }
@@ -130,14 +119,10 @@ class PropriedadeMenuGrid extends StatelessWidget {
         .toList()
         .length;
 
-    final badgeCount = onlineCount.toString();
-
-    return MenuItemCardWithBadge(
-      icon: Icons.vaccines,
-      accent: AppTokens.secondary,
-      label: 'Inseminações',
-      iconSize: 22.0,
-      badgeCount: badgeCount,
+    return MenuAcaoCard(
+      icone: Icons.vaccines,
+      rotulo: 'Inseminações',
+      contador: onlineCount,
       onTap: () {
         context.pushNamed(
           ListaInseminacoesPage.routeName,
@@ -159,14 +144,12 @@ class PropriedadeMenuGrid extends StatelessWidget {
               true,
             ))
         .toList()
-        .length
-        .toString();
+        .length;
 
-    return MenuItemCardWithBadge(
-      icon: Icons.medical_information_outlined,
-      accent: AppTokens.secondary,
-      label: 'Diagnóstico\nGestação',
-      badgeCount: count,
+    return MenuAcaoCard(
+      icone: Icons.medical_information_outlined,
+      rotulo: 'Diagnóstico Gestação',
+      contador: count,
       onTap: () {
         context.pushNamed(
           DiagnosticogestacaoPage.routeName,
@@ -177,14 +160,13 @@ class PropriedadeMenuGrid extends StatelessWidget {
   }
 
   Widget _buildVacasPrenhasCard(BuildContext context) {
-    String getBadgeCount() {
+    int getBadgeCount() {
       if (isOnline) {
         return animaisRecordList
             .where(
                 (e) => (ehPrenha(e.status)) && (ehVacaOuNovilha(e.grupoAnimal)))
             .toList()
-            .length
-            .toString();
+            .length;
       } else {
         final existentesCount = animaisProdutoresExistentesObjectBox()
             .where((e) =>
@@ -194,15 +176,14 @@ class PropriedadeMenuGrid extends StatelessWidget {
             .toList()
             .length;
 
-        return existentesCount.toString();
+        return existentesCount;
       }
     }
 
-    return MenuItemCardWithBadge(
-      icon: Icons.monitor_heart_outlined,
-      accent: AppTokens.secondary,
-      label: 'Prenhas',
-      badgeCount: getBadgeCount(),
+    return MenuAcaoCard(
+      icone: Icons.monitor_heart_outlined,
+      rotulo: 'Prenhas',
+      contador: getBadgeCount(),
       onTap: () {
         context.pushNamed(
           AnimaisPrenhasPage.routeName,
@@ -220,13 +201,12 @@ class PropriedadeMenuGrid extends StatelessWidget {
             (ehDescarte(e.status)) ||
             ((ehVazia(e.status)) && (e.dtInducaoLactacao != null)))
         .toList()
-        .length
-        .toString();
+        .length;
 
-    return MenuItemCardWithBadge(
-      icon: Icons.alarm_add_sharp,
-      label: 'Secas',
-      badgeCount: count,
+    return MenuAcaoCard(
+      icone: Icons.alarm_add_sharp,
+      rotulo: 'Secas',
+      contador: count,
       onTap: () {
         context.pushNamed(
           SecasPage.routeName,
@@ -237,7 +217,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
   }
 
   Widget _buildExameGinecologicoCard(BuildContext context) {
-    String getBadgeCount() {
+    int getBadgeCount() {
       final onlineCount = animaisRecordList
           .where((e) =>
               (ehVazia(e.status)) &&
@@ -246,14 +226,13 @@ class PropriedadeMenuGrid extends StatelessWidget {
           .toList()
           .length;
 
-      return onlineCount.toString();
+      return onlineCount;
     }
 
-    return MenuItemCardWithBadge(
-      icon: Icons.medical_services,
-      accent: AppTokens.secondary,
-      label: 'Exame\nGinecológico',
-      badgeCount: getBadgeCount(),
+    return MenuAcaoCard(
+      icone: Icons.medical_services,
+      rotulo: 'Exame Ginecológico',
+      contador: getBadgeCount(),
       onTap: () {
         context.pushNamed(
           ExameGinecologicoPage.routeName,
@@ -264,7 +243,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
   }
 
   Widget _buildRecriaCard(BuildContext context) {
-    String getBadgeCount() {
+    int getBadgeCount() {
       final onlineCount = animaisRecordList
           .where((e) =>
               (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) ||
@@ -276,13 +255,13 @@ class PropriedadeMenuGrid extends StatelessWidget {
           .toList()
           .length;
 
-      return onlineCount.toString();
+      return onlineCount;
     }
 
-    return MenuItemCardWithBadge(
-      icon: Icons.compare_arrows_sharp,
-      label: 'Recria',
-      badgeCount: getBadgeCount(),
+    return MenuAcaoCard(
+      icone: Icons.compare_arrows_sharp,
+      rotulo: 'Recria',
+      contador: getBadgeCount(),
       onTap: () {
         context.pushNamed(
           RecriacaoPage.routeName,
@@ -298,13 +277,12 @@ class PropriedadeMenuGrid extends StatelessWidget {
             ((ehNovilha(e.grupoAnimal)) || (ehVaca(e.grupoAnimal))) &&
             (!ehDescarte(e.status)))
         .toList()
-        .length
-        .toString();
+        .length;
 
-    return MenuItemCardWithBadge(
-      icon: Icons.list_alt_sharp,
-      label: 'Lista completa',
-      badgeCount: count,
+    return MenuAcaoCard(
+      icone: Icons.list_alt_sharp,
+      rotulo: 'Lista completa',
+      contador: count,
       onTap: () {
         context.pushNamed(
           ListacompletaPage.routeName,
@@ -315,10 +293,9 @@ class PropriedadeMenuGrid extends StatelessWidget {
   }
 
   Widget _buildReceituarioCard(BuildContext context) {
-    return MenuItemCard(
-      icon: Icons.summarize,
-      label: 'Receituário',
-      iconSize: 30.0,
+    return MenuAcaoCard(
+      icone: Icons.summarize,
+      rotulo: 'Receituário',
       onTap: () {
         context.pushNamed(
           ReceituariosListaPage.routeName,
@@ -329,10 +306,9 @@ class PropriedadeMenuGrid extends StatelessWidget {
   }
 
   Widget _buildResumoRebanhoCard(BuildContext context) {
-    return MenuItemCard(
-      icon: Icons.summarize_outlined,
-      label: 'Resumo Rebanho',
-      iconSize: 30.0,
+    return MenuAcaoCard(
+      icone: Icons.summarize_outlined,
+      rotulo: 'Resumo Rebanho',
       onTap: () {
         context.pushNamed(
           ResumoRebanhoPage.routeName,
@@ -343,10 +319,9 @@ class PropriedadeMenuGrid extends StatelessWidget {
   }
 
   Widget _buildCalendarioSanitarioCard(BuildContext context) {
-    return MenuItemCard(
-      icon: Icons.calendar_today,
-      label: 'Calendário Sanitário',
-      iconSize: 28.0,
+    return MenuAcaoCard(
+      icone: Icons.calendar_today,
+      rotulo: 'Calendário Sanitário',
       onTap: () {
         context.pushNamed(
           CalendarioSanitarioPage.routeName,
@@ -357,10 +332,9 @@ class PropriedadeMenuGrid extends StatelessWidget {
   }
 
   Widget _buildIndicesZootecnicosCard(BuildContext context) {
-    return MenuItemCard(
-      icon: Icons.folder_copy_outlined,
-      label: 'Indíces Zootécnicos',
-      iconSize: 30.0,
+    return MenuAcaoCard(
+      icone: Icons.folder_copy_outlined,
+      rotulo: 'Índices Zootécnicos',
       onTap: () {
         context.pushNamed(
           IndicesZootecnicosPage.routeName,
@@ -371,10 +345,9 @@ class PropriedadeMenuGrid extends StatelessWidget {
   }
 
   Widget _buildFinanceiroCard(BuildContext context) {
-    return MenuItemCard(
-      icon: Icons.attach_money_sharp,
-      label: 'Financeiro',
-      iconSize: 30.0,
+    return MenuAcaoCard(
+      icone: Icons.attach_money_sharp,
+      rotulo: 'Financeiro',
       onTap: () {
         context.pushNamed(
           RelatorioFinanceiroPage.routeName,

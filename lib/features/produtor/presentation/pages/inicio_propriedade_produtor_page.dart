@@ -3,6 +3,8 @@ import '/data/backend.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/app_card.dart';
+import '/core/ui/menu_acao_card.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/ui/request_manager.dart';
@@ -22,8 +24,6 @@ import '../widgets/widgets.dart';
 ///
 /// Esta versão refatorada utiliza componentes separados para:
 /// - [PropriedadeMenuGrid]: Grid com todos os itens de menu
-/// - [MenuItemCard]: Card de menu simples
-/// - [MenuItemCardWithBadge]: Card de menu com badge de contagem
 /// - [SyncStatusBar]: Barra de status de sincronização
 /// - [PropriedadeNavigationParams]: Parâmetros de navegação reutilizáveis
 class InicioPropriedadeProdutorPage extends StatefulWidget {
@@ -194,7 +194,7 @@ class _InicioPropriedadeProdutorPageState
           },
           child: Scaffold(
             key: scaffoldKey,
-            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+            backgroundColor: AppTokens.canvas(context),
             appBar: _buildAppBar(),
             body: SafeArea(
               top: true,
@@ -203,7 +203,7 @@ class _InicioPropriedadeProdutorPageState
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildMenuTitle(context),
+                    const MenuAcaoCabecalho(),
                     _buildMenuGridPadding(animaisRecordList),
                     _buildSyncStatusSection(),
                   ],
@@ -219,7 +219,7 @@ class _InicioPropriedadeProdutorPageState
   /// Constrói o Scaffold de loading.
   Widget _buildLoadingScaffold() {
     return Scaffold(
-      backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+      backgroundColor: AppTokens.canvas(context),
       body: const Center(
         child: SizedBox(
           width: 50.0,
@@ -290,31 +290,11 @@ class _InicioPropriedadeProdutorPageState
     );
   }
 
-  /// Constrói o título do menu.
-  Widget _buildMenuTitle(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(24.0, 25.0, 0.0, 0.0),
-      child: Text(
-        'Menu de Ações',
-        textAlign: TextAlign.start,
-        style: FlutterFlowTheme.of(context).labelMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FontWeight.w600,
-                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-              ),
-              letterSpacing: 0.0,
-              fontWeight: FontWeight.w600,
-              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-            ),
-      ),
-    );
-  }
-
   /// Constrói o grid de menu com padding.
   Widget _buildMenuGridPadding(
       List<AnimaisProdutoresRecord> animaisRecordList) {
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 8.0, 16.0, 16.0),
       child: PropriedadeMenuGrid(
         animaisRecordList: animaisRecordList,
         navigationParams: _navigationParams,
