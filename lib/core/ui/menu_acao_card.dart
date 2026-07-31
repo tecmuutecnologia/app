@@ -60,8 +60,9 @@ class MenuAcaoCabecalho extends StatelessWidget {
 ///   Sem isso, um rótulo de duas linhas ("Trocar Produtor") empurra o ícone
 ///   para cima e ele sai do alinhamento dos vizinhos de uma linha — numa grade,
 ///   ícone desalinhado é o que faz a tela parecer inacabada.
-/// - **Laranja é a moldura, roxo é o dado.** O card é definido por uma linha
-///   laranja de 1px, sem sombra; ícone e badge usam o acento secundário.
+/// - **Card branco sobre página branca, separado por sombra difusa.** Sem
+///   contorno: quem desenha o card é a elevação. O acento roxo fica só no
+///   ícone e no badge.
 /// - **O toque tem ripple**, recortado no raio do card. As duas grades nasceram
 ///   do FlutterFlow com splash/focus/hover/highlight em `transparent`, ou seja,
 ///   sem retorno visual nenhum ao tocar.
@@ -91,7 +92,7 @@ class MenuAcaoCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: FlutterFlowTheme.of(context).secondaryBackground,
         borderRadius: BorderRadius.circular(_raio),
-        border: AppTokens.brandBorder(context),
+        boxShadow: AppTokens.softShadow(context),
       ),
       clipBehavior: Clip.antiAlias,
       child: Material(

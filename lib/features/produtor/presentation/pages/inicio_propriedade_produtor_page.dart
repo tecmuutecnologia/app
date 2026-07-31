@@ -3,7 +3,6 @@ import '/data/backend.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
-import '/core/ui/app_card.dart';
 import '/core/ui/menu_acao_card.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/instant_timer.dart';
@@ -194,7 +193,7 @@ class _InicioPropriedadeProdutorPageState
           },
           child: Scaffold(
             key: scaffoldKey,
-            backgroundColor: AppTokens.canvas(context),
+            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
             appBar: _buildAppBar(),
             body: SafeArea(
               top: true,
@@ -219,7 +218,7 @@ class _InicioPropriedadeProdutorPageState
   /// Constrói o Scaffold de loading.
   Widget _buildLoadingScaffold() {
     return Scaffold(
-      backgroundColor: AppTokens.canvas(context),
+      backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
       body: const Center(
         child: SizedBox(
           width: 50.0,

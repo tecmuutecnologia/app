@@ -796,11 +796,11 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
 
     return animaisAsync.when(
       loading: () => Scaffold(
-        backgroundColor: AppTokens.canvas(context),
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
         body: const Center(child: CircularProgressIndicator()),
       ),
       error: (_, __) => Scaffold(
-        backgroundColor: AppTokens.canvas(context),
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
         body: Center(child: Text('Erro ao carregar os animais.')),
       ),
       data: (inicioPropriedadeAnimaisProdutoresRecordList) {
@@ -811,7 +811,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
           },
           child: Scaffold(
             key: scaffoldKey,
-            backgroundColor: AppTokens.canvas(context),
+            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
             appBar: AppBar(
               backgroundColor:
                   _respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),

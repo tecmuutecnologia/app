@@ -27,23 +27,6 @@ class AppTokens {
   /// que o splash.
   static const Color brandTintSoft = Color(0x0DF75E38);
 
-  /// Contorno dos cards de ação: o laranja da marca CHEIO, sem alfa.
-  ///
-  /// Já foi translúcido (35%) e o resultado era um salmão dessaturado que num
-  /// LCD lia como bege — cor com alfa compõe com o fundo e perde a identidade
-  /// do matiz. Como aqui a linha é o único elemento que define o card, ela
-  /// precisa ser reconhecivelmente a cor da marca, a mesma da barra do topo.
-  static const Color brandHairline = brand;
-
-  /// Fundo de página das telas cujos cards têm acento laranja. É um off-white
-  /// QUENTE de propósito: o `primaryBackground` do tema (#F1F4F8) é um cinza
-  /// azulado, e sob ele o halo laranja dos cards lê como sujeira. Card branco
-  /// sobre página branca não lê como card nenhum — precisa de chão.
-  static Color canvas(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark
-          ? FlutterFlowTheme.of(context).primaryBackground
-          : const Color(0xFFF7F4F1);
-
   /// Raio padrão dos cards/superfícies.
   static const double radius = 16.0;
 
@@ -61,11 +44,6 @@ class AppTokens {
           offset: Offset(0.0, 6.0),
         ),
       ];
-
-  /// Contorno dos cards de ação: uma linha laranja de 1px e nada mais. Sem
-  /// sombra — o card é definido pela linha, não por elevação.
-  static Border brandBorder(BuildContext context) =>
-      Border.all(color: brandHairline, width: 1.0);
 }
 
 /// "Tile" quadrado-arredondado com o ícone tonalizado — base visual dos cards
