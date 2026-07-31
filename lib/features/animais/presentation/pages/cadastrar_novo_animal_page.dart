@@ -4,6 +4,8 @@ import '/data/backend.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/success_overlay.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
+import '/features/animais/application/status_animal_opcoes.dart';
+import '/data/objectbox/entities/reference_entities.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -118,7 +120,6 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
   final String? Function(BuildContext, String?)?
       _dataUltimoPartoTextControllerValidator = null;
   DateTime? _datePicked2;
-  List<StatusAnimaisRecord>? _outListaAnimais;
   FocusNode? _dataUltimaInseminacaoFocusNode;
   TextEditingController? _dataUltimaInseminacaoTextController;
   late MaskTextInputFormatter _dataUltimaInseminacaoMask;
@@ -1388,7 +1389,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
   }
 
   Widget _formularioCadastro(BuildContext context,
-      dynamic cadastrarNovoAnimalStatusAnimaisRecordList) {
+      List<StatusAnimalEntity> cadastrarNovoAnimalStatusAnimaisRecordList) {
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.always,
@@ -1642,48 +1643,13 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                       FormFieldController<String>(
                     _statusAnimalValue ??= 'Vazia',
                   ),
-                  options: () {
-                    if ((_dataUltimaInseminacaoTextController.text != '') &&
-                        (_dataUltimoPartoTextController.text != '') &&
-                        (_datePicked2! > _datePicked3!)) {
-                      return cadastrarNovoAnimalStatusAnimaisRecordList
-                          .map((e) => e.descricao)
-                          .toList()
-                          .where((e) => e == 'Vazia')
-                          .toList();
-                    } else if ((_dataUltimaInseminacaoTextController.text !=
-                            '') &&
-                        (_dataUltimoPartoTextController.text != '') &&
-                        (_datePicked2! < _datePicked3!)) {
-                      return cadastrarNovoAnimalStatusAnimaisRecordList
-                          .map((e) => e.descricao)
-                          .toList()
-                          .where((e) =>
-                              (e == 'Inseminada') ||
-                              (e == 'Prenha') ||
-                              (e == 'Seca') ||
-                              (e == 'Inseminada PP') ||
-                              (e == 'Pré Parto'))
-                          .toList();
-                    } else if ((_dataUltimaInseminacaoTextController.text !=
-                            '') &&
-                        (_dataUltimoPartoTextController.text == '')) {
-                      return functions.retornaStringEmLista(_grupoValue ==
-                              'Novilhas'
-                          ? 'Inseminada, Inseminada PP, Prenha, Pré Parto'
-                          : 'Inseminada, Inseminada PP, Prenha, Seca, Pré Parto');
-                    } else if ((_dataUltimaInseminacaoTextController.text ==
-                            '') &&
-                        (_dataUltimoPartoTextController.text != '')) {
-                      return cadastrarNovoAnimalStatusAnimaisRecordList
-                          .map((e) => e.descricao)
-                          .toList()
-                          .where((e) => e == 'Vazia')
-                          .toList();
-                    } else {
-                      return functions.retornaStringEmLista('Vazia');
-                    }
-                  }(),
+                  options: opcoesStatusAnimal(
+                    statusDisponiveis:
+                        cadastrarNovoAnimalStatusAnimaisRecordList,
+                    ultimoParto: _datePicked2,
+                    ultimaInseminacao: _datePicked3,
+                    grupo: _grupoValue,
+                  ),
                   onChanged: (val) =>
                       safeSetState(() => _statusAnimalValue = val),
                   width: double.infinity,
@@ -2447,6 +2413,10 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                 ? InkWell(
                     onTap: () async {
                       _dataUltimoPartoTextController?.clear();
+                      // A data também: o campo é readOnly, então o texto e o
+                      // DateTime são a mesma informação. Limpar só o texto
+                      // deixava a data antiga valendo para as opções de status.
+                      _datePicked2 = null;
                       safeSetState(() {});
                     },
                     child: Icon(
@@ -2487,7 +2457,6 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
       hoverColor: Colors.transparent,
       highlightColor: Colors.transparent,
       onTap: () async {
-        var _shouldSetState = false;
         // calendarUltimoParto
         await showModalBottomSheet<bool>(
             context: context,
@@ -2559,33 +2528,18 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
             ),
           );
         });
-        if (_datePicked2! > _datePicked3!) {
-          safeSetState(() {
-            _statusAnimalValueController?.value = 'Vazia';
-            _statusAnimalValue = 'Vazia';
-          });
-          if (_shouldSetState) safeSetState(() {});
-          return;
-        } else {
-          _outListaAnimais = await queryStatusAnimaisRecordOnce();
-          _shouldSetState = true;
-          safeSetState(() {
-            _statusAnimalValueController?.value =
-                (_outListaAnimais != null && (_outListaAnimais)!.isNotEmpty)
-                    .toString();
-            _statusAnimalValue =
-                (_outListaAnimais != null && (_outListaAnimais)!.isNotEmpty)
-                    .toString();
-          });
-          safeSetState(() {
-            _statusAnimalValueController?.value = 'Inseminada';
-            _statusAnimalValue = 'Inseminada';
-          });
-          if (_shouldSetState) safeSetState(() {});
-          return;
-        }
-
-        if (_shouldSetState) safeSetState(() {});
+        // Sem inseminação registrada não há o que comparar: a vaca pariu e está
+        // vazia. Antes isto era `_datePicked2! > _datePicked3!` direto, e
+        // escolher o parto sem ter escolhido a inseminação estourava null check
+        // — a tela então quebrava a cada frame e ficava cinza.
+        final sugerido = statusSugerido(
+          ultimoParto: _datePicked2,
+          ultimaInseminacao: _datePicked3,
+        );
+        safeSetState(() {
+          _statusAnimalValueController?.value = sugerido;
+          _statusAnimalValue = sugerido;
+        });
       },
       child: Icon(
         Icons.calendar_month,
@@ -2674,6 +2628,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                 ? InkWell(
                     onTap: () async {
                       _dataUltimaInseminacaoTextController?.clear();
+                      _datePicked3 = null;
                       safeSetState(() {});
                     },
                     child: Icon(
@@ -2785,28 +2740,18 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
             ),
           );
         });
-        if ((_dataUltimaInseminacaoTextController.text != '') &&
-            (_dataUltimoPartoTextController.text != '')) {
-          if (_datePicked2! > _datePicked3!) {
-            safeSetState(() {
-              _statusAnimalValueController?.value = 'Vazia';
-              _statusAnimalValue = 'Vazia';
-            });
-            return;
-          } else {
-            safeSetState(() {
-              _statusAnimalValueController?.value = 'Inseminada';
-              _statusAnimalValue = 'Inseminada';
-            });
-            return;
-          }
-        } else {
-          safeSetState(() {
-            _statusAnimalValueController?.value = 'Inseminada';
-            _statusAnimalValue = 'Inseminada';
-          });
-          return;
-        }
+        // Fechar a folha sem escolher deixa a data nula, e o status caía em
+        // 'Inseminada' assim mesmo — um valor fora das opções, que aparecia
+        // como campo vazio. A regra agora é a mesma que gera as opções.
+        final sugerido = statusSugerido(
+          ultimoParto: _datePicked2,
+          ultimaInseminacao: _datePicked3,
+        );
+        safeSetState(() {
+          _statusAnimalValueController?.value = sugerido;
+          _statusAnimalValue = sugerido;
+        });
+        return;
       },
       child: Icon(
         Icons.calendar_month,
