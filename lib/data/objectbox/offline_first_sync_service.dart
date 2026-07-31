@@ -4,7 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 
+import '../../core/sync/alvos_animais_produtor.dart';
 import '../../core/sync/queue_payload_codec.dart';
+import '../../core/sync/upsert_referencia.dart';
 import 'objectbox_service.dart';
 import 'entities/index.dart';
 import '../../objectbox.g.dart';
@@ -203,66 +205,114 @@ class OfflineFirstSyncService {
   }
 
   /// Baixa tabelas de referência (grupos, raças, status, etc.)
+  /// Cada tabela é gravada com [_gravarReferencias], que reaproveita o `id`
+  /// local do registro já existente. Sem isso o `put` insere de novo e viola o
+  /// índice único de `firestoreId` no segundo download completo do aparelho —
+  /// derrubando o download inteiro aqui no primeiro passo, antes de qualquer
+  /// propriedade ou animal descer.
   Future<void> _downloadReferenceTables() async {
     // Grupos
     final grupos = await _firestore.collection('grupo').get();
-    for (final doc in grupos.docs) {
-      final entity = GrupoEntity.fromFirestore(doc.data(), doc.id);
-      _objectBox.grupoBox.put(entity);
-    }
+    _gravarReferencias<GrupoEntity>(
+      _objectBox.grupoBox,
+      grupos.docs.map((d) => GrupoEntity.fromFirestore(d.data(), d.id)),
+      (e) => e.firestoreId,
+      (e) => e.id,
+      (e, id) => e.id = id,
+    );
     debugPrint('📦 ${grupos.docs.length} grupos baixados');
 
     // Raças
     final racas = await _firestore.collection('racas').get();
-    for (final doc in racas.docs) {
-      final entity = RacaEntity.fromFirestore(doc.data(), doc.id);
-      _objectBox.racaBox.put(entity);
-    }
+    _gravarReferencias<RacaEntity>(
+      _objectBox.racaBox,
+      racas.docs.map((d) => RacaEntity.fromFirestore(d.data(), d.id)),
+      (e) => e.firestoreId,
+      (e) => e.id,
+      (e, id) => e.id = id,
+    );
     debugPrint('📦 ${racas.docs.length} raças baixadas');
 
     // Status Animais
     final statusAnimais = await _firestore.collection('status_animais').get();
-    for (final doc in statusAnimais.docs) {
-      final entity = StatusAnimalEntity.fromFirestore(doc.data(), doc.id);
-      _objectBox.statusAnimalBox.put(entity);
-    }
+    _gravarReferencias<StatusAnimalEntity>(
+      _objectBox.statusAnimalBox,
+      statusAnimais.docs
+          .map((d) => StatusAnimalEntity.fromFirestore(d.data(), d.id)),
+      (e) => e.firestoreId,
+      (e) => e.id,
+      (e, id) => e.id = id,
+    );
     debugPrint('📦 ${statusAnimais.docs.length} status animais baixados');
 
     // Status Produtivo
     final statusProdutivo =
         await _firestore.collection('status_produtivo').get();
-    for (final doc in statusProdutivo.docs) {
-      final entity = StatusProdutivoEntity.fromFirestore(doc.data(), doc.id);
-      _objectBox.statusProdutivoBox.put(entity);
-    }
+    _gravarReferencias<StatusProdutivoEntity>(
+      _objectBox.statusProdutivoBox,
+      statusProdutivo.docs
+          .map((d) => StatusProdutivoEntity.fromFirestore(d.data(), d.id)),
+      (e) => e.firestoreId,
+      (e) => e.id,
+      (e, id) => e.id = id,
+    );
     debugPrint('📦 ${statusProdutivo.docs.length} status produtivo baixados');
 
     // Tipo Ações
     final tipoAcoes = await _firestore.collection('tipo_acoes').get();
-    for (final doc in tipoAcoes.docs) {
-      final entity = TipoAcaoEntity.fromFirestore(doc.data(), doc.id);
-      _objectBox.tipoAcaoBox.put(entity);
-    }
+    _gravarReferencias<TipoAcaoEntity>(
+      _objectBox.tipoAcaoBox,
+      tipoAcoes.docs.map((d) => TipoAcaoEntity.fromFirestore(d.data(), d.id)),
+      (e) => e.firestoreId,
+      (e) => e.id,
+      (e, id) => e.id = id,
+    );
     debugPrint('📦 ${tipoAcoes.docs.length} tipos de ações baixados');
 
     // Calendário Sanitário
     final calendario =
         await _firestore.collection('calendario_sanitario').get();
-    for (final doc in calendario.docs) {
-      final entity =
-          CalendarioSanitarioEntity.fromFirestore(doc.data(), doc.id);
-      _objectBox.calendarioSanitarioBox.put(entity);
-    }
+    _gravarReferencias<CalendarioSanitarioEntity>(
+      _objectBox.calendarioSanitarioBox,
+      calendario.docs
+          .map((d) => CalendarioSanitarioEntity.fromFirestore(d.data(), d.id)),
+      (e) => e.firestoreId,
+      (e) => e.id,
+      (e, id) => e.id = id,
+    );
     debugPrint(
         '📦 ${calendario.docs.length} itens do calendário sanitário baixados');
 
     // Cidades
     final cidades = await _firestore.collection('cidades').get();
-    for (final doc in cidades.docs) {
-      final entity = CidadeEntity.fromFirestore(doc.data(), doc.id);
-      _objectBox.cidadeBox.put(entity);
-    }
+    _gravarReferencias<CidadeEntity>(
+      _objectBox.cidadeBox,
+      cidades.docs.map((d) => CidadeEntity.fromFirestore(d.data(), d.id)),
+      (e) => e.firestoreId,
+      (e) => e.id,
+      (e, id) => e.id = id,
+    );
     debugPrint('📦 ${cidades.docs.length} cidades baixadas');
+  }
+
+  /// Grava uma tabela de referência como upsert: quem já existe é atualizado,
+  /// quem é novo é inserido.
+  void _gravarReferencias<T>(
+    Box<T> box,
+    Iterable<T> baixados,
+    String? Function(T) firestoreIdDe,
+    int Function(T) idDe,
+    void Function(T, int) definirId,
+  ) {
+    final lista = baixados.toList();
+    reaproveitarIds<T>(
+      existentes: box.getAll(),
+      baixados: lista,
+      firestoreIdDe: firestoreIdDe,
+      idDe: idDe,
+      definirId: definirId,
+    );
+    box.putMany(lista);
   }
 
   /// Baixa dados de Person do usuário
@@ -447,12 +497,44 @@ class OfflineFirstSyncService {
   /// `uidTecnicoPropriedade`. Por isso o `parentPath` da entidade é o path do
   /// documento do técnico — o que também alinha os paths de sincronização e de
   /// edição (`<parentPath>/animaisProdutores/<id>`).
+  /// Quem entra como PRODUTOR não tem documento de técnico, e antes o download
+  /// desistia na primeira linha (`if (tecnicoRef == null) return`) — o produtor
+  /// ficava só com os animais criados offline naquele aparelho. Ele chega no
+  /// rebanho pelo caminho das propriedades dele, que o download anterior já
+  /// gravou com o `parentPath` do técnico dono, e busca filtrando por
+  /// propriedade: o que enxerga é o dele, não o rebanho inteiro do técnico.
   Future<void> _downloadTodosAnimais(DocumentReference? tecnicoRef) async {
-    if (tecnicoRef == null) return;
     int totalAnimais = 0;
 
-    final snapshot = await tecnicoRef.collection('animaisProdutores').get();
-    for (final doc in snapshot.docs) {
+    if (tecnicoRef != null) {
+      final snapshot = await tecnicoRef.collection('animaisProdutores').get();
+      totalAnimais += _salvarAnimais(snapshot.docs, tecnicoRef.path);
+    } else {
+      for (final alvo
+          in alvosAnimaisProdutor(_objectBox.propriedadeBox.getAll())) {
+        try {
+          final snapshot = await _firestore
+              .doc(alvo.tecnicoPath)
+              .collection('animaisProdutores')
+              .where('uidTecnicoPropriedade',
+                  isEqualTo: _firestore.doc(alvo.propriedadePath))
+              .get();
+          totalAnimais += _salvarAnimais(snapshot.docs, alvo.tecnicoPath);
+        } catch (e) {
+          debugPrint('⚠️ Erro ao baixar animais de ${alvo.propriedadePath}: $e');
+        }
+      }
+    }
+
+    debugPrint('🐄 $totalAnimais animal(is) baixado(s)');
+  }
+
+  /// Grava os animais baixados, atualizando o que já existe em vez de duplicar.
+  int _salvarAnimais(
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+    String parentPath,
+  ) {
+    for (final doc in docs) {
       final existing = _objectBox.animalBox
           .query(AnimalEntity_.firestoreId.equals(doc.id))
           .build()
@@ -462,16 +544,12 @@ class OfflineFirstSyncService {
         existing.updateFromFirestore(doc.data());
         _objectBox.animalBox.put(existing);
       } else {
-        final entity = AnimalEntity.fromFirestore(
-          doc.data(),
-          doc.id,
-          tecnicoRef.path,
+        _objectBox.animalBox.put(
+          AnimalEntity.fromFirestore(doc.data(), doc.id, parentPath),
         );
-        _objectBox.animalBox.put(entity);
       }
-      totalAnimais++;
     }
-    debugPrint('🐄 $totalAnimais animal(is) baixado(s)');
+    return docs.length;
   }
 
   /// Baixa ações e tratamentos.
@@ -497,6 +575,28 @@ class OfflineFirstSyncService {
         }
       } catch (e) {
         debugPrint('⚠️ Erro ao baixar ações: $e');
+      }
+    } else {
+      // Produtor: mesma lacuna dos animais. Sem isto o histórico do prontuário
+      // chega vazio, mesmo com os animais já baixados.
+      for (final alvo
+          in alvosAnimaisProdutor(_objectBox.propriedadeBox.getAll())) {
+        try {
+          final acoesSnapshot = await _firestore
+              .doc(alvo.tecnicoPath)
+              .collection('acoes')
+              .where('uidPropriedade',
+                  isEqualTo: _firestore.doc(alvo.propriedadePath))
+              .get();
+          for (final doc in acoesSnapshot.docs) {
+            _objectBox.acaoBox.put(
+              AcaoEntity.fromFirestore(doc.data(), doc.id, alvo.tecnicoPath),
+            );
+            totalAcoes++;
+          }
+        } catch (e) {
+          debugPrint('⚠️ Erro ao baixar ações de ${alvo.propriedadePath}: $e');
+        }
       }
     }
 
