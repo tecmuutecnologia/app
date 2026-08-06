@@ -13,6 +13,8 @@ import '/data/objectbox/index.dart';
 import '/data/stripe/payment_manager.dart';
 import '/core/connectivity/connectivity_service.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
+import '/features/sincronizacao/data/offline_first_sync_gateway.dart';
+import '/features/sincronizacao/domain/sync_gateway.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import 'app.dart';
@@ -70,6 +72,9 @@ Future<void> bootstrap() async {
   // ProviderScope habilita a injeção via Riverpod (camada offline-first),
   // coexistindo com o ChangeNotifierProvider/FFAppState durante a migração.
   runApp(ProviderScope(
+    overrides: [
+      syncGatewayProvider.overrideWithValue(OfflineFirstSyncGateway()),
+    ],
     child: ChangeNotifierProvider(
       create: (context) => appState,
       child: const MyApp(),

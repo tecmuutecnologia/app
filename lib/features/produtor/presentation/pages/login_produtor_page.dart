@@ -1,12 +1,10 @@
 import '/core/auth/firebase_auth/auth_util.dart';
-import '/data/backend.dart';
 import '/data/objectbox/offline_auth_service.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
-import '/features/produtor/presentation/pages/inicio_propriedade_produtor_page.dart';
+import '/features/sincronizacao/presentation/pages/sync_page.dart';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -43,6 +41,10 @@ class _LoginProdutorPageState extends State<LoginProdutorPage>
   late final TextEditingController _passwordController;
   late final FocusNode _passwordFocusNode;
   bool _passwordVisibility = false;
+
+  /// Desabilita o botao enquanto o `signInWithEmail` esta na rede (1-3s), para
+  /// o duplo toque nao disparar dois logins.
+  bool _entrando = false;
   final String? Function(BuildContext, String?)? _emailValidator = null;
   final String? Function(BuildContext, String?)? _passwordValidator = null;
 
@@ -201,6 +203,8 @@ class _LoginProdutorPageState extends State<LoginProdutorPage>
       padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: LoginButton(
         onPressed: _handleLogin,
+        text: _entrando ? 'Entrando...' : 'Entrar',
+        isLoading: _entrando,
       ),
     );
   }
@@ -236,19 +240,23 @@ class _LoginProdutorPageState extends State<LoginProdutorPage>
 
   /// Processa o login do usuário.
   Future<void> _handleLogin() async {
-    GoRouter.of(context).prepareAuthEvent();
+    setState(() => _entrando = true);
+    try {
+      GoRouter.of(context).prepareAuthEvent();
 
-    final user = await authManager.signInWithEmail(
-      context,
-      _emailController.text,
-      _passwordController.text,
-    );
+      final user = await authManager.signInWithEmail(
+        context,
+        _emailController.text,
+        _passwordController.text,
+      );
 
-    if (user == null) {
-      return;
+      if (user == null) return;
+      if (!mounted) return;
+
+      _irParaSincronizacao();
+    } finally {
+      if (mounted) setState(() => _entrando = false);
     }
-
-    await _afterLogin();
   }
 
   /// Login offline por biometria/PIN: reabre a sessão sem digitar a senha.
@@ -256,66 +264,16 @@ class _LoginProdutorPageState extends State<LoginProdutorPage>
     final service = await OfflineAuthService.instance;
     final session = await service.loginOfflineComBiometria();
     if (session == null || !mounted) return;
-    await _afterLogin();
+    _irParaSincronizacao();
   }
 
-  /// Carrega person/propriedade e navega — comum aos logins por senha e biometria.
-  Future<void> _afterLogin() async {
-    // Busca dados do usuário logado
-    final uidPersonLogged = await queryPersonRecordOnce(
-      queryBuilder: (personRecord) => personRecord.where(
-        'uid',
-        isEqualTo: currentUserUid,
-      ),
-      singleRecord: true,
-    ).then((s) => s.firstOrNull);
-
-    // Busca dados da propriedade
-    final outUidPropriedade = await queryPropriedadesRecordOnce(
-      queryBuilder: (propriedadesRecord) => propriedadesRecord.where(
-        'uidPersonProdutor',
-        isEqualTo: uidPersonLogged?.reference,
-      ),
-      singleRecord: true,
-    ).then((s) => s.firstOrNull);
-
-    // Navega para a tela principal
-    _navigateToHome(outUidPropriedade);
-
-    safeSetState(() {});
-  }
-
-  /// Navega para a tela inicial da propriedade.
-  void _navigateToHome(PropriedadesRecord? outUidPropriedade) {
-    context.goNamedAuth(
-      InicioPropriedadeProdutorPage.routeName,
+  /// A busca de person/propriedade e a navegacao final vivem agora no
+  /// `OfflineFirstSyncGateway`, atras da tela de sincronizacao.
+  void _irParaSincronizacao() {
+    context.pushNamedAuth(
+      SyncPage.routeName,
       context.mounted,
-      queryParameters: {
-        'nomePropriedade': serializeParam(
-          outUidPropriedade?.displayName,
-          ParamType.String,
-        ),
-        'uidPropriedade': serializeParam(
-          outUidPropriedade?.reference,
-          ParamType.DocumentReference,
-        ),
-        'uidTecnico': serializeParam(
-          outUidPropriedade?.parentReference,
-          ParamType.DocumentReference,
-        ),
-        'emailPropriedade': serializeParam(
-          outUidPropriedade?.email,
-          ParamType.String,
-        ),
-        'visitaPresencial': serializeParam(
-          false,
-          ParamType.bool,
-        ),
-        'diasDg': serializeParam(
-          outUidPropriedade?.diasParaDg,
-          ParamType.String,
-        ),
-      }.withoutNulls,
+      queryParameters: {'papel': 'produtor'},
     );
   }
 }

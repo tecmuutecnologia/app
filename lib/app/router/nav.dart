@@ -14,7 +14,8 @@ import '/features/animais/presentation/pages/editar_animal_page.dart';
 import '/features/animais/presentation/pages/lista_animais_page.dart';
 import '/features/auth/presentation/pages/create_account_technician_page.dart';
 import '/features/auth/presentation/pages/login_technician_page.dart';
-import '/features/auth/presentation/pages/sync_technician_page.dart';
+import '/features/sincronizacao/domain/sync_state.dart';
+import '/features/sincronizacao/presentation/pages/sync_page.dart';
 import '/features/calendario_sanitario/presentation/pages/calendario_sanitario_page.dart';
 import '/features/dashboard/presentation/pages/dashboard_tecnico_page.dart';
 import '/features/diagnostico_gestacao/presentation/pages/diagnosticogestacao_page.dart';
@@ -492,9 +493,13 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           ),
         ),
         FFRoute(
-          name: SyncTechnicianPage.routeName,
-          path: SyncTechnicianPage.routePath,
-          builder: (context, params) => SyncTechnicianPage(),
+          name: SyncPage.routeName,
+          path: SyncPage.routePath,
+          builder: (context, params) => SyncPage(
+            papel: params.getParam('papel', ParamType.String) == 'produtor'
+                ? SyncPapel.produtor
+                : SyncPapel.tecnico,
+          ),
         ),
         FFRoute(
           name: ReceituariosListaPage.routeName,

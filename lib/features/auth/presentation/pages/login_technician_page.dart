@@ -12,7 +12,7 @@ import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/app_card.dart';
 import '/features/auth/presentation/pages/create_account_technician_page.dart';
-import '/features/auth/presentation/pages/sync_technician_page.dart';
+import '/features/sincronizacao/presentation/pages/sync_page.dart';
 import '../controllers/login_technician_controller.dart';
 
 /// Tela de login do técnico.
@@ -37,6 +37,10 @@ class LoginTechnicianPage extends ConsumerStatefulWidget {
 class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
     with TickerProviderStateMixin {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  /// Desabilita o botao enquanto o `signInWithEmail` esta na rede (1-3s), para
+  /// o duplo toque nao disparar dois logins.
+  bool _entrando = false;
 
   final animationsMap = <String, AnimationInfo>{};
 
@@ -392,21 +396,31 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 16.0),
       child: FFButtonWidget(
-        onPressed: () async {
-          GoRouter.of(context).prepareAuthEvent();
+        onPressed: _entrando
+            ? null
+            : () async {
+                setState(() => _entrando = true);
+                try {
+                  GoRouter.of(context).prepareAuthEvent();
 
-          final user = await authManager.signInWithEmail(
-            context,
-            _emailController.text,
-            _passwordController.text,
-          );
-          if (user == null) {
-            return;
-          }
+                  final user = await authManager.signInWithEmail(
+                    context,
+                    _emailController.text,
+                    _passwordController.text,
+                  );
+                  if (user == null) return;
+                  if (!context.mounted) return;
 
-          context.pushNamedAuth(SyncTechnicianPage.routeName, context.mounted);
-        },
-        text: 'Entrar',
+                  context.pushNamedAuth(
+                    SyncPage.routeName,
+                    context.mounted,
+                    queryParameters: {'papel': 'tecnico'},
+                  );
+                } finally {
+                  if (mounted) setState(() => _entrando = false);
+                }
+              },
+        text: _entrando ? 'Entrando...' : 'Entrar',
         options: FFButtonOptions(
           width: double.infinity,
           height: 44.0,
@@ -452,7 +466,10 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
               final session = await service.loginOfflineComBiometria();
               if (session != null && context.mounted) {
                 context.pushNamedAuth(
-                    SyncTechnicianPage.routeName, context.mounted);
+                  SyncPage.routeName,
+                  context.mounted,
+                  queryParameters: {'papel': 'tecnico'},
+                );
               }
             },
             text: 'Entrar com biometria',
