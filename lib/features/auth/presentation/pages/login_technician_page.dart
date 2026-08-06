@@ -116,9 +116,18 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
           image: DecorationImage(
             fit: BoxFit.cover,
             alignment: AlignmentDirectional(0.7, 0.0),
-            image: Image.asset(
-              'assets/images/veterinary-farm-walking-cowshed-checking-cows.jpg',
-            ).image,
+            // `cacheWidth` decodifica em resolucao reduzida. O arquivo tem
+            // 1,3 MB e era decodificado em tamanho cheio na thread principal a
+            // cada abertura da tela, o que travava a transicao vinda do
+            // "Sou Técnico" por varios segundos. 1080 cobre a largura de
+            // qualquer celular sem perda visivel neste uso (imagem de fundo).
+            image: ResizeImage(
+              AssetImage(
+                'assets/images/veterinary-farm-walking-cowshed-checking-cows.jpg',
+              ),
+              width: 1080,
+              policy: ResizeImagePolicy.fit,
+            ),
           ),
           gradient: LinearGradient(
             colors: [Color(0xFFF75E38), Color(0xFFEC3B5B)],
@@ -411,9 +420,12 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
                   if (user == null) return;
                   if (!context.mounted) return;
 
-                  context.pushNamedAuth(
+                  // `pushNamedAuth` nao navega quando ha redirecionamento
+                  // pendente — retorna null em silencio e o usuario cai no app
+                  // sem passar pela sincronizacao. A tela limpa esse redirect
+                  // ao montar, entao aqui a navegacao e direta.
+                  context.pushNamed(
                     SyncPage.routeName,
-                    context.mounted,
                     queryParameters: {'papel': 'tecnico'},
                   );
                 } finally {
@@ -465,9 +477,8 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
               final service = await OfflineAuthService.instance;
               final session = await service.loginOfflineComBiometria();
               if (session != null && context.mounted) {
-                context.pushNamedAuth(
+                context.pushNamed(
                   SyncPage.routeName,
-                  context.mounted,
                   queryParameters: {'papel': 'tecnico'},
                 );
               }

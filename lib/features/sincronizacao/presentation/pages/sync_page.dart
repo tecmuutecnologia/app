@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '/app/router/nav.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/data/schema/propriedades_record.dart';
 import '/features/dashboard/presentation/pages/dashboard_tecnico_page.dart';
@@ -30,6 +31,17 @@ class _SyncPageState extends ConsumerState<SyncPage> {
   @override
   void initState() {
     super.initState();
+
+    // Mata qualquer redirecionamento pendente antes de comecar.
+    //
+    // O router escuta o `AppStateNotifier` (`refreshListenable`) e reavalia as
+    // rotas a cada evento de autenticacao. Se sobrar um `_redirectLocation` de
+    // antes do login, o `redirect` global de `nav.dart` dispara assim que o
+    // Firebase propaga o usuario e TROCA esta tela pelo destino guardado —
+    // a sincronizacao continuava rodando em background, sem tela, e o usuario
+    // caia no app achando que tinha terminado.
+    AppStateNotifier.instance.clearRedirectLocation();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(syncPageControllerProvider.notifier).iniciar(widget.papel);
     });
@@ -64,12 +76,9 @@ class _SyncPageState extends ConsumerState<SyncPage> {
   Widget build(BuildContext context) {
     final estado = ref.watch(syncPageControllerProvider);
 
-    ref.listen(syncPageControllerProvider, (_, novo) {
-      if (novo is SyncConcluido) _navegar(novo.destino);
-    });
-
     // Sair no meio deixaria o usuario autenticado numa tela de login, com o
-    // download orfao e o estado pela metade.
+    // download orfao e o estado pela metade. Concluido tambem nao pode sair
+    // pelo botao voltar: a saida e o "Continuar".
     return PopScope(
       canPop: estado is SyncErro,
       child: Scaffold(
@@ -80,6 +89,11 @@ class _SyncPageState extends ConsumerState<SyncPage> {
           onContinuarAssimMesmo: () => ref
               .read(syncPageControllerProvider.notifier)
               .continuarAssimMesmo(),
+          // Unica saida da tela: navegar so quando o usuario decide.
+          onContinuar: () {
+            final atual = ref.read(syncPageControllerProvider);
+            if (atual is SyncConcluido) _navegar(atual.destino);
+          },
         ),
       ),
     );

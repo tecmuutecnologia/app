@@ -270,9 +270,11 @@ class _LoginProdutorPageState extends State<LoginProdutorPage>
   /// A busca de person/propriedade e a navegacao final vivem agora no
   /// `OfflineFirstSyncGateway`, atras da tela de sincronizacao.
   void _irParaSincronizacao() {
-    context.pushNamedAuth(
+    // `pushNamedAuth` nao navega quando ha redirecionamento pendente — retorna
+    // null em silencio e o usuario cai no app sem passar pela sincronizacao.
+    // A tela limpa esse redirect ao montar, entao aqui a navegacao e direta.
+    context.pushNamed(
       SyncPage.routeName,
-      context.mounted,
       queryParameters: {'papel': 'produtor'},
     );
   }

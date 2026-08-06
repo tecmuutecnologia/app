@@ -5,6 +5,10 @@ import 'package:tecmuu/features/sincronizacao/domain/sync_state.dart';
 import 'package:tecmuu/features/sincronizacao/presentation/widgets/sync_progress_view.dart';
 
 void main() {
+  var continuouClicado = false;
+
+  setUp(() => continuouClicado = false);
+
   Future<void> montar(WidgetTester tester, SyncState estado) {
     return tester.pumpWidget(MaterialApp(
       home: Scaffold(
@@ -12,6 +16,7 @@ void main() {
           estado: estado,
           onTentarNovamente: () {},
           onContinuarAssimMesmo: () {},
+          onContinuar: () => continuouClicado = true,
         ),
       ),
     ));
@@ -159,5 +164,38 @@ void main() {
     expect(find.byIcon(Icons.radio_button_checked), findsOneWidget);
     // acoes e financeiro: pendentes.
     expect(find.byIcon(Icons.radio_button_unchecked), findsNWidgets(2));
+  });
+
+  group('estado concluido', () {
+    testWidgets('mostra "Tudo pronto!" e o botao Continuar', (tester) async {
+      await montar(tester, const SyncConcluido(DestinoDashboardTecnico()));
+
+      expect(find.text('Tudo pronto!'), findsOneWidget);
+      expect(find.text('Continuar'), findsOneWidget);
+      // Todas as seis linhas da checklist aparecem concluidas.
+      expect(find.byIcon(Icons.check_circle), findsNWidgets(7));
+    });
+
+    testWidgets('nao avanca sozinho — so o toque no botao dispara',
+        (tester) async {
+      await montar(tester, const SyncConcluido(DestinoDashboardTecnico()));
+
+      // Varios frames sem interacao: a tela tem de continuar onde esta.
+      await tester.pump(const Duration(seconds: 5));
+      expect(continuouClicado, false,
+          reason: 'a tela nao pode navegar por conta propria');
+
+      await tester.tap(find.text('Continuar'));
+      await tester.pump();
+      expect(continuouClicado, true);
+    });
+
+    testWidgets('nao mostra a barra de progresso nem contador',
+        (tester) async {
+      await montar(tester, const SyncConcluido(DestinoDashboardTecnico()));
+
+      expect(find.byType(LinearProgressIndicator), findsNothing);
+      expect(find.textContaining(RegExp(r'\d[\d.]* de \d[\d.]*')), findsNothing);
+    });
   });
 }

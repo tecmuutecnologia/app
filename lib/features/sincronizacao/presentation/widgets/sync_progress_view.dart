@@ -60,11 +60,16 @@ class SyncProgressView extends StatelessWidget {
     required this.estado,
     required this.onTentarNovamente,
     required this.onContinuarAssimMesmo,
+    required this.onContinuar,
   });
 
   final SyncState estado;
   final VoidCallback onTentarNovamente;
   final VoidCallback onContinuarAssimMesmo;
+
+  /// Avanco para o app, disparado SO pelo botao. A tela nao navega sozinha:
+  /// o usuario precisa ver que a sincronizacao terminou antes de sair dela.
+  final VoidCallback onContinuar;
 
   @override
   Widget build(BuildContext context) {
@@ -87,9 +92,7 @@ class SyncProgressView extends StatelessWidget {
               final SyncErro e => _erro(context, e),
               final SyncBaixando e => _baixando(context, e),
               SyncPreparando() => _preparando(context),
-              // A page navega assim que o estado vira concluido; manter a tela
-              // de preparo evita um flash de layout durante a transicao.
-              SyncConcluido() => _preparando(context),
+              SyncConcluido() => _concluido(context),
             },
           ),
         ),
@@ -115,6 +118,58 @@ class SyncProgressView extends StatelessWidget {
             'Preparando seus dados',
             style: TextStyle(
                 color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),
+          ),
+        ],
+      );
+
+  /// Tela final. Fica parada aqui ate o usuario tocar em "Continuar": sair
+  /// sozinho fazia a sincronizacao parecer inacabada, porque a tela sumia antes
+  /// de o usuario conseguir ler que tudo tinha terminado.
+  Widget _concluido(BuildContext context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Icon(Icons.check_circle, size: 72, color: Colors.white),
+          const SizedBox(height: 16),
+          const Text(
+            'Tudo pronto!',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Colors.white, fontSize: 24, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'Seus dados foram baixados e já podem ser usados sem internet.',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white70, fontSize: 14),
+          ),
+          const SizedBox(height: 24),
+          ...linhasVisiveis.map(
+            (linha) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 3),
+              child: Row(
+                children: [
+                  const Icon(Icons.check_circle, size: 16, color: Colors.white),
+                  const SizedBox(width: 8),
+                  Text(
+                    rotuloLinha(linha),
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 28),
+          FilledButton(
+            onPressed: onContinuar,
+            style: FilledButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: const Color(0xFFF75E38),
+              minimumSize: const Size(double.infinity, 48),
+              textStyle:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+            child: const Text('Continuar'),
           ),
         ],
       );
