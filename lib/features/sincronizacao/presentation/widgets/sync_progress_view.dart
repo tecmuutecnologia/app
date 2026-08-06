@@ -29,6 +29,20 @@ String rotuloLinha(SyncEtapa etapa) => switch (etapa) {
       SyncEtapa.financeiro => 'Financeiro e visitas',
     };
 
+/// Linha da checklist que representa esta etapa. `usuario` e `tecnico` nao tem
+/// linha propria — sao cobertas pela linha de `referencias`.
+SyncEtapa linhaDaEtapa(SyncEtapa etapa) => switch (etapa) {
+      SyncEtapa.referencias ||
+      SyncEtapa.usuario ||
+      SyncEtapa.tecnico =>
+        SyncEtapa.referencias,
+      SyncEtapa.produtores => SyncEtapa.produtores,
+      SyncEtapa.propriedades => SyncEtapa.propriedades,
+      SyncEtapa.animais => SyncEtapa.animais,
+      SyncEtapa.acoes => SyncEtapa.acoes,
+      SyncEtapa.financeiro => SyncEtapa.financeiro,
+    };
+
 /// Separador de milhar em pt-BR sem depender de `intl`.
 String _milhar(int n) {
   final s = n.toString();
@@ -72,7 +86,10 @@ class SyncProgressView extends StatelessWidget {
             child: switch (estado) {
               final SyncErro e => _erro(context, e),
               final SyncBaixando e => _baixando(context, e),
-              _ => _preparando(context),
+              SyncPreparando() => _preparando(context),
+              // A page navega assim que o estado vira concluido; manter a tela
+              // de preparo evita um flash de layout durante a transicao.
+              SyncConcluido() => _preparando(context),
             },
           ),
         ),
@@ -169,8 +186,8 @@ class SyncProgressView extends StatelessWidget {
   }
 
   Widget _linha(SyncEtapa linha, SyncEtapa atual) {
-    final indiceLinha = SyncEtapa.values.indexOf(linha);
-    final indiceAtual = SyncEtapa.values.indexOf(atual);
+    final indiceLinha = linhasVisiveis.indexOf(linha);
+    final indiceAtual = linhasVisiveis.indexOf(linhaDaEtapa(atual));
 
     final (icone, cor) = switch (indiceLinha.compareTo(indiceAtual)) {
       < 0 => (Icons.check_circle, Colors.white),
