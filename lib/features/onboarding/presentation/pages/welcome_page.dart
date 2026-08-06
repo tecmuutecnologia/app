@@ -137,9 +137,15 @@ class _WelcomePageState extends State<WelcomePage>
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.cover,
-                      image: Image.asset(
-                        'assets/images/backgrouond.png',
-                      ).image,
+                      // O arquivo tem 2,3 MB e era decodificado em tamanho
+                      // cheio na thread principal. Como o `fit` e `cover`, a
+                      // imagem e escalada de qualquer forma — decodificar em
+                      // 1080 de largura nao muda o resultado visual.
+                      image: const ResizeImage(
+                        AssetImage('assets/images/backgrouond.png'),
+                        width: 1080,
+                        policy: ResizeImagePolicy.fit,
+                      ),
                     ),
                   ),
                   child: Container(
