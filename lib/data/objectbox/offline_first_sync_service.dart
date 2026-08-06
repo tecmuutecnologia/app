@@ -7,10 +7,11 @@ import 'package:flutter/foundation.dart';
 import '../../core/sync/alvos_animais_produtor.dart';
 import '../../core/sync/queue_payload_codec.dart';
 import '../../core/sync/reconciliacao_animais.dart';
+import '../../core/sync/sync_etapa.dart';
 import '../../core/sync/upsert_referencia.dart';
 import 'objectbox_service.dart';
 import 'entities/index.dart';
-import '../../objectbox.g.dart';
+import '../../objectbox.g.dart' hide Query;
 
 /// Callback para reportar progresso da sincronização
 typedef SyncProgressCallback = void Function(String message, double progress);
@@ -120,13 +121,29 @@ class OfflineFirstSyncService {
     _statusController.add(status);
   }
 
-  void _reportProgress(String message, double progress, {String? collection}) {
-    _progressController.add(SyncProgress(
+  SyncProgress? _lastProgress;
+
+  /// Ultimo progresso emitido. A tela de sincronizacao pode montar depois do
+  /// primeiro evento; sem isto ela renderizaria vazia ate o proximo lote.
+  SyncProgress? get lastProgress => _lastProgress;
+
+  void _reportProgress(
+    SyncEtapa etapa,
+    String message, {
+    int? atual,
+    int? total,
+  }) {
+    final progresso = SyncProgress(
+      etapa: etapa,
       message: message,
-      progress: progress,
-      collection: collection,
-    ));
-    debugPrint('📊 $message (${(progress * 100).toStringAsFixed(1)}%)');
+      progress: progressoGlobal(etapa, atual: atual, total: total),
+      atual: atual,
+      total: total,
+    );
+    _lastProgress = progresso;
+    _progressController.add(progresso);
+    debugPrint(
+        '📊 $message (${(progresso.progress * 100).toStringAsFixed(1)}%)');
   }
 
   // ==========================================================================
@@ -147,46 +164,42 @@ class OfflineFirstSyncService {
     }
 
     _updateStatus(SyncStatus.syncing);
-    _reportProgress('Iniciando download completo...', 0.0);
+    _reportProgress(SyncEtapa.referencias, 'Tabelas de referência');
 
     try {
       // 1. Baixa tabelas de referência primeiro (são usadas por outras entidades)
       await _downloadReferenceTables();
-      _reportProgress('Tabelas de referência baixadas', 0.15);
 
       // 2. Sincroniza Person do usuário
+      _reportProgress(SyncEtapa.usuario, 'Seus dados');
       await _downloadPerson(userId);
-      _reportProgress('Dados do usuário baixados', 0.20);
 
       // 3. Sincroniza Tecnico se existir
+      _reportProgress(SyncEtapa.tecnico, 'Dados do técnico');
       final tecnicoRef = await _downloadTecnico(userId);
-      _reportProgress('Dados do técnico baixados', 0.30);
 
       // 4. Se for técnico, baixa todos os produtores vinculados
+      _reportProgress(SyncEtapa.produtores, 'Produtores');
       if (tecnicoRef != null) {
         await _downloadProdutoresDoTecnico(tecnicoRef);
-        _reportProgress('Produtores baixados', 0.50);
       } else {
         // Se for produtor, baixa seus próprios dados
         await _downloadProdutor(userId);
-        _reportProgress('Dados do produtor baixados', 0.50);
       }
 
       // 5. Baixa todas as propriedades
+      _reportProgress(SyncEtapa.propriedades, 'Propriedades');
       await _downloadTodasPropriedades(tecnicoRef, userId);
-      _reportProgress('Propriedades baixadas', 0.60);
 
       // 6. Baixa todos os animais (subcoleção 'animaisProdutores' do técnico)
       await _downloadTodosAnimais(tecnicoRef);
-      _reportProgress('Animais baixados', 0.70);
 
       // 7. Baixa ações e tratamentos
       await _downloadAcoes(tecnicoRef);
-      _reportProgress('Ações e tratamentos baixados', 0.85);
 
       // 8. Baixa dados financeiros e visitas
+      _reportProgress(SyncEtapa.financeiro, 'Financeiro e visitas');
       await _downloadFinanceiroEVisitas();
-      _reportProgress('Dados financeiros e visitas baixados', 0.95);
 
       // Marca sincronização inicial como completa
       _updateSyncMetadata('initial_download', DateTime.now(), complete: true);
@@ -196,7 +209,7 @@ class OfflineFirstSyncService {
           complete: true);
       _initialSyncComplete = true;
 
-      _reportProgress('Download completo finalizado!', 1.0);
+      _reportProgress(SyncEtapa.financeiro, 'Concluído', atual: 1, total: 1);
       _updateStatus(SyncStatus.completed);
     } catch (e) {
       debugPrint('❌ Erro no download completo: $e');
@@ -508,26 +521,91 @@ class OfflineFirstSyncService {
     int totalAnimais = 0;
 
     if (tecnicoRef != null) {
-      final snapshot = await tecnicoRef.collection('animaisProdutores').get();
-      totalAnimais += _salvarAnimais(snapshot.docs, tecnicoRef.path);
+      final colecao = tecnicoRef.collection('animaisProdutores');
+      final total = (await colecao.count().get()).count ?? 0;
+      totalAnimais = await _baixarAnimaisPaginado(
+        colecao,
+        tecnicoRef.path,
+        total,
+        0,
+      );
     } else {
-      for (final alvo
-          in alvosAnimaisProdutor(_objectBox.propriedadeBox.getAll())) {
-        try {
-          final snapshot = await _firestore
+      // Produtor: chega no rebanho pelo caminho das propriedades dele, e
+      // filtrando por propriedade — enxerga o dele, nao o rebanho do tecnico.
+      final alvos = alvosAnimaisProdutor(_objectBox.propriedadeBox.getAll());
+
+      final consultas = {
+        for (final alvo in alvos)
+          alvo: _firestore
               .doc(alvo.tecnicoPath)
               .collection('animaisProdutores')
               .where('uidTecnicoPropriedade',
-                  isEqualTo: _firestore.doc(alvo.propriedadePath))
-              .get();
-          totalAnimais += _salvarAnimais(snapshot.docs, alvo.tecnicoPath);
+                  isEqualTo: _firestore.doc(alvo.propriedadePath)),
+      };
+
+      var total = 0;
+      for (final consulta in consultas.values) {
+        total += (await consulta.count().get()).count ?? 0;
+      }
+
+      for (final entrada in consultas.entries) {
+        try {
+          totalAnimais = await _baixarAnimaisPaginado(
+            entrada.value,
+            entrada.key.tecnicoPath,
+            total,
+            totalAnimais,
+          );
         } catch (e) {
-          debugPrint('⚠️ Erro ao baixar animais de ${alvo.propriedadePath}: $e');
+          debugPrint(
+              '⚠️ Erro ao baixar animais de ${entrada.key.propriedadePath}: $e');
         }
       }
     }
 
     debugPrint('🐄 $totalAnimais animal(is) baixado(s)');
+  }
+
+  /// Tamanho do lote de download e gravacao. 250 e nao 500 por causa do ritmo:
+  /// cada lote e uma amostra para o estimador, e com 500 haveria so 6 amostras
+  /// em 3000 animais — o ritmo mal apareceria antes de terminar.
+  static const int _loteDownload = 250;
+
+  /// Baixa animais em paginas, reportando progresso a cada lote. Devolve o
+  /// acumulado atualizado.
+  Future<int> _baixarAnimaisPaginado(
+    Query<Map<String, dynamic>> consulta,
+    String parentPath,
+    int total,
+    int acumulado,
+  ) async {
+    DocumentSnapshot? ultimo;
+
+    while (true) {
+      var pagina = consulta.orderBy(FieldPath.documentId).limit(_loteDownload);
+      if (ultimo != null) pagina = pagina.startAfterDocument(ultimo);
+
+      final snapshot = await pagina.get();
+      if (snapshot.docs.isEmpty) break;
+
+      acumulado += _salvarAnimais(snapshot.docs, parentPath);
+      ultimo = snapshot.docs.last;
+
+      _reportProgress(
+        SyncEtapa.animais,
+        'Animais',
+        atual: acumulado,
+        total: total,
+      );
+
+      // Devolve a isolate principal ao event loop para a UI respirar entre
+      // lotes; sem isso a barra de progresso nao anima.
+      await Future<void>.delayed(Duration.zero);
+
+      if (snapshot.docs.length < _loteDownload) break;
+    }
+
+    return acumulado;
   }
 
   /// Grava um lote de animais baixados numa unica transacao.
@@ -573,12 +651,35 @@ class OfflineFirstSyncService {
     // Ações do técnico.
     if (tecnicoRef != null) {
       try {
-        final acoesSnapshot = await tecnicoRef.collection('acoes').get();
-        for (final doc in acoesSnapshot.docs) {
-          final entity =
-              AcaoEntity.fromFirestore(doc.data(), doc.id, tecnicoRef.path);
-          _objectBox.acaoBox.put(entity);
-          totalAcoes++;
+        final colecao = tecnicoRef.collection('acoes');
+        final total = (await colecao.count().get()).count ?? 0;
+        DocumentSnapshot? ultimo;
+
+        while (true) {
+          var pagina =
+              colecao.orderBy(FieldPath.documentId).limit(_loteDownload);
+          if (ultimo != null) pagina = pagina.startAfterDocument(ultimo);
+
+          final snapshot = await pagina.get();
+          if (snapshot.docs.isEmpty) break;
+
+          _objectBox.acaoBox.putMany([
+            for (final doc in snapshot.docs)
+              AcaoEntity.fromFirestore(doc.data(), doc.id, tecnicoRef.path),
+          ]);
+
+          totalAcoes += snapshot.docs.length;
+          ultimo = snapshot.docs.last;
+
+          _reportProgress(
+            SyncEtapa.acoes,
+            'Ações e tratamentos',
+            atual: totalAcoes,
+            total: total,
+          );
+          await Future<void>.delayed(Duration.zero);
+
+          if (snapshot.docs.length < _loteDownload) break;
         }
       } catch (e) {
         debugPrint('⚠️ Erro ao baixar ações: $e');
@@ -1426,15 +1527,22 @@ enum SyncStatus {
   offline,
 }
 
-/// Progresso da sincronização
+/// Progresso da sincronizacao. Carrega apenas fatos — etapa e quantos de
+/// quantos. Ritmo e ETA sao derivados na apresentacao pelo `SyncRateEstimator`.
 class SyncProgress {
-  final String message;
-  final double progress;
-  final String? collection;
-
-  SyncProgress({
+  const SyncProgress({
+    required this.etapa,
     required this.message,
     required this.progress,
-    this.collection,
+    this.atual,
+    this.total,
   });
+
+  final SyncEtapa etapa;
+  final String message;
+  final double progress;
+
+  /// Preenchidos so nas etapas que sabem contar (animais, acoes).
+  final int? atual;
+  final int? total;
 }
