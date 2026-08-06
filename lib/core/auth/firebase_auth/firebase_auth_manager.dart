@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../auth_manager.dart';
+import '/core/sync/sync_exceptions.dart';
 import '/data/objectbox/objectbox_auth_helper.dart';
 
 import 'anonymous_auth.dart';
@@ -323,7 +324,18 @@ class FirebaseAuthManager extends AuthManager
 
       // Sincroniza dados do Firestore para ObjectBox após login
       if (userCredential.user != null) {
-        await ObjectBoxAuthHelper.onUserLogin(userCredential.user!);
+        try {
+          await ObjectBoxAuthHelper.onUserLogin(userCredential.user!);
+        } on SyncOfflineException {
+          // Rede TEMPORARIA: onUserLogin passou a propagar para a tela de
+          // sincronizacao poder mostrar erro e oferecer nova tentativa, mas
+          // essa tela ainda nao existe. Sem este catch, login offline falha
+          // aqui e o usuario nem entra no app. Remover quando esta chamada
+          // sair deste metodo e for para a tela de sincronizacao.
+          debugPrint('📴 Offline no login - sincronização adiada');
+        } on SyncFalhaException catch (e) {
+          debugPrint('⚠️ Falha ao sincronizar após login: ${e.mensagem}');
+        }
       }
 
       return TecmuuFirebaseUser.fromUserCredential(userCredential);
