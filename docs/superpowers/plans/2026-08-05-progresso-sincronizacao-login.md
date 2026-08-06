@@ -1908,7 +1908,10 @@ void main() {
       ),
     );
 
-    expect(find.textContaining(' de '), findsNothing);
+    // Casa o PADRAO de contador ("1.240 de 3.000"), nao o substring ' de '
+    // solto: o rotulo legitimo "Tabelas de referência" contem ' de ' e daria
+    // falso negativo independentemente da implementacao.
+    expect(find.textContaining(RegExp(r'\d[\d.]* de \d[\d.]*')), findsNothing);
     expect(find.textContaining('/s'), findsNothing);
     expect(find.textContaining('Restam'), findsNothing);
   });
