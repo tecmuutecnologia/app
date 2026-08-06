@@ -1174,8 +1174,8 @@ EOF
 Tipos puros que descrevem o que a tela mostra e para onde ela vai. Sem lógica, mas é o contrato que a Task 7 (view) e a Task 8 (controller) compartilham.
 
 **Files:**
-- Create: `lib/features/sync/domain/sync_state.dart`
-- Test: `test/features/sync/sync_state_test.dart`
+- Create: `lib/features/sincronizacao/domain/sync_state.dart`
+- Test: `test/features/sincronizacao/sync_state_test.dart`
 
 **Interfaces:**
 - Consumes: `SyncEtapa` (Task 2).
@@ -1201,12 +1201,12 @@ Tipos puros que descrevem o que a tela mostra e para onde ela vai. Sem lógica, 
 
 - [ ] **Step 1: Write the failing test**
 
-Create `test/features/sync/sync_state_test.dart`:
+Create `test/features/sincronizacao/sync_state_test.dart`:
 
 ```dart
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tecmuu/core/sync/sync_etapa.dart';
-import 'package:tecmuu/features/sync/domain/sync_state.dart';
+import 'package:tecmuu/features/sincronizacao/domain/sync_state.dart';
 
 void main() {
   group('SyncBaixando', () {
@@ -1265,12 +1265,12 @@ void main() {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `flutter test test/features/sync/sync_state_test.dart`
+Run: `flutter test test/features/sincronizacao/sync_state_test.dart`
 Expected: FAIL — arquivo inexistente.
 
 - [ ] **Step 3: Write minimal implementation**
 
-Create `lib/features/sync/domain/sync_state.dart`:
+Create `lib/features/sincronizacao/domain/sync_state.dart`:
 
 ```dart
 import '../../../core/sync/sync_etapa.dart';
@@ -1365,13 +1365,13 @@ class SyncConcluido extends SyncState {
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `flutter test test/features/sync/sync_state_test.dart`
+Run: `flutter test test/features/sincronizacao/sync_state_test.dart`
 Expected: PASS, 4 testes.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add lib/features/sync/domain/sync_state.dart test/features/sync/sync_state_test.dart
+git add lib/features/sincronizacao/domain/sync_state.dart test/features/sincronizacao/sync_state_test.dart
 git commit -m "$(cat <<'EOF'
 Adiciona estados e destinos da tela de sincronizacao
 
@@ -1387,9 +1387,9 @@ EOF
 O coração da tarefa. Orquestra download → perfil → destino, traduzindo progresso em estado. Depende de uma porta estreita (`SyncGateway`) para ser testável sem Firestore nem ObjectBox.
 
 **Files:**
-- Create: `lib/features/sync/domain/sync_gateway.dart`
-- Create: `lib/features/sync/presentation/controllers/sync_page_controller.dart`
-- Test: `test/features/sync/sync_page_controller_test.dart`
+- Create: `lib/features/sincronizacao/domain/sync_gateway.dart`
+- Create: `lib/features/sincronizacao/presentation/controllers/sync_page_controller.dart`
+- Test: `test/features/sincronizacao/sync_page_controller_test.dart`
 
 **Interfaces:**
 - Consumes: `SyncState`, `SyncPapel`, `SyncDestino`, `SyncErroTipo` (Task 6); `SyncProgress`, `lastProgress` (Task 4); `SyncOfflineException`, `SyncFalhaException` (Task 5); `SyncRateEstimator` (Task 1); `progressoGlobal`, `SyncEtapa` (Task 2).
@@ -1413,7 +1413,7 @@ O coração da tarefa. Orquestra download → perfil → destino, traduzindo pro
 
 - [ ] **Step 1: Criar a porta**
 
-Create `lib/features/sync/domain/sync_gateway.dart`:
+Create `lib/features/sincronizacao/domain/sync_gateway.dart`:
 
 ```dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -1453,7 +1453,7 @@ final syncGatewayProvider = Provider<SyncGateway>(
 
 - [ ] **Step 2: Write the failing test**
 
-Create `test/features/sync/sync_page_controller_test.dart`:
+Create `test/features/sincronizacao/sync_page_controller_test.dart`:
 
 ```dart
 import 'dart:async';
@@ -1463,9 +1463,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tecmuu/core/sync/sync_etapa.dart';
 import 'package:tecmuu/core/sync/sync_exceptions.dart';
 import 'package:tecmuu/data/objectbox/offline_first_sync_service.dart';
-import 'package:tecmuu/features/sync/domain/sync_gateway.dart';
-import 'package:tecmuu/features/sync/domain/sync_state.dart';
-import 'package:tecmuu/features/sync/presentation/controllers/sync_page_controller.dart';
+import 'package:tecmuu/features/sincronizacao/domain/sync_gateway.dart';
+import 'package:tecmuu/features/sincronizacao/domain/sync_state.dart';
+import 'package:tecmuu/features/sincronizacao/presentation/controllers/sync_page_controller.dart';
 
 /// Dublê escrito à mão: o projeto não usa mockito.
 class FakeSyncGateway implements SyncGateway {
@@ -1652,12 +1652,12 @@ void main() {
 
 - [ ] **Step 3: Run test to verify it fails**
 
-Run: `flutter test test/features/sync/sync_page_controller_test.dart`
+Run: `flutter test test/features/sincronizacao/sync_page_controller_test.dart`
 Expected: FAIL — `sync_page_controller.dart` inexistente.
 
 - [ ] **Step 4: Write minimal implementation**
 
-Create `lib/features/sync/presentation/controllers/sync_page_controller.dart`:
+Create `lib/features/sincronizacao/presentation/controllers/sync_page_controller.dart`:
 
 ```dart
 import 'dart:async';
@@ -1773,7 +1773,7 @@ final syncPageControllerProvider =
 
 - [ ] **Step 5: Run test to verify it passes**
 
-Run: `flutter test test/features/sync/sync_page_controller_test.dart`
+Run: `flutter test test/features/sincronizacao/sync_page_controller_test.dart`
 Expected: PASS, 8 testes.
 
 Se `progresso do gateway vira SyncBaixando com contador` falhar por não capturar nenhum `SyncBaixando`, o `emitir` está sendo chamado antes de `_executar` assinar o stream — mova o `fake.emitir(...)` para depois de um `await Future<void>.delayed(Duration.zero)`.
@@ -1781,7 +1781,7 @@ Se `progresso do gateway vira SyncBaixando com contador` falhar por não captura
 - [ ] **Step 6: Commit**
 
 ```bash
-git add lib/features/sync/domain/sync_gateway.dart lib/features/sync/presentation/controllers/sync_page_controller.dart test/features/sync/sync_page_controller_test.dart
+git add lib/features/sincronizacao/domain/sync_gateway.dart lib/features/sincronizacao/presentation/controllers/sync_page_controller.dart test/features/sincronizacao/sync_page_controller_test.dart
 git commit -m "$(cat <<'EOF'
 Adiciona controller da tela de sincronizacao
 
@@ -1800,8 +1800,8 @@ EOF
 Renderiza o estado. Sem lógica além de formatação.
 
 **Files:**
-- Create: `lib/features/sync/presentation/widgets/sync_progress_view.dart`
-- Test: `test/features/sync/sync_progress_view_test.dart`
+- Create: `lib/features/sincronizacao/presentation/widgets/sync_progress_view.dart`
+- Test: `test/features/sincronizacao/sync_progress_view_test.dart`
 
 **Interfaces:**
 - Consumes: `SyncState` e subclasses (Task 6), `SyncEtapa` (Task 2).
@@ -1819,14 +1819,14 @@ Renderiza o estado. Sem lógica além de formatação.
 
 - [ ] **Step 1: Write the failing test**
 
-Create `test/features/sync/sync_progress_view_test.dart`:
+Create `test/features/sincronizacao/sync_progress_view_test.dart`:
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tecmuu/core/sync/sync_etapa.dart';
-import 'package:tecmuu/features/sync/domain/sync_state.dart';
-import 'package:tecmuu/features/sync/presentation/widgets/sync_progress_view.dart';
+import 'package:tecmuu/features/sincronizacao/domain/sync_state.dart';
+import 'package:tecmuu/features/sincronizacao/presentation/widgets/sync_progress_view.dart';
 
 void main() {
   Future<void> montar(WidgetTester tester, SyncState estado) {
@@ -1928,12 +1928,12 @@ void main() {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run: `flutter test test/features/sync/sync_progress_view_test.dart`
+Run: `flutter test test/features/sincronizacao/sync_progress_view_test.dart`
 Expected: FAIL — arquivo inexistente.
 
 - [ ] **Step 3: Write minimal implementation**
 
-Create `lib/features/sync/presentation/widgets/sync_progress_view.dart`:
+Create `lib/features/sincronizacao/presentation/widgets/sync_progress_view.dart`:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -2220,7 +2220,7 @@ class SyncProgressView extends StatelessWidget {
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run: `flutter test test/features/sync/sync_progress_view_test.dart`
+Run: `flutter test test/features/sincronizacao/sync_progress_view_test.dart`
 Expected: PASS, 6 testes.
 
 Se algum teste falhar porque o asset do Lottie não carrega no ambiente de teste, adicione `errorBuilder: (_, __, ___) => const SizedBox(height: 160)` ao `Lottie.asset`. Não envolva a chamada num `try`/`catch`: a falha acontece durante o build do widget, não na chamada.
@@ -2228,7 +2228,7 @@ Se algum teste falhar porque o asset do Lottie não carrega no ambiente de teste
 - [ ] **Step 5: Commit**
 
 ```bash
-git add lib/features/sync/presentation/widgets/sync_progress_view.dart test/features/sync/sync_progress_view_test.dart
+git add lib/features/sincronizacao/presentation/widgets/sync_progress_view.dart test/features/sincronizacao/sync_progress_view_test.dart
 git commit -m "$(cat <<'EOF'
 Adiciona a view de progresso da sincronizacao
 
@@ -2244,8 +2244,8 @@ EOF
 Junta tudo: a página nova, a implementação real do gateway, a rota, a saída do download de dentro do auth manager e o estado de carregando nos botões de login.
 
 **Files:**
-- Create: `lib/features/sync/presentation/pages/sync_page.dart`
-- Create: `lib/features/sync/data/offline_first_sync_gateway.dart`
+- Create: `lib/features/sincronizacao/presentation/pages/sync_page.dart`
+- Create: `lib/features/sincronizacao/data/offline_first_sync_gateway.dart`
 - Delete: `lib/features/auth/presentation/pages/sync_technician_page.dart`
 - Modify: `lib/core/auth/firebase_auth/firebase_auth_manager.dart:315-329`
 - Modify: `lib/app/router/nav.dart:494-498`
@@ -2260,7 +2260,7 @@ Junta tudo: a página nova, a implementação real do gateway, a rota, a saída 
 
 - [ ] **Step 1: Implementar o gateway real**
 
-Create `lib/features/sync/data/offline_first_sync_gateway.dart`. Este arquivo concentra tudo o que a antiga `SyncTechnicianPage` fazia no `initState` (`sync_technician_page.dart:37-111`):
+Create `lib/features/sincronizacao/data/offline_first_sync_gateway.dart`. Este arquivo concentra tudo o que a antiga `SyncTechnicianPage` fazia no `initState` (`sync_technician_page.dart:37-111`):
 
 ```dart
 import 'package:collection/collection.dart';
@@ -2365,15 +2365,15 @@ ProviderScope(
 Com os imports:
 
 ```dart
-import '/features/sync/data/offline_first_sync_gateway.dart';
-import '/features/sync/domain/sync_gateway.dart';
+import '/features/sincronizacao/data/offline_first_sync_gateway.dart';
+import '/features/sincronizacao/domain/sync_gateway.dart';
 ```
 
 Se o `ProviderScope` estiver em `lib/main.dart` e não em `app.dart`, faça a mudança lá — rode `grep -rn "ProviderScope" lib/` para localizar.
 
 - [ ] **Step 3: Criar a `SyncPage`**
 
-Create `lib/features/sync/presentation/pages/sync_page.dart`:
+Create `lib/features/sincronizacao/presentation/pages/sync_page.dart`:
 
 ```dart
 import 'package:flutter/material.dart';
@@ -2486,8 +2486,8 @@ Em `lib/app/router/nav.dart`, substitua o `FFRoute` de `SyncTechnicianPage` (`:4
 Troque o import de `sync_technician_page.dart` por:
 
 ```dart
-import '/features/sync/presentation/pages/sync_page.dart';
-import '/features/sync/domain/sync_state.dart';
+import '/features/sincronizacao/presentation/pages/sync_page.dart';
+import '/features/sincronizacao/domain/sync_state.dart';
 ```
 
 - [ ] **Step 5: Tirar o download do auth manager**
@@ -2514,8 +2514,8 @@ Em `lib/features/auth/presentation/pages/login_technician_page.dart`:
 Troque o import `'/features/auth/presentation/pages/sync_technician_page.dart'` (linha 15) por:
 
 ```dart
-import '/features/sync/presentation/pages/sync_page.dart';
-import '/features/sync/domain/sync_state.dart';
+import '/features/sincronizacao/presentation/pages/sync_page.dart';
+import '/features/sincronizacao/domain/sync_state.dart';
 ```
 
 Adicione um campo de estado logo abaixo de `final scaffoldKey` (linha 39):
@@ -2647,8 +2647,20 @@ Expected: PASS na suíte inteira.
 
 - [ ] **Step 11: Commit**
 
+Adicione apenas os arquivos desta tarefa. **Nunca use `git add -A`** aqui: o working
+tree tem mudanças não relacionadas do usuário (`pubspec.yaml`, `pubspec.lock`,
+`.flutter-plugins-dependencies`, `layout_inspirations/`) que não podem entrar neste
+commit.
+
 ```bash
-git add -A
+git add lib/features/sincronizacao/ \
+        lib/core/auth/firebase_auth/firebase_auth_manager.dart \
+        lib/app/router/nav.dart \
+        lib/app/app.dart \
+        lib/features/auth/presentation/pages/login_technician_page.dart \
+        lib/features/produtor/presentation/pages/login_produtor_page.dart \
+        lib/features/perfil/presentation/pages/completar_perfil_tecnico_page.dart
+git add -u lib/features/auth/presentation/pages/sync_technician_page.dart
 git commit -m "$(cat <<'EOF'
 Tira o download completo de dentro do botao de login
 
