@@ -274,7 +274,18 @@ EOF
 
 ### Task 2: Progresso global por etapa (função pura)
 
-Converte `(etapa, atual, total)` numa fração 0..1, preservando as faixas que `_reportProgress` já usa hoje em `offline_first_sync_service.dart:149-198`.
+Converte `(etapa, atual, total)` numa fração 0..1, preservando os **pontos de corte
+entre etapas** que `_reportProgress` já usa hoje em
+`offline_first_sync_service.dart:149-198`.
+
+Uma diferença é deliberada: hoje o serviço reporta `0.95` ao terminar financeiro e
+`1.0` num evento separado de "Download completo finalizado" (linha 198), depois de
+gravar metadados de sync. No desenho novo `financeiro` é a última etapa e sua faixa
+termina em **1.00** — a conclusão é reportada como essa etapa completa
+(`atual: 1, total: 1`). Sem isso a barra nunca alcançaria 100% pelo sistema de
+faixas, e o 1.0 teria que vir por fora, furando a invariante "as faixas cobrem 0..1
+sem buraco" que o teste de continuidade verifica. O trecho `0.95 → 1.0` do código
+atual cobre apenas a gravação de metadados, de milissegundos.
 
 **Files:**
 - Create: `lib/core/sync/sync_etapa.dart`
