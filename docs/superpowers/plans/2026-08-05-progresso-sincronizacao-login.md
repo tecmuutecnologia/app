@@ -92,6 +92,29 @@ void main() {
       expect(e.registrosPorSegundo, closeTo(1000.0, 0.01));
     });
 
+    test('poda retem janela + 1 pontos, nao janela', () {
+      // Ritmo nao uniforme de proposito: com amostras uniformes, reter 3 ou 4
+      // pontos da o mesmo resultado e o teste nao pega o off-by-one.
+      final e = SyncRateEstimator(janela: 3)
+        ..registrar(0, em(0))
+        ..registrar(100, em(1000))
+        ..registrar(200, em(2000))
+        ..registrar(300, em(3000))
+        ..registrar(1300, em(4000));
+
+      // Retendo 4 pontos (o correto): (1300-100)/3s = 400/s.
+      // Retendo 3 (poda demais):      (1300-200)/2s = 550/s.
+      // Retendo 5 (nao poda):          1300/4s      = 325/s.
+      expect(e.registrosPorSegundo, closeTo(400.0, 0.01));
+    });
+
+    test('contador que anda para tras nao produz ritmo negativo', () {
+      final e = SyncRateEstimator()
+        ..registrar(500, em(0))
+        ..registrar(200, em(1000));
+      expect(e.registrosPorSegundo, isNull);
+    });
+
     test('reiniciar zera o historico', () {
       final e = SyncRateEstimator()
         ..registrar(0, em(0))
@@ -138,6 +161,14 @@ void main() {
         ..registrar(1500, em(1000))
         ..registrar(3000, em(2000));
       expect(e.etaPara(3000), isNull);
+    });
+
+    test('total ja ultrapassado devolve null', () {
+      final e = SyncRateEstimator()
+        ..registrar(0, em(0))
+        ..registrar(1500, em(1000))
+        ..registrar(3000, em(2000));
+      expect(e.etaPara(2500), isNull);
     });
   });
 }
@@ -223,9 +254,9 @@ class _Amostra {
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `flutter test test/core/sync/sync_rate_estimator_test.dart`
-Expected: PASS, 11 testes.
+Expected: PASS, 13 testes.
 
-Se o teste `media movel usa apenas as ultimas 3 transicoes` falhar, o motivo provável é a poda: com `janela: 3` são necessárias 4 amostras retidas, não 3.
+Se `poda retem janela + 1 pontos, nao janela` falhar com 550/s, a poda está removendo um ponto a mais (`> janela` em vez de `> janela + 1`); com 325/s, não está podando.
 
 - [ ] **Step 5: Commit**
 
