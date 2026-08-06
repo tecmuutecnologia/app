@@ -1520,7 +1520,11 @@ class TransitionInfo {
   const TransitionInfo({
     required this.hasTransition,
     this.transitionType = PageTransitionType.fade,
-    this.duration = const Duration(seconds: 5),
+    // 5 segundos era o default herdado do FlutterFlow. Nenhuma das telas que
+    // pedem transicao informa `duration`, entao todas herdavam um fade de
+    // cinco segundos — era o que fazia a ida do "Sou Técnico" para o login
+    // parecer travamento. 250ms e a faixa de transicao de tela do Material.
+    this.duration = const Duration(milliseconds: 250),
     this.alignment,
   });
 
