@@ -34,6 +34,13 @@ class FakeSyncGateway implements SyncGateway {
   @override
   SyncProgress? ultimoProgresso;
 
+  /// Se setado, `baixarTudo` fica pendurado até o teste chamar `.complete()`.
+  /// Sem controle explícito, o download "termina" no mesmo tick em que
+  /// começa (nada aqui é I/O de verdade) e a assinatura do progresso já
+  /// estaria cancelada (estado terminal) antes do teste conseguir emitir um
+  /// evento no meio do caminho.
+  Completer<void>? baixarTudoGate;
+
   void emitir(SyncProgress p) {
     ultimoProgresso = p;
     _controller.add(p);
@@ -43,6 +50,8 @@ class FakeSyncGateway implements SyncGateway {
   Future<void> baixarTudo() async {
     vezesQueBaixou++;
     if (erroAoBaixar != null) throw erroAoBaixar!;
+    final gate = baixarTudoGate;
+    if (gate != null) await gate.future;
   }
 
   @override
@@ -86,6 +95,11 @@ void main() {
 
     test('progresso do gateway vira SyncBaixando com contador', () async {
       final fake = FakeSyncGateway();
+      // Segura `baixarTudo` no meio do caminho: sem isso, como nada aqui é
+      // I/O real, o download (e a conclusão, que cancela a inscrição) termina
+      // antes do teste ter a chance de emitir um progresso no meio do fluxo.
+      final gate = Completer<void>();
+      fake.baixarTudoGate = gate;
       final c = containerCom(fake);
 
       final estados = <SyncState>[];
@@ -95,6 +109,9 @@ void main() {
           .read(syncPageControllerProvider.notifier)
           .iniciar(SyncPapel.tecnico);
 
+      // Deixa a assinatura do progressStream se estabelecer (ela é feita
+      // antes do primeiro await de `_executar`, mas ainda depende de um
+      // ciclo do event loop para rodar a partir daqui).
       await Future<void>.delayed(Duration.zero);
       fake.emitir(const SyncProgress(
         etapa: SyncEtapa.animais,
@@ -104,6 +121,7 @@ void main() {
         total: 3000,
       ));
       await Future<void>.delayed(Duration.zero);
+      gate.complete();
       await futuro;
 
       final baixando = estados.whereType<SyncBaixando>().toList();
@@ -111,6 +129,33 @@ void main() {
       expect(baixando.last.atual, 1240);
       expect(baixando.last.total, 3000);
       expect(baixando.last.temContador, true);
+    });
+
+    test(
+        'tela monta depois do primeiro lote: usa ultimoProgresso do gateway',
+        () async {
+      final fake = FakeSyncGateway();
+      // Simula a porta ja tendo emitido progresso antes da tela montar —
+      // `ultimoProgresso` existe exatamente para esse caso.
+      fake.ultimoProgresso = const SyncProgress(
+        etapa: SyncEtapa.animais,
+        message: 'Animais',
+        progress: 0.42,
+        atual: 500,
+        total: 1000,
+      );
+      final c = containerCom(fake);
+
+      final estados = <SyncState>[];
+      c.listen(syncPageControllerProvider, (_, novo) => estados.add(novo));
+
+      await c
+          .read(syncPageControllerProvider.notifier)
+          .iniciar(SyncPapel.tecnico);
+
+      final primeiroBaixando = estados.whereType<SyncBaixando>().first;
+      expect(primeiroBaixando.atual, 500);
+      expect(primeiroBaixando.total, 1000);
     });
   });
 
@@ -188,6 +233,24 @@ void main() {
 
       expect(c.read(syncPageControllerProvider), isA<SyncConcluido>());
       expect(fake.vezesQueConcluiu, 1);
+    });
+  });
+
+  group('reentrancia', () {
+    test('chamada concorrente de iniciar é ignorada', () async {
+      final fake = FakeSyncGateway();
+      final c = containerCom(fake);
+      final notifier = c.read(syncPageControllerProvider.notifier);
+
+      // Duplo toque no botao: a segunda chamada, disparada antes da primeira
+      // suspender no seu primeiro await, deve ser um no-op.
+      final f1 = notifier.iniciar(SyncPapel.tecnico);
+      final f2 = notifier.iniciar(SyncPapel.tecnico);
+      await Future.wait([f1, f2]);
+
+      expect(fake.vezesQueBaixou, 1);
+      expect(fake.vezesQueConcluiu, 1);
+      expect(c.read(syncPageControllerProvider), isA<SyncConcluido>());
     });
   });
 }
