@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../core/sync/alvos_animais_produtor.dart';
 import '../../core/sync/queue_payload_codec.dart';
+import '../../core/sync/reconciliacao_animais.dart';
 import '../../core/sync/upsert_referencia.dart';
 import 'objectbox_service.dart';
 import 'entities/index.dart';
@@ -529,26 +530,32 @@ class OfflineFirstSyncService {
     debugPrint('🐄 $totalAnimais animal(is) baixado(s)');
   }
 
-  /// Grava os animais baixados, atualizando o que já existe em vez de duplicar.
+  /// Grava um lote de animais baixados numa unica transacao.
+  ///
+  /// A versao anterior fazia, por animal, uma query e um `put` — 3000 queries e
+  /// 3000 transacoes na isolate principal, o que congelava a UI thread por
+  /// dezenas de segundos no primeiro login de um tecnico grande.
   int _salvarAnimais(
     List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
     String parentPath,
   ) {
-    for (final doc in docs) {
-      final existing = _objectBox.animalBox
-          .query(AnimalEntity_.firestoreId.equals(doc.id))
-          .build()
-          .findFirst();
+    if (docs.isEmpty) return 0;
 
-      if (existing != null) {
-        existing.updateFromFirestore(doc.data());
-        _objectBox.animalBox.put(existing);
-      } else {
-        _objectBox.animalBox.put(
-          AnimalEntity.fromFirestore(doc.data(), doc.id, parentPath),
-        );
-      }
-    }
+    final ids = docs.map((d) => d.id).toList();
+    final existentes = _objectBox.animalBox
+        .query(AnimalEntity_.firestoreId.oneOf(ids))
+        .build()
+        .find();
+
+    final aGravar = reconciliarAnimais(
+      docs: docs.map((d) => DocAnimal(d.id, d.data())).toList(),
+      existentesPorFirestoreId: {
+        for (final e in existentes) e.firestoreId!: e,
+      },
+      parentPath: parentPath,
+    );
+
+    _objectBox.animalBox.putMany(aGravar);
     return docs.length;
   }
 
