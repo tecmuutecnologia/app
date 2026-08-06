@@ -53,8 +53,12 @@ class ObjectBoxAuthHelper {
     });
   }
 
-  /// Sincroniza dados do usuário após login
-  /// Se é a primeira vez ou dados locais não existem, faz download completo
+  /// Sincroniza dados do usuário após login.
+  ///
+  /// Propaga [SyncOfflineException] e [SyncFalhaException]: quem chama e a tela
+  /// de sincronizacao, que sabe mostrar erro e oferecer nova tentativa. A versao
+  /// anterior engolia a excecao aqui, e um download que nao aconteceu chegava na
+  /// UI como sucesso.
   static Future<void> onUserLogin(User user) async {
     if (kIsWeb) return;
 
@@ -68,35 +72,30 @@ class ObjectBoxAuthHelper {
 
     final syncService = OfflineFirstSyncService.instance;
 
-    try {
-      // Faz o download completo na primeira sincronização OU quando o cache de
-      // animais está vazio (auto-recuperação de instalações cujo sync anterior
-      // baixou do path errado e ficou sem animais).
-      final semAnimaisLocais = ObjectBoxService.instance.animalBox.count() == 0;
-      if (syncService.needsInitialSync() || semAnimaisLocais) {
-        debugPrint('📥 Baixando todos os dados...');
-        await syncService.performFullDownload(userId: user.uid);
-      } else {
-        // Sincroniza apenas alterações pendentes
-        debugPrint('🔄 Sincronizando alterações pendentes...');
-        await syncService.syncPendingChangesToFirestore();
-      }
+    // Faz o download completo na primeira sincronização OU quando o cache de
+    // animais está vazio (auto-recuperação de instalações cujo sync anterior
+    // baixou do path errado e ficou sem animais).
+    final semAnimaisLocais = ObjectBoxService.instance.animalBox.count() == 0;
+    if (syncService.needsInitialSync() || semAnimaisLocais) {
+      debugPrint('📥 Baixando todos os dados...');
+      await syncService.performFullDownload(userId: user.uid);
+    } else {
+      // Sincroniza apenas alterações pendentes
+      debugPrint('🔄 Sincronizando alterações pendentes...');
+      await syncService.syncPendingChangesToFirestore();
+    }
 
-      // Auto-recuperação (uma vez por instalação): quem já tinha sincronizado
-      // antes da correção ficou com as propriedades no path do produtor e nunca
-      // re-baixa por conta própria. Re-baixa só as propriedades.
-      await syncService.repararPathPropriedades(user.uid);
+    // Auto-recuperação (uma vez por instalação): quem já tinha sincronizado
+    // antes da correção ficou com as propriedades no path do produtor e nunca
+    // re-baixa por conta própria. Re-baixa só as propriedades.
+    await syncService.repararPathPropriedades(user.uid);
 
-      debugPrint('✅ Sincronização após login concluída');
+    debugPrint('✅ Sincronização após login concluída');
 
-      // Manutenção: remove soft-deletes já sincronizados (Fase 1.5).
-      final purged = purgeAllSyncedSoftDeletes();
-      if (purged > 0) {
-        debugPrint('🧹 $purged registro(s) soft-deleted purgado(s)');
-      }
-    } catch (e) {
-      debugPrint('❌ Erro ao sincronizar dados após login: $e');
-      // Não lança erro para permitir uso offline
+    // Manutenção: remove soft-deletes já sincronizados (Fase 1.5).
+    final purged = purgeAllSyncedSoftDeletes();
+    if (purged > 0) {
+      debugPrint('🧹 $purged registro(s) soft-deleted purgado(s)');
     }
   }
 

@@ -8,6 +8,7 @@ import '../../core/sync/alvos_animais_produtor.dart';
 import '../../core/sync/queue_payload_codec.dart';
 import '../../core/sync/reconciliacao_animais.dart';
 import '../../core/sync/sync_etapa.dart';
+import '../../core/sync/sync_exceptions.dart';
 import '../../core/sync/upsert_referencia.dart';
 import 'objectbox_service.dart';
 import 'entities/index.dart';
@@ -160,7 +161,7 @@ class OfflineFirstSyncService {
     if (!_isOnline) {
       debugPrint('📴 Offline - download adiado');
       _updateStatus(SyncStatus.offline);
-      return;
+      throw const SyncOfflineException();
     }
 
     _updateStatus(SyncStatus.syncing);
@@ -211,10 +212,12 @@ class OfflineFirstSyncService {
 
       _reportProgress(SyncEtapa.financeiro, 'Concluído', atual: 1, total: 1);
       _updateStatus(SyncStatus.completed);
+    } on SyncOfflineException {
+      rethrow;
     } catch (e) {
       debugPrint('❌ Erro no download completo: $e');
       _updateStatus(SyncStatus.error);
-      rethrow;
+      throw SyncFalhaException(_lastProgress?.etapa, e);
     }
   }
 
