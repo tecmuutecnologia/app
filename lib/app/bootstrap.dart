@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' show ProviderScope;
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:provider/provider.dart';
 
+import '/app/router/destino_inicial.dart';
 import '/data/firebase/firebase_config.dart';
 import '/data/objectbox/index.dart';
 import '/data/stripe/payment_manager.dart';
@@ -55,6 +56,10 @@ Future<void> bootstrap() async {
 
   final appState = FFAppState(); // Initialize FFAppState
   await appState.initializePersistedState();
+
+  // Precisa estar pronto antes do primeiro `redirect` da rota `/`, que decide
+  // para onde abrir sem poder esperar por I/O.
+  await DestinoInicial.inicializar();
 
   // Migração legado->ObjectBox a cada startup (idempotente, não-bloqueante):
   // resgata animais criados offline pelo mecanismo antigo (array persistido em

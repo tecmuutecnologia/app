@@ -1,3 +1,4 @@
+import '/app/router/destino_inicial.dart';
 import 'dart:async';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -63,6 +64,10 @@ class FirebaseAuthManager extends AuthManager
 
     // Sincroniza dados pendentes e limpa cache local
     await ObjectBoxAuthHelper.onUserLogout(userId);
+
+    // O proximo usuario deste aparelho nao pode abrir o app no destino do
+    // anterior.
+    await DestinoInicial.limpar();
 
     return FirebaseAuth.instance.signOut();
   }

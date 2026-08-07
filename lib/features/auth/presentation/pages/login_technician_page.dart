@@ -12,6 +12,7 @@ import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/app_card.dart';
 import '/features/auth/presentation/pages/create_account_technician_page.dart';
+import '/features/sincronizacao/domain/sync_state.dart';
 import '/features/sincronizacao/presentation/pages/sync_page.dart';
 import '../controllers/login_technician_controller.dart';
 
@@ -420,14 +421,11 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
                   if (user == null) return;
                   if (!context.mounted) return;
 
-                  // `pushNamedAuth` nao navega quando ha redirecionamento
-                  // pendente — retorna null em silencio e o usuario cai no app
-                  // sem passar pela sincronizacao. A tela limpa esse redirect
-                  // ao montar, entao aqui a navegacao e direta.
-                  context.pushNamed(
-                    SyncPage.routeName,
-                    queryParameters: {'papel': 'tecnico'},
-                  );
+                  // Nao usar `goNamedAuth`: ele nao navega quando ha
+                  // redirecionamento pendente — retorna null em silencio e o
+                  // usuario cai no app sem passar pela sincronizacao. A tela
+                  // limpa esse redirect ao montar.
+                  SyncPage.abrir(context, papel: SyncPapel.tecnico);
                 } finally {
                   if (mounted) setState(() => _entrando = false);
                 }
@@ -477,10 +475,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
               final service = await OfflineAuthService.instance;
               final session = await service.loginOfflineComBiometria();
               if (session != null && context.mounted) {
-                context.pushNamed(
-                  SyncPage.routeName,
-                  queryParameters: {'papel': 'tecnico'},
-                );
+                SyncPage.abrir(context, papel: SyncPapel.tecnico);
               }
             },
             text: 'Entrar com biometria',

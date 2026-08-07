@@ -23,8 +23,8 @@ abstract class SyncGateway {
   Future<void> baixarTudo();
 
   /// Busca person/tecnico, liga os listeners remotos, aquece caches e resolve
-  /// para onde navegar.
-  Future<SyncDestino> concluirLogin(SyncPapel papel);
+  /// para onde navegar. `papel` nulo = descobrir de quem e a sessao.
+  Future<SyncDestino> concluirLogin(SyncPapel? papel);
 }
 
 /// Sobrescrito no `main`/`app` com a implementacao real e, no teste, com um fake.

@@ -39,7 +39,7 @@ class OfflineFirstSyncGateway implements SyncGateway {
   }
 
   @override
-  Future<SyncDestino> concluirLogin(SyncPapel papel) async {
+  Future<SyncDestino> concluirLogin(SyncPapel? papel) async {
     // Migração legado→ObjectBox: resgata (das prefs) os animais criados
     // offline pelo mecanismo antigo e limpa a chave.
     await migrarAnimaisOfflineLegadoDePrefs();
@@ -51,13 +51,27 @@ class OfflineFirstSyncGateway implements SyncGateway {
 
     if (person == null) return const DestinoCompletarPerfil();
 
-    if (papel == SyncPapel.produtor) {
+    // `papel` nulo = o app foi aberto pela rota `/` e ninguem informou quem
+    // esta entrando. A propriedade ligada ao person e o unico sinal que nao
+    // confunde "produtor" com "tecnico sem perfil completo": o tecnico
+    // incompleto nao tem propriedade como produtor, entao segue no ramo de
+    // baixo e cai no `DestinoCompletarPerfil`. Deduzir pela existencia do
+    // TecnicoRecord — o que a `VerificaTipoLoginPage` fazia — mandava esse
+    // tecnico para a tela do produtor.
+    if (papel != SyncPapel.tecnico) {
       final propriedade = await queryPropriedadesRecordOnce(
         queryBuilder: (r) =>
             r.where('uidPersonProdutor', isEqualTo: person.reference),
         singleRecord: true,
       ).then((s) => s.firstOrNull);
-      return DestinoInicioPropriedadeProdutor(propriedade);
+      if (propriedade != null) {
+        return DestinoInicioPropriedadeProdutor(propriedade);
+      }
+      // Produtor declarado e sem propriedade: a tela do produtor ja lida com
+      // o vazio, e mandar para o dashboard do tecnico seria pior.
+      if (papel == SyncPapel.produtor) {
+        return const DestinoInicioPropriedadeProdutor(null);
+      }
     }
 
     final tecnico = await queryTecnicoRecordOnce(

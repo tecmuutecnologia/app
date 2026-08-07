@@ -6,6 +6,7 @@ import '/data/backend.dart';
 import '/data/schema/structs/index.dart';
 
 import '/core/auth/base_auth_user_provider.dart';
+import 'destino_inicial.dart';
 
 import '/core/ui/flutter_flow_util.dart';
 
@@ -25,7 +26,6 @@ import '/features/financeiro/presentation/pages/novo_relatorio_financeiro_page.d
 import '/features/financeiro/presentation/pages/relatorio_financeiro_page.dart';
 import '/features/inseminacoes/presentation/pages/lista_inseminacoes_page.dart';
 import '/features/onboarding/presentation/pages/tutorial_page.dart';
-import '/features/onboarding/presentation/pages/verifica_tipo_login_page.dart';
 import '/features/onboarding/presentation/pages/welcome_page.dart';
 import '/features/perfil/presentation/pages/apagar_conta_page.dart';
 import '/features/perfil/presentation/pages/completar_perfil_tecnico_page.dart';
@@ -114,20 +114,44 @@ class AppStateNotifier extends ChangeNotifier {
   }
 }
 
+/// Para onde a rota `/` manda quem abre o app. `null` = fica na tela inicial.
+///
+/// Antes isto era a `VerificaTipoLoginPage`: uma tela que descobria o destino
+/// com duas consultas ao Firestore a cada abertura. O destino agora e gravado
+/// no fim da sincronizacao, entao abrir o app e instantaneo e funciona offline.
+String? destinoDeAbertura({
+  required bool logado,
+  required String? destinoGuardado,
+}) {
+  if (!logado) return null;
+  // `/` guardado nunca: redirecionar a rota para ela mesma e laco infinito.
+  if (destinoGuardado == null || destinoGuardado == '/') {
+    // Instalacao que ainda nao sincronizou (ou sessao anterior a este
+    // mecanismo): a sincronizacao resolve. Sem `papel` na rota, ela descobre
+    // sozinha de quem e a sessao.
+    return SyncPage.routePath;
+  }
+  return destinoGuardado;
+}
+
 GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       initialLocation: '/',
       debugLogDiagnostics: true,
       refreshListenable: appStateNotifier,
       navigatorKey: appNavigatorKey,
-      errorBuilder: (context, state) =>
-          appStateNotifier.loggedIn ? VerificaTipoLoginPage() : WelcomePage(),
+      // Rota inexistente (deep link velho, URL digitada na web): a tela
+      // inicial e o unico destino que serve tanto para quem tem sessao quanto
+      // para quem nao tem.
+      errorBuilder: (context, state) => WelcomePage(),
       routes: [
         FFRoute(
           name: '_initialize',
           path: '/',
-          builder: (context, _) => appStateNotifier.loggedIn
-              ? VerificaTipoLoginPage()
-              : WelcomePage(),
+          redirect: (context, state) => destinoDeAbertura(
+            logado: appStateNotifier.loggedIn,
+            destinoGuardado: DestinoInicial.valor,
+          ),
+          builder: (context, _) => WelcomePage(),
         ),
         FFRoute(
           name: WelcomePage.routeName,
@@ -495,11 +519,18 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: SyncPage.routeName,
           path: SyncPage.routePath,
-          builder: (context, params) => SyncPage(
-            papel: params.getParam('papel', ParamType.String) == 'produtor'
-                ? SyncPapel.produtor
-                : SyncPapel.tecnico,
-          ),
+          builder: (context, params) {
+            // Sem o parametro (abertura do app pela `/`), o papel fica nulo e
+            // o gateway descobre de quem e a sessao.
+            final papel = params.getParam('papel', ParamType.String);
+            return SyncPage(
+              papel: papel == null
+                  ? null
+                  : (papel == 'produtor'
+                      ? SyncPapel.produtor
+                      : SyncPapel.tecnico),
+            );
+          },
         ),
         FFRoute(
           name: ReceituariosListaPage.routeName,
@@ -1289,11 +1320,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               ParamType.String,
             ),
           ),
-        ),
-        FFRoute(
-          name: VerificaTipoLoginPage.routeName,
-          path: VerificaTipoLoginPage.routePath,
-          builder: (context, params) => VerificaTipoLoginPage(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
@@ -1445,11 +1471,16 @@ class FFRoute {
     this.requireAuth = false,
     this.asyncParams = const {},
     this.routes = const [],
+    this.redirect,
   });
 
   final String name;
   final String path;
   final bool requireAuth;
+
+  /// Decisao de destino da propria rota, avaliada depois das guardas de
+  /// autenticacao. Devolver `null` mantem a rota.
+  final String? Function(BuildContext, GoRouterState)? redirect;
   final Map<String, Future<dynamic> Function(String)> asyncParams;
   final Widget Function(BuildContext, FFParameters) builder;
   final List<GoRoute> routes;
@@ -1468,7 +1499,7 @@ class FFRoute {
             appStateNotifier.setRedirectLocationIfUnset(state.uri.toString());
             return '/welcome';
           }
-          return null;
+          return this.redirect?.call(context, state);
         },
         pageBuilder: (context, state) {
           fixStatusBarOniOS16AndBelow(context);

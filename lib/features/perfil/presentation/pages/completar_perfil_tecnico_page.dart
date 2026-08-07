@@ -4,6 +4,7 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
+import '/features/sincronizacao/domain/sync_state.dart';
 import '/features/sincronizacao/presentation/pages/sync_page.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -1154,10 +1155,7 @@ class _CompletarPerfilTecnicoPageState
                       nomePlano: 'Plano Start',
                     ));
 
-                context.pushNamed(
-                  SyncPage.routeName,
-                  queryParameters: {'papel': 'tecnico'},
-                );
+                SyncPage.abrir(context, papel: SyncPapel.tecnico);
 
                 if (_shouldSetState) safeSetState(() {});
               },

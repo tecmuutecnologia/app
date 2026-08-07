@@ -3,6 +3,7 @@ import '/data/objectbox/offline_auth_service.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
+import '/features/sincronizacao/domain/sync_state.dart';
 import '/features/sincronizacao/presentation/pages/sync_page.dart';
 
 import 'package:flutter/material.dart';
@@ -270,12 +271,9 @@ class _LoginProdutorPageState extends State<LoginProdutorPage>
   /// A busca de person/propriedade e a navegacao final vivem agora no
   /// `OfflineFirstSyncGateway`, atras da tela de sincronizacao.
   void _irParaSincronizacao() {
-    // `pushNamedAuth` nao navega quando ha redirecionamento pendente — retorna
-    // null em silencio e o usuario cai no app sem passar pela sincronizacao.
-    // A tela limpa esse redirect ao montar, entao aqui a navegacao e direta.
-    context.pushNamed(
-      SyncPage.routeName,
-      queryParameters: {'papel': 'produtor'},
-    );
+    // Nao usar `goNamedAuth`: ele nao navega quando ha redirecionamento
+    // pendente — retorna null em silencio e o usuario cai no app sem passar
+    // pela sincronizacao. A tela limpa esse redirect ao montar.
+    SyncPage.abrir(context, papel: SyncPapel.produtor);
   }
 }

@@ -55,7 +55,7 @@ class FakeSyncGateway implements SyncGateway {
   }
 
   @override
-  Future<SyncDestino> concluirLogin(SyncPapel papel) async {
+  Future<SyncDestino> concluirLogin(SyncPapel? papel) async {
     vezesQueConcluiu++;
     return destino;
   }

@@ -14,7 +14,8 @@ import '../../domain/sync_state.dart';
 class SyncPageController extends Notifier<SyncState> {
   StreamSubscription<SyncProgress>? _inscricao;
   final SyncRateEstimator _estimador = SyncRateEstimator();
-  SyncPapel _papel = SyncPapel.tecnico;
+  /// Nulo = a rota nao informou; o gateway descobre.
+  SyncPapel? _papel;
 
   /// Guarda contra reentrancia: a tela tera botoes reais ("tentar novamente",
   /// "continuar assim mesmo") que o usuario pode tocar duas vezes, ou tocar
@@ -31,7 +32,7 @@ class SyncPageController extends Notifier<SyncState> {
 
   SyncGateway get _gateway => ref.read(syncGatewayProvider);
 
-  Future<void> iniciar(SyncPapel papel) async {
+  Future<void> iniciar(SyncPapel? papel) async {
     if (_emAndamento) return;
     _papel = papel;
     // So a primeira tentativa faz sentido reaproveitar `ultimoProgresso`: e

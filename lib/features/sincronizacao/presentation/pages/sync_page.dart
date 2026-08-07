@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '/app/router/destino_inicial.dart';
 import '/app/router/nav.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/data/schema/propriedades_record.dart';
@@ -16,12 +19,32 @@ import '../widgets/sync_progress_view.dart';
 /// Substitui a antiga `SyncTechnicianPage`, que so aparecia DEPOIS que o
 /// download completo ja tinha rodado dentro do botao de login.
 class SyncPage extends ConsumerStatefulWidget {
-  const SyncPage({super.key, required this.papel});
+  const SyncPage({super.key, this.papel});
 
-  final SyncPapel papel;
+  /// Nulo quando a rota nao informa (abertura do app pela `/`): ai o gateway
+  /// descobre de quem e a sessao.
+  final SyncPapel? papel;
 
   static String routeName = 'sync';
   static String routePath = '/sincronizando';
+
+  /// Unica forma de abrir a tela. Usa `go` (substitui a pilha), nunca `push`.
+  ///
+  /// Empilhar deixa a rota `/` embaixo, e o `pageBuilder` de TODA rota da
+  /// pilha e reexecutado a cada rebuild do roteador. Era assim que a
+  /// sincronizacao "piscava" e o usuario caia no dashboard com o download pela
+  /// metade: ja autenticado, a pagina da `/` se materializava por baixo desta
+  /// tela e navegava sozinha. Aquela pagina nao existe mais, mas a pilha
+  /// pos-login continua tendo de ser so esta tela — voltar ao login depois de
+  /// autenticar nao e um estado valido.
+  static void abrir(BuildContext context, {required SyncPapel papel}) {
+    context.goNamed(
+      routeName,
+      queryParameters: {
+        'papel': papel == SyncPapel.produtor ? 'produtor' : 'tecnico',
+      },
+    );
+  }
 
   @override
   ConsumerState<SyncPage> createState() => _SyncPageState();
@@ -48,14 +71,24 @@ class _SyncPageState extends ConsumerState<SyncPage> {
   }
 
   void _navegar(SyncDestino destino) {
+    final localizacao = _localizacaoDe(destino);
+    // Este e o destino que a rota `/` usa na proxima abertura do app, no lugar
+    // das duas consultas ao Firestore que a `VerificaTipoLoginPage` fazia. So
+    // aqui o app sabe, com dado do servidor, quem e o usuario.
+    unawaited(DestinoInicial.guardar(localizacao));
+    context.go(localizacao);
+  }
+
+  String _localizacaoDe(SyncDestino destino) {
+    final router = GoRouter.of(context);
     switch (destino) {
       case DestinoDashboardTecnico():
-        context.goNamed(DashboardTecnicoPage.routeName);
+        return router.namedLocation(DashboardTecnicoPage.routeName);
       case DestinoCompletarPerfil():
-        context.goNamed(CompletarPerfilTecnicoPage.routeName);
+        return router.namedLocation(CompletarPerfilTecnicoPage.routeName);
       case DestinoInicioPropriedadeProdutor(:final propriedade):
         final p = propriedade as PropriedadesRecord?;
-        context.goNamed(
+        return router.namedLocation(
           InicioPropriedadeProdutorPage.routeName,
           queryParameters: {
             'nomePropriedade':
