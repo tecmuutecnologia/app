@@ -1,8 +1,5 @@
 // ignore_for_file: unnecessary_null_comparison, dead_code
 
-import 'dart:async';
-
-import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
@@ -18,7 +15,6 @@ import '/features/prontuario/presentation/pages/pron_cios_page.dart';
 import '/features/prontuario/presentation/pages/pron_diag_gestacao_page.dart';
 import '/features/prontuario/presentation/pages/pron_inseminacoes_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -52,35 +48,17 @@ class ProntuarioAnimalPage extends StatefulWidget {
 }
 
 class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
-  StreamSubscription<bool>? _conectividadeSub;
-  bool? _respostaNet = true;
-
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
 
-    // On page load action.
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      // Conectividade por transicao real, nao por polling: antes era um
-      // timer periodico de 5s cujo callback chamava safeSetState
-      // incondicionalmente, reconstruindo a arvore inteira houvesse mudanca
-      // ou nao. O valor alimenta um unico lugar: a cor de um botao.
-      _respostaNet = ConnectivityService.instance.isOnline;
-      _conectividadeSub =
-          ConnectivityService.instance.onStatusChange.listen((online) {
-        if (mounted) safeSetState(() => _respostaNet = online);
-      });
-    });
-
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _conectividadeSub?.cancel();
-
     super.dispose();
   }
 
@@ -1787,782 +1765,6 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _rotuloNomeBrinco2(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(15.0, 15.0, 15.0, 15.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Nome ou brinco:',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      fontSize: 16.0,
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-              Text(
-                () {
-                  if ((prontuarioAnimalAnimaisProdutoresRecord.nomeAnimal !=
-                          '') &&
-                      (prontuarioAnimalAnimaisProdutoresRecord.brincoAnimal !=
-                          null) &&
-                      (prontuarioAnimalAnimaisProdutoresRecord.brincoAnimal !=
-                          -1)) {
-                    return '${prontuarioAnimalAnimaisProdutoresRecord.nomeAnimal} - ${prontuarioAnimalAnimaisProdutoresRecord.brincoAnimal.toString()}';
-                  } else if (prontuarioAnimalAnimaisProdutoresRecord
-                          .nomeAnimal !=
-                      '') {
-                    return prontuarioAnimalAnimaisProdutoresRecord.nomeAnimal;
-                  } else {
-                    return prontuarioAnimalAnimaisProdutoresRecord.brincoAnimal
-                        .toString();
-                  }
-                }(),
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight: FontWeight.bold,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      fontSize: 16.0,
-                      letterSpacing: 0.0,
-                      fontWeight: FontWeight.bold,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-              Text(
-                'Nascimento:',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      fontSize: 16.0,
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-              Text(
-                prontuarioAnimalAnimaisProdutoresRecord.dtNascimento,
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight: FontWeight.bold,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      fontSize: 16.0,
-                      letterSpacing: 0.0,
-                      fontWeight: FontWeight.bold,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _tituloInfoGerais2(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(15.0, 25.0, 15.0, 15.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.info_outline_rounded,
-                      color: AppTokens.secondary, size: 20.0),
-                  const SizedBox(width: 8.0),
-                  Flexible(
-                    child: Text(
-                      'Informações gerais:',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
-                            ),
-                            fontSize: 16.0,
-                            letterSpacing: 0.0,
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _listaInfoGerais2(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
-    return ListView(
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      // A pagina inteira ja rola; sem isto a lista vira sua propria area de
-      // rolagem e o dedo prende dentro dela.
-      physics: const NeverScrollableScrollPhysics(),
-      scrollDirection: Axis.vertical,
-      children: [
-        _linhaMae2(context, prontuarioAnimalAnimaisProdutoresRecord),
-        _linhaGrupo2(context, prontuarioAnimalAnimaisProdutoresRecord),
-        _linhaNumeroRegistro2(context, prontuarioAnimalAnimaisProdutoresRecord),
-      ],
-    );
-  }
-
-  Widget _tituloReproducao2(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(15.0, 25.0, 15.0, 15.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Text(
-                'Reprodução:',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      fontSize: 16.0,
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _listaReproducao2(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
-    return ListView(
-      padding: EdgeInsets.zero,
-      primary: false,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      scrollDirection: Axis.vertical,
-      children: [
-        _linhaUltimoParto2(context, prontuarioAnimalAnimaisProdutoresRecord),
-        _linhaTotalPartos2(context, prontuarioAnimalAnimaisProdutoresRecord),
-        _linhaDel2(context, prontuarioAnimalAnimaisProdutoresRecord),
-      ],
-    );
-  }
-
-  Widget _linhaMae2(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Mãe:',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-              Text(
-                valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.vaca,
-                  'N/C',
-                ),
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight: FontWeight.bold,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight: FontWeight.bold,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-            ],
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Pai:',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-              Text(
-                valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.touro,
-                  'N/C',
-                ),
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight: FontWeight.bold,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight: FontWeight.bold,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _linhaGrupo2(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Grupo:',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-              Text(
-                valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.grupoAnimal,
-                  'N/C',
-                ),
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight: FontWeight.bold,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight: FontWeight.bold,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-            ],
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Raça:',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-              Text(
-                valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.racaAnimal,
-                  'N/C',
-                ),
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight: FontWeight.bold,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight: FontWeight.bold,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _linhaNumeroRegistro2(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Nº registro:',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-              Text(
-                (prontuarioAnimalAnimaisProdutoresRecord.brincoAnimal !=
-                            null) &&
-                        (prontuarioAnimalAnimaisProdutoresRecord.brincoAnimal !=
-                            -1)
-                    ? prontuarioAnimalAnimaisProdutoresRecord.brincoAnimal
-                        .toString()
-                    : 'N/C',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight: FontWeight.bold,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight: FontWeight.bold,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-            ],
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Status:',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-              Text(
-                valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.status,
-                  'N/C',
-                ),
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight: FontWeight.bold,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight: FontWeight.bold,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _linhaUltimoParto2(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Último parto:',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-              Text(
-                valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.dtUltimoParto,
-                  'N/C',
-                ),
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight: FontWeight.bold,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight: FontWeight.bold,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-            ],
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Última inseminação:',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-              Text(
-                valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.dtUltimaInseminacao,
-                  'N/C',
-                ),
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight: FontWeight.bold,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight: FontWeight.bold,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _linhaTotalPartos2(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Total partos:',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-              Text(
-                valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.totalPartos
-                      .toString(),
-                  'N/C',
-                ),
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight: FontWeight.bold,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight: FontWeight.bold,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-            ],
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Total inseminações:',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-              Text(
-                valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.totalInseminacoes
-                      .toString(),
-                  'N/C',
-                ),
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight: FontWeight.bold,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight: FontWeight.bold,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _linhaDel2(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'DEL:',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-              Text(
-                prontuarioAnimalAnimaisProdutoresRecord.dtUltimoParto != ''
-                    ? functions
-                        .calcularDiferencaEmDias(
-                            prontuarioAnimalAnimaisProdutoresRecord
-                                .dtUltimoParto)
-                        .toString()
-                    : 'N/D',
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight: FontWeight.bold,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight: FontWeight.bold,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-              ),
-            ],
-          ),
-          if (prontuarioAnimalAnimaisProdutoresRecord.dtDesmame != null)
-            Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Data desmame:',
-                  style: FlutterFlowTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                ),
-                Text(
-                  dateTimeFormat(
-                    "dd/MM/yyyy",
-                    prontuarioAnimalAnimaisProdutoresRecord.dtDesmame!,
-                    locale: FFLocalizations.of(context).languageCode,
-                  ),
-                  style: FlutterFlowTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FontWeight.bold,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                        letterSpacing: 0.0,
-                        fontWeight: FontWeight.bold,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                ),
-              ],
-            ),
-        ],
-      ),
-    );
-  }
-
-  /// Ações sanitárias DESTE animal, do tipo pedido, limitadas a 3 (mesmo
-  /// `limit` da query antiga). O animal é comparado pelo caminho da referência,
-  /// que é o que a ação guarda no ObjectBox.
   List<AcaoSanitarioEntity> _sanitariasDoAnimal(
       List<AcaoSanitarioEntity>? todas, String tipoAcao) {
     final caminhoAnimal = widget.uidAnimaisProdutores?.path;
@@ -2649,110 +1851,61 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (_respostaNet ?? true)
-                    Container(
-                      width: 500.0,
-                      constraints: BoxConstraints(
-                        maxWidth: 570.0,
-                      ),
-                      margin: EdgeInsetsDirectional.fromSTEB(
-                          12.0, 10.0, 12.0, 10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16.0),
-                        boxShadow: AppTokens.softShadow(context),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(12.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _rotuloNomeBrinco(context,
-                                prontuarioAnimalAnimaisProdutoresRecord),
-                            Divider(
-                              height: 2.0,
-                              thickness: 1.0,
-                              color: Color(0xFFE5E7EB),
-                            ),
-                            _tituloInfoGerais(context),
-                            Divider(
-                              height: 2.0,
-                              thickness: 1.0,
-                              color: Color(0xFFE5E7EB),
-                            ),
-                            _listaInfoGerais(context,
-                                prontuarioAnimalAnimaisProdutoresRecord),
-                            Divider(
-                              height: 2.0,
-                              thickness: 1.0,
-                              color: Color(0xFFE5E7EB),
-                            ),
-                            _tituloReproducao(context),
-                            Divider(
-                              height: 2.0,
-                              thickness: 1.0,
-                              color: Color(0xFFE5E7EB),
-                            ),
-                            _listaReproducao(context,
-                                prontuarioAnimalAnimaisProdutoresRecord),
-                          ],
-                        ),
+                  // Um bloco so: os ramos online e offline eram identicos —
+                  // heranca do FlutterFlow, de quando o online lia do
+                  // Firestore e o offline do estado local. Hoje os dois leem
+                  // do ObjectBox.
+                  Container(
+                    width: 500.0,
+                    constraints: BoxConstraints(
+                      maxWidth: 570.0,
+                    ),
+                    margin:
+                        EdgeInsetsDirectional.fromSTEB(12.0, 10.0, 12.0, 10.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16.0),
+                      boxShadow: AppTokens.softShadow(context),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _rotuloNomeBrinco(
+                              context, prontuarioAnimalAnimaisProdutoresRecord),
+                          Divider(
+                            height: 2.0,
+                            thickness: 1.0,
+                            color: Color(0xFFE5E7EB),
+                          ),
+                          _tituloInfoGerais(context),
+                          Divider(
+                            height: 2.0,
+                            thickness: 1.0,
+                            color: Color(0xFFE5E7EB),
+                          ),
+                          _listaInfoGerais(
+                              context, prontuarioAnimalAnimaisProdutoresRecord),
+                          Divider(
+                            height: 2.0,
+                            thickness: 1.0,
+                            color: Color(0xFFE5E7EB),
+                          ),
+                          _tituloReproducao(context),
+                          Divider(
+                            height: 2.0,
+                            thickness: 1.0,
+                            color: Color(0xFFE5E7EB),
+                          ),
+                          _listaReproducao(
+                              context, prontuarioAnimalAnimaisProdutoresRecord),
+                        ],
                       ),
                     ),
-                  if (!_respostaNet!)
-                    Container(
-                      width: 500.0,
-                      constraints: BoxConstraints(
-                        maxWidth: 570.0,
-                      ),
-                      margin: EdgeInsetsDirectional.fromSTEB(
-                          12.0, 10.0, 12.0, 10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16.0),
-                        boxShadow: AppTokens.softShadow(context),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(12.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _rotuloNomeBrinco2(context,
-                                prontuarioAnimalAnimaisProdutoresRecord),
-                            Divider(
-                              height: 2.0,
-                              thickness: 1.0,
-                              color: Color(0xFFE5E7EB),
-                            ),
-                            _tituloInfoGerais2(context),
-                            Divider(
-                              height: 2.0,
-                              thickness: 1.0,
-                              color: Color(0xFFE5E7EB),
-                            ),
-                            _listaInfoGerais2(context,
-                                prontuarioAnimalAnimaisProdutoresRecord),
-                            Divider(
-                              height: 2.0,
-                              thickness: 1.0,
-                              color: Color(0xFFE5E7EB),
-                            ),
-                            _tituloReproducao2(context),
-                            Divider(
-                              height: 2.0,
-                              thickness: 1.0,
-                              color: Color(0xFFE5E7EB),
-                            ),
-                            _listaReproducao2(context,
-                                prontuarioAnimalAnimaisProdutoresRecord),
-                          ],
-                        ),
-                      ),
-                    ),
+                  ),
                   _conteudo(context),
                 ],
               ),
