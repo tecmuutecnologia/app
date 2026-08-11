@@ -81,14 +81,6 @@ class OfflineFirstSyncGateway implements SyncGateway {
 
     if (tecnico == null) return const DestinoCompletarPerfil();
 
-    // Aquecimento de cache do Firestore para as telas seguintes.
-    await queryPropriedadesRecordOnce(parent: tecnico.reference);
-    await queryAcoesRecordOnce(parent: tecnico.reference);
-    await queryResumoDaVisitaRecordOnce(
-      queryBuilder: (r) => r.where('uidTecnico', isEqualTo: tecnico.reference),
-    );
-    await queryTipoAcoesRecordOnce();
-
     return const DestinoDashboardTecnico();
   }
 }
