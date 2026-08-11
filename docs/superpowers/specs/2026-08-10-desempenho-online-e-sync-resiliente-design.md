@@ -276,15 +276,21 @@ passando: `lastModified` entra no payload de escrita, não no `updateFromFiresto
 Os itens 5, 6 e 7 são substituição de fonte de dados e remoção de código; são
 cobertos pelos testes de widget existentes e pelo gate de análise.
 
-## Índices do Firestore
+## Escopo do pull e índices do Firestore
 
-O pull do ramo do técnico é um filtro de intervalo em campo único
-(`lastModified`), atendido pelo índice automático de campo único.
+O pull incremental roda **apenas em aparelho de técnico**. A referência do
+técnico é remontada do ObjectBox casando `uidPerson` com o usuário logado; em
+aparelho de produtor isso devolve nulo e o pull vira no-op.
 
-O pull do ramo do produtor combina `where('uidTecnicoPropriedade', isEqualTo: …)`
-com o intervalo em `lastModified`, o que exige **índice composto**. Ele precisa ser
-criado antes de a versão ir para produção; o Firestore devolve o link de criação
-na mensagem de erro da primeira execução.
+Essa restrição não é só de custo. O cache de um produtor também contém o
+documento do técnico dele: um pull que pegasse "o primeiro técnico da box"
+baixaria o rebanho inteiro daquele técnico, incluindo animais de outros
+produtores. O produtor continua servido pelo download completo, que já filtra
+por propriedade via `alvosAnimaisProdutor`.
+
+Consequência para índices: as duas queries do pull são filtro de intervalo em
+campo único (`lastModified`), atendidas pelo índice automático de campo único.
+**Nenhum índice composto precisa ser criado.**
 
 ## Fora de escopo
 
