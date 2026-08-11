@@ -44,13 +44,6 @@ Future<void> bootstrap() async {
 
   await initFirebase();
 
-  // TEMPORÁRIO (diagnóstico): o SDK nativo do Firestore passa a logar TODA
-  // query/listen em logcat (tag `Firestore`). É a única forma de garantir que
-  // nenhuma leitura de rede escapa, independentemente do call site.
-  if (kDebugMode) {
-    FirebaseFirestore.setLoggingEnabled(true);
-  }
-
   // Inicializa ObjectBox para armazenamento offline-first (apenas em plataformas nativas)
   if (!kIsWeb) {
     await ObjectBoxAuthHelper.initializeOfflineFirst();

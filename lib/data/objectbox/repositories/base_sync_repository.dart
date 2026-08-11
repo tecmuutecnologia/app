@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:objectbox/objectbox.dart';
 
-import '../../../core/diagnostics/query_tracer.dart';
-
 import '../../../core/result/result.dart';
 import '../entities/syncable_entity.dart';
 import '../offline_first_sync_service.dart';
@@ -50,31 +48,27 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
   // ---------------------------------------------------------------------------
 
   /// Busca pelo ID local do ObjectBox.
-  E? getById(int id) =>
-      QueryTracer.obx('$runtimeType.getById($id)', () => box.get(id));
+  E? getById(int id) => box.get(id);
 
   /// Retorna todas as entidades (incluindo soft-deleted).
-  List<E> getAll() =>
-      QueryTracer.obx('$runtimeType.getAll', () => box.getAll());
+  List<E> getAll() => box.getAll();
 
   /// Conta o total de entidades.
-  int count() => QueryTracer.obx('$runtimeType.count', () => box.count());
+  int count() => box.count();
 
   /// Entidades com mudanças locais pendentes de sincronização.
   ///
   /// Implementação padrão por varredura em memória; subclasses podem sobrescrever
   /// com uma query indexada (`EntityName_.needsSync.equals(true)`) para datasets
   /// grandes.
-  List<E> getPendingSync() => QueryTracer.obx('$runtimeType.getPendingSync',
-      () => box.getAll().where((e) => e.needsSync).toList());
+  List<E> getPendingSync() => box.getAll().where((e) => e.needsSync).toList();
 
   /// Entidades cujo documento pai no Firestore é [parentPath].
   ///
   /// Implementação padrão por varredura em memória; subclasses podem sobrescrever
   /// com uma query indexada (`EntityName_.parentPath.equals(parentPath)`).
-  List<E> getByParentPath(String parentPath) => QueryTracer.obx(
-      '$runtimeType.getByParentPath(scan) $parentPath',
-      () => box.getAll().where((e) => e.parentPath == parentPath).toList());
+  List<E> getByParentPath(String parentPath) =>
+      box.getAll().where((e) => e.parentPath == parentPath).toList();
 
   /// Persiste a entidade localmente e retorna seu ID.
   int put(E entity) => box.put(entity);

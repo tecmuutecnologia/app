@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import '../../../core/diagnostics/query_tracer.dart';
 import '../../../core/result/result.dart';
 import '../objectbox_service.dart';
 import '../entities/index.dart';
@@ -58,13 +57,10 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
 
   /// Obtém todos os animais de uma propriedade (local).
   List<AnimalEntity> getAnimaisByPropriedade(String propriedadePath) {
-    return QueryTracer.obx(
-        'Animal.getAnimaisByPropriedade $propriedadePath',
-        () => box
-            .query(
-                AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
-            .build()
-            .find());
+    return box
+        .query(AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
+        .build()
+        .find();
   }
 
   /// True se já existe um animal ATIVO (não descartado, não soft-deletado) na
@@ -95,12 +91,10 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
 
   /// Obtém um animal pelo ID do Firestore.
   AnimalEntity? getByFirestoreId(String firestoreId) {
-    return QueryTracer.obx(
-        'Animal.getByFirestoreId',
-        () => box
-            .query(AnimalEntity_.firestoreId.equals(firestoreId))
-            .build()
-            .findFirst());
+    return box
+        .query(AnimalEntity_.firestoreId.equals(firestoreId))
+        .build()
+        .findFirst();
   }
 
   /// Obtém um animal criado offline pela sua identidade local (uidAnimalOffline).
@@ -114,7 +108,6 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
 
   /// Busca animais pelo nome ou brinco.
   List<AnimalEntity> search(String query, {String? propriedadePath}) {
-    QueryTracer.stream('Animal.search("$query")');
     final queryLower = query.toLowerCase();
 
     final builder = propriedadePath != null
@@ -136,12 +129,10 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
 
   /// Stream de animais de uma propriedade (reatividade local do ObjectBox).
   Stream<List<AnimalEntity>> watchAnimaisByPropriedade(String propriedadePath) {
-    QueryTracer.stream('Animal.watchAnimaisByPropriedade $propriedadePath');
     return box
         .query(AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
         .watch(triggerImmediately: true)
-        .map((query) => QueryTracer.obx(
-            'Animal.watchAnimaisByPropriedade·evento', () => query.find()));
+        .map((query) => query.find());
   }
 
   /// Stream de todos os animais do aparelho (reatividade local do ObjectBox).
@@ -153,13 +144,10 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
 
   /// Conta animais por propriedade.
   int countByPropriedade(String propriedadePath) {
-    return QueryTracer.obx(
-        'Animal.countByPropriedade',
-        () => box
-            .query(
-                AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
-            .build()
-            .count());
+    return box
+        .query(AnimalEntity_.uidTecnicoPropriedadePath.equals(propriedadePath))
+        .build()
+        .count();
   }
 
   /// Animais pendentes de sincronização (query indexada).
