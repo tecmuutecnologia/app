@@ -176,9 +176,14 @@ class SyncProgressView extends StatelessWidget {
 
   Widget _baixando(BuildContext context, SyncBaixando e) {
     final detalhes = <String>[];
-    if (e.temContador) {
+    if (e.temTotal) {
       detalhes.add('${_milhar(e.atual!)} de ${_milhar(e.total!)}');
-      if (e.ritmo != null) detalhes.add('~${e.ritmo!.round()}/s');
+    } else if (e.temContador) {
+      // Sem total, o numero que sobe e o que prova que nada travou.
+      detalhes.add('${_milhar(e.atual!)} baixados');
+    }
+    if (e.temContador && e.ritmo != null) {
+      detalhes.add('~${e.ritmo!.round()}/s');
     }
 
     return Column(
@@ -187,10 +192,12 @@ class SyncProgressView extends StatelessWidget {
       children: [
         _vaca(),
         const SizedBox(height: 16),
-        const Text(
-          'Preparando seus dados',
+        Text(
+          // O rotulo da etapa ja diz o que esta acontecendo agora; o texto fixo
+          // ficava minutos na tela dizendo "preparando" durante o download.
+          e.rotulo,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
               color: Colors.white, fontSize: 22, fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 24),
@@ -200,18 +207,22 @@ class SyncProgressView extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: LinearProgressIndicator(
-                  value: e.progresso,
+                  // `null` anima: sem total conhecido, uma barra num valor fixo
+                  // e indistinguivel de uma barra travada.
+                  value: e.indeterminado ? null : e.progresso,
                   minHeight: 8,
                   backgroundColor: Colors.white24,
                   valueColor: const AlwaysStoppedAnimation(Colors.white),
                 ),
               ),
             ),
-            const SizedBox(width: 12),
-            Text(
-              '${(e.progresso * 100).round()}%',
-              style: const TextStyle(color: Colors.white, fontSize: 14),
-            ),
+            if (!e.indeterminado) ...[
+              const SizedBox(width: 12),
+              Text(
+                '${(e.progresso * 100).round()}%',
+                style: const TextStyle(color: Colors.white, fontSize: 14),
+              ),
+            ],
           ],
         ),
         const SizedBox(height: 16),

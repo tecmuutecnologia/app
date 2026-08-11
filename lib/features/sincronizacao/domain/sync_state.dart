@@ -67,9 +67,22 @@ class SyncBaixando extends SyncState {
   final double? ritmo;
   final Duration? eta;
 
-  /// Etapas curtas (um documento) nao tem contador — mostrar numero nelas so
-  /// produziria um valor piscando.
-  bool get temContador => atual != null && total != null && total! > 0;
+  /// Ha um numero de registros baixados para mostrar.
+  ///
+  /// Nao exige `total`: o contador sozinho ja e o sinal mais forte de que o
+  /// download nao travou. Antes exigia os dois, e quando o total faltava a tela
+  /// escondia contador e ritmo — ficava minutos imovel, parecendo congelada.
+  ///
+  /// Etapas curtas (um documento) reportam progresso sem `atual`, entao seguem
+  /// sem contador: mostrar numero nelas so produziria um valor piscando.
+  bool get temContador => atual != null && atual! > 0;
+
+  /// Da para dizer "X de Y". Sem isto, mostra so o X.
+  bool get temTotal => temContador && total != null && total! > 0;
+
+  /// Sem total conhecido, a barra deve animar em vez de ficar num valor fixo —
+  /// e o gesto padrao para "trabalhando, duracao desconhecida".
+  bool get indeterminado => !temTotal;
 }
 
 class SyncErro extends SyncState {
@@ -84,8 +97,7 @@ class SyncErro extends SyncState {
   final String mensagem;
 
   bool get podeContinuarAssimMesmo =>
-      tipo == SyncErroTipo.falhaDownload ||
-      tipo == SyncErroTipo.cotaExcedida;
+      tipo == SyncErroTipo.falhaDownload || tipo == SyncErroTipo.cotaExcedida;
 }
 
 class SyncConcluido extends SyncState {

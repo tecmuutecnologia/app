@@ -18,13 +18,13 @@ class OfflineFirstSyncGateway implements SyncGateway {
       ObjectBoxService.instance.animalBox.count() > 0;
 
   @override
-  Stream<SyncProgress> get progressStream =>
-      OfflineFirstSyncService.isInitialized
-          ? OfflineFirstSyncService.instance.progressStream
-          // Na web o ObjectBox nao sobe e o servico nunca e inicializado; sem
-          // esta guarda o getter `instance` lancaria StateError e a tela ficaria
-          // presa em "Preparando seus dados".
-          : const Stream<SyncProgress>.empty();
+  Stream<SyncProgress> get progressStream => OfflineFirstSyncService
+          .isInitialized
+      ? OfflineFirstSyncService.instance.progressStream
+      // Na web o ObjectBox nao sobe e o servico nunca e inicializado; sem
+      // esta guarda o getter `instance` lancaria StateError e a tela ficaria
+      // presa em "Preparando seus dados".
+      : const Stream<SyncProgress>.empty();
 
   @override
   SyncProgress? get ultimoProgresso => OfflineFirstSyncService.isInitialized

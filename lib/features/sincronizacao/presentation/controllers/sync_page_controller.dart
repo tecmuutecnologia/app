@@ -14,6 +14,7 @@ import '../../domain/sync_state.dart';
 class SyncPageController extends Notifier<SyncState> {
   StreamSubscription<SyncProgress>? _inscricao;
   final SyncRateEstimator _estimador = SyncRateEstimator();
+
   /// Nulo = a rota nao informou; o gateway descobre.
   SyncPapel? _papel;
 

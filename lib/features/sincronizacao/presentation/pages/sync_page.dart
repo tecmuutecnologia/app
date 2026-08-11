@@ -91,8 +91,7 @@ class _SyncPageState extends ConsumerState<SyncPage> {
         return router.namedLocation(
           InicioPropriedadeProdutorPage.routeName,
           queryParameters: {
-            'nomePropriedade':
-                serializeParam(p?.displayName, ParamType.String),
+            'nomePropriedade': serializeParam(p?.displayName, ParamType.String),
             'uidPropriedade':
                 serializeParam(p?.reference, ParamType.DocumentReference),
             'uidTecnico':

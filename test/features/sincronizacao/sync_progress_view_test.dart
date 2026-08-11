@@ -198,4 +198,62 @@ void main() {
       expect(find.textContaining(RegExp(r'\d[\d.]* de \d[\d.]*')), findsNothing);
     });
   });
+
+  testWidgets('sem total, mostra o contador de baixados e o ritmo',
+      (tester) async {
+    // O caso que fazia a tela parecer travada: durante milhares de registros a
+    // view escondia contador e ritmo, e nada se mexia por minutos.
+    await montar(
+      tester,
+      const SyncBaixando(
+        etapa: SyncEtapa.acoes,
+        rotulo: 'Ações e tratamentos',
+        progresso: 0.70,
+        atual: 4820,
+        ritmo: 180,
+      ),
+    );
+
+    expect(find.textContaining('4.820 baixados'), findsOneWidget);
+    expect(find.textContaining('~180/s'), findsOneWidget);
+  });
+
+  testWidgets('sem total, a barra fica indeterminada e some a porcentagem',
+      (tester) async {
+    await montar(
+      tester,
+      const SyncBaixando(
+        etapa: SyncEtapa.acoes,
+        rotulo: 'Ações e tratamentos',
+        progresso: 0.70,
+        atual: 4820,
+      ),
+    );
+
+    final barra = tester.widget<LinearProgressIndicator>(
+      find.byType(LinearProgressIndicator),
+    );
+    expect(barra.value, isNull);
+    expect(find.textContaining('70%'), findsNothing);
+  });
+
+  testWidgets('com total, a barra usa o valor e mostra a porcentagem',
+      (tester) async {
+    await montar(
+      tester,
+      const SyncBaixando(
+        etapa: SyncEtapa.animais,
+        rotulo: 'Animais',
+        progresso: 0.65,
+        atual: 1240,
+        total: 3000,
+      ),
+    );
+
+    final barra = tester.widget<LinearProgressIndicator>(
+      find.byType(LinearProgressIndicator),
+    );
+    expect(barra.value, 0.65);
+    expect(find.textContaining('65%'), findsOneWidget);
+  });
 }
