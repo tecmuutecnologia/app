@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../data/objectbox/entities/index.dart';
 import '../../../core/di/providers.dart';
+import '../../../domain/animais/classificacao_animal.dart';
 
 /// Lista reativa de animais de uma propriedade, lida do ObjectBox via
 /// `AnimalRepository` (offline-first), filtrando soft-deletes.
@@ -29,5 +30,24 @@ final animaisByGrupoProvider =
         (animais) => animais
             .where((a) => !a.isDeleted && a.grupoAnimal == args.grupo)
             .toList(),
+      );
+});
+
+/// Quantidade de animais ativos do técnico, lida do ObjectBox.
+///
+/// Antes vinha de um `.snapshots()` do Firestore com `limit: 500` — um stream
+/// ao vivo de até 500 documentos para exibir um número que já estava local.
+///
+/// Sem `family`: o cache local contém apenas os animais do técnico logado,
+/// então "todos" já é o rebanho dele.
+final animaisAtivosCountProvider = StreamProvider<int>((ref) {
+  final repo = ref.watch(animalRepositoryProvider);
+  return repo.watchTodos().map(
+        (animais) => animais
+            .where((a) =>
+                !a.isDeleted &&
+                !ehDescarte(a.status) &&
+                a.grupoAnimal != 'Sêmens')
+            .length,
       );
 });

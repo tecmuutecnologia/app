@@ -1,13 +1,12 @@
 import 'package:tecmuu/data/objectbox/widgets/objectbox_debug_menu.dart';
-import '/domain/animais/classificacao_animal.dart';
 
 import '/core/auth/firebase_auth/auth_util.dart';
-import '/data/backend.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_util.dart';
+import '/features/animais/application/animais_providers.dart';
 import '/core/ui/instant_timer.dart';
 import '/core/services/index.dart' as actions;
 import '/data/objectbox/entities/index.dart';
@@ -311,31 +310,28 @@ class _DashboardTecnicoPageState extends ConsumerState<DashboardTecnicoPage>
 
   /// Card de estatística de animais ativos.
   Widget _buildAnimaisAtivosStatCard(TecnicoEntity tecnicoRecord) {
-    return StreamBuilder<List<AnimaisProdutoresRecord>>(
-      stream: queryAnimaisProdutoresRecord(parent: tecnicoRecord.docRef),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const DashboardStatCardWithStream(
-            valueWidget: AppLoadingIndicator(size: 30.0),
-            label: 'Animais ativos',
-            icon: Icons.pets_rounded,
-            accent: AppTokens.secondary,
-          );
-        }
-
-        final animaisAtivos = snapshot.data!
-            .where(
-                (e) => (!ehDescarte(e.status)) && (e.grupoAnimal != 'Sêmens'))
-            .toList()
-            .length;
-
-        return DashboardStatCard(
-          value: animaisAtivos.toString(),
-          label: 'Animais ativos',
-          icon: Icons.pets_rounded,
-          accent: AppTokens.secondary,
-        );
-      },
+    // Lido do ObjectBox: antes era um snapshots() do Firestore com limit 500,
+    // um stream ao vivo de ate 500 documentos para exibir um numero.
+    final contagem = ref.watch(animaisAtivosCountProvider);
+    return contagem.when(
+      loading: () => const DashboardStatCardWithStream(
+        valueWidget: AppLoadingIndicator(size: 30.0),
+        label: 'Animais ativos',
+        icon: Icons.pets_rounded,
+        accent: AppTokens.secondary,
+      ),
+      error: (_, __) => const DashboardStatCard(
+        value: '—',
+        label: 'Animais ativos',
+        icon: Icons.pets_rounded,
+        accent: AppTokens.secondary,
+      ),
+      data: (n) => DashboardStatCard(
+        value: n.toString(),
+        label: 'Animais ativos',
+        icon: Icons.pets_rounded,
+        accent: AppTokens.secondary,
+      ),
     );
   }
 

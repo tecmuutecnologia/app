@@ -144,6 +144,13 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
             'Animal.watchAnimaisByPropriedade·evento', () => query.find()));
   }
 
+  /// Stream de todos os animais do aparelho (reatividade local do ObjectBox).
+  ///
+  /// Sem filtro de propriedade de propósito: o cache local contém apenas os
+  /// animais do técnico logado, então isto já é o rebanho dele.
+  Stream<List<AnimalEntity>> watchTodos() =>
+      box.query().watch(triggerImmediately: true).map((q) => q.find());
+
   /// Conta animais por propriedade.
   int countByPropriedade(String propriedadePath) {
     return QueryTracer.obx(
