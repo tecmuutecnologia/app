@@ -366,6 +366,9 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   Widget _listaInseminacoes(BuildContext context) {
     return SingleChildScrollView(
+      // A pagina inteira ja rola; sem isto cada secao vira sua propria
+      // area de rolagem e o dedo prende dentro dela.
+      physics: const NeverScrollableScrollPhysics(),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -449,6 +452,9 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   Widget _listaAcoes(BuildContext context) {
     return SingleChildScrollView(
+      // A pagina inteira ja rola; sem isto cada secao vira sua propria
+      // area de rolagem e o dedo prende dentro dela.
+      physics: const NeverScrollableScrollPhysics(),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -539,6 +545,9 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   Widget _listaAbortos(BuildContext context) {
     return SingleChildScrollView(
+      // A pagina inteira ja rola; sem isto cada secao vira sua propria
+      // area de rolagem e o dedo prende dentro dela.
+      physics: const NeverScrollableScrollPhysics(),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -622,6 +631,9 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   Widget _listaDiagGestacao(BuildContext context) {
     return SingleChildScrollView(
+      // A pagina inteira ja rola; sem isto cada secao vira sua propria
+      // area de rolagem e o dedo prende dentro dela.
+      physics: const NeverScrollableScrollPhysics(),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -705,6 +717,9 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   Widget _listaCios(BuildContext context) {
     return SingleChildScrollView(
+      // A pagina inteira ja rola; sem isto cada secao vira sua propria
+      // area de rolagem e o dedo prende dentro dela.
+      physics: const NeverScrollableScrollPhysics(),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -788,6 +803,9 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   Widget _listaVacinas(BuildContext context) {
     return SingleChildScrollView(
+      // A pagina inteira ja rola; sem isto cada secao vira sua propria
+      // area de rolagem e o dedo prende dentro dela.
+      physics: const NeverScrollableScrollPhysics(),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -870,6 +888,9 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   Widget _listaExames(BuildContext context) {
     return SingleChildScrollView(
+      // A pagina inteira ja rola; sem isto cada secao vira sua propria
+      // area de rolagem e o dedo prende dentro dela.
+      physics: const NeverScrollableScrollPhysics(),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -952,6 +973,9 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   Widget _listaDoencas(BuildContext context) {
     return SingleChildScrollView(
+      // A pagina inteira ja rola; sem isto cada secao vira sua propria
+      // area de rolagem e o dedo prende dentro dela.
+      physics: const NeverScrollableScrollPhysics(),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
@@ -1144,6 +1168,9 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     return ListView(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
+      // A pagina inteira ja rola; sem isto a lista vira sua propria area de
+      // rolagem e o dedo prende dentro dela.
+      physics: const NeverScrollableScrollPhysics(),
       scrollDirection: Axis.vertical,
       children: [
         _linhaMae(context, prontuarioAnimalAnimaisProdutoresRecord),
@@ -1193,6 +1220,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
       padding: EdgeInsets.zero,
       primary: false,
       shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       scrollDirection: Axis.vertical,
       children: [
         _linhaUltimoParto(context, prontuarioAnimalAnimaisProdutoresRecord),
@@ -1913,6 +1941,9 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     return ListView(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
+      // A pagina inteira ja rola; sem isto a lista vira sua propria area de
+      // rolagem e o dedo prende dentro dela.
+      physics: const NeverScrollableScrollPhysics(),
       scrollDirection: Axis.vertical,
       children: [
         _linhaMae2(context, prontuarioAnimalAnimaisProdutoresRecord),
@@ -1962,6 +1993,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
       padding: EdgeInsets.zero,
       primary: false,
       shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       scrollDirection: Axis.vertical,
       children: [
         _linhaUltimoParto2(context, prontuarioAnimalAnimaisProdutoresRecord),
