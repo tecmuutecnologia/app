@@ -1814,7 +1814,9 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
             key: scaffoldKey,
             backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
             appBar: PreferredSize(
-              preferredSize: Size.fromHeight(100.0),
+              // 80 em vez de 100: o titulo ocupava so a faixa de cima e
+              // sobravam ~20 de gradiente vazio antes da curva.
+              preferredSize: Size.fromHeight(80.0),
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
