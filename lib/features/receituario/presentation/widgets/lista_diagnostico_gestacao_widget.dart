@@ -1,3 +1,4 @@
+import '/domain/animais/ordenacao_animal.dart';
 import '/data/backend.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -260,24 +261,13 @@ class _ListaDiagnosticoGestacaoWidgetState
     );
   }
 
-  int _compararAnimais(_AnimalComInseminacao a, _AnimalComInseminacao b) {
-    // Primeiro tenta ordenar por brinco
-    if (a.brincoAnimal != null &&
-        a.brincoAnimal != -1 &&
-        a.brincoAnimal != 0 &&
-        b.brincoAnimal != null &&
-        b.brincoAnimal != -1 &&
-        b.brincoAnimal != 0) {
-      return a.brincoAnimal!.compareTo(b.brincoAnimal!);
-    }
-    // Se apenas um tem brinco, ele vem primeiro
-    if (a.brincoAnimal != null && a.brincoAnimal != -1 && a.brincoAnimal != 0)
-      return -1;
-    if (b.brincoAnimal != null && b.brincoAnimal != -1 && b.brincoAnimal != 0)
-      return 1;
-    // Se nenhum tem brinco, ordena por nome
-    return a.nomeAnimal.toLowerCase().compareTo(b.nomeAnimal.toLowerCase());
-  }
+  int _compararAnimais(_AnimalComInseminacao a, _AnimalComInseminacao b) =>
+      compararAnimais(
+        brincoA: a.brincoAnimal,
+        nomeA: a.nomeAnimal,
+        brincoB: b.brincoAnimal,
+        nomeB: b.nomeAnimal,
+      );
 
   Widget _buildAnimalListFromData(List<_AnimalComInseminacao> animais) {
     return ListView.builder(
@@ -390,16 +380,12 @@ class _ListaDiagnosticoGestacaoWidgetState
               final dtUltimaInseminacaoAnimal =
                   animalData['dtUltimaInseminacao'] as String? ?? '';
 
-              String displayName;
-              if (nomeAnimal.isNotEmpty &&
-                  brincoAnimal != null &&
-                  brincoAnimal != -1 &&
-                  brincoAnimal != 0) {
-                displayName = '$brincoAnimal - $nomeAnimal';
-              } else if (brincoAnimal != null &&
-                  brincoAnimal != -1 &&
-                  brincoAnimal != 0) {
-                displayName = brincoAnimal.toString();
+              // Mesmo predicado da ordenacao: 0 e -1 nao sao brinco.
+              final String displayName;
+              if (temBrinco(brincoAnimal)) {
+                displayName = nomeAnimal.isNotEmpty
+                    ? '$brincoAnimal - $nomeAnimal'
+                    : brincoAnimal.toString();
               } else {
                 displayName = nomeAnimal;
               }

@@ -1,4 +1,5 @@
 // Automatic FlutterFlow imports
+import '/domain/animais/ordenacao_animal.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/core/ui/flutter_flow_util.dart';
@@ -162,34 +163,13 @@ Future<void> createReceituario(
           }
         });
       } else {
-        // Ordena por brincoAnimalOrder (ordem crescente) e depois por nomeAnimal
-        sortedTratamentos.sort((a, b) {
-          var dataA = a;
-          var dataB = b;
-
-          // Primeiro tenta ordenar por brincoAnimalOrder
-          int? orderA = dataA['brincoAnimalOrder'] as int?;
-          int? orderB = dataB['brincoAnimalOrder'] as int?;
-
-          // Se ambos têm brincoAnimalOrder válido, ordena por ele
-          if (orderA != null &&
-              orderA != 0 &&
-              orderA != -1 &&
-              orderB != null &&
-              orderB != 0 &&
-              orderB != -1) {
-            return orderA.compareTo(orderB);
-          }
-
-          // Se apenas um tem brincoAnimalOrder válido, ele vem primeiro
-          if (orderA != null && orderA != 0 && orderA != -1) return -1;
-          if (orderB != null && orderB != 0 && orderB != -1) return 1;
-
-          // Se nenhum tem brincoAnimalOrder válido, ordena por nome
-          String nomeA = (dataA['nomeAnimal'] ?? '').toString().toLowerCase();
-          String nomeB = (dataB['nomeAnimal'] ?? '').toString().toLowerCase();
-          return nomeA.compareTo(nomeB);
-        });
+        // Regra unica do dominio: brinco -> nome.
+        sortedTratamentos.sort((a, b) => compararAnimais(
+              brincoA: a['brincoAnimalOrder'] as int?,
+              nomeA: a['nomeAnimal']?.toString(),
+              brincoB: b['brincoAnimalOrder'] as int?,
+              nomeB: b['nomeAnimal']?.toString(),
+            ));
       }
 
       // Constrói a lista de tratamentos para a recomendação atual

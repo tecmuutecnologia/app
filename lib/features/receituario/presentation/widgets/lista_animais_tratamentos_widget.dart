@@ -1,5 +1,6 @@
 // ignore_for_file: unnecessary_null_comparison
 
+import '/domain/animais/ordenacao_animal.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
@@ -96,15 +97,20 @@ class _ListaAnimaisTratamentosWidgetState
             e.tipoAcao == widget.parameter1)
         .toList();
     lista.sort((a, b) {
+      // A data de inseminacao tem precedencia aqui (e a ordem clinica da
+      // visita); so no empate cai na regra geral brinco -> nome.
       final da = a.compararDtUltimaInseminacao;
       final db = b.compararDtUltimaInseminacao;
       if (da != null && db != null) {
         final c = da.compareTo(db);
         if (c != 0) return c;
       }
-      final c = a.brincoAnimalOrder.compareTo(b.brincoAnimalOrder);
-      if (c != 0) return c;
-      return (a.nomeAnimal ?? '').compareTo(b.nomeAnimal ?? '');
+      return compararAnimais(
+        brincoA: a.brincoAnimalOrder,
+        nomeA: a.nomeAnimal,
+        brincoB: b.brincoAnimalOrder,
+        nomeB: b.nomeAnimal,
+      );
     });
     return lista;
   }

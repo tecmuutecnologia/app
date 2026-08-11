@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '/domain/animais/ordenacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 
 import '/data/backend.dart';
@@ -89,17 +90,26 @@ class AnimalListWidget extends StatelessWidget {
     );
   }
 
+  /// Regra única do domínio (brinco -> nome), com a direção do toggle.
+  ///
+  /// Antes ordenava por `nomeBrincoConcat`, que e texto: brinco 390 vinha antes
+  /// de 428 por comparacao de caractere, o mesmo defeito das telas de lista.
+  int _compararAnimais(AnimalData a, AnimalData b) => compararAnimais(
+        brincoA: a.brincoAnimal,
+        nomeA: a.nomeAnimal,
+        brincoB: b.brincoAnimal,
+        nomeB: b.nomeAnimal,
+      );
+
   /// Mesma regra de ordenação do modo online, aplicada sobre `AnimalData`.
   void _ordenar(List<AnimalData> animais) {
     if (filterCategory == 'Novilhas') {
       animais.sort((a, b) {
+        // Novilhas seguem a ordem clinica: data de inseminacao primeiro, quem
+        // nao tem vai para o fim, e o empate cai na regra geral.
         final dateA = _parseInseminacaoDate(a.dtUltimaInseminacao);
         final dateB = _parseInseminacaoDate(b.dtUltimaInseminacao);
-        if (dateA == null && dateB == null) {
-          return a.nomeBrincoConcat
-              .toLowerCase()
-              .compareTo(b.nomeBrincoConcat.toLowerCase());
-        }
+        if (dateA == null && dateB == null) return _compararAnimais(a, b);
         if (dateA == null) return 1;
         if (dateB == null) return -1;
         final c = dateA.compareTo(dateB);
@@ -107,9 +117,7 @@ class AnimalListWidget extends StatelessWidget {
       });
     } else {
       animais.sort((a, b) {
-        final c = a.nomeBrincoConcat
-            .toLowerCase()
-            .compareTo(b.nomeBrincoConcat.toLowerCase());
+        final c = _compararAnimais(a, b);
         return ascending ? c : -c;
       });
     }
