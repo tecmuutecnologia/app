@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:objectbox/objectbox.dart';
 
+import '../../../core/diagnostics/query_tracer.dart';
+
 import '../../../core/result/result.dart';
 import '../entities/syncable_entity.dart';
 import '../offline_first_sync_service.dart';
@@ -48,27 +50,31 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
   // ---------------------------------------------------------------------------
 
   /// Busca pelo ID local do ObjectBox.
-  E? getById(int id) => box.get(id);
+  E? getById(int id) =>
+      QueryTracer.obx('$runtimeType.getById($id)', () => box.get(id));
 
   /// Retorna todas as entidades (incluindo soft-deleted).
-  List<E> getAll() => box.getAll();
+  List<E> getAll() =>
+      QueryTracer.obx('$runtimeType.getAll', () => box.getAll());
 
   /// Conta o total de entidades.
-  int count() => box.count();
+  int count() => QueryTracer.obx('$runtimeType.count', () => box.count());
 
   /// Entidades com mudanças locais pendentes de sincronização.
   ///
   /// Implementação padrão por varredura em memória; subclasses podem sobrescrever
   /// com uma query indexada (`EntityName_.needsSync.equals(true)`) para datasets
   /// grandes.
-  List<E> getPendingSync() => box.getAll().where((e) => e.needsSync).toList();
+  List<E> getPendingSync() => QueryTracer.obx('$runtimeType.getPendingSync',
+      () => box.getAll().where((e) => e.needsSync).toList());
 
   /// Entidades cujo documento pai no Firestore é [parentPath].
   ///
   /// Implementação padrão por varredura em memória; subclasses podem sobrescrever
   /// com uma query indexada (`EntityName_.parentPath.equals(parentPath)`).
-  List<E> getByParentPath(String parentPath) =>
-      box.getAll().where((e) => e.parentPath == parentPath).toList();
+  List<E> getByParentPath(String parentPath) => QueryTracer.obx(
+      '$runtimeType.getByParentPath(scan) $parentPath',
+      () => box.getAll().where((e) => e.parentPath == parentPath).toList());
 
   /// Persiste a entidade localmente e retorna seu ID.
   int put(E entity) => box.put(entity);
@@ -153,7 +159,19 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
   ///
   /// Público para que o `OfflineFirstSyncService` (que tem seu próprio laço de
   /// sync por-entidade) use o mesmo payload e não perca as referências.
-  Map<String, dynamic> firestorePayloadFor(E entity) => entity.toFirestore();
+  Map<String, dynamic> firestorePayloadFor(E entity) =>
+      carimbarLastModified(entity.toFirestore());
+
+  /// Acrescenta o carimbo de modificação ao payload, sem mutar o original.
+  ///
+  /// Existe porque `lastModified` é campo só local do ObjectBox: nenhum
+  /// `toFirestore()` o escrevia, e sem ele no documento o pull incremental não
+  /// teria sobre o que filtrar. O carimbo é do servidor para não depender do
+  /// relógio do aparelho, que em campo costuma estar errado.
+  static Map<String, dynamic> carimbarLastModified(
+    Map<String, dynamic> payload,
+  ) =>
+      {...payload, 'lastModified': FieldValue.serverTimestamp()};
 
   /// `true` se o CREATE/UPDATE desta entidade já é feito pelo laço por-entidade
   /// (`_syncModifiedX`) do [OfflineFirstSyncService] ao reconectar.

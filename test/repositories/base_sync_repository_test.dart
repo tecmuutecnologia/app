@@ -26,4 +26,31 @@ void main() {
       expect(BaseSyncRepository.isPurgeable(e), false);
     });
   });
+
+  group('BaseSyncRepository.carimbarLastModified', () {
+    test('acrescenta lastModified ao payload', () {
+      final payload =
+          BaseSyncRepository.carimbarLastModified({'nome': 'Mimosa'});
+      expect(payload.containsKey('lastModified'), true);
+    });
+
+    test('preserva os campos originais', () {
+      final payload = BaseSyncRepository.carimbarLastModified(
+          {'nome': 'Mimosa', 'peso': 3});
+      expect(payload['nome'], 'Mimosa');
+      expect(payload['peso'], 3);
+    });
+
+    test('nao muta o mapa recebido', () {
+      final original = <String, dynamic>{'nome': 'Mimosa'};
+      BaseSyncRepository.carimbarLastModified(original);
+      expect(original.containsKey('lastModified'), false);
+    });
+
+    test('sobrescreve lastModified preexistente com o carimbo do servidor', () {
+      final payload = BaseSyncRepository.carimbarLastModified(
+          {'lastModified': 'texto qualquer'});
+      expect(payload['lastModified'], isNot('texto qualquer'));
+    });
+  });
 }

@@ -13,6 +13,7 @@ import '../../core/sync/sync_etapa.dart';
 import '../../core/sync/sync_exceptions.dart';
 import '../../core/sync/upsert_referencia.dart';
 import 'objectbox_service.dart';
+import 'repositories/base_sync_repository.dart';
 import 'entities/index.dart';
 import '../../objectbox.g.dart' hide Query;
 
@@ -1036,7 +1037,7 @@ class OfflineFirstSyncService {
     if (prop.uidPersonProdutorPath != null) {
       data['uidPersonProdutor'] = _firestore.doc(prop.uidPersonProdutorPath!);
     }
-    return data;
+    return BaseSyncRepository.carimbarLastModified(data);
   }
 
   /// Sincroniza propriedades modificadas localmente. A propriedade nasce com um
@@ -1128,7 +1129,7 @@ class OfflineFirstSyncService {
     if (acao.uidPropriedadePath != null) {
       data['uidPropriedade'] = _firestore.doc(acao.uidPropriedadePath!);
     }
-    return data;
+    return BaseSyncRepository.carimbarLastModified(data);
   }
 
   /// Payload do animal para o Firestore, reanexando o vínculo com a propriedade
@@ -1141,7 +1142,7 @@ class OfflineFirstSyncService {
       data['uidTecnicoPropriedade'] =
           _firestore.doc(animal.uidTecnicoPropriedadePath!);
     }
-    return data;
+    return BaseSyncRepository.carimbarLastModified(data);
   }
 
   /// Sincroniza ações modificadas localmente
@@ -1286,13 +1287,14 @@ class OfflineFirstSyncService {
         // O entity guarda os caminhos; o Firestore espera DocumentReference.
         // Sem reanexar, as telas que filtram por `uidPropriedade` (indices
         // zootecnicos) nao encontrariam o documento.
-        Map<String, dynamic> payload(FinanceiroEntity e) => {
+        Map<String, dynamic> payload(FinanceiroEntity e) =>
+            BaseSyncRepository.carimbarLastModified({
               ...e.toFirestore(),
               if (e.uidPropriedadePath != null)
                 'uidPropriedade': _firestore.doc(e.uidPropriedadePath!),
               if (e.uidTecnicoPath != null)
                 'uidTecnico': _firestore.doc(e.uidTecnicoPath!),
-            };
+            });
 
         if (fin.firestoreId != null && fin.parentPath != null) {
           final docRef = _firestore.doc(
@@ -1326,7 +1328,8 @@ class OfflineFirstSyncService {
   }
 
   /// Reanexa as referências do tratamento (guardadas como caminho).
-  Map<String, dynamic> _payloadTratamento(TratamentoEntity t) => {
+  Map<String, dynamic> _payloadTratamento(TratamentoEntity t) =>
+      BaseSyncRepository.carimbarLastModified({
         ...t.toFirestore(),
         if (t.uidAnimalPath != null)
           'uidAnimal': _firestore.doc(t.uidAnimalPath!),
@@ -1337,10 +1340,11 @@ class OfflineFirstSyncService {
         if (t.compararDtUltimaInseminacao != null)
           'compararDtUltimaInseminacao':
               Timestamp.fromDate(t.compararDtUltimaInseminacao!),
-      };
+      });
 
   /// Reanexa referências e Timestamps que o entity guarda como caminho/data.
-  Map<String, dynamic> _payloadVisita(ResumoVisitaEntity v) => {
+  Map<String, dynamic> _payloadVisita(ResumoVisitaEntity v) =>
+      BaseSyncRepository.carimbarLastModified({
         ...v.toFirestore(),
         if (v.uidPropriedadePath != null)
           'uidPropriedade': _firestore.doc(v.uidPropriedadePath!),
@@ -1351,7 +1355,7 @@ class OfflineFirstSyncService {
         if (v.dtVisita != null) 'dtVisita': Timestamp.fromDate(v.dtVisita!),
         if (v.dtAssinatura != null)
           'dtAssinatura': Timestamp.fromDate(v.dtAssinatura!),
-      };
+      });
 
   /// Sincroniza visitas modificadas
   Future<void> _syncModifiedVisitas() async {
@@ -1434,7 +1438,9 @@ class OfflineFirstSyncService {
         await _executeQueuedCreate(op, docRef, data);
         break;
       case 'UPDATE':
-        if (data != null) await docRef.update(data);
+        if (data != null) {
+          await docRef.update(BaseSyncRepository.carimbarLastModified(data));
+        }
         break;
       case 'DELETE':
         await docRef.delete();
@@ -1473,7 +1479,7 @@ class OfflineFirstSyncService {
 
     final payload = current?.toFirestore() ?? snapshot;
     if (payload == null) return;
-    await docRef.set(payload);
+    await docRef.set(BaseSyncRepository.carimbarLastModified(payload));
 
     if (current != null && accessor != null) {
       current.firestoreId = docRef.id;
