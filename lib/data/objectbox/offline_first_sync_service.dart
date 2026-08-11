@@ -10,6 +10,7 @@ import '../../core/sync/janela_pull.dart';
 import '../../core/sync/queue_payload_codec.dart';
 import '../../core/sync/reconciliacao_animais.dart';
 import '../../core/sync/sync_checkpoint.dart';
+import '../../core/sync/total_estimado.dart';
 import '../../core/sync/sync_etapa.dart';
 import '../../core/sync/sync_exceptions.dart';
 import '../../core/sync/upsert_referencia.dart';
@@ -288,6 +289,7 @@ class OfflineFirstSyncService {
             _reportProgress(etapa, 'Financeiro e visitas');
             await _downloadFinanceiroEVisitas();
         }
+        _registrarContagemDaEtapa(etapa);
         _updateSyncMetadata(SyncCheckpoint.chaveDe(etapa), DateTime.now(),
             complete: true);
       }
@@ -618,19 +620,67 @@ class OfflineFirstSyncService {
   /// rebanho pelo caminho das propriedades dele, que o download anterior já
   /// gravou com o `parentPath` do técnico dono, e busca filtrando por
   /// propriedade: o que enxerga é o dele, não o rebanho inteiro do técnico.
-  /// Total de documentos da consulta, ou `null` se a contagem falhar.
+  /// Total da etapa segundo a última sincronização bem-sucedida.
   ///
-  /// O total alimenta APENAS a barra de progresso — a paginação em
-  /// `_baixarAnimaisPaginado` não depende dele. Antes, um `count()` que falhasse
-  /// derrubava o download inteiro de animais antes da primeira página: um
-  /// indicador cosmético matando a sincronização.
-  Future<int?> _contarOuNulo(Query<Map<String, dynamic>> consulta) async {
-    try {
-      return (await consulta.count().get()).count;
-    } catch (e) {
-      debugPrint('⚠️ count() indisponível, progresso indeterminado: $e');
-      return null;
-    }
+  /// Para as etapas sem contador no documento do técnico (ações), a estimativa
+  /// vem do que a execução anterior de fato baixou, guardado em
+  /// `SyncMetadataEntity.recordCount`. Na primeira sincronização de um aparelho
+  /// não há estimativa, e a barra fica indeterminada.
+  int? _totalEstimadoDaEtapa(SyncEtapa etapa) {
+    final marca = _objectBox.syncMetadataBox
+        .query(SyncMetadataEntity_.collectionName
+            .equals(SyncCheckpoint.chaveDe(etapa)))
+        .build()
+        .findFirst();
+    return totalEstimado(marca?.recordCount);
+  }
+
+  /// Quantos registros a etapa tem localmente agora. Vira a estimativa da
+  /// próxima sincronização.
+  int _contagemLocalDaEtapa(SyncEtapa etapa) => switch (etapa) {
+        SyncEtapa.animais => _objectBox.animalBox.count(),
+        SyncEtapa.acoes => _objectBox.acaoBox.count(),
+        SyncEtapa.propriedades => _objectBox.propriedadeBox.count(),
+        _ => 0,
+      };
+
+  /// Guarda a contagem da etapa recém-concluída, para a barra da próxima
+  /// sincronização ter um total sem precisar de `count()` no Firestore.
+  void _registrarContagemDaEtapa(SyncEtapa etapa) {
+    final quantidade = _contagemLocalDaEtapa(etapa);
+    if (quantidade <= 0) return;
+
+    final chave = SyncCheckpoint.chaveDe(etapa);
+    final linha = _objectBox.syncMetadataBox
+            .query(SyncMetadataEntity_.collectionName.equals(chave))
+            .build()
+            .findFirst() ??
+        SyncMetadataEntity(collectionName: chave);
+    linha.recordCount = quantidade;
+    _objectBox.syncMetadataBox.put(linha);
+  }
+
+  /// Total de animais do técnico, lido do documento que a etapa `tecnico` já
+  /// baixou — sem nenhuma ida à rede.
+  ///
+  /// Substitui o `count()` do Firestore, que era uma *aggregation query* com
+  /// cota própria: esgotada, ela derrubava o download inteiro de animais antes
+  /// da primeira página. O total alimenta APENAS a barra de progresso; a
+  /// paginação nunca dependeu dele.
+  ///
+  /// O contador é denormalizado (o app o mantém), então pode ter derivado do
+  /// valor real. Para barra de progresso isso basta: `progressoGlobal` já faz
+  /// `clamp(0,1)`, então subestimar não passa de 100% nem inverte a barra.
+  int? _totalAnimaisDoTecnico() {
+    final userId = _lastUserId ?? FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) return null;
+
+    final tecnico = _objectBox.tecnicoBox
+        .query(TecnicoEntity_.uidPerson.equals(userId))
+        .build()
+        .findFirst();
+
+    return totalEstimado(tecnico?.quantidadeAnimaisCadastrados);
   }
 
   Future<void> _downloadTodosAnimais(DocumentReference? tecnicoRef) async {
@@ -638,7 +688,10 @@ class OfflineFirstSyncService {
 
     if (tecnicoRef != null) {
       final colecao = tecnicoRef.collection('animaisProdutores');
-      final total = await _contarOuNulo(colecao);
+      // Contador do tecnico primeiro (mais fiel ao remoto); se estiver
+      // zerado, cai para o que a execucao anterior baixou.
+      final total =
+          _totalAnimaisDoTecnico() ?? _totalEstimadoDaEtapa(SyncEtapa.animais);
       totalAnimais = await _baixarAnimaisPaginado(
         colecao,
         tecnicoRef.path,
@@ -659,17 +712,10 @@ class OfflineFirstSyncService {
                   isEqualTo: _firestore.doc(alvo.propriedadePath)),
       };
 
-      // Soma o que der para contar; qualquer contagem que falhe torna o total
-      // desconhecido, e a barra fica indeterminada em vez de mentir.
-      int? total = 0;
-      for (final consulta in consultas.values) {
-        final parcial = await _contarOuNulo(consulta);
-        if (parcial == null) {
-          total = null;
-          break;
-        }
-        total = total! + parcial;
-      }
+      // Produtor nao tem contador proprio: o campo de quantidade vive no
+      // documento do TECNICO, e quem entra como produtor nao e dono dele. Sem
+      // estimativa, a barra fica indeterminada — que e o comportamento honesto.
+      const int? total = null;
 
       for (final entrada in consultas.entries) {
         try {
@@ -813,7 +859,7 @@ class OfflineFirstSyncService {
     if (tecnicoRef != null) {
       try {
         final colecao = tecnicoRef.collection('acoes');
-        final total = await _contarOuNulo(colecao);
+        final total = _totalEstimadoDaEtapa(SyncEtapa.acoes);
         DocumentSnapshot? ultimo;
 
         while (true) {
