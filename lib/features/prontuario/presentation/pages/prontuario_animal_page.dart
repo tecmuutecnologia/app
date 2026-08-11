@@ -88,6 +88,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
   Widget _buildCard8(
       BuildContext context, AcaoSanitarioEntity item, int index) {
     return LinhaProntuario(
+      identidade: IdentidadeSecao.doencas,
       data: item.dtAcaoFormatada ?? '',
       titulo: item.acao ?? '',
       detalhe: (item.obsVisita?.isEmpty ?? true) ? null : item.obsVisita,
@@ -97,6 +98,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
   Widget _buildCard7(
       BuildContext context, AcaoSanitarioEntity item, int index) {
     return LinhaProntuario(
+      identidade: IdentidadeSecao.exames,
       data: item.dtAcaoFormatada ?? '',
       titulo: item.acao ?? '',
       detalhe: (item.obsVisita?.isEmpty ?? true) ? null : item.obsVisita,
@@ -106,6 +108,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
   Widget _buildCard6(
       BuildContext context, AcaoSanitarioEntity item, int index) {
     return LinhaProntuario(
+      identidade: IdentidadeSecao.vacinas,
       data: item.dtAcaoFormatada ?? '',
       titulo: item.acao ?? '',
       detalhe: (item.obsVisita?.isEmpty ?? true) ? null : item.obsVisita,
@@ -114,6 +117,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   Widget _buildCard5(BuildContext context, AcoesRecord item, int index) {
     return LinhaProntuario(
+      identidade: IdentidadeSecao.cios,
       data: item.dataVisita,
       titulo: 'Fez cio',
       detalhe: null,
@@ -122,6 +126,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   Widget _buildCard4(BuildContext context, AcoesRecord item, int index) {
     return LinhaProntuario(
+      identidade: IdentidadeSecao.diagnosticos,
       data: item.dataVisita,
       titulo: item.acao,
       detalhe: null,
@@ -130,6 +135,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   Widget _buildCard3(BuildContext context, AcoesRecord item, int index) {
     return LinhaProntuario(
+      identidade: IdentidadeSecao.abortos,
       data: item.dtAborto,
       titulo: 'Aborto',
       detalhe: null,
@@ -138,6 +144,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   Widget _buildCard2(BuildContext context, AcoesRecord item, int index) {
     return LinhaProntuario(
+      identidade: IdentidadeSecao.acoes,
       data: item.dataVisita,
       titulo: item.acao,
       detalhe: item.obsVisita.isEmpty ? null : item.obsVisita,
@@ -183,6 +190,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   Widget _buildCard1(BuildContext context, AcoesRecord item, int index) {
     return LinhaProntuario(
+      identidade: IdentidadeSecao.inseminacoes,
       data: item.dataVisita,
       titulo: item.touroInseminacao.isNotEmpty ? item.touroInseminacao : 'IA',
       detalhe: item.dataPartoPrevisto.isEmpty
@@ -317,6 +325,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
   Widget _tituloInseminacoes(BuildContext context) {
     return TituloSecao(
       titulo: 'Inseminações',
+      identidade: IdentidadeSecao.inseminacoes,
       onVerMais: () async {
         context.pushNamed(
           PronInseminacoesPage.routeName,
@@ -375,16 +384,20 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               final acoes = snapshot.data!;
               if (acoes.isEmpty) return const SecaoVazia();
 
-              return ListView.builder(
+              return CorpoSecao(
+                  child: ListView.builder(
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
+                // A pagina inteira ja rola; sem isto cada secao vira sua
+                // propria area de rolagem e o dedo prende dentro da lista.
+                physics: const NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 itemCount: acoes.length,
                 itemBuilder: (context, listViewIndex) {
                   return _buildCard1(context,
                       acaoEntityToRecord(acoes[listViewIndex]), listViewIndex);
                 },
-              );
+              ));
             },
           ),
         ],
@@ -395,6 +408,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
   Widget _tituloAcoes(BuildContext context) {
     return TituloSecao(
       titulo: 'Ações',
+      identidade: IdentidadeSecao.acoes,
       onVerMais: () async {
         context.pushNamed(
           PronAcoesPage.routeName,
@@ -460,16 +474,20 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               final acoes = snapshot.data!;
               if (acoes.isEmpty) return const SecaoVazia();
 
-              return ListView.builder(
+              return CorpoSecao(
+                  child: ListView.builder(
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
+                // A pagina inteira ja rola; sem isto cada secao vira sua
+                // propria area de rolagem e o dedo prende dentro da lista.
+                physics: const NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 itemCount: acoes.length,
                 itemBuilder: (context, listViewIndex) {
                   return _buildCard2(context,
                       acaoEntityToRecord(acoes[listViewIndex]), listViewIndex);
                 },
-              );
+              ));
             },
           ),
         ],
@@ -480,6 +498,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
   Widget _tituloAbortos(BuildContext context) {
     return TituloSecao(
       titulo: 'Abortos',
+      identidade: IdentidadeSecao.abortos,
       onVerMais: () async {
         context.pushNamed(
           PronAbortosPage.routeName,
@@ -538,16 +557,20 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               final acoes = snapshot.data!;
               if (acoes.isEmpty) return const SecaoVazia();
 
-              return ListView.builder(
+              return CorpoSecao(
+                  child: ListView.builder(
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
+                // A pagina inteira ja rola; sem isto cada secao vira sua
+                // propria area de rolagem e o dedo prende dentro da lista.
+                physics: const NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 itemCount: acoes.length,
                 itemBuilder: (context, listViewIndex) {
                   return _buildCard3(context,
                       acaoEntityToRecord(acoes[listViewIndex]), listViewIndex);
                 },
-              );
+              ));
             },
           ),
         ],
@@ -558,6 +581,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
   Widget _tituloDiagGestacao(BuildContext context) {
     return TituloSecao(
       titulo: 'Diagnósticos de gestação',
+      identidade: IdentidadeSecao.diagnosticos,
       onVerMais: () async {
         context.pushNamed(
           PronDiagGestacaoPage.routeName,
@@ -616,16 +640,20 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               final acoes = snapshot.data!;
               if (acoes.isEmpty) return const SecaoVazia();
 
-              return ListView.builder(
+              return CorpoSecao(
+                  child: ListView.builder(
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
+                // A pagina inteira ja rola; sem isto cada secao vira sua
+                // propria area de rolagem e o dedo prende dentro da lista.
+                physics: const NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 itemCount: acoes.length,
                 itemBuilder: (context, listViewIndex) {
                   return _buildCard4(context,
                       acaoEntityToRecord(acoes[listViewIndex]), listViewIndex);
                 },
-              );
+              ));
             },
           ),
         ],
@@ -636,6 +664,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
   Widget _tituloCios(BuildContext context) {
     return TituloSecao(
       titulo: 'Cios',
+      identidade: IdentidadeSecao.cios,
       onVerMais: () async {
         context.pushNamed(
           PronCiosPage.routeName,
@@ -694,16 +723,20 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               final acoes = snapshot.data!;
               if (acoes.isEmpty) return const SecaoVazia();
 
-              return ListView.builder(
+              return CorpoSecao(
+                  child: ListView.builder(
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
+                // A pagina inteira ja rola; sem isto cada secao vira sua
+                // propria area de rolagem e o dedo prende dentro da lista.
+                physics: const NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 itemCount: acoes.length,
                 itemBuilder: (context, listViewIndex) {
                   return _buildCard5(context,
                       acaoEntityToRecord(acoes[listViewIndex]), listViewIndex);
                 },
-              );
+              ));
             },
           ),
         ],
@@ -714,6 +747,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
   Widget _tituloVacinas(BuildContext context) {
     return TituloSecao(
       titulo: 'Vacinas',
+      identidade: IdentidadeSecao.vacinas,
       onVerMais: () async {
         context.pushNamed(
           PronCiosPage.routeName,
@@ -770,10 +804,12 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                 return const SecaoVazia();
               }
 
-              return ListView.builder(
+              return CorpoSecao(
+                  child: ListView.builder(
                 padding: EdgeInsets.zero,
                 primary: false,
                 shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 itemCount: listViewAcoesSanitarioRecordList.length,
                 itemBuilder: (context, listViewIndex) {
@@ -782,7 +818,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                   return _buildCard6(
                       context, listViewAcoesSanitarioRecord, listViewIndex);
                 },
-              );
+              ));
             },
           ),
         ],
@@ -793,6 +829,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
   Widget _tituloExames(BuildContext context) {
     return TituloSecao(
       titulo: 'Exames',
+      identidade: IdentidadeSecao.exames,
       onVerMais: () async {
         context.pushNamed(
           PronCiosPage.routeName,
@@ -849,10 +886,12 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                 return const SecaoVazia();
               }
 
-              return ListView.builder(
+              return CorpoSecao(
+                  child: ListView.builder(
                 padding: EdgeInsets.zero,
                 primary: false,
                 shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 itemCount: listViewAcoesSanitarioRecordList.length,
                 itemBuilder: (context, listViewIndex) {
@@ -861,7 +900,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                   return _buildCard7(
                       context, listViewAcoesSanitarioRecord, listViewIndex);
                 },
-              );
+              ));
             },
           ),
         ],
@@ -872,6 +911,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
   Widget _tituloDoencas(BuildContext context) {
     return TituloSecao(
       titulo: 'Doenças',
+      identidade: IdentidadeSecao.doencas,
       onVerMais: () async {
         context.pushNamed(
           PronCiosPage.routeName,
@@ -928,10 +968,12 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                 return const SecaoVazia();
               }
 
-              return ListView.builder(
+              return CorpoSecao(
+                  child: ListView.builder(
                 padding: EdgeInsets.zero,
                 primary: false,
                 shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 itemCount: listViewAcoesSanitarioRecordList.length,
                 itemBuilder: (context, listViewIndex) {
@@ -940,7 +982,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                   return _buildCard8(
                       context, listViewAcoesSanitarioRecord, listViewIndex);
                 },
-              );
+              ));
             },
           ),
         ],

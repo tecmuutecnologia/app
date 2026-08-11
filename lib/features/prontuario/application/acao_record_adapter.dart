@@ -20,7 +20,8 @@ import '../../../data/schema/acoes_record.dart';
 /// não dá erro de compilação — o campo só chega vazio na tela. Assim ele fica
 /// testável sem precisar do Firebase.
 Map<String, dynamic> acaoEntityToSnapshotData(AcaoEntity e) => {
-      'uidAnimalAnimaisProdutores': _refOuNulo(e.uidAnimalAnimaisProdutoresPath),
+      'uidAnimalAnimaisProdutores':
+          _refOuNulo(e.uidAnimalAnimaisProdutoresPath),
       'nomeAnimal': e.nomeAnimal,
       'acao': e.acao,
       'obsVisita': e.obsVisita,
@@ -48,8 +49,9 @@ AcoesRecord acaoEntityToRecord(AcaoEntity e) => AcoesRecord.getDocumentFromData(
       _referenciaDa(e),
     );
 
-DocumentReference? _refOuNulo(String? path) =>
-    (path == null || path.isEmpty) ? null : FirebaseFirestore.instance.doc(path);
+DocumentReference? _refOuNulo(String? path) => (path == null || path.isEmpty)
+    ? null
+    : FirebaseFirestore.instance.doc(path);
 
 DocumentReference _referenciaDa(AcaoEntity e) {
   final colecao = (e.parentPath == null || e.parentPath!.isEmpty)
