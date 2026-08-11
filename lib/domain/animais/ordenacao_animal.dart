@@ -12,8 +12,7 @@ library;
 /// `0` é o default de quem nunca recebeu brinco e `-1` é a sentinela herdada do
 /// FlutterFlow. Tratar qualquer um deles como número faria o animal sem brinco
 /// disputar as primeiras posições da lista.
-bool temBrinco(int? brinco) =>
-    brinco != null && brinco != 0 && brinco != -1;
+bool temBrinco(int? brinco) => brinco != null && brinco != 0 && brinco != -1;
 
 /// Compara dois animais: quem tem brinco vem primeiro, em ordem numérica;
 /// empate (ou ausência de brinco nos dois) desempata pelo nome.

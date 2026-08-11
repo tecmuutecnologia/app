@@ -35,8 +35,9 @@ List<String> opcoesStatusAnimal({
 
   if (ultimaInseminacao != null) {
     // Sem parto registrado: novilha nunca esteve lactante, então não seca.
-    final permitidos =
-        grupo == 'Novilhas' ? cobertos.where((e) => e != 'Seca').toList() : cobertos;
+    final permitidos = grupo == 'Novilhas'
+        ? cobertos.where((e) => e != 'Seca').toList()
+        : cobertos;
     return _filtra(statusDisponiveis, permitidos);
   }
 

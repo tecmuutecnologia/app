@@ -7,6 +7,7 @@ import '../../../data/objectbox/entities/index.dart';
 import '../../../data/objectbox/objectbox_service.dart';
 import '../../../data/objectbox/repositories/animal_repository.dart';
 import '../../../data/schema/structs/index.dart';
+import '../../../domain/animais/ordenacao_animal.dart';
 
 /// Converte uma [AnimalEntity] (ObjectBox) no [AnimaisProdutoresStruct] usado
 /// pelas telas FlutterFlow legadas (ex.: `listacompleta`, que renderiza a partir
@@ -211,3 +212,15 @@ Future<int> migrarAnimaisOfflineLegadoDePrefs() async {
   await prefs.remove(kPrefsAnimaisOfflineLegado);
   return migrados;
 }
+
+/// Comparador de [AnimaisProdutoresStruct] pela regra única do domínio.
+///
+/// Existe aqui, e não em `domain/`, porque o struct é view-model do FlutterFlow
+/// — o domínio não deve conhecê-lo. Esta é só a ponte de campos.
+int compararStructs(AnimaisProdutoresStruct a, AnimaisProdutoresStruct b) =>
+    compararAnimais(
+      brincoA: a.brincoAnimal,
+      nomeA: a.nomeAnimal,
+      brincoB: b.brincoAnimal,
+      nomeB: b.nomeAnimal,
+    );

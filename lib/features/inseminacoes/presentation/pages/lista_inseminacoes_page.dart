@@ -5,6 +5,7 @@ import 'dart:async';
 import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/domain/animais/classificacao_animal.dart';
+import '/domain/animais/ordenacao_animal.dart';
 import '/data/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
@@ -75,7 +76,10 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
           .getAll()
           .where((a) => !a.isDeleted)
           .map(animalEntityToStruct)
-          .toList();
+          .toList()
+        // `getAll()` devolve ordem de insercao do ObjectBox, que espelha a
+        // ordem de documentId do Firestore — nem numerica, nem alfabetica.
+        ..sort(compararStructs);
     }
 
     // On page load action.

@@ -56,6 +56,26 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
   /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
   List<AnimaisProdutoresStruct> _animaisExistentes = [];
 
+  /// Direção da ordenação da lista. Crescente por padrão: brinco 390 antes de
+  /// 430, e nome A antes de Z.
+  bool _ordemCrescente = true;
+
+  /// Comparador da tela: a regra é a única do domínio; aqui só se aplica a
+  /// direção que o usuário escolheu no botão da barra.
+  int _compararStructs(AnimaisProdutoresStruct a, AnimaisProdutoresStruct b) {
+    final c = compararStructs(a, b);
+    return _ordemCrescente ? c : -c;
+  }
+
+  /// Inverte a ordem e reordena a lista já carregada — sem tocar no ObjectBox,
+  /// já que só a direção mudou.
+  void _alternarOrdem() {
+    safeSetState(() {
+      _ordemCrescente = !_ordemCrescente;
+      _animaisExistentes = _animaisExistentes.toList()..sort(_compararStructs);
+    });
+  }
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -104,7 +124,10 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
           .getAll()
           .where((a) => !a.isDeleted)
           .map(animalEntityToStruct)
-          .toList();
+          .toList()
+        // `getAll()` devolve ordem de insercao do ObjectBox, que espelha a
+        // ordem de documentId do Firestore — nem numerica, nem alfabetica.
+        ..sort(_compararStructs);
     }
   }
 
@@ -624,7 +647,32 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
             backgroundColor:
                 _respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
             automaticallyImplyLeading: false,
-            actions: [],
+            actions: [
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 8, 0),
+                child: Tooltip(
+                  message: _ordemCrescente
+                      ? 'Ordem crescente — tocar para inverter'
+                      : 'Ordem decrescente — tocar para inverter',
+                  child: FlutterFlowIconButton(
+                    borderColor: Colors.transparent,
+                    borderRadius: 30.0,
+                    borderWidth: 1.0,
+                    buttonSize: 50.0,
+                    // Icones distintos: um botao que nao muda de aparencia nao
+                    // diz em que ordem a lista esta.
+                    icon: Icon(
+                      _ordemCrescente
+                          ? Icons.arrow_downward_rounded
+                          : Icons.arrow_upward_rounded,
+                      color: Colors.white,
+                      size: 26.0,
+                    ),
+                    onPressed: _alternarOrdem,
+                  ),
+                ),
+              ),
+            ],
             flexibleSpace: FlexibleSpaceBar(
               title: Column(
                 mainAxisSize: MainAxisSize.max,

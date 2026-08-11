@@ -106,7 +106,10 @@ class _DiagnosticogestacaoPageState extends State<DiagnosticogestacaoPage> {
           .getAll()
           .where((a) => !a.isDeleted)
           .map(animalEntityToStruct)
-          .toList();
+          .toList()
+        // `getAll()` devolve ordem de insercao do ObjectBox, que espelha a
+        // ordem de documentId do Firestore — nem numerica, nem alfabetica.
+        ..sort(compararStructs);
     }
   }
 

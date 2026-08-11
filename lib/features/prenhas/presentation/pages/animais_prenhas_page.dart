@@ -7,6 +7,7 @@ import '/data/backend.dart';
 import '/core/ui/app_card.dart';
 import '/data/objectbox/index.dart';
 import '/domain/animais/classificacao_animal.dart';
+import '/domain/animais/ordenacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -108,7 +109,10 @@ class _AnimaisPrenhasPageState extends State<AnimaisPrenhasPage> {
           .getAll()
           .where((a) => !a.isDeleted)
           .map(animalEntityToStruct)
-          .toList();
+          .toList()
+        // `getAll()` devolve ordem de insercao do ObjectBox, que espelha a
+        // ordem de documentId do Firestore — nem numerica, nem alfabetica.
+        ..sort(compararStructs);
     }
   }
 
