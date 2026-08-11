@@ -3,7 +3,10 @@ import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
-import '/core/ui/flutter_flow_widgets.dart';
+import '/data/objectbox/repositories/acao_repository.dart';
+import '/data/objectbox/entities/index.dart';
+import '/features/prontuario/presentation/widgets/ficha_clinica.dart';
+import '/features/prontuario/application/acao_record_adapter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -103,11 +106,11 @@ class _PronAcoesPageState extends State<PronAcoesPage> {
       child: Padding(
         padding: EdgeInsets.all(12.0),
         child: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _tituloAcoes(context),
               _listaAcoes(context),
             ],
           ),
@@ -116,295 +119,40 @@ class _PronAcoesPageState extends State<PronAcoesPage> {
     );
   }
 
-  Widget _tituloAcoes(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(5.0, 15.0, 5.0, 5.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FFButtonWidget(
-                onPressed: () {
-                  print('Button pressed ...');
-                },
-                text: 'AÇÕES',
-                options: FFButtonOptions(
-                  height: 40.0,
-                  padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                  iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  color: Color(0xFFFFCB00),
-                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                        color: Colors.white,
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                      ),
-                  elevation: 3.0,
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 1.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _listaAcoes(BuildContext context) {
-    return StreamBuilder<List<AcoesRecord>>(
-      stream: queryAcoesRecord(
-        parent: widget.uidTecnico,
-        queryBuilder: (acoesRecord) => acoesRecord
-            .where(
-              'uidAnimalAnimaisProdutores',
-              isEqualTo: widget.uidAnimaisProdutores,
-            )
-            .orderBy('dataDaAcao', descending: true),
+    // Fonte: ObjectBox. Antes era um `.snapshots()` do Firestore, e o filtro
+    // por tipo de acao acontecia no card com Visibility em vez de na query —
+    // a tela buscava tudo e escondia o que nao servia.
+    return StreamBuilder<List<AcaoEntity>>(
+      stream: AcaoRepository().watchByAnimalComTipos(
+        widget.uidAnimaisProdutores!.path,
+        excluir: const {
+          'Inseminada',
+          'Cio',
+          'PP',
+          'DG+',
+          'DG-',
+          'Inseminada PP'
+        },
       ),
       builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
-          return Center(
-            child: SizedBox(
-              width: 50.0,
-              height: 50.0,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Color(0xFFF75E38),
-                ),
-              ),
-            ),
-          );
-        }
-        List<AcoesRecord> listViewAcoesRecordList = snapshot.data!;
+        if (!snapshot.hasData) return const SizedBox.shrink();
+        final acoes = snapshot.data!;
+        if (acoes.isEmpty) return const SecaoVazia();
 
         return ListView.builder(
           padding: EdgeInsets.zero,
           shrinkWrap: true,
-          scrollDirection: Axis.vertical,
-          itemCount: listViewAcoesRecordList.length,
-          itemBuilder: (context, listViewIndex) {
-            final listViewAcoesRecord = listViewAcoesRecordList[listViewIndex];
-            return Visibility(
-              visible: (listViewAcoesRecord.acao != 'Inseminada') &&
-                  (listViewAcoesRecord.acao != 'Cio') &&
-                  (listViewAcoesRecord.acao != 'PP') &&
-                  (listViewAcoesRecord.acao != 'DG+') &&
-                  (listViewAcoesRecord.acao != 'DG-') &&
-                  (listViewAcoesRecord.acao != 'Inseminada PP'),
-              child: Card(
-                clipBehavior: Clip.antiAliasWithSaveLayer,
-                color: FlutterFlowTheme.of(context).secondaryBackground,
-                elevation: 3.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              15.0, 0.0, 0.0, 0.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                height: 120.0,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.rectangle,
-                                ),
-                                alignment: AlignmentDirectional(-1.0, 0.0),
-                                child: Container(
-                                  width: 50.0,
-                                  height: 50.0,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFFFCB00),
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(100.0),
-                                      bottomRight: Radius.circular(100.0),
-                                      topLeft: Radius.circular(100.0),
-                                      topRight: Radius.circular(100.0),
-                                    ),
-                                  ),
-                                  child: Icon(
-                                    Icons.settings_sharp,
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
-                                    size: 30.0,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              15.0, 0.0, 0.0, 0.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: 180.0,
-                                height: 25.0,
-                                decoration: BoxDecoration(),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          5.0, 0.0, 0.0, 0.0),
-                                      child: Text(
-                                        listViewAcoesRecord.acao,
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .override(
-                                              font: GoogleFonts.readexPro(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyLarge
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyLarge
-                                                        .fontStyle,
-                                              ),
-                                              fontSize: 14.0,
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyLarge
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyLarge
-                                                      .fontStyle,
-                                            ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                width: 180.0,
-                                height: 25.0,
-                                decoration: BoxDecoration(),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          5.0, 0.0, 0.0, 0.0),
-                                      child: Text(
-                                        listViewAcoesRecord.obsVisita,
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .override(
-                                              font: GoogleFonts.readexPro(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyLarge
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyLarge
-                                                        .fontStyle,
-                                              ),
-                                              fontSize: 14.0,
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyLarge
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyLarge
-                                                      .fontStyle,
-                                            ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                width: 230.0,
-                                height: 25.0,
-                                decoration: BoxDecoration(),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.fromSTEB(
-                                          5.0, 0.0, 0.0, 0.0),
-                                      child: Text(
-                                        listViewAcoesRecord.dataVisita,
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .override(
-                                              font: GoogleFonts.readexPro(
-                                                fontWeight:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyLarge
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    FlutterFlowTheme.of(context)
-                                                        .bodyLarge
-                                                        .fontStyle,
-                                              ),
-                                              fontSize: 14.0,
-                                              letterSpacing: 0.0,
-                                              fontWeight:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyLarge
-                                                      .fontWeight,
-                                              fontStyle:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyLarge
-                                                      .fontStyle,
-                                            ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+          // A pagina inteira ja rola.
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: acoes.length,
+          itemBuilder: (context, i) {
+            final item = acaoEntityToRecord(acoes[i]);
+            return LinhaProntuario(
+              identidade: IdentidadeSecao.acoes,
+              data: item.dataVisita,
+              titulo: item.acao,
+              detalhe: item.obsVisita.isEmpty ? null : item.obsVisita,
             );
           },
         );
