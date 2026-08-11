@@ -1,5 +1,8 @@
 // ignore_for_file: unnecessary_null_comparison, unused_import
 
+import 'dart:async';
+
+import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/data/objectbox/index.dart';
@@ -9,14 +12,12 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
-import '/core/ui/instant_timer.dart';
 import '/features/animais/presentation/widgets/descarte_animal_widget.dart';
 import '../widgets/nova_inseminacao_widget.dart';
 import '../widgets/registrar_cio_widget.dart';
 import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
 import '/features/prontuario/presentation/pages/prontuario_animal_page.dart';
 import '/features/sincronizacao/presentation/widgets/alerta_sem_internet_widget.dart';
-import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ class ListaInseminacoesPage extends StatefulWidget {
 }
 
 class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
-  InstantTimer? _instantTimer;
+  StreamSubscription<bool>? _conectividadeSub;
   bool? _respostaNet = true;
   FocusNode? _searchListFocusNode;
   TextEditingController? _searchListTextController;
@@ -79,22 +80,15 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _instantTimer = InstantTimer.periodic(
-        duration: Duration(seconds: 5),
-        callback: (timer) async {
-          _respostaNet = await actions.checkInternetConnection();
-
-          safeSetState(() {});
-          if (_respostaNet!) {
-            safeSetState(() {});
-          } else {
-            // Offline: notificação passiva via SyncStatusBanner (app-wide);
-            // sem modal bloqueante nem flag global. O respostaNet acima já
-            // atualiza a UI e o sync ao reconectar é automático.
-          }
-        },
-        startImmediately: false,
-      );
+      // Conectividade por transicao real, nao por polling: antes era um
+      // timer periodico de 5s cujo callback chamava safeSetState
+      // incondicionalmente, reconstruindo a arvore inteira houvesse mudanca
+      // ou nao. O valor alimenta um unico lugar: a cor de um botao.
+      _respostaNet = ConnectivityService.instance.isOnline;
+      _conectividadeSub =
+          ConnectivityService.instance.onStatusChange.listen((online) {
+        if (mounted) safeSetState(() => _respostaNet = online);
+      });
     });
 
     _searchListTextController ??= TextEditingController();
@@ -105,7 +99,7 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
 
   @override
   void dispose() {
-    _instantTimer?.cancel();
+    _conectividadeSub?.cancel();
     _searchListFocusNode?.dispose();
     _searchListTextController?.dispose();
 

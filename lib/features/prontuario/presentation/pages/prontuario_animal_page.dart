@@ -1,5 +1,8 @@
 // ignore_for_file: unnecessary_null_comparison, dead_code
 
+import 'dart:async';
+
+import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
@@ -7,8 +10,6 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
-import '/core/ui/instant_timer.dart';
-import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
 import '/features/prontuario/presentation/pages/pron_abortos_page.dart';
 import '/features/prontuario/presentation/pages/pron_acoes_page.dart';
@@ -50,7 +51,7 @@ class ProntuarioAnimalPage extends StatefulWidget {
 }
 
 class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
-  InstantTimer? _instantTimer;
+  StreamSubscription<bool>? _conectividadeSub;
   bool? _respostaNet = true;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -61,15 +62,15 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _instantTimer = InstantTimer.periodic(
-        duration: Duration(milliseconds: 1000),
-        callback: (timer) async {
-          _respostaNet = await actions.checkInternetConnection();
-
-          safeSetState(() {});
-        },
-        startImmediately: false,
-      );
+      // Conectividade por transicao real, nao por polling: antes era um
+      // timer periodico de 5s cujo callback chamava safeSetState
+      // incondicionalmente, reconstruindo a arvore inteira houvesse mudanca
+      // ou nao. O valor alimenta um unico lugar: a cor de um botao.
+      _respostaNet = ConnectivityService.instance.isOnline;
+      _conectividadeSub =
+          ConnectivityService.instance.onStatusChange.listen((online) {
+        if (mounted) safeSetState(() => _respostaNet = online);
+      });
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
@@ -77,7 +78,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
 
   @override
   void dispose() {
-    _instantTimer?.cancel();
+    _conectividadeSub?.cancel();
 
     super.dispose();
   }

@@ -9,7 +9,6 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
-import '/core/ui/instant_timer.dart';
 import '/features/diagnostico_gestacao/presentation/widgets/confirma_pp_widget.dart';
 import '/features/diagnostico_gestacao/presentation/widgets/dg_mais_widget.dart';
 import '/features/diagnostico_gestacao/presentation/widgets/dg_menos_widget.dart';
@@ -21,7 +20,6 @@ import '/features/recria/presentation/widgets/desmame_widget.dart';
 import '/features/secas/presentation/widgets/registrar_parto_widget.dart';
 import '/features/secas/presentation/widgets/registrar_pre_parto_widget.dart';
 import '/features/sincronizacao/presentation/widgets/alerta_sem_internet_widget.dart';
-import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
 import '/features/prontuario/presentation/pages/prontuario_animal_page.dart';
 import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
@@ -57,8 +55,6 @@ class ListacompletaPage extends StatefulWidget {
 }
 
 class _ListacompletaPageState extends State<ListacompletaPage> {
-  InstantTimer? _instantTimer;
-  bool? _respostaNet = true;
   FocusNode? _searchListFocusNode;
   TextEditingController? _searchListTextController;
   final String? Function(BuildContext, String?)?
@@ -85,23 +81,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
     }
 
     // On page load action.
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _instantTimer = InstantTimer.periodic(
-        duration: Duration(seconds: 5),
-        callback: (timer) async {
-          _respostaNet = await actions.checkInternetConnection();
-
-          safeSetState(() {});
-          if (_respostaNet!) {
-            safeSetState(() {});
-          } else {
-            // Offline: notificação passiva via SyncStatusBanner (app-wide);
-            // sem flag global. O respostaNet acima já atualiza a UI.
-          }
-        },
-        startImmediately: false,
-      );
-    });
+    SchedulerBinding.instance.addPostFrameCallback((_) async {});
 
     _searchListTextController ??= TextEditingController();
     _searchListFocusNode ??= FocusNode();
@@ -111,7 +91,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
 
   @override
   void dispose() {
-    _instantTimer?.cancel();
     _searchListFocusNode?.dispose();
     _searchListTextController?.dispose();
 

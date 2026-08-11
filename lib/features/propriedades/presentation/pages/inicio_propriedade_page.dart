@@ -1,5 +1,8 @@
 // ignore_for_file: unused_import, unused_local_variable
 
+import 'dart:async';
+
+import '/core/connectivity/connectivity_service.dart';
 import '/core/auth/firebase_auth/auth_util.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
@@ -13,10 +16,8 @@ import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/menu_acao_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
-import '/core/ui/instant_timer.dart';
 import '/core/ui/request_manager.dart';
 import '/features/sincronizacao/presentation/widgets/alerta_sem_internet_widget.dart';
-import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
 import '/features/animais/presentation/pages/lista_animais_page.dart';
 import '/features/calendario_sanitario/presentation/pages/calendario_sanitario_page.dart';
@@ -76,7 +77,7 @@ class InicioPropriedadePage extends ConsumerStatefulWidget {
 
 class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
     with TickerProviderStateMixin {
-  InstantTimer? _instantTimer;
+  StreamSubscription<bool>? _conectividadeSub;
   bool? _respostaNet = true;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -89,22 +90,15 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _instantTimer = InstantTimer.periodic(
-        duration: Duration(seconds: 5),
-        callback: (timer) async {
-          _respostaNet = await actions.checkInternetConnection();
-
-          safeSetState(() {});
-          if (_respostaNet!) {
-            safeSetState(() {});
-          } else {
-            // Offline: notificação passiva via SyncStatusBanner (app-wide);
-            // sem modal bloqueante nem flag global. O respostaNet acima já
-            // atualiza a UI e o sync ao reconectar é automático.
-          }
-        },
-        startImmediately: false,
-      );
+      // Conectividade por transicao real, nao por polling: antes era um
+      // timer periodico de 5s cujo callback chamava safeSetState
+      // incondicionalmente, reconstruindo a arvore inteira houvesse mudanca
+      // ou nao. O valor alimenta um unico lugar: a cor de um botao.
+      _respostaNet = ConnectivityService.instance.isOnline;
+      _conectividadeSub =
+          ConnectivityService.instance.onStatusChange.listen((online) {
+        if (mounted) safeSetState(() => _respostaNet = online);
+      });
     });
 
     animationsMap.addAll({
@@ -425,7 +419,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
 
   @override
   void dispose() {
-    _instantTimer?.cancel();
+    _conectividadeSub?.cancel();
 
     super.dispose();
   }

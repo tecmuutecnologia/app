@@ -1,13 +1,14 @@
 // ignore_for_file: unnecessary_null_comparison
 
+import 'dart:async';
+
+import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/core/ui/flutter_flow_button_tabbar.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/app_card.dart';
-import '/core/ui/instant_timer.dart';
-import '/core/services/index.dart' as actions;
 import '/features/animais/presentation/pages/cadastrar_novo_animal_page.dart';
 import '/features/animais/presentation/pages/editar_animal_page.dart';
 import '/features/animais/presentation/animal_group_list_view.dart';
@@ -48,7 +49,7 @@ class ListaAnimaisPage extends StatefulWidget {
 
 class _ListaAnimaisPageState extends State<ListaAnimaisPage>
     with TickerProviderStateMixin {
-  InstantTimer? _instantTimer;
+  StreamSubscription<bool>? _conectividadeSub;
   bool? _respostaNet = true;
   TabController? _tabBarController;
   int get _tabBarCurrentIndex =>
@@ -75,22 +76,15 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _instantTimer = InstantTimer.periodic(
-        duration: Duration(seconds: 5),
-        callback: (timer) async {
-          _respostaNet = await actions.checkInternetConnection();
-
-          safeSetState(() {});
-          if (_respostaNet!) {
-            safeSetState(() {});
-          } else {
-            // Offline: notificação passiva via SyncStatusBanner (app-wide);
-            // sem modal bloqueante nem flag global. O respostaNet acima já
-            // atualiza a UI e o sync ao reconectar é automático.
-          }
-        },
-        startImmediately: false,
-      );
+      // Conectividade por transicao real, nao por polling: antes era um
+      // timer periodico de 5s cujo callback chamava safeSetState
+      // incondicionalmente, reconstruindo a arvore inteira houvesse mudanca
+      // ou nao. O valor alimenta um unico lugar: a cor de um botao.
+      _respostaNet = ConnectivityService.instance.isOnline;
+      _conectividadeSub =
+          ConnectivityService.instance.onStatusChange.listen((online) {
+        if (mounted) safeSetState(() => _respostaNet = online);
+      });
     });
 
     _tabBarController = TabController(
@@ -127,7 +121,7 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
 
   @override
   void dispose() {
-    _instantTimer?.cancel();
+    _conectividadeSub?.cancel();
     _tabBarController?.dispose();
     _searchListBezerrasFocusNode?.dispose();
     _searchListBezerrasTextController?.dispose();

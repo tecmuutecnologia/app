@@ -1,4 +1,5 @@
 import 'dart:async';
+import '/core/diagnostics/tracing_navigator_observer.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -136,6 +137,8 @@ String? destinoDeAbertura({
 
 GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       initialLocation: '/',
+      // TEMPORÁRIO (diagnóstico): correlaciona queries com a tela aberta.
+      observers: [TracingNavigatorObserver()],
       debugLogDiagnostics: true,
       refreshListenable: appStateNotifier,
       navigatorKey: appNavigatorKey,
@@ -1524,6 +1527,9 @@ class FFRoute {
           return transitionInfo.hasTransition
               ? CustomTransitionPage(
                   key: state.pageKey,
+                  // TEMPORÁRIO (diagnóstico): dá nome à rota para o
+                  // TracingNavigatorObserver correlacionar tela x query.
+                  name: state.uri.toString(),
                   child: child,
                   transitionDuration: transitionInfo.duration,
                   transitionsBuilder:
@@ -1541,7 +1547,10 @@ class FFRoute {
                     child,
                   ),
                 )
-              : MaterialPage(key: state.pageKey, child: child);
+              : MaterialPage(
+                  key: state.pageKey,
+                  name: state.uri.toString(),
+                  child: child);
         },
         routes: routes,
       );

@@ -9,9 +9,7 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
-import '/core/ui/instant_timer.dart';
 import 'dart:ui';
-import '/core/services/index.dart' as actions;
 import '/data/objectbox/index.dart';
 import '/features/animais/presentation/pages/lista_animais_page.dart';
 import 'dart:async';
@@ -57,8 +55,6 @@ class EditarAnimalPage extends StatefulWidget {
 
 class _EditarAnimalPageState extends State<EditarAnimalPage> {
   final _formKey = GlobalKey<FormState>();
-  InstantTimer? _instantTimer;
-  bool? _respostaNet = true;
   FocusNode? _nomeFocusNode;
   TextEditingController? _nomeTextController;
   final String? Function(BuildContext, String?)? _nomeTextControllerValidator =
@@ -105,24 +101,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
     super.initState();
 
     // On page load action.
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _instantTimer = InstantTimer.periodic(
-        duration: Duration(seconds: 5),
-        callback: (timer) async {
-          _respostaNet = await actions.checkInternetConnection();
-
-          safeSetState(() {});
-          if (_respostaNet!) {
-            safeSetState(() {});
-          } else {
-            // Offline: notificação passiva via SyncStatusBanner (app-wide);
-            // sem modal bloqueante nem flag global. O respostaNet acima já
-            // atualiza a UI e o sync ao reconectar é automático.
-          }
-        },
-        startImmediately: false,
-      );
-    });
+    SchedulerBinding.instance.addPostFrameCallback((_) async {});
 
     _nomeFocusNode ??= FocusNode();
 
@@ -143,7 +122,6 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
 
   @override
   void dispose() {
-    _instantTimer?.cancel();
     _nomeFocusNode?.dispose();
     _nomeTextController?.dispose();
     _brincoFocusNode?.dispose();

@@ -1,5 +1,8 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
+import 'dart:async';
+
+import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/success_overlay.dart';
@@ -12,10 +15,8 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
-import '/core/ui/instant_timer.dart';
 import '/data/objectbox/repositories/index.dart';
 import 'dart:ui';
-import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
 import '/features/animais/presentation/pages/lista_animais_page.dart';
 import 'package:easy_debounce/easy_debounce.dart';
@@ -59,7 +60,7 @@ class CadastrarNovoAnimalPage extends StatefulWidget {
 
 class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
   final _formKey = GlobalKey<FormState>();
-  InstantTimer? _instantTimer;
+  StreamSubscription<bool>? _conectividadeSub;
   bool? _respostaNet = true;
 
   /// Cria o animal no ObjectBox — a fonte única de que todas as listas leem — e
@@ -139,22 +140,15 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _instantTimer = InstantTimer.periodic(
-        duration: Duration(seconds: 5),
-        callback: (timer) async {
-          _respostaNet = await actions.checkInternetConnection();
-
-          safeSetState(() {});
-          if (_respostaNet!) {
-            safeSetState(() {});
-          } else {
-            // Offline: notificação passiva via SyncStatusBanner (app-wide);
-            // sem modal bloqueante nem flag global. O respostaNet acima já
-            // atualiza a UI e o sync ao reconectar é automático.
-          }
-        },
-        startImmediately: false,
-      );
+      // Conectividade por transicao real, nao por polling: antes era um
+      // timer periodico de 5s cujo callback chamava safeSetState
+      // incondicionalmente, reconstruindo a arvore inteira houvesse mudanca
+      // ou nao. O valor alimenta um unico lugar: a cor de um botao.
+      _respostaNet = ConnectivityService.instance.isOnline;
+      _conectividadeSub =
+          ConnectivityService.instance.onStatusChange.listen((online) {
+        if (mounted) safeSetState(() => _respostaNet = online);
+      });
     });
 
     _nomeTextController ??= TextEditingController();
@@ -191,7 +185,7 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
 
   @override
   void dispose() {
-    _instantTimer?.cancel();
+    _conectividadeSub?.cancel();
     _nomeFocusNode?.dispose();
     _nomeTextController?.dispose();
     _brincoFocusNode?.dispose();

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/core/ui/flutter_flow_choice_chips.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
@@ -5,8 +8,6 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/form_field_controller.dart';
-import '/core/ui/instant_timer.dart';
-import '/core/services/index.dart' as actions;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -49,7 +50,7 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
   bool _ordenacaoQuery = false;
 
   // Estado de view (antes no RecriacaoModel/FlutterFlowModel).
-  InstantTimer? _instantTimer;
+  StreamSubscription<bool>? _conectividadeSub;
   bool? _respostaNet = true;
   FormFieldController<List<String>>? _choiceChipsValueController;
   String? get _choiceChipsValue =>
@@ -73,26 +74,20 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
   }
 
   void _setupInternetChecker() {
-    _instantTimer = InstantTimer.periodic(
-      duration: const Duration(seconds: 5),
-      callback: (timer) async {
-        _respostaNet = await actions.checkInternetConnection();
-        safeSetState(() {});
-
-        if (_respostaNet!) {
-          safeSetState(() {});
-        } else {
-          // Offline: notificação passiva via SyncStatusBanner (app-wide);
-          // sem flag global. O respostaNet acima já atualiza a UI.
-        }
-      },
-      startImmediately: false,
-    );
+    // Conectividade por transicao real, nao por polling: antes era um
+    // timer periodico de 5s cujo callback chamava safeSetState
+    // incondicionalmente, reconstruindo a arvore inteira houvesse mudanca
+    // ou nao. O valor alimenta um unico lugar: a cor de um botao.
+    _respostaNet = ConnectivityService.instance.isOnline;
+    _conectividadeSub =
+        ConnectivityService.instance.onStatusChange.listen((online) {
+      if (mounted) safeSetState(() => _respostaNet = online);
+    });
   }
 
   @override
   void dispose() {
-    _instantTimer?.cancel();
+    _conectividadeSub?.cancel();
     super.dispose();
   }
 

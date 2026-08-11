@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import '/core/connectivity/connectivity_service.dart';
 import '/core/auth/firebase_auth/auth_util.dart';
 import '/data/backend.dart';
 import '/core/ui/flutter_flow_animations.dart';
@@ -5,9 +8,7 @@ import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/menu_acao_card.dart';
 import '/core/ui/flutter_flow_util.dart';
-import '/core/ui/instant_timer.dart';
 import '/core/ui/request_manager.dart';
-import '/core/services/index.dart' as actions;
 import '/features/propriedades/presentation/pages/editar_propriedade_page.dart';
 
 import 'package:flutter/material.dart';
@@ -53,7 +54,7 @@ class InicioPropriedadeProdutorPage extends StatefulWidget {
 
 class _InicioPropriedadeProdutorPageState
     extends State<InicioPropriedadeProdutorPage> with TickerProviderStateMixin {
-  InstantTimer? _instantTimer;
+  StreamSubscription<bool>? _conectividadeSub;
   bool? _respostaNet = true;
 
   final _cacheAnimaisListaCompletaManager =
@@ -101,21 +102,15 @@ class _InicioPropriedadeProdutorPageState
   /// Configura o timer periódico para verificar conexão com internet.
   void _setupInternetCheckTimer() {
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _instantTimer = InstantTimer.periodic(
-        duration: const Duration(seconds: 5),
-        callback: (timer) async {
-          _respostaNet = await actions.checkInternetConnection();
-          safeSetState(() {});
-
-          if (_respostaNet!) {
-            safeSetState(() {});
-          } else {
-            // Offline: notificação passiva via SyncStatusBanner (app-wide);
-            // sem modal bloqueante. O respostaNet acima já atualiza a UI.
-          }
-        },
-        startImmediately: false,
-      );
+      // Conectividade por transicao real, nao por polling: antes era um
+      // timer periodico de 5s cujo callback chamava safeSetState
+      // incondicionalmente, reconstruindo a arvore inteira houvesse mudanca
+      // ou nao. O valor alimenta um unico lugar: a cor de um botao.
+      _respostaNet = ConnectivityService.instance.isOnline;
+      _conectividadeSub =
+          ConnectivityService.instance.onStatusChange.listen((online) {
+        if (mounted) safeSetState(() => _respostaNet = online);
+      });
     });
   }
 
@@ -160,7 +155,7 @@ class _InicioPropriedadeProdutorPageState
 
   @override
   void dispose() {
-    _instantTimer?.cancel();
+    _conectividadeSub?.cancel();
     _cacheAnimaisListaCompletaManager.clear();
     super.dispose();
   }

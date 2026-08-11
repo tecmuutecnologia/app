@@ -1,4 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison
+import 'dart:async';
+
+import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/core/ui/app_card.dart';
 import '/domain/animais/classificacao_animal.dart';
@@ -8,10 +11,8 @@ import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
-import '/core/ui/instant_timer.dart';
 import '../widgets/nova_acao_exame_ginecologico_widget.dart';
 import '/features/prontuario/presentation/pages/prontuario_animal_page.dart';
-import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -44,7 +45,7 @@ class ExameGinecologicoPage extends StatefulWidget {
 }
 
 class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
-  InstantTimer? _instantTimer;
+  StreamSubscription<bool>? _conectividadeSub;
   bool? _respostaNet = true;
   FocusNode? _searchListFocusNode;
   TextEditingController? _searchListTextController;
@@ -67,21 +68,15 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _instantTimer = InstantTimer.periodic(
-        duration: Duration(seconds: 5),
-        callback: (timer) async {
-          _respostaNet = await actions.checkInternetConnection();
-
-          safeSetState(() {});
-          if (_respostaNet!) {
-            safeSetState(() {});
-          } else {
-            // Offline: notificação passiva via SyncStatusBanner (app-wide);
-            // sem flag global. O respostaNet acima já atualiza a UI.
-          }
-        },
-        startImmediately: false,
-      );
+      // Conectividade por transicao real, nao por polling: antes era um
+      // timer periodico de 5s cujo callback chamava safeSetState
+      // incondicionalmente, reconstruindo a arvore inteira houvesse mudanca
+      // ou nao. O valor alimenta um unico lugar: a cor de um botao.
+      _respostaNet = ConnectivityService.instance.isOnline;
+      _conectividadeSub =
+          ConnectivityService.instance.onStatusChange.listen((online) {
+        if (mounted) safeSetState(() => _respostaNet = online);
+      });
     });
 
     _searchListTextController ??= TextEditingController();
@@ -92,7 +87,7 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
 
   @override
   void dispose() {
-    _instantTimer?.cancel();
+    _conectividadeSub?.cancel();
     _searchListFocusNode?.dispose();
     _searchListTextController?.dispose();
 

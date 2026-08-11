@@ -1,5 +1,8 @@
 // ignore_for_file: dead_code, unnecessary_null_comparison, dead_null_aware_expression, unused_import
 
+import 'dart:async';
+
+import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/domain/animais/classificacao_animal.dart';
@@ -12,7 +15,6 @@ import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
-import '/core/ui/instant_timer.dart';
 import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
 import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
@@ -55,7 +57,7 @@ class ResumoRebanhoPage extends StatefulWidget {
 }
 
 class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
-  InstantTimer? _instantTimer;
+  StreamSubscription<bool>? _conectividadeSub;
   bool? _respostaNet = true;
   List<String>? _categoriaAnimalValue;
   FormFieldController<List<String>>? _categoriaAnimalValueController;
@@ -82,15 +84,15 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _instantTimer = InstantTimer.periodic(
-        duration: Duration(milliseconds: 1000),
-        callback: (timer) async {
-          _respostaNet = await actions.checkInternetConnection();
-
-          safeSetState(() {});
-        },
-        startImmediately: false,
-      );
+      // Conectividade por transicao real, nao por polling: antes era um
+      // timer periodico de 5s cujo callback chamava safeSetState
+      // incondicionalmente, reconstruindo a arvore inteira houvesse mudanca
+      // ou nao. O valor alimenta um unico lugar: a cor de um botao.
+      _respostaNet = ConnectivityService.instance.isOnline;
+      _conectividadeSub =
+          ConnectivityService.instance.onStatusChange.listen((online) {
+        if (mounted) safeSetState(() => _respostaNet = online);
+      });
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
@@ -98,7 +100,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
 
   @override
   void dispose() {
-    _instantTimer?.cancel();
+    _conectividadeSub?.cancel();
 
     super.dispose();
   }

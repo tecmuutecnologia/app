@@ -1,12 +1,13 @@
+import 'dart:async';
+
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
-import '/core/ui/instant_timer.dart';
+import '/core/connectivity/connectivity_service.dart';
 import '../widgets/alerta_sem_internet_widget.dart';
 import '/core/services/index.dart' as actions;
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
@@ -36,7 +37,7 @@ class ImportacaoAnimaisPage extends StatefulWidget {
 }
 
 class _ImportacaoAnimaisPageState extends State<ImportacaoAnimaisPage> {
-  InstantTimer? _instantTimer;
+  StreamSubscription<bool>? _conectividadeSub;
   bool? _respostaNet = true;
 
   /// Flag local (antes em FFAppState.verificaInternet, removido): -1 = online,
@@ -49,48 +50,46 @@ class _ImportacaoAnimaisPageState extends State<ImportacaoAnimaisPage> {
   void initState() {
     super.initState();
 
-    // On page load action.
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _instantTimer = InstantTimer.periodic(
-        duration: Duration(seconds: 5),
-        callback: (timer) async {
-          _respostaNet = await actions.checkInternetConnection();
+    // Conectividade por transicao real, nao por polling: antes era um timer
+    // periodico de 5s cujo callback chamava safeSetState incondicionalmente.
+    // O modal bloqueante e mantido de proposito — esta tela importa animais e
+    // nao funciona sem rede, diferente das demais, onde o aviso passivo do
+    // SyncStatusBanner basta.
+    _respostaNet = ConnectivityService.instance.isOnline;
+    _conectividadeSub =
+        ConnectivityService.instance.onStatusChange.listen((online) async {
+      if (!mounted) return;
+      safeSetState(() => _respostaNet = online);
 
-          safeSetState(() {});
-          if (_respostaNet!) {
-            _verificaInternet = -1;
-            safeSetState(() {});
-          } else {
-            if (_verificaInternet == -1) {
-              _verificaInternet = 0;
-              safeSetState(() {});
-              _instantTimer?.cancel();
-              await showModalBottomSheet(
-                isScrollControlled: true,
-                backgroundColor: Colors.transparent,
-                isDismissible: false,
-                enableDrag: false,
-                context: context,
-                builder: (context) {
-                  return GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).unfocus();
-                      FocusManager.instance.primaryFocus?.unfocus();
-                    },
-                    child: Padding(
-                      padding: MediaQuery.viewInsetsOf(context),
-                      child: AlertaSemInternetWidget(),
-                    ),
-                  );
-                },
-              ).then((value) => safeSetState(() {}));
+      if (online) {
+        _verificaInternet = -1;
+        return;
+      }
 
-              return;
-            }
-          }
+      // Um alerta por queda: sem esta guarda, cada emissao reabriria o modal.
+      if (_verificaInternet != -1) return;
+      _verificaInternet = 0;
+
+      await showModalBottomSheet(
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        isDismissible: false,
+        enableDrag: false,
+        context: context,
+        builder: (context) {
+          return GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus();
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
+            child: Padding(
+              padding: MediaQuery.viewInsetsOf(context),
+              child: AlertaSemInternetWidget(),
+            ),
+          );
         },
-        startImmediately: false,
       );
+      if (mounted) safeSetState(() {});
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
@@ -98,7 +97,7 @@ class _ImportacaoAnimaisPageState extends State<ImportacaoAnimaisPage> {
 
   @override
   void dispose() {
-    _instantTimer?.cancel();
+    _conectividadeSub?.cancel();
 
     super.dispose();
   }
