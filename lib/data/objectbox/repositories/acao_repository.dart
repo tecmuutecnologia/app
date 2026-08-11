@@ -69,6 +69,75 @@ class AcaoRepository extends BaseSyncRepository<AcaoEntity> {
   }
 
   /// Stream reativa das ações de um animal (path do documento pai).
+  /// Ações de UM animal, filtradas por tipo, mais recentes primeiro.
+  ///
+  /// [incluir] restringe aos tipos listados; [excluir] remove os listados. Uma
+  /// seção usa um ou outro, nunca os dois.
+  ///
+  /// O filtro acontece na QUERY, não depois. Três seções do prontuário faziam o
+  /// contrário: buscavam as 3 ações mais recentes de qualquer tipo e escondiam
+  /// as que não serviam com `Visibility`. Se as 3 mais recentes fossem todas
+  /// inseminações, a seção de abortos aparecia vazia mesmo com abortos no
+  /// histórico — a tela mentia em silêncio.
+  Stream<List<AcaoEntity>> watchByAnimalComTipos(
+    String animalPath, {
+    Set<String> incluir = const {},
+    Set<String> excluir = const {},
+    int? limite,
+  }) {
+    assert(incluir.isEmpty || excluir.isEmpty,
+        'Use incluir OU excluir, nao os dois');
+
+    var condicao = AcaoEntity_.uidAnimalAnimaisProdutoresPath
+        .equals(animalPath)
+        .and(AcaoEntity_.isDeleted.equals(false));
+
+    if (incluir.isNotEmpty) {
+      condicao = condicao.and(AcaoEntity_.acao.oneOf(incluir.toList()));
+    }
+    for (final tipo in excluir) {
+      condicao = condicao.and(AcaoEntity_.acao.notEquals(tipo));
+    }
+
+    return box
+        .query(condicao)
+        .order(AcaoEntity_.dataDaAcao, flags: Order.descending)
+        .watch(triggerImmediately: true)
+        .map((q) {
+      final achados = q.find();
+      return (limite == null || achados.length <= limite)
+          ? achados
+          : achados.sublist(0, limite);
+    });
+  }
+
+  /// Ações de UM animal, de UM tipo, mais recentes primeiro.
+  ///
+  /// Alimenta as seções do prontuário, que antes abriam um `.snapshots()` do
+  /// Firestore cada — cinco listeners de rede por animal aberto, com os dados
+  /// já baixados localmente.
+  ///
+  /// `limite` reproduz o `limit` que as queries do Firestore usavam: as seções
+  /// mostram só as primeiras e oferecem "Ver mais".
+  Stream<List<AcaoEntity>> watchByAnimalEAcao(
+    String animalPath,
+    String acao, {
+    int? limite,
+  }) =>
+      box
+          .query(AcaoEntity_.uidAnimalAnimaisProdutoresPath
+              .equals(animalPath)
+              .and(AcaoEntity_.acao.equals(acao))
+              .and(AcaoEntity_.isDeleted.equals(false)))
+          .order(AcaoEntity_.dataDaAcao, flags: Order.descending)
+          .watch(triggerImmediately: true)
+          .map((q) {
+        final achados = q.find();
+        return (limite == null || achados.length <= limite)
+            ? achados
+            : achados.sublist(0, limite);
+      });
+
   Stream<List<AcaoEntity>> watchByParentPath(String parentPath) => box
       .query(AcaoEntity_.parentPath.equals(parentPath))
       .watch(triggerImmediately: true)

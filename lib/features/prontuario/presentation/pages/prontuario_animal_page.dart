@@ -8,6 +8,7 @@ import '/data/objectbox/index.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
+import '/features/prontuario/application/acao_record_adapter.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/custom_functions.dart' as functions;
@@ -1983,47 +1984,28 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          StreamBuilder<List<AcoesRecord>>(
-            stream: queryAcoesRecord(
-              parent: widget.uidTecnico,
-              queryBuilder: (acoesRecord) => acoesRecord
-                  .where(
-                    'uidAnimalAnimaisProdutores',
-                    isEqualTo: widget.uidAnimaisProdutores,
-                  )
-                  .where(
-                    'acao',
-                    isEqualTo: 'Inseminada',
-                  ),
-              limit: 3,
+          StreamBuilder<List<AcaoEntity>>(
+            // Fonte: ObjectBox. Antes era um `.snapshots()` do Firestore
+            // por secao — cinco listeners de rede por animal aberto.
+            stream: AcaoRepository().watchByAnimalComTipos(
+              widget.uidAnimaisProdutores!.path,
+              incluir: const {'Inseminada'},
+              limite: 3,
             ),
             builder: (context, snapshot) {
-              // Customize what your widget looks like when it's loading.
               if (!snapshot.hasData) {
-                return Center(
-                  child: SizedBox(
-                    width: 50.0,
-                    height: 50.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFFF75E38),
-                      ),
-                    ),
-                  ),
-                );
+                return const SizedBox.shrink();
               }
-              List<AcoesRecord> listViewAcoesRecordList = snapshot.data!;
+              final acoes = snapshot.data!;
 
               return ListView.builder(
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
-                itemCount: listViewAcoesRecordList.length,
+                itemCount: acoes.length,
                 itemBuilder: (context, listViewIndex) {
-                  final listViewAcoesRecord =
-                      listViewAcoesRecordList[listViewIndex];
-                  return _buildCard1(
-                      context, listViewAcoesRecord, listViewIndex);
+                  return _buildCard1(context,
+                      acaoEntityToRecord(acoes[listViewIndex]), listViewIndex);
                 },
               );
             },
@@ -2153,45 +2135,35 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          StreamBuilder<List<AcoesRecord>>(
-            stream: queryAcoesRecord(
-              parent: widget.uidTecnico,
-              queryBuilder: (acoesRecord) => acoesRecord
-                  .where(
-                    'uidAnimalAnimaisProdutores',
-                    isEqualTo: widget.uidAnimaisProdutores,
-                  )
-                  .orderBy('dataDaAcao', descending: true),
-              limit: 3,
+          StreamBuilder<List<AcaoEntity>>(
+            // Fonte: ObjectBox. Antes era um `.snapshots()` do Firestore
+            // por secao — cinco listeners de rede por animal aberto.
+            stream: AcaoRepository().watchByAnimalComTipos(
+              widget.uidAnimaisProdutores!.path,
+              excluir: const {
+                'Inseminada',
+                'Cio',
+                'PP',
+                'DG+',
+                'DG-',
+                'Inseminada PP'
+              },
+              limite: 3,
             ),
             builder: (context, snapshot) {
-              // Customize what your widget looks like when it's loading.
               if (!snapshot.hasData) {
-                return Center(
-                  child: SizedBox(
-                    width: 50.0,
-                    height: 50.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFFF75E38),
-                      ),
-                    ),
-                  ),
-                );
+                return const SizedBox.shrink();
               }
-              List<AcoesRecord> listViewAcoesRecordList = snapshot.data!;
+              final acoes = snapshot.data!;
 
               return ListView.builder(
                 padding: EdgeInsets.zero,
-                primary: false,
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
-                itemCount: listViewAcoesRecordList.length,
+                itemCount: acoes.length,
                 itemBuilder: (context, listViewIndex) {
-                  final listViewAcoesRecord =
-                      listViewAcoesRecordList[listViewIndex];
-                  return _buildCard2(
-                      context, listViewAcoesRecord, listViewIndex);
+                  return _buildCard2(context,
+                      acaoEntityToRecord(acoes[listViewIndex]), listViewIndex);
                 },
               );
             },
@@ -2321,45 +2293,28 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          StreamBuilder<List<AcoesRecord>>(
-            stream: queryAcoesRecord(
-              parent: widget.uidTecnico,
-              queryBuilder: (acoesRecord) => acoesRecord
-                  .where(
-                    'uidAnimalAnimaisProdutores',
-                    isEqualTo: widget.uidAnimaisProdutores,
-                  )
-                  .orderBy('dataDaAcao', descending: true),
-              limit: 3,
+          StreamBuilder<List<AcaoEntity>>(
+            // Fonte: ObjectBox. Antes era um `.snapshots()` do Firestore
+            // por secao — cinco listeners de rede por animal aberto.
+            stream: AcaoRepository().watchByAnimalComTipos(
+              widget.uidAnimaisProdutores!.path,
+              incluir: const {'Aborto'},
+              limite: 3,
             ),
             builder: (context, snapshot) {
-              // Customize what your widget looks like when it's loading.
               if (!snapshot.hasData) {
-                return Center(
-                  child: SizedBox(
-                    width: 50.0,
-                    height: 50.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFFF75E38),
-                      ),
-                    ),
-                  ),
-                );
+                return const SizedBox.shrink();
               }
-              List<AcoesRecord> listViewAcoesRecordList = snapshot.data!;
+              final acoes = snapshot.data!;
 
               return ListView.builder(
                 padding: EdgeInsets.zero,
-                primary: false,
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
-                itemCount: listViewAcoesRecordList.length,
+                itemCount: acoes.length,
                 itemBuilder: (context, listViewIndex) {
-                  final listViewAcoesRecord =
-                      listViewAcoesRecordList[listViewIndex];
-                  return _buildCard3(
-                      context, listViewAcoesRecord, listViewIndex);
+                  return _buildCard3(context,
+                      acaoEntityToRecord(acoes[listViewIndex]), listViewIndex);
                 },
               );
             },
@@ -2489,45 +2444,28 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          StreamBuilder<List<AcoesRecord>>(
-            stream: queryAcoesRecord(
-              parent: widget.uidTecnico,
-              queryBuilder: (acoesRecord) => acoesRecord
-                  .where(
-                    'uidAnimalAnimaisProdutores',
-                    isEqualTo: widget.uidAnimaisProdutores,
-                  )
-                  .orderBy('dataDaAcao', descending: true),
-              limit: 3,
+          StreamBuilder<List<AcaoEntity>>(
+            // Fonte: ObjectBox. Antes era um `.snapshots()` do Firestore
+            // por secao — cinco listeners de rede por animal aberto.
+            stream: AcaoRepository().watchByAnimalComTipos(
+              widget.uidAnimaisProdutores!.path,
+              incluir: const {'PP', 'DG+', 'DG-'},
+              limite: 3,
             ),
             builder: (context, snapshot) {
-              // Customize what your widget looks like when it's loading.
               if (!snapshot.hasData) {
-                return Center(
-                  child: SizedBox(
-                    width: 50.0,
-                    height: 50.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFFF75E38),
-                      ),
-                    ),
-                  ),
-                );
+                return const SizedBox.shrink();
               }
-              List<AcoesRecord> listViewAcoesRecordList = snapshot.data!;
+              final acoes = snapshot.data!;
 
               return ListView.builder(
                 padding: EdgeInsets.zero,
-                primary: false,
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
-                itemCount: listViewAcoesRecordList.length,
+                itemCount: acoes.length,
                 itemBuilder: (context, listViewIndex) {
-                  final listViewAcoesRecord =
-                      listViewAcoesRecordList[listViewIndex];
-                  return _buildCard4(
-                      context, listViewAcoesRecord, listViewIndex);
+                  return _buildCard4(context,
+                      acaoEntityToRecord(acoes[listViewIndex]), listViewIndex);
                 },
               );
             },
@@ -2657,48 +2595,28 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          StreamBuilder<List<AcoesRecord>>(
-            stream: queryAcoesRecord(
-              parent: widget.uidTecnico,
-              queryBuilder: (acoesRecord) => acoesRecord
-                  .where(
-                    'uidAnimalAnimaisProdutores',
-                    isEqualTo: widget.uidAnimaisProdutores,
-                  )
-                  .where(
-                    'acao',
-                    isEqualTo: 'Cio',
-                  ),
-              limit: 3,
+          StreamBuilder<List<AcaoEntity>>(
+            // Fonte: ObjectBox. Antes era um `.snapshots()` do Firestore
+            // por secao — cinco listeners de rede por animal aberto.
+            stream: AcaoRepository().watchByAnimalComTipos(
+              widget.uidAnimaisProdutores!.path,
+              incluir: const {'Cio'},
+              limite: 3,
             ),
             builder: (context, snapshot) {
-              // Customize what your widget looks like when it's loading.
               if (!snapshot.hasData) {
-                return Center(
-                  child: SizedBox(
-                    width: 50.0,
-                    height: 50.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFFF75E38),
-                      ),
-                    ),
-                  ),
-                );
+                return const SizedBox.shrink();
               }
-              List<AcoesRecord> listViewAcoesRecordList = snapshot.data!;
+              final acoes = snapshot.data!;
 
               return ListView.builder(
                 padding: EdgeInsets.zero,
-                primary: false,
                 shrinkWrap: true,
                 scrollDirection: Axis.vertical,
-                itemCount: listViewAcoesRecordList.length,
+                itemCount: acoes.length,
                 itemBuilder: (context, listViewIndex) {
-                  final listViewAcoesRecord =
-                      listViewAcoesRecordList[listViewIndex];
-                  return _buildCard5(
-                      context, listViewAcoesRecord, listViewIndex);
+                  return _buildCard5(context,
+                      acaoEntityToRecord(acoes[listViewIndex]), listViewIndex);
                 },
               );
             },
