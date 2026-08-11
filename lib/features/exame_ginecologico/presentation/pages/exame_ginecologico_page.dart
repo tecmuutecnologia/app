@@ -554,78 +554,141 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
     );
   }
 
+  /// Botão de ordenação, ao lado da busca.
+  ///
+  /// Mostra a ordem ATUAL ("Menor"/"Maior") em vez de nomear a ação
+  /// ("Ordenar"): assim o usuário não precisa de um passo mental para descobrir
+  /// como a lista está — o botão é a própria resposta, e tocar inverte as duas
+  /// coisas.
+  ///
+  /// A palavra fica: um glifo sozinho traria de volta o "adivinhe o que faz".
+  /// E fica FORA da AppBar, que já tem a seta de voltar — um segundo ícone de
+  /// seta ali era confundível com navegação.
+  Widget _botaoOrdenacao(BuildContext context) {
+    final rotulo = _ordemCrescente ? 'Menor' : 'Maior';
+
+    return Semantics(
+      button: true,
+      label: _ordemCrescente
+          ? 'Ordem: menor brinco primeiro. Tocar para inverter.'
+          : 'Ordem: maior brinco primeiro. Tocar para inverter.',
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
+        onTap: _alternarOrdem,
+        child: Container(
+          // Alvo de toque confortável para uso com uma mão no curral.
+          constraints: const BoxConstraints(minHeight: 48.0),
+          padding: const EdgeInsetsDirectional.fromSTEB(10.0, 8.0, 12.0, 8.0),
+          decoration: BoxDecoration(
+            color: AppTokens.brandTint,
+            borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.swap_vert_rounded,
+                color: AppTokens.brand,
+                size: 20.0,
+              ),
+              const SizedBox(width: 6.0),
+              Text(
+                rotulo,
+                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                      color: AppTokens.brand,
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   /// Campo de busca no mesmo padrão das telas anteriores.
   Widget _campoBusca(BuildContext context) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-      child: TextFormField(
-        controller: _searchListTextController,
-        focusNode: _searchListFocusNode,
-        onChanged: (_) => safeSetState(() {}),
-        obscureText: false,
-        decoration: InputDecoration(
-          labelText: 'Pesquisar animal',
-          labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                ),
-                letterSpacing: 0.0,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(child: _campoBuscaTexto(context)),
+          const SizedBox(width: 8.0),
+          _botaoOrdenacao(context),
+        ],
+      ),
+    );
+  }
+
+  /// O campo em si, sem o padding externo — a linha acima cuida do arranjo.
+  Widget _campoBuscaTexto(BuildContext context) {
+    return TextFormField(
+      controller: _searchListTextController,
+      focusNode: _searchListFocusNode,
+      onChanged: (_) => safeSetState(() {}),
+      obscureText: false,
+      decoration: InputDecoration(
+        labelText: 'Pesquisar animal',
+        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+              font: GoogleFonts.readexPro(
                 fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
                 fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
               ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.transparent, width: 1.0),
-            borderRadius: BorderRadius.circular(14.0),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide:
-                const BorderSide(color: AppTokens.secondary, width: 1.5),
-            borderRadius: BorderRadius.circular(14.0),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).error, width: 1.0),
-            borderRadius: BorderRadius.circular(14.0),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).error, width: 1.0),
-            borderRadius: BorderRadius.circular(14.0),
-          ),
-          filled: true,
-          fillColor: FlutterFlowTheme.of(context).primaryBackground,
-          prefixIcon: Icon(
-            Icons.search_rounded,
-            color: FlutterFlowTheme.of(context).secondaryText,
-          ),
-          suffixIcon: _searchListTextController.text.isNotEmpty
-              ? InkWell(
-                  onTap: () {
-                    _searchListTextController?.clear();
-                    safeSetState(() {});
-                  },
-                  child: Icon(
-                    Icons.clear,
-                    color: FlutterFlowTheme.of(context).secondaryText,
-                    size: 18.0,
-                  ),
-                )
-              : null,
-        ),
-        style: FlutterFlowTheme.of(context).bodyMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-              ),
               letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.transparent, width: 1.0),
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: AppTokens.secondary, width: 1.5),
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide:
+              BorderSide(color: FlutterFlowTheme.of(context).error, width: 1.0),
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide:
+              BorderSide(color: FlutterFlowTheme.of(context).error, width: 1.0),
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
+        prefixIcon: Icon(
+          Icons.search_rounded,
+          color: FlutterFlowTheme.of(context).secondaryText,
+        ),
+        suffixIcon: _searchListTextController.text.isNotEmpty
+            ? InkWell(
+                onTap: () {
+                  _searchListTextController?.clear();
+                  safeSetState(() {});
+                },
+                child: Icon(
+                  Icons.clear,
+                  color: FlutterFlowTheme.of(context).secondaryText,
+                  size: 18.0,
+                ),
+              )
+            : null,
+      ),
+      style: FlutterFlowTheme.of(context).bodyMedium.override(
+            font: GoogleFonts.readexPro(
               fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
             ),
-        validator: _searchListTextControllerValidator.asValidator(context),
-        maxLines: 1,
-      ),
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+          ),
+      validator: _searchListTextControllerValidator.asValidator(context),
+      maxLines: 1,
     );
   }
 
@@ -647,32 +710,7 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
             backgroundColor:
                 _respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
             automaticallyImplyLeading: false,
-            actions: [
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 8, 0),
-                child: Tooltip(
-                  message: _ordemCrescente
-                      ? 'Ordem crescente — tocar para inverter'
-                      : 'Ordem decrescente — tocar para inverter',
-                  child: FlutterFlowIconButton(
-                    borderColor: Colors.transparent,
-                    borderRadius: 30.0,
-                    borderWidth: 1.0,
-                    buttonSize: 50.0,
-                    // Icones distintos: um botao que nao muda de aparencia nao
-                    // diz em que ordem a lista esta.
-                    icon: Icon(
-                      _ordemCrescente
-                          ? Icons.arrow_downward_rounded
-                          : Icons.arrow_upward_rounded,
-                      color: Colors.white,
-                      size: 26.0,
-                    ),
-                    onPressed: _alternarOrdem,
-                  ),
-                ),
-              ),
-            ],
+            actions: [],
             flexibleSpace: FlexibleSpaceBar(
               title: Column(
                 mainAxisSize: MainAxisSize.max,
