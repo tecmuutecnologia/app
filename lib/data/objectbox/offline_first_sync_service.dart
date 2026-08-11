@@ -613,12 +613,27 @@ class OfflineFirstSyncService {
   /// rebanho pelo caminho das propriedades dele, que o download anterior já
   /// gravou com o `parentPath` do técnico dono, e busca filtrando por
   /// propriedade: o que enxerga é o dele, não o rebanho inteiro do técnico.
+  /// Total de documentos da consulta, ou `null` se a contagem falhar.
+  ///
+  /// O total alimenta APENAS a barra de progresso — a paginação em
+  /// `_baixarAnimaisPaginado` não depende dele. Antes, um `count()` que falhasse
+  /// derrubava o download inteiro de animais antes da primeira página: um
+  /// indicador cosmético matando a sincronização.
+  Future<int?> _contarOuNulo(Query<Map<String, dynamic>> consulta) async {
+    try {
+      return (await consulta.count().get()).count;
+    } catch (e) {
+      debugPrint('⚠️ count() indisponível, progresso indeterminado: $e');
+      return null;
+    }
+  }
+
   Future<void> _downloadTodosAnimais(DocumentReference? tecnicoRef) async {
     int totalAnimais = 0;
 
     if (tecnicoRef != null) {
       final colecao = tecnicoRef.collection('animaisProdutores');
-      final total = (await colecao.count().get()).count ?? 0;
+      final total = await _contarOuNulo(colecao);
       totalAnimais = await _baixarAnimaisPaginado(
         colecao,
         tecnicoRef.path,
@@ -639,9 +654,16 @@ class OfflineFirstSyncService {
                   isEqualTo: _firestore.doc(alvo.propriedadePath)),
       };
 
-      var total = 0;
+      // Soma o que der para contar; qualquer contagem que falhe torna o total
+      // desconhecido, e a barra fica indeterminada em vez de mentir.
+      int? total = 0;
       for (final consulta in consultas.values) {
-        total += (await consulta.count().get()).count ?? 0;
+        final parcial = await _contarOuNulo(consulta);
+        if (parcial == null) {
+          total = null;
+          break;
+        }
+        total = total! + parcial;
       }
 
       for (final entrada in consultas.entries) {
@@ -655,6 +677,10 @@ class OfflineFirstSyncService {
         } catch (e) {
           debugPrint(
               '⚠️ Erro ao baixar animais de ${entrada.key.propriedadePath}: $e');
+          // Cota estourada aborta a etapa em vez de ser engolida: se fosse
+          // engolida, o laco de checkpoint marcaria a etapa como concluida sem
+          // ter baixado nada, e a retomada a pularia para sempre.
+          if (ehErroDeCota(e)) rethrow;
         }
       }
     }
@@ -672,7 +698,7 @@ class OfflineFirstSyncService {
   Future<int> _baixarAnimaisPaginado(
     Query<Map<String, dynamic>> consulta,
     String parentPath,
-    int total,
+    int? total,
     int acumulado,
   ) async {
     DocumentSnapshot? ultimo;
@@ -748,7 +774,7 @@ class OfflineFirstSyncService {
     if (tecnicoRef != null) {
       try {
         final colecao = tecnicoRef.collection('acoes');
-        final total = (await colecao.count().get()).count ?? 0;
+        final total = await _contarOuNulo(colecao);
         DocumentSnapshot? ultimo;
 
         while (true) {
@@ -779,6 +805,10 @@ class OfflineFirstSyncService {
         }
       } catch (e) {
         debugPrint('⚠️ Erro ao baixar ações: $e');
+        // Cota estourada aborta a etapa em vez de ser engolida: se fosse
+        // engolida, o laco de checkpoint marcaria a etapa como concluida sem
+        // ter baixado nada, e a retomada a pularia para sempre.
+        if (ehErroDeCota(e)) rethrow;
       }
     } else {
       // Produtor: mesma lacuna dos animais. Sem isto o histórico do prontuário
@@ -800,6 +830,10 @@ class OfflineFirstSyncService {
           }
         } catch (e) {
           debugPrint('⚠️ Erro ao baixar ações de ${alvo.propriedadePath}: $e');
+          // Cota estourada aborta a etapa em vez de ser engolida: se fosse
+          // engolida, o laco de checkpoint marcaria a etapa como concluida sem
+          // ter baixado nada, e a retomada a pularia para sempre.
+          if (ehErroDeCota(e)) rethrow;
         }
       }
     }
@@ -835,6 +869,10 @@ class OfflineFirstSyncService {
         }
       } catch (e) {
         debugPrint('⚠️ Erro ao baixar financeiro: $e');
+        // Cota estourada aborta a etapa em vez de ser engolida: se fosse
+        // engolida, o laco de checkpoint marcaria a etapa como concluida sem
+        // ter baixado nada, e a retomada a pularia para sempre.
+        if (ehErroDeCota(e)) rethrow;
       }
 
       // Baixa ações sanitárias (subcoleção da PROPRIEDADE; antes o download
@@ -852,6 +890,10 @@ class OfflineFirstSyncService {
         }
       } catch (e) {
         debugPrint('⚠️ Erro ao baixar ações sanitárias: $e');
+        // Cota estourada aborta a etapa em vez de ser engolida: se fosse
+        // engolida, o laco de checkpoint marcaria a etapa como concluida sem
+        // ter baixado nada, e a retomada a pularia para sempre.
+        if (ehErroDeCota(e)) rethrow;
       }
 
       // Baixa resumos de visitas. `resumo_da_visita` é TOP-LEVEL no
@@ -875,6 +917,10 @@ class OfflineFirstSyncService {
         }
       } catch (e) {
         debugPrint('⚠️ Erro ao baixar visitas: $e');
+        // Cota estourada aborta a etapa em vez de ser engolida: se fosse
+        // engolida, o laco de checkpoint marcaria a etapa como concluida sem
+        // ter baixado nada, e a retomada a pularia para sempre.
+        if (ehErroDeCota(e)) rethrow;
       }
 
       // Baixa tratamentos. Passam a ser subcoleção da PROPRIEDADE (antes o
@@ -894,6 +940,10 @@ class OfflineFirstSyncService {
         }
       } catch (e) {
         debugPrint('⚠️ Erro ao baixar tratamentos: $e');
+        // Cota estourada aborta a etapa em vez de ser engolida: se fosse
+        // engolida, o laco de checkpoint marcaria a etapa como concluida sem
+        // ter baixado nada, e a retomada a pularia para sempre.
+        if (ehErroDeCota(e)) rethrow;
       }
 
       // Baixa recomendações
@@ -911,6 +961,10 @@ class OfflineFirstSyncService {
         }
       } catch (e) {
         debugPrint('⚠️ Erro ao baixar recomendações: $e');
+        // Cota estourada aborta a etapa em vez de ser engolida: se fosse
+        // engolida, o laco de checkpoint marcaria a etapa como concluida sem
+        // ter baixado nada, e a retomada a pularia para sempre.
+        if (ehErroDeCota(e)) rethrow;
       }
 
       // Baixa ações da visita
@@ -927,6 +981,10 @@ class OfflineFirstSyncService {
         }
       } catch (e) {
         debugPrint('⚠️ Erro ao baixar ações da visita: $e');
+        // Cota estourada aborta a etapa em vez de ser engolida: se fosse
+        // engolida, o laco de checkpoint marcaria a etapa como concluida sem
+        // ter baixado nada, e a retomada a pularia para sempre.
+        if (ehErroDeCota(e)) rethrow;
       }
     }
 
