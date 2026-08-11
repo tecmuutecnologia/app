@@ -11,6 +11,7 @@ import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
+import '/features/shared/widgets/botao_ordenacao.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/features/animais/presentation/widgets/descarte_animal_widget.dart';
@@ -63,6 +64,25 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
   /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
   List<AnimaisProdutoresStruct> _animaisExistentes = [];
 
+  /// Direção da ordenação da lista. Crescente por padrão: brinco 390 antes de
+  /// 430, e nome A antes de Z.
+  bool _ordemCrescente = true;
+
+  /// Regra única do domínio, com a direção escolhida no botão.
+  int _compararStructs(AnimaisProdutoresStruct a, AnimaisProdutoresStruct b) {
+    final c = compararStructs(a, b);
+    return _ordemCrescente ? c : -c;
+  }
+
+  /// Inverte a ordem e reordena a lista já carregada — sem tocar no ObjectBox,
+  /// já que só a direção mudou.
+  void _alternarOrdem() {
+    safeSetState(() {
+      _ordemCrescente = !_ordemCrescente;
+      _animaisExistentes = _animaisExistentes.toList()..sort(_compararStructs);
+    });
+  }
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -79,7 +99,7 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
           .toList()
         // `getAll()` devolve ordem de insercao do ObjectBox, que espelha a
         // ordem de documentId do Firestore — nem numerica, nem alfabetica.
-        ..sort(compararStructs);
+        ..sort(_compararStructs);
     }
 
     // On page load action.
@@ -567,93 +587,106 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
   Widget _campoBusca(BuildContext context) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-      child: TextFormField(
-        controller: _searchListTextController,
-        focusNode: _searchListFocusNode,
-        onChanged: (_) => safeSetState(() {}),
-        obscureText: false,
-        decoration: InputDecoration(
-          labelText: 'Pesquisar animal',
-          labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                ),
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-              ),
-          hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                ),
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-              ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              color: Colors.transparent,
-              width: 1.0,
-            ),
-            borderRadius: BorderRadius.circular(14.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(child: _campoBuscaTexto(context)),
+          const SizedBox(width: 8.0),
+          BotaoOrdenacao(
+            crescente: _ordemCrescente,
+            onAlternar: _alternarOrdem,
           ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              color: AppTokens.secondary,
-              width: 1.5,
-            ),
-            borderRadius: BorderRadius.circular(14.0),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).error,
-              width: 1.0,
-            ),
-            borderRadius: BorderRadius.circular(14.0),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).error,
-              width: 1.0,
-            ),
-            borderRadius: BorderRadius.circular(14.0),
-          ),
-          filled: true,
-          fillColor: FlutterFlowTheme.of(context).primaryBackground,
-          prefixIcon: Icon(
-            Icons.search_rounded,
-            color: FlutterFlowTheme.of(context).secondaryText,
-          ),
-          suffixIcon: _searchListTextController.text.isNotEmpty
-              ? InkWell(
-                  onTap: () {
-                    _searchListTextController?.clear();
-                    safeSetState(() {});
-                  },
-                  child: Icon(
-                    Icons.clear,
-                    color: FlutterFlowTheme.of(context).secondaryText,
-                    size: 18.0,
-                  ),
-                )
-              : null,
-        ),
-        style: FlutterFlowTheme.of(context).bodyMedium.override(
+        ],
+      ),
+    );
+  }
+
+  /// O campo em si, sem o padding externo — a linha acima cuida do arranjo.
+  Widget _campoBuscaTexto(BuildContext context) {
+    return TextFormField(
+      controller: _searchListTextController,
+      focusNode: _searchListFocusNode,
+      onChanged: (_) => safeSetState(() {}),
+      obscureText: false,
+      decoration: InputDecoration(
+        labelText: 'Pesquisar animal',
+        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
               font: GoogleFonts.readexPro(
-                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
               ),
               letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+        hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+              ),
+              letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
+            ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: Colors.transparent,
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            color: AppTokens.secondary,
+            width: 1.5,
+          ),
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).error,
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: FlutterFlowTheme.of(context).error,
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
+        prefixIcon: Icon(
+          Icons.search_rounded,
+          color: FlutterFlowTheme.of(context).secondaryText,
+        ),
+        suffixIcon: _searchListTextController.text.isNotEmpty
+            ? InkWell(
+                onTap: () {
+                  _searchListTextController?.clear();
+                  safeSetState(() {});
+                },
+                child: Icon(
+                  Icons.clear,
+                  color: FlutterFlowTheme.of(context).secondaryText,
+                  size: 18.0,
+                ),
+              )
+            : null,
+      ),
+      style: FlutterFlowTheme.of(context).bodyMedium.override(
+            font: GoogleFonts.readexPro(
               fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
               fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
             ),
-        validator: _searchListTextControllerValidator.asValidator(context),
-        maxLines: 1,
-      ),
+            letterSpacing: 0.0,
+            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+          ),
+      validator: _searchListTextControllerValidator.asValidator(context),
+      maxLines: 1,
     );
   }
 

@@ -10,6 +10,7 @@ import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
+import '/features/shared/widgets/botao_ordenacao.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '../widgets/nova_acao_exame_ginecologico_widget.dart';
 import '/features/prontuario/presentation/pages/prontuario_animal_page.dart';
@@ -554,59 +555,6 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
     );
   }
 
-  /// Botão de ordenação, ao lado da busca.
-  ///
-  /// Mostra a ordem ATUAL ("Menor"/"Maior") em vez de nomear a ação
-  /// ("Ordenar"): assim o usuário não precisa de um passo mental para descobrir
-  /// como a lista está — o botão é a própria resposta, e tocar inverte as duas
-  /// coisas.
-  ///
-  /// A palavra fica: um glifo sozinho traria de volta o "adivinhe o que faz".
-  /// E fica FORA da AppBar, que já tem a seta de voltar — um segundo ícone de
-  /// seta ali era confundível com navegação.
-  Widget _botaoOrdenacao(BuildContext context) {
-    final rotulo = _ordemCrescente ? 'Menor' : 'Maior';
-
-    return Semantics(
-      button: true,
-      label: _ordemCrescente
-          ? 'Ordem: menor brinco primeiro. Tocar para inverter.'
-          : 'Ordem: maior brinco primeiro. Tocar para inverter.',
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-        onTap: _alternarOrdem,
-        child: Container(
-          // Alvo de toque confortável para uso com uma mão no curral.
-          constraints: const BoxConstraints(minHeight: 48.0),
-          padding: const EdgeInsetsDirectional.fromSTEB(10.0, 8.0, 12.0, 8.0),
-          decoration: BoxDecoration(
-            color: AppTokens.brandTint,
-            borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.swap_vert_rounded,
-                color: AppTokens.brand,
-                size: 20.0,
-              ),
-              const SizedBox(width: 6.0),
-              Text(
-                rotulo,
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      color: AppTokens.brand,
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w600,
-                    ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   /// Campo de busca no mesmo padrão das telas anteriores.
   Widget _campoBusca(BuildContext context) {
     return Padding(
@@ -616,7 +564,10 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
         children: [
           Expanded(child: _campoBuscaTexto(context)),
           const SizedBox(width: 8.0),
-          _botaoOrdenacao(context),
+          BotaoOrdenacao(
+            crescente: _ordemCrescente,
+            onAlternar: _alternarOrdem,
+          ),
         ],
       ),
     );
