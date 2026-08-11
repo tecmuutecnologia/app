@@ -11,6 +11,10 @@ enum SyncErroTipo {
 
   /// Offline e sem nada baixado ainda. Nao ha dado parcial com que continuar.
   semConexao,
+
+  /// A cota do Firestore foi atingida. Os dados baixados ate aqui sao validos e
+  /// o restante desce na proxima tentativa, a partir da etapa que faltou.
+  cotaExcedida,
 }
 
 /// Para onde ir quando a sincronizacao terminar.
@@ -79,7 +83,9 @@ class SyncErro extends SyncState {
   final SyncEtapa? etapa;
   final String mensagem;
 
-  bool get podeContinuarAssimMesmo => tipo == SyncErroTipo.falhaDownload;
+  bool get podeContinuarAssimMesmo =>
+      tipo == SyncErroTipo.falhaDownload ||
+      tipo == SyncErroTipo.cotaExcedida;
 }
 
 class SyncConcluido extends SyncState {

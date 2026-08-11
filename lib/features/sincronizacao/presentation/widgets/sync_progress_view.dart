@@ -266,24 +266,35 @@ class SyncProgressView extends StatelessWidget {
   }
 
   Widget _erro(BuildContext context, SyncErro e) {
-    final titulo = e.tipo == SyncErroTipo.semConexao
-        ? 'Sem conexão'
-        : 'Não foi possível concluir a sincronização';
+    final titulo = switch (e.tipo) {
+      SyncErroTipo.semConexao => 'Sem conexão',
+      // Cota nao e falha: o que baixou e valido e o usuario pode trabalhar.
+      SyncErroTipo.cotaExcedida => 'Sincronização parcial',
+      SyncErroTipo.falhaDownload => 'Não foi possível concluir a sincronização',
+    };
 
-    final explicacao = e.tipo == SyncErroTipo.semConexao
-        ? 'A primeira sincronização precisa de internet. Conecte-se e tente de novo.'
-        : e.etapa != null
-            ? 'Falhou ao baixar: ${rotuloLinha(e.etapa!)}.'
-            : 'Algo deu errado durante a sincronização.';
+    final explicacao = switch (e.tipo) {
+      SyncErroTipo.semConexao =>
+        'A primeira sincronização precisa de internet. Conecte-se e tente de novo.',
+      SyncErroTipo.cotaExcedida =>
+        'A cota diária do Firebase foi atingida. Seus dados até aqui foram '
+            'salvos e você pode usar o app normalmente. O restante será '
+            'baixado automaticamente.',
+      SyncErroTipo.falhaDownload => e.etapa != null
+          ? 'Falhou ao baixar: ${rotuloLinha(e.etapa!)}.'
+          : 'Algo deu errado durante a sincronização.',
+    };
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Icon(
-          e.tipo == SyncErroTipo.semConexao
-              ? Icons.cloud_off
-              : Icons.error_outline,
+          switch (e.tipo) {
+            SyncErroTipo.semConexao => Icons.cloud_off,
+            SyncErroTipo.cotaExcedida => Icons.info_outline,
+            SyncErroTipo.falhaDownload => Icons.error_outline,
+          },
           size: 56,
           color: Colors.white,
         ),

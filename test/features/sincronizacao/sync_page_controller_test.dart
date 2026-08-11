@@ -253,4 +253,50 @@ void main() {
       expect(c.read(syncPageControllerProvider), isA<SyncConcluido>());
     });
   });
+
+  group('cota excedida', () {
+    test('vira estado de erro do tipo cotaExcedida, nao falhaDownload',
+        () async {
+      final fake = FakeSyncGateway(
+        erroAoBaixar:
+            const SyncCotaExcedidaException(SyncEtapa.animais, 'Quota exceeded'),
+      );
+      final c = containerCom(fake);
+
+      await c.read(syncPageControllerProvider.notifier).iniciar(null);
+
+      final estado = c.read(syncPageControllerProvider);
+      expect(estado, isA<SyncErro>());
+      expect((estado as SyncErro).tipo, SyncErroTipo.cotaExcedida);
+      expect(estado.etapa, SyncEtapa.animais);
+    });
+
+    test('permite continuar assim mesmo', () async {
+      final fake = FakeSyncGateway(
+        erroAoBaixar:
+            const SyncCotaExcedidaException(SyncEtapa.animais, 'Quota exceeded'),
+      );
+      final c = containerCom(fake);
+
+      await c.read(syncPageControllerProvider.notifier).iniciar(null);
+
+      final estado = c.read(syncPageControllerProvider) as SyncErro;
+      expect(estado.podeContinuarAssimMesmo, true);
+    });
+
+    test('continuar assim mesmo conclui o login com os dados parciais',
+        () async {
+      final fake = FakeSyncGateway(
+        erroAoBaixar:
+            const SyncCotaExcedidaException(SyncEtapa.animais, 'Quota exceeded'),
+      );
+      final c = containerCom(fake);
+      await c.read(syncPageControllerProvider.notifier).iniciar(null);
+
+      await c.read(syncPageControllerProvider.notifier).continuarAssimMesmo();
+
+      expect(c.read(syncPageControllerProvider), isA<SyncConcluido>());
+      expect(fake.vezesQueConcluiu, 1);
+    });
+  });
 }

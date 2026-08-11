@@ -72,6 +72,13 @@ class SyncPageController extends Notifier<SyncState> {
           );
           return;
         }
+      } on SyncCotaExcedidaException catch (e) {
+        state = SyncErro(
+          tipo: SyncErroTipo.cotaExcedida,
+          etapa: e.etapa,
+          mensagem: e.mensagem,
+        );
+        return;
       } on SyncFalhaException catch (e) {
         state = SyncErro(
           tipo: SyncErroTipo.falhaDownload,
