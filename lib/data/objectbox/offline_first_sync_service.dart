@@ -6,6 +6,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../core/sync/alvos_animais_produtor.dart';
+import '../../core/sync/janela_pull.dart';
 import '../../core/sync/queue_payload_codec.dart';
 import '../../core/sync/reconciliacao_animais.dart';
 import '../../core/sync/sync_checkpoint.dart';
@@ -107,6 +108,9 @@ class OfflineFirstSyncService {
 
         if (_isOnline && wasOffline) {
           debugPrint('🔄 Conexão restaurada - sincronizando pendências');
+          // Reconectar e o momento mais provavel de haver alteracao remota
+          // acumulada; sem os listeners, este pull e o que a traz.
+          await _pullRemoteChanges();
           await syncPendingChangesToFirestore();
           // Rebaixa os dados do técnico (limites/plano podem ter mudado no
           // Firestore enquanto offline).
@@ -760,6 +764,40 @@ class OfflineFirstSyncService {
     return docs.length;
   }
 
+  /// Grava ações baixadas reaproveitando o `id` local das que já existem.
+  ///
+  /// `AcaoEntity.firestoreId` é `@Unique` e `fromFirestore` devolve sempre
+  /// `id = 0`. Um `putMany` direto seria INSERT e, no segundo download do mesmo
+  /// documento, estouraria a constraint — que é exatamente o problema que
+  /// `reaproveitarIds` já resolve para as tabelas de referência.
+  void _salvarAcoes(
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+    String parentPath,
+  ) {
+    if (docs.isEmpty) return;
+
+    final ids = docs.map((d) => d.id).toList();
+    final existentes = _objectBox.acaoBox
+        .query(AcaoEntity_.firestoreId.oneOf(ids))
+        .build()
+        .find();
+
+    final baixados = [
+      for (final doc in docs)
+        AcaoEntity.fromFirestore(doc.data(), doc.id, parentPath),
+    ];
+
+    reaproveitarIds<AcaoEntity>(
+      existentes: existentes,
+      baixados: baixados,
+      firestoreIdDe: (e) => e.firestoreId,
+      idDe: (e) => e.id,
+      definirId: (e, id) => e.id = id,
+    );
+
+    _objectBox.acaoBox.putMany(baixados);
+  }
+
   /// Baixa ações e tratamentos.
   ///
   /// As AÇÕES vivem na subcoleção `acoes` do TÉCNICO
@@ -786,10 +824,7 @@ class OfflineFirstSyncService {
           final snapshot = await pagina.get();
           if (snapshot.docs.isEmpty) break;
 
-          _objectBox.acaoBox.putMany([
-            for (final doc in snapshot.docs)
-              AcaoEntity.fromFirestore(doc.data(), doc.id, tecnicoRef.path),
-          ]);
+          _salvarAcoes(snapshot.docs, tecnicoRef.path);
 
           totalAcoes += snapshot.docs.length;
           ultimo = snapshot.docs.last;
@@ -1597,11 +1632,80 @@ class OfflineFirstSyncService {
     return metadata == null || !metadata.initialSyncComplete;
   }
 
+  /// Traz do Firestore o que mudou desde a última sincronização.
+  ///
+  /// Substitui os listeners `.snapshots()` permanentes (um por coleção mais um
+  /// por propriedade — 40 numa conta com 38 propriedades), que reliam coleções
+  /// inteiras a cada attach. Aqui são duas queries delta, trazendo só o que
+  /// mudou.
+  ///
+  /// Documentos sem o campo `lastModified` são invisíveis a um filtro de
+  /// intervalo. Isso é esperado: o carimbo só passou a existir a partir da
+  /// versão que introduziu o pull, e o download completo (sem filtro) continua
+  /// trazendo a base inteira no primeiro login.
+  ///
+  /// No-op em aparelho de produtor: `_tecnicoRefLocal` devolve nulo ali.
+  Future<void> _pullRemoteChanges() async {
+    if (!_isOnline) return;
+
+    final tecnicoRef = _tecnicoRefLocal();
+    if (tecnicoRef == null) return;
+
+    await _pullColecao(
+      etapa: SyncEtapa.animais,
+      consulta: (desde) => tecnicoRef
+          .collection('animaisProdutores')
+          .where('lastModified', isGreaterThan: Timestamp.fromDate(desde)),
+      aplicar: (docs) => _salvarAnimais(docs, tecnicoRef.path),
+    );
+
+    await _pullColecao(
+      etapa: SyncEtapa.acoes,
+      consulta: (desde) => tecnicoRef
+          .collection('acoes')
+          .where('lastModified', isGreaterThan: Timestamp.fromDate(desde)),
+      aplicar: (docs) => _salvarAcoes(docs, tecnicoRef.path),
+    );
+  }
+
+  /// Executa o delta de UMA coleção e avança a marca dela.
+  Future<void> _pullColecao({
+    required SyncEtapa etapa,
+    required Query<Map<String, dynamic>> Function(DateTime desde) consulta,
+    required void Function(List<QueryDocumentSnapshot<Map<String, dynamic>>>)
+        aplicar,
+  }) async {
+    final chave = SyncCheckpoint.chaveDe(etapa);
+    final marca = _objectBox.syncMetadataBox
+        .query(SyncMetadataEntity_.collectionName.equals(chave))
+        .build()
+        .findFirst();
+    final desde = JanelaPull.desde(marca?.lastIncrementalSync);
+
+    try {
+      final snapshot = await consulta(desde).get();
+      if (snapshot.docs.isNotEmpty) {
+        aplicar(snapshot.docs);
+        debugPrint('↓ ${snapshot.docs.length} ${etapa.name} atualizado(s)');
+      }
+      final linha = marca ?? SyncMetadataEntity(collectionName: chave);
+      linha.lastIncrementalSync = DateTime.now().toUtc();
+      _objectBox.syncMetadataBox.put(linha);
+    } catch (e) {
+      // Pull é oportunista: falhar aqui não pode derrubar o push que vem em
+      // seguida nem marcar o app como quebrado.
+      debugPrint('⚠️ Pull de ${etapa.name} falhou: $e');
+    }
+  }
+
   /// Inicia sincronização periódica em background
   void startPeriodicSync({Duration interval = const Duration(minutes: 5)}) {
     _periodicSyncTimer?.cancel();
     _periodicSyncTimer = Timer.periodic(interval, (_) async {
       if (_isOnline) {
+        // Pull antes do push: alteracao remota entra no ObjectBox antes de o
+        // push decidir o que ainda esta pendente.
+        await _pullRemoteChanges();
         await syncPendingChangesToFirestore();
       }
     });

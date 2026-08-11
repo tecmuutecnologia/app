@@ -81,14 +81,6 @@ class OfflineFirstSyncGateway implements SyncGateway {
 
     if (tecnico == null) return const DestinoCompletarPerfil();
 
-    // Sincronização em tempo real Firestore->ObjectBox: reflete mudanças
-    // remotas (ex.: outro dispositivo) automaticamente. Só nativo.
-    if (ObjectBoxService.isInitialized) {
-      await RemoteSyncListenersService.initialize();
-      RemoteSyncListenersService.instance
-          .startAllListeners(tecnico.reference.path);
-    }
-
     // Aquecimento de cache do Firestore para as telas seguintes.
     await queryPropriedadesRecordOnce(parent: tecnico.reference);
     await queryAcoesRecordOnce(parent: tecnico.reference);

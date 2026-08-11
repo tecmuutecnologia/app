@@ -26,7 +26,9 @@ data/            camada de dados (ex-backend/ do FlutterFlow):
     entities/      entidades ObjectBox (implementam SyncableEntity)
     repositories/  1 repo por agregado, sobre BaseSyncRepository<E>
     offline_first_sync_service.dart   o "SyncEngine" (download + push + fila)
-    remote_sync_listeners_service.dart  listeners Firestore->ObjectBox (HOJE INATIVO)
+    remote_sync_listeners_service.dart  listeners Firestore->ObjectBox (SEM CHAMADOR
+                                        desde 2026-08-10: substituidos pelo pull
+                                        incremental em startPeriodicSync)
   schema/        record classes Firestore (geradas); backend.dart (queries); firebase*/, stripe/
 domain/          regras puras testáveis (ex.: animais/classificacao_animal.dart)
 features/        feature-first: <feature>/presentation/{pages,widgets,controllers},
