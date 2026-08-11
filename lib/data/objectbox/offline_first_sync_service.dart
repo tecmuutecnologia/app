@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../core/sync/alvos_animais_produtor.dart';
 import '../../core/sync/queue_payload_codec.dart';
 import '../../core/sync/reconciliacao_animais.dart';
+import '../../core/sync/sync_checkpoint.dart';
 import '../../core/sync/sync_etapa.dart';
 import '../../core/sync/sync_exceptions.dart';
 import '../../core/sync/upsert_referencia.dart';
@@ -153,6 +155,74 @@ class OfflineFirstSyncService {
 
   /// Faz download completo de todos os dados do Firestore
   /// Deve ser chamado no login ou quando dados locais não existem
+  /// Etapas já concluídas, lidas das marcas persistidas.
+  Set<SyncEtapa> _etapasConcluidas() {
+    final marcas = <SyncEtapa>{};
+    for (final etapa in SyncEtapa.values) {
+      final linha = _objectBox.syncMetadataBox
+          .query(SyncMetadataEntity_.collectionName
+              .equals(SyncCheckpoint.chaveDe(etapa)))
+          .build()
+          .findFirst();
+      if (linha != null && linha.initialSyncComplete) marcas.add(etapa);
+    }
+    return marcas;
+  }
+
+  /// Fecha as marcas de etapa ao fim de um download completo bem-sucedido.
+  ///
+  /// Duas coisas acontecem aqui, e as duas importam:
+  ///
+  /// 1. `initialSyncComplete` volta a `false`, para que um próximo
+  ///    `performFullDownload` (troca de aparelho, logout/login) recomece do
+  ///    zero em vez de achar que já baixou tudo.
+  /// 2. `lastIncrementalSync` recebe AGORA. Sem isso o primeiro pull
+  ///    incremental veria a marca nula, cairia no início dos tempos e
+  ///    rebaixaria a base inteira minutos depois de terminar o download
+  ///    completo — justamente o consumo que se quer eliminar.
+  ///
+  /// `_updateSyncMetadata` não serve aqui: ele só sabe LIGAR o
+  /// `initialSyncComplete`, nunca desligar.
+  void _fecharMarcasDeEtapa() {
+    final agora = DateTime.now().toUtc();
+    for (final etapa in SyncEtapa.values) {
+      final chave = SyncCheckpoint.chaveDe(etapa);
+      final linha = _objectBox.syncMetadataBox
+              .query(SyncMetadataEntity_.collectionName.equals(chave))
+              .build()
+              .findFirst() ??
+          SyncMetadataEntity(collectionName: chave);
+      linha.initialSyncComplete = false;
+      linha.lastIncrementalSync = agora;
+      _objectBox.syncMetadataBox.put(linha);
+    }
+  }
+
+  /// Referência do técnico LOGADO, remontada do ObjectBox sem ida à rede.
+  ///
+  /// Usada em dois lugares: quando a etapa `tecnico` foi pulada por já ter
+  /// concluído, e no pull incremental.
+  ///
+  /// O filtro por `uidPerson` não é detalhe: o cache de um aparelho de PRODUTOR
+  /// também contém o documento do técnico dele. Pegar "o primeiro técnico da
+  /// box" faria o pull baixar o rebanho inteiro daquele técnico — animais de
+  /// outros produtores. Casando com o usuário logado, isto devolve `null` em
+  /// aparelho de produtor, e o pull vira no-op ali (produtor continua servido
+  /// pelo download completo).
+  DocumentReference? _tecnicoRefLocal() {
+    final userId = _lastUserId ?? FirebaseAuth.instance.currentUser?.uid;
+    if (userId == null) return null;
+
+    final tecnico = _objectBox.tecnicoBox
+        .query(TecnicoEntity_.uidPerson.equals(userId))
+        .build()
+        .findFirst();
+
+    final firestoreId = tecnico?.firestoreId;
+    if (firestoreId == null) return null;
+    return _firestore.doc('tecnico/$firestoreId');
+  }
+
   Future<void> performFullDownload({
     required String userId,
     SyncProgressCallback? onProgress,
@@ -165,42 +235,57 @@ class OfflineFirstSyncService {
     }
 
     _updateStatus(SyncStatus.syncing);
-    _reportProgress(SyncEtapa.referencias, 'Tabelas de referência');
 
+    final checkpoint = SyncCheckpoint(_etapasConcluidas());
+    if (checkpoint.concluidas.isNotEmpty) {
+      debugPrint(
+          '↻ Retomando download: ${checkpoint.pendentes.length} etapa(s) '
+          'pendente(s) de ${SyncEtapa.values.length}');
+    }
+
+    // A referência do técnico é produzida pela etapa `tecnico` e consumida por
+    // quatro etapas seguintes. Se aquela etapa já concluiu numa tentativa
+    // anterior, remonta do ObjectBox em vez de rebaixar o documento.
+    DocumentReference? tecnicoRef =
+        checkpoint.concluidas.contains(SyncEtapa.tecnico)
+            ? _tecnicoRefLocal()
+            : null;
+
+    SyncEtapa? etapaAtual;
     try {
-      // 1. Baixa tabelas de referência primeiro (são usadas por outras entidades)
-      await _downloadReferenceTables();
-
-      // 2. Sincroniza Person do usuário
-      _reportProgress(SyncEtapa.usuario, 'Seus dados');
-      await _downloadPerson(userId);
-
-      // 3. Sincroniza Tecnico se existir
-      _reportProgress(SyncEtapa.tecnico, 'Dados do técnico');
-      final tecnicoRef = await _downloadTecnico(userId);
-
-      // 4. Se for técnico, baixa todos os produtores vinculados
-      _reportProgress(SyncEtapa.produtores, 'Produtores');
-      if (tecnicoRef != null) {
-        await _downloadProdutoresDoTecnico(tecnicoRef);
-      } else {
-        // Se for produtor, baixa seus próprios dados
-        await _downloadProdutor(userId);
+      for (final etapa in checkpoint.pendentes) {
+        etapaAtual = etapa;
+        switch (etapa) {
+          case SyncEtapa.referencias:
+            _reportProgress(etapa, 'Tabelas de referência');
+            await _downloadReferenceTables();
+          case SyncEtapa.usuario:
+            _reportProgress(etapa, 'Seus dados');
+            await _downloadPerson(userId);
+          case SyncEtapa.tecnico:
+            _reportProgress(etapa, 'Dados do técnico');
+            tecnicoRef = await _downloadTecnico(userId);
+          case SyncEtapa.produtores:
+            _reportProgress(etapa, 'Produtores');
+            if (tecnicoRef != null) {
+              await _downloadProdutoresDoTecnico(tecnicoRef);
+            } else {
+              await _downloadProdutor(userId);
+            }
+          case SyncEtapa.propriedades:
+            _reportProgress(etapa, 'Propriedades');
+            await _downloadTodasPropriedades(tecnicoRef, userId);
+          case SyncEtapa.animais:
+            await _downloadTodosAnimais(tecnicoRef);
+          case SyncEtapa.acoes:
+            await _downloadAcoes(tecnicoRef);
+          case SyncEtapa.financeiro:
+            _reportProgress(etapa, 'Financeiro e visitas');
+            await _downloadFinanceiroEVisitas();
+        }
+        _updateSyncMetadata(SyncCheckpoint.chaveDe(etapa), DateTime.now(),
+            complete: true);
       }
-
-      // 5. Baixa todas as propriedades
-      _reportProgress(SyncEtapa.propriedades, 'Propriedades');
-      await _downloadTodasPropriedades(tecnicoRef, userId);
-
-      // 6. Baixa todos os animais (subcoleção 'animaisProdutores' do técnico)
-      await _downloadTodosAnimais(tecnicoRef);
-
-      // 7. Baixa ações e tratamentos
-      await _downloadAcoes(tecnicoRef);
-
-      // 8. Baixa dados financeiros e visitas
-      _reportProgress(SyncEtapa.financeiro, 'Financeiro e visitas');
-      await _downloadFinanceiroEVisitas();
 
       // Marca sincronização inicial como completa
       _updateSyncMetadata('initial_download', DateTime.now(), complete: true);
@@ -209,15 +294,23 @@ class OfflineFirstSyncService {
       _updateSyncMetadata(_kReparoPathPropriedades, DateTime.now(),
           complete: true);
       _initialSyncComplete = true;
+      // As marcas cumpriram seu papel. Zerá-las deixa um próximo download
+      // completo recomeçar do zero, e carimbar `lastIncrementalSync` evita que
+      // o primeiro pull rebaixe a base inteira.
+      _fecharMarcasDeEtapa();
 
       _reportProgress(SyncEtapa.financeiro, 'Concluído', atual: 1, total: 1);
       _updateStatus(SyncStatus.completed);
     } on SyncOfflineException {
       rethrow;
     } catch (e) {
-      debugPrint('❌ Erro no download completo: $e');
       _updateStatus(SyncStatus.error);
-      throw SyncFalhaException(_lastProgress?.etapa, e);
+      if (ehErroDeCota(e)) {
+        debugPrint('⚠️ Cota do Firestore atingida na etapa $etapaAtual: $e');
+        throw SyncCotaExcedidaException(etapaAtual, e);
+      }
+      debugPrint('❌ Erro no download completo (etapa $etapaAtual): $e');
+      throw SyncFalhaException(etapaAtual, e);
     }
   }
 
