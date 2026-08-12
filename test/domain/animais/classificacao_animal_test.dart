@@ -134,4 +134,22 @@ void main() {
       }
     });
   });
+
+  group('podeRegistrarDgMais', () {
+    test('bloqueia animal sem PP e com status comum', () {
+      expect(podeRegistrarDgMais(kStatusVazia, ''), isFalse);
+    });
+
+    test('libera quando ha PP registrado', () {
+      expect(podeRegistrarDgMais(kStatusVazia, '10/06/2026'), isTrue);
+    });
+
+    test('libera Inseminada PP mesmo sem data de PP', () {
+      expect(podeRegistrarDgMais(kStatusInseminadaPP, ''), isTrue);
+    });
+
+    test('trata dtPP nulo como ausencia de PP', () {
+      expect(podeRegistrarDgMais(kStatusVazia, null), isFalse);
+    });
+  });
 }

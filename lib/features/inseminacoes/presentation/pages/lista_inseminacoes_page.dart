@@ -6,8 +6,8 @@ import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/domain/animais/ordenacao_animal.dart';
-import '/data/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
+import '/features/animais/presentation/animais_ordenados_view.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
@@ -60,10 +60,6 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
   final String? Function(BuildContext, String?)?
       _searchListTextControllerValidator = null;
 
-  /// Lista de animais existentes (fonte ObjectBox). Antes em
-  /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
-  List<AnimaisProdutoresStruct> _animaisExistentes = [];
-
   /// Direção da ordenação da lista. Crescente por padrão: brinco 390 antes de
   /// 430, e nome A antes de Z.
   bool _ordemCrescente = true;
@@ -74,13 +70,10 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
     return _ordemCrescente ? c : -c;
   }
 
-  /// Inverte a ordem e reordena a lista já carregada — sem tocar no ObjectBox,
-  /// já que só a direção mudou.
+  /// Inverte a ordem. A lista se reordena sozinha: `AnimaisOrdenadosView`
+  /// recebe `_compararStructs`, que ja depende de `_ordemCrescente`.
   void _alternarOrdem() {
-    safeSetState(() {
-      _ordemCrescente = !_ordemCrescente;
-      _animaisExistentes = _animaisExistentes.toList()..sort(_compararStructs);
-    });
+    safeSetState(() => _ordemCrescente = !_ordemCrescente);
   }
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -88,19 +81,6 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
   @override
   void initState() {
     super.initState();
-
-    // Fonte única: carrega a lista do ObjectBox (offline-first). A tela renderiza
-    // sempre desta lista; o Firestore é usado apenas para sincronizar.
-    if (ObjectBoxService.isInitialized) {
-      _animaisExistentes = AnimalRepository()
-          .getAll()
-          .where((a) => !a.isDeleted)
-          .map(animalEntityToStruct)
-          .toList()
-        // `getAll()` devolve ordem de insercao do ObjectBox, que espelha a
-        // ordem de documentId do Firestore — nem numerica, nem alfabetica.
-        ..sort(_compararStructs);
-    }
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
@@ -794,28 +774,18 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
                     primary: false,
                     scrollDirection: Axis.vertical,
                     children: [
-                      Builder(
-                        builder: (context) {
-                          final listaAnimaisOfflineExistente =
-                              _animaisExistentes.toList();
-
-                          return ListView.builder(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 120.0),
-                            primary: false,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: listaAnimaisOfflineExistente.length,
-                            itemBuilder:
-                                (context, listaAnimaisOfflineExistenteIndex) {
-                              final listaAnimaisOfflineExistenteItem =
-                                  listaAnimaisOfflineExistente[
-                                      listaAnimaisOfflineExistenteIndex];
-                              return _itemAnimalElegivel(
-                                  context, listaAnimaisOfflineExistenteItem);
-                            },
-                          );
-                        },
+                      AnimaisOrdenadosView(
+                        comparador: _compararStructs,
+                        builder: (context, animais) => ListView.builder(
+                          padding:
+                              EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 120.0),
+                          primary: false,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemCount: animais.length,
+                          itemBuilder: (context, indice) =>
+                              _itemAnimalElegivel(context, animais[indice]),
+                        ),
                       ),
                     ],
                   ),
@@ -833,28 +803,18 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
                     scrollDirection: Axis.vertical,
                     children: [
                       if (_searchListTextController.text != '')
-                        Builder(
-                          builder: (context) {
-                            final listaAnimaisOfflineExistente =
-                                _animaisExistentes.toList();
-
-                            return ListView.builder(
-                              padding: EdgeInsetsDirectional.fromSTEB(
-                                  0.0, 0.0, 0.0, 120.0),
-                              primary: false,
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              itemCount: listaAnimaisOfflineExistente.length,
-                              itemBuilder:
-                                  (context, listaAnimaisOfflineExistenteIndex) {
-                                final listaAnimaisOfflineExistenteItem =
-                                    listaAnimaisOfflineExistente[
-                                        listaAnimaisOfflineExistenteIndex];
-                                return _itemAnimalBusca(
-                                    context, listaAnimaisOfflineExistenteItem);
-                              },
-                            );
-                          },
+                        AnimaisOrdenadosView(
+                          comparador: _compararStructs,
+                          builder: (context, animais) => ListView.builder(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 120.0),
+                            primary: false,
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            itemCount: animais.length,
+                            itemBuilder: (context, indice) =>
+                                _itemAnimalBusca(context, animais[indice]),
+                          ),
                         ),
                     ],
                   ),

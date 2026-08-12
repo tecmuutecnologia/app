@@ -4,6 +4,9 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
+import '/data/objectbox/objectbox_service.dart';
+import '/data/objectbox/repositories/tecnico_repository.dart';
+import '/features/perfil/application/espelho_tecnico_local.dart';
 import '/features/sincronizacao/domain/sync_state.dart';
 import '/features/sincronizacao/presentation/pages/sync_page.dart';
 import 'package:collection/collection.dart';
@@ -1100,7 +1103,7 @@ class _CompletarPerfilTecnicoPageState
                 ));
 
                 var tecnicoRecordReference = TecnicoRecord.collection.doc();
-                await tecnicoRecordReference.set(createTecnicoRecordData(
+                final dadosTecnico = createTecnicoRecordData(
                   uidPerson: completarPerfilTecnicoPersonRecord.reference.id,
                   liberado: true,
                   limiteProdutoresContratado: 3,
@@ -1109,20 +1112,14 @@ class _CompletarPerfilTecnicoPageState
                   limiteAnimaisContratado: 50,
                   quantidadeAnimaisCadastrados: 0,
                   restanteLimiteAnimais: 50,
-                ));
+                );
+                await tecnicoRecordReference.set(dadosTecnico);
+                _espelharTecnicoNoCacheLocal(
+                  firestoreId: tecnicoRecordReference.id,
+                  dados: dadosTecnico,
+                );
                 _outUidTecnico = TecnicoRecord.getDocumentFromData(
-                    createTecnicoRecordData(
-                      uidPerson:
-                          completarPerfilTecnicoPersonRecord.reference.id,
-                      liberado: true,
-                      limiteProdutoresContratado: 3,
-                      quantidadeProdutoresCadastrados: 0,
-                      restanteLimiteProdutores: 3,
-                      limiteAnimaisContratado: 50,
-                      quantidadeAnimaisCadastrados: 0,
-                      restanteLimiteAnimais: 50,
-                    ),
-                    tecnicoRecordReference);
+                    dadosTecnico, tecnicoRecordReference);
                 _shouldSetState = true;
 
                 var assinaturaTecnicoRecordReference =
@@ -1192,6 +1189,30 @@ class _CompletarPerfilTecnicoPageState
         ),
       ),
     );
+  }
+
+  /// Grava no ObjectBox o tecnico que acabou de ser criado no Firestore.
+  ///
+  /// O dashboard le o tecnico do cache local, e a sincronizacao disparada logo
+  /// em seguida cai no ramo incremental (o download inicial ja esta marcado
+  /// como completo), que nao baixa documento nenhum. Sem este espelho a tela
+  /// abre sem tecnico.
+  void _espelharTecnicoNoCacheLocal({
+    required String firestoreId,
+    required Map<String, dynamic> dados,
+  }) {
+    // Na web o ObjectBox nao sobe: o cache local simplesmente nao existe.
+    if (!ObjectBoxService.isInitialized) return;
+
+    final repositorio = TecnicoRepository();
+    final espelho = espelhoDoTecnicoRecemCriado(
+      firestoreId: firestoreId,
+      dados: dados,
+      jaNoCache: repositorio.getByFirestoreId(firestoreId),
+    );
+    // `put` direto, sem `save`: o Firestore ja tem o documento, e marcar
+    // needsSync faria a sincronizacao reenviar o que ela acabou de receber.
+    if (espelho != null) repositorio.box.put(espelho);
   }
 
   @override

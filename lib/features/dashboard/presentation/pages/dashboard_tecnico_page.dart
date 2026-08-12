@@ -11,6 +11,8 @@ import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/features/animais/application/animais_providers.dart';
 import '/data/objectbox/entities/index.dart';
+import '/data/objectbox/remote_sync_listeners_service.dart';
+import '/features/onboarding/presentation/pages/welcome_page.dart';
 import '/features/propriedades/application/firestore_refs.dart';
 import '/features/propriedades/application/propriedades_providers.dart';
 import '/features/propriedades/presentation/pages/lista_propriedade_page.dart';
@@ -139,7 +141,12 @@ class _DashboardTecnicoPageState extends ConsumerState<DashboardTecnicoPage>
       error: (_, __) => _buildLoadingScaffold(),
       data: (tecnicoRecord) {
         if (tecnicoRecord == null) {
-          return Container();
+          return Scaffold(
+            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+            body: SafeArea(
+              child: TecnicoAusenteView(onSair: _sairDaConta),
+            ),
+          );
         }
 
         return GestureDetector(
@@ -168,6 +175,24 @@ class _DashboardTecnicoPageState extends ConsumerState<DashboardTecnicoPage>
         );
       },
     );
+  }
+
+  /// Sai da conta pelo mesmo caminho do botao de logout do perfil.
+  ///
+  /// E o unico caminho que recupera um cache sem o tecnico: o logout apaga as
+  /// marcas de sincronizacao, e o login seguinte volta a fazer o download
+  /// completo.
+  Future<void> _sairDaConta() async {
+    // Para os listeners remotos (evita escutar dados do tecnico anterior
+    // apos a troca de conta).
+    if (RemoteSyncListenersService.isInitialized) {
+      RemoteSyncListenersService.instance.dispose();
+    }
+    GoRouter.of(context).prepareAuthEvent();
+    await authManager.signOut();
+    if (!mounted) return;
+    GoRouter.of(context).clearRedirectLocation();
+    context.goNamedAuth(WelcomePage.routeName, context.mounted);
   }
 
   /// Scaffold de loading.

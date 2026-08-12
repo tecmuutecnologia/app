@@ -4,3 +4,4 @@ export 'dashboard_header.dart';
 export 'propriedades_progress_card.dart';
 export 'dashboard_action_buttons.dart';
 export 'app_loading_indicator.dart';
+export 'tecnico_ausente_view.dart';

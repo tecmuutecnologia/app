@@ -447,6 +447,12 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
         width: 1.0,
       ),
       borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
+      // Preventivo: nenhum botao desta tela e desabilitado hoje. Sem este par,
+      // o `color` acima pinta tambem o estado desabilitado — foi assim que o
+      // "DG +" da lista completa ficou verde e com cara de clicavel sem
+      // responder ao toque. Mesmo par usado na tela de diagnostico de gestacao.
+      disabledColor: FlutterFlowTheme.of(context).primaryBackground,
+      disabledTextColor: FlutterFlowTheme.of(context).secondaryText,
     );
   }
 

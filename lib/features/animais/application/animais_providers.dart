@@ -40,6 +40,19 @@ final animaisByGrupoProvider =
 ///
 /// Sem `family`: o cache local contém apenas os animais do técnico logado,
 /// então "todos" já é o rebanho dele.
+/// Lista reativa de TODOS os animais do aparelho, filtrando soft-deletes.
+///
+/// Sem `family` pelo mesmo motivo do `watchTodos` do repositorio: o cache local
+/// contem apenas os animais do tecnico logado, entao "todos" ja e o rebanho
+/// dele. Telas que liam com `getAll()` no `initState` — uma fotografia que nao
+/// reagia a escrita nenhuma — passam a observar isto.
+final animaisTodosProvider = StreamProvider<List<AnimalEntity>>((ref) {
+  final repo = ref.watch(animalRepositoryProvider);
+  return repo
+      .watchTodos()
+      .map((animais) => animais.where((a) => !a.isDeleted).toList());
+});
+
 final animaisAtivosCountProvider = StreamProvider<int>((ref) {
   final repo = ref.watch(animalRepositoryProvider);
   return repo.watchTodos().map(

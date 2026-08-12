@@ -111,3 +111,12 @@ bool ehVacaSeca(String? grupo, String? status) =>
 bool ehElegivelInseminacao(String? grupo, String? status) =>
     ehVacaOuNovilha(grupo) &&
     (ehVazia(status) || ehInseminada(status) || ehInseminadaPP(status));
+
+/// Pode registrar DG+ — regra do botao "DG +" nas listas.
+///
+/// O diagnostico positivo so faz sentido depois de um pre-parto confirmado:
+/// sem isso nao ha ciclo aberto para confirmar. Antes esta condicao vivia
+/// duplicada e invertida (`onPressed: ... ? null : ...`) dentro de dois
+/// botoes da lista completa, sem nome nem teste.
+bool podeRegistrarDgMais(String? status, String? dtPP) =>
+    ehInseminadaPP(status) || (dtPP != null && dtPP.isNotEmpty);

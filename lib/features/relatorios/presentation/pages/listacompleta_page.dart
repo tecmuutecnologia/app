@@ -1,9 +1,9 @@
 // ignore_for_file: unused_import, unused_local_variable, unnecessary_null_comparison
 
 import '/data/backend.dart';
-import '/data/objectbox/index.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/domain/animais/ordenacao_animal.dart';
+import '/features/animais/presentation/animais_ordenados_view.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -62,10 +62,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   final String? Function(BuildContext, String?)?
       _searchListTextControllerValidator = null;
 
-  /// Lista de animais existentes (fonte ObjectBox). Antes em
-  /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
-  List<AnimaisProdutoresStruct> _animaisExistentes = [];
-
   /// Direção da ordenação da lista. Crescente por padrão: brinco 390 antes de
   /// 430, e nome A antes de Z.
   bool _ordemCrescente = true;
@@ -76,13 +72,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
     return _ordemCrescente ? c : -c;
   }
 
-  /// Inverte a ordem e reordena a lista já carregada — sem tocar no ObjectBox,
-  /// já que só a direção mudou.
+  /// Inverte a ordem. A lista se reordena sozinha: `AnimaisOrdenadosView`
+  /// recebe `_compararStructs`, que ja depende de `_ordemCrescente`.
   void _alternarOrdem() {
-    safeSetState(() {
-      _ordemCrescente = !_ordemCrescente;
-      _animaisExistentes = _animaisExistentes.toList()..sort(_compararStructs);
-    });
+    safeSetState(() => _ordemCrescente = !_ordemCrescente);
   }
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -90,19 +83,6 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   @override
   void initState() {
     super.initState();
-
-    // Fonte única: carrega a lista do ObjectBox (offline-first). A tela renderiza
-    // sempre desta lista; o Firestore é usado apenas para sincronizar.
-    if (ObjectBoxService.isInitialized) {
-      _animaisExistentes = AnimalRepository()
-          .getAll()
-          .where((a) => !a.isDeleted)
-          .map(animalEntityToStruct)
-          .toList()
-        // `getAll()` devolve ordem de insercao do ObjectBox, que espelha a
-        // ordem de documentId do Firestore — nem numerica, nem alfabetica.
-        ..sort(_compararStructs);
-    }
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {});
@@ -131,9 +111,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   /// ser escondido em seguida. Somado ao `shrinkWrap` da lista, que constroi
   /// TODOS os itens de uma vez, o resultado era a tela travar em rebanhos
   /// grandes — independente de conexao.
-  List<AnimaisProdutoresStruct> _animaisVisiveis() {
+  List<AnimaisProdutoresStruct> _animaisVisiveis(
+      List<AnimaisProdutoresStruct> animais) {
     final busca = _searchListTextController.text.toLowerCase();
-    return _animaisExistentes.where((item) {
+    return animais.where((item) {
       if (item.uidTecnicoPropriedade != widget.uidPropriedade) return false;
       if (!(ehNovilha(item.grupoAnimal) || ehVaca(item.grupoAnimal))) {
         return false;
@@ -317,6 +298,12 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
       elevation: 0.0,
       borderSide: const BorderSide(color: Colors.transparent, width: 1.0),
       borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
+      // Sem isto o `color` acima pintava tambem o botao desabilitado: o "DG +"
+      // de um animal sem PP ficava verde vivo, com cara de clicavel, e o toque
+      // simplesmente nao respondia. Mesmo par ja usado na tela de diagnostico
+      // de gestacao.
+      disabledColor: FlutterFlowTheme.of(context).primaryBackground,
+      disabledTextColor: FlutterFlowTheme.of(context).secondaryText,
     );
   }
 
@@ -380,12 +367,76 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
     );
   }
 
+  /// Envolve o card para que o toque em qualquer area livre abra o prontuario,
+  /// como ja acontece na tela de inseminações.
+  ///
+  /// Os botoes do card (DG+, Inseminar, PP, ...) vencem o teste de acerto antes
+  /// deste InkWell, entao seguem com o comportamento proprio; aqui chega apenas
+  /// o toque que nao caiu em nenhum deles. Fica DENTRO do `Visibility`, para um
+  /// card oculto nao virar alvo.
+  Widget _cardTocavel(
+      BuildContext context, AnimaisProdutoresStruct item, Widget card) {
+    return InkWell(
+      splashColor: Colors.transparent,
+      focusColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      onTap: () => _abrirProntuario(item),
+      child: card,
+    );
+  }
+
+  /// Abre o prontuario do animal.
+  ///
+  /// Extraido porque os oito parametros serializados estavam duplicados nos
+  /// dois cards (normal e da busca); com o card inteiro clicavel seriam quatro
+  /// copias do mesmo bloco.
+  void _abrirProntuario(AnimaisProdutoresStruct item) {
+    context.pushNamed(
+      ProntuarioAnimalPage.routeName,
+      queryParameters: {
+        'uidPropriedade': serializeParam(
+          widget.uidPropriedade,
+          ParamType.DocumentReference,
+        ),
+        'nomePropriedade': serializeParam(
+          widget.nomePropriedade,
+          ParamType.String,
+        ),
+        'uidTecnico': serializeParam(
+          widget.uidTecnico,
+          ParamType.DocumentReference,
+        ),
+        'emailPropriedade': serializeParam(
+          widget.emailPropriedade,
+          ParamType.String,
+        ),
+        'uidAnimaisProdutores': serializeParam(
+          item.uidAnimal,
+          ParamType.DocumentReference,
+        ),
+        'grupoPredominante': serializeParam(
+          item.grupoAnimal,
+          ParamType.String,
+        ),
+        'visitaPresencial': serializeParam(
+          widget.visitaPresencial,
+          ParamType.bool,
+        ),
+        'diasDg': serializeParam(
+          widget.diasDg,
+          ParamType.String,
+        ),
+      }.withoutNulls,
+    );
+  }
+
   Widget _buildAnimalCard(
       BuildContext context, AnimaisProdutoresStruct item, int index) {
     return Visibility(
       visible: (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
           ((ehNovilha(item.grupoAnimal)) || (ehVaca(item.grupoAnimal))),
-      child: _front1(context, item, index),
+      child: _cardTocavel(context, item, _front1(context, item, index)),
     );
   }
 
@@ -401,7 +452,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
       visible: (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
           matchesSearch &&
           ((ehNovilha(item.grupoAnimal)) || (ehVaca(item.grupoAnimal))),
-      child: _front2(context, item, index),
+      child: _cardTocavel(context, item, _front2(context, item, index)),
     );
   }
 
@@ -573,44 +624,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                                       hoverColor: Colors.transparent,
                                       highlightColor: Colors.transparent,
                                       onTap: () async {
-                                        context.pushNamed(
-                                          ProntuarioAnimalPage.routeName,
-                                          queryParameters: {
-                                            'uidPropriedade': serializeParam(
-                                              widget.uidPropriedade,
-                                              ParamType.DocumentReference,
-                                            ),
-                                            'nomePropriedade': serializeParam(
-                                              widget.nomePropriedade,
-                                              ParamType.String,
-                                            ),
-                                            'uidTecnico': serializeParam(
-                                              widget.uidTecnico,
-                                              ParamType.DocumentReference,
-                                            ),
-                                            'emailPropriedade': serializeParam(
-                                              widget.emailPropriedade,
-                                              ParamType.String,
-                                            ),
-                                            'uidAnimaisProdutores':
-                                                serializeParam(
-                                              item.uidAnimal,
-                                              ParamType.DocumentReference,
-                                            ),
-                                            'grupoPredominante': serializeParam(
-                                              item.grupoAnimal,
-                                              ParamType.String,
-                                            ),
-                                            'visitaPresencial': serializeParam(
-                                              widget.visitaPresencial,
-                                              ParamType.bool,
-                                            ),
-                                            'diasDg': serializeParam(
-                                              widget.diasDg,
-                                              ParamType.String,
-                                            ),
-                                          }.withoutNulls,
-                                        );
+                                        _abrirProntuario(item);
                                       },
                                       child: _chipProntuario(context),
                                     ),
@@ -851,44 +865,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                                       hoverColor: Colors.transparent,
                                       highlightColor: Colors.transparent,
                                       onTap: () async {
-                                        context.pushNamed(
-                                          ProntuarioAnimalPage.routeName,
-                                          queryParameters: {
-                                            'uidPropriedade': serializeParam(
-                                              widget.uidPropriedade,
-                                              ParamType.DocumentReference,
-                                            ),
-                                            'nomePropriedade': serializeParam(
-                                              widget.nomePropriedade,
-                                              ParamType.String,
-                                            ),
-                                            'uidTecnico': serializeParam(
-                                              widget.uidTecnico,
-                                              ParamType.DocumentReference,
-                                            ),
-                                            'emailPropriedade': serializeParam(
-                                              widget.emailPropriedade,
-                                              ParamType.String,
-                                            ),
-                                            'uidAnimaisProdutores':
-                                                serializeParam(
-                                              item.uidAnimal,
-                                              ParamType.DocumentReference,
-                                            ),
-                                            'grupoPredominante': serializeParam(
-                                              item.grupoAnimal,
-                                              ParamType.String,
-                                            ),
-                                            'visitaPresencial': serializeParam(
-                                              widget.visitaPresencial,
-                                              ParamType.bool,
-                                            ),
-                                            'diasDg': serializeParam(
-                                              widget.diasDg,
-                                              ParamType.String,
-                                            ),
-                                          }.withoutNulls,
-                                        );
+                                        _abrirProntuario(item);
                                       },
                                       child: _chipProntuario(context),
                                     ),
@@ -1840,8 +1817,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FFButtonWidget(
-                  onPressed: ((!ehInseminadaPP(item.status)) &&
-                          (item.dtPP == ''))
+                  onPressed: !podeRegistrarDgMais(item.status, item.dtPP)
                       ? null
                       : () async {
                           await showModalBottomSheet(
@@ -2857,8 +2833,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 FFButtonWidget(
-                  onPressed: ((!ehInseminadaPP(item.status)) &&
-                          (item.dtPP == ''))
+                  onPressed: !podeRegistrarDgMais(item.status, item.dtPP)
                       ? null
                       : () async {
                           await showModalBottomSheet(
@@ -3091,9 +3066,10 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
             children: [
               _campoBusca(context),
               Expanded(
-                child: Builder(
-                  builder: (context) {
-                    final lista = _animaisVisiveis();
+                child: AnimaisOrdenadosView(
+                  comparador: _compararStructs,
+                  builder: (context, animais) {
+                    final lista = _animaisVisiveis(animais);
                     final buscando = _searchListTextController.text.isNotEmpty;
                     return ListView.builder(
                       padding: const EdgeInsetsDirectional.fromSTEB(
