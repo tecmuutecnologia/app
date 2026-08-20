@@ -21,6 +21,39 @@
 
 ---
 
+## Resultado (19/08/2026)
+
+**Causa raiz confirmada:** existe `tecnico/OYr7yRw1ubDYVQDOSQK2` com
+`uidPerson = KrIqahVRAzTfyMSux0rb3SowjSk1` — um técnico fantasma na conta do
+produtor, com esse campo e mais nada. `_downloadTecnico` o encontrava, o
+download inteiro passava a apontar para ele e trazia zero propriedades e zero
+animais, sem erro nenhum na tela.
+
+Evidência: cópia do `data.mdb` do emulador (`app_flutter/tecmuu_objectbox/`),
+que continha o `PersonEntity` do produtor e um registro com exatamente
+`uidPerson` + `firestoreId`, e nenhuma ocorrência de `tecnico/`,
+`propriedades/` ou `animaisProdutores`. Confirmado no console do Firestore.
+
+**Status das tarefas:**
+
+| Tarefa | Status |
+|---|---|
+| 1 — Instrumentação | dispensada: a evidência veio do `data.mdb` e do log existente |
+| 2 — Papel do login decide a fonte | **feita** (`fonteDeDownload`) |
+| 3 — Etapa de animais falha visivelmente | **feita** (`erroFatalDaEtapaAnimais`) |
+| 4 — Unificar `uidPerson` | **feita** (`chavesUidPerson`) |
+| 5 — Dono do cache | descartada: o download rodava, R1 não se confirmou |
+| 6 — Validação no aparelho | produtor **validado**; regressão do técnico **pendente** |
+
+Validação do produtor (emulador, 21:23): `🏡 1 propriedade(s)` →
+`↳ tecnico/eGxgvzJRlPsJ7hW4Fj1f/propriedades/yRyMrmg5rsezXulSH9eG: 26 animal(is)`
+→ `🐄 26`, `📋 24 ações`, `📝 10 visitas`. O `data.mdb` foi de 127 KB para 184 KB.
+
+**Pendente:** apagar `tecnico/OYr7yRw1ubDYVQDOSQK2` e varrer outros fantasmas;
+testar o login do técnico (`lucas.tomasini@hotmail.com`) contra regressão.
+
+---
+
 ## Estado da investigação
 
 Descartado com evidência do console do Firestore (verificado pelo usuário em 19/08/2026, conta `teste100@gmail.com` / uid `KrIqahVRAzTfyMSux0rb3SowjSk1`, técnico `tecnico/eGxgvzJRlPsJ7hW4Fj1f`):
