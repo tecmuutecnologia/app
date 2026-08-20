@@ -956,12 +956,16 @@ class OfflineFirstSyncService {
               .where('uidPropriedade',
                   isEqualTo: _firestore.doc(alvo.propriedadePath))
               .get();
-          for (final doc in acoesSnapshot.docs) {
-            _objectBox.acaoBox.put(
+          final acoesDoAlvo = [
+            for (final doc in acoesSnapshot.docs)
               AcaoEntity.fromFirestore(doc.data(), doc.id, alvo.tecnicoPath),
-            );
-            totalAcoes++;
-          }
+          ];
+          _gravarSincronizaveis<AcaoEntity>(
+            _objectBox.acaoBox,
+            acoesDoAlvo,
+            AcaoEntity_.firestoreId,
+          );
+          totalAcoes += acoesDoAlvo.length;
         } catch (e) {
           debugPrint('⚠️ Erro ao baixar ações de ${alvo.propriedadePath}: $e');
           // Cota estourada aborta a etapa em vez de ser engolida: se fosse
@@ -973,6 +977,41 @@ class OfflineFirstSyncService {
     }
 
     debugPrint('📋 $totalAcoes ação(ões) baixada(s)');
+  }
+
+  /// Grava um lote de documentos baixados preservando o `id` local de quem já
+  /// existe com o mesmo `firestoreId`.
+  ///
+  /// `fromFirestore` devolve sempre `id = 0` e `firestoreId` é `@Unique`: um
+  /// `put` direto é INSERT e, no segundo download do mesmo documento (troca de
+  /// conta no aparelho, re-download automático), estoura a constraint. O erro
+  /// caía no `catch` do laço e o resto daquela coleção não era gravado — sem
+  /// nada na tela dizendo que faltou dado.
+  ///
+  /// Uma consulta e uma transação por coleção, em vez de um `put` por
+  /// documento.
+  void _gravarSincronizaveis<T extends SyncableEntity>(
+    Box<T> box,
+    List<T> baixados,
+    QueryStringProperty<T> firestoreIdProp,
+  ) {
+    if (baixados.isEmpty) return;
+
+    final ids = [
+      for (final e in baixados)
+        if (e.firestoreId != null && e.firestoreId!.isNotEmpty) e.firestoreId!,
+    ];
+
+    reaproveitarIds<T>(
+      existentes:
+          ids.isEmpty ? <T>[] : box.query(firestoreIdProp.oneOf(ids)).build().find(),
+      baixados: baixados,
+      firestoreIdDe: (e) => e.firestoreId,
+      idDe: (e) => e.id,
+      definirId: (e, id) => e.id = id,
+    );
+
+    box.putMany(baixados);
   }
 
   /// Baixa dados financeiros e visitas
@@ -992,15 +1031,19 @@ class OfflineFirstSyncService {
       // Baixa dados financeiros
       try {
         final financeiroSnapshot = await propRef.collection('financeiro').get();
-        for (final doc in financeiroSnapshot.docs) {
-          final entity = FinanceiroEntity.fromFirestore(
-            doc.data(),
-            doc.id,
-            parentPath: propRef.path,
-          );
-          _objectBox.financeiroBox.put(entity);
-          totalFinanceiro++;
-        }
+        _gravarSincronizaveis<FinanceiroEntity>(
+          _objectBox.financeiroBox,
+          [
+            for (final doc in financeiroSnapshot.docs)
+              FinanceiroEntity.fromFirestore(
+                doc.data(),
+                doc.id,
+                parentPath: propRef.path,
+              ),
+          ],
+          FinanceiroEntity_.firestoreId,
+        );
+        totalFinanceiro += financeiroSnapshot.docs.length;
       } catch (e) {
         debugPrint('⚠️ Erro ao baixar financeiro: $e');
         // Cota estourada aborta a etapa em vez de ser engolida: se fosse
@@ -1014,14 +1057,18 @@ class OfflineFirstSyncService {
       try {
         final sanitarioSnapshot =
             await propRef.collection('acoesSanitario').get();
-        for (final doc in sanitarioSnapshot.docs) {
-          final entity = AcaoSanitarioEntity.fromFirestore(
-            doc.data(),
-            doc.id,
-            parentPath: propRef.path,
-          );
-          _objectBox.acaoSanitarioBox.put(entity);
-        }
+        _gravarSincronizaveis<AcaoSanitarioEntity>(
+          _objectBox.acaoSanitarioBox,
+          [
+            for (final doc in sanitarioSnapshot.docs)
+              AcaoSanitarioEntity.fromFirestore(
+                doc.data(),
+                doc.id,
+                parentPath: propRef.path,
+              ),
+          ],
+          AcaoSanitarioEntity_.firestoreId,
+        );
       } catch (e) {
         debugPrint('⚠️ Erro ao baixar ações sanitárias: $e');
         // Cota estourada aborta a etapa em vez de ser engolida: se fosse
@@ -1040,15 +1087,19 @@ class OfflineFirstSyncService {
             .collection('resumo_da_visita')
             .where('uidPropriedade', isEqualTo: propRef)
             .get();
-        for (final doc in visitasSnapshot.docs) {
-          final entity = ResumoVisitaEntity.fromFirestore(
-            doc.data(),
-            doc.id,
-            parentPath: 'resumo_da_visita',
-          );
-          _objectBox.resumoVisitaBox.put(entity);
-          totalVisitas++;
-        }
+        _gravarSincronizaveis<ResumoVisitaEntity>(
+          _objectBox.resumoVisitaBox,
+          [
+            for (final doc in visitasSnapshot.docs)
+              ResumoVisitaEntity.fromFirestore(
+                doc.data(),
+                doc.id,
+                parentPath: 'resumo_da_visita',
+              ),
+          ],
+          ResumoVisitaEntity_.firestoreId,
+        );
+        totalVisitas += visitasSnapshot.docs.length;
       } catch (e) {
         debugPrint('⚠️ Erro ao baixar visitas: $e');
         // Cota estourada aborta a etapa em vez de ser engolida: se fosse
@@ -1063,15 +1114,19 @@ class OfflineFirstSyncService {
       try {
         final tratamentosSnapshot =
             await propRef.collection('tratamentos').get();
-        for (final doc in tratamentosSnapshot.docs) {
-          final entity = TratamentoEntity.fromFirestore(
-            doc.data(),
-            doc.id,
-            parentPath: propRef.path,
-          );
-          _objectBox.tratamentoBox.put(entity);
-          totalTratamentos++;
-        }
+        _gravarSincronizaveis<TratamentoEntity>(
+          _objectBox.tratamentoBox,
+          [
+            for (final doc in tratamentosSnapshot.docs)
+              TratamentoEntity.fromFirestore(
+                doc.data(),
+                doc.id,
+                parentPath: propRef.path,
+              ),
+          ],
+          TratamentoEntity_.firestoreId,
+        );
+        totalTratamentos += tratamentosSnapshot.docs.length;
       } catch (e) {
         debugPrint('⚠️ Erro ao baixar tratamentos: $e');
         // Cota estourada aborta a etapa em vez de ser engolida: se fosse
@@ -1084,15 +1139,19 @@ class OfflineFirstSyncService {
       try {
         final recomendacoesSnapshot =
             await propRef.collection('recomendacoes').get();
-        for (final doc in recomendacoesSnapshot.docs) {
-          final entity = RecomendacaoEntity.fromFirestore(
-            doc.data(),
-            doc.id,
-            parentPath: propRef.path,
-          );
-          _objectBox.recomendacaoBox.put(entity);
-          totalRecomendacoes++;
-        }
+        _gravarSincronizaveis<RecomendacaoEntity>(
+          _objectBox.recomendacaoBox,
+          [
+            for (final doc in recomendacoesSnapshot.docs)
+              RecomendacaoEntity.fromFirestore(
+                doc.data(),
+                doc.id,
+                parentPath: propRef.path,
+              ),
+          ],
+          RecomendacaoEntity_.firestoreId,
+        );
+        totalRecomendacoes += recomendacoesSnapshot.docs.length;
       } catch (e) {
         debugPrint('⚠️ Erro ao baixar recomendações: $e');
         // Cota estourada aborta a etapa em vez de ser engolida: se fosse
@@ -1105,14 +1164,18 @@ class OfflineFirstSyncService {
       try {
         final acoesDaVisitaSnapshot =
             await propRef.collection('acoes_da_visita').get();
-        for (final doc in acoesDaVisitaSnapshot.docs) {
-          final entity = AcaoDaVisitaEntity.fromFirestore(
-            doc.data(),
-            doc.id,
-            propRef.path,
-          );
-          _objectBox.acaoDaVisitaBox.put(entity);
-        }
+        _gravarSincronizaveis<AcaoDaVisitaEntity>(
+          _objectBox.acaoDaVisitaBox,
+          [
+            for (final doc in acoesDaVisitaSnapshot.docs)
+              AcaoDaVisitaEntity.fromFirestore(
+                doc.data(),
+                doc.id,
+                propRef.path,
+              ),
+          ],
+          AcaoDaVisitaEntity_.firestoreId,
+        );
       } catch (e) {
         debugPrint('⚠️ Erro ao baixar ações da visita: $e');
         // Cota estourada aborta a etapa em vez de ser engolida: se fosse
