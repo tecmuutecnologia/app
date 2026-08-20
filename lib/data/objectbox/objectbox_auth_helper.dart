@@ -59,7 +59,7 @@ class ObjectBoxAuthHelper {
   /// de sincronizacao, que sabe mostrar erro e oferecer nova tentativa. A versao
   /// anterior engolia a excecao aqui, e um download que nao aconteceu chegava na
   /// UI como sucesso.
-  static Future<void> onUserLogin(User user) async {
+  static Future<void> onUserLogin(User user, {bool? ehProdutor}) async {
     if (kIsWeb) return;
 
     if (!ObjectBoxService.isInitialized) {
@@ -78,7 +78,10 @@ class ObjectBoxAuthHelper {
     final semAnimaisLocais = ObjectBoxService.instance.animalBox.count() == 0;
     if (syncService.needsInitialSync() || semAnimaisLocais) {
       debugPrint('📥 Baixando todos os dados...');
-      await syncService.performFullDownload(userId: user.uid);
+      await syncService.performFullDownload(
+        userId: user.uid,
+        ehProdutor: ehProdutor,
+      );
     } else {
       // Sincroniza apenas alterações pendentes
       debugPrint('🔄 Sincronizando alterações pendentes...');

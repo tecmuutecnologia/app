@@ -6,9 +6,11 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../core/sync/alvos_animais_produtor.dart';
+import '../../core/sync/fonte_download.dart';
 import '../../core/sync/janela_pull.dart';
 import '../../core/sync/queue_payload_codec.dart';
 import '../../core/sync/reconciliacao_animais.dart';
+import '../../core/sync/resultado_etapa_animais.dart';
 import '../../core/sync/sync_checkpoint.dart';
 import '../../core/sync/total_estimado.dart';
 import '../../core/sync/sync_etapa.dart';
@@ -229,8 +231,25 @@ class OfflineFirstSyncService {
     return _firestore.doc('tecnico/$firestoreId');
   }
 
+  /// Descarta o documento de técnico quando o login já resolveu que a conta é
+  /// de PRODUTOR: com `tecnicoRef` nulo, as etapas seguintes usam o caminho das
+  /// propriedades dele. É o que impede um técnico fantasma de sequestrar o
+  /// download inteiro.
+  DocumentReference? _refDaFonte(
+    DocumentReference? tecnicoRef,
+    bool? ehProdutor,
+  ) =>
+      fonteDeDownload(
+                ehProdutor: ehProdutor,
+                temDocumentoDeTecnico: tecnicoRef != null,
+              ) ==
+              FonteDeDownload.produtor
+          ? null
+          : tecnicoRef;
+
   Future<void> performFullDownload({
     required String userId,
+    bool? ehProdutor,
     SyncProgressCallback? onProgress,
   }) async {
     _lastUserId = userId;
@@ -252,10 +271,12 @@ class OfflineFirstSyncService {
     // A referência do técnico é produzida pela etapa `tecnico` e consumida por
     // quatro etapas seguintes. Se aquela etapa já concluiu numa tentativa
     // anterior, remonta do ObjectBox em vez de rebaixar o documento.
-    DocumentReference? tecnicoRef =
-        checkpoint.concluidas.contains(SyncEtapa.tecnico)
-            ? _tecnicoRefLocal()
-            : null;
+    DocumentReference? tecnicoRef = _refDaFonte(
+      checkpoint.concluidas.contains(SyncEtapa.tecnico)
+          ? _tecnicoRefLocal()
+          : null,
+      ehProdutor,
+    );
 
     SyncEtapa? etapaAtual;
     try {
@@ -270,7 +291,7 @@ class OfflineFirstSyncService {
             await _downloadPerson(userId);
           case SyncEtapa.tecnico:
             _reportProgress(etapa, 'Dados do técnico');
-            tecnicoRef = await _downloadTecnico(userId);
+            tecnicoRef = _refDaFonte(await _downloadTecnico(userId), ehProdutor);
           case SyncEtapa.produtores:
             _reportProgress(etapa, 'Produtores');
             if (tecnicoRef != null) {
@@ -717,15 +738,23 @@ class OfflineFirstSyncService {
       // estimativa, a barra fica indeterminada — que e o comportamento honesto.
       const int? total = null;
 
+      int falhas = 0;
+      Object? primeiroErro;
+
       for (final entrada in consultas.entries) {
         try {
+          final antes = totalAnimais;
           totalAnimais = await _baixarAnimaisPaginado(
             entrada.value,
             entrada.key.tecnicoPath,
             total,
             totalAnimais,
           );
+          debugPrint('   ↳ ${entrada.key.propriedadePath}: '
+              '${totalAnimais - antes} animal(is)');
         } catch (e) {
+          falhas++;
+          primeiroErro ??= e;
           debugPrint(
               '⚠️ Erro ao baixar animais de ${entrada.key.propriedadePath}: $e');
           // Cota estourada aborta a etapa em vez de ser engolida: se fosse
@@ -734,6 +763,16 @@ class OfflineFirstSyncService {
           if (ehErroDeCota(e)) rethrow;
         }
       }
+
+      // O `catch` de `performFullDownload` embrulha isto em
+      // `SyncFalhaException(etapa)`, e a tela diz qual etapa quebrou em vez de
+      // dar o download por concluido com zero animais.
+      final fatal = erroFatalDaEtapaAnimais(
+        alvos: consultas.length,
+        falhas: falhas,
+        primeiroErro: primeiroErro,
+      );
+      if (fatal != null) throw fatal;
     }
 
     debugPrint('🐄 $totalAnimais animal(is) baixado(s)');

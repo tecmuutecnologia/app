@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tecmuu/core/sync/sync_etapa.dart';
 import 'package:tecmuu/core/sync/sync_exceptions.dart';
 import 'package:tecmuu/data/objectbox/offline_first_sync_service.dart';
+import 'package:tecmuu/features/sincronizacao/domain/decisao_pos_login.dart';
 import 'package:tecmuu/features/sincronizacao/domain/sync_gateway.dart';
 import 'package:tecmuu/features/sincronizacao/domain/sync_state.dart';
 import 'package:tecmuu/features/sincronizacao/presentation/controllers/sync_page_controller.dart';
@@ -15,7 +16,20 @@ class FakeSyncGateway implements SyncGateway {
     this.temDadosLocais = false,
     this.erroAoBaixar,
     this.destino = const DestinoDashboardTecnico(),
+    this.resolucao = const ResolucaoPapel(
+      papel: PapelResolvido.tecnico,
+      conflita: false,
+    ),
   });
+
+  ResolucaoPapel resolucao;
+  int vezesQueResolveu = 0;
+
+  @override
+  Future<ResolucaoPapel> resolverPapel(SyncPapel? papel) async {
+    vezesQueResolveu++;
+    return resolucao;
+  }
 
   @override
   bool temDadosLocais;
@@ -46,16 +60,21 @@ class FakeSyncGateway implements SyncGateway {
     _controller.add(p);
   }
 
+  /// Resolucao que o controller repassou ao download. O papel resolvido no
+  /// login precisa chegar ate aqui: e ele que decide de onde os dados vem.
+  ResolucaoPapel? resolucaoRecebidaNoDownload;
+
   @override
-  Future<void> baixarTudo() async {
+  Future<void> baixarTudo(ResolucaoPapel resolucao) async {
     vezesQueBaixou++;
+    resolucaoRecebidaNoDownload = resolucao;
     if (erroAoBaixar != null) throw erroAoBaixar!;
     final gate = baixarTudoGate;
     if (gate != null) await gate.future;
   }
 
   @override
-  Future<SyncDestino> concluirLogin(SyncPapel? papel) async {
+  Future<SyncDestino> concluirLogin(ResolucaoPapel resolucao) async {
     vezesQueConcluiu++;
     return destino;
   }
@@ -74,6 +93,26 @@ ProviderContainer containerCom(FakeSyncGateway fake) {
 
 void main() {
   group('caminho feliz', () {
+    test('repassa ao download o papel resolvido no login', () async {
+      // O produtor entrava e nao via nada porque o download re-decidia o papel
+      // por conta propria: achava um TecnicoRecord fantasma na conta dele e
+      // baixava de um documento vazio.
+      final fake = FakeSyncGateway(
+        resolucao: const ResolucaoPapel(
+          papel: PapelResolvido.produtor,
+          conflita: false,
+        ),
+        destino: const DestinoInicioPropriedadeProdutor(null),
+      );
+      final c = containerCom(fake);
+
+      await c
+          .read(syncPageControllerProvider.notifier)
+          .iniciar(SyncPapel.produtor);
+
+      expect(fake.resolucaoRecebidaNoDownload?.papel, PapelResolvido.produtor);
+    });
+
     test('começa em Preparando', () {
       final fake = FakeSyncGateway();
       final c = containerCom(fake);
@@ -297,6 +336,27 @@ void main() {
 
       expect(c.read(syncPageControllerProvider), isA<SyncConcluido>());
       expect(fake.vezesQueConcluiu, 1);
+    });
+  });
+
+  group('papel incompativel', () {
+    test('aborta sem baixar nada quando a conta e de outro tipo', () async {
+      final fake = FakeSyncGateway(
+        resolucao: const ResolucaoPapel(
+          papel: PapelResolvido.produtor,
+          conflita: true,
+        ),
+      );
+      final c = containerCom(fake);
+
+      await c
+          .read(syncPageControllerProvider.notifier)
+          .iniciar(SyncPapel.tecnico);
+
+      expect(c.read(syncPageControllerProvider), isA<SyncPapelIncompativel>());
+      // O requisito e este: nada de rede, nada gravado.
+      expect(fake.vezesQueBaixou, 0);
+      expect(fake.vezesQueConcluiu, 0);
     });
   });
 }

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/sync/sync_exceptions.dart';
 import '../../../../core/sync/sync_rate_estimator.dart';
 import '../../../../data/objectbox/offline_first_sync_service.dart';
+import '../../domain/decisao_pos_login.dart';
 import '../../domain/sync_gateway.dart';
 import '../../domain/sync_state.dart';
 
@@ -17,6 +18,10 @@ class SyncPageController extends Notifier<SyncState> {
 
   /// Nulo = a rota nao informou; o gateway descobre.
   SyncPapel? _papel;
+
+  /// Guardada da ultima execucao para o "continuar assim mesmo" montar o
+  /// destino sem repetir as consultas que ja foram feitas antes do download.
+  ResolucaoPapel? _ultimaResolucao;
 
   /// Guarda contra reentrancia: a tela tera botoes reais ("tentar novamente",
   /// "continuar assim mesmo") que o usuario pode tocar duas vezes, ou tocar
@@ -56,13 +61,25 @@ class SyncPageController extends Notifier<SyncState> {
       await _inscricao?.cancel();
       _inscricao = _gateway.progressStream.listen(_aoProgredir);
 
+      // Antes de qualquer download: se a conta e de um tipo e a pessoa entrou
+      // pela porta do outro, o login e abortado aqui. Baixar primeiro e barrar
+      // depois deixaria o cache local com dados que aquela sessao nao deveria
+      // ter visto.
+      final resolucao = await _gateway.resolverPapel(_papel);
+      _ultimaResolucao = resolucao;
+      if (resolucao.conflita) {
+        await _inscricao?.cancel();
+        state = SyncPapelIncompativel(resolucao.papel);
+        return;
+      }
+
       if (replayUltimoProgresso) {
         final ultimo = _gateway.ultimoProgresso;
         if (ultimo != null) _aoProgredir(ultimo);
       }
 
       try {
-        await _gateway.baixarTudo();
+        await _gateway.baixarTudo(resolucao);
       } on SyncOfflineException {
         // Offline com dados locais e o caso normal do tecnico em campo: segue.
         // Sem dados locais, entrar num app vazio pareceria perda de dados.
@@ -95,7 +112,7 @@ class SyncPageController extends Notifier<SyncState> {
         return;
       }
 
-      await _concluir();
+      await _concluir(resolucao);
     } finally {
       _emAndamento = false;
     }
@@ -107,15 +124,15 @@ class SyncPageController extends Notifier<SyncState> {
     if (_emAndamento) return;
     _emAndamento = true;
     try {
-      await _concluir();
+      await _concluir(_ultimaResolucao ?? await _gateway.resolverPapel(_papel));
     } finally {
       _emAndamento = false;
     }
   }
 
-  Future<void> _concluir() async {
+  Future<void> _concluir(ResolucaoPapel resolucao) async {
     try {
-      final destino = await _gateway.concluirLogin(_papel);
+      final destino = await _gateway.concluirLogin(resolucao);
       // Estado terminal: sem isto, um evento de progresso tardio (ex.: um
       // `performFullDownload` concorrente ainda emitindo) reabriria a tela
       // de volta para `SyncBaixando` depois de concluida.
