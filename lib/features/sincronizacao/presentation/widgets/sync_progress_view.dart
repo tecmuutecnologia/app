@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../../core/sync/sync_etapa.dart';
+import '../../domain/decisao_pos_login.dart';
 import '../../domain/sync_state.dart';
 
 /// Etapas com linha propria na checklist.
@@ -61,6 +62,7 @@ class SyncProgressView extends StatelessWidget {
     required this.onTentarNovamente,
     required this.onContinuarAssimMesmo,
     required this.onContinuar,
+    required this.onVoltarAoLogin,
   });
 
   final SyncState estado;
@@ -70,6 +72,9 @@ class SyncProgressView extends StatelessWidget {
   /// Avanco para o app, disparado SO pelo botao. A tela nao navega sozinha:
   /// o usuario precisa ver que a sincronizacao terminou antes de sair dela.
   final VoidCallback onContinuar;
+
+  /// Unica saida do papel incompativel: desloga e volta a tela inicial.
+  final VoidCallback onVoltarAoLogin;
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +98,7 @@ class SyncProgressView extends StatelessWidget {
               final SyncBaixando e => _baixando(context, e),
               SyncPreparando() => _preparando(context),
               SyncConcluido() => _concluido(context),
+              final SyncPapelIncompativel e => _papelIncompativel(context, e),
             },
           ),
         ),
@@ -273,6 +279,48 @@ class SyncProgressView extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  /// Conta de um tipo, porta do outro: login abortado antes de baixar nada.
+  Widget _papelIncompativel(BuildContext context, SyncPapelIncompativel e) {
+    final (conta, porta) = switch (e.papelDaConta) {
+      PapelResolvido.produtor => ('produtor', 'do produtor'),
+      PapelResolvido.tecnico => ('técnico', 'do técnico'),
+      // Nao conflita por definicao — nunca chega aqui.
+      PapelResolvido.cadastroTecnico => ('técnico', 'do técnico'),
+    };
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Icon(Icons.no_accounts_outlined, size: 56, color: Colors.white),
+        const SizedBox(height: 16),
+        Text(
+          'Esta conta é de $conta',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+              color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Você entrou por outra área do app. Nenhum dado foi baixado. '
+          'Entre pela área $porta para acessar seus dados.',
+          textAlign: TextAlign.center,
+          style: const TextStyle(color: Colors.white70, fontSize: 14),
+        ),
+        const SizedBox(height: 24),
+        FilledButton(
+          onPressed: onVoltarAoLogin,
+          style: FilledButton.styleFrom(
+            backgroundColor: Colors.white,
+            foregroundColor: const Color(0xFFF75E38),
+            minimumSize: const Size(double.infinity, 44),
+          ),
+          child: const Text('Voltar ao login'),
+        ),
+      ],
     );
   }
 

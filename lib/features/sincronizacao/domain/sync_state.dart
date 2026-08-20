@@ -1,4 +1,5 @@
 import '../../../core/sync/sync_etapa.dart';
+import 'decisao_pos_login.dart';
 
 /// Quem esta entrando. Vem por parametro de rota, nao e deduzido da existencia
 /// do TecnicoRecord: deduzir confundiria "produtor" com "tecnico sem perfil
@@ -98,6 +99,18 @@ class SyncErro extends SyncState {
 
   bool get podeContinuarAssimMesmo =>
       tipo == SyncErroTipo.falhaDownload || tipo == SyncErroTipo.cotaExcedida;
+}
+
+/// A conta e de um tipo e a pessoa entrou pela porta do outro.
+///
+/// Terminal e sem "tentar novamente": repetir nao muda o tipo da conta. A unica
+/// saida e sair e entrar pela porta certa. Nada foi baixado — este estado
+/// acontece antes do download, de proposito, para o cache local nao misturar os
+/// dois mundos.
+class SyncPapelIncompativel extends SyncState {
+  const SyncPapelIncompativel(this.papelDaConta);
+
+  final PapelResolvido papelDaConta;
 }
 
 class SyncConcluido extends SyncState {

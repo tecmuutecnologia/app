@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tecmuu/core/sync/sync_etapa.dart';
+import 'package:tecmuu/features/sincronizacao/domain/decisao_pos_login.dart';
 import 'package:tecmuu/features/sincronizacao/domain/sync_state.dart';
 import 'package:tecmuu/features/sincronizacao/presentation/widgets/sync_progress_view.dart';
 
 void main() {
   var continuouClicado = false;
+  var voltouAoLogin = false;
 
-  setUp(() => continuouClicado = false);
+  setUp(() {
+    continuouClicado = false;
+    voltouAoLogin = false;
+  });
 
   Future<void> montar(WidgetTester tester, SyncState estado) {
     return tester.pumpWidget(MaterialApp(
@@ -17,6 +22,7 @@ void main() {
           onTentarNovamente: () {},
           onContinuarAssimMesmo: () {},
           onContinuar: () => continuouClicado = true,
+          onVoltarAoLogin: () => voltouAoLogin = true,
         ),
       ),
     ));
@@ -255,5 +261,18 @@ void main() {
     );
     expect(barra.value, 0.65);
     expect(find.textContaining('65%'), findsOneWidget);
+  });
+
+  testWidgets('papel incompativel explica e so oferece voltar ao login',
+      (tester) async {
+    await montar(tester, const SyncPapelIncompativel(PapelResolvido.produtor));
+
+    expect(find.textContaining('produtor'), findsWidgets);
+    // "Tentar novamente" seria mentira: repetir nao muda o tipo da conta.
+    expect(find.text('Tentar novamente'), findsNothing);
+
+    await tester.tap(find.text('Voltar ao login'));
+    await tester.pump();
+    expect(voltouAoLogin, isTrue);
   });
 }

@@ -5,10 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '/app/router/destino_inicial.dart';
 import '/app/router/nav.dart';
+import '/core/auth/firebase_auth/auth_util.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/data/schema/propriedades_record.dart';
 import '/features/dashboard/presentation/pages/dashboard_tecnico_page.dart';
 import '/features/perfil/presentation/pages/completar_perfil_tecnico_page.dart';
+import '/features/onboarding/presentation/pages/welcome_page.dart';
 import '/features/produtor/presentation/pages/inicio_propriedade_produtor_page.dart';
 import '../../domain/sync_state.dart';
 import '../controllers/sync_page_controller.dart';
@@ -79,6 +81,20 @@ class _SyncPageState extends ConsumerState<SyncPage> {
     context.go(localizacao);
   }
 
+  /// Aborta o login: a conta e de um tipo e a pessoa entrou pela porta do
+  /// outro. O `signOut` nao e opcional — o Firebase ja autenticou quando a
+  /// senha foi aceita, e voltar sem deslogar deixaria uma sessao aberta na
+  /// tela de login.
+  Future<void> _voltarAoLogin() async {
+    GoRouter.of(context).prepareAuthEvent();
+    await authManager.signOut();
+    if (!mounted) return;
+    GoRouter.of(context).clearRedirectLocation();
+    await DestinoInicial.limpar();
+    if (!mounted) return;
+    context.goNamedAuth(WelcomePage.routeName, context.mounted);
+  }
+
   String _localizacaoDe(SyncDestino destino) {
     final router = GoRouter.of(context);
     switch (destino) {
@@ -122,6 +138,7 @@ class _SyncPageState extends ConsumerState<SyncPage> {
               .read(syncPageControllerProvider.notifier)
               .continuarAssimMesmo(),
           // Unica saida da tela: navegar so quando o usuario decide.
+          onVoltarAoLogin: () => unawaited(_voltarAoLogin()),
           onContinuar: () {
             final atual = ref.read(syncPageControllerProvider);
             if (atual is SyncConcluido) _navegar(atual.destino);
