@@ -1104,7 +1104,11 @@ class _CompletarPerfilTecnicoPageState
 
                 var tecnicoRecordReference = TecnicoRecord.collection.doc();
                 final dadosTecnico = createTecnicoRecordData(
-                  uidPerson: completarPerfilTecnicoPersonRecord.reference.id,
+                  // Uid do Auth, e nao o id do documento `person`: e o valor que
+                  // o download procura. Gravar o id do documento aqui deixava o
+                  // tecnico invisivel para a propria sincronizacao dele sempre
+                  // que o `person` nao fosse `person/{uid}`.
+                  uidPerson: currentUserUid,
                   liberado: true,
                   limiteProdutoresContratado: 3,
                   quantidadeProdutoresCadastrados: 0,

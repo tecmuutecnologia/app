@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '/core/auth/firebase_auth/auth_util.dart';
+import '/core/sync/chaves_uid_person.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
@@ -74,8 +75,13 @@ class OfflineFirstSyncGateway implements SyncGateway {
     final tecnico = propriedade != null
         ? null
         : await queryTecnicoRecordOnce(
-            queryBuilder: (r) =>
-                r.where('uidPerson', isEqualTo: person.reference.id),
+            queryBuilder: (r) => r.where(
+              'uidPerson',
+              whereIn: chavesUidPerson(
+                authUid: currentUserUid,
+                personDocId: person.reference.id,
+              ),
+            ),
             singleRecord: true,
           ).then((s) => s.firstOrNull);
 

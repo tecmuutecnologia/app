@@ -6,6 +6,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../core/sync/alvos_animais_produtor.dart';
+import '../../core/sync/chaves_uid_person.dart';
 import '../../core/sync/fonte_download.dart';
 import '../../core/sync/janela_pull.dart';
 import '../../core/sync/queue_payload_codec.dart';
@@ -486,9 +487,21 @@ class OfflineFirstSyncService {
 
   /// Baixa dados de Técnico
   Future<DocumentReference?> _downloadTecnico(String userId) async {
+    // `uidPerson` foi gravado de duas formas ao longo do tempo (uid do Auth e
+    // id do documento `person`), entao a consulta aceita as duas. O id local
+    // vem da box: a etapa `usuario` roda antes desta e ja baixou a pessoa.
+    final personLocal = _objectBox.personBox
+        .query(PersonEntity_.uid.equals(userId))
+        .build()
+        .findFirst();
+
     final snapshot = await _firestore
         .collection('tecnico')
-        .where('uidPerson', isEqualTo: userId)
+        .where('uidPerson',
+            whereIn: chavesUidPerson(
+              authUid: userId,
+              personDocId: personLocal?.firestoreId,
+            ))
         .get();
 
     DocumentReference? tecnicoRef;
