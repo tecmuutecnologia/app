@@ -211,6 +211,7 @@ Future<void> createReceituario(
 
       tratamentosRows.add(
         pw.TableRow(
+          repeat: true,
           children: [
             pw.Expanded(
               flex: 1,
@@ -338,48 +339,53 @@ Future<void> createReceituario(
       }
 
       // Adiciona a recomendação e seus tratamentos ao PDF
+      // Os widgets abaixo sao adicionados de forma achatada (nao dentro de uma
+      // pw.Column). pw.Table sabe se dividir entre paginas, mas pw.Column so
+      // quebra ENTRE os filhos dela: uma tabela mais alta que a pagina vira um
+      // filho indivisivel, a paginacao nunca avanca e o dart_pdf lanca
+      // TooManyPagesException. Como filha direta do MultiPage a tabela pagina.
       recomendacoesWidgets.add(
-        pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.start,
-          children: [
-            pw.Container(
-              alignment: pw.Alignment.centerLeft,
-              child: pw.Text(
-                '${recomendacaoData['tituloRecomendacao']}',
-                style: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold,
-                  fontSize: 16,
-                  color: PdfColor.fromHex('#f75e38'),
-                ),
-              ),
+        pw.Container(
+          alignment: pw.Alignment.centerLeft,
+          child: pw.Text(
+            '${recomendacaoData['tituloRecomendacao']}',
+            style: pw.TextStyle(
+              fontWeight: pw.FontWeight.bold,
+              fontSize: 16,
+              color: PdfColor.fromHex('#f75e38'),
             ),
-            pw.SizedBox(height: 10),
-            pw.Table(
-              border: pw.TableBorder(
-                top: pw.BorderSide(style: pw.BorderStyle.dashed),
-                bottom: pw.BorderSide(style: pw.BorderStyle.dashed),
-                left: pw.BorderSide(style: pw.BorderStyle.dashed),
-                right: pw.BorderSide(style: pw.BorderStyle.dashed),
-                horizontalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
-                verticalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
-              ),
-              children: tratamentosRows,
-            ),
-            if (recomendacaoData['descricaoRecomendacao'] != null &&
-                recomendacaoData['descricaoRecomendacao'].isNotEmpty)
-              pw.Text(
-                'Tratamento: ',
-                style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
-              ),
-            if (recomendacaoData['descricaoRecomendacao'] != null &&
-                recomendacaoData['descricaoRecomendacao'].isNotEmpty)
-              pw.Text(
-                '${recomendacaoData['descricaoRecomendacao']}',
-              ),
-            pw.SizedBox(height: 20),
-          ],
+          ),
         ),
       );
+      recomendacoesWidgets.add(pw.SizedBox(height: 10));
+      recomendacoesWidgets.add(
+        pw.Table(
+          border: pw.TableBorder(
+            top: pw.BorderSide(style: pw.BorderStyle.dashed),
+            bottom: pw.BorderSide(style: pw.BorderStyle.dashed),
+            left: pw.BorderSide(style: pw.BorderStyle.dashed),
+            right: pw.BorderSide(style: pw.BorderStyle.dashed),
+            horizontalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
+            verticalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
+          ),
+          children: tratamentosRows,
+        ),
+      );
+      if (recomendacaoData['descricaoRecomendacao'] != null &&
+          recomendacaoData['descricaoRecomendacao'].isNotEmpty) {
+        recomendacoesWidgets.add(
+          pw.Text(
+            'Tratamento: ',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+          ),
+        );
+        recomendacoesWidgets.add(
+          pw.Text(
+            '${recomendacaoData['descricaoRecomendacao']}',
+          ),
+        );
+      }
+      recomendacoesWidgets.add(pw.SizedBox(height: 20));
     }
 
     // ============================================================
@@ -646,6 +652,7 @@ Future<void> createReceituario(
         // Cabeçalho da tabela
         pw.TableRow buildDiagnosticoHeader() {
           return pw.TableRow(
+            repeat: true,
             children: [
               pw.Expanded(
                 flex: 1,
