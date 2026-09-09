@@ -3,7 +3,7 @@
 ## 📋 Informações do Projeto
 - **Nome do App**: tecmuu
 - **Package ID**: br.app.tecmuu
-- **Versão Atual**: 1.0.18+85
+- **Versão Atual**: 1.0.28+96
 
 ---
 
@@ -31,13 +31,13 @@ storeFile=<caminho-para-o-arquivo.keystore>
 ### Editar o arquivo `pubspec.yaml`
 Localize a linha `version:` e atualize:
 ```yaml
-version: 1.0.19+86  # Formato: major.minor.patch+buildNumber
+version: 1.0.29+97  # Formato: major.minor.patch+buildNumber
 ```
 
 **Regras de versionamento:**
-- `1.0.19` - Versão visível para usuários (versionName)
-- `+86` - Número do build (versionCode) - DEVE ser sempre maior que o anterior
-- **Importante**: O buildNumber (`86`) NUNCA pode ser menor que versões anteriores na Play Store
+- `1.0.29` - Versão visível para usuários (versionName)
+- `+97` - Número do build (versionCode) - DEVE ser sempre maior que o anterior
+- **Importante**: O buildNumber (`97`) NUNCA pode ser menor que versões anteriores na Play Store
 
 ---
 
@@ -85,7 +85,7 @@ Após o build, os arquivos estarão em:
 3. Faça upload do arquivo `app-release.aab`
 
 ### 6.3 Preencher Informações da Versão
-- **Nome da versão**: 1.0.19 (mesmo do pubspec.yaml)
+- **Nome da versão**: 1.0.29 (mesmo do pubspec.yaml)
 - **Notas de versão**: Descreva as mudanças/melhorias
   ```
   - Correções de bugs
@@ -112,7 +112,7 @@ Após o build, os arquivos estarão em:
 
 ### Erro: "Version code has already been used"
 - Aumente o número após o `+` no pubspec.yaml
-- Exemplo: `1.0.18+85` → `1.0.18+86`
+- Exemplo: `1.0.28+96` → `1.0.28+97`
 
 ### Erro: "App not signed correctly"
 - Verifique o arquivo `key.properties`

@@ -3,7 +3,7 @@
 ## 📋 Informações do Projeto
 - **Nome do App**: Tecmuu
 - **Bundle ID**: br.app.tecmuu
-- **Versão Atual**: 1.0.18+85
+- **Versão Atual**: 1.0.28+96
 
 ---
 
@@ -30,11 +30,11 @@
 
 ### Editar o arquivo `pubspec.yaml`
 ```yaml
-version: 1.0.19+86  # Formato: major.minor.patch+buildNumber
+version: 1.0.29+97  # Formato: major.minor.patch+buildNumber
 ```
 
 **Importante para iOS:**
-- O `buildNumber` (86) deve ser **único** para cada upload no App Store Connect
+- O `buildNumber` (97) deve ser **único** para cada upload no App Store Connect
 - Não pode repetir números de build já enviados anteriormente
 
 ---
@@ -201,7 +201,7 @@ security find-identity -v -p codesigning
 
 ### Erro: "Build number already used"
 - Aumente o número após o `+` no pubspec.yaml
-- Exemplo: `1.0.18+85` → `1.0.18+86`
+- Exemplo: `1.0.28+96` → `1.0.28+97`
 
 ### Erro: "Missing compliance information"
 - No App Store Connect, responda às perguntas sobre criptografia
