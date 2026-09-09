@@ -719,7 +719,7 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                                       .assinaturaTecnico !=
                                   '')) &&
                       (resumoVisitaAtualResumoDaVisitaRecord
-                                  .obsGeralVisita ==
+                                  .dtAssinaturaFormatado ==
                               ''))
                     Container(
                       decoration: BoxDecoration(
@@ -1250,9 +1250,6 @@ class _ResumoVisitaAtualWidgetState extends State<ResumoVisitaAtualWidget> {
                           (resumoVisitaAtualResumoDaVisitaRecord
                                       .assinaturaTecnico !=
                                   '')) &&
-                      (resumoVisitaAtualResumoDaVisitaRecord
-                                  .obsGeralVisita !=
-                              '') &&
                       (resumoVisitaAtualResumoDaVisitaRecord
                                   .dtAssinaturaFormatado !=
                               ''))
