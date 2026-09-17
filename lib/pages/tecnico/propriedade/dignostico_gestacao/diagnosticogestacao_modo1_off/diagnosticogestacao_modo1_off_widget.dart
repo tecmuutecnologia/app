@@ -65,7 +65,11 @@ class _DiagnosticogestacaoModo1OffWidgetState
       _model.instantTimer = InstantTimer.periodic(
         duration: Duration(milliseconds: 500),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
+          // Só reconstrói quando o estado da conexão muda: cada rebuild recria
+          // os streams do Firestore, que nunca chegavam a receber resposta.
+          final novaResposta = await actions.checkInternetConnection();
+          if (novaResposta == _model.respostaNet) return;
+          _model.respostaNet = novaResposta;
 
           safeSetState(() {});
         },
