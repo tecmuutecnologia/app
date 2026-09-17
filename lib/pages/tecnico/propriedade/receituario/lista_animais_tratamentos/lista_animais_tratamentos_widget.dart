@@ -62,6 +62,19 @@ class _ListaAnimaisTratamentosWidgetState
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
+  // O animal pode ter sido excluído depois do lançamento do tratamento. Nesse
+  // caso o documento não existe e o StreamBuilder ficava em loading infinito;
+  // usa os dados do animal copiados no próprio tratamento.
+  Stream<AnimaisProdutoresRecord> _animalDoTratamento(
+          TratamentosRecord tratamento) =>
+      tratamento.uidAnimal!.snapshots().map((s) => s.exists
+          ? AnimaisProdutoresRecord.fromSnapshot(s)
+          : AnimaisProdutoresRecord.getDocumentFromData({
+              'nomeAnimal': tratamento.nomeAnimal,
+              'brincoAnimal': int.tryParse(tratamento.brincoAnimal) ?? -1,
+              'grupoAnimal': tratamento.grupoAnimal,
+            }, tratamento.uidAnimal!));
+
   @override
   void dispose() {
     _model.maybeDispose();
@@ -157,8 +170,7 @@ class _ListaAnimaisTratamentosWidgetState
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 0.0, 10.0, 0.0),
                             child: StreamBuilder<AnimaisProdutoresRecord>(
-                              stream: AnimaisProdutoresRecord.getDocument(
-                                  listViewTratamentosRecord.uidAnimal!),
+                              stream: _animalDoTratamento(listViewTratamentosRecord),
                               builder: (context, snapshot) {
                                 // Customize what your widget looks like when it's loading.
                                 if (!snapshot.hasData) {
@@ -201,8 +213,7 @@ class _ListaAnimaisTratamentosWidgetState
                             ),
                           ),
                           StreamBuilder<AnimaisProdutoresRecord>(
-                            stream: AnimaisProdutoresRecord.getDocument(
-                                listViewTratamentosRecord.uidAnimal!),
+                            stream: _animalDoTratamento(listViewTratamentosRecord),
                             builder: (context, snapshot) {
                               // Customize what your widget looks like when it's loading.
                               if (!snapshot.hasData) {
@@ -270,8 +281,7 @@ class _ListaAnimaisTratamentosWidgetState
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 0.0, 10.0, 0.0),
                             child: StreamBuilder<AnimaisProdutoresRecord>(
-                              stream: AnimaisProdutoresRecord.getDocument(
-                                  listViewTratamentosRecord.uidAnimal!),
+                              stream: _animalDoTratamento(listViewTratamentosRecord),
                               builder: (context, snapshot) {
                                 // Customize what your widget looks like when it's loading.
                                 if (!snapshot.hasData) {
@@ -388,8 +398,7 @@ class _ListaAnimaisTratamentosWidgetState
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 0.0, 10.0, 0.0),
                             child: StreamBuilder<AnimaisProdutoresRecord>(
-                              stream: AnimaisProdutoresRecord.getDocument(
-                                  listViewTratamentosRecord.uidAnimal!),
+                              stream: _animalDoTratamento(listViewTratamentosRecord),
                               builder: (context, snapshot) {
                                 // Customize what your widget looks like when it's loading.
                                 if (!snapshot.hasData) {
@@ -432,8 +441,7 @@ class _ListaAnimaisTratamentosWidgetState
                             ),
                           ),
                           StreamBuilder<AnimaisProdutoresRecord>(
-                            stream: AnimaisProdutoresRecord.getDocument(
-                                listViewTratamentosRecord.uidAnimal!),
+                            stream: _animalDoTratamento(listViewTratamentosRecord),
                             builder: (context, snapshot) {
                               // Customize what your widget looks like when it's loading.
                               if (!snapshot.hasData) {
@@ -501,8 +509,7 @@ class _ListaAnimaisTratamentosWidgetState
                             padding: EdgeInsetsDirectional.fromSTEB(
                                 0.0, 0.0, 10.0, 0.0),
                             child: StreamBuilder<AnimaisProdutoresRecord>(
-                              stream: AnimaisProdutoresRecord.getDocument(
-                                  listViewTratamentosRecord.uidAnimal!),
+                              stream: _animalDoTratamento(listViewTratamentosRecord),
                               builder: (context, snapshot) {
                                 // Customize what your widget looks like when it's loading.
                                 if (!snapshot.hasData) {

@@ -50,6 +50,17 @@ class _CalendarioSanitarioWidgetState extends State<CalendarioSanitarioWidget> {
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
+  // O animal pode ter sido excluído depois do lançamento da ação. Nesse caso o
+  // documento não existe e o StreamBuilder ficava em loading infinito; usa os
+  // dados do animal copiados na própria ação.
+  Stream<AnimaisProdutoresRecord> _animalDaAcao(AcoesSanitarioRecord acao) =>
+      acao.uidAnimalAnimaisProdutores!.snapshots().map((s) => s.exists
+          ? AnimaisProdutoresRecord.fromSnapshot(s)
+          : AnimaisProdutoresRecord.getDocumentFromData({
+              'nomeAnimal': acao.nomeAnimal,
+              'brincoAnimal': int.tryParse(acao.brincoAnimal) ?? -1,
+            }, acao.uidAnimalAnimaisProdutores!));
+
   @override
   void dispose() {
     _model.dispose();
@@ -450,9 +461,7 @@ class _CalendarioSanitarioWidgetState extends State<CalendarioSanitarioWidget> {
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       0.0, 0.0, 10.0, 0.0),
                                   child: StreamBuilder<AnimaisProdutoresRecord>(
-                                    stream: AnimaisProdutoresRecord.getDocument(
-                                        listaAcoesAcoesSanitarioRecord
-                                            .uidAnimalAnimaisProdutores!),
+                                    stream: _animalDaAcao(listaAcoesAcoesSanitarioRecord),
                                     builder: (context, snapshot) {
                                       // Customize what your widget looks like when it's loading.
                                       if (!snapshot.hasData) {
