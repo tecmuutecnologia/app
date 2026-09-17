@@ -250,7 +250,7 @@ cd ios && pod install --repo-update && cd ..
 flutter build ipa --release
 
 # Upload via Fastlane (interno)
-fastlane ios upload_testflight_internal
+#fastlane ios upload_testflight_internal
 
 # Upload via Fastlane (externo)
 fastlane ios upload_testflight_external
