@@ -60,12 +60,18 @@ class _ExameGinecologicoWidgetState extends State<ExameGinecologicoWidget> {
       _model.instantTimer = InstantTimer.periodic(
         duration: Duration(seconds: 5),
         callback: (timer) async {
-          _model.respostaNet = await actions.checkInternetConnection();
-
-          safeSetState(() {});
-          if (_model.respostaNet!) {
-            FFAppState().verificaInternet = -1;
+          // Só reconstrói quando algo muda: cada rebuild recria os streams do
+          // Firestore, que deixam de receber resposta do servidor.
+          final novaResposta = await actions.checkInternetConnection();
+          if (novaResposta != _model.respostaNet) {
+            _model.respostaNet = novaResposta;
             safeSetState(() {});
+          }
+          if (_model.respostaNet!) {
+            if (FFAppState().verificaInternet != -1) {
+              FFAppState().verificaInternet = -1;
+              safeSetState(() {});
+            }
           } else {
             if (FFAppState().verificaInternet == -1) {
               FFAppState().verificaInternet = 0;
