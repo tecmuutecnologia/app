@@ -64,3 +64,17 @@ final animaisAtivosCountProvider = StreamProvider<int>((ref) {
             .length,
       );
 });
+
+/// Um animal só, pelo id do Firestore, lido do ObjectBox. `null` quando ele
+/// ainda não existe no cache local.
+///
+/// Serve as telas de um animal (prontuário, edição), que antes abriam um
+/// `.snapshots()` do documento no Firestore. Soft-delete também devolve `null`:
+/// animal excluído não deve abrir ficha.
+final animalPorFirestoreIdProvider =
+    StreamProvider.family<AnimalEntity?, String>((ref, firestoreId) {
+  final repo = ref.watch(animalRepositoryProvider);
+  return repo
+      .watchByFirestoreId(firestoreId)
+      .map((animal) => animal == null || animal.isDeleted ? null : animal);
+});

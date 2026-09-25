@@ -15,14 +15,17 @@ import '/features/animais/presentation/pages/lista_animais_page.dart';
 import 'dart:async';
 import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/cupertino.dart';
+import '/domain/animais/ordenacao_animal.dart';
+import '/features/animais/application/animais_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:provider/provider.dart';
 
-class EditarAnimalPage extends StatefulWidget {
+class EditarAnimalPage extends ConsumerStatefulWidget {
   const EditarAnimalPage({
     super.key,
     required this.uidPropriedade,
@@ -50,10 +53,10 @@ class EditarAnimalPage extends StatefulWidget {
   static String routePath = '/editarAnimal';
 
   @override
-  State<EditarAnimalPage> createState() => _EditarAnimalPageState();
+  ConsumerState<EditarAnimalPage> createState() => _EditarAnimalPageState();
 }
 
-class _EditarAnimalPageState extends State<EditarAnimalPage> {
+class _EditarAnimalPageState extends ConsumerState<EditarAnimalPage> {
   final _formKey = GlobalKey<FormState>();
   FocusNode? _nomeFocusNode;
   TextEditingController? _nomeTextController;
@@ -232,8 +235,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
     );
   }
 
-  Widget _formularioEdicao(
-      BuildContext context, dynamic editarAnimalAnimaisProdutoresRecord) {
+  Widget _formularioEdicao(BuildContext context, AnimalEntity animal) {
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.disabled,
@@ -243,10 +245,10 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              _campoNome(context, editarAnimalAnimaisProdutoresRecord),
-              _campoBrinco(context, editarAnimalAnimaisProdutoresRecord),
-              _campoRaca(context, editarAnimalAnimaisProdutoresRecord),
-              _campoGrupo(context, editarAnimalAnimaisProdutoresRecord),
+              _campoNome(context, animal),
+              _campoBrinco(context, animal),
+              _campoRaca(context, animal),
+              _campoGrupo(context, animal),
               if (((widget.grupoPredominante == 'Sêmens') ||
                       (widget.grupoPredominante == 'Touros')) ||
                   ((_grupoValue == 'Touros') || (_grupoValue == 'Sêmens')))
@@ -275,8 +277,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                           ),
                     ),
                     Switch.adaptive(
-                      value: _switchValue ??=
-                          editarAnimalAnimaisProdutoresRecord.liberaInseminacao,
+                      value: _switchValue ??= animal.liberaInseminacao,
                       onChanged: (newValue) async {
                         safeSetState(() => _switchValue = newValue);
                       },
@@ -292,7 +293,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
               if (_grupoValue != 'Sêmens')
                 TextFormField(
                   controller: _pesoTextController ??= TextEditingController(
-                    text: editarAnimalAnimaisProdutoresRecord.pesoAnimal,
+                    text: animal.pesoAnimal,
                   ),
                   focusNode: _pesoFocusNode,
                   autofocus: false,
@@ -386,10 +387,9 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                   cursorColor: FlutterFlowTheme.of(context).primary,
                   validator: _pesoTextControllerValidator.asValidator(context),
                 ),
-              _campoDataNascimento(
-                  context, editarAnimalAnimaisProdutoresRecord),
-              _campoTouro(context, editarAnimalAnimaisProdutoresRecord),
-              _campoVaca(context, editarAnimalAnimaisProdutoresRecord),
+              _campoDataNascimento(context, animal),
+              _campoTouro(context, animal),
+              _campoVaca(context, animal),
             ].divide(SizedBox(height: 12.0)),
           ),
         ),
@@ -397,8 +397,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
     );
   }
 
-  Widget _secaoSalvar(
-      BuildContext context, dynamic editarAnimalAnimaisProdutoresRecord) {
+  Widget _secaoSalvar(BuildContext context, AnimalEntity animal) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 12.0),
       child: FFButtonWidget(
@@ -418,9 +417,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
             // Checagem de duplicidade pelo PAR (nome + brinco), só entre animais
             // ativos (não descartados), excluindo o próprio animal em edição.
             // Brinco vazio é normalizado para -1, igual à persistência.
-            final propPath = (editarAnimalAnimaisProdutoresRecord
-                    .uidTecnicoPropriedade as DocumentReference?)
-                ?.path;
+            final propPath = animal.uidTecnicoPropriedadePath;
             final brincoNovo = _brincoTextController.text != ''
                 ? (int.tryParse(_brincoTextController.text) ?? -1)
                 : -1;
@@ -451,8 +448,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
             }
             if ((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) {
               await _saveAnimalOfflineFirst(createAnimaisProdutoresRecordData(
-                uidTecnicoPropriedade:
-                    editarAnimalAnimaisProdutoresRecord.uidTecnicoPropriedade,
+                uidTecnicoPropriedade: _refPropriedade(animal),
                 nomeAnimal: _nomeTextController.text,
                 brincoAnimal: int.tryParse(_brincoTextController.text),
                 racaAnimal: _racaValue,
@@ -460,7 +456,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                 dtNascimento: _dataNascimentoTextController.text,
                 touro: _touroTextController.text,
                 vaca: _vacaTextController.text,
-                grupoAnimal: editarAnimalAnimaisProdutoresRecord.grupoAnimal,
+                grupoAnimal: animal.grupoAnimal,
                 nomeBrincoConcat: () {
                   if ((_nomeTextController.text != '') &&
                       (_brincoTextController.text != '') &&
@@ -518,8 +514,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
             } else {
               if (_grupoValue == 'Touros') {
                 await _saveAnimalOfflineFirst(createAnimaisProdutoresRecordData(
-                  uidTecnicoPropriedade:
-                      editarAnimalAnimaisProdutoresRecord.uidTecnicoPropriedade,
+                  uidTecnicoPropriedade: _refPropriedade(animal),
                   nomeAnimal: _nomeTextController.text,
                   brincoAnimal: int.tryParse(_brincoTextController.text),
                   racaAnimal: _racaValue,
@@ -527,7 +522,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                   dtNascimento: _dataNascimentoTextController.text,
                   touro: _touroTextController.text,
                   vaca: _vacaTextController.text,
-                  grupoAnimal: editarAnimalAnimaisProdutoresRecord.grupoAnimal,
+                  grupoAnimal: animal.grupoAnimal,
                   nomeBrincoConcat: () {
                     if ((_nomeTextController.text != '') &&
                         (_brincoTextController.text != '') &&
@@ -587,21 +582,18 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                 if (_grupoValue == 'Sêmens') {
                   await _saveAnimalOfflineFirst(
                       createAnimaisProdutoresRecordData(
-                    uidTecnicoPropriedade: editarAnimalAnimaisProdutoresRecord
-                        .uidTecnicoPropriedade,
+                    uidTecnicoPropriedade: _refPropriedade(animal),
                     nomeAnimal: _nomeTextController.text,
                     brincoAnimal: int.tryParse(_brincoTextController.text),
                     racaAnimal: _racaValue,
                     dtNascimento: _dataNascimentoTextController.text,
                     touro: _touroTextController.text,
                     vaca: _vacaTextController.text,
-                    grupoAnimal:
-                        editarAnimalAnimaisProdutoresRecord.grupoAnimal,
+                    grupoAnimal: animal.grupoAnimal,
                     nomeBrincoConcat: () {
                       if ((_nomeTextController.text != '') &&
                           (_brincoTextController.text != '') &&
-                          (editarAnimalAnimaisProdutoresRecord.brincoAnimal !=
-                              -1)) {
+                          (animal.brincoAnimal != -1)) {
                         return '${_nomeTextController.text} - ${_brincoTextController.text}';
                       } else if (_nomeTextController.text != '') {
                         return _nomeTextController.text;
@@ -656,8 +648,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                 } else {
                   await _saveAnimalOfflineFirst(
                       createAnimaisProdutoresRecordData(
-                    uidTecnicoPropriedade: editarAnimalAnimaisProdutoresRecord
-                        .uidTecnicoPropriedade,
+                    uidTecnicoPropriedade: _refPropriedade(animal),
                     nomeAnimal: _nomeTextController.text,
                     brincoAnimal: int.tryParse(_brincoTextController.text),
                     racaAnimal: _racaValue,
@@ -665,13 +656,11 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                     dtNascimento: _dataNascimentoTextController.text,
                     touro: _touroTextController.text,
                     vaca: _vacaTextController.text,
-                    grupoAnimal:
-                        editarAnimalAnimaisProdutoresRecord.grupoAnimal,
+                    grupoAnimal: animal.grupoAnimal,
                     nomeBrincoConcat: () {
                       if ((_nomeTextController.text != '') &&
                           (_brincoTextController.text != '') &&
-                          (editarAnimalAnimaisProdutoresRecord.brincoAnimal !=
-                              -1)) {
+                          (animal.brincoAnimal != -1)) {
                         return '${_nomeTextController.text} - ${_brincoTextController.text}';
                       } else if (_nomeTextController.text != '') {
                         return _nomeTextController.text;
@@ -778,11 +767,10 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
     );
   }
 
-  Widget _campoNome(
-      BuildContext context, dynamic editarAnimalAnimaisProdutoresRecord) {
+  Widget _campoNome(BuildContext context, AnimalEntity animal) {
     return TextFormField(
       controller: _nomeTextController ??= TextEditingController(
-        text: editarAnimalAnimaisProdutoresRecord.nomeAnimal,
+        text: animal.nomeAnimal,
       ),
       focusNode: _nomeFocusNode,
       autofocus: false,
@@ -853,11 +841,14 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
     );
   }
 
-  Widget _campoBrinco(
-      BuildContext context, dynamic editarAnimalAnimaisProdutoresRecord) {
+  Widget _campoBrinco(BuildContext context, AnimalEntity animal) {
     return TextFormField(
       controller: _brincoTextController ??= TextEditingController(
-        text: editarAnimalAnimaisProdutoresRecord.brincoAnimal.toString(),
+        // Sem brinco a entidade guarda 0 (default) ou -1 (sentinela do
+        // FlutterFlow); nenhum dos dois deve aparecer no campo.
+        text: temBrinco(animal.brincoAnimal)
+            ? animal.brincoAnimal.toString()
+            : '',
       ),
       focusNode: _brincoFocusNode,
       autofocus: false,
@@ -929,12 +920,11 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
     );
   }
 
-  Widget _campoRaca(
-      BuildContext context, dynamic editarAnimalAnimaisProdutoresRecord) {
+  Widget _campoRaca(BuildContext context, AnimalEntity animal) {
     // Raças do ObjectBox (offline-first) — sem StreamBuilder de rede.
     return FlutterFlowDropDown<String>(
       controller: _racaValueController ??= FormFieldController<String>(
-        _racaValue ??= editarAnimalAnimaisProdutoresRecord.racaAnimal,
+        _racaValue ??= animal.racaAnimal,
       ),
       options: ReferenciaRepository().racas(),
       onChanged: (val) => safeSetState(() => _racaValue = val),
@@ -987,12 +977,11 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
     );
   }
 
-  Widget _campoGrupo(
-      BuildContext context, dynamic editarAnimalAnimaisProdutoresRecord) {
+  Widget _campoGrupo(BuildContext context, AnimalEntity animal) {
     // Grupos do ObjectBox (offline-first) — sem StreamBuilder de rede.
     return FlutterFlowDropDown<String>(
       controller: _grupoValueController ??= FormFieldController<String>(
-        _grupoValue ??= editarAnimalAnimaisProdutoresRecord.grupoAnimal,
+        _grupoValue ??= animal.grupoAnimal,
       ),
       options: ReferenciaRepository().grupos(),
       onChanged: (val) => safeSetState(() => _grupoValue = val),
@@ -1025,8 +1014,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
     );
   }
 
-  Widget _campoDataNascimento(
-      BuildContext context, dynamic editarAnimalAnimaisProdutoresRecord) {
+  Widget _campoDataNascimento(BuildContext context, AnimalEntity animal) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -1036,7 +1024,7 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
             child: TextFormField(
               controller: _dataNascimentoTextController ??=
                   TextEditingController(
-                text: editarAnimalAnimaisProdutoresRecord.dtNascimento,
+                text: animal.dtNascimento,
               ),
               focusNode: _dataNascimentoFocusNode,
               onChanged: (_) => EasyDebounce.debounce(
@@ -1232,11 +1220,10 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
     );
   }
 
-  Widget _campoTouro(
-      BuildContext context, dynamic editarAnimalAnimaisProdutoresRecord) {
+  Widget _campoTouro(BuildContext context, AnimalEntity animal) {
     return TextFormField(
       controller: _touroTextController ??= TextEditingController(
-        text: editarAnimalAnimaisProdutoresRecord.touro,
+        text: animal.touro,
       ),
       focusNode: _touroFocusNode,
       autofocus: false,
@@ -1307,11 +1294,10 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
     );
   }
 
-  Widget _campoVaca(
-      BuildContext context, dynamic editarAnimalAnimaisProdutoresRecord) {
+  Widget _campoVaca(BuildContext context, AnimalEntity animal) {
     return TextFormField(
       controller: _vacaTextController ??= TextEditingController(
-        text: editarAnimalAnimaisProdutoresRecord.vaca,
+        text: animal.vaca,
       ),
       focusNode: _vacaFocusNode,
       autofocus: false,
@@ -1383,32 +1369,62 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
     );
   }
 
+  /// A entidade do ObjectBox guarda o PATH da propriedade; o payload do
+  /// Firestore (`createAnimaisProdutoresRecordData`) espera a referência.
+  DocumentReference? _refPropriedade(AnimalEntity animal) {
+    final path = animal.uidTecnicoPropriedadePath;
+    if (path == null || path.isEmpty) return null;
+    return FirebaseFirestore.instance.doc(path);
+  }
+
+  Widget _carregando(BuildContext context) => Scaffold(
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        body: const Center(
+          child: SizedBox(
+            width: 50.0,
+            height: 50.0,
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFF75E38)),
+            ),
+          ),
+        ),
+      );
+
+  Widget _semAnimal(BuildContext context, String mensagem) => Scaffold(
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        appBar: AppBar(
+          backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+          leading: BackButton(color: FlutterFlowTheme.of(context).primaryText),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Text(
+              mensagem,
+              textAlign: TextAlign.center,
+              style: FlutterFlowTheme.of(context).bodyMedium,
+            ),
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
 
-    return StreamBuilder<AnimaisProdutoresRecord>(
-      stream: AnimaisProdutoresRecord.getDocument(widget.uidAnimal!),
-      builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
-          return Scaffold(
-            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-            body: Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Color(0xFFF75E38),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
+    // Fonte: ObjectBox — a MESMA que o botão Salvar já usa (AnimalRepository).
+    // A leitura vinha de um `.snapshots()` do Firestore, então offline o
+    // formulário dependia do cache interno dele para abrir.
+    final animalAsync =
+        ref.watch(animalPorFirestoreIdProvider(widget.uidAnimal?.id ?? ''));
 
-        final editarAnimalAnimaisProdutoresRecord = snapshot.data!;
+    return animalAsync.when(
+      loading: () => _carregando(context),
+      error: (_, __) => _semAnimal(context, 'Erro ao carregar o animal.'),
+      data: (animal) {
+        if (animal == null) {
+          return _semAnimal(context, 'Animal não encontrado neste aparelho.');
+        }
 
         return GestureDetector(
           onTap: () {
@@ -1460,10 +1476,8 @@ class _EditarAnimalPageState extends State<EditarAnimalPage> {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _formularioEdicao(
-                          context, editarAnimalAnimaisProdutoresRecord),
-                      _secaoSalvar(
-                          context, editarAnimalAnimaisProdutoresRecord),
+                      _formularioEdicao(context, animal),
+                      _secaoSalvar(context, animal),
                     ],
                   ),
                 ),

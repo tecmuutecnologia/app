@@ -14,11 +14,14 @@ import '/features/prontuario/presentation/pages/pron_acoes_page.dart';
 import '/features/prontuario/presentation/pages/pron_cios_page.dart';
 import '/features/prontuario/presentation/pages/pron_diag_gestacao_page.dart';
 import '/features/prontuario/presentation/pages/pron_inseminacoes_page.dart';
+import '/domain/animais/ordenacao_animal.dart';
+import '/features/animais/application/animais_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class ProntuarioAnimalPage extends StatefulWidget {
+class ProntuarioAnimalPage extends ConsumerStatefulWidget {
   const ProntuarioAnimalPage({
     super.key,
     required this.uidPropriedade,
@@ -44,10 +47,11 @@ class ProntuarioAnimalPage extends StatefulWidget {
   static String routePath = '/prontuarioAnimal';
 
   @override
-  State<ProntuarioAnimalPage> createState() => _ProntuarioAnimalPageState();
+  ConsumerState<ProntuarioAnimalPage> createState() =>
+      _ProntuarioAnimalPageState();
 }
 
-class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
+class _ProntuarioAnimalPageState extends ConsumerState<ProntuarioAnimalPage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -992,8 +996,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _rotuloNomeBrinco(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
+  Widget _rotuloNomeBrinco(BuildContext context, AnimalEntity animal) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(15.0, 15.0, 15.0, 15.0),
       child: Row(
@@ -1023,20 +1026,16 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               ),
               Text(
                 () {
-                  if ((prontuarioAnimalAnimaisProdutoresRecord.nomeAnimal !=
-                          '') &&
-                      (prontuarioAnimalAnimaisProdutoresRecord.brincoAnimal !=
-                          null) &&
-                      (prontuarioAnimalAnimaisProdutoresRecord.brincoAnimal !=
-                          -1)) {
-                    return '${prontuarioAnimalAnimaisProdutoresRecord.nomeAnimal} - ${prontuarioAnimalAnimaisProdutoresRecord.brincoAnimal.toString()}';
-                  } else if (prontuarioAnimalAnimaisProdutoresRecord
-                          .nomeAnimal !=
-                      '') {
-                    return prontuarioAnimalAnimaisProdutoresRecord.nomeAnimal;
+                  // `nomeAnimal` é String? no ObjectBox: normalizado antes do
+                  // guard, senão o `!= ''` passa com nulo.
+                  final nome = animal.nomeAnimal ?? '';
+                  final brinco = animal.brincoAnimal;
+                  if (nome != '' && temBrinco(brinco)) {
+                    return '$nome - $brinco';
+                  } else if (nome != '') {
+                    return nome;
                   } else {
-                    return prontuarioAnimalAnimaisProdutoresRecord.brincoAnimal
-                        .toString();
+                    return brinco.toString();
                   }
                 }(),
                 style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -1070,7 +1069,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                     ),
               ),
               Text(
-                prontuarioAnimalAnimaisProdutoresRecord.dtNascimento,
+                animal.dtNascimento ?? '',
                 style: FlutterFlowTheme.of(context).bodyMedium.override(
                       font: GoogleFonts.readexPro(
                         fontWeight: FontWeight.bold,
@@ -1141,8 +1140,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _listaInfoGerais(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
+  Widget _listaInfoGerais(BuildContext context, AnimalEntity animal) {
     return ListView(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
@@ -1151,9 +1149,9 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
       physics: const NeverScrollableScrollPhysics(),
       scrollDirection: Axis.vertical,
       children: [
-        _linhaMae(context, prontuarioAnimalAnimaisProdutoresRecord),
-        _linhaGrupo(context, prontuarioAnimalAnimaisProdutoresRecord),
-        _linhaNumeroRegistro(context, prontuarioAnimalAnimaisProdutoresRecord),
+        _linhaMae(context, animal),
+        _linhaGrupo(context, animal),
+        _linhaNumeroRegistro(context, animal),
       ],
     );
   }
@@ -1192,8 +1190,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _listaReproducao(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
+  Widget _listaReproducao(BuildContext context, AnimalEntity animal) {
     return ListView(
       padding: EdgeInsets.zero,
       primary: false,
@@ -1201,15 +1198,14 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
       physics: const NeverScrollableScrollPhysics(),
       scrollDirection: Axis.vertical,
       children: [
-        _linhaUltimoParto(context, prontuarioAnimalAnimaisProdutoresRecord),
-        _linhaTotalPartos(context, prontuarioAnimalAnimaisProdutoresRecord),
-        _linhaDel(context, prontuarioAnimalAnimaisProdutoresRecord),
+        _linhaUltimoParto(context, animal),
+        _linhaTotalPartos(context, animal),
+        _linhaDel(context, animal),
       ],
     );
   }
 
-  Widget _linhaMae(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
+  Widget _linhaMae(BuildContext context, AnimalEntity animal) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
       child: Row(
@@ -1238,7 +1234,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               ),
               Text(
                 valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.vaca,
+                  animal.vaca,
                   'N/C',
                 ),
                 style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -1277,7 +1273,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               ),
               Text(
                 valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.touro,
+                  animal.touro,
                   'N/C',
                 ),
                 style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -1299,8 +1295,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _linhaGrupo(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
+  Widget _linhaGrupo(BuildContext context, AnimalEntity animal) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
       child: Row(
@@ -1329,7 +1324,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               ),
               Text(
                 valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.grupoAnimal,
+                  animal.grupoAnimal,
                   'N/C',
                 ),
                 style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -1368,7 +1363,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               ),
               Text(
                 valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.racaAnimal,
+                  animal.racaAnimal,
                   'N/C',
                 ),
                 style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -1390,8 +1385,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _linhaNumeroRegistro(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
+  Widget _linhaNumeroRegistro(BuildContext context, AnimalEntity animal) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
       child: Row(
@@ -1419,12 +1413,8 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                     ),
               ),
               Text(
-                (prontuarioAnimalAnimaisProdutoresRecord.brincoAnimal !=
-                            null) &&
-                        (prontuarioAnimalAnimaisProdutoresRecord.brincoAnimal !=
-                            -1)
-                    ? prontuarioAnimalAnimaisProdutoresRecord.brincoAnimal
-                        .toString()
+                temBrinco(animal.brincoAnimal)
+                    ? animal.brincoAnimal.toString()
                     : 'N/C',
                 style: FlutterFlowTheme.of(context).bodyMedium.override(
                       font: GoogleFonts.readexPro(
@@ -1462,7 +1452,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               ),
               Text(
                 valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.status,
+                  animal.status,
                   'N/C',
                 ),
                 style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -1484,8 +1474,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _linhaUltimoParto(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
+  Widget _linhaUltimoParto(BuildContext context, AnimalEntity animal) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
       child: Row(
@@ -1514,7 +1503,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               ),
               Text(
                 valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.dtUltimoParto,
+                  animal.dtUltimoParto,
                   'N/C',
                 ),
                 style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -1553,7 +1542,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               ),
               Text(
                 valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.dtUltimaInseminacao,
+                  animal.dtUltimaInseminacao,
                   'N/C',
                 ),
                 style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -1575,8 +1564,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _linhaTotalPartos(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
+  Widget _linhaTotalPartos(BuildContext context, AnimalEntity animal) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
       child: Row(
@@ -1605,8 +1593,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               ),
               Text(
                 valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.totalPartos
-                      .toString(),
+                  animal.totalPartos.toString(),
                   'N/C',
                 ),
                 style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -1645,8 +1632,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               ),
               Text(
                 valueOrDefault<String>(
-                  prontuarioAnimalAnimaisProdutoresRecord.totalInseminacoes
-                      .toString(),
+                  animal.totalInseminacoes.toString(),
                   'N/C',
                 ),
                 style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -1668,8 +1654,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     );
   }
 
-  Widget _linhaDel(
-      BuildContext context, dynamic prontuarioAnimalAnimaisProdutoresRecord) {
+  Widget _linhaDel(BuildContext context, AnimalEntity animal) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
       child: Row(
@@ -1697,11 +1682,9 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                     ),
               ),
               Text(
-                prontuarioAnimalAnimaisProdutoresRecord.dtUltimoParto != ''
+                (animal.dtUltimoParto ?? '') != ''
                     ? functions
-                        .calcularDiferencaEmDias(
-                            prontuarioAnimalAnimaisProdutoresRecord
-                                .dtUltimoParto)
+                        .calcularDiferencaEmDias(animal.dtUltimoParto!)
                         .toString()
                     : 'N/D',
                 style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -1718,7 +1701,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
               ),
             ],
           ),
-          if (prontuarioAnimalAnimaisProdutoresRecord.dtDesmame != null)
+          if (animal.dtDesmame != null)
             Column(
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -1743,7 +1726,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                 Text(
                   dateTimeFormat(
                     "dd/MM/yyyy",
-                    prontuarioAnimalAnimaisProdutoresRecord.dtDesmame!,
+                    animal.dtDesmame!,
                     locale: FFLocalizations.of(context).languageCode,
                   ),
                   style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -1778,32 +1761,58 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
     return filtradas.length > 3 ? filtradas.sublist(0, 3) : filtradas;
   }
 
+  /// Spinner enquanto o ObjectBox responde.
+  Widget _carregando(BuildContext context) => Scaffold(
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        body: const Center(
+          child: SizedBox(
+            width: 50.0,
+            height: 50.0,
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFF75E38)),
+            ),
+          ),
+        ),
+      );
+
+  /// Animal fora do cache local (ou excluído). Antes, com o stream do
+  /// Firestore, este caso girava o spinner para sempre.
+  Widget _semAnimal(BuildContext context, String mensagem) => Scaffold(
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        appBar: AppBar(
+          backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+          leading: BackButton(color: FlutterFlowTheme.of(context).primaryText),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Text(
+              mensagem,
+              textAlign: TextAlign.center,
+              style: FlutterFlowTheme.of(context).bodyMedium,
+            ),
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
 
-    return StreamBuilder<AnimaisProdutoresRecord>(
-      stream: AnimaisProdutoresRecord.getDocument(widget.uidAnimaisProdutores!),
-      builder: (context, snapshot) {
-        // Customize what your widget looks like when it's loading.
-        if (!snapshot.hasData) {
-          return Scaffold(
-            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-            body: Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Color(0xFFF75E38),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }
+    // Fonte: ObjectBox. Antes era um `.snapshots()` do documento no Firestore:
+    // offline a tela dependia do cache interno dele, e animal nunca aberto
+    // online ficava preso no spinner. As seções já liam do ObjectBox, então o
+    // cabeçalho era a última peça em outra fonte.
+    final animalAsync = ref.watch(
+        animalPorFirestoreIdProvider(widget.uidAnimaisProdutores?.id ?? ''));
 
-        final prontuarioAnimalAnimaisProdutoresRecord = snapshot.data!;
+    return animalAsync.when(
+      loading: () => _carregando(context),
+      error: (_, __) => _semAnimal(context, 'Erro ao carregar o animal.'),
+      data: (animal) {
+        if (animal == null) {
+          return _semAnimal(context, 'Animal não encontrado neste aparelho.');
+        }
 
         return GestureDetector(
           onTap: () {
@@ -1876,8 +1885,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _rotuloNomeBrinco(
-                              context, prontuarioAnimalAnimaisProdutoresRecord),
+                          _rotuloNomeBrinco(context, animal),
                           Divider(
                             height: 2.0,
                             thickness: 1.0,
@@ -1889,8 +1897,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                             thickness: 1.0,
                             color: Color(0xFFE5E7EB),
                           ),
-                          _listaInfoGerais(
-                              context, prontuarioAnimalAnimaisProdutoresRecord),
+                          _listaInfoGerais(context, animal),
                           Divider(
                             height: 2.0,
                             thickness: 1.0,
@@ -1902,8 +1909,7 @@ class _ProntuarioAnimalPageState extends State<ProntuarioAnimalPage> {
                             thickness: 1.0,
                             color: Color(0xFFE5E7EB),
                           ),
-                          _listaReproducao(
-                              context, prontuarioAnimalAnimaisProdutoresRecord),
+                          _listaReproducao(context, animal),
                         ],
                       ),
                     ),

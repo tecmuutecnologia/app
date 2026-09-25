@@ -135,6 +135,19 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
         .map((query) => query.find());
   }
 
+  /// Stream de UM animal pelo id do Firestore. `null` enquanto ele não existir
+  /// no cache local.
+  ///
+  /// O prontuário lia esse animal com `AnimaisProdutoresRecord.getDocument()`,
+  /// um `.snapshots()` do Firestore: offline dependia do cache interno dele, e
+  /// animal nunca aberto online ficava preso no spinner. Como stream do
+  /// ObjectBox, a tela também reage às escritas locais e ao que a escuta remota
+  /// traz de outro aparelho.
+  Stream<AnimalEntity?> watchByFirestoreId(String firestoreId) => box
+      .query(AnimalEntity_.firestoreId.equals(firestoreId))
+      .watch(triggerImmediately: true)
+      .map((query) => query.findFirst());
+
   /// Stream de todos os animais do aparelho (reatividade local do ObjectBox).
   ///
   /// Sem filtro de propriedade de propósito: o cache local contém apenas os
