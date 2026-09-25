@@ -159,15 +159,21 @@ class ObjectBoxAuthHelper {
         await OfflineFirstSyncService.instance.syncPendingChangesToFirestore();
       }
 
-      // Para sincronização periódica
+      // Para sincronização periódica e as escutas — antes de apagar o banco,
+      // para nenhum evento remoto gravar dados da conta que está saindo.
       if (OfflineFirstSyncService.isInitialized) {
         OfflineFirstSyncService.instance.stopPeriodicSync();
+        OfflineFirstSyncService.instance.pararEscutaRemota();
       }
 
-      // Limpa dados do usuário do cache local
-      if (userId != null) {
-        await ObjectBoxService.instance.clearUserData(userId);
-      }
+      // Apaga o banco local INTEIRO. Antes só saíam o person, a fila e as
+      // marcas de sync: propriedades, animais e ações ficavam, e o próximo
+      // usuário do aparelho herdava tudo — um produtor chegou a baixar os
+      // animais de outros 13 clientes do técnico anterior, porque os alvos do
+      // download saem das propriedades locais. Quem avisa sobre o que ainda não
+      // foi enviado é a tela, antes de chamar o signOut
+      // (`confirmarSaidaDaConta`).
+      await ObjectBoxService.instance.clearAllData();
 
       debugPrint('✅ Dados locais limpos após logout');
     } catch (e) {

@@ -2,6 +2,7 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import '../../objectbox.g.dart';
 import 'entities/index.dart';
+import '../../core/sync/pendencias_locais.dart' as sync;
 
 /// Serviço singleton para gerenciamento do ObjectBox
 class ObjectBoxService {
@@ -160,17 +161,32 @@ class ObjectBoxService {
     userSessionBox.removeAll();
   }
 
-  /// Limpa dados de um usuário específico (para logout)
-  Future<void> clearUserData(String userUid) async {
-    // Remove dados relacionados ao usuário
-    final persons =
-        personBox.query(PersonEntity_.uid.equals(userUid)).build().find();
-    personBox.removeMany(persons.map((e) => e.id).toList());
+  /// Quanto do banco local ainda não chegou ao Firestore (fila + entidades
+  /// `needsSync`). Consultado antes do logout, que apaga tudo.
+  int contarNaoEnviados() => sync.contarNaoEnviados(
+        filaPendente: pendingOperationBox.count(),
+        pendentesPorColecao: [
+          _pendentes(personBox, PersonEntity_.needsSync),
+          _pendentes(tecnicoBox, TecnicoEntity_.needsSync),
+          _pendentes(produtorBox, ProdutorEntity_.needsSync),
+          _pendentes(propriedadeBox, PropriedadeEntity_.needsSync),
+          _pendentes(animalBox, AnimalEntity_.needsSync),
+          _pendentes(acaoBox, AcaoEntity_.needsSync),
+          _pendentes(acaoDaVisitaBox, AcaoDaVisitaEntity_.needsSync),
+          _pendentes(resumoVisitaBox, ResumoVisitaEntity_.needsSync),
+          _pendentes(recomendacaoBox, RecomendacaoEntity_.needsSync),
+          _pendentes(tratamentoBox, TratamentoEntity_.needsSync),
+          _pendentes(acaoSanitarioBox, AcaoSanitarioEntity_.needsSync),
+          _pendentes(financeiroBox, FinanceiroEntity_.needsSync),
+        ],
+      );
 
-    // Remove operações pendentes
-    pendingOperationBox.removeAll();
-
-    // Reseta metadados de sincronização
-    syncMetadataBox.removeAll();
+  static int _pendentes<T>(Box<T> box, QueryBooleanProperty<T> needsSync) {
+    final query = box.query(needsSync.equals(true)).build();
+    try {
+      return query.count();
+    } finally {
+      query.close();
+    }
   }
 }

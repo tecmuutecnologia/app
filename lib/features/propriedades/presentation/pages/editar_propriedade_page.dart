@@ -1,4 +1,5 @@
 import '/core/auth/firebase_auth/auth_util.dart';
+import '/core/auth/confirmar_saida_da_conta.dart';
 import '/core/ui/app_card.dart';
 import '/data/backend.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
@@ -951,6 +952,8 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
         padding: EdgeInsetsDirectional.fromSTEB(20.0, 15.0, 20.0, 0.0),
         child: FFButtonWidget(
           onPressed: () async {
+            if (!await confirmarSaidaDaConta(context)) return;
+            if (!context.mounted) return;
             GoRouter.of(context).prepareAuthEvent();
             await authManager.signOut();
             GoRouter.of(context).clearRedirectLocation();

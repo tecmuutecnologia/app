@@ -1,4 +1,5 @@
 import 'dart:async';
+import '/core/auth/confirmar_saida_da_conta.dart';
 
 import 'package:tecmuu/data/objectbox/widgets/objectbox_debug_menu.dart';
 
@@ -183,6 +184,8 @@ class _DashboardTecnicoPageState extends ConsumerState<DashboardTecnicoPage>
   /// marcas de sincronizacao, e o login seguinte volta a fazer o download
   /// completo.
   Future<void> _sairDaConta() async {
+    if (!await confirmarSaidaDaConta(context)) return;
+    if (!mounted) return;
     // Para os listeners remotos (evita escutar dados do tecnico anterior
     // apos a troca de conta).
     if (RemoteSyncListenersService.isInitialized) {

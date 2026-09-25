@@ -1,4 +1,5 @@
 import '/core/auth/firebase_auth/auth_util.dart';
+import '/core/auth/confirmar_saida_da_conta.dart';
 import '/core/ui/app_card.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
@@ -1048,6 +1049,8 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 0.0),
       child: FFButtonWidget(
         onPressed: () async {
+          if (!await confirmarSaidaDaConta(context)) return;
+          if (!context.mounted) return;
           // Para os listeners remotos (evita escutar dados do
           // técnico anterior após troca de conta).
           if (RemoteSyncListenersService.isInitialized) {
