@@ -131,6 +131,9 @@ class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
     final acao = AcaoEntity(
       parentPath: widget.uidTecnico!.path,
       uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
+      // Sem o vínculo com a propriedade, o produtor não vê esta ação: ele
+      // filtra por `uidPropriedade` no download, no pull e na escuta.
+      uidPropriedadePath: widget.uidPropriedade?.path,
       uidAnimalOffline:
           widget.uidAnimaisProdutores == null ? widget.uidAnimalOffline : null,
       nomeAnimal: widget.nomeAnimal,
