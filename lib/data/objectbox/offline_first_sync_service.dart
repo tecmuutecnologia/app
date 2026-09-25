@@ -1,11 +1,14 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '/core/connectivity/connectivity_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../core/sync/alvos_animais_produtor.dart';
+import '../../core/sync/edicao_pendente.dart';
+import '../../core/sync/escuta_remota.dart';
 import '../../core/sync/chaves_uid_person.dart';
 import '../../core/sync/fonte_download.dart';
 import '../../core/sync/janela_pull.dart';
@@ -34,9 +37,9 @@ class OfflineFirstSyncService {
 
   final ObjectBoxService _objectBox;
   final FirebaseFirestore _firestore;
-  final Connectivity _connectivity;
+  final ConnectivityService _connectivity;
 
-  StreamSubscription<ConnectivityResult>? _connectivitySubscription;
+  StreamSubscription<bool>? _connectivitySubscription;
   Timer? _periodicSyncTimer;
 
   final _statusController = StreamController<SyncStatus>.broadcast();
@@ -61,10 +64,10 @@ class OfflineFirstSyncService {
   OfflineFirstSyncService._({
     required ObjectBoxService objectBox,
     FirebaseFirestore? firestore,
-    Connectivity? connectivity,
+    ConnectivityService? connectivity,
   })  : _objectBox = objectBox,
         _firestore = firestore ?? FirebaseFirestore.instance,
-        _connectivity = connectivity ?? Connectivity();
+        _connectivity = connectivity ?? ConnectivityService.instance;
 
   static OfflineFirstSyncService get instance {
     if (_instance == null) {
@@ -80,7 +83,7 @@ class OfflineFirstSyncService {
 
   static Future<OfflineFirstSyncService> initialize({
     FirebaseFirestore? firestore,
-    Connectivity? connectivity,
+    ConnectivityService? connectivity,
   }) async {
     if (_instance != null) {
       return _instance!;
@@ -101,14 +104,21 @@ class OfflineFirstSyncService {
     return _instance!;
   }
 
+  /// Observa a conectividade pelo `ConnectivityService` — a fonte ÚNICA do app.
+  ///
+  /// Antes este serviço abria o próprio listener do `connectivity_plus`, em
+  /// paralelo ao da UI. Duas assinaturas independentes do mesmo evento é
+  /// duplicação sem ganho: quando o evento de volta se perde (plus_plugins#479,
+  /// visto em simulador e em device), as duas ficam cegas juntas e o push fica
+  /// travado porque é gated em `_isOnline`. Consumindo o serviço, o re-check
+  /// periódico dele destrava a UI e o sync de uma vez só.
   Future<void> _setupConnectivityListener() async {
-    final result = await _connectivity.checkConnectivity();
-    _isOnline = result != ConnectivityResult.none;
+    _isOnline = _connectivity.isOnline;
 
-    _connectivitySubscription = _connectivity.onConnectivityChanged.listen(
-      (ConnectivityResult result) async {
+    _connectivitySubscription = _connectivity.onStatusChange.listen(
+      (bool online) async {
         final wasOffline = !_isOnline;
-        _isOnline = result != ConnectivityResult.none;
+        _isOnline = online;
 
         if (_isOnline && wasOffline) {
           debugPrint('🔄 Conexão restaurada - sincronizando pendências');
@@ -292,7 +302,8 @@ class OfflineFirstSyncService {
             await _downloadPerson(userId);
           case SyncEtapa.tecnico:
             _reportProgress(etapa, 'Dados do técnico');
-            tecnicoRef = _refDaFonte(await _downloadTecnico(userId), ehProdutor);
+            tecnicoRef =
+                _refDaFonte(await _downloadTecnico(userId), ehProdutor);
           case SyncEtapa.produtores:
             _reportProgress(etapa, 'Produtores');
             if (tecnicoRef != null) {
@@ -880,9 +891,11 @@ class OfflineFirstSyncService {
         .build()
         .find();
 
+    final aplicaveis = semEdicaoPendente(ids, existentes).toSet();
     final baixados = [
       for (final doc in docs)
-        AcaoEntity.fromFirestore(doc.data(), doc.id, parentPath),
+        if (aplicaveis.contains(doc.id))
+          AcaoEntity.fromFirestore(doc.data(), doc.id, parentPath),
     ];
 
     reaproveitarIds<AcaoEntity>(
@@ -1003,8 +1016,9 @@ class OfflineFirstSyncService {
     ];
 
     reaproveitarIds<T>(
-      existentes:
-          ids.isEmpty ? <T>[] : box.query(firestoreIdProp.oneOf(ids)).build().find(),
+      existentes: ids.isEmpty
+          ? <T>[]
+          : box.query(firestoreIdProp.oneOf(ids)).build().find(),
       baixados: baixados,
       firestoreIdDe: (e) => e.firestoreId,
       idDe: (e) => e.id,
@@ -1277,6 +1291,7 @@ class OfflineFirstSyncService {
         .build()
         .find();
 
+    var enviados = 0;
     for (final animal in modified) {
       try {
         if (animal.firestoreId != null && animal.parentPath != null) {
@@ -1288,6 +1303,7 @@ class OfflineFirstSyncService {
           animal.needsSync = false;
           animal.lastSynced = DateTime.now();
           _objectBox.animalBox.put(animal);
+          enviados++;
         } else if (animal.firestoreId == null &&
             animal.parentPath != null &&
             !animal.isDeleted) {
@@ -1299,6 +1315,7 @@ class OfflineFirstSyncService {
           animal.needsSync = false;
           animal.lastSynced = DateTime.now();
           _objectBox.animalBox.put(animal);
+          enviados++;
           _resolveAcoesParaAnimalSincronizado(animal);
         }
       } catch (e) {
@@ -1307,7 +1324,10 @@ class OfflineFirstSyncService {
     }
 
     if (modified.isNotEmpty) {
-      debugPrint('🐄 ${modified.length} animal(is) sincronizado(s)');
+      // Conta o que REALMENTE subiu: antes imprimia o total de pendentes, e
+      // uma falha (ex.: permission-denied) aparecia no log como sucesso.
+      debugPrint(
+          '🐄 $enviados de ${modified.length} animal(is) sincronizado(s)');
     }
   }
 
@@ -1438,6 +1458,7 @@ class OfflineFirstSyncService {
         .build()
         .find();
 
+    var enviados = 0;
     for (final tratamento in modified) {
       try {
         if (tratamento.firestoreId != null && tratamento.parentPath != null) {
@@ -1448,6 +1469,7 @@ class OfflineFirstSyncService {
           tratamento.needsSync = false;
           tratamento.lastSynced = DateTime.now();
           _objectBox.tratamentoBox.put(tratamento);
+          enviados++;
         } else if (tratamento.firestoreId == null &&
             tratamento.parentPath != null &&
             !tratamento.isDeleted) {
@@ -1459,6 +1481,7 @@ class OfflineFirstSyncService {
           tratamento.needsSync = false;
           tratamento.lastSynced = DateTime.now();
           _objectBox.tratamentoBox.put(tratamento);
+          enviados++;
         }
       } catch (e) {
         debugPrint(
@@ -1467,7 +1490,8 @@ class OfflineFirstSyncService {
     }
 
     if (modified.isNotEmpty) {
-      debugPrint('💊 ${modified.length} tratamento(s) sincronizado(s)');
+      debugPrint(
+          '💊 $enviados de ${modified.length} tratamento(s) sincronizado(s)');
     }
   }
 
@@ -1795,59 +1819,50 @@ class OfflineFirstSyncService {
 
   /// Traz do Firestore o que mudou desde a última sincronização.
   ///
-  /// Substitui os listeners `.snapshots()` permanentes (um por coleção mais um
-  /// por propriedade — 40 numa conta com 38 propriedades), que reliam coleções
-  /// inteiras a cada attach. Aqui são duas queries delta, trazendo só o que
-  /// mudou.
+  /// Duas queries delta (animais e ações) em vez de reler coleções inteiras.
+  /// É a rede de segurança do [iniciarEscutaRemota]: roda no ciclo periódico e
+  /// ao reconectar, e cobre o que o listener não viu (app fechado, listener
+  /// derrubado).
+  ///
+  /// Técnico e produtor usam os mesmos alvos da escuta ([alvosDeEscuta]). Antes
+  /// era no-op para o produtor, que só recebia animais novos no login seguinte.
   ///
   /// Documentos sem o campo `lastModified` são invisíveis a um filtro de
   /// intervalo. Isso é esperado: o carimbo só passou a existir a partir da
   /// versão que introduziu o pull, e o download completo (sem filtro) continua
   /// trazendo a base inteira no primeiro login.
-  ///
-  /// No-op em aparelho de produtor: `_tecnicoRefLocal` devolve nulo ali.
   Future<void> _pullRemoteChanges() async {
     if (!_isOnline) return;
 
-    final tecnicoRef = _tecnicoRefLocal();
-    if (tecnicoRef == null) return;
+    final alvos = _alvosLocais();
+    if (alvos.isEmpty) return;
 
     await _pullColecao(
       etapa: SyncEtapa.animais,
-      consulta: (desde) => tecnicoRef
-          .collection('animaisProdutores')
-          .where('lastModified', isGreaterThan: Timestamp.fromDate(desde)),
-      aplicar: (docs) => _salvarAnimais(docs, tecnicoRef.path),
+      alvos: alvos.where((a) => a.tipo == TipoEscuta.animais).toList(),
     );
-
     await _pullColecao(
       etapa: SyncEtapa.acoes,
-      consulta: (desde) => tecnicoRef
-          .collection('acoes')
-          .where('lastModified', isGreaterThan: Timestamp.fromDate(desde)),
-      aplicar: (docs) => _salvarAcoes(docs, tecnicoRef.path),
+      alvos: alvos.where((a) => a.tipo == TipoEscuta.acoes).toList(),
     );
   }
 
-  /// Executa o delta de UMA coleção e avança a marca dela.
+  /// Executa o delta de UMA etapa (em todos os alvos dela) e avança a marca.
   Future<void> _pullColecao({
     required SyncEtapa etapa,
-    required Query<Map<String, dynamic>> Function(DateTime desde) consulta,
-    required void Function(List<QueryDocumentSnapshot<Map<String, dynamic>>>)
-        aplicar,
+    required List<AlvoEscuta> alvos,
   }) async {
     final chave = SyncCheckpoint.chaveDe(etapa);
-    final marca = _objectBox.syncMetadataBox
-        .query(SyncMetadataEntity_.collectionName.equals(chave))
-        .build()
-        .findFirst();
+    final marca = _marcaDe(etapa);
     final desde = JanelaPull.desde(marca?.lastIncrementalSync);
 
     try {
-      final snapshot = await consulta(desde).get();
-      if (snapshot.docs.isNotEmpty) {
-        aplicar(snapshot.docs);
-        debugPrint('↓ ${snapshot.docs.length} ${etapa.name} atualizado(s)');
+      for (final alvo in alvos) {
+        final snapshot = await _consultaDelta(alvo, desde).get();
+        if (snapshot.docs.isNotEmpty) {
+          _aplicarDelta(alvo, snapshot.docs);
+          debugPrint('↓ ${snapshot.docs.length} ${etapa.name} atualizado(s)');
+        }
       }
       final linha = marca ?? SyncMetadataEntity(collectionName: chave);
       linha.lastIncrementalSync = DateTime.now().toUtc();
@@ -1857,6 +1872,97 @@ class OfflineFirstSyncService {
       // seguida nem marcar o app como quebrado.
       debugPrint('⚠️ Pull de ${etapa.name} falhou: $e');
     }
+  }
+
+  SyncMetadataEntity? _marcaDe(SyncEtapa etapa) => _objectBox.syncMetadataBox
+      .query(SyncMetadataEntity_.collectionName
+          .equals(SyncCheckpoint.chaveDe(etapa)))
+      .build()
+      .findFirst();
+
+  List<AlvoEscuta> _alvosLocais() => alvosDeEscuta(
+        tecnicoPath: _tecnicoRefLocal()?.path,
+        propriedades: _objectBox.propriedadeBox.getAll(),
+      );
+
+  Query<Map<String, dynamic>> _consultaDelta(AlvoEscuta alvo, DateTime desde) {
+    Query<Map<String, dynamic>> query = _firestore.collection(alvo.colecaoPath);
+    if (alvo.campoPropriedade != null) {
+      query = query.where(alvo.campoPropriedade!,
+          isEqualTo: _firestore.doc(alvo.propriedadePath!));
+    }
+    return query.where('lastModified',
+        isGreaterThan: Timestamp.fromDate(desde));
+  }
+
+  void _aplicarDelta(
+    AlvoEscuta alvo,
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+  ) {
+    switch (alvo.tipo) {
+      case TipoEscuta.animais:
+        _salvarAnimais(docs, alvo.parentPath);
+      case TipoEscuta.acoes:
+        _salvarAcoes(docs, alvo.parentPath);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Escuta em tempo real
+  // ---------------------------------------------------------------------------
+
+  final Map<AlvoEscuta, StreamSubscription<QuerySnapshot<Map<String, dynamic>>>>
+      _escutas = {};
+
+  /// Abre um listener por alvo, cada um filtrado por `lastModified` a partir
+  /// da marca da etapa.
+  ///
+  /// Os 40 listeners antigos (`RemoteSyncListenersService`) foram trocados
+  /// pelo pull porque reliam a coleção INTEIRA a cada attach. Com o filtro de
+  /// intervalo, o attach só lê o que mudou desde a última sincronização — e a
+  /// partir daí cada gravação de outro aparelho chega em segundos. Sem isto, a
+  /// bezerra de um parto lançado pelo técnico só aparecia para o produtor no
+  /// login seguinte.
+  ///
+  /// Idempotente: fecha as escutas anteriores antes de abrir as novas (troca
+  /// de conta, propriedades novas).
+  void iniciarEscutaRemota() {
+    pararEscutaRemota();
+
+    for (final alvo in _alvosLocais()) {
+      final etapa =
+          alvo.tipo == TipoEscuta.animais ? SyncEtapa.animais : SyncEtapa.acoes;
+      final desde = JanelaPull.desde(_marcaDe(etapa)?.lastIncrementalSync);
+
+      _escutas[alvo] = _consultaDelta(alvo, desde).snapshots().listen(
+        (snapshot) {
+          final mudados = {
+            for (final c in snapshot.docChanges)
+              if (c.type != DocumentChangeType.removed) c.doc.id,
+          };
+          // Eco da própria escrita ainda não confirmada: o ObjectBox já tem o
+          // dado, e o `lastModified` ainda é nulo (serverTimestamp pendente).
+          final docs = [
+            for (final d in snapshot.docs)
+              if (mudados.contains(d.id) && !d.metadata.hasPendingWrites) d,
+          ];
+          if (docs.isEmpty) return;
+          _aplicarDelta(alvo, docs);
+          debugPrint('⚡ ${docs.length} ${alvo.tipo.name} em tempo real');
+        },
+        onError: (Object e) =>
+            debugPrint('⚠️ Escuta de ${alvo.tipo.name} caiu: $e'),
+      );
+    }
+    debugPrint('👂 ${_escutas.length} escuta(s) remota(s) ativa(s)');
+  }
+
+  /// Fecha todas as escutas (logout, dispose).
+  void pararEscutaRemota() {
+    for (final escuta in _escutas.values) {
+      escuta.cancel();
+    }
+    _escutas.clear();
   }
 
   /// Inicia sincronização periódica em background
@@ -1935,6 +2041,7 @@ class OfflineFirstSyncService {
   }
 
   void dispose() {
+    pararEscutaRemota();
     _connectivitySubscription?.cancel();
     _periodicSyncTimer?.cancel();
     _statusController.close();

@@ -50,6 +50,9 @@ class ObjectBoxAuthHelper {
       final sync = OfflineFirstSyncService.instance;
       if (sync.needsInitialSync()) return;
       unawaited(sync.refreshTecnico(user.uid));
+      // App reaberto com sessão salva não passa pelo `onUserLogin`, que é
+      // quem abre as escutas depois do download.
+      sync.iniciarEscutaRemota();
     });
   }
 
@@ -94,6 +97,13 @@ class ObjectBoxAuthHelper {
     await syncService.repararPathPropriedades(user.uid);
 
     debugPrint('✅ Sincronização após login concluída');
+
+    // O logout para o timer, e o bootstrap é o único outro lugar que o arma:
+    // quem trocava de conta sem fechar o app ficava sem pull nem push
+    // periódico. Armado só depois do download, para não disputar a box com ele.
+    syncService.startPeriodicSync();
+    // Depois do download: os alvos do produtor saem das propriedades locais.
+    syncService.iniciarEscutaRemota();
 
     // Manutenção: remove soft-deletes já sincronizados (Fase 1.5).
     final purged = purgeAllSyncedSoftDeletes();

@@ -77,6 +77,28 @@ void main() {
       expect(r.map((e) => e.id), [7, 0]);
     });
 
+    test('edição local ainda não enviada não é sobrescrita pelo remoto', () {
+      // Com o listener em tempo real, um evento remoto pode chegar antes de o
+      // push local sair. A edição pendente vence — mesma regra do
+      // ConflictResolver dos listeners antigos.
+      final pendente = AnimalEntity.fromFirestore(
+        <String, dynamic>{'nomeAnimal': 'Editada offline'},
+        'f1',
+        parentPath,
+      )
+        ..id = 42
+        ..needsSync = true;
+
+      final r = reconciliarAnimais(
+        docs: [doc('f1', 'Versao remota')],
+        existentesPorFirestoreId: {'f1': pendente},
+        parentPath: parentPath,
+      );
+
+      expect(r, isEmpty);
+      expect(pendente.nomeAnimal, 'Editada offline');
+    });
+
     test('lote vazio devolve lista vazia', () {
       expect(
         reconciliarAnimais(

@@ -23,6 +23,10 @@ List<AnimalEntity> reconciliarAnimais({
 
   for (final doc in docs) {
     final existente = existentesPorFirestoreId[doc.firestoreId];
+    // Edição local ainda não enviada vence o remoto: o push dela vai chegar ao
+    // servidor e voltar para os outros aparelhos. Sobrescrever aqui perderia a
+    // edição sem aviso.
+    if (existente != null && existente.needsSync) continue;
     if (existente != null) {
       existente.updateFromFirestore(doc.data);
       resultado.add(existente);

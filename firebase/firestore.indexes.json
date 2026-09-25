@@ -479,6 +479,34 @@
           "order": "ASCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "animaisProdutores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnicoPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "lastModified",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "acoes",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "lastModified",
+          "order": "ASCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": [
