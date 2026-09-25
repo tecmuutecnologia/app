@@ -5,6 +5,7 @@ import '/data/objectbox/index.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
+import '../../application/tem_assinatura.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '../widgets/assinatura_produtor_widget.dart';
@@ -982,9 +983,9 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                                       ),
                                 ),
                               ),
-                            if (resumoVisitaAtualResumoDaVisitaRecord
-                                    .assinaturaTecnico !=
-                                '')
+                            if (temAssinatura(
+                                resumoVisitaAtualResumoDaVisitaRecord
+                                    .assinaturaTecnico))
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 4.0, 0.0, 0.0),
@@ -1010,9 +1011,9 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                                       ),
                                 ),
                               ),
-                            if (resumoVisitaAtualResumoDaVisitaRecord
-                                    .assinaturaTecnico !=
-                                '')
+                            if (temAssinatura(
+                                resumoVisitaAtualResumoDaVisitaRecord
+                                    .assinaturaTecnico))
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 0.0, 0.0, 10.0),
@@ -1025,12 +1026,16 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                                     width: 250.0,
                                     height: 80.0,
                                     fit: BoxFit.contain,
+                                    // URL quebrada (assinatura removida do
+                                    // Storage) não pode derrubar a tela.
+                                    errorBuilder: (_, __, ___) =>
+                                        const SizedBox.shrink(),
                                   ),
                                 ),
                               ),
-                            if (resumoVisitaAtualResumoDaVisitaRecord
-                                    .assinaturaProdutor !=
-                                '')
+                            if (temAssinatura(
+                                resumoVisitaAtualResumoDaVisitaRecord
+                                    .assinaturaProdutor))
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 4.0, 0.0, 0.0),
@@ -1056,9 +1061,9 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                                       ),
                                 ),
                               ),
-                            if (resumoVisitaAtualResumoDaVisitaRecord
-                                    .assinaturaProdutor !=
-                                '')
+                            if (temAssinatura(
+                                resumoVisitaAtualResumoDaVisitaRecord
+                                    .assinaturaProdutor))
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 0.0, 0.0, 10.0),
@@ -1071,6 +1076,10 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                                     width: 250.0,
                                     height: 80.0,
                                     fit: BoxFit.contain,
+                                    // URL quebrada (assinatura removida do
+                                    // Storage) não pode derrubar a tela.
+                                    errorBuilder: (_, __, ___) =>
+                                        const SizedBox.shrink(),
                                   ),
                                 ),
                               ),

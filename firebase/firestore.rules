@@ -1,184 +1,72 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /cidades/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if false;
-      allow delete: if false;
-    }
-
-    match /grupo/{document} {
-      allow create: if request.auth != null;
-      allow read: if request.auth != null;
-      allow write: if false;
-      allow delete: if false;
-    }
-
-    match /status_animais/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if false;
-      allow delete: if false;
-    }
-
-    match /planos-produtor/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if false;
-      allow delete: if false;
-    }
-
-    match /planos-tecnicos/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if false;
-      allow delete: if false;
-    }
-
-    match /empresas/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if false;
-      allow delete: if false;
-    }
-
-    match /person/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if request.auth != null;
-      allow delete: if request.auth != null;
-    }
-
-    match /tecnico/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if request.auth != null;
-      allow delete: if false;
-    }
-
-    match /produtor/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if request.auth != null;
-      allow delete: if false;
-    }
-
-    match /assinatura-produtor/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if request.auth != null;
-      allow delete: if false;
-    }
-
-    match /assinatura-ativa-produtor/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if request.auth != null;
-      allow delete: if false;
-    }
-
-    match /assinatura-tecnico/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if request.auth != null;
-      allow delete: if false;
-    }
-
-    match /assinatura-ativa-tecnico/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if request.auth != null;
-      allow delete: if false;
-    }
-
-    match /tecnico/{parent}/propriedades/{document} {
+    match /status_produtivo/{document} {
       allow create: if request.auth != null;
       allow read: if request.auth != null;
       allow write: if request.auth != null;
       allow delete: if request.auth != null;
     }
 
-    match /{path=**}/propriedades/{document} {
-      allow read: if request.auth != null;
-    }
-
-
-    match /tecnico/{parent}/animaisProdutores/{document} {
+    match /resumo_da_visita/{parent}/recomendacoes/{document} {
       allow create: if request.auth != null;
       allow read: if request.auth != null;
       allow write: if request.auth != null;
       allow delete: if request.auth != null;
     }
 
-    match /{path=**}/animaisProdutores/{document} {
+    match /{path=**}/recomendacoes/{document} {
       allow read: if request.auth != null;
     }
 
 
-    match /tecnico/{parent}/acoes/{document} {
+    match /resumo_da_visita/{parent}/tratamentos/{document} {
       allow create: if request.auth != null;
       allow read: if request.auth != null;
       allow write: if request.auth != null;
       allow delete: if request.auth != null;
     }
 
-    match /{path=**}/acoes/{document} {
+    match /{path=**}/tratamentos/{document} {
       allow read: if request.auth != null;
     }
 
-
-    match /tipo_acoes/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if false;
-      allow delete: if false;
-    }
-
-    match /racas/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if false;
-      allow delete: if false;
-    }
-
-    match /tecnico/{parent}/acoesSanitario/{document} {
+    // Subcoleções da PROPRIEDADE. O app grava tratamentos, recomendações,
+    // ações sanitárias e financeiro em
+    // `tecnico/{t}/propriedades/{p}/<colecao>` — é de lá que o download os lê.
+    // As regras só liberavam escrita nos caminhos antigos (sob
+    // `resumo_da_visita` ou direto sob o técnico), então toda gravação dessas
+    // quatro coleções voltava `permission-denied`: o receituário lançado ficava
+    // só no aparelho do técnico e nunca chegava ao produtor.
+    match /tecnico/{tecnico}/propriedades/{propriedade}/tratamentos/{document} {
       allow create: if request.auth != null;
       allow read: if request.auth != null;
       allow write: if request.auth != null;
       allow delete: if request.auth != null;
     }
 
-    match /{path=**}/acoesSanitario/{document} {
-      allow read: if request.auth != null;
-    }
-
-
-    match /colunas_relatorio_rebanho/{document} {
-      allow create: if true;
-      allow read: if true;
-      allow write: if false;
-      allow delete: if false;
-    }
-
-    match /tecnico/{parent}/financeiro/{document} {
+    match /tecnico/{tecnico}/propriedades/{propriedade}/recomendacoes/{document} {
       allow create: if request.auth != null;
       allow read: if request.auth != null;
       allow write: if request.auth != null;
       allow delete: if request.auth != null;
     }
 
-    match /{path=**}/financeiro/{document} {
-      allow read: if request.auth != null;
-    }
-
-
-    match /resumo_da_visita/{document} {
+    match /tecnico/{tecnico}/propriedades/{propriedade}/acoesSanitario/{document} {
       allow create: if request.auth != null;
       allow read: if request.auth != null;
       allow write: if request.auth != null;
       allow delete: if request.auth != null;
     }
+
+    match /tecnico/{tecnico}/propriedades/{propriedade}/financeiro/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+
 
     match /resumo_da_visita/{parent}/acoes_da_visita/{document} {
       allow create: if true;
@@ -199,35 +87,315 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    match /resumo_da_visita/{parent}/tratamentos/{document} {
+    match /resumo_da_visita/{document} {
       allow create: if request.auth != null;
       allow read: if request.auth != null;
       allow write: if request.auth != null;
       allow delete: if request.auth != null;
     }
 
-    match /{path=**}/tratamentos/{document} {
-      allow read: if request.auth != null;
-    }
-
-
-    match /resumo_da_visita/{parent}/recomendacoes/{document} {
+    match /tecnico/{parent}/financeiro/{document} {
       allow create: if request.auth != null;
       allow read: if request.auth != null;
       allow write: if request.auth != null;
       allow delete: if request.auth != null;
     }
 
-    match /{path=**}/recomendacoes/{document} {
+    match /{path=**}/financeiro/{document} {
       allow read: if request.auth != null;
     }
 
 
-    match /status_produtivo/{document} {
+    match /colunas_relatorio_rebanho/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if false;
+      allow delete: if false;
+    }
+
+    match /tecnico/{parent}/acoesSanitario/{document} {
       allow create: if request.auth != null;
       allow read: if request.auth != null;
       allow write: if request.auth != null;
       allow delete: if request.auth != null;
     }
+
+    match /{path=**}/acoesSanitario/{document} {
+      allow read: if request.auth != null;
+    }
+
+
+    match /tecnico/{parent}/resumo_visita/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    match /{path=**}/resumo_visita/{document} {
+      allow read: if request.auth != null;
+    }
+
+
+    match /tipo_acoes/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if false;
+      allow delete: if false;
+    }
+
+    match /tecnico/{parent}/acoes/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    match /{path=**}/acoes/{document} {
+      allow read: if request.auth != null;
+    }
+
+
+    match /tecnico/{parent}/animaisProdutores/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    match /{path=**}/animaisProdutores/{document} {
+      allow read: if request.auth != null;
+    }
+
+
+    match /tecnico/{parent}/propriedades/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    match /{path=**}/propriedades/{document} {
+      allow read: if request.auth != null;
+    }
+
+
+    match /assinatura-ativa-tecnico/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if request.auth != null;
+      allow delete: if false;
+    }
+
+    match /assinatura-tecnico/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if request.auth != null;
+      allow delete: if false;
+    }
+
+    match /assinatura-ativa-produtor/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if request.auth != null;
+      allow delete: if false;
+    }
+
+    match /assinatura-produtor/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if request.auth != null;
+      allow delete: if false;
+    }
+
+    match /produtor/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if request.auth != null;
+      allow delete: if false;
+    }
+
+    match /tecnico/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if request.auth != null;
+      allow delete: if false;
+    }
+
+    match /person/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    match /empresas/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if false;
+      allow delete: if false;
+    }
+
+    match /racas/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if false;
+      allow delete: if false;
+    }
+
+    match /usuarios/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if false;
+      allow delete: if false;
+    }
+
+    match /planos-produtor/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if false;
+      allow delete: if false;
+    }
+
+    match /planos-tecnicos/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if false;
+      allow delete: if false;
+    }
+
+    match /tecnicos/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if false;
+      allow delete: if false;
+    }
+
+    match /producers/{parent}/relatorios_financeiros/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    match /{path=**}/relatorios_financeiros/{document} {
+      allow read: if request.auth != null;
+    }
+
+
+    match /producers/{parent}/animais/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    match /{path=**}/animais/{document} {
+      allow read: if request.auth != null;
+    }
+
+
+    match /producers/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    match /grupo/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if false;
+      allow delete: if false;
+    }
+
+    match /raca/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if false;
+      allow delete: if false;
+    }
+
+    match /cidades/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if false;
+      allow delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if request.auth.token.email.matches("firebase@flutterflow.io");
+    }
+
+  //   Desabilita leitura e gravaçao para todos
+  //   match /{document=**} {
+  //     allow read, write: if false;
+  //   }
+  
+		//Libera o Leitura de Planos para todos sem autenticação
+    match /planos/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if false;
+      allow delete: if false;
+    }
+    
+    //Libera o Cadastro de novos planos somente com autenticação
+    
+    //Libera o cadastro/Leitura de Grupos de Animais
+    match /grupos_animais/{document=**} {
+  		allow read, write: if request.auth != null;
+  	}
+    
+    //Libera o cadastro/Leitura de Status de Animais
+    match /status_animais/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if false;
+      allow delete: if false;
+    }
+    
+    //Libera o cadastro/Leitura de Tipos Lancamentos Visitas
+    match /tipos_lancamentos_visitas/{document=**} {
+  		allow read, write: if request.auth != null;
+  	}
+    
+    //Libera o cadastro/Leitura de Diagnosticos Gestacões
+    match /diagnosticos_gestacoes/{document=**} {
+  		allow read, write: if request.auth != null;
+  	}
+    
+    //Libera o cadastro/Leitura de Dados de Sincronização
+    match /syncAppToWeb/{document=**} {
+  		allow read, write: if request.auth != null;
+  	}
+    
+    //Libera o cadastro/Leitura de Dados de Sincronização
+    match /syncWebToApp/{document=**} {
+  		allow read, write: if request.auth != null;
+  	}
+    
+    //Libera o cadastro/Leitura dos dados dos tenants
+    match /tenants/{document} {
+      allow create: if request.auth.uid == document;
+      allow read: if true;
+      allow write: if request.auth.uid == document;
+      allow delete: if false;
+    }
+    
+    // Libera a criaçao/atualização dos dados do usuário, 
+    // somente se ele estiver autenticado e o uid dele for
+    // igual ao uid que ele está tentando alterar
+    match /users/{document} {
+      allow create: if true;
+      allow read: if true;
+      allow write: if false;
+      allow delete: if false;
+    }
+    
+    // Libera a criaçao/atualização dos dados do usuário, 
+    // somente se ele estiver autenticado e o uid dele for
+    // igual ao uid que ele está tentando consultar
+    
   }
 }
