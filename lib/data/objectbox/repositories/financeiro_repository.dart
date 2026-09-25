@@ -22,6 +22,20 @@ class FinanceiroRepository extends BaseSyncRepository<FinanceiroEntity> {
   @override
   String get collectionName => 'financeiro';
 
+  /// Reanexa propriedade e técnico (guardados como caminho): a criação online
+  /// mandava só os números do relatório.
+  @override
+  Map<String, dynamic> firestorePayloadFor(FinanceiroEntity entity) {
+    final data = entity.toFirestore();
+    if (entity.uidPropriedadePath != null) {
+      data['uidPropriedade'] = firestore.doc(entity.uidPropriedadePath!);
+    }
+    if (entity.uidTecnicoPath != null) {
+      data['uidTecnico'] = firestore.doc(entity.uidTecnicoPath!);
+    }
+    return data;
+  }
+
   /// O CREATE/UPDATE é feito por `_syncModifiedFinanceiro` (que reconcilia o
   /// `firestoreId`). Não enfileirar evita dupla-sync e o furo de reconcile.
   @override

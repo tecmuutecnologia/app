@@ -164,8 +164,12 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
   /// Não pode ser sobrescrito para que nenhum repositório consiga gravar sem o
   /// carimbo. Sem ele o documento fica invisível ao pull incremental dos outros
   /// aparelhos até o próximo login.
+  ///
+  /// Público porque o `OfflineFirstSyncService` grava por fora do repositório
+  /// (laço de reenvio por entidade) e precisa do MESMO payload: quando cada um
+  /// montava o seu, a criação online de visita e tratamento subia sem os
+  /// vínculos que o download usa para filtrar.
   @nonVirtual
-  @visibleForTesting
   Map<String, dynamic> payloadParaGravar(E entity) =>
       carimbarLastModified(firestorePayloadFor(entity));
 
@@ -211,12 +215,8 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
   Future<Result<E>> pushCreate(E entity) async {
     final collectionPath = collectionPathFor(entity);
     // Com firestoreId pré-gerado, o CREATE é um `set(merge)` idempotente no id
-    // definitivo — sem auto-id nem reconciliação. O path da fila também usa o
-    // firestoreId (não o objectboxId).
+    // definitivo — sem auto-id nem reconciliação.
     final preId = entity.firestoreId;
-    final queuePath = preId != null
-        ? '$collectionPath/$preId'
-        : '$collectionPath/${entity.id}';
 
     if (isOnline) {
       try {
@@ -236,8 +236,7 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
       } catch (e, st) {
         debugPrint('❌ [$collectionName] erro ao criar no Firestore: $e');
         if (!syncedByModifiedLoop) {
-          _queue('CREATE', queuePath,
-              firestoreId: preId, data: payloadParaFila(entity));
+          _queueCreate(entity, collectionPath);
         }
         // needsSync permanece true: recriado pela fila (acima) ou, para
         // entidades com laço próprio, pelo `_syncModifiedX` ao reconectar.
@@ -247,12 +246,31 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
     }
 
     if (!syncedByModifiedLoop) {
-      _queue('CREATE', queuePath,
-          firestoreId: preId, data: payloadParaFila(entity));
+      _queueCreate(entity, collectionPath);
     }
     // needsSync permanece true: recriado pela fila (acima) ou, para entidades
     // com laço próprio, pelo `_syncModifiedX` ao reconectar.
     return Success(entity);
+  }
+
+  /// Enfileira o CREATE garantindo um `firestoreId` REAL.
+  ///
+  /// O id do ObjectBox é local: serve de chave dentro daquele aparelho e mais
+  /// nada. Quando a fila o usava como id de documento
+  /// (`<colecao>/<entity.id>`), a primeira recomendação de qualquer aparelho ia
+  /// para o documento `1` — dois aparelhos na mesma propriedade sobrescreviam a
+  /// recomendação um do outro. O Firestore gera ids no cliente sem escrever
+  /// (`collection(path).doc().id`), então o id definitivo sai daqui e fica
+  /// gravado no local: fila e aparelho passam a apontar para o mesmo documento.
+  void _queueCreate(E entity, String collectionPath) {
+    var id = entity.firestoreId;
+    if (id == null) {
+      id = _firestore.collection(collectionPath).doc().id;
+      entity.firestoreId = id;
+      box.put(entity);
+    }
+    _queue('CREATE', '$collectionPath/$id',
+        firestoreId: id, data: payloadParaFila(entity));
   }
 
   /// Atualiza a entidade no Firestore (ou enfileira se offline/erro).

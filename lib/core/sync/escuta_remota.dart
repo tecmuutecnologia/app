@@ -47,26 +47,34 @@ class AlvoEscuta {
       '${propriedadePath == null ? '' : ', $campoPropriedade=$propriedadePath'})';
 }
 
+/// `true` quando o aparelho é de um TÉCNICO.
+///
+/// [tecnicoPath] é o documento de técnico com o `uidPerson` do usuário, se
+/// houver. Ele só vale se for dono de alguma propriedade local (ou se não houver
+/// nenhuma — técnico recém-cadastrado): conta de produtor pode carregar um
+/// técnico fantasma, sobra de cadastro indevido, e tomá-lo por técnico faz o
+/// app escutar e reparar a coleção errada.
+bool ehAparelhoDeTecnico({
+  required String? tecnicoPath,
+  required List<PropriedadeEntity> propriedades,
+}) =>
+    tecnicoPath != null &&
+    (propriedades.isEmpty ||
+        propriedades.any((p) => p.parentPath == tecnicoPath));
+
 /// Onde o aparelho escuta mudanças feitas em OUTRO aparelho.
 ///
 /// Técnico: as duas coleções dele, inteiras. Produtor: as mesmas coleções, mas
 /// sob o técnico dono de cada propriedade e filtradas por ela — o produtor
 /// enxerga o que é dele, não o rebanho que o técnico atende. Mesmo recorte do
-/// download completo ([alvosAnimaisProdutor]).
-///
-/// [tecnicoPath] é o documento de técnico com o `uidPerson` do usuário, se
-/// houver. Ele só vale se for dono de alguma propriedade local (ou se não
-/// houver nenhuma — técnico recém-cadastrado): conta de produtor pode carregar
-/// um técnico fantasma, e escutá-lo é escutar uma coleção vazia.
+/// download completo ([alvosAnimaisProdutor]). Quem decide o papel é
+/// [ehAparelhoDeTecnico].
 List<AlvoEscuta> alvosDeEscuta({
   required String? tecnicoPath,
   required List<PropriedadeEntity> propriedades,
 }) {
-  final ehTecnico = tecnicoPath != null &&
-      (propriedades.isEmpty ||
-          propriedades.any((p) => p.parentPath == tecnicoPath));
-
-  if (ehTecnico) {
+  if (ehAparelhoDeTecnico(
+      tecnicoPath: tecnicoPath, propriedades: propriedades)) {
     return [
       AlvoEscuta(
         tipo: TipoEscuta.animais,

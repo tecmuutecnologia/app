@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../core/sync/alvos_animais_produtor.dart';
+import '../../core/sync/blocos.dart';
 import '../../core/sync/edicao_pendente.dart';
 import '../../core/sync/escuta_remota.dart';
 import '../../core/sync/chaves_uid_person.dart';
@@ -14,6 +15,7 @@ import '../../core/sync/fonte_download.dart';
 import '../../core/sync/janela_pull.dart';
 import '../../core/sync/queue_payload_codec.dart';
 import '../../core/sync/reconciliacao_animais.dart';
+import '../../core/sync/reparo_visitas.dart';
 import '../../core/sync/resultado_etapa_animais.dart';
 import '../../core/sync/sync_checkpoint.dart';
 import '../../core/sync/total_estimado.dart';
@@ -22,6 +24,10 @@ import '../../core/sync/sync_exceptions.dart';
 import '../../core/sync/upsert_referencia.dart';
 import 'objectbox_service.dart';
 import 'repositories/base_sync_repository.dart';
+import 'repositories/financeiro_repository.dart';
+import 'repositories/recomendacao_repository.dart';
+import 'repositories/resumo_visita_repository.dart';
+import 'repositories/tratamento_repository.dart';
 import 'entities/index.dart';
 import '../../objectbox.g.dart' hide Query;
 
@@ -963,16 +969,35 @@ class OfflineFirstSyncService {
       for (final alvo
           in alvosAnimaisProdutor(_objectBox.propriedadeBox.getAll())) {
         try {
-          final acoesSnapshot = await _firestore
-              .doc(alvo.tecnicoPath)
-              .collection('acoes')
-              .where('uidPropriedade',
-                  isEqualTo: _firestore.doc(alvo.propriedadePath))
-              .get();
-          final acoesDoAlvo = [
-            for (final doc in acoesSnapshot.docs)
-              AcaoEntity.fromFirestore(doc.data(), doc.id, alvo.tecnicoPath),
+          // Busca pelos ANIMAIS da propriedade, não por `uidPropriedade`: DG,
+          // secagem e aborto gravavam a ação SEM esse campo, e 6 mil ações
+          // históricas ficariam invisíveis ao produtor para sempre. Os animais
+          // já estão locais — a etapa deles roda antes desta.
+          final refsAnimais = [
+            for (final animal in _objectBox.animalBox
+                .query(AnimalEntity_.uidTecnicoPropriedadePath
+                    .equals(alvo.propriedadePath))
+                .build()
+                .find())
+              if ((animal.firestoreId ?? '').isNotEmpty)
+                _firestore.doc(
+                    '${alvo.tecnicoPath}/animaisProdutores/${animal.firestoreId}'),
           ];
+
+          final acoesDoAlvo = <AcaoEntity>[];
+          // `whereIn` aceita no máximo 30 valores por consulta.
+          for (final bloco in emBlocos(refsAnimais, 30)) {
+            final acoesSnapshot = await _firestore
+                .doc(alvo.tecnicoPath)
+                .collection('acoes')
+                .where('uidAnimalAnimaisProdutores', whereIn: bloco)
+                .get();
+            acoesDoAlvo.addAll([
+              for (final doc in acoesSnapshot.docs)
+                AcaoEntity.fromFirestore(doc.data(), doc.id, alvo.tecnicoPath),
+            ]);
+          }
+
           _gravarSincronizaveis<AcaoEntity>(
             _objectBox.acaoBox,
             acoesDoAlvo,
@@ -1508,13 +1533,7 @@ class OfflineFirstSyncService {
         // Sem reanexar, as telas que filtram por `uidPropriedade` (indices
         // zootecnicos) nao encontrariam o documento.
         Map<String, dynamic> payload(FinanceiroEntity e) =>
-            BaseSyncRepository.carimbarLastModified({
-              ...e.toFirestore(),
-              if (e.uidPropriedadePath != null)
-                'uidPropriedade': _firestore.doc(e.uidPropriedadePath!),
-              if (e.uidTecnicoPath != null)
-                'uidTecnico': _firestore.doc(e.uidTecnicoPath!),
-            });
+            FinanceiroRepository(firestore: _firestore).payloadParaGravar(e);
 
         if (fin.firestoreId != null && fin.parentPath != null) {
           final docRef = _firestore.doc(
@@ -1547,35 +1566,18 @@ class OfflineFirstSyncService {
     }
   }
 
-  /// Reanexa as referências do tratamento (guardadas como caminho).
+  /// Payload do tratamento, com as referências reanexadas e o carimbo.
+  ///
+  /// Delega ao repositório: enquanto cada caminho de escrita montava o seu, a
+  /// criação online (que passa pelo repositório) subia sem os vínculos e este
+  /// laço subia com eles.
   Map<String, dynamic> _payloadTratamento(TratamentoEntity t) =>
-      BaseSyncRepository.carimbarLastModified({
-        ...t.toFirestore(),
-        if (t.uidAnimalPath != null)
-          'uidAnimal': _firestore.doc(t.uidAnimalPath!),
-        if (t.uidResumoDaVisitaPath != null)
-          'uidResumoDaVisita': _firestore.doc(t.uidResumoDaVisitaPath!),
-        if (t.uidAcaoLancadaPath != null)
-          'uidAcaoLancada': _firestore.doc(t.uidAcaoLancadaPath!),
-        if (t.compararDtUltimaInseminacao != null)
-          'compararDtUltimaInseminacao':
-              Timestamp.fromDate(t.compararDtUltimaInseminacao!),
-      });
+      TratamentoRepository(firestore: _firestore).payloadParaGravar(t);
 
-  /// Reanexa referências e Timestamps que o entity guarda como caminho/data.
+  /// Payload da visita, com referências, datas e carimbo. Delega ao
+  /// repositório pelo mesmo motivo do tratamento: uma definição só.
   Map<String, dynamic> _payloadVisita(ResumoVisitaEntity v) =>
-      BaseSyncRepository.carimbarLastModified({
-        ...v.toFirestore(),
-        if (v.uidPropriedadePath != null)
-          'uidPropriedade': _firestore.doc(v.uidPropriedadePath!),
-        if (v.uidTecnicoPath != null)
-          'uidTecnico': _firestore.doc(v.uidTecnicoPath!),
-        if (v.uidResumoDaVisitaPath != null)
-          'uidResumoDaVisita': _firestore.doc(v.uidResumoDaVisitaPath!),
-        if (v.dtVisita != null) 'dtVisita': Timestamp.fromDate(v.dtVisita!),
-        if (v.dtAssinatura != null)
-          'dtAssinatura': Timestamp.fromDate(v.dtAssinatura!),
-      });
+      ResumoVisitaRepository(firestore: _firestore).payloadParaGravar(v);
 
   /// Sincroniza visitas modificadas
   Future<void> _syncModifiedVisitas() async {
@@ -1785,6 +1787,92 @@ class OfflineFirstSyncService {
     } catch (e) {
       // Sem marcar como concluído: tenta de novo no próximo login.
       debugPrint('⚠️ Falha ao reparar o path das propriedades: $e');
+    }
+  }
+
+  static const _kReparoVinculosVisitas = 'reparo_vinculos_receituario_v2';
+
+  /// Reenvia as visitas locais para completar, no servidor, os vínculos que
+  /// faltaram.
+  ///
+  /// Visita criada ONLINE subia com cinco campos e nenhuma referência, porque a
+  /// reanexação vivia só no laço de reenvio daqui. O documento existe, mas o
+  /// download de visitas filtra por `uidPropriedade`: o receituário não chegava
+  /// ao produtor, e o técnico perderia essas visitas ao sair da conta. O
+  /// payload agora é o do repositório (completo), então basta marcar as visitas
+  /// como pendentes: o push reescreve cada uma com `set(merge)`, que acrescenta
+  /// campo e não apaga nada.
+  ///
+  /// Uma vez por instalação (marca em `SyncMetadata`), e só em aparelho de
+  /// TÉCNICO: o produtor não reescreve documento de visita que não é dele.
+  Future<void> repararVinculosDeVisitas() async {
+    if (!_isOnline) return;
+
+    final marca = _objectBox.syncMetadataBox
+        .query(
+            SyncMetadataEntity_.collectionName.equals(_kReparoVinculosVisitas))
+        .build()
+        .findFirst();
+    if (marca != null && marca.initialSyncComplete) return;
+
+    if (!ehAparelhoDeTecnico(
+      tecnicoPath: _tecnicoRefLocal()?.path,
+      propriedades: _objectBox.propriedadeBox.getAll(),
+    )) {
+      return;
+    }
+
+    try {
+      final aReenviar =
+          _objectBox.resumoVisitaBox.getAll().where(precisaReenviarVinculo);
+      if (aReenviar.isEmpty) {
+        _updateSyncMetadata(_kReparoVinculosVisitas, DateTime.now(),
+            complete: true);
+        return;
+      }
+
+      for (final visita in aReenviar) {
+        visita.needsSync = true;
+      }
+      _objectBox.resumoVisitaBox.putMany(aReenviar.toList());
+      debugPrint('🛠️ ${aReenviar.length} visita(s) marcada(s) para reenvio');
+
+      // Tratamentos e recomendações têm o mesmo defeito de origem: subiram sem
+      // `uidAnimal`/`uidResumoDaVisita`, e sem o vínculo com a visita o
+      // receituário não agrupa o tratamento na seção da recomendação.
+      final tratamentos =
+          _objectBox.tratamentoBox.getAll().where(jaSubiu).toList();
+      for (final t in tratamentos) {
+        t.needsSync = true;
+      }
+      _objectBox.tratamentoBox.putMany(tratamentos);
+
+      final recomendacoes =
+          _objectBox.recomendacaoBox.getAll().where(jaSubiu).toList();
+      debugPrint('🛠️ ${tratamentos.length} tratamento(s) e '
+          '${recomendacoes.length} recomendação(ões) para reenvio');
+
+      await _syncModifiedVisitas();
+      await _syncModifiedTratamentos();
+      // Recomendação não tem laço próprio: sobe pelo repositório.
+      final repoRecomendacao = RecomendacaoRepository(firestore: _firestore);
+      for (final r in recomendacoes) {
+        await repoRecomendacao.save(r);
+      }
+      final pendentes = _objectBox.resumoVisitaBox
+          .query(ResumoVisitaEntity_.needsSync.equals(true))
+          .build()
+          .count();
+      if (pendentes == 0) {
+        _updateSyncMetadata(_kReparoVinculosVisitas, DateTime.now(),
+            complete: true);
+        debugPrint('🛠️ Vínculos das visitas reparados');
+      } else {
+        // Sem marcar: o que sobrou tenta de novo no próximo login.
+        debugPrint('⚠️ $pendentes visita(s) ainda pendente(s) de reenvio');
+      }
+    } catch (e) {
+      debugPrint('⚠️ Falha ao reparar os vínculos das visitas: $e');
     }
   }
 

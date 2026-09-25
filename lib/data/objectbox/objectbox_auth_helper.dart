@@ -53,6 +53,9 @@ class ObjectBoxAuthHelper {
       // App reaberto com sessão salva não passa pelo `onUserLogin`, que é
       // quem abre as escutas depois do download.
       sync.iniciarEscutaRemota();
+      // Mesmo motivo: sem isto o reparo dos vínculos só rodaria para quem
+      // fizesse login de novo. É no-op depois da primeira execução.
+      unawaited(sync.repararVinculosDeVisitas());
     });
   }
 
@@ -95,6 +98,11 @@ class ObjectBoxAuthHelper {
     // antes da correção ficou com as propriedades no path do produtor e nunca
     // re-baixa por conta própria. Re-baixa só as propriedades.
     await syncService.repararPathPropriedades(user.uid);
+
+    // Completa no servidor os vínculos das visitas já enviadas (uma vez por
+    // instalação). Sem isso o receituário emitido online fica invisível ao
+    // produtor e desaparece do técnico no próximo login.
+    await syncService.repararVinculosDeVisitas();
 
     debugPrint('✅ Sincronização após login concluída');
 

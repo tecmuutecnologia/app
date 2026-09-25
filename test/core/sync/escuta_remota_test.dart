@@ -9,6 +9,41 @@ PropriedadeEntity _prop(String id, String tecnicoPath) =>
 /// gravou. Os filtros por `lastModified` ficam a cargo de quem abre o listener;
 /// aqui se decide ONDE escutar e com qual filtro de propriedade.
 void main() {
+  group('ehAparelhoDeTecnico', () {
+    test('sem documento de técnico é aparelho de produtor', () {
+      expect(
+        ehAparelhoDeTecnico(
+            tecnicoPath: null, propriedades: [_prop('P1', 'tecnico/T1')]),
+        false,
+      );
+    });
+
+    test('técnico dono de alguma propriedade local', () {
+      expect(
+        ehAparelhoDeTecnico(
+            tecnicoPath: 'tecnico/T1',
+            propriedades: [_prop('P1', 'tecnico/T1')]),
+        true,
+      );
+    });
+
+    test('técnico fantasma (não é dono de nenhuma) não conta', () {
+      expect(
+        ehAparelhoDeTecnico(
+            tecnicoPath: 'tecnico/FANTASMA',
+            propriedades: [_prop('P1', 'tecnico/T1')]),
+        false,
+      );
+    });
+
+    test('técnico sem propriedade nenhuma conta (conta nova)', () {
+      expect(
+        ehAparelhoDeTecnico(tecnicoPath: 'tecnico/T1', propriedades: const []),
+        true,
+      );
+    });
+  });
+
   group('alvosDeEscuta — técnico', () {
     test('escuta animais e ações do rebanho inteiro dele', () {
       final alvos = alvosDeEscuta(

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../objectbox_service.dart';
 import '../entities/index.dart';
 import '../../../objectbox.g.dart';
@@ -21,6 +23,29 @@ class TratamentoRepository extends BaseSyncRepository<TratamentoEntity> {
 
   @override
   String get collectionName => 'tratamentos';
+
+  /// Reanexa os vínculos do tratamento (animal, visita, ação lançada).
+  ///
+  /// Sem eles o receituário não consegue agrupar o tratamento na visita nem
+  /// ligá-lo ao animal: a criação online mandava só os campos escalares.
+  @override
+  Map<String, dynamic> firestorePayloadFor(TratamentoEntity entity) {
+    final data = entity.toFirestore();
+    if (entity.uidAnimalPath != null) {
+      data['uidAnimal'] = firestore.doc(entity.uidAnimalPath!);
+    }
+    if (entity.uidResumoDaVisitaPath != null) {
+      data['uidResumoDaVisita'] = firestore.doc(entity.uidResumoDaVisitaPath!);
+    }
+    if (entity.uidAcaoLancadaPath != null) {
+      data['uidAcaoLancada'] = firestore.doc(entity.uidAcaoLancadaPath!);
+    }
+    if (entity.compararDtUltimaInseminacao != null) {
+      data['compararDtUltimaInseminacao'] =
+          Timestamp.fromDate(entity.compararDtUltimaInseminacao!);
+    }
+    return data;
+  }
 
   /// O CREATE/UPDATE dos tratamentos já é feito por `_syncModifiedTratamentos`
   /// (que reconcilia o `firestoreId`). Não enfileirar evita a dupla-sincronização.

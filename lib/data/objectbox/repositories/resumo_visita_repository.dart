@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../objectbox_service.dart';
 import '../entities/index.dart';
 import '../../../objectbox.g.dart';
@@ -21,6 +23,34 @@ class ResumoVisitaRepository extends BaseSyncRepository<ResumoVisitaEntity> {
 
   @override
   String get collectionName => 'resumo_da_visita';
+
+  /// Reanexa os vínculos (guardados como caminho) e as datas como `Timestamp`.
+  ///
+  /// Sem isto, visita criada ONLINE subia com cinco campos e nenhuma
+  /// referência: o download de visitas filtra por `uidPropriedade`, então o
+  /// receituário não chegava ao produtor — e o próprio técnico o perderia no
+  /// login seguinte. A reanexação existia só no laço de reenvio do
+  /// `OfflineFirstSyncService`, que cobre o caso offline.
+  @override
+  Map<String, dynamic> firestorePayloadFor(ResumoVisitaEntity entity) {
+    final data = entity.toFirestore();
+    if (entity.uidPropriedadePath != null) {
+      data['uidPropriedade'] = firestore.doc(entity.uidPropriedadePath!);
+    }
+    if (entity.uidTecnicoPath != null) {
+      data['uidTecnico'] = firestore.doc(entity.uidTecnicoPath!);
+    }
+    if (entity.uidResumoDaVisitaPath != null) {
+      data['uidResumoDaVisita'] = firestore.doc(entity.uidResumoDaVisitaPath!);
+    }
+    if (entity.dtVisita != null) {
+      data['dtVisita'] = Timestamp.fromDate(entity.dtVisita!);
+    }
+    if (entity.dtAssinatura != null) {
+      data['dtAssinatura'] = Timestamp.fromDate(entity.dtAssinatura!);
+    }
+    return data;
+  }
 
   /// Coleção top-level: todos os resumos compartilham o mesmo `parentPath`.
   /// O recorte por propriedade é feito pelo campo `uidPropriedadePath`.
