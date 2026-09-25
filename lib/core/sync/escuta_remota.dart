@@ -1,7 +1,7 @@
 import '../../data/objectbox/entities/propriedade_entity.dart';
 import 'alvos_animais_produtor.dart';
 
-enum TipoEscuta { animais, acoes }
+enum TipoEscuta { animais, acoes, visitas, tratamentos, recomendacoes }
 
 /// Uma coleção do Firestore a escutar em tempo real, opcionalmente restrita a
 /// uma propriedade.
@@ -9,42 +9,47 @@ class AlvoEscuta {
   const AlvoEscuta({
     required this.tipo,
     required this.colecaoPath,
-    this.campoPropriedade,
-    this.propriedadePath,
+    this.campoFiltro,
+    this.valorRefPath,
   });
 
   final TipoEscuta tipo;
 
-  /// `tecnico/{id}/animaisProdutores` ou `tecnico/{id}/acoes`.
+  /// Caminho da coleção: sob o técnico (`animaisProdutores`, `acoes`), sob a
+  /// propriedade (`tratamentos`, `recomendacoes`) ou top-level
+  /// (`resumo_da_visita`).
   final String colecaoPath;
 
-  /// Campo que aponta para a propriedade (`DocumentReference`). Nulo para o
-  /// técnico, que escuta o rebanho inteiro.
-  final String? campoPropriedade;
+  /// Campo de referência pelo qual filtrar (`uidTecnicoPropriedade`,
+  /// `uidPropriedade`, `uidTecnico`). Nulo quando a própria coleção já é o
+  /// recorte — caso das subcoleções da propriedade e do técnico que escuta o
+  /// rebanho inteiro.
+  final String? campoFiltro;
 
-  /// `tecnico/{id}/propriedades/{id}` — o valor do filtro.
-  final String? propriedadePath;
+  /// Documento que o [campoFiltro] tem de apontar.
+  final String? valorRefPath;
 
-  /// `parentPath` das entidades gravadas a partir desta escuta: o técnico dono
-  /// da coleção, igual ao download completo.
-  String get parentPath =>
-      colecaoPath.substring(0, colecaoPath.lastIndexOf('/'));
+  /// `parentPath` das entidades gravadas a partir desta escuta, igual ao que o
+  /// download completo usa: o documento pai da coleção, ou a própria coleção
+  /// quando ela é top-level (`resumo_da_visita`).
+  String get parentPath => colecaoPath.contains('/')
+      ? colecaoPath.substring(0, colecaoPath.lastIndexOf('/'))
+      : colecaoPath;
 
   @override
   bool operator ==(Object other) =>
       other is AlvoEscuta &&
       other.tipo == tipo &&
       other.colecaoPath == colecaoPath &&
-      other.campoPropriedade == campoPropriedade &&
-      other.propriedadePath == propriedadePath;
+      other.campoFiltro == campoFiltro &&
+      other.valorRefPath == valorRefPath;
 
   @override
-  int get hashCode =>
-      Object.hash(tipo, colecaoPath, campoPropriedade, propriedadePath);
+  int get hashCode => Object.hash(tipo, colecaoPath, campoFiltro, valorRefPath);
 
   @override
   String toString() => 'AlvoEscuta($tipo, $colecaoPath'
-      '${propriedadePath == null ? '' : ', $campoPropriedade=$propriedadePath'})';
+      '${valorRefPath == null ? '' : ', $campoFiltro=$valorRefPath'})';
 }
 
 /// `true` quando o aparelho é de um TÉCNICO.
@@ -81,6 +86,16 @@ List<AlvoEscuta> alvosDeEscuta({
         colecaoPath: '$tecnicoPath/animaisProdutores',
       ),
       AlvoEscuta(tipo: TipoEscuta.acoes, colecaoPath: '$tecnicoPath/acoes'),
+      // Só a visita: tratamentos e recomendações são subcoleção de CADA
+      // propriedade, e escutá-las numa conta com dezenas delas abriria dezenas
+      // de conexões. O técnico emite o receituário — ele já tem tudo local; a
+      // visita cobre um segundo aparelho dele.
+      AlvoEscuta(
+        tipo: TipoEscuta.visitas,
+        colecaoPath: 'resumo_da_visita',
+        campoFiltro: 'uidTecnico',
+        valorRefPath: tecnicoPath,
+      ),
     ];
   }
 
@@ -89,14 +104,30 @@ List<AlvoEscuta> alvosDeEscuta({
       AlvoEscuta(
         tipo: TipoEscuta.animais,
         colecaoPath: '${alvo.tecnicoPath}/animaisProdutores',
-        campoPropriedade: 'uidTecnicoPropriedade',
-        propriedadePath: alvo.propriedadePath,
+        campoFiltro: 'uidTecnicoPropriedade',
+        valorRefPath: alvo.propriedadePath,
       ),
       AlvoEscuta(
         tipo: TipoEscuta.acoes,
         colecaoPath: '${alvo.tecnicoPath}/acoes',
-        campoPropriedade: 'uidPropriedade',
-        propriedadePath: alvo.propriedadePath,
+        campoFiltro: 'uidPropriedade',
+        valorRefPath: alvo.propriedadePath,
+      ),
+      // Receituário: a visita é top-level e se liga à propriedade por campo; os
+      // tratamentos e as recomendações são subcoleções dela.
+      AlvoEscuta(
+        tipo: TipoEscuta.visitas,
+        colecaoPath: 'resumo_da_visita',
+        campoFiltro: 'uidPropriedade',
+        valorRefPath: alvo.propriedadePath,
+      ),
+      AlvoEscuta(
+        tipo: TipoEscuta.tratamentos,
+        colecaoPath: '${alvo.propriedadePath}/tratamentos',
+      ),
+      AlvoEscuta(
+        tipo: TipoEscuta.recomendacoes,
+        colecaoPath: '${alvo.propriedadePath}/recomendacoes',
       ),
     ],
   ];

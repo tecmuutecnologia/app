@@ -1933,6 +1933,13 @@ class OfflineFirstSyncService {
       etapa: SyncEtapa.acoes,
       alvos: alvos.where((a) => a.tipo == TipoEscuta.acoes).toList(),
     );
+    // Receituário: visitas, tratamentos e recomendações dividem a marca da
+    // etapa `financeiro`, a mesma que o download completo usa para eles.
+    await _pullColecao(
+      etapa: SyncEtapa.financeiro,
+      alvos:
+          alvos.where((a) => _etapaDe(a.tipo) == SyncEtapa.financeiro).toList(),
+    );
   }
 
   /// Executa o delta de UMA etapa (em todos os alvos dela) e avança a marca.
@@ -1962,6 +1969,18 @@ class OfflineFirstSyncService {
     }
   }
 
+  /// Etapa cuja marca de sincronização vale para este tipo de escuta. O
+  /// receituário (visitas, tratamentos, recomendações) compartilha a marca da
+  /// etapa `financeiro`, que é a que o download completo usa para ele.
+  static SyncEtapa _etapaDe(TipoEscuta tipo) => switch (tipo) {
+        TipoEscuta.animais => SyncEtapa.animais,
+        TipoEscuta.acoes => SyncEtapa.acoes,
+        TipoEscuta.visitas ||
+        TipoEscuta.tratamentos ||
+        TipoEscuta.recomendacoes =>
+          SyncEtapa.financeiro,
+      };
+
   SyncMetadataEntity? _marcaDe(SyncEtapa etapa) => _objectBox.syncMetadataBox
       .query(SyncMetadataEntity_.collectionName
           .equals(SyncCheckpoint.chaveDe(etapa)))
@@ -1975,9 +1994,9 @@ class OfflineFirstSyncService {
 
   Query<Map<String, dynamic>> _consultaDelta(AlvoEscuta alvo, DateTime desde) {
     Query<Map<String, dynamic>> query = _firestore.collection(alvo.colecaoPath);
-    if (alvo.campoPropriedade != null) {
-      query = query.where(alvo.campoPropriedade!,
-          isEqualTo: _firestore.doc(alvo.propriedadePath!));
+    if (alvo.campoFiltro != null) {
+      query = query.where(alvo.campoFiltro!,
+          isEqualTo: _firestore.doc(alvo.valorRefPath!));
     }
     return query.where('lastModified',
         isGreaterThan: Timestamp.fromDate(desde));
@@ -1992,6 +2011,36 @@ class OfflineFirstSyncService {
         _salvarAnimais(docs, alvo.parentPath);
       case TipoEscuta.acoes:
         _salvarAcoes(docs, alvo.parentPath);
+      case TipoEscuta.visitas:
+        _gravarSincronizaveis<ResumoVisitaEntity>(
+          _objectBox.resumoVisitaBox,
+          [
+            for (final doc in docs)
+              ResumoVisitaEntity.fromFirestore(doc.data(), doc.id,
+                  parentPath: alvo.parentPath),
+          ],
+          ResumoVisitaEntity_.firestoreId,
+        );
+      case TipoEscuta.tratamentos:
+        _gravarSincronizaveis<TratamentoEntity>(
+          _objectBox.tratamentoBox,
+          [
+            for (final doc in docs)
+              TratamentoEntity.fromFirestore(doc.data(), doc.id,
+                  parentPath: alvo.parentPath),
+          ],
+          TratamentoEntity_.firestoreId,
+        );
+      case TipoEscuta.recomendacoes:
+        _gravarSincronizaveis<RecomendacaoEntity>(
+          _objectBox.recomendacaoBox,
+          [
+            for (final doc in docs)
+              RecomendacaoEntity.fromFirestore(doc.data(), doc.id,
+                  parentPath: alvo.parentPath),
+          ],
+          RecomendacaoEntity_.firestoreId,
+        );
     }
   }
 
@@ -2018,8 +2067,7 @@ class OfflineFirstSyncService {
     pararEscutaRemota();
 
     for (final alvo in _alvosLocais()) {
-      final etapa =
-          alvo.tipo == TipoEscuta.animais ? SyncEtapa.animais : SyncEtapa.acoes;
+      final etapa = _etapaDe(alvo.tipo);
       final desde = JanelaPull.desde(_marcaDe(etapa)?.lastIncrementalSync);
 
       _escutas[alvo] = _consultaDelta(alvo, desde).snapshots().listen(

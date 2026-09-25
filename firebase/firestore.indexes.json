@@ -507,6 +507,34 @@
           "order": "ASCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "resumo_da_visita",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidPropriedade",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "lastModified",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "resumo_da_visita",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "uidTecnico",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "lastModified",
+          "order": "ASCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": [
