@@ -153,8 +153,29 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
   ///
   /// Público para que o `OfflineFirstSyncService` (que tem seu próprio laço de
   /// sync por-entidade) use o mesmo payload e não perca as referências.
-  Map<String, dynamic> firestorePayloadFor(E entity) =>
-      carimbarLastModified(entity.toFirestore());
+  ///
+  /// NÃO carimba `lastModified`: quem carimba é [payloadParaGravar]. Enquanto o
+  /// carimbo morava aqui, todo override o perdia — e os quatro que existem
+  /// (animal, ação, ação sanitária, propriedade) gravavam sem ele.
+  Map<String, dynamic> firestorePayloadFor(E entity) => entity.toFirestore();
+
+  /// Payload das gravações diretas no Firestore, com o carimbo do servidor.
+  ///
+  /// Não pode ser sobrescrito para que nenhum repositório consiga gravar sem o
+  /// carimbo. Sem ele o documento fica invisível ao pull incremental dos outros
+  /// aparelhos até o próximo login.
+  @nonVirtual
+  @visibleForTesting
+  Map<String, dynamic> payloadParaGravar(E entity) =>
+      carimbarLastModified(firestorePayloadFor(entity));
+
+  /// Payload da fila de pendências, SEM carimbo.
+  ///
+  /// A fila é serializada em JSON e `FieldValue.serverTimestamp()` não é
+  /// serializável. O executor da fila carimba na hora em que grava.
+  @nonVirtual
+  @visibleForTesting
+  Map<String, dynamic> payloadParaFila(E entity) => firestorePayloadFor(entity);
 
   /// Acrescenta o carimbo de modificação ao payload, sem mutar o original.
   ///
@@ -202,10 +223,10 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
         if (preId != null) {
           await _firestore
               .doc('$collectionPath/$preId')
-              .set(firestorePayloadFor(entity), SetOptions(merge: true));
+              .set(payloadParaGravar(entity), SetOptions(merge: true));
         } else {
           final docRef = _firestore.collection(collectionPath).doc();
-          await docRef.set(firestorePayloadFor(entity));
+          await docRef.set(payloadParaGravar(entity));
           entity.firestoreId = docRef.id;
         }
         entity.needsSync = false;
@@ -216,7 +237,7 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
         debugPrint('❌ [$collectionName] erro ao criar no Firestore: $e');
         if (!syncedByModifiedLoop) {
           _queue('CREATE', queuePath,
-              firestoreId: preId, data: firestorePayloadFor(entity));
+              firestoreId: preId, data: payloadParaFila(entity));
         }
         // needsSync permanece true: recriado pela fila (acima) ou, para
         // entidades com laço próprio, pelo `_syncModifiedX` ao reconectar.
@@ -227,7 +248,7 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
 
     if (!syncedByModifiedLoop) {
       _queue('CREATE', queuePath,
-          firestoreId: preId, data: firestorePayloadFor(entity));
+          firestoreId: preId, data: payloadParaFila(entity));
     }
     // needsSync permanece true: recriado pela fila (acima) ou, para entidades
     // com laço próprio, pelo `_syncModifiedX` ao reconectar.
@@ -246,7 +267,7 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
 
     if (isOnline) {
       try {
-        await _firestore.doc(documentPath).update(firestorePayloadFor(entity));
+        await _firestore.doc(documentPath).update(payloadParaGravar(entity));
         entity.needsSync = false;
         entity.lastSynced = DateTime.now();
         box.put(entity);
@@ -255,7 +276,7 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
         debugPrint('❌ [$collectionName] erro ao atualizar no Firestore: $e');
         if (!syncedByModifiedLoop) {
           _queue('UPDATE', documentPath,
-              firestoreId: firestoreId, data: firestorePayloadFor(entity));
+              firestoreId: firestoreId, data: payloadParaFila(entity));
         }
         // needsSync permanece true: reenviado pela fila (acima) ou pelo laço.
         return Failure(
@@ -267,7 +288,7 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
 
     if (!syncedByModifiedLoop) {
       _queue('UPDATE', documentPath,
-          firestoreId: firestoreId, data: firestorePayloadFor(entity));
+          firestoreId: firestoreId, data: payloadParaFila(entity));
     }
     // needsSync permanece true: reenviado pela fila (acima) ou pelo laço.
     return Success(entity);
