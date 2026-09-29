@@ -5,6 +5,7 @@ import '/data/objectbox/index.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
+import '/core/util/preenchido.dart';
 import '../../application/tem_assinatura.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
@@ -78,8 +79,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     super.dispose();
   }
 
-  Widget _cabecalho(
-      BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
+  Widget _cabecalho(BuildContext context,
+      ResumoVisitaEntity resumoVisitaAtualResumoDaVisitaRecord) {
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -193,8 +194,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     );
   }
 
-  Widget _conteudo(
-      BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
+  Widget _conteudo(BuildContext context,
+      ResumoVisitaEntity resumoVisitaAtualResumoDaVisitaRecord) {
     return // Lista de Diagnóstico de Gestação
         Container(
       decoration: BoxDecoration(
@@ -212,8 +213,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     );
   }
 
-  Widget _botaoAdicionarRecomendacao(
-      BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
+  Widget _botaoAdicionarRecomendacao(BuildContext context,
+      ResumoVisitaEntity resumoVisitaAtualResumoDaVisitaRecord) {
     return Expanded(
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
@@ -222,10 +223,10 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if ((resumoVisitaAtualResumoDaVisitaRecord.assinaturaProdutor ==
-                    '') &&
-                (resumoVisitaAtualResumoDaVisitaRecord.dtAssinaturaFormatado ==
-                    ''))
+            if ((!preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                    .assinaturaProdutor)) &&
+                (!preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                    .dtAssinaturaFormatado)))
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
                 child: FFButtonWidget(
@@ -290,10 +291,10 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                   ),
                 ),
               ),
-            if ((resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico ==
-                    '') &&
-                (resumoVisitaAtualResumoDaVisitaRecord.dtAssinaturaFormatado ==
-                    ''))
+            if ((!preenchido(
+                    resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico)) &&
+                (!preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                    .dtAssinaturaFormatado)))
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
                 child: FFButtonWidget(
@@ -364,8 +365,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     );
   }
 
-  Widget _secaoObservacoes(
-      BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
+  Widget _secaoObservacoes(BuildContext context,
+      ResumoVisitaEntity resumoVisitaAtualResumoDaVisitaRecord) {
     return Expanded(
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(12.0, 10.0, 12.0, 0.0),
@@ -492,15 +493,16 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     );
   }
 
-  Widget _botaoConcluirVisita(
-      BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
+  Widget _botaoConcluirVisita(BuildContext context,
+      ResumoVisitaEntity resumoVisitaAtualResumoDaVisitaRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
       child: FFButtonWidget(
         onPressed: () async {
-          if ((resumoVisitaAtualResumoDaVisitaRecord.assinaturaProdutor !=
-                  '') ||
-              (resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico != '')) {
+          if ((preenchido(
+                  resumoVisitaAtualResumoDaVisitaRecord.assinaturaProdutor)) ||
+              (preenchido(
+                  resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico))) {
             await _assinarOfflineFirst();
             await showDialog(
               context: context,
@@ -599,16 +601,17 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     );
   }
 
-  Widget _botaoConcluirVisita2(
-      BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
+  Widget _botaoConcluirVisita2(BuildContext context,
+      ResumoVisitaEntity resumoVisitaAtualResumoDaVisitaRecord) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 16.0),
       child: FFButtonWidget(
         onPressed: () async {
           var _shouldSetState = false;
-          if ((resumoVisitaAtualResumoDaVisitaRecord.assinaturaProdutor !=
-                  '') ||
-              (resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico != '')) {
+          if ((preenchido(
+                  resumoVisitaAtualResumoDaVisitaRecord.assinaturaProdutor)) ||
+              (preenchido(
+                  resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico))) {
             _outUidPropriedade2 = await PropriedadesRecord.getDocumentOnce(
                 widget.uidPropriedade!);
             _shouldSetState = true;
@@ -670,16 +673,16 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
               }.withoutNulls,
             );
 
-            await actions.createReceituario(
-              widget.uidResumoVisita!,
-              _outUidPropriedade2?.displayName,
-              _outUidPropriedade2?.endereco,
-              _outUidPersonTecnico2?.displayName,
-              _outUidPersonTecnico2?.phoneNumber,
-              resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado ?? '',
-              _outUidPersonTecnico2?.email,
-              _outUidPersonTecnico2?.empresa,
-            );
+            await _gerarReceituario(() => actions.createReceituario(
+                  widget.uidResumoVisita!,
+                  _outUidPropriedade2?.displayName,
+                  _outUidPropriedade2?.endereco,
+                  _outUidPersonTecnico2?.displayName,
+                  _outUidPersonTecnico2?.phoneNumber,
+                  resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado ?? '',
+                  _outUidPersonTecnico2?.email,
+                  _outUidPersonTecnico2?.empresa,
+                ));
             if (_shouldSetState) safeSetState(() {});
             return;
           } else {
@@ -734,8 +737,34 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     );
   }
 
-  Widget _botaoGerarPdf(
-      BuildContext context, dynamic resumoVisitaAtualResumoDaVisitaRecord) {
+  /// Gera o receituário avisando na tela quando falha.
+  ///
+  /// A ação engolia a exceção (`catch` com `print`), então um clique que dava
+  /// erro — um cast de data quebrado, por exemplo — não fazia nada e não dizia
+  /// nada. Agora ela propaga e quem chama mostra o motivo.
+  Future<void> _gerarReceituario(Future<void> Function() gerar) async {
+    try {
+      await gerar();
+    } catch (e) {
+      if (!mounted) return;
+      await showDialog(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          title: const Text('Não foi possível gerar o PDF'),
+          content: Text('$e'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text('Ok'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget _botaoGerarPdf(BuildContext context,
+      ResumoVisitaEntity resumoVisitaAtualResumoDaVisitaRecord) {
     return Expanded(
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
@@ -759,17 +788,18 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                     ),
                     singleRecord: true,
                   ).then((s) => s.firstOrNull);
-                  await actions.createReceituario(
-                    widget.uidResumoVisita!,
-                    _outUidPropriedade?.displayName,
-                    _outUidPropriedade?.endereco,
-                    _outUidPersonTecnico?.displayName,
-                    _outUidPersonTecnico?.phoneNumber,
-                    resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado ??
-                        '',
-                    _outUidPersonTecnico?.email,
-                    _outUidPersonTecnico?.empresa,
-                  );
+                  await _gerarReceituario(() => actions.createReceituario(
+                        widget.uidResumoVisita!,
+                        _outUidPropriedade?.displayName,
+                        _outUidPropriedade?.endereco,
+                        _outUidPersonTecnico?.displayName,
+                        _outUidPersonTecnico?.phoneNumber,
+                        resumoVisitaAtualResumoDaVisitaRecord
+                                .dtVisitaFormatado ??
+                            '',
+                        _outUidPersonTecnico?.email,
+                        _outUidPersonTecnico?.empresa,
+                      ));
 
                   safeSetState(() {});
                 },
@@ -912,12 +942,10 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                 children: [
                   _listaRecomendacoes(context),
                   _conteudo(context, resumoVisitaAtualResumoDaVisitaRecord),
-                  if ((resumoVisitaAtualResumoDaVisitaRecord
-                              .assinaturaProdutor !=
-                          '') ||
-                      (resumoVisitaAtualResumoDaVisitaRecord
-                              .assinaturaTecnico !=
-                          ''))
+                  if ((preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                          .assinaturaProdutor)) ||
+                      (preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                          .assinaturaTecnico)))
                     Container(
                       decoration: BoxDecoration(
                         color: FlutterFlowTheme.of(context).secondaryBackground,
@@ -929,9 +957,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            if (resumoVisitaAtualResumoDaVisitaRecord
-                                    .dtAssinaturaFormatado !=
-                                '')
+                            if (preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                                .dtAssinaturaFormatado))
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 4.0, 0.0, 0.0),
@@ -957,9 +984,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                                       ),
                                 ),
                               ),
-                            if (resumoVisitaAtualResumoDaVisitaRecord
-                                    .dtAssinaturaFormatado !=
-                                '')
+                            if (preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                                .dtAssinaturaFormatado))
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 4.0, 0.0, 12.0),
@@ -1083,9 +1109,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                                   ),
                                 ),
                               ),
-                            if (resumoVisitaAtualResumoDaVisitaRecord
-                                    .obsGeralVisita !=
-                                '')
+                            if (preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                                .obsGeralVisita))
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 10.0, 0.0, 0.0),
@@ -1111,9 +1136,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                                       ),
                                 ),
                               ),
-                            if (resumoVisitaAtualResumoDaVisitaRecord
-                                    .obsGeralVisita !=
-                                '')
+                            if (preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                                .obsGeralVisita))
                               Padding(
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0.0, 4.0, 0.0, 12.0),
@@ -1141,12 +1165,10 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                         ),
                       ),
                     ),
-                  if ((resumoVisitaAtualResumoDaVisitaRecord
-                              .assinaturaProdutor ==
-                          '') ||
-                      (resumoVisitaAtualResumoDaVisitaRecord
-                              .assinaturaTecnico ==
-                          ''))
+                  if ((!preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                          .assinaturaProdutor)) ||
+                      (!preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                          .assinaturaTecnico)))
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -1159,14 +1181,12 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                         ],
                       ),
                     ),
-                  if (((resumoVisitaAtualResumoDaVisitaRecord
-                                  .assinaturaProdutor !=
-                              '') ||
-                          (resumoVisitaAtualResumoDaVisitaRecord
-                                  .assinaturaTecnico !=
-                              '')) &&
-                      (resumoVisitaAtualResumoDaVisitaRecord.obsGeralVisita ==
-                          ''))
+                  if (((preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                              .assinaturaProdutor)) ||
+                          (preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                              .assinaturaTecnico))) &&
+                      (!preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                          .obsGeralVisita)))
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -1179,16 +1199,14 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                         ],
                       ),
                     ),
-                  if (((resumoVisitaAtualResumoDaVisitaRecord
-                                  .assinaturaProdutor !=
-                              '') ||
-                          (resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico !=
-                              '')) &&
-                      (resumoVisitaAtualResumoDaVisitaRecord.obsGeralVisita !=
-                          '') &&
-                      (resumoVisitaAtualResumoDaVisitaRecord
-                              .dtAssinaturaFormatado !=
-                          ''))
+                  if (((preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                              .assinaturaProdutor)) ||
+                          (preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                              .assinaturaTecnico))) &&
+                      (preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                          .obsGeralVisita)) &&
+                      (preenchido(resumoVisitaAtualResumoDaVisitaRecord
+                          .dtAssinaturaFormatado)))
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,

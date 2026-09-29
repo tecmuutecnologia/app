@@ -16,6 +16,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+
+import '../util/data_flexivel.dart';
 import 'package:http/http.dart' as http;
 
 Future<void> createReceituario(
@@ -362,13 +365,15 @@ Future<void> createReceituario(
     final uidPropriedade =
         resumoVisitaData['uidPropriedade'] as DocumentReference?;
     final uidTecnico = resumoVisitaData['uidTecnico'] as DocumentReference?;
-    final dtVisita = resumoVisitaData['dtVisita'] as Timestamp?;
+    // Vem `DateTime` do ObjectBox e `Timestamp` de documento do Firestore; o
+    // cast fixo para `Timestamp` derrubava a geração inteira do receituário.
+    final dtVisita = comoData(resumoVisitaData['dtVisita']);
 
     // Buscar todas as ações de diagnóstico de gestação do mesmo dia da visita
 
     if (uidPropriedade != null && uidTecnico != null && dtVisita != null) {
       // Calcular início e fim do dia da visita
-      final dtVisitaDate = dtVisita.toDate();
+      final dtVisitaDate = dtVisita;
       final dtInicioDia = DateTime(
           dtVisitaDate.year, dtVisitaDate.month, dtVisitaDate.day, 0, 0, 0);
       final dtFimDia = DateTime(
@@ -930,7 +935,12 @@ Future<void> createReceituario(
     // Abre o documento PDF usando o visualizador de PDF padrão
     final result = await OpenFile.open(file.path);
     print('OpenFile result: $result');
-  } catch (e) {
-    print('Erro ao gerar PDF: $e');
+  } catch (e, st) {
+    // Propaga em vez de engolir. Enquanto este catch só imprimia, o clique em
+    // "Gerar PDF" não fazia nada e a tela não dizia por quê — um cast quebrado
+    // (DateTime x Timestamp) passou despercebido até alguém ler o console.
+    debugPrint('❌ Erro ao gerar o receituário: $e');
+    debugPrint('$st');
+    rethrow;
   }
 }
