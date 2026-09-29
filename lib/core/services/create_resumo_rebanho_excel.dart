@@ -1,9 +1,11 @@
 // Automatic FlutterFlow imports
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
+import '/domain/animais/vinculo_acao_animal.dart';
 import '/core/ui/flutter_flow_util.dart';
 // Imports other custom actions
 import '/core/ui/custom_functions.dart' as functions;
+import '/domain/animais/dias_desde.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
@@ -15,7 +17,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:open_file/open_file.dart';
 
 Future<void> createResumoRebanhoExcel(
-  List<DocumentReference> animaisProdutores,
+  List<AnimalEntity> animaisProdutores,
   bool ultimoParto,
   bool ultimaInseminacao,
   bool del,
@@ -41,12 +43,12 @@ Future<void> createResumoRebanhoExcel(
     List<Map<String, dynamic>> animaisData = [];
 
     // Filtrar os animais produtores de acordo com as categorias selecionadas
-    for (var animalRef in animaisProdutores) {
-      // Animal lido do ObjectBox (fonte única offline-first). Antes era um
-      // `await animalRef.get()` POR ANIMAL — o relatório não saía sem rede e
-      // custava uma ida ao Firestore por linha.
-      final animalEntity = AnimalRepository().getByFirestoreId(animalRef.id);
-      if (animalEntity != null && !animalEntity.isDeleted) {
+    // Recebe as ENTIDADES que a tela já tem em mãos. Antes vinham
+    // `DocumentReference`s e este laço buscava cada animal de volta pelo id —
+    // rodeio que, além da ida extra ao banco por linha, deixava de fora o
+    // animal criado offline: sem `firestoreId` ele não tem referência.
+    for (final animalEntity in animaisProdutores) {
+      if (!animalEntity.isDeleted) {
         final data = animalEntity.toFirestore();
 
         // Filtrar por Categoria
@@ -106,12 +108,13 @@ Future<void> createResumoRebanhoExcel(
             (data['grupoAnimal'] == 'Vacas' ||
                 data['grupoAnimal'] == 'Novilhas')) {
           try {
-            // Ações lidas do ObjectBox, filtradas pelo caminho do animal.
+            // Ações do animal: por caminho quando ele já subiu, pela
+            // identidade offline enquanto não subiu (`acaoEhDoAnimal`).
             final acoes = AcaoRepository()
                 .getAll()
                 .where((e) =>
                     !e.isDeleted &&
-                    e.uidAnimalAnimaisProdutoresPath == animalRef.path &&
+                    acaoEhDoAnimal(e, animalEntity) &&
                     e.dataDaAcao != null)
                 .toList()
               ..sort((x, y) => y.dataDaAcao!.compareTo(x.dataDaAcao!));
@@ -238,15 +241,15 @@ Future<void> createResumoRebanhoExcel(
       }
 
       if (del) {
-        row.add(animalData['dtUltimoParto'] != null &&
-                animalData['dtUltimoParto'].isNotEmpty &&
-                animalData['grupoAnimal'] == 'Vacas' &&
+        // Célula NUMÉRICA: `diasDesdeNum` devolve nulo (vira vazio) quando não
+        // há data ou ela vem torta, em vez de derrubar a exportação inteira
+        // com FormatException.
+        final del = animalData['grupoAnimal'] == 'Vacas' &&
                 ['Vazia', 'Inseminada', 'Inseminada PP', 'Prenha']
                     .contains(animalData['statusReprodutivo'])
-            ? functions.calcularDiferencaEmDias(
-                animalData['dtUltimoParto'],
-              )
-            : '');
+            ? diasDesdeNum(animalData['dtUltimoParto'] as String?)
+            : null;
+        row.add(del ?? '');
       }
 
       if (ultimaInseminacao) {

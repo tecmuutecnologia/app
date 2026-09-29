@@ -19,7 +19,10 @@ import '/core/services/index.dart' as actions;
 import '/core/ui/custom_functions.dart' as functions;
 import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
 import 'package:collection/collection.dart';
+import '/features/animais/application/animais_providers.dart';
+import '/features/relatorios/application/categorias_do_relatorio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +32,7 @@ import 'package:provider/provider.dart';
 /// nas opções do dropdown de categoria.
 const kStatusExtrasFixos = ['Indução de Lactação', 'Descarte'];
 
-class ResumoRebanhoPage extends StatefulWidget {
+class ResumoRebanhoPage extends ConsumerStatefulWidget {
   const ResumoRebanhoPage({
     super.key,
     required this.uidPropriedade,
@@ -53,12 +56,10 @@ class ResumoRebanhoPage extends StatefulWidget {
   static String routePath = '/resumoRebanho';
 
   @override
-  State<ResumoRebanhoPage> createState() => _ResumoRebanhoPageState();
+  ConsumerState<ResumoRebanhoPage> createState() => _ResumoRebanhoPageState();
 }
 
-class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
-  StreamSubscription<bool>? _conectividadeSub;
-  bool? _respostaNet = true;
+class _ResumoRebanhoPageState extends ConsumerState<ResumoRebanhoPage> {
   List<String>? _categoriaAnimalValue;
   FormFieldController<List<String>>? _categoriaAnimalValueController;
   List<String>? _statusAnimalValue;
@@ -82,26 +83,11 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
   void initState() {
     super.initState();
 
-    // On page load action.
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      // Conectividade por transicao real, nao por polling: antes era um
-      // timer periodico de 5s cujo callback chamava safeSetState
-      // incondicionalmente, reconstruindo a arvore inteira houvesse mudanca
-      // ou nao. O valor alimenta um unico lugar: a cor de um botao.
-      _respostaNet = ConnectivityService.instance.isOnline;
-      _conectividadeSub =
-          ConnectivityService.instance.onStatusChange.listen((online) {
-        if (mounted) safeSetState(() => _respostaNet = online);
-      });
-    });
-
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
   void dispose() {
-    _conectividadeSub?.cancel();
-
     super.dispose();
   }
 
@@ -191,10 +177,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
       // prendia a tela no CircularProgressIndicator.
       child: Builder(
         builder: (context) {
-          final categoriaAnimalGrupoRecordList = ReferenciaRepository()
-              .grupos()
-              .where((d) => !ehSemens(d))
-              .toList();
+          final categoriaAnimalGrupoRecordList = _gruposDisponiveis;
 
           return FlutterFlowDropDown<String>(
             multiSelectController: _categoriaAnimalValueController ??=
@@ -202,9 +185,11 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
                     _categoriaAnimalValue ??= List<String>.from(
               categoriaAnimalGrupoRecordList,
             )),
-            options: _respostaNet!
-                ? categoriaAnimalGrupoRecordList
-                : kGruposDescricoes.toList(),
+            // Sempre a tabela de referência LOCAL. Antes isto era
+            // `online ? repositório : constante`, invertido para o
+            // offline-first: o repositório É local, e a constante podia
+            // divergir da tabela real.
+            options: categoriaAnimalGrupoRecordList,
             width: double.infinity,
             height: 50.0,
             searchHintTextStyle: FlutterFlowTheme.of(context)
@@ -971,7 +956,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
   }
 
   Widget _botaoExportar(
-      BuildContext context, dynamic resumoRebanhoAnimaisProdutoresRecordList) {
+      BuildContext context, List<AnimalEntity> animaisDoRelatorio) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 30.0),
       child: Row(
@@ -981,7 +966,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
           FFButtonWidget(
             onPressed: () async {
               var _shouldSetState = false;
-              if (_categoriaAnimalValue!.length >= 1) {
+              {
                 // Cabeçalho do relatório (propriedade e técnico) lido do
                 // ObjectBox. Antes eram três idas ao Firestore, que offline
                 // não retornavam e abortavam a exportação.
@@ -994,13 +979,18 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
                     : PersonRepository().getByUid(tecnico!.uidPerson!);
                 _shouldSetState = true;
 
+                // Nenhuma categoria marcada significa TODAS: antes o clique
+                // morria num `if (length >= 1)` sem aviso nenhum.
+                final categorias = categoriasDoRelatorio(
+                  _categoriaAnimalValue,
+                  _gruposDisponiveis,
+                );
+
                 // Verificar qual formato foi selecionado
                 if (_formatoExportacaoValue == 'Excel') {
                   // Gerar Excel
                   await actions.createResumoRebanhoExcel(
-                    resumoRebanhoAnimaisProdutoresRecordList
-                        .map((e) => e.reference)
-                        .toList(),
+                    animaisDoRelatorio,
                     _checkUltimopartoValue == true,
                     _checkUltimaiaValue == true,
                     _checkDelValue == true,
@@ -1010,7 +1000,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
                     _checkParicaoValue == true,
                     _checkDiasAbertoValue!,
                     _checkIntervaloEntrePartosValue!,
-                    _categoriaAnimalValue!.toList(),
+                    categorias,
                     _statusAnimalValue?.toList(),
                     propriedade?.displayName ?? '',
                     '${propriedade?.endereco ?? ''} - ${propriedade?.cidade ?? ''}',
@@ -1024,9 +1014,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
                 } else {
                   // Gerar PDF (padrão)
                   await actions.createResumoRebanho(
-                    resumoRebanhoAnimaisProdutoresRecordList
-                        .map((e) => e.reference)
-                        .toList(),
+                    animaisDoRelatorio,
                     _checkUltimopartoValue == true,
                     _checkUltimaiaValue == true,
                     _checkDelValue == true,
@@ -1036,7 +1024,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
                     _checkParicaoValue == true,
                     _checkDiasAbertoValue!,
                     _checkIntervaloEntrePartosValue!,
-                    _categoriaAnimalValue!.toList(),
+                    categorias,
                     _statusAnimalValue?.toList(),
                     propriedade?.displayName ?? '',
                     '${propriedade?.endereco ?? ''} - ${propriedade?.cidade ?? ''}',
@@ -1048,23 +1036,6 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
                     widget.uidTecnico!,
                   );
                 }
-                if (_shouldSetState) safeSetState(() {});
-                return;
-              } else {
-                await showDialog(
-                  context: context,
-                  builder: (alertDialogContext) {
-                    return AlertDialog(
-                      title: Text('Selecione ao menos uma categoria.'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(alertDialogContext),
-                          child: Text('Ok'),
-                        ),
-                      ],
-                    );
-                  },
-                );
                 if (_shouldSetState) safeSetState(() {});
                 return;
               }
@@ -1111,24 +1082,32 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
     );
   }
 
+  /// Grupos que o relatório oferece (tabela de referência local, sem sêmens).
+  List<String> get _gruposDisponiveis =>
+      ReferenciaRepository().grupos().where((d) => !ehSemens(d)).toList();
+
   @override
   Widget build(BuildContext context) {
     // context.watch<FFAppState>();
 
-    // Animais da propriedade direto do ObjectBox — é essa lista que alimenta
-    // a exportação do relatório.
-    return Builder(
-      builder: (context) {
-        final resumoRebanhoAnimaisProdutoresRecordList =
-            (widget.uidPropriedade == null
-                    ? <AnimaisProdutoresStruct>[]
-                    : AnimalRepository()
-                        .getAnimaisByPropriedade(widget.uidPropriedade!.path)
-                        .where((a) => !a.isDeleted)
-                        .map(animalEntityToStruct)
-                        .toList())
-                .toList();
+    // Lista REATIVA do ObjectBox: era uma leitura única dentro de um `Builder`,
+    // então animal que chegasse pela escuta em tempo real (ou cadastrado em
+    // outra tela) só entrava no relatório depois de sair e voltar. Entrega as
+    // ENTIDADES: a exportação não precisa mais de `DocumentReference`, e é isso
+    // que faz o animal criado offline aparecer.
+    final animaisAsync = ref
+        .watch(animaisByPropriedadeProvider(widget.uidPropriedade?.path ?? ''));
 
+    return animaisAsync.when(
+      loading: () => Scaffold(
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        body: const Center(child: CircularProgressIndicator()),
+      ),
+      error: (_, __) => Scaffold(
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        body: const Center(child: Text('Erro ao carregar os animais.')),
+      ),
+      data: (animaisDoRelatorio) {
         return GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -1192,8 +1171,7 @@ class _ResumoRebanhoPageState extends State<ResumoRebanhoPage> {
                   _colunaPrevisaoParto(context),
                   _colunaUltimaAcao(context),
                   _campoFormatoExportacao(context),
-                  _botaoExportar(
-                      context, resumoRebanhoAnimaisProdutoresRecordList),
+                  _botaoExportar(context, animaisDoRelatorio),
                 ],
               ),
             ),
