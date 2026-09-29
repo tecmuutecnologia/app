@@ -1083,14 +1083,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
               children: [
                 Expanded(
                     child: _faixaInfo(context, [
-                  _tileInfo(
-                      context,
-                      'DEL',
-                      item.dtUltimoParto != ''
-                          ? functions
-                              .calcularDiferencaEmDias(item.dtUltimoParto)
-                              .toString()
-                          : ''),
+                  _tileInfo(context, 'DEL', diasDesde(item.dtUltimoParto)),
                   _tileInfo(context, 'Último parto', item.dtUltimoParto),
                 ])),
               ],
@@ -2099,14 +2092,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
               children: [
                 Expanded(
                     child: _faixaInfo(context, [
-                  _tileInfo(
-                      context,
-                      'DEL',
-                      item.dtUltimoParto != ''
-                          ? functions
-                              .calcularDiferencaEmDias(item.dtUltimoParto)
-                              .toString()
-                          : ''),
+                  _tileInfo(context, 'DEL', diasDesde(item.dtUltimoParto)),
                   _tileInfo(context, 'Último parto', item.dtUltimoParto),
                 ])),
               ],

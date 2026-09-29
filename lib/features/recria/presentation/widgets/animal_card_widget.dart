@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '/domain/animais/classificacao_animal.dart';
+import '/domain/animais/dias_desde.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '/app/theme/flutter_flow_theme.dart';
@@ -377,12 +378,7 @@ class AnimalCardWidget extends StatelessWidget {
     if (ehNovilha(animal.grupoAnimal)) {
       switch (animal.status) {
         case 'Vazia':
-          final del =
-              animal.dtUltimoParto != null && animal.dtUltimoParto!.isNotEmpty
-                  ? functions
-                      .calcularDiferencaEmDias(animal.dtUltimoParto!)
-                      .toString()
-                  : '';
+          final del = diasDesde(animal.dtUltimoParto);
           return [
             _tileInfo(context, 'DEL', del),
             _tileInfo(context, 'Último parto',

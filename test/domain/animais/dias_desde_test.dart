@@ -25,4 +25,20 @@ void main() {
 
   test('data inválida não mostra nada em vez de quebrar a tela',
       () => expect(diasDesde('31/13/xxxx'), ''));
+
+  test('sem data usa o texto pedido pela tela', () {
+    // O prontuário mostra 'N/D'; as listas deixam em branco.
+    expect(diasDesde('', seVazio: 'N/D'), 'N/D');
+    expect(diasDesde('31/13/xxxx', seVazio: 'N/D'), 'N/D');
+  });
+
+  group('diasDesdeNum', () {
+    // A planilha recebe NÚMERO: virar texto mudaria o tipo da coluna.
+    test('devolve o número de dias', () => expect(diasDesdeNum(dias(37)), 37));
+
+    test('sem data devolve nulo', () => expect(diasDesdeNum(''), isNull));
+
+    test('data inválida devolve nulo em vez de derrubar a exportação',
+        () => expect(diasDesdeNum('31/13/xxxx'), isNull));
+  });
 }

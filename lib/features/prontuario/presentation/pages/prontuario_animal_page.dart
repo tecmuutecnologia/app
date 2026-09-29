@@ -8,12 +8,12 @@ import '/core/ui/flutter_flow_util.dart';
 import '/features/prontuario/presentation/widgets/ficha_clinica.dart';
 import '/features/prontuario/application/acao_record_adapter.dart';
 import '/core/ui/app_card.dart';
-import '/core/ui/custom_functions.dart' as functions;
 import '/features/prontuario/presentation/pages/pron_abortos_page.dart';
 import '/features/prontuario/presentation/pages/pron_acoes_page.dart';
 import '/features/prontuario/presentation/pages/pron_cios_page.dart';
 import '/features/prontuario/presentation/pages/pron_diag_gestacao_page.dart';
 import '/features/prontuario/presentation/pages/pron_inseminacoes_page.dart';
+import '/domain/animais/dias_desde.dart';
 import '/domain/animais/ordenacao_animal.dart';
 import '/features/animais/application/animais_providers.dart';
 import 'package:flutter/material.dart';
@@ -1682,11 +1682,7 @@ class _ProntuarioAnimalPageState extends ConsumerState<ProntuarioAnimalPage> {
                     ),
               ),
               Text(
-                (animal.dtUltimoParto ?? '') != ''
-                    ? functions
-                        .calcularDiferencaEmDias(animal.dtUltimoParto!)
-                        .toString()
-                    : 'N/D',
+                diasDesde(animal.dtUltimoParto, seVazio: 'N/D'),
                 style: FlutterFlowTheme.of(context).bodyMedium.override(
                       font: GoogleFonts.readexPro(
                         fontWeight: FontWeight.bold,
