@@ -240,6 +240,12 @@ class _ReceituariosListaPageState extends State<ReceituariosListaPage> {
                                     childAspectRatio: 2.0,
                                   ),
                                   shrinkWrap: true,
+                                  // O grid é só o arranjo de 3 células da
+                                  // linha (ícone, data, seta): ele não deve
+                                  // rolar. Enquanto rolava, o arrasto sobre a
+                                  // linha movia a data e o "Ver detalhes"
+                                  // dentro do card, em vez de rolar a lista.
+                                  physics: const NeverScrollableScrollPhysics(),
                                   scrollDirection: Axis.vertical,
                                   children: [
                                     Column(
