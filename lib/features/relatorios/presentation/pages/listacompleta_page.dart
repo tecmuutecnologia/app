@@ -2,6 +2,7 @@
 
 import '/data/backend.dart';
 import '/domain/animais/classificacao_animal.dart';
+import '/domain/animais/dias_desde.dart';
 import '/domain/animais/ordenacao_animal.dart';
 import '/features/animais/presentation/animais_ordenados_view.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
@@ -1806,6 +1807,11 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
             children: [
               Expanded(
                   child: _faixaInfo(context, [
+                // Quantos dias desde a IA — mesma leitura que o DEL faz do
+                // último parto. Sem isso o card do animal inseminado só mostra
+                // a data, e quem está no curral tem de contar de cabeça.
+                _tileInfo(
+                    context, 'Dias IA', diasDesde(item.dtUltimaInseminacao)),
                 _tileInfo(context, 'Inseminada', item.dtUltimaInseminacao),
               ])),
             ],
@@ -2822,6 +2828,11 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
             children: [
               Expanded(
                   child: _faixaInfo(context, [
+                // Quantos dias desde a IA — mesma leitura que o DEL faz do
+                // último parto. Sem isso o card do animal inseminado só mostra
+                // a data, e quem está no curral tem de contar de cabeça.
+                _tileInfo(
+                    context, 'Dias IA', diasDesde(item.dtUltimaInseminacao)),
                 _tileInfo(context, 'Inseminada', item.dtUltimaInseminacao),
               ])),
             ],
