@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../application/animais_providers.dart';
+import '../application/ordenacao_animais.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/app_card.dart';
 
@@ -22,6 +24,11 @@ class AnimalGroupListView extends ConsumerWidget {
     required this.grupo,
     this.onTapAnimal,
     this.onEditAnimal,
+    this.ordem = OrdemAnimais.nome,
+    this.crescente = true,
+    this.busca = '',
+    this.permiteDescarte = false,
+    this.onDescartar,
   });
 
   /// Path do documento da propriedade (parentPath dos animais).
@@ -38,6 +45,25 @@ class AnimalGroupListView extends ConsumerWidget {
   /// referência reconstruída a partir do firestoreId. Funciona offline.
   final void Function(String firestoreId)? onEditAnimal;
 
+  /// Ordem da lista. Vem da tela porque o botao de ordenacao vale para as 6
+  /// abas de uma vez — o estado e de la, nao de cada aba.
+  final OrdemAnimais ordem;
+
+  /// `true` = A-Z / menor brinco primeiro. Como a [ordem], e estado da tela.
+  final bool crescente;
+
+  /// Termo digitado no campo de busca da tela. Filtra por nome OU brinco.
+  final String busca;
+
+  /// Libera o arrasto que pede o descarte. Padrao `false`: so a navegacao do
+  /// tecnico liga isso, entao uma rota nova que esqueca o parametro nao
+  /// entrega o descarte ao produtor por acidente.
+  final bool permiteDescarte;
+
+  /// Pedido de descarte de um animal (recebe o firestoreId). A tela abre o
+  /// formulario de motivo/data; esta view nao decide nada sobre o descarte.
+  final void Function(String firestoreId)? onDescartar;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final animaisAsync = ref.watch(
@@ -53,15 +79,35 @@ class AnimalGroupListView extends ConsumerWidget {
         if (animais.isEmpty) {
           return Center(child: Text('Nenhum animal no grupo $grupo'));
         }
+
+        final visiveis = aplicarBuscaEOrdem(animais,
+            ordem: ordem, crescente: crescente, busca: busca);
+
+        // Mensagem diferente de propsito: "grupo vazio" e "a busca nao achou"
+        // sao situacoes distintas, e dizer a primeira no lugar da segunda faz
+        // o usuario achar que perdeu os animais da categoria.
+        if (visiveis.isEmpty) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text(
+                'Nenhum animal encontrado para "${busca.trim()}" em $grupo',
+                textAlign: TextAlign.center,
+              ),
+            ),
+          );
+        }
+
         return ListView.builder(
-          itemCount: animais.length,
+          itemCount: visiveis.length,
           itemBuilder: (context, index) {
-            final animal = animais[index];
-            final titulo = animal.nomeBrincoConcat?.isNotEmpty == true
-                ? animal.nomeBrincoConcat!
-                : (animal.nomeAnimal ?? 'Animal sem nome');
+            final animal = visiveis[index];
+            // Mesmo titulo que a ordenacao e a busca usam — se divergirem, a
+            // lista volta a parecer desordenada.
+            final titulo = tituloAnimal(animal);
+            final tituloExibido = titulo.isEmpty ? 'Animal sem nome' : titulo;
             final firestoreId = animal.firestoreId;
-            return Padding(
+            final card = Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
               child: AppCard(
                 padding: EdgeInsets.zero,
@@ -73,7 +119,7 @@ class AnimalGroupListView extends ConsumerWidget {
                     child: const Icon(Icons.pets, color: Color(0xFFF75E38)),
                   ),
                   title: Text(
-                    titulo,
+                    tituloExibido,
                     style: FlutterFlowTheme.of(context)
                         .bodyLarge
                         .copyWith(fontWeight: FontWeight.w600),
@@ -100,9 +146,58 @@ class AnimalGroupListView extends ConsumerWidget {
                 ),
               ),
             );
+
+            // Animal ja descartado nao se descarta de novo — era a mesma
+            // guarda do card antigo (`status != 'Descarte'`).
+            final podeDescartar = permiteDescarte &&
+                onDescartar != null &&
+                firestoreId != null &&
+                !ehDescarte(animal.status);
+
+            if (!podeDescartar) return card;
+
+            return Dismissible(
+              key: ValueKey('descarte-$firestoreId'),
+              direction: DismissDirection.endToStart,
+              background: _faixaDescartar(context),
+              // Devolve `false` SEMPRE: o arrasto apenas PEDE o descarte. Quem
+              // tira o animal da lista e a gravacao do status no ObjectBox, que
+              // esta view observa. Se o card sumisse no arrasto, ele voltaria
+              // piscando quando o tecnico cancelasse o formulario.
+              confirmDismiss: (_) async {
+                onDescartar!(firestoreId);
+                return false;
+              },
+              child: card,
+            );
           },
         );
       },
+    );
+  }
+
+  /// Faixa revelada pelo arrasto. Diz "Descartar", e nao "Excluir": o animal
+  /// continua na propriedade, muda de status e vai para a aba Descarte.
+  Widget _faixaDescartar(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+      padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 24, 0),
+      alignment: Alignment.centerRight,
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).error,
+        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
+      ),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.inventory_2_outlined, color: Colors.white, size: 20),
+          SizedBox(width: 8),
+          Text(
+            'Descartar',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
     );
   }
 }

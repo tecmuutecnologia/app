@@ -12,6 +12,10 @@ import '/core/ui/app_card.dart';
 import '/features/animais/presentation/pages/cadastrar_novo_animal_page.dart';
 import '/features/animais/presentation/pages/editar_animal_page.dart';
 import '/features/animais/presentation/animal_group_list_view.dart';
+import '/features/animais/application/ordenacao_animais.dart';
+import '/features/animais/presentation/widgets/seletor_ordem_animais.dart';
+import '/features/animais/presentation/widgets/descarte_animal_widget.dart';
+import '/data/objectbox/repositories/animal_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,7 +32,9 @@ class ListaAnimaisPage extends StatefulWidget {
     required this.visitaPresencial,
     int? initialTabSelect,
     this.diasDg,
-  })  : this.tabBarOpenSelected = tabBarOpenSelected ?? 1,
+    bool? permiteDescarte,
+  })  : this.permiteDescarte = permiteDescarte ?? false,
+        this.tabBarOpenSelected = tabBarOpenSelected ?? 1,
         this.initialTabSelect = initialTabSelect ?? 0;
 
   final DocumentReference? uidPropriedade;
@@ -39,6 +45,11 @@ class ListaAnimaisPage extends StatefulWidget {
   final bool? visitaPresencial;
   final int initialTabSelect;
   final String? diasDg;
+
+  /// Libera o descarte por arrasto. Padrao `false` e so a navegacao do tecnico
+  /// liga: o produtor abre a MESMA tela pelo menu dele, e descarte (com motivo
+  /// e data, alimentando os indicadores do rebanho) e decisao de manejo.
+  final bool permiteDescarte;
 
   static String routeName = 'listaAnimais';
   static String routePath = '/listaAnimais';
@@ -55,18 +66,20 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
   int get _tabBarCurrentIndex =>
       _tabBarController != null ? _tabBarController!.index : 0;
 
-  FocusNode? _searchListBezerrasFocusNode;
-  TextEditingController? _searchListBezerrasTextController;
-  FocusNode? _searchListBezerrosFocusNode;
-  TextEditingController? _searchListBezerrosTextController;
-  FocusNode? _searchListNovilhasFocusNode;
-  TextEditingController? _searchListNovilhasTextController;
-  FocusNode? _searchListSemensFocusNode;
-  TextEditingController? _searchListSemensTextController;
-  FocusNode? _searchListTourosFocusNode;
-  TextEditingController? _searchListTourosTextController;
-  FocusNode? _searchListVacasFocusNode;
-  TextEditingController? _searchListVacasTextController;
+  /// Um campo de busca para a tela inteira, e nao um por aba.
+  ///
+  /// Antes existiam SEIS controllers aqui — um por categoria — criados no
+  /// `initState` e descartados no `dispose` sem nunca aparecerem na tela:
+  /// resto do FlutterFlow. A busca filtra a aba aberta, entao um campo basta.
+  final TextEditingController _buscaController = TextEditingController();
+  final FocusNode _buscaFocusNode = FocusNode();
+
+  /// Criterio de ordenacao das SEIS abas. Fica na tela, nao em cada aba, para
+  /// o tecnico nao precisar reescolher a ordem ao trocar de categoria.
+  OrdemAnimais _ordem = OrdemAnimais.nome;
+
+  /// Direcao do criterio: `true` = A-Z / menor brinco primeiro.
+  bool _crescente = true;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -98,24 +111,6 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
           5),
     )..addListener(() => safeSetState(() {}));
 
-    _searchListBezerrasTextController ??= TextEditingController();
-    _searchListBezerrasFocusNode ??= FocusNode();
-
-    _searchListBezerrosTextController ??= TextEditingController();
-    _searchListBezerrosFocusNode ??= FocusNode();
-
-    _searchListNovilhasTextController ??= TextEditingController();
-    _searchListNovilhasFocusNode ??= FocusNode();
-
-    _searchListSemensTextController ??= TextEditingController();
-    _searchListSemensFocusNode ??= FocusNode();
-
-    _searchListTourosTextController ??= TextEditingController();
-    _searchListTourosFocusNode ??= FocusNode();
-
-    _searchListVacasTextController ??= TextEditingController();
-    _searchListVacasFocusNode ??= FocusNode();
-
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
@@ -123,18 +118,8 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
   void dispose() {
     _conectividadeSub?.cancel();
     _tabBarController?.dispose();
-    _searchListBezerrasFocusNode?.dispose();
-    _searchListBezerrasTextController?.dispose();
-    _searchListBezerrosFocusNode?.dispose();
-    _searchListBezerrosTextController?.dispose();
-    _searchListNovilhasFocusNode?.dispose();
-    _searchListNovilhasTextController?.dispose();
-    _searchListSemensFocusNode?.dispose();
-    _searchListSemensTextController?.dispose();
-    _searchListTourosFocusNode?.dispose();
-    _searchListTourosTextController?.dispose();
-    _searchListVacasFocusNode?.dispose();
-    _searchListVacasTextController?.dispose();
+    _buscaFocusNode.dispose();
+    _buscaController.dispose();
 
     super.dispose();
   }
@@ -179,6 +164,122 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
               ),
         ),
       ],
+    );
+  }
+
+  /// Abre o formulario de descarte (motivo + data) do animal arrastado.
+  ///
+  /// O arrasto so PEDE o descarte; nada e gravado aqui. Quem grava e o
+  /// `DescarteAnimalWidget`, no ObjectBox, e o animal some da lista sozinho
+  /// porque a aba observa o ObjectBox — e reaparece na aba "Descarte" das
+  /// secas, de onde ele pode ser eliminado em definitivo.
+  Future<void> _abrirDescarte(String firestoreId, String grupo) async {
+    final animal = AnimalRepository().getByFirestoreId(firestoreId);
+    if (animal == null || !mounted) return;
+
+    await showModalBottomSheet(
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      enableDrag: false,
+      context: context,
+      builder: (context) => Padding(
+        padding: MediaQuery.viewInsetsOf(context),
+        child: DescarteAnimalWidget(
+          uidPropriedade: widget.uidPropriedade!,
+          nomePropriedade: widget.nomePropriedade!,
+          uidTecnico: widget.uidTecnico!,
+          emailPropriedade: widget.emailPropriedade!,
+          // Animais vivem sob o tecnico — mesma reconstrucao usada no editar.
+          uidAnimaisProdutores: FirebaseFirestore.instance.doc(
+              '${widget.uidTecnico!.path}/animaisProdutores/$firestoreId'),
+          grupoPredominante: grupo,
+          nomeAnimal: animal.nomeAnimal ?? '',
+          visitaPresencial: widget.visitaPresencial ?? false,
+          diasDg: widget.diasDg ?? '',
+        ),
+      ),
+    );
+  }
+
+  /// Busca e ordenacao da tela, acima das abas.
+  ///
+  /// Fica fora da `TabBarView` de proposito: o criterio de ordem e o termo
+  /// digitado valem para a categoria que estiver aberta, e repetir o controle
+  /// dentro de cada aba faria o tecnico reconfigurar tudo a cada troca.
+  ///
+  /// Busca em cima e botoes embaixo, e nao os tres na mesma linha: com dois
+  /// botoes ao lado do campo sobraria pouca largura justamente para quem
+  /// recebe texto longo, que e o campo de busca.
+  Widget _cabecalhoBuscaEOrdem(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _campoBuscaTexto(context),
+          const SizedBox(height: 10.0),
+          SeletorOrdemAnimais(
+            ordem: _ordem,
+            crescente: _crescente,
+            // Trocar de criterio recomeca crescente: o resultado de um toque
+            // nao deve depender da direcao deixada no criterio anterior.
+            onSelecionar: (nova) => safeSetState(() {
+              _ordem = nova;
+              _crescente = true;
+            }),
+            onInverter: () => safeSetState(() => _crescente = !_crescente),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// O campo em si, no mesmo desenho das telas de secas, prenhas e lista
+  /// completa.
+  Widget _campoBuscaTexto(BuildContext context) {
+    return TextFormField(
+      controller: _buscaController,
+      focusNode: _buscaFocusNode,
+      onChanged: (_) => safeSetState(() {}),
+      decoration: InputDecoration(
+        labelText: 'Pesquisar por nome ou brinco',
+        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
+              font: GoogleFonts.readexPro(),
+              letterSpacing: 0.0,
+            ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.transparent, width: 1.0),
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: AppTokens.secondary, width: 1.5),
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
+        prefixIcon: Icon(
+          Icons.search_rounded,
+          color: FlutterFlowTheme.of(context).secondaryText,
+        ),
+        suffixIcon: _buscaController.text.isNotEmpty
+            ? InkWell(
+                onTap: () {
+                  _buscaController.clear();
+                  safeSetState(() {});
+                },
+                child: Icon(
+                  Icons.clear,
+                  color: FlutterFlowTheme.of(context).secondaryText,
+                  size: 18.0,
+                ),
+              )
+            : null,
+      ),
+      style: FlutterFlowTheme.of(context).bodyMedium.override(
+            font: GoogleFonts.readexPro(),
+            letterSpacing: 0.0,
+          ),
+      maxLines: 1,
     );
   }
 
@@ -259,7 +360,13 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
               children: [
                 AnimalGroupListView(
                   propriedadePath: widget.uidPropriedade!.path,
+                  ordem: _ordem,
+                  crescente: _crescente,
+                  busca: _buscaController.text,
                   grupo: 'Bezerras',
+                  permiteDescarte: widget.permiteDescarte,
+                  onDescartar: (firestoreId) =>
+                      _abrirDescarte(firestoreId, 'Bezerras'),
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
                       EditarAnimalPage.routeName,
@@ -291,7 +398,13 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
                 ),
                 AnimalGroupListView(
                   propriedadePath: widget.uidPropriedade!.path,
+                  ordem: _ordem,
+                  crescente: _crescente,
+                  busca: _buscaController.text,
                   grupo: 'Bezerros',
+                  permiteDescarte: widget.permiteDescarte,
+                  onDescartar: (firestoreId) =>
+                      _abrirDescarte(firestoreId, 'Bezerros'),
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
                       EditarAnimalPage.routeName,
@@ -323,7 +436,13 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
                 ),
                 AnimalGroupListView(
                   propriedadePath: widget.uidPropriedade!.path,
+                  ordem: _ordem,
+                  crescente: _crescente,
+                  busca: _buscaController.text,
                   grupo: 'Novilhas',
+                  permiteDescarte: widget.permiteDescarte,
+                  onDescartar: (firestoreId) =>
+                      _abrirDescarte(firestoreId, 'Novilhas'),
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
                       EditarAnimalPage.routeName,
@@ -355,7 +474,13 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
                 ),
                 AnimalGroupListView(
                   propriedadePath: widget.uidPropriedade!.path,
+                  ordem: _ordem,
+                  crescente: _crescente,
+                  busca: _buscaController.text,
                   grupo: 'Sêmens',
+                  permiteDescarte: widget.permiteDescarte,
+                  onDescartar: (firestoreId) =>
+                      _abrirDescarte(firestoreId, 'Sêmens'),
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
                       EditarAnimalPage.routeName,
@@ -387,7 +512,13 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
                 ),
                 AnimalGroupListView(
                   propriedadePath: widget.uidPropriedade!.path,
+                  ordem: _ordem,
+                  crescente: _crescente,
+                  busca: _buscaController.text,
                   grupo: 'Touros',
+                  permiteDescarte: widget.permiteDescarte,
+                  onDescartar: (firestoreId) =>
+                      _abrirDescarte(firestoreId, 'Touros'),
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
                       EditarAnimalPage.routeName,
@@ -419,7 +550,13 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
                 ),
                 AnimalGroupListView(
                   propriedadePath: widget.uidPropriedade!.path,
+                  ordem: _ordem,
+                  crescente: _crescente,
+                  busca: _buscaController.text,
                   grupo: 'Vacas',
+                  permiteDescarte: widget.permiteDescarte,
+                  onDescartar: (firestoreId) =>
+                      _abrirDescarte(firestoreId, 'Vacas'),
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
                       EditarAnimalPage.routeName,
@@ -562,6 +699,7 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            _cabecalhoBuscaEOrdem(context),
             _abasDeAnimais(context),
           ],
         ),
