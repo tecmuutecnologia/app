@@ -1947,21 +1947,27 @@ class OfflineFirstSyncService {
     required SyncEtapa etapa,
     required List<AlvoEscuta> alvos,
   }) async {
-    final chave = SyncCheckpoint.chaveDe(etapa);
-    final marca = _marcaDe(etapa);
-    final desde = JanelaPull.desde(marca?.lastIncrementalSync);
+    final chaveEtapa = SyncCheckpoint.chaveDe(etapa);
 
     try {
+      // Cada alvo le a SUA marca: os de escuta compartilham a da etapa, os de
+      // pull tem a propria. Ver [chaveDeMarca].
       for (final alvo in alvos) {
+        final chave = chaveDeMarca(alvo, chaveEtapa);
+        final marca = _marcaPorChave(chave);
+        final desde = JanelaPull.desde(marca?.lastIncrementalSync);
+
         final snapshot = await _consultaDelta(alvo, desde).get();
         if (snapshot.docs.isNotEmpty) {
           _aplicarDelta(alvo, snapshot.docs);
           debugPrint('↓ ${snapshot.docs.length} ${etapa.name} atualizado(s)');
         }
+
+        // So os alvos de pull avancam aqui: a marca da etapa e avancada uma
+        // vez no fim, depois de todos os alvos dela terem sido lidos.
+        if (alvo.apenasPull) _avancarMarca(chave, marca);
       }
-      final linha = marca ?? SyncMetadataEntity(collectionName: chave);
-      linha.lastIncrementalSync = DateTime.now().toUtc();
-      _objectBox.syncMetadataBox.put(linha);
+      _avancarMarca(chaveEtapa, _marcaPorChave(chaveEtapa));
     } catch (e) {
       // Pull é oportunista: falhar aqui não pode derrubar o push que vem em
       // seguida nem marcar o app como quebrado.
@@ -1981,15 +1987,29 @@ class OfflineFirstSyncService {
           SyncEtapa.financeiro,
       };
 
-  SyncMetadataEntity? _marcaDe(SyncEtapa etapa) => _objectBox.syncMetadataBox
-      .query(SyncMetadataEntity_.collectionName
-          .equals(SyncCheckpoint.chaveDe(etapa)))
+  SyncMetadataEntity? _marcaDe(SyncEtapa etapa) =>
+      _marcaPorChave(SyncCheckpoint.chaveDe(etapa));
+
+  SyncMetadataEntity? _marcaPorChave(String chave) => _objectBox.syncMetadataBox
+      .query(SyncMetadataEntity_.collectionName.equals(chave))
       .build()
       .findFirst();
+
+  void _avancarMarca(String chave, SyncMetadataEntity? marca) {
+    final linha = marca ?? SyncMetadataEntity(collectionName: chave);
+    linha.lastIncrementalSync = DateTime.now().toUtc();
+    _objectBox.syncMetadataBox.put(linha);
+  }
 
   List<AlvoEscuta> _alvosLocais() => alvosDeEscuta(
         tecnicoPath: _tecnicoRefLocal()?.path,
         propriedades: _objectBox.propriedadeBox.getAll(),
+        // No aparelho do tecnico, tratamentos e recomendacoes entram so para as
+        // propriedades com visita recente — e so no pull. Ver [apenasPull].
+        propriedadesComVisita: propriedadesComVisitaRecente(
+          _objectBox.resumoVisitaBox.getAll(),
+          agora: DateTime.now(),
+        ),
       );
 
   Query<Map<String, dynamic>> _consultaDelta(AlvoEscuta alvo, DateTime desde) {
@@ -2067,6 +2087,10 @@ class OfflineFirstSyncService {
     pararEscutaRemota();
 
     for (final alvo in _alvosLocais()) {
+      // Alvo de pull nao abre conexao: e o que evita as 60 escutas de um
+      // tecnico com 30 propriedades.
+      if (alvo.apenasPull) continue;
+
       final etapa = _etapaDe(alvo.tipo);
       final desde = JanelaPull.desde(_marcaDe(etapa)?.lastIncrementalSync);
 
