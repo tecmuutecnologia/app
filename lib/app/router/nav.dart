@@ -378,6 +378,10 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               'diasDg',
               ParamType.String,
             ),
+            permiteDescarte: params.getParam(
+              'permiteDescarte',
+              ParamType.bool,
+            ),
           ),
         ),
         FFRoute(

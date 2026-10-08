@@ -12,6 +12,67 @@ import 'base_sync_repository.dart';
 /// orquestração de sincronização com o Firestore (criar/atualizar/excluir com
 /// fila de pendências). Aqui ficam apenas as queries e o mapeamento de campos
 /// específicos do animal.
+/// Copia para [entity] os campos presentes em [data], preservando o que o mapa
+/// nao menciona (`?? entity.campo`).
+///
+/// Mora fora da classe, e nao dentro do `update`, para ser testavel sem subir
+/// um Store do ObjectBox: a copia de campos e onde um esquecimento passa
+/// despercebido — era o caso de `dtDescarteAnimal` e `motivoDescarteAnimal`,
+/// que a tela de descarte gravava e esta funcao ignorava, fazendo a aba
+/// "Descarte" mostrar o animal sem data nem motivo.
+void aplicarDadosNoAnimal(AnimalEntity entity, Map<String, dynamic> data) {
+  entity.nomeAnimal = data['nomeAnimal'] ?? entity.nomeAnimal;
+  entity.racaAnimal = data['racaAnimal'] ?? entity.racaAnimal;
+  entity.pesoAnimal = data['pesoAnimal'] ?? entity.pesoAnimal;
+  entity.dtNascimento = data['dtNascimento'] ?? entity.dtNascimento;
+  entity.touro = data['touro'] ?? entity.touro;
+  entity.vaca = data['vaca'] ?? entity.vaca;
+  entity.status = data['status'] ?? entity.status;
+  entity.grupoAnimal = data['grupoAnimal'] ?? entity.grupoAnimal;
+  entity.dtUltimaInseminacao =
+      data['dtUltimaInseminacao'] ?? entity.dtUltimaInseminacao;
+  entity.nomeTouroUltimaInseminacao =
+      data['nomeTouroUltimaInseminacao'] ?? entity.nomeTouroUltimaInseminacao;
+  entity.compararDtUltimaInseminacao = data['compararDtUltimaInseminacao'] ??
+      entity.compararDtUltimaInseminacao;
+  entity.dtUltimoParto = data['dtUltimoParto'] ?? entity.dtUltimoParto;
+  // Datas de ciclo (definidas/limpas pelos formulários de ação).
+  entity.dtPartoPrevisto = data['dtPartoPrevisto'] ?? entity.dtPartoPrevisto;
+  entity.dtSecPrevista = data['dtSecPrevista'] ?? entity.dtSecPrevista;
+  entity.dtPrePartoPrevista =
+      data['dtPrePartoPrevista'] ?? entity.dtPrePartoPrevista;
+  entity.dtPreParto = data['dtPreParto'] ?? entity.dtPreParto;
+  entity.dtPP = data['dtPP'] ?? entity.dtPP;
+  entity.dtUltimoPP = data['dtUltimoPP'] ?? entity.dtUltimoPP;
+  entity.dtDgMais = data['dtDgMais'] ?? entity.dtDgMais;
+  entity.dtDgMenos = data['dtDgMenos'] ?? entity.dtDgMenos;
+  entity.dtAborto = data['dtAborto'] ?? entity.dtAborto;
+  entity.dtSecagem = data['dtSecagem'] ?? entity.dtSecagem;
+  entity.dtInducaoLactacao =
+      data['dtInducaoLactacao'] ?? entity.dtInducaoLactacao;
+  entity.dtUltimaAcao = data['dtUltimaAcao'] ?? entity.dtUltimaAcao;
+  entity.dtUltimoPartoContingencia =
+      data['dtUltimoPartoContingencia'] ?? entity.dtUltimoPartoContingencia;
+  entity.dtDesmame = data['dtDesmame'] ?? entity.dtDesmame;
+  entity.liberaInseminacao =
+      data['liberaInseminacao'] ?? entity.liberaInseminacao;
+  entity.brincoAnimal = data['brincoAnimal'] ?? entity.brincoAnimal;
+  entity.brincoAnimalOrder =
+      data['brincoAnimalOrder'] ?? entity.brincoAnimalOrder;
+  entity.nomeBrincoConcat =
+      data['nomeBrincoConcat'] ?? entity.nomeBrincoConcat;
+  entity.idGrupoAnimal = data['idGrupoAnimal'] ?? entity.idGrupoAnimal;
+  entity.idStatusAnimal = data['idStatusAnimal'] ?? entity.idStatusAnimal;
+  entity.totalInseminacoes =
+      data['totalInseminacoes'] ?? entity.totalInseminacoes;
+  entity.totalPartos = data['totalPartos'] ?? entity.totalPartos;
+
+  entity.dtDescarteAnimal =
+    data['dtDescarteAnimal'] ?? entity.dtDescarteAnimal;
+  entity.motivoDescarteAnimal =
+    data['motivoDescarteAnimal'] ?? entity.motivoDescarteAnimal;
+}
+
 class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
   AnimalRepository({
     ObjectBoxService? objectBox,
@@ -224,51 +285,7 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
   /// Atualiza um animal existente localmente e sincroniza (ou enfileira).
   Future<Result<AnimalEntity>> update(
       AnimalEntity entity, Map<String, dynamic> data) async {
-    entity.nomeAnimal = data['nomeAnimal'] ?? entity.nomeAnimal;
-    entity.racaAnimal = data['racaAnimal'] ?? entity.racaAnimal;
-    entity.pesoAnimal = data['pesoAnimal'] ?? entity.pesoAnimal;
-    entity.dtNascimento = data['dtNascimento'] ?? entity.dtNascimento;
-    entity.touro = data['touro'] ?? entity.touro;
-    entity.vaca = data['vaca'] ?? entity.vaca;
-    entity.status = data['status'] ?? entity.status;
-    entity.grupoAnimal = data['grupoAnimal'] ?? entity.grupoAnimal;
-    entity.dtUltimaInseminacao =
-        data['dtUltimaInseminacao'] ?? entity.dtUltimaInseminacao;
-    entity.nomeTouroUltimaInseminacao =
-        data['nomeTouroUltimaInseminacao'] ?? entity.nomeTouroUltimaInseminacao;
-    entity.compararDtUltimaInseminacao = data['compararDtUltimaInseminacao'] ??
-        entity.compararDtUltimaInseminacao;
-    entity.dtUltimoParto = data['dtUltimoParto'] ?? entity.dtUltimoParto;
-    // Datas de ciclo (definidas/limpas pelos formulários de ação).
-    entity.dtPartoPrevisto = data['dtPartoPrevisto'] ?? entity.dtPartoPrevisto;
-    entity.dtSecPrevista = data['dtSecPrevista'] ?? entity.dtSecPrevista;
-    entity.dtPrePartoPrevista =
-        data['dtPrePartoPrevista'] ?? entity.dtPrePartoPrevista;
-    entity.dtPreParto = data['dtPreParto'] ?? entity.dtPreParto;
-    entity.dtPP = data['dtPP'] ?? entity.dtPP;
-    entity.dtUltimoPP = data['dtUltimoPP'] ?? entity.dtUltimoPP;
-    entity.dtDgMais = data['dtDgMais'] ?? entity.dtDgMais;
-    entity.dtDgMenos = data['dtDgMenos'] ?? entity.dtDgMenos;
-    entity.dtAborto = data['dtAborto'] ?? entity.dtAborto;
-    entity.dtSecagem = data['dtSecagem'] ?? entity.dtSecagem;
-    entity.dtInducaoLactacao =
-        data['dtInducaoLactacao'] ?? entity.dtInducaoLactacao;
-    entity.dtUltimaAcao = data['dtUltimaAcao'] ?? entity.dtUltimaAcao;
-    entity.dtUltimoPartoContingencia =
-        data['dtUltimoPartoContingencia'] ?? entity.dtUltimoPartoContingencia;
-    entity.dtDesmame = data['dtDesmame'] ?? entity.dtDesmame;
-    entity.liberaInseminacao =
-        data['liberaInseminacao'] ?? entity.liberaInseminacao;
-    entity.brincoAnimal = data['brincoAnimal'] ?? entity.brincoAnimal;
-    entity.brincoAnimalOrder =
-        data['brincoAnimalOrder'] ?? entity.brincoAnimalOrder;
-    entity.nomeBrincoConcat =
-        data['nomeBrincoConcat'] ?? entity.nomeBrincoConcat;
-    entity.idGrupoAnimal = data['idGrupoAnimal'] ?? entity.idGrupoAnimal;
-    entity.idStatusAnimal = data['idStatusAnimal'] ?? entity.idStatusAnimal;
-    entity.totalInseminacoes =
-        data['totalInseminacoes'] ?? entity.totalInseminacoes;
-    entity.totalPartos = data['totalPartos'] ?? entity.totalPartos;
+    aplicarDadosNoAnimal(entity, data);
 
     entity.markAsModified();
     box.put(entity);

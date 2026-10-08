@@ -536,7 +536,12 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       onTap: () async {
         context.pushNamed(
           ListaAnimaisPage.routeName,
-          queryParameters: _paramsPropriedade(),
+          queryParameters: {
+            ..._paramsPropriedade(),
+            // So o tecnico descarta: o produtor abre a MESMA tela pelo menu
+            // dele e nao passa este parametro.
+            'permiteDescarte': serializeParam(true, ParamType.bool),
+          }.withoutNulls,
         );
       },
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation3']!);

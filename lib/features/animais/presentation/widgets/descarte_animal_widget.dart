@@ -1,6 +1,7 @@
 // ignore_for_file: unused_local_variable
 
 import '/data/backend.dart';
+import '/data/objectbox/repositories/animal_repository.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
@@ -9,7 +10,6 @@ import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -45,7 +45,6 @@ class DescarteAnimalWidget extends StatefulWidget {
 
 class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
     with TickerProviderStateMixin {
-  AnimaisProdutoresRecord? _outUidAnimaisAnimal;
   String? _motivoDescarteValue;
   FormFieldController<String>? _motivoDescarteValueController;
   FocusNode? _dtDescarteFocusNode;
@@ -59,12 +58,6 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
   @override
   void initState() {
     super.initState();
-
-    // On component load action.
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _outUidAnimaisAnimal = await AnimaisProdutoresRecord.getDocumentOnce(
-          widget.uidAnimaisProdutores!);
-    });
 
     _dtDescarteTextController ??= TextEditingController();
     _dtDescarteFocusNode ??= FocusNode();
@@ -471,12 +464,24 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
                       ) ??
                       false;
                   if (confirmDialogResponse) {
-                    await _outUidAnimaisAnimal!.reference
-                        .update(createAnimaisProdutoresRecordData(
-                      status: 'Descarte',
-                      dtDescarteAnimal: _dtDescarteTextController.text,
-                      motivoDescarteAnimal: _motivoDescarteValue,
-                    ));
+                    // Descarte offline-first: grava no ObjectBox e deixa o
+                    // sync propagar (imediato se online, fila se nao). Antes
+                    // isto era um `reference.update(...)` direto no Firestore,
+                    // precedido de um `getDocumentOnce` no `initState` — ou
+                    // seja, offline o formulario nao gravava nada e ainda
+                    // estourava no `!` da referencia nula. E como a lista e a
+                    // aba "Descarte" leem do ObjectBox, online o animal so
+                    // saia da lista quando o sync voltasse.
+                    final repo = AnimalRepository();
+                    final entidade =
+                        repo.getByFirestoreId(widget.uidAnimaisProdutores!.id);
+                    if (entidade != null) {
+                      await repo.update(entidade, {
+                        'status': 'Descarte',
+                        'dtDescarteAnimal': _dtDescarteTextController.text,
+                        'motivoDescarteAnimal': _motivoDescarteValue,
+                      });
+                    }
                     Navigator.pop(context);
                     return;
                   } else {
