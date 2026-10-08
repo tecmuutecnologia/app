@@ -5,6 +5,7 @@ import 'dart:async';
 import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
+import '/features/secas/application/filtros_secas.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/core/ui/flutter_flow_button_tabbar.dart';
@@ -126,6 +127,36 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  /// Lista de UMA aba: filtra antes de construir e deixa o `ListView`
+  /// virtualizar.
+  ///
+  /// A versao anterior fazia o oposto nos tres pontos: iterava o rebanho
+  /// inteiro, escondia card por card com `Visibility` (que esconde um widget
+  /// JA montado) e usava `shrinkWrap: true` dentro de um
+  /// `SingleChildScrollView`, o que obriga a montar todos os itens de uma vez
+  /// para medir a altura. Medido numa propriedade de 3 animais: 2304 cards
+  /// construidos para 1 visivel, e 4608 durante a animacao de troca de aba.
+  Widget _abaLista(
+    AbaSecas aba,
+    Widget Function(BuildContext, AnimaisProdutoresStruct) card,
+  ) {
+    final itens = animaisDaAba(
+      _animaisExistentes,
+      aba: aba,
+      busca: _searchListTextController?.text ?? '',
+    )
+        .sortedList(
+            keyOf: (e) => e.compararDtUltimaInseminacao, desc: !_ordemCrescente)
+        .toList();
+
+    return ListView.builder(
+      padding: EdgeInsets.zero,
+      primary: false,
+      itemCount: itens.length,
+      itemBuilder: (context, i) => card(context, itens[i]),
+    );
+  }
+
   /// Recarrega a lista a partir do ObjectBox (fonte única offline-first).
   ///
   /// Chamado no `initState` e após CADA ação. Sem isto a tela renderiza a lista
@@ -135,8 +166,10 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
   /// o animal deve sair da aba "Vacas secas" e aparecer em "Pré Parto".
   void _recarregarAnimais() {
     if (ObjectBoxService.isInitialized) {
+      // So os animais DESTA propriedade (consulta indexada), em vez de
+      // `getAll()` com o rebanho inteiro do tecnico filtrado card a card.
       _animaisExistentes = AnimalRepository()
-          .getAll()
+          .getAnimaisByPropriedade(widget.uidPropriedade?.path ?? '')
           .where((a) => !a.isDeleted)
           .map(animalEntityToStruct)
           .toList()
@@ -456,16 +489,6 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
     );
   }
 
-  /// Card extraído do build (Fase 4).
-  /// `true` quando o animal casa com o texto pesquisado (nome ou brinco).
-  /// Busca vazia casa com todos. Aplicado nas 4 abas.
-  bool _casaBusca(AnimaisProdutoresStruct item) {
-    final termo = _searchListTextController?.text ?? '';
-    if (termo.isEmpty) return true;
-    return item.nomeAnimal.toLowerCase().contains(termo.toLowerCase()) ||
-        item.brincoAnimal.toString().contains(termo);
-  }
-
   /// Campo de busca no mesmo padrão das telas de inseminações, diagnóstico de
   /// gestação e prenhas. Fica acima das abas e filtra as quatro listas.
   Widget _campoBusca(BuildContext context) {
@@ -557,62 +580,50 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
   }
 
   /// Card da aba "Descarte".
-  Widget _buildCard4(
-      BuildContext context, AnimaisProdutoresStruct item, int index) {
-    return Visibility(
-      visible: (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
-          _casaBusca(item) &&
-          (ehDescarte(item.status)),
-      child: _linhaCard(
+  Widget _buildCard4(BuildContext context, AnimaisProdutoresStruct item) {
+    return _linhaCard(
+      context,
+      item,
+      _conteudoCard(
         context,
         item,
-        _conteudoCard(
-          context,
-          item,
-          botoes: _part2(context, item, index),
-          info: [
-            _tileInfo(context, 'Data do descarte', item.dtDescarteAnimal),
-            _tileInfo(context, 'Motivo', item.motivoDescarteAnimal,
-                ehData: false),
-          ],
-        ),
+        botoes: _part2(context, item),
+        info: [
+          _tileInfo(context, 'Data do descarte', item.dtDescarteAnimal),
+          _tileInfo(context, 'Motivo', item.motivoDescarteAnimal,
+              ehData: false),
+        ],
       ),
     );
   }
 
   /// Card da aba "Indução Lactação".
-  Widget _buildCard3(
-      BuildContext context, AnimaisProdutoresStruct item, int index) {
-    return Visibility(
-      visible: (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
-          _casaBusca(item) &&
-          (item.dtInducaoLactacao != null),
-      child: _linhaCard(
+  Widget _buildCard3(BuildContext context, AnimaisProdutoresStruct item) {
+    return _linhaCard(
+      context,
+      item,
+      _conteudoCard(
         context,
         item,
-        _conteudoCard(
-          context,
-          item,
-          botoes: _botaoInduzirLactacao(context, item, index),
-          info: [
-            _tileInfo(
-              context,
-              'Indução lactação',
-              dateTimeFormat(
-                "dd/MM/yyyy",
-                item.dtInducaoLactacao,
-                locale: FFLocalizations.of(context).languageCode,
-              ),
-              destaque: true,
+        botoes: _botaoInduzirLactacao(context, item),
+        info: [
+          _tileInfo(
+            context,
+            'Indução lactação',
+            dateTimeFormat(
+              "dd/MM/yyyy",
+              item.dtInducaoLactacao,
+              locale: FFLocalizations.of(context).languageCode,
             ),
-          ],
-        ),
+            destaque: true,
+          ),
+        ],
       ),
     );
   }
 
   Widget _botaoInduzirLactacao(
-      BuildContext context, AnimaisProdutoresStruct item, int index) {
+      BuildContext context, AnimaisProdutoresStruct item) {
     return Row(
       children: [
         Expanded(
@@ -620,7 +631,7 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
             onPressed: () async {
               if ((item.grupoAnimal == 'Novilha') ||
                   (ehNovilha(item.grupoAnimal))) {
-                _animaisExistentes[index].grupoAnimal = 'Vacas';
+                item.grupoAnimal = 'Vacas';
                 safeSetState(() {});
               }
 
@@ -668,53 +679,29 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
   }
 
   /// Card da aba "Pré Parto".
-  Widget _buildCard2(
-      BuildContext context, AnimaisProdutoresStruct item, int index) {
-    return Visibility(
-      visible: (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
-          _casaBusca(item) &&
-          (item.status == 'Pré Parto') &&
-          (dateTimeFormat(
-                "d/M/y",
-                item.compararDtUltimaInseminacao,
-                locale: FFLocalizations.of(context).languageCode,
-              ) !=
-              '31/12/2050'),
-      child: _linhaCard(
+  Widget _buildCard2(BuildContext context, AnimaisProdutoresStruct item) {
+    return _linhaCard(
+      context,
+      item,
+      _conteudoCard(
         context,
         item,
-        _conteudoCard(
-          context,
-          item,
-          botoes: _part4(context, item, index),
-          info: _datasCiclo(context, item),
-        ),
+        botoes: _part4(context, item),
+        info: _datasCiclo(context, item),
       ),
     );
   }
 
   /// Card da aba "Vacas secas".
-  Widget _buildCard1(
-      BuildContext context, AnimaisProdutoresStruct item, int index) {
-    return Visibility(
-      visible: (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
-          _casaBusca(item) &&
-          ehVacaSeca(item.grupoAnimal, item.status) &&
-          (dateTimeFormat(
-                "d/M/y",
-                item.compararDtUltimaInseminacao,
-                locale: FFLocalizations.of(context).languageCode,
-              ) !=
-              '31/12/2050'),
-      child: _linhaCard(
+  Widget _buildCard1(BuildContext context, AnimaisProdutoresStruct item) {
+    return _linhaCard(
+      context,
+      item,
+      _conteudoCard(
         context,
         item,
-        _conteudoCard(
-          context,
-          item,
-          botoes: _part6(context, item, index),
-          info: _datasCiclo(context, item),
-        ),
+        botoes: _part6(context, item),
+        info: _datasCiclo(context, item),
       ),
     );
   }
@@ -730,7 +717,7 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
     ];
   }
 
-  Widget _part2(BuildContext context, AnimaisProdutoresStruct item, int index) {
+  Widget _part2(BuildContext context, AnimaisProdutoresStruct item) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 15.0),
       child: Row(
@@ -770,18 +757,16 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
                           ) ??
                           false;
                       if (confirmDialogResponse) {
-                        _animaisExistentes[index].status = 'Vazia';
+                        item.status = 'Vazia';
                         safeSetState(() {});
                         // Restaurar offline-first: aplica status 'Vazia' no animal via
                         // AnimalRepository (persiste no ObjectBox e sincroniza).
-                        final restItem =
-                            _animaisExistentes.elementAtOrNull(index);
                         final repoRest = AnimalRepository();
-                        final entRest = restItem?.uidAnimal != null
-                            ? repoRest.getByFirestoreId(restItem!.uidAnimal!.id)
-                            : ((restItem?.uidAnimalOffline ?? '').isNotEmpty
+                        final entRest = item.uidAnimal != null
+                            ? repoRest.getByFirestoreId(item.uidAnimal!.id)
+                            : (item.uidAnimalOffline.isNotEmpty
                                 ? repoRest.getByUidAnimalOffline(
-                                    restItem!.uidAnimalOffline)
+                                    item.uidAnimalOffline)
                                 : null);
                         if (entRest != null) {
                           await repoRest.update(entRest,
@@ -880,7 +865,7 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _part4(BuildContext context, AnimaisProdutoresStruct item, int index) {
+  Widget _part4(BuildContext context, AnimaisProdutoresStruct item) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 15.0),
       child: Row(
@@ -1002,7 +987,7 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _part6(BuildContext context, AnimaisProdutoresStruct item, int index) {
+  Widget _part6(BuildContext context, AnimaisProdutoresStruct item) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 15.0),
       child: Row(
@@ -1328,149 +1313,10 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
                     child: TabBarView(
                       controller: _tabBarController,
                       children: [
-                        SingleChildScrollView(
-                          primary: false,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Builder(
-                                builder: (context) {
-                                  final vacasExistenteOffline =
-                                      _animaisExistentes
-                                          .map((e) => e)
-                                          .toList()
-                                          .sortedList(
-                                              keyOf: (e) =>
-                                                  e.compararDtUltimaInseminacao,
-                                              desc: !_ordemCrescente)
-                                          .toList();
-
-                                  return ListView.builder(
-                                    padding: EdgeInsets.zero,
-                                    primary: false,
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.vertical,
-                                    itemCount: vacasExistenteOffline.length,
-                                    itemBuilder:
-                                        (context, vacasExistenteOfflineIndex) {
-                                      final vacasExistenteOfflineItem =
-                                          vacasExistenteOffline[
-                                              vacasExistenteOfflineIndex];
-                                      return _buildCard1(
-                                          context,
-                                          vacasExistenteOfflineItem,
-                                          vacasExistenteOfflineIndex);
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        SingleChildScrollView(
-                          primary: false,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Builder(
-                                builder: (context) {
-                                  final animaisExistentesOffline =
-                                      _animaisExistentes
-                                          .map((e) => e)
-                                          .toList()
-                                          .sortedList(
-                                              keyOf: (e) =>
-                                                  e.compararDtUltimaInseminacao,
-                                              desc: !_ordemCrescente)
-                                          .toList();
-
-                                  return ListView.builder(
-                                    padding: EdgeInsets.zero,
-                                    primary: false,
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.vertical,
-                                    itemCount: animaisExistentesOffline.length,
-                                    itemBuilder: (context,
-                                        animaisExistentesOfflineIndex) {
-                                      final animaisExistentesOfflineItem =
-                                          animaisExistentesOffline[
-                                              animaisExistentesOfflineIndex];
-                                      return _buildCard2(
-                                          context,
-                                          animaisExistentesOfflineItem,
-                                          animaisExistentesOfflineIndex);
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        SingleChildScrollView(
-                          primary: false,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Builder(
-                                builder: (context) {
-                                  final animaisExistenteOffline =
-                                      _animaisExistentes.toList();
-
-                                  return ListView.builder(
-                                    padding: EdgeInsets.zero,
-                                    primary: false,
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.vertical,
-                                    itemCount: animaisExistenteOffline.length,
-                                    itemBuilder: (context,
-                                        animaisExistenteOfflineIndex) {
-                                      final animaisExistenteOfflineItem =
-                                          animaisExistenteOffline[
-                                              animaisExistenteOfflineIndex];
-                                      return _buildCard3(
-                                          context,
-                                          animaisExistenteOfflineItem,
-                                          animaisExistenteOfflineIndex);
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                        SingleChildScrollView(
-                          primary: false,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Builder(
-                                builder: (context) {
-                                  final animaisExistentesOfflineDescarte =
-                                      _animaisExistentes.toList();
-
-                                  return ListView.builder(
-                                    padding: EdgeInsets.zero,
-                                    primary: false,
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.vertical,
-                                    itemCount:
-                                        animaisExistentesOfflineDescarte.length,
-                                    itemBuilder: (context,
-                                        animaisExistentesOfflineDescarteIndex) {
-                                      final animaisExistentesOfflineDescarteItem =
-                                          animaisExistentesOfflineDescarte[
-                                              animaisExistentesOfflineDescarteIndex];
-                                      return _buildCard4(
-                                          context,
-                                          animaisExistentesOfflineDescarteItem,
-                                          animaisExistentesOfflineDescarteIndex);
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
+                        _abaLista(AbaSecas.vacasSecas, _buildCard1),
+                        _abaLista(AbaSecas.preParto, _buildCard2),
+                        _abaLista(AbaSecas.inducaoLactacao, _buildCard3),
+                        _abaLista(AbaSecas.descarte, _buildCard4),
                       ],
                     ),
                   ),
