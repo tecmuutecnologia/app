@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import '/core/ui/menu_acao_card.dart';
 import '/domain/animais/classificacao_animal.dart';
-import '/features/animais/application/animal_struct_adapter.dart';
+import '/data/objectbox/entities/animal_entity.dart';
 
-import '/data/backend.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/custom_functions.dart' as functions;
@@ -32,13 +31,11 @@ class PropriedadeMenuGrid extends StatelessWidget {
     super.key,
     required this.animaisRecordList,
     required this.navigationParams,
-    required this.isOnline,
     required this.animationsMap,
   });
 
-  final List<AnimaisProdutoresRecord> animaisRecordList;
+  final List<AnimalEntity> animaisRecordList;
   final PropriedadeNavigationParams navigationParams;
-  final bool isOnline;
   final Map<String, AnimationInfo> animationsMap;
 
   @override
@@ -74,20 +71,20 @@ class PropriedadeMenuGrid extends StatelessWidget {
         // 8. Lista Completa
         _buildListaCompletaCard(context),
 
-        // 9. Receituário (apenas online)
-        if (isOnline) _buildReceituarioCard(context),
+        // 9. Receituário
+        _buildReceituarioCard(context),
 
-        // 10. Resumo Rebanho (apenas online)
-        if (isOnline) _buildResumoRebanhoCard(context),
+        // 10. Resumo Rebanho
+        _buildResumoRebanhoCard(context),
 
-        // 11. Calendário Sanitário (apenas online)
-        if (isOnline) _buildCalendarioSanitarioCard(context),
+        // 11. Calendário Sanitário
+        _buildCalendarioSanitarioCard(context),
 
         // 12. Índices Zootécnicos
         _buildIndicesZootecnicosCard(context),
 
-        // 13. Financeiro (apenas online)
-        if (isOnline) _buildFinanceiroCard(context),
+        // 13. Financeiro
+        _buildFinanceiroCard(context),
       ],
     );
   }
@@ -133,18 +130,22 @@ class PropriedadeMenuGrid extends StatelessWidget {
   }
 
   Widget _buildDiagnosticoCard(BuildContext context) {
-    final count = animaisRecordList
-        .where((e) => valueOrDefault<bool>(
-              (e.dtUltimaInseminacao != '') &&
-                  ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
-                  ((ehInseminada(e.status)) || (ehInseminadaPP(e.status))) &&
-                  (functions.converterStringParaData(
-                          e.dtUltimaInseminacao, navigationParams.diasDg!) <=
-                      functions.obterDataAtual()),
-              true,
-            ))
-        .toList()
-        .length;
+    // `dtUltimaInseminacao` é anulável no ObjectBox, e sem data não há DG a
+    // fazer — nulo e vazio valem a mesma coisa aqui. Normalizar antes do teste
+    // mantém o curto-circuito: só chega em `converterStringParaData` quem tem
+    // data de verdade.
+    final count = animaisRecordList.where((e) {
+      final dtInseminacao = e.dtUltimaInseminacao ?? '';
+      return valueOrDefault<bool>(
+        (dtInseminacao != '') &&
+            ((ehVaca(e.grupoAnimal)) || (ehNovilha(e.grupoAnimal))) &&
+            ((ehInseminada(e.status)) || (ehInseminadaPP(e.status))) &&
+            (functions.converterStringParaData(
+                    dtInseminacao, navigationParams.diasDg!) <=
+                functions.obterDataAtual()),
+        true,
+      );
+    }).length;
 
     return MenuAcaoCard(
       icone: Icons.medical_information_outlined,
@@ -160,30 +161,19 @@ class PropriedadeMenuGrid extends StatelessWidget {
   }
 
   Widget _buildVacasPrenhasCard(BuildContext context) {
-    int getBadgeCount() {
-      if (isOnline) {
-        return animaisRecordList
-            .where(
-                (e) => (ehPrenha(e.status)) && (ehVacaOuNovilha(e.grupoAnimal)))
-            .toList()
-            .length;
-      } else {
-        final existentesCount = animaisProdutoresExistentesObjectBox()
-            .where((e) =>
-                (e.uidTecnicoPropriedade == navigationParams.uidPropriedade) &&
-                (ehVacaOuNovilha(e.grupoAnimal)) &&
-                (ehPrenha(e.status)))
-            .toList()
-            .length;
-
-        return existentesCount;
-      }
-    }
+    // Uma fonte só: a lista do ObjectBox que a página injeta, já filtrada pela
+    // propriedade. Havia aqui um `if (isOnline)` que, online, contava a lista
+    // vinda do Firestore e, offline, relia o ObjectBox por fora — o único badge
+    // do menu com essa saída de emergência, porque era o único que alguém
+    // percebeu ficar errado quando a lista do Firestore congelava.
+    final prenhas = animaisRecordList
+        .where((e) => (ehPrenha(e.status)) && (ehVacaOuNovilha(e.grupoAnimal)))
+        .length;
 
     return MenuAcaoCard(
       icone: Icons.monitor_heart_outlined,
       rotulo: 'Prenhas',
-      contador: getBadgeCount(),
+      contador: prenhas,
       onTap: () {
         context.pushNamed(
           AnimaisPrenhasPage.routeName,

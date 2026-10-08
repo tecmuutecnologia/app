@@ -29,8 +29,8 @@ class SyncRateEstimator {
 
     final primeira = _amostras.first;
     final ultima = _amostras.last;
-    final segundos =
-        ultima.em.difference(primeira.em).inMicroseconds / Duration.microsecondsPerSecond;
+    final segundos = ultima.em.difference(primeira.em).inMicroseconds /
+        Duration.microsecondsPerSecond;
     if (segundos <= 0) return null;
 
     final delta = ultima.atual - primeira.atual;

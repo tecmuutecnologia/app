@@ -1,0 +1,91 @@
+# Fastfile — envio de builds para o TestFlight.
+#
+# O build NÃO é feito aqui: rode `flutter build ipa --release` antes, como o
+# GUIA_DEPLOY_APP_STORE descreve. Separar as etapas deixa reexecutar só o envio
+# quando a Apple recusa ou a rede cai, sem pagar outro build de ~4 minutos.
+#
+# Autenticação: Apple ID (do Appfile) + SENHA ESPECÍFICA DE APP, gerada em
+# appleid.apple.com > Segurança > Senhas de app. Exporte antes de rodar:
+#
+#   export FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD="xxxx-xxxx-xxxx-xxxx"
+#
+# A senha NÃO fica no repositório.
+
+default_platform(:ios)
+
+# Caminho do IPA gerado pelo `flutter build ipa` (raiz do projeto, não `ios/`).
+def caminho_do_ipa
+  pasta = File.expand_path("../../build/ios/ipa", __dir__)
+  ipas = Dir.glob(File.join(pasta, "*.ipa")).sort_by { |f| File.mtime(f) }
+
+  if ipas.empty?
+    UI.user_error!(
+      "Nenhum .ipa em #{pasta}.\n" \
+      "Rode antes:  flutter build ipa --release"
+    )
+  end
+
+  ipas.last
+end
+
+def exige_senha_de_app!
+  return unless ENV["FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD"].to_s.empty?
+
+  UI.user_error!(
+    "Falta a senha específica de app. Gere em appleid.apple.com > Segurança > " \
+    "Senhas de app e exporte:\n" \
+    '  export FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD="xxxx-xxxx-xxxx-xxxx"'
+  )
+end
+
+platform :ios do
+  desc "Envia o IPA ao TestFlight para os testadores INTERNOS (sem revisão da Apple)"
+  lane :upload_testflight_internal do
+    exige_senha_de_app!
+    ipa = caminho_do_ipa
+    UI.message("Enviando #{File.basename(ipa)} para o TestFlight (interno)")
+
+    upload_to_testflight(
+      ipa: ipa,
+      # Testador interno recebe assim que a Apple termina de processar, então
+      # não há por que segurar o terminal esperando.
+      skip_waiting_for_build_processing: true,
+      skip_submission: true
+    )
+  end
+
+  desc "Envia o IPA ao TestFlight e distribui para os testadores EXTERNOS"
+  lane :upload_testflight_external do |options|
+    exige_senha_de_app!
+
+    grupos = (options[:groups] || ENV["TESTFLIGHT_GROUPS"]).to_s
+                                                           .split(",")
+                                                           .map(&:strip)
+                                                           .reject(&:empty?)
+    if grupos.empty?
+      UI.user_error!(
+        "Informe o(s) grupo(s) externo(s) do TestFlight, como aparecem no App " \
+        "Store Connect:\n" \
+        '  fastlane ios upload_testflight_external groups:"Testadores Externos"' \
+        "\nou  export TESTFLIGHT_GROUPS=\"Testadores Externos\""
+      )
+    end
+
+    novidades = options[:changelog] ||
+                ENV["TESTFLIGHT_CHANGELOG"] ||
+                "Correções e melhorias."
+
+    ipa = caminho_do_ipa
+    UI.message("Enviando #{File.basename(ipa)} para os grupos: #{grupos.join(', ')}")
+
+    upload_to_testflight(
+      ipa: ipa,
+      distribute_external: true,
+      groups: grupos,
+      changelog: novidades,
+      # Distribuição externa só acontece depois do processamento, então aqui a
+      # espera é necessária — e a Apple ainda revisa o build (Beta App Review).
+      skip_waiting_for_build_processing: false
+    )
+  end
+end

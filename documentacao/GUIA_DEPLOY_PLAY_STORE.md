@@ -45,8 +45,7 @@ version: 1.0.19+86  # Formato: major.minor.patch+buildNumber
 
 Execute no terminal:
 ```bash
-flutter clean
-flutter pub get
+flutter clean && flutter pub get
 ```
 
 ---

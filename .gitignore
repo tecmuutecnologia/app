@@ -21,3 +21,9 @@ android/app/tecmuu-xingpe-keystore.jks
 
 #credencias stripe
 **/functions/.env
+
+# Fastlane: segredos locais e saídas geradas
+ios/fastlane/.env
+ios/fastlane/.env.*
+ios/fastlane/report.xml
+ios/fastlane/README.md

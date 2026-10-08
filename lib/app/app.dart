@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '/core/connectivity/connectivity_service.dart';
+import '/core/di/providers.dart';
 import '/core/auth/firebase_auth/auth_util.dart';
 import '/core/auth/firebase_auth/firebase_user_provider.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -30,7 +33,7 @@ class MyAppScrollBehavior extends MaterialScrollBehavior {
       };
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Locale? _locale;
 
   ThemeMode _themeMode = FlutterFlowTheme.themeMode;
@@ -58,6 +61,10 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    // Voltar do segundo plano é o momento clássico de a rede ter mudado sem o
+    // app receber o evento (dormiu no Wi-Fi, acordou no 4G). O re-check
+    // reconcilia na hora, sem esperar o timer do serviço.
+    WidgetsBinding.instance.addObserver(this);
     _appStateNotifier = AppStateNotifier.instance;
     _router = createRouter(_appStateNotifier);
 
@@ -84,7 +91,15 @@ class _MyAppState extends State<MyApp> {
       });
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(ConnectivityService.instance.recheck());
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _userStreamSubscription.cancel();
     _jwtTokenStreamSubscription.cancel();
     super.dispose();
@@ -123,7 +138,32 @@ class _MyAppState extends State<MyApp> {
       // no topo que aparecia antes). Quando OFFLINE, mostra um aviso fino no
       // topo, com SafeArea próprio. A sincronização ao reconectar é automática
       // (OfflineFirstSyncService), então não há botão de sincronizar.
-      builder: (context, child) => Column(
+      builder: (context, child) => Consumer(
+        builder: (context, ref, _) {
+          final online = ref.watch(isOnlineProvider).valueOrNull ?? true;
+          return _comBanner(context, child, mostrandoBanner: !online);
+        },
+      ),
+    );
+  }
+
+  /// Empilha o banner de conectividade acima do conteúdo do app.
+  ///
+  /// Quando o banner aparece, ele consome o inset da status bar no SafeArea
+  /// dele — mas o `MediaQuery` que desce para o conteúdo ainda anunciava esse
+  /// inset, e a AppBar de cada tela o aplicava DE NOVO. O resultado era uma
+  /// faixa vazia da altura da status bar entre o banner e o título, que fazia
+  /// a tela inteira parecer empurrada para baixo. Consumido o inset uma vez,
+  /// removê-lo do filho é o que mantém o deslocamento igual à altura real do
+  /// banner.
+  Widget _comBanner(
+    BuildContext context,
+    Widget? child, {
+    required bool mostrandoBanner,
+  }) {
+    final conteudo = child ?? const SizedBox.shrink();
+
+    return Column(
         children: [
           const SyncStatusBanner(),
           // `bottom: true` isola o conteúdo da barra de navegação do sistema.
@@ -141,11 +181,16 @@ class _MyAppState extends State<MyApp> {
               top: false,
               left: false,
               right: false,
-              child: child ?? const SizedBox.shrink(),
+              child: mostrandoBanner
+                  ? MediaQuery.removePadding(
+                      context: context,
+                      removeTop: true,
+                      child: conteudo,
+                    )
+                  : conteudo,
             ),
           ),
         ],
-      ),
     );
   }
 }

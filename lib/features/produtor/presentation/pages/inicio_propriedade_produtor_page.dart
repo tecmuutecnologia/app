@@ -8,14 +8,15 @@ import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/menu_acao_card.dart';
 import '/core/ui/flutter_flow_util.dart';
-import '/core/ui/request_manager.dart';
+import '/data/objectbox/entities/animal_entity.dart';
+import '/features/animais/application/animais_providers.dart';
 import '/features/propriedades/presentation/pages/editar_propriedade_page.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
 // Importa os widgets refatorados
 import '../widgets/widgets.dart';
@@ -26,7 +27,7 @@ import '../widgets/widgets.dart';
 /// - [PropriedadeMenuGrid]: Grid com todos os itens de menu
 /// - [SyncStatusBar]: Barra de status de sincronização
 /// - [PropriedadeNavigationParams]: Parâmetros de navegação reutilizáveis
-class InicioPropriedadeProdutorPage extends StatefulWidget {
+class InicioPropriedadeProdutorPage extends ConsumerStatefulWidget {
   const InicioPropriedadeProdutorPage({
     super.key,
     required this.nomePropriedade,
@@ -48,27 +49,15 @@ class InicioPropriedadeProdutorPage extends StatefulWidget {
   static String routePath = '/inicioPropriedadeProdutor';
 
   @override
-  State<InicioPropriedadeProdutorPage> createState() =>
+  ConsumerState<InicioPropriedadeProdutorPage> createState() =>
       _InicioPropriedadeProdutorPageState();
 }
 
 class _InicioPropriedadeProdutorPageState
-    extends State<InicioPropriedadeProdutorPage> with TickerProviderStateMixin {
+    extends ConsumerState<InicioPropriedadeProdutorPage>
+    with TickerProviderStateMixin {
   StreamSubscription<bool>? _conectividadeSub;
   bool? _respostaNet = true;
-
-  final _cacheAnimaisListaCompletaManager =
-      StreamRequestManager<List<AnimaisProdutoresRecord>>();
-  Stream<List<AnimaisProdutoresRecord>> _cacheAnimaisListaCompleta({
-    String? uniqueQueryKey,
-    bool? overrideCache,
-    required Stream<List<AnimaisProdutoresRecord>> Function() requestFn,
-  }) =>
-      _cacheAnimaisListaCompletaManager.performRequest(
-        uniqueQueryKey: uniqueQueryKey,
-        overrideCache: overrideCache,
-        requestFn: requestFn,
-      );
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final animationsMap = <String, AnimationInfo>{};
@@ -156,31 +145,28 @@ class _InicioPropriedadeProdutorPageState
   @override
   void dispose() {
     _conectividadeSub?.cancel();
-    _cacheAnimaisListaCompletaManager.clear();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
+    // Animais lidos do ObjectBox (offline-first), filtrados pela propriedade —
+    // a mesma fonte que a home do TÉCNICO já usa. Antes era um StreamBuilder do
+    // Firestore: como toda escrita (DG+, cadastro) vai primeiro ao ObjectBox e
+    // só chega ao Firestore pelo motor de sync, que é gated em conectividade,
+    // offline esta lista congelava e os contadores do menu mostravam números
+    // velhos. A ordenação do Firestore (nome/brinco) não faz falta: a lista
+    // alimenta apenas os badges.
+    final animaisAsync = ref
+        .watch(animaisByPropriedadeProvider(widget.uidPropriedade?.path ?? ''));
 
-    return StreamBuilder<List<AnimaisProdutoresRecord>>(
-      stream: _cacheAnimaisListaCompleta(
-        requestFn: () => queryAnimaisProdutoresRecord(
-          parent: widget.uidTecnico,
-          queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
-              .where('uidTecnicoPropriedade', isEqualTo: widget.uidPropriedade)
-              .orderBy('nomeAnimal')
-              .orderBy('brincoAnimalOrder'),
-        ),
+    return animaisAsync.when(
+      loading: () => _buildLoadingScaffold(),
+      error: (_, __) => Scaffold(
+        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        body: const Center(child: Text('Erro ao carregar os animais.')),
       ),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return _buildLoadingScaffold();
-        }
-
-        final animaisRecordList = snapshot.data!;
-
+      data: (animaisRecordList) {
         return GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -285,14 +271,12 @@ class _InicioPropriedadeProdutorPageState
   }
 
   /// Constrói o grid de menu com padding.
-  Widget _buildMenuGridPadding(
-      List<AnimaisProdutoresRecord> animaisRecordList) {
+  Widget _buildMenuGridPadding(List<AnimalEntity> animaisRecordList) {
     return Padding(
       padding: const EdgeInsetsDirectional.fromSTEB(16.0, 8.0, 16.0, 16.0),
       child: PropriedadeMenuGrid(
         animaisRecordList: animaisRecordList,
         navigationParams: _navigationParams,
-        isOnline: _respostaNet ?? true,
         animationsMap: animationsMap,
       ),
     );
