@@ -4,6 +4,7 @@ import 'dart:async';
 
 import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
+import '/features/inseminacoes/application/filtros_inseminacao.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/domain/animais/ordenacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
@@ -110,130 +111,56 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
     super.dispose();
   }
 
-  /// Item da lista de RESULTADOS DA BUSCA: exibe o cartão do animal apenas quando
-  /// o nome/brinco casa com o texto pesquisado e o animal é elegível à inseminação.
-  Widget _itemAnimalBusca(BuildContext context, AnimaisProdutoresStruct item) {
-    return Visibility(
-      visible: (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
-          ((item.nomeAnimal
-                  .toLowerCase()
-                  .contains(_searchListTextController.text.toLowerCase())) ||
-              (item.brincoAnimal
-                  .toString()
-                  .contains(_searchListTextController.text))) &&
-          ehElegivelInseminacao(item.grupoAnimal, item.status),
-      child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(12.0, 6.0, 12.0, 6.0),
-        child: InkWell(
-          splashColor: Colors.transparent,
-          focusColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          onTap: () async {
-            context.pushNamed(
-              ProntuarioAnimalPage.routeName,
-              queryParameters: {
-                'uidPropriedade': serializeParam(
-                  widget.uidPropriedade,
-                  ParamType.DocumentReference,
-                ),
-                'nomePropriedade': serializeParam(
-                  widget.nomePropriedade,
-                  ParamType.String,
-                ),
-                'uidTecnico': serializeParam(
-                  widget.uidTecnico,
-                  ParamType.DocumentReference,
-                ),
-                'emailPropriedade': serializeParam(
-                  widget.emailPropriedade,
-                  ParamType.String,
-                ),
-                'uidAnimaisProdutores': serializeParam(
-                  item.uidAnimal,
-                  ParamType.DocumentReference,
-                ),
-                'grupoPredominante': serializeParam(
-                  item.grupoAnimal,
-                  ParamType.String,
-                ),
-                'visitaPresencial': serializeParam(
-                  widget.visitaPresencial,
-                  ParamType.bool,
-                ),
-                'diasDg': serializeParam(
-                  widget.diasDg,
-                  ParamType.String,
-                ),
-              }.withoutNulls,
-            );
-          },
-          onLongPress: () async {},
-          child: _cartaoAnimal(context, item),
-        ),
-      ),
-    );
-  }
-
-  /// Item da LISTA PADRÃO (sem busca ativa): exibe o cartão dos animais elegíveis
-  /// à inseminação — vacas/novilhas vazias ou já inseminadas.
   Widget _itemAnimalElegivel(
       BuildContext context, AnimaisProdutoresStruct item) {
-    return Visibility(
-      visible: (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
-          (((ehVaca(item.grupoAnimal)) || (ehNovilha(item.grupoAnimal))) &&
-              ((ehVazia(item.status)) ||
-                  (ehInseminada(item.status)) ||
-                  (ehInseminadaPP(item.status)))),
-      child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(12.0, 6.0, 12.0, 6.0),
-        child: InkWell(
-          splashColor: Colors.transparent,
-          focusColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          onTap: () async {
-            context.pushNamed(
-              ProntuarioAnimalPage.routeName,
-              queryParameters: {
-                'uidPropriedade': serializeParam(
-                  widget.uidPropriedade,
-                  ParamType.DocumentReference,
-                ),
-                'nomePropriedade': serializeParam(
-                  widget.nomePropriedade,
-                  ParamType.String,
-                ),
-                'uidTecnico': serializeParam(
-                  widget.uidTecnico,
-                  ParamType.DocumentReference,
-                ),
-                'emailPropriedade': serializeParam(
-                  widget.emailPropriedade,
-                  ParamType.String,
-                ),
-                'uidAnimaisProdutores': serializeParam(
-                  item.uidAnimal,
-                  ParamType.DocumentReference,
-                ),
-                'grupoPredominante': serializeParam(
-                  item.grupoAnimal,
-                  ParamType.String,
-                ),
-                'visitaPresencial': serializeParam(
-                  widget.visitaPresencial,
-                  ParamType.bool,
-                ),
-                'diasDg': serializeParam(
-                  widget.diasDg,
-                  ParamType.String,
-                ),
-              }.withoutNulls,
-            );
-          },
-          onLongPress: () async {},
-          child: _cartaoAnimal(context, item),
-        ),
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(12.0, 6.0, 12.0, 6.0),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () async {
+          context.pushNamed(
+            ProntuarioAnimalPage.routeName,
+            queryParameters: {
+              'uidPropriedade': serializeParam(
+                widget.uidPropriedade,
+                ParamType.DocumentReference,
+              ),
+              'nomePropriedade': serializeParam(
+                widget.nomePropriedade,
+                ParamType.String,
+              ),
+              'uidTecnico': serializeParam(
+                widget.uidTecnico,
+                ParamType.DocumentReference,
+              ),
+              'emailPropriedade': serializeParam(
+                widget.emailPropriedade,
+                ParamType.String,
+              ),
+              'uidAnimaisProdutores': serializeParam(
+                item.uidAnimal,
+                ParamType.DocumentReference,
+              ),
+              'grupoPredominante': serializeParam(
+                item.grupoAnimal,
+                ParamType.String,
+              ),
+              'visitaPresencial': serializeParam(
+                widget.visitaPresencial,
+                ParamType.bool,
+              ),
+              'diasDg': serializeParam(
+                widget.diasDg,
+                ParamType.String,
+              ),
+            }.withoutNulls,
+          );
+        },
+        onLongPress: () async {},
+        child: _cartaoAnimal(context, item),
       ),
     );
   }
@@ -762,63 +689,41 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
             scrollDirection: Axis.vertical,
             children: [
               _campoBusca(context),
-              if (_searchListTextController.text == '')
-                Container(
-                  width: MediaQuery.sizeOf(context).width * 1.0,
-                  height: MediaQuery.sizeOf(context).height * 1.0,
-                  decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
-                  ),
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    primary: false,
-                    scrollDirection: Axis.vertical,
-                    children: [
-                      AnimaisOrdenadosView(
-                        comparador: _compararStructs,
-                        builder: (context, animais) => ListView.builder(
-                          padding:
-                              EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 120.0),
-                          primary: false,
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          itemCount: animais.length,
-                          itemBuilder: (context, indice) =>
-                              _itemAnimalElegivel(context, animais[indice]),
-                        ),
-                      ),
-                    ],
-                  ),
+              // UMA lista, nao duas: a diferenca era so o filtro de busca.
+              // `AnimaisOrdenadosView` continua sendo a fonte (reativa, via
+              // ObjectBox), mas agora o recorte acontece ANTES de construir.
+              Container(
+                width: MediaQuery.sizeOf(context).width * 1.0,
+                height: MediaQuery.sizeOf(context).height * 1.0,
+                decoration: BoxDecoration(
+                  color: FlutterFlowTheme.of(context).secondaryBackground,
                 ),
-              if (_searchListTextController.text != '')
-                Container(
-                  width: MediaQuery.sizeOf(context).width * 1.0,
-                  height: MediaQuery.sizeOf(context).height * 1.0,
-                  decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
-                  ),
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    primary: false,
-                    scrollDirection: Axis.vertical,
-                    children: [
-                      if (_searchListTextController.text != '')
-                        AnimaisOrdenadosView(
-                          comparador: _compararStructs,
-                          builder: (context, animais) => ListView.builder(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 120.0),
-                            primary: false,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: animais.length,
-                            itemBuilder: (context, indice) =>
-                                _itemAnimalBusca(context, animais[indice]),
-                          ),
-                        ),
-                    ],
-                  ),
+                child: AnimaisOrdenadosView(
+                  comparador: _compararStructs,
+                  builder: (context, animais) {
+                    // O provider entrega o rebanho do APARELHO; a propriedade
+                    // e recortada aqui, em Dart, sem montar widget nenhum.
+                    final visiveis = elegiveisInseminacao(
+                      animais.where((a) =>
+                          a.uidTecnicoPropriedade == widget.uidPropriedade),
+                      busca: _searchListTextController.text,
+                    );
+
+                    // Sem `shrinkWrap`, e sem o `ListView` externo que
+                    // envolvia este: o Container ja limita a altura, entao a
+                    // lista volta a montar so as linhas visiveis.
+                    return ListView.builder(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 120.0),
+                      primary: false,
+                      scrollDirection: Axis.vertical,
+                      itemCount: visiveis.length,
+                      itemBuilder: (context, i) =>
+                          _itemAnimalElegivel(context, visiveis[i]),
+                    );
+                  },
                 ),
+              ),
             ],
           ),
         ),

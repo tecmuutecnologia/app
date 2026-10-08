@@ -6,6 +6,7 @@ import '/data/backend.dart';
 import '/core/ui/app_card.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/data/objectbox/index.dart';
+import '/features/exame_ginecologico/application/filtros_exame.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -121,12 +122,14 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
   /// vazio sumir da lista imediatamente (inclusive offline).
   void _recarregarAnimais() {
     if (ObjectBoxService.isInitialized) {
+      // So os animais DESTA propriedade (consulta indexada), em vez do
+      // rebanho inteiro do tecnico filtrado card a card.
       _animaisExistentes = AnimalRepository()
-          .getAll()
+          .getAnimaisByPropriedade(widget.uidPropriedade?.path ?? '')
           .where((a) => !a.isDeleted)
           .map(animalEntityToStruct)
           .toList()
-        // `getAll()` devolve ordem de insercao do ObjectBox, que espelha a
+        // A consulta do ObjectBox devolve ordem de insercao, que espelha a
         // ordem de documentId do Firestore — nem numerica, nem alfabetica.
         ..sort(_compararStructs);
     }
@@ -134,38 +137,12 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
 
   /// `true` quando o animal entra na lista de exame ginecológico: é da
   /// propriedade, está Vazia, é Vaca/Novilha e não tem lactação induzida.
-  bool _ehExameVisivel(AnimaisProdutoresStruct item) {
-    return (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
-        (ehVazia(item.status)) &&
-        ((ehNovilha(item.grupoAnimal)) || (ehVaca(item.grupoAnimal))) &&
-        (item.dtInducaoLactacao == null);
-  }
-
-  /// Item da LISTA PADRÃO (sem busca ativa).
+  /// Card de um animal da lista. O filtro acontece antes, em
+  /// `elegiveisExame` — aqui so se desenha.
   Widget _itemExame(BuildContext context, AnimaisProdutoresStruct item) {
-    return Visibility(
-      visible: _ehExameVisivel(item),
-      child: _linhaCard(context, item),
-    );
+    return _linhaCard(context, item);
   }
 
-  /// Item da lista de RESULTADOS DA BUSCA: além de elegível, o nome/brinco
-  /// precisa casar com o texto pesquisado.
-  Widget _itemExameBusca(BuildContext context, AnimaisProdutoresStruct item) {
-    return Visibility(
-      visible: _ehExameVisivel(item) &&
-          ((item.nomeAnimal
-                  .toLowerCase()
-                  .contains(_searchListTextController.text.toLowerCase())) ||
-              (item.brincoAnimal
-                  .toString()
-                  .contains(_searchListTextController.text))),
-      child: _linhaCard(context, item),
-    );
-  }
-
-  /// Envelopa o cartão: sombra suave, cantos arredondados e o InkWell que abre
-  /// o prontuário do animal.
   Widget _linhaCard(BuildContext context, AnimaisProdutoresStruct item) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(12.0, 6.0, 12.0, 6.0),
@@ -741,80 +718,35 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
             scrollDirection: Axis.vertical,
             children: [
               _campoBusca(context),
-              if (_searchListTextController.text == '')
-                Container(
-                  width: MediaQuery.sizeOf(context).width * 1.0,
-                  height: MediaQuery.sizeOf(context).height * 1.0,
-                  decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
-                  ),
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    primary: false,
-                    scrollDirection: Axis.vertical,
-                    children: [
-                      Builder(
-                        builder: (context) {
-                          final listOfflineExistente =
-                              _animaisExistentes.toList();
-
-                          return ListView.builder(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 120.0),
-                            primary: false,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: listOfflineExistente.length,
-                            itemBuilder: (context, listOfflineExistenteIndex) {
-                              final listOfflineExistenteItem =
-                                  listOfflineExistente[
-                                      listOfflineExistenteIndex];
-                              return _itemExame(
-                                  context, listOfflineExistenteItem);
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+              // UMA lista, nao duas: a diferenca era so o filtro de busca,
+              // que agora mora em `elegiveisExame`.
+              Container(
+                width: MediaQuery.sizeOf(context).width * 1.0,
+                height: MediaQuery.sizeOf(context).height * 1.0,
+                decoration: BoxDecoration(
+                  color: FlutterFlowTheme.of(context).secondaryBackground,
                 ),
-              if (_searchListTextController.text != '')
-                Container(
-                  width: MediaQuery.sizeOf(context).width * 1.0,
-                  height: MediaQuery.sizeOf(context).height * 1.0,
-                  decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
-                  ),
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    primary: false,
-                    scrollDirection: Axis.vertical,
-                    children: [
-                      Builder(
-                        builder: (context) {
-                          final listOfflineExistente =
-                              _animaisExistentes.toList();
+                child: Builder(
+                  builder: (context) {
+                    final visiveis = elegiveisExame(
+                      _animaisExistentes,
+                      busca: _searchListTextController.text,
+                    );
 
-                          return ListView.builder(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 120.0),
-                            primary: false,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: listOfflineExistente.length,
-                            itemBuilder: (context, listOfflineExistenteIndex) {
-                              final listOfflineExistenteItem =
-                                  listOfflineExistente[
-                                      listOfflineExistenteIndex];
-                              return _itemExameBusca(
-                                  context, listOfflineExistenteItem);
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                    // Sem `shrinkWrap`: o Container ja limita a altura, e sem
+                    // ele a lista volta a montar so as linhas visiveis.
+                    return ListView.builder(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 120.0),
+                      primary: false,
+                      scrollDirection: Axis.vertical,
+                      itemCount: visiveis.length,
+                      itemBuilder: (context, i) =>
+                          _itemExame(context, visiveis[i]),
+                    );
+                  },
                 ),
+              ),
             ],
           ),
         ),

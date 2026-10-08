@@ -6,13 +6,13 @@ import '/data/backend.dart';
 import '/core/ui/app_card.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/data/objectbox/index.dart';
+import '/features/diagnostico_gestacao/application/filtros_dg.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/features/shared/widgets/botao_ordenacao.dart';
 import '/core/ui/flutter_flow_widgets.dart';
-import '/core/ui/custom_functions.dart' as functions;
 import '../widgets/dg_mais_widget.dart';
 import '../widgets/dg_menos_widget.dart';
 import '../widgets/confirma_pp_widget.dart';
@@ -122,12 +122,14 @@ class _DiagnosticogestacaoPageState extends State<DiagnosticogestacaoPage> {
   /// o botão DG+.
   void _recarregarAnimais() {
     if (ObjectBoxService.isInitialized) {
+      // So os animais DESTA propriedade (consulta indexada), em vez do
+      // rebanho inteiro do tecnico filtrado card a card.
       _animaisExistentes = AnimalRepository()
-          .getAll()
+          .getAnimaisByPropriedade(widget.uidPropriedade?.path ?? '')
           .where((a) => !a.isDeleted)
           .map(animalEntityToStruct)
           .toList()
-        // `getAll()` devolve ordem de insercao do ObjectBox, que espelha a
+        // A consulta do ObjectBox devolve ordem de insercao, que espelha a
         // ordem de documentId do Firestore — nem numerica, nem alfabetica.
         ..sort(_compararStructs);
     }
@@ -137,38 +139,10 @@ class _DiagnosticogestacaoPageState extends State<DiagnosticogestacaoPage> {
   /// propriedade, tem data de última inseminação, é Vaca/Novilha, está
   /// Inseminada ou Inseminada PP, e já passou do prazo (dtUltimaInseminacao +
   /// diasDg <= hoje). Mesma regra usada na lista e na busca.
-  bool _vencidoParaDg(AnimaisProdutoresStruct item) {
-    return (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
-        (item.dtUltimaInseminacao != '') &&
-        ((ehVaca(item.grupoAnimal)) || (ehNovilha(item.grupoAnimal))) &&
-        ((ehInseminada(item.status)) || (ehInseminadaPP(item.status))) &&
-        (functions.converterStringParaData(
-                item.dtUltimaInseminacao, widget.diasDg!) <=
-            functions.obterDataAtual());
-  }
-
-  /// Item da LISTA PADRÃO (sem busca ativa): mostra o cartão dos animais
-  /// vencidos para DG.
+  /// Card de um animal da lista. O filtro acontece antes, em
+  /// `vencidosParaDg` — aqui so se desenha.
   Widget _itemDgElegivel(BuildContext context, AnimaisProdutoresStruct item) {
-    return Visibility(
-      visible: _vencidoParaDg(item),
-      child: _linhaAnimal(context, item),
-    );
-  }
-
-  /// Item da lista de RESULTADOS DA BUSCA: além de vencido para DG, o nome/brinco
-  /// precisa casar com o texto pesquisado.
-  Widget _itemDgBusca(BuildContext context, AnimaisProdutoresStruct item) {
-    return Visibility(
-      visible: _vencidoParaDg(item) &&
-          ((item.nomeAnimal
-                  .toLowerCase()
-                  .contains(_searchListTextController.text.toLowerCase())) ||
-              (item.brincoAnimal
-                  .toString()
-                  .contains(_searchListTextController.text))),
-      child: _linhaAnimal(context, item),
-    );
+    return _linhaAnimal(context, item);
   }
 
   /// Envelopa o cartão com o padding + InkWell (abre o prontuário do animal),
@@ -763,76 +737,36 @@ class _DiagnosticogestacaoPageState extends State<DiagnosticogestacaoPage> {
             scrollDirection: Axis.vertical,
             children: [
               _campoBusca(context),
-              if (_searchListTextController.text == '')
-                Container(
-                  width: MediaQuery.sizeOf(context).width * 1.0,
-                  height: MediaQuery.sizeOf(context).height * 1.0,
-                  decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
-                  ),
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    primary: false,
-                    scrollDirection: Axis.vertical,
-                    children: [
-                      Builder(
-                        builder: (context) {
-                          final animaisExistentes = _animaisExistentes.toList();
-
-                          return ListView.builder(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 120.0),
-                            primary: false,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: animaisExistentes.length,
-                            itemBuilder: (context, animaisExistentesIndex) {
-                              final animaisExistentesItem =
-                                  animaisExistentes[animaisExistentesIndex];
-                              return _itemDgElegivel(
-                                  context, animaisExistentesItem);
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+              // UMA lista, nao duas: a diferenca era so o filtro de busca,
+              // que agora mora em `vencidosParaDg`.
+              Container(
+                width: MediaQuery.sizeOf(context).width * 1.0,
+                height: MediaQuery.sizeOf(context).height * 1.0,
+                decoration: BoxDecoration(
+                  color: FlutterFlowTheme.of(context).secondaryBackground,
                 ),
-              if (_searchListTextController.text != '')
-                Container(
-                  width: MediaQuery.sizeOf(context).width * 1.0,
-                  height: MediaQuery.sizeOf(context).height * 1.0,
-                  decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
-                  ),
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    primary: false,
-                    scrollDirection: Axis.vertical,
-                    children: [
-                      Builder(
-                        builder: (context) {
-                          final animaisExistentes = _animaisExistentes.toList();
+                child: Builder(
+                  builder: (context) {
+                    final visiveis = vencidosParaDg(
+                      _animaisExistentes,
+                      diasDg: widget.diasDg ?? '0',
+                      busca: _searchListTextController.text,
+                    );
 
-                          return ListView.builder(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 120.0),
-                            primary: false,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: animaisExistentes.length,
-                            itemBuilder: (context, animaisExistentesIndex) {
-                              final animaisExistentesItem =
-                                  animaisExistentes[animaisExistentesIndex];
-                              return _itemDgBusca(
-                                  context, animaisExistentesItem);
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                    // Sem `shrinkWrap`: o Container ja limita a altura, e sem
+                    // ele a lista volta a montar so as linhas visiveis.
+                    return ListView.builder(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 120.0),
+                      primary: false,
+                      scrollDirection: Axis.vertical,
+                      itemCount: visiveis.length,
+                      itemBuilder: (context, i) =>
+                          _itemDgElegivel(context, visiveis[i]),
+                    );
+                  },
                 ),
+              ),
             ],
           ),
         ),

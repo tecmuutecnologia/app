@@ -6,6 +6,7 @@ import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/core/ui/app_card.dart';
 import '/data/objectbox/index.dart';
+import '/features/prenhas/application/filtros_prenhas.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/domain/animais/ordenacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
@@ -124,52 +125,23 @@ class _AnimaisPrenhasPageState extends State<AnimaisPrenhasPage> {
   /// que deixa de estar prenhe sumir do card imediatamente.
   void _recarregarAnimais() {
     if (ObjectBoxService.isInitialized) {
+      // So os animais DESTA propriedade (consulta indexada), em vez do
+      // rebanho inteiro do tecnico filtrado card a card.
       _animaisExistentes = AnimalRepository()
-          .getAll()
+          .getAnimaisByPropriedade(widget.uidPropriedade?.path ?? '')
           .where((a) => !a.isDeleted)
           .map(animalEntityToStruct)
           .toList()
-        // `getAll()` devolve ordem de insercao do ObjectBox, que espelha a
+        // A consulta do ObjectBox devolve ordem de insercao, que espelha a
         // ordem de documentId do Firestore — nem numerica, nem alfabetica.
         ..sort(_compararStructs);
     }
   }
 
-  /// `true` quando o animal deve aparecer na lista de prenhas: é da
-  /// propriedade, é Vaca/Novilha prenha e não carrega a data-sentinela
-  /// 31/12/2050. Mesma regra usada na lista padrão e na busca.
-  bool _ehPrenhaVisivel(BuildContext context, AnimaisProdutoresStruct item) {
-    return (item.uidTecnicoPropriedade == widget.uidPropriedade) &&
-        (ehVacaOuNovilha(item.grupoAnimal) && ehPrenha(item.status)) &&
-        (dateTimeFormat(
-              "d/M/y",
-              item.compararDtUltimaInseminacao,
-              locale: FFLocalizations.of(context).languageCode,
-            ) !=
-            '31/12/2050');
-  }
-
-  /// Item da LISTA PADRÃO (sem busca ativa).
+  /// Card de um animal da lista. O filtro acontece antes, em
+  /// `prenhasVisiveis` — aqui so se desenha.
   Widget _itemPrenha(BuildContext context, AnimaisProdutoresStruct item) {
-    return Visibility(
-      visible: _ehPrenhaVisivel(context, item),
-      child: _linhaCard(context, item),
-    );
-  }
-
-  /// Item da lista de RESULTADOS DA BUSCA: além de prenha, o nome/brinco
-  /// precisa casar com o texto pesquisado.
-  Widget _itemPrenhaBusca(BuildContext context, AnimaisProdutoresStruct item) {
-    return Visibility(
-      visible: _ehPrenhaVisivel(context, item) &&
-          ((item.nomeAnimal
-                  .toLowerCase()
-                  .contains(_searchListTextController.text.toLowerCase())) ||
-              (item.brincoAnimal
-                  .toString()
-                  .contains(_searchListTextController.text))),
-      child: _linhaCard(context, item),
-    );
+    return _linhaCard(context, item);
   }
 
   /// Envelopa o cartão com padding + InkWell (abre o prontuário do animal).
@@ -806,76 +778,35 @@ class _AnimaisPrenhasPageState extends State<AnimaisPrenhasPage> {
             scrollDirection: Axis.vertical,
             children: [
               _campoBusca(context),
-              if (_searchListTextController.text == '')
-                Container(
-                  width: MediaQuery.sizeOf(context).width * 1.0,
-                  height: MediaQuery.sizeOf(context).height * 1.0,
-                  decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
-                  ),
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    primary: false,
-                    scrollDirection: Axis.vertical,
-                    children: [
-                      Builder(
-                        builder: (context) {
-                          final animaisExistentes = _animaisOrdenados();
-
-                          return ListView.builder(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 120.0),
-                            primary: false,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: animaisExistentes.length,
-                            itemBuilder: (context, animaisExistentesIndex) {
-                              final animaisExistentesItem =
-                                  animaisExistentes[animaisExistentesIndex];
-                              return _itemPrenha(
-                                  context, animaisExistentesItem);
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+              // UMA lista, nao duas: a diferenca entre elas era so o filtro
+              // de busca, que agora mora em `prenhasVisiveis`.
+              Container(
+                width: MediaQuery.sizeOf(context).width * 1.0,
+                height: MediaQuery.sizeOf(context).height * 1.0,
+                decoration: BoxDecoration(
+                  color: FlutterFlowTheme.of(context).secondaryBackground,
                 ),
-              if (_searchListTextController.text != '')
-                Container(
-                  width: MediaQuery.sizeOf(context).width * 1.0,
-                  height: MediaQuery.sizeOf(context).height * 1.0,
-                  decoration: BoxDecoration(
-                    color: FlutterFlowTheme.of(context).secondaryBackground,
-                  ),
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    primary: false,
-                    scrollDirection: Axis.vertical,
-                    children: [
-                      Builder(
-                        builder: (context) {
-                          final animaisExistentes = _animaisOrdenados();
+                child: Builder(
+                  builder: (context) {
+                    final visiveis = prenhasVisiveis(
+                      _animaisOrdenados(),
+                      busca: _searchListTextController.text,
+                    );
 
-                          return ListView.builder(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 120.0),
-                            primary: false,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: animaisExistentes.length,
-                            itemBuilder: (context, animaisExistentesIndex) {
-                              final animaisExistentesItem =
-                                  animaisExistentes[animaisExistentesIndex];
-                              return _itemPrenhaBusca(
-                                  context, animaisExistentesItem);
-                            },
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                    // Sem `shrinkWrap`: o Container ja da altura limitada, e
+                    // sem ele a lista volta a montar so as linhas visiveis.
+                    return ListView.builder(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 120.0),
+                      primary: false,
+                      scrollDirection: Axis.vertical,
+                      itemCount: visiveis.length,
+                      itemBuilder: (context, i) =>
+                          _itemPrenha(context, visiveis[i]),
+                    );
+                  },
                 ),
+              ),
             ],
           ),
         ),
