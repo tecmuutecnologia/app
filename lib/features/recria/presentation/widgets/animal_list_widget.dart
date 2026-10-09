@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '/features/recria/application/filtros_recria.dart';
 import '/domain/animais/ordenacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 
@@ -49,6 +50,8 @@ class AnimalListWidget extends StatelessWidget {
             .where((entry) {
               final item = entry.value;
               if (item.uidTecnicoPropriedade != uidPropriedade) return false;
+              // Semen nao se recria: e insumo de inseminacao.
+              if (!ehDaRecria(item.grupoAnimal)) return false;
               if (filterCategory != null &&
                   filterCategory != 'Todos' &&
                   item.grupoAnimal != filterCategory) return false;

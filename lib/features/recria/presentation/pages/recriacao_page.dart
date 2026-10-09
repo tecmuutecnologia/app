@@ -215,7 +215,6 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
         ChipData('Bezerras'),
         ChipData('Touros'),
         ChipData('Novilhas'),
-        ChipData('Sêmens'),
       ],
       onChanged: (val) =>
           safeSetState(() => _choiceChipsValue = val?.firstOrNull),
