@@ -1,6 +1,7 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
 import '/data/backend.dart';
+import '/domain/animais/data_ultima_acao.dart';
 import '/features/receituario/application/bookkeeping_visita.dart';
 import '/data/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
@@ -891,6 +892,21 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                 dataVisita: _dtAcaoTextController.text,
                 dataDaAcao: getCurrentTimestamp,
               ));
+              // Carimba a data da acao NO ANIMAL. Este formulario registrava
+              // a acao e o bookkeeping da visita, mas nunca tocava no animal
+              // — e e `dtUltimaAcao` que acende o selo "Hoje" nos cards.
+              final animalRepo = AnimalRepository();
+              final entidadeAnimal = animalRef != null
+                  ? animalRepo.getByFirestoreId(animalRef.id)
+                  : ((animalSel?.uidAnimalOffline ?? '').isNotEmpty
+                      ? animalRepo
+                          .getByUidAnimalOffline(animalSel!.uidAnimalOffline)
+                      : null);
+              if (entidadeAnimal != null) {
+                await animalRepo.update(entidadeAnimal,
+                    comDataDaAcao(const {}, quando: DateTime.now()));
+              }
+
               await registrarBookkeepingVisita(
                 uidPropriedade: widget.uidPropriedade,
                 uidTecnico: widget.uidTecnico,

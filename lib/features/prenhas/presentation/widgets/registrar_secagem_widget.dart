@@ -1,5 +1,6 @@
 // ignore_for_file: dead_code
 
+import '/domain/animais/data_ultima_acao.dart';
 import '/data/backend.dart';
 import '/features/receituario/application/bookkeeping_visita.dart';
 import '/core/ui/app_card.dart';
@@ -166,7 +167,8 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
             ? animalRepo.getByUidAnimalOffline(widget.uidAnimalOffline!)
             : null);
     if (entity != null) {
-      unawaited(animalRepo.update(entity, dados));
+      unawaited(animalRepo.update(
+          entity, comDataDaAcao(dados, quando: DateTime.now())));
     } else if (_outUidAnimaisAnimal != null) {
       unawaited(_outUidAnimaisAnimal!.reference
           .update(createAnimaisProdutoresRecordData(

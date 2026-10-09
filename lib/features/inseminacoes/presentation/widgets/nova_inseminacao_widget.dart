@@ -1,5 +1,6 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
+import '/domain/animais/data_ultima_acao.dart';
 import '/data/backend.dart';
 import '/core/ui/app_card.dart';
 import '/data/objectbox/index.dart';
@@ -189,10 +190,12 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
             ? animalRepo.getByUidAnimalOffline(widget.uidAnimalOffline!)
             : null);
     if (entity != null) {
-      unawaited(animalRepo.update(entity, {
-        ...dadosAnimal,
-        'totalInseminacoes': entity.totalInseminacoes + 1,
-      }));
+      unawaited(animalRepo.update(
+          entity,
+          comDataDaAcao({
+            ...dadosAnimal,
+            'totalInseminacoes': entity.totalInseminacoes + 1,
+          }, quando: DateTime.now())));
     } else if (_outUidAnimaisAnimal != null) {
       // Fallback: animal não no cache local (grava direto; persistência offline).
       unawaited(_outUidAnimaisAnimal!.reference.update({

@@ -1,5 +1,6 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
+import '/domain/animais/data_ultima_acao.dart';
 import '/data/backend.dart';
 import '/core/ui/app_card.dart';
 import '/data/objectbox/index.dart';
@@ -173,7 +174,8 @@ class _RegistrarCioWidgetState extends State<RegistrarCioWidget>
             ? animalRepo.getByUidAnimalOffline(widget.uidAnimalOffline!)
             : null);
     if (entity != null) {
-      unawaited(animalRepo.update(entity, dadosAnimal));
+      unawaited(animalRepo.update(
+          entity, comDataDaAcao(dadosAnimal, quando: DateTime.now())));
     } else if (_outUidAnimaisAnimal != null) {
       // Fallback: animal não está no cache local (grava direto; persistência
       // offline do Firestore cuida do envio).

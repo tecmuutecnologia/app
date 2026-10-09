@@ -1,3 +1,4 @@
+import '/domain/animais/data_ultima_acao.dart';
 import '/data/backend.dart';
 import '/data/objectbox/entities/index.dart';
 import '/data/objectbox/repositories/acao_repository.dart';
@@ -113,7 +114,8 @@ class _InduzirLactacaoWidgetState extends State<InduzirLactacaoWidget>
             ? animalRepo.getByUidAnimalOffline(widget.uidAnimalOffline!)
             : null);
     if (entity != null) {
-      unawaited(animalRepo.update(entity, dados));
+      unawaited(animalRepo.update(
+          entity, comDataDaAcao(dados, quando: DateTime.now())));
     } else {
       unawaited(
           widget.uidAnimaisProdutores!.update(createAnimaisProdutoresRecordData(

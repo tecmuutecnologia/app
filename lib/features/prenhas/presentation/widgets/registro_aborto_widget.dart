@@ -1,5 +1,6 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
+import '/domain/animais/data_ultima_acao.dart';
 import '/data/backend.dart';
 import '/core/ui/app_card.dart';
 import '/data/objectbox/entities/index.dart';
@@ -167,7 +168,8 @@ class _RegistroAbortoWidgetState extends State<RegistroAbortoWidget>
             ? animalRepo.getByUidAnimalOffline(widget.uidAnimalOffline!)
             : null);
     if (entity != null) {
-      unawaited(animalRepo.update(entity, dados));
+      unawaited(animalRepo.update(
+          entity, comDataDaAcao(dados, quando: DateTime.now())));
     } else if (_outUidAnimaisAnimal != null) {
       unawaited(_outUidAnimaisAnimal!.reference
           .update(createAnimaisProdutoresRecordData(
