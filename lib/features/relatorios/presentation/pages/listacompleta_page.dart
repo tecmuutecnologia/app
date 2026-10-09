@@ -1,5 +1,7 @@
 // ignore_for_file: unused_import, unused_local_variable, unnecessary_null_comparison
 
+import '/domain/animais/data_ultima_acao.dart';
+import '/features/shared/widgets/selo_hoje.dart';
 import '/data/backend.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/domain/animais/dias_desde.dart';
@@ -631,15 +633,12 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                                     ),
                                   ),
                                 ),
-                                if ((item.dtUltimaAcao != '') &&
-                                    (functions.verificaDataAcaoDataAtual(
-                                            item.dtUltimaAcao) ==
-                                        true))
+                                if (acaoFoiHoje(item.dtUltimaAcao))
                                   Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         5.0, 0.0, 0.0, 0.0),
-                                    child: _selo(context, 'Hoje',
-                                        Color(0xFF048508), Icons.check_circle),
+                                    child: SeloHoje(
+                                        dtUltimaAcao: item.dtUltimaAcao),
                                   ),
                               ],
                             ),
@@ -872,15 +871,12 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                                     ),
                                   ),
                                 ),
-                                if ((item.dtUltimaAcao != '') &&
-                                    (functions.verificaDataAcaoDataAtual(
-                                            item.dtUltimaAcao) ==
-                                        true))
+                                if (acaoFoiHoje(item.dtUltimaAcao))
                                   Padding(
                                     padding: EdgeInsetsDirectional.fromSTEB(
                                         5.0, 0.0, 0.0, 0.0),
-                                    child: _selo(context, 'Hoje',
-                                        Color(0xFF048508), Icons.check_circle),
+                                    child: SeloHoje(
+                                        dtUltimaAcao: item.dtUltimaAcao),
                                   ),
                               ],
                             ),

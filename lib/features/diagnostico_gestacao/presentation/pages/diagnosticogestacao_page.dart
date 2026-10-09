@@ -7,6 +7,7 @@ import '/core/ui/app_card.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/data/objectbox/index.dart';
 import '/features/diagnostico_gestacao/application/filtros_dg.dart';
+import '/features/shared/widgets/selo_hoje.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -267,33 +268,43 @@ class _DiagnosticogestacaoPageState extends State<DiagnosticogestacaoPage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    () {
-                      if ((item.nomeAnimal != '') &&
-                          (item.brincoAnimal != null) &&
-                          (item.brincoAnimal != -1)) {
-                        return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
-                      } else if (item.nomeAnimal != '') {
-                        return item.nomeAnimal;
-                      } else {
-                        return item.brincoAnimal.toString();
-                      }
-                    }(),
-                    style: FlutterFlowTheme.of(context).bodyLarge.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .bodyLarge
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyLarge
-                                .fontStyle,
-                          ),
-                          letterSpacing: 0.0,
-                          fontWeight:
-                              FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          () {
+                            if ((item.nomeAnimal != '') &&
+                                (item.brincoAnimal != null) &&
+                                (item.brincoAnimal != -1)) {
+                              return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
+                            } else if (item.nomeAnimal != '') {
+                              return item.nomeAnimal;
+                            } else {
+                              return item.brincoAnimal.toString();
+                            }
+                          }(),
+                          style:
+                              FlutterFlowTheme.of(context).bodyLarge.override(
+                                    font: GoogleFonts.readexPro(
+                                      fontWeight: FlutterFlowTheme.of(context)
+                                          .bodyLarge
+                                          .fontWeight,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .bodyLarge
+                                          .fontStyle,
+                                    ),
+                                    letterSpacing: 0.0,
+                                    fontWeight: FlutterFlowTheme.of(context)
+                                        .bodyLarge
+                                        .fontWeight,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyLarge
+                                        .fontStyle,
+                                  ),
                         ),
+                      ),
+                      SeloHoje(dtUltimaAcao: item.dtUltimaAcao),
+                    ],
                   ),
                   if (item.nomeTouroUltimaInseminacao != '')
                     Padding(

@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison
 import 'dart:async';
 
+import '/features/shared/widgets/selo_hoje.dart';
 import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/core/ui/app_card.dart';
@@ -15,7 +16,6 @@ import '/features/shared/widgets/botao_ordenacao.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '../widgets/nova_acao_exame_ginecologico_widget.dart';
 import '/features/prontuario/presentation/pages/prontuario_animal_page.dart';
-import '/core/ui/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -212,9 +212,6 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
   Widget _conteudoCard(BuildContext context, AnimaisProdutoresStruct item) {
     // Ação já registrada hoje: vira um selo ao lado do nome, em vez de um
     // ícone solto ao lado do botão (que competia com ele por espaço).
-    final feitaHoje = (item.dtUltimaAcao != '') &&
-        (functions.verificaDataAcaoDataAtual(item.dtUltimaAcao) == true);
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -264,7 +261,7 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
                                     ),
                           ),
                         ),
-                        if (feitaHoje) _seloFeitaHoje(context),
+                        SeloHoje(dtUltimaAcao: item.dtUltimaAcao),
                       ],
                     ),
                     const SizedBox(height: 12.0),
@@ -285,44 +282,6 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
               alinhaInicio: true),
         ]),
       ],
-    );
-  }
-
-  /// Selo "feita hoje": substitui o ícone verde solto, deixando claro a QUE se
-  /// refere o check.
-  Widget _seloFeitaHoje(BuildContext context) {
-    return Container(
-      padding: const EdgeInsetsDirectional.fromSTEB(8.0, 3.0, 8.0, 3.0),
-      decoration: BoxDecoration(
-        color: Color(0x1A048508),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.check_circle,
-            color: Color(0xFF048508),
-            size: 13.0,
-          ),
-          const SizedBox(width: 4.0),
-          Text(
-            'Hoje',
-            style: FlutterFlowTheme.of(context).labelSmall.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight: FontWeight.w600,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).labelSmall.fontStyle,
-                  ),
-                  color: Color(0xFF048508),
-                  fontSize: 11.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FontWeight.w600,
-                  fontStyle: FlutterFlowTheme.of(context).labelSmall.fontStyle,
-                ),
-          ),
-        ],
-      ),
     );
   }
 

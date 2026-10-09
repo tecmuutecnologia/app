@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '/features/shared/widgets/selo_hoje.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/domain/animais/dias_desde.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -212,11 +213,6 @@ class AnimalCardWidget extends StatelessWidget {
       baseName = animal.brincoAnimal?.toString() ?? '';
     }
 
-    final dtUltimaAcao = animal.dtUltimaAcao;
-    final feitaHoje = dtUltimaAcao != null &&
-        dtUltimaAcao.isNotEmpty &&
-        functions.verificaDataAcaoDataAtual(dtUltimaAcao) == true;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -235,7 +231,7 @@ class AnimalCardWidget extends StatelessWidget {
                     ),
               ),
             ),
-            if (feitaHoje) _selo(context, 'Hoje', const Color(0xFF048508)),
+            SeloHoje(dtUltimaAcao: animal.dtUltimaAcao),
           ],
         ),
         if (!isBezerra && animal.status.isNotEmpty) ...[
@@ -257,32 +253,6 @@ class AnimalCardWidget extends StatelessWidget {
 
   /// Selo textual. Substitui os ícones soltos de 30px (um check verde sem
   /// rótulo) que não diziam a que se referiam.
-  Widget _selo(BuildContext context, String texto, Color cor) {
-    return Container(
-      padding: const EdgeInsetsDirectional.fromSTEB(8.0, 3.0, 8.0, 3.0),
-      decoration: BoxDecoration(
-        color: cor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.check_circle, color: cor, size: 13.0),
-          const SizedBox(width: 4.0),
-          Text(
-            texto,
-            style: FlutterFlowTheme.of(context).labelSmall.override(
-                  font: GoogleFonts.readexPro(fontWeight: FontWeight.w600),
-                  color: cor,
-                  fontSize: 11.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FontWeight.w600,
-                ),
-          ),
-        ],
-      ),
-    );
-  }
 
   /// Avatar circular do grupo (TOU/BZA/BZO/NOV), com o símbolo de sexo do
   /// bezerro sobreposto em vez de solto ao lado.
