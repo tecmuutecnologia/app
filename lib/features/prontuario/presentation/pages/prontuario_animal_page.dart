@@ -232,7 +232,7 @@ class _ProntuarioAnimalPageState extends ConsumerState<ProntuarioAnimalPage> {
       ),
       margin: EdgeInsetsDirectional.fromSTEB(12.0, 10.0, 12.0, 10.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: FlutterFlowTheme.of(context).secondaryBackground,
         borderRadius: BorderRadius.circular(16.0),
         boxShadow: AppTokens.softShadow(context),
       ),
@@ -1870,7 +1870,7 @@ class _ProntuarioAnimalPageState extends ConsumerState<ProntuarioAnimalPage> {
                     margin:
                         EdgeInsetsDirectional.fromSTEB(12.0, 10.0, 12.0, 10.0),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: FlutterFlowTheme.of(context).secondaryBackground,
                       borderRadius: BorderRadius.circular(16.0),
                       boxShadow: AppTokens.softShadow(context),
                     ),
