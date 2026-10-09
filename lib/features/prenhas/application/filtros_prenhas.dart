@@ -9,7 +9,11 @@ import '../../../data/schema/structs/animais_produtores_struct.dart';
 import '../../../domain/animais/classificacao_animal.dart';
 import '../../../domain/animais/filtro_lista_animais.dart';
 
-/// Vacas e novilhas prenhas, filtradas tambem pelo termo buscado.
+/// Vacas prenhas, filtradas tambem pelo termo buscado.
+///
+/// Usa `ehVacaPrenha` do dominio, que desde sempre documentava ser "o filtro
+/// da lista de prenhas (animais_prenhas)" — e nunca tinha sido chamada. A tela
+/// usava `ehVacaOuNovilha`, entao novilha prenha aparecia aqui por engano.
 ///
 /// Nao filtra por propriedade: isso passou a acontecer na origem, com a
 /// consulta indexada `getAnimaisByPropriedade`.
@@ -19,8 +23,7 @@ List<AnimaisProdutoresStruct> prenhasVisiveis(
 }) {
   return animais
       .where((item) =>
-          ehVacaOuNovilha(item.grupoAnimal) &&
-          ehPrenha(item.status) &&
+          ehVacaPrenha(item.grupoAnimal, item.status) &&
           !temDataSentinela(item.compararDtUltimaInseminacao) &&
           casaBuscaAnimal(
               nome: item.nomeAnimal, brinco: item.brincoAnimal, termo: busca))

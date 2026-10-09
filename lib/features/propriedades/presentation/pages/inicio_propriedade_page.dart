@@ -602,7 +602,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       rotulo: 'Prenhas',
       contador: inicioPropriedadeAnimaisProdutoresRecordList
           .where(
-              (e) => (ehPrenha(e.status)) && (ehVacaOuNovilha(e.grupoAnimal)))
+              (e) => ehVacaPrenha(e.grupoAnimal, e.status))
           .toList()
           .length,
       onTap: () async {

@@ -23,17 +23,27 @@ List<String> nomes(List<AnimaisProdutoresStruct> l) =>
     l.map((e) => e.nomeAnimal).toList();
 
 void main() {
-  test('mantem vaca e novilha prenhas', () {
+  test('lista VACA prenha', () {
     final lista = [
       animal(nome: 'Vaca', grupo: 'Vacas', status: 'Prenha', comparar: dataReal),
+    ];
+
+    expect(nomes(prenhasVisiveis(lista)), ['Vaca']);
+  });
+
+  test('NAO lista novilha prenha', () {
+    // A tela usava `ehVacaOuNovilha`, mas o dominio documenta `ehVacaPrenha`
+    // como "filtro da lista de prenhas (animais_prenhas)" — e essa funcao
+    // nunca tinha sido usada. A novilha prenha aparecia por engano.
+    final lista = [
       animal(
-          nome: 'Novilha',
+          nome: 'Boneca',
           grupo: 'Novilhas',
           status: 'Prenha',
           comparar: dataReal),
     ];
 
-    expect(nomes(prenhasVisiveis(lista)), ['Vaca', 'Novilha']);
+    expect(prenhasVisiveis(lista), isEmpty);
   });
 
   test('descarta quem nao esta prenha', () {

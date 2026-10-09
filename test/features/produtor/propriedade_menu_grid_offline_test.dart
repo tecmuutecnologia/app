@@ -94,14 +94,18 @@ void main() {
     }
   });
 
-  testWidgets('o badge de Prenhas conta a lista recebida', (tester) async {
+  testWidgets('o badge de Prenhas conta a lista recebida, so as VACAS',
+      (tester) async {
+    // Novilha prenha nao entra: o badge segue `ehVacaPrenha`, a mesma regra da
+    // lista de prenhas. Antes contava novilha e a lista tambem a exibia — as
+    // duas pontas erradas juntas, o que escondia o problema.
     await pumpGrid(tester, animais: [
       animal(status: kStatusPrenha, grupo: kGrupoVacas),
       animal(status: kStatusPrenha, grupo: kGrupoNovilhas),
       animal(status: kStatusVazia, grupo: kGrupoVacas),
     ]);
 
-    expect(badgeDe(tester, 'Prenhas'), 2);
+    expect(badgeDe(tester, 'Prenhas'), 1);
   });
 
   testWidgets('o badge de Prenhas acompanha um animal gravado só localmente',

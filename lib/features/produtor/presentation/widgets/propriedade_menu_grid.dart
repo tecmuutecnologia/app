@@ -167,7 +167,7 @@ class PropriedadeMenuGrid extends StatelessWidget {
     // do menu com essa saída de emergência, porque era o único que alguém
     // percebeu ficar errado quando a lista do Firestore congelava.
     final prenhas = animaisRecordList
-        .where((e) => (ehPrenha(e.status)) && (ehVacaOuNovilha(e.grupoAnimal)))
+        .where((e) => ehVacaPrenha(e.grupoAnimal, e.status))
         .length;
 
     return MenuAcaoCard(
