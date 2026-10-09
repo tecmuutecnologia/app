@@ -47,3 +47,36 @@ O projeto já possui Fastlane configurado com:
 - **Key File**: AuthKey_ZA9C2S6HF2.p8
 
 ---
+
+## ⚠️ Upload falha com "A required agreement is missing or has expired"
+
+```
+| 2    | app_store_connect_api_key | 0  |   ← a chave autenticou
+| 💥   | pilot                     | 1  |   ← a Apple recusou
+
+[!] A required agreement is missing or has expired.
+```
+
+**Não é o build, a chave nem o certificado.** Há um contrato pendente de
+aceite na conta Apple, e o App Store Connect bloqueia todo upload — pela API
+e pelo site — enquanto ele não for assinado. Acontece sempre que a Apple
+atualiza os termos do Developer Program License Agreement: funcionava ontem,
+eles mudam o texto, e para de funcionar hoje. Vale para app gratuito também.
+
+Como reconhecer: a etapa `app_store_connect_api_key` passa e o `pilot`
+morre em 1 segundo. Se a chave estivesse errada, teria falhado na etapa 2.
+
+**Só o Account Holder resolve** — Admin e Developer não conseguem aceitar.
+
+1. Entrar em `appstoreconnect.apple.com` com a conta do titular
+2. Aceitar o contrato pendente no banner da home ou em **Negócios**
+   (*Business*, antes "Contratos, Impostos e Banco")
+3. App pago ou com compra no app pode exigir também os dados fiscais e
+   bancários completos
+4. Conferir em `developer.apple.com/account` se a associação ao Developer
+   Program não expirou — a renovação vencida dá a MESMA mensagem
+
+Propaga em alguns minutos. Depois é só repetir o comando de upload: o
+`.ipa` continua válido, não precisa refazer o build.
+
+---
