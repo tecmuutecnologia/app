@@ -154,6 +154,19 @@ class PropriedadeRepository extends BaseSyncRepository<PropriedadeEntity> {
           .watch(triggerImmediately: true)
           .map((query) => query.find());
 
+  /// Exclusão pela lista ou pela edição: soft-delete que sincroniza como
+  /// UPDATE e pode ser restaurado da lixeira.
+  ///
+  /// Vale também para pendentes (conta não ativada). Antes elas eram só
+  /// removidas do ObjectBox, como se nunca tivessem subido — mas desde
+  /// [saveLocalPending] elas sincronizam ao nascer, e o documento órfão no
+  /// Firestore as trazia de volta no download seguinte.
+  Future<void> moverParaLixeira(PropriedadeEntity entity) async {
+    entity.isDeleted = true;
+    entity.deletedAt = DateTime.now();
+    await save(entity);
+  }
+
   /// Restaura uma propriedade da lixeira (offline-first: vira um UPDATE no
   /// Firestore, enfileirado se estiver sem internet).
   Future<Result<PropriedadeEntity>> restaurar(PropriedadeEntity entity) {

@@ -721,27 +721,16 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
             }
 
             final entity = editarPropriedadePropriedadesRecord;
-            final repo = ref.read(propriedadeRepositoryProvider);
-            if (!entity.contaCriada) {
-              // Pendente: existe só localmente (sem doc no Firestore) → remove
-              // do ObjectBox. Não há lixeira porque nada foi sincronizado.
-              repo.box.remove(entity.id);
-            } else {
-              // Offline-first: soft-delete via ObjectBox (sincroniza como UPDATE,
-              // preservando a semântica de lixeira).
-              entity.isDeleted = true;
-              entity.deletedAt = DateTime.now();
-              await repo.save(entity);
-            }
+            await ref
+                .read(propriedadeRepositoryProvider)
+                .moverParaLixeira(entity);
 
             await showDialog(
               context: context,
               builder: (alertDialogContext) {
                 return AlertDialog(
                   title: Text('Sucesso!'),
-                  content: Text(entity.contaCriada
-                      ? 'Propriedade movida para a lixeira.'
-                      : 'Propriedade removida.'),
+                  content: Text('Propriedade movida para a lixeira.'),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(alertDialogContext),

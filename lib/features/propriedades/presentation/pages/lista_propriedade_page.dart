@@ -7,6 +7,7 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/features/propriedades/presentation/pages/propriedades_excluidas_page.dart';
+import '/features/propriedades/presentation/widgets/arrastar_para_excluir.dart';
 import '/features/dashboard/presentation/pages/dashboard_tecnico_page.dart';
 import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
 import '/features/propriedades/presentation/pages/editar_propriedade_page.dart';
@@ -264,14 +265,24 @@ class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
           // pararia embaixo deles.
           padding: const EdgeInsets.only(top: 4.0, bottom: _alturaBotoes),
           itemCount: pendentesFiltradas.length + ativasFiltradas.length,
-          itemBuilder: (context, index) => index < pendentesFiltradas.length
-              ? _pendingCard(
-                  context, pendentesFiltradas[index], isOnline, tecnico)
-              : _propriedadeCard(
-                  context,
-                  ativasFiltradas[index - pendentesFiltradas.length],
-                  tecnico,
-                ),
+          itemBuilder: (context, index) {
+            final pendente = index < pendentesFiltradas.length;
+            final entity = pendente
+                ? pendentesFiltradas[index]
+                : ativasFiltradas[index - pendentesFiltradas.length];
+            // Arrastar para a esquerda exclui, como no card de animal. Segurar
+            // continua abrindo a edição.
+            return ArrastarParaExcluir(
+              chave: '${entity.id}',
+              margem: const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 10),
+              onExcluir: () => ref
+                  .read(propriedadeRepositoryProvider)
+                  .moverParaLixeira(entity),
+              child: pendente
+                  ? _pendingCard(context, entity, isOnline, tecnico)
+                  : _propriedadeCard(context, entity, tecnico),
+            );
+          },
         );
       },
     );
