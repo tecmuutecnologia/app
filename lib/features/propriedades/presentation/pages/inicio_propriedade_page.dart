@@ -776,7 +776,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
 
   Widget _cardImportarAnimais(BuildContext context) {
     return MenuAcaoCard(
-      icone: FontAwesomeIcons.fileImport,
+      icone: FontAwesomeIcons.fileImport.data,
       rotulo: 'Importar animais',
       onTap: () async {},
     ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation16']!);
