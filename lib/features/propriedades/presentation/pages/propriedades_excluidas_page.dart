@@ -602,7 +602,9 @@ class _PropriedadesExcluiasPageState
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               _campoBusca(context),
-              _secaoLista(context),
+              // A Row da seção precisa do Expanded: sem ele a Column lhe dá
+              // altura ilimitada e a ListView lá dentro estoura o layout.
+              Expanded(child: _secaoLista(context)),
             ],
           ),
         ),
