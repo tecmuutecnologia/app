@@ -58,7 +58,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "br.app.tecmuu"
-        minSdkVersion 23
+        minSdkVersion flutter.minSdkVersion
         targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -99,7 +99,7 @@ configurations {
 
 dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.1.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.2.20"
 
     // ObjectBox Admin: habilita Admin.isAvailable() em debug no Android.
     debugImplementation "io.objectbox:objectbox-android-objectbrowser:4.3.1"
