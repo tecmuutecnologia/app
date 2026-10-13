@@ -1,6 +1,7 @@
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/domain/animais/classificacao_animal.dart';
+import '/domain/animais/media_del.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
@@ -127,7 +128,17 @@ class _IndicesZootecnicosPageState extends State<IndicesZootecnicosPage> {
               _gradeIndicadores(context, [
                 _Indicador('Animais ativos', '${semSemens.length}'),
                 _Indicador('Vacas em lactação',
-                    '${semSemens.where((a) => ehVaca(a.grupoAnimal)).length}'),
+                    '${semSemens.where((a) => ehVacaEmLactacao(a.grupoAnimal, a.status)).length}'),
+                _Indicador(
+                  'DEL médio',
+                  mediaDiasEmLactacao(semSemens.map((a) => (
+                            grupo: a.grupoAnimal,
+                            status: a.status,
+                            dtUltimoParto: a.dtUltimoParto,
+                          )))?.toString() ??
+                      '—',
+                  sufixo: 'dias',
+                ),
                 _Indicador(
                   'Dias em aberto',
                   valueOrDefault<String>(
@@ -190,7 +201,7 @@ class _IndicesZootecnicosPageState extends State<IndicesZootecnicosPage> {
               _composicao(
                 context,
                 titulo: 'Rebanho produtivo',
-                subtitulo: 'Fase produtiva das fêmeas',
+                subtitulo: 'Fase produtiva das vacas',
                 fatias: _porFaseProdutiva(semSemens),
               ),
             ],
@@ -237,17 +248,17 @@ class _IndicesZootecnicosPageState extends State<IndicesZootecnicosPage> {
     ];
   }
 
-  /// "Lactação" agrupa Vazia, Inseminada, Inseminada PP e Prenha — mesma regra
-  /// da `retornaRebanhoProdutivoId` original.
+  /// Só vacas: novilhas ainda não pariram, então não estão em nenhuma fase
+  /// produtiva. "Lactação" segue [ehVacaEmLactacao] — a mesma regra dos cards
+  /// "Vacas em lactação" e "DEL médio".
   List<_Fatia> _porFaseProdutiva(List<AnimaisProdutoresStruct> animais) {
-    const lactacao = {'Vazia', 'Inseminada', 'Inseminada PP', 'Prenha'};
     var emLactacao = 0, secas = 0, prePartos = 0;
-    for (final a in animais) {
-      if (lactacao.contains(a.status)) {
+    for (final a in animais.where((a) => ehVaca(a.grupoAnimal))) {
+      if (ehVacaEmLactacao(a.grupoAnimal, a.status)) {
         emLactacao++;
-      } else if (a.status == 'Seca') {
+      } else if (ehSeca(a.status)) {
         secas++;
-      } else if (a.status == 'Pré Parto') {
+      } else if (ehPreParto(a.status)) {
         prePartos++;
       }
     }
