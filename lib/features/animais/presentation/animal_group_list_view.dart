@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../application/animais_providers.dart';
 import '../application/ordenacao_animais.dart';
@@ -114,9 +115,15 @@ class AnimalGroupListView extends ConsumerWidget {
                 child: ListTile(
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                  leading: CircleAvatar(
-                    backgroundColor: const Color(0x1AF75E38),
-                    child: const Icon(Icons.pets, color: Color(0xFFF75E38)),
+                  leading: const CircleAvatar(
+                    backgroundColor: Color(0x1AF75E38),
+                    // Era Icons.pets — produtores e técnicos liam como pata
+                    // de cão ou gato.
+                    child: FaIcon(
+                      FontAwesomeIcons.cow,
+                      size: 18,
+                      color: Color(0xFFF75E38),
+                    ),
                   ),
                   title: Text(
                     tituloExibido,

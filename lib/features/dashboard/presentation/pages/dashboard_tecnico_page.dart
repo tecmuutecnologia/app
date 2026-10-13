@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // Widgets refatorados
@@ -341,22 +342,22 @@ class _DashboardTecnicoPageState extends ConsumerState<DashboardTecnicoPage>
     // um stream ao vivo de ate 500 documentos para exibir um numero.
     final contagem = ref.watch(animaisAtivosCountProvider);
     return contagem.when(
-      loading: () => const DashboardStatCardWithStream(
-        valueWidget: AppLoadingIndicator(size: 30.0),
+      loading: () => DashboardStatCardWithStream(
+        valueWidget: const AppLoadingIndicator(size: 30.0),
         label: 'Animais ativos',
-        icon: Icons.pets_rounded,
+        icon: FontAwesomeIcons.cow.data,
         accent: AppTokens.secondary,
       ),
-      error: (_, __) => const DashboardStatCard(
+      error: (_, __) => DashboardStatCard(
         value: '—',
         label: 'Animais ativos',
-        icon: Icons.pets_rounded,
+        icon: FontAwesomeIcons.cow.data,
         accent: AppTokens.secondary,
       ),
       data: (n) => DashboardStatCard(
         value: n.toString(),
         label: 'Animais ativos',
-        icon: Icons.pets_rounded,
+        icon: FontAwesomeIcons.cow.data,
         accent: AppTokens.secondary,
       ),
     );
