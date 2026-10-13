@@ -17,6 +17,10 @@ analyzer:
     - lib/objectbox.g.dart
     - lib/data/schema/**
     - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - macos/**
 
 linter:
   rules:
