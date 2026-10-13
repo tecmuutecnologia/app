@@ -52,7 +52,7 @@ void main() {
 
     expect(tester.takeException(), isNull);
     expect(
-      find.text('Pasta vazia: não há nenhuma propriedade na lixeira.'),
+      find.textContaining('A lixeira está vazia.'),
       findsOneWidget,
     );
   });

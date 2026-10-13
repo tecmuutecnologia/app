@@ -226,7 +226,11 @@ class _PropriedadesExcluiasPageState
           context,
           searchQuery.isNotEmpty
               ? 'Nenhuma propriedade encontrada com "$searchQuery"'
-              : 'Pasta vazia: não há nenhuma propriedade na lixeira.',
+              : 'A lixeira está vazia.\nPropriedades excluídas aparecem aqui '
+                  'e podem ser restauradas.',
+          icone: searchQuery.isNotEmpty
+              ? Icons.search_off_rounded
+              : Icons.delete_outline_rounded,
         ),
       );
     }
@@ -235,30 +239,20 @@ class _PropriedadesExcluiasPageState
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(0.0, 1.0, 0.0, 0.0),
         child: ListView.builder(
-          padding: EdgeInsets.zero,
+          padding: const EdgeInsets.only(top: 4.0, bottom: 24.0),
           itemCount: lista.length,
           itemBuilder: (context, listViewIndex) {
             final entity = lista[listViewIndex];
             return Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 10.0),
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                  borderRadius: BorderRadius.circular(16.0),
-                  boxShadow: AppTokens.softShadow(context),
-                ),
-                child: Padding(
-                  padding:
-                      EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _infoPropriedade(context, entity),
-                      _botoesAcao(context, entity),
-                    ],
-                  ),
+              padding:
+                  const EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 10.0),
+              child: AppCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _infoPropriedade(context, entity),
+                    _botoesAcao(context, entity),
+                  ],
                 ),
               ),
             );
@@ -268,93 +262,103 @@ class _PropriedadesExcluiasPageState
     );
   }
 
-  Widget _mensagem(BuildContext context, String texto) {
+  Widget _mensagem(BuildContext context, String texto, {IconData? icone}) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 24.0, 16.0, 24.0),
+      padding: const EdgeInsetsDirectional.fromSTEB(24.0, 24.0, 24.0, 24.0),
       child: Center(
-        child: Text(
-          texto,
-          textAlign: TextAlign.center,
-          style: FlutterFlowTheme.of(context).bodyMedium.override(
-                font: GoogleFonts.readexPro(),
-                color: FlutterFlowTheme.of(context).secondaryText,
-                letterSpacing: 0.0,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icone != null) ...[
+              Container(
+                width: 64.0,
+                height: 64.0,
+                decoration: const BoxDecoration(
+                  color: AppTokens.brandTint,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icone, color: AppTokens.brand, size: 30.0),
               ),
+              const SizedBox(height: 16.0),
+            ],
+            Text(
+              texto,
+              textAlign: TextAlign.center,
+              style: FlutterFlowTheme.of(context).bodyMedium.override(
+                    font: GoogleFonts.readexPro(),
+                    color: FlutterFlowTheme.of(context).secondaryText,
+                    letterSpacing: 0.0,
+                  ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _infoPropriedade(
-      BuildContext context, PropriedadeEntity listViewPropriedadesRecord) {
+  /// Mesma linha de topo dos cards da lista de propriedades (avatar + nome +
+  /// subtítulo). O aro do avatar fica cinza: a propriedade está fora de uso.
+  Widget _infoPropriedade(BuildContext context, PropriedadeEntity entity) {
+    final cinza = FlutterFlowTheme.of(context).secondaryText;
+    final subtitulo = [
+      if ((entity.cidade ?? '').trim().isNotEmpty) entity.cidade!.trim(),
+      if (entity.deletedAt != null)
+        'Excluída em ${dateTimeFormat('dd/MM/yyyy', entity.deletedAt)}',
+    ].join(' · ');
+
     return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
+        Container(
+          width: 44.0,
+          height: 44.0,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            border: Border.all(color: cinza, width: 2.0),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(44.0),
+              child: Opacity(
+                opacity: 0.6,
+                child: Image.asset(
+                  'assets/images/Logo-white_(1).png',
+                  width: 35.0,
+                  height: 35.0,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12.0),
         Expanded(
           child: Column(
-            mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                listViewPropriedadesRecord.displayName ?? '',
+                entity.displayName ?? 'Propriedade',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: FlutterFlowTheme.of(context).bodyLarge.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                      ),
+                      font: GoogleFonts.readexPro(),
                       letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyLarge.fontStyle,
                     ),
               ),
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                child: Text(
-                  'Excluída em: ${dateTimeFormat('d/M/y', listViewPropriedadesRecord.deletedAt)}',
+              if (subtitulo.isNotEmpty) ...[
+                const SizedBox(height: 4.0),
+                Text(
+                  subtitulo,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: FlutterFlowTheme.of(context).labelMedium.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .labelMedium
-                              .fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context)
-                              .labelMedium
-                              .fontStyle,
-                        ),
-                        color: FlutterFlowTheme.of(context).secondaryText,
+                        font: GoogleFonts.readexPro(),
+                        color: cinza,
                         letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).labelMedium.fontStyle,
                       ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                child: Text(
-                  listViewPropriedadesRecord.cidade ?? '',
-                  style: FlutterFlowTheme.of(context).labelMedium.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .labelMedium
-                              .fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context)
-                              .labelMedium
-                              .fontStyle,
-                        ),
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                      ),
-                ),
-              ),
+              ],
             ],
           ),
         ),
@@ -362,191 +366,145 @@ class _PropriedadesExcluiasPageState
     );
   }
 
-  Widget _botoesAcao(
-      BuildContext context, PropriedadeEntity listViewPropriedadesRecord) {
+  /// Restaurar é a ação principal (roxo cheio, como "Ativar conta" na lista);
+  /// excluir de vez é destrutiva e fica em tom suave para não competir.
+  Widget _botoesAcao(BuildContext context, PropriedadeEntity entity) {
+    final vermelho = FlutterFlowTheme.of(context).error;
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
+      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 0.0),
       child: Row(
-        mainAxisSize: MainAxisSize.max,
         children: [
           Expanded(
-            child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-              child: FFButtonWidget(
-                onPressed: () async {
-                  final confirmRestore = await showDialog<bool>(
-                    context: context,
-                    builder: (alertDialogContext) {
-                      return AlertDialog(
-                        title: Text('Restaurar propriedade'),
-                        content: Text('Deseja restaurar esta propriedade?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () =>
-                                Navigator.pop(alertDialogContext, false),
-                            child: Text('Cancelar'),
-                          ),
-                          TextButton(
-                            onPressed: () =>
-                                Navigator.pop(alertDialogContext, true),
-                            child: Text('Confirmar'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-
-                  if (confirmRestore != true) {
-                    return;
-                  }
-
-                  // Offline-first: grava local e sincroniza (ou enfileira). O
-                  // item some da lixeira sozinho — a query reativa deixa de
-                  // casar com ele, sem precisar de setState.
-                  final result = await ref
-                      .read(propriedadeRepositoryProvider)
-                      .restaurar(listViewPropriedadesRecord);
-
-                  if (!context.mounted) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(result is Success
-                          ? 'Propriedade restaurada com sucesso.'
-                          : 'Não foi possível restaurar a propriedade.'),
+            child: FFButtonWidget(
+              onPressed: () => _restaurar(context, entity),
+              text: 'Restaurar',
+              icon: const Icon(Icons.restore_rounded, size: 18.0),
+              options: FFButtonOptions(
+                height: 44.0,
+                color: AppTokens.secondary,
+                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                      font: GoogleFonts.readexPro(),
+                      color: Colors.white,
+                      letterSpacing: 0.0,
                     ),
-                  );
-                },
-                text: 'Restaurar',
-                icon: Icon(
-                  Icons.restore,
-                  size: 15.0,
-                ),
-                options: FFButtonOptions(
-                  width: double.infinity,
-                  height: 40.0,
-                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  color: Color(0xFF3B82F6),
-                  textStyle: FlutterFlowTheme.of(context).labelSmall.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .labelSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).labelSmall.fontStyle,
-                        ),
-                        color: Colors.white,
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).labelSmall.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).labelSmall.fontStyle,
-                      ),
-                  elevation: 2.0,
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 1.0,
-                  ),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
+                elevation: 0.0,
+                borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
               ),
             ),
           ),
+          const SizedBox(width: 12.0),
           Expanded(
-            child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(8.0, 0.0, 0.0, 0.0),
-              child: FFButtonWidget(
-                onPressed: () async {
-                  var confirmDialogResponse = await showDialog<bool>(
-                        context: context,
-                        builder: (alertDialogContext) {
-                          return AlertDialog(
-                            title: Text('Excluir Permanentemente'),
-                            content: Text(
-                                'Tem certeza que deseja excluir permanentemente essa propriedade? Esta ação não poderá ser desfeita.'),
-                            actions: [
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.pop(alertDialogContext, false),
-                                child: Text('Cancelar'),
-                              ),
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.pop(alertDialogContext, true),
-                                child: Text('Excluir'),
-                              ),
-                            ],
-                          );
-                        },
-                      ) ??
-                      false;
-                  if (!confirmDialogResponse) {
-                    return;
-                  }
-
-                  // Apaga o documento no Firestore e remove o registro local
-                  // (enfileira o DELETE se estiver offline).
-                  await ref
-                      .read(propriedadeRepositoryProvider)
-                      .excluirPermanente(listViewPropriedadesRecord);
-
-                  if (!context.mounted) return;
-                  await showDialog(
-                    context: context,
-                    builder: (alertDialogContext) {
-                      return AlertDialog(
-                        title: Text('Excluída!'),
-                        content: Text('Propriedade excluída permanentemente.'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(alertDialogContext),
-                            child: Text('Ok'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                text: 'Excluir',
-                icon: Icon(
-                  Icons.delete_forever,
-                  size: 15.0,
-                ),
-                options: FFButtonOptions(
-                  width: double.infinity,
-                  height: 40.0,
-                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  color: Color(0xFFEF4444),
-                  textStyle: FlutterFlowTheme.of(context).labelSmall.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .labelSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).labelSmall.fontStyle,
-                        ),
-                        color: Colors.white,
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).labelSmall.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).labelSmall.fontStyle,
-                      ),
-                  elevation: 2.0,
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 1.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+            child: FFButtonWidget(
+              onPressed: () => _excluirDeVez(context, entity),
+              text: 'Excluir de vez',
+              icon: Icon(Icons.delete_forever_outlined,
+                  size: 18.0, color: vermelho),
+              options: FFButtonOptions(
+                height: 44.0,
+                color: vermelho.withValues(alpha: 0.1),
+                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                      font: GoogleFonts.readexPro(),
+                      color: vermelho,
+                      letterSpacing: 0.0,
+                    ),
+                elevation: 0.0,
+                borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _restaurar(
+      BuildContext context, PropriedadeEntity entity) async {
+    final confirmRestore = await showDialog<bool>(
+      context: context,
+      builder: (alertDialogContext) {
+        return AlertDialog(
+          title: const Text('Restaurar propriedade'),
+          content: const Text('Deseja restaurar esta propriedade?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(alertDialogContext, false),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(alertDialogContext, true),
+              child: const Text('Confirmar'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmRestore != true) {
+      return;
+    }
+
+    // Offline-first: grava local e sincroniza (ou enfileira). O item some da
+    // lixeira sozinho — a query reativa deixa de casar com ele, sem precisar
+    // de setState.
+    final result =
+        await ref.read(propriedadeRepositoryProvider).restaurar(entity);
+
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(result is Success
+            ? 'Propriedade restaurada com sucesso.'
+            : 'Não foi possível restaurar a propriedade.'),
+      ),
+    );
+  }
+
+  Future<void> _excluirDeVez(
+      BuildContext context, PropriedadeEntity entity) async {
+    final confirmDialogResponse = await showDialog<bool>(
+          context: context,
+          builder: (alertDialogContext) {
+            return AlertDialog(
+              title: const Text('Excluir Permanentemente'),
+              content: const Text(
+                  'Tem certeza que deseja excluir permanentemente essa propriedade? Esta ação não poderá ser desfeita.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(alertDialogContext, false),
+                  child: const Text('Cancelar'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(alertDialogContext, true),
+                  child: const Text('Excluir'),
+                ),
+              ],
+            );
+          },
+        ) ??
+        false;
+    if (!confirmDialogResponse) {
+      return;
+    }
+
+    // Apaga o documento no Firestore e remove o registro local (enfileira o
+    // DELETE se estiver offline).
+    await ref.read(propriedadeRepositoryProvider).excluirPermanente(entity);
+
+    if (!context.mounted) return;
+    await showDialog(
+      context: context,
+      builder: (alertDialogContext) {
+        return AlertDialog(
+          title: const Text('Excluída!'),
+          content: const Text('Propriedade excluída permanentemente.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(alertDialogContext),
+              child: const Text('Ok'),
+            ),
+          ],
+        );
+      },
     );
   }
 
