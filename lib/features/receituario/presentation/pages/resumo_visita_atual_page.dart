@@ -1185,8 +1185,11 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                               .assinaturaProdutor)) ||
                           (preenchido(resumoVisitaAtualResumoDaVisitaRecord
                               .assinaturaTecnico))) &&
+                      // Concluída = tem data de assinatura. "Observações
+                      // gerais" é opcional: usá-la como marcador escondia o
+                      // "Gerar PDF" de toda visita concluída sem observação.
                       (!preenchido(resumoVisitaAtualResumoDaVisitaRecord
-                          .obsGeralVisita)))
+                          .dtAssinaturaFormatado)))
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -1203,8 +1206,6 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                               .assinaturaProdutor)) ||
                           (preenchido(resumoVisitaAtualResumoDaVisitaRecord
                               .assinaturaTecnico))) &&
-                      (preenchido(resumoVisitaAtualResumoDaVisitaRecord
-                          .obsGeralVisita)) &&
                       (preenchido(resumoVisitaAtualResumoDaVisitaRecord
                           .dtAssinaturaFormatado)))
                     Container(
