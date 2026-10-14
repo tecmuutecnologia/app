@@ -237,8 +237,8 @@ void main() {
   });
 
   group('versao generica (Recria)', () {
-    _Item item(String titulo, int? brinco, {String nome = ''}) =>
-        (titulo: titulo, nome: nome, brinco: brinco);
+    _Item item(String titulo, int? brinco, {String nome = '', DateTime? ia}) =>
+        (titulo: titulo, nome: nome, brinco: brinco, ia: ia);
 
     test('ordena por nome com a mesma regra (acento, sem nome no fim)', () {
       final r = _aplicar([item('Zulmira', 1), item('', 2), item('Ângela', 3)]);
@@ -268,13 +268,34 @@ void main() {
       expect(_aplicar(lista, busca: '2208').map((i) => i.brinco), [220824]);
       expect(_aplicar(lista, busca: 'mimo').map((i) => i.brinco), [5]);
     });
+
+    group('por inseminacao', () {
+      final lista = [
+        item('c', 3, ia: DateTime(2026, 3, 8)),
+        item('sem', 9),
+        item('a', 1, ia: DateTime(2025, 7, 11)),
+        item('b', 2, ia: DateTime(2026, 3, 8)),
+      ];
+
+      test('das mais antigas as mais recentes; empate desempata por brinco',
+          () {
+        final r = _aplicar(lista, ordem: OrdemAnimais.inseminacao);
+        expect(r.map((i) => i.titulo), ['a', 'b', 'c', 'sem']);
+      });
+
+      test('invertida: mais recentes primeiro, sem data continua no fim', () {
+        final r =
+            _aplicar(lista, ordem: OrdemAnimais.inseminacao, crescente: false);
+        expect(r.map((i) => i.titulo), ['c', 'b', 'a', 'sem']);
+      });
+    });
   });
 }
 
 /// A Recria lista `AnimalData` (do struct), nao `AnimalEntity`. A versao
 /// generica aplica a MESMA regra a qualquer tipo, dado como ler titulo, nome
 /// e brinco — assim as duas telas buscam e ordenam igual.
-typedef _Item = ({String titulo, String nome, int? brinco});
+typedef _Item = ({String titulo, String nome, int? brinco, DateTime? ia});
 
 List<_Item> _aplicar(List<_Item> lista,
         {OrdemAnimais ordem = OrdemAnimais.nome,
@@ -285,6 +306,7 @@ List<_Item> _aplicar(List<_Item> lista,
       titulo: (i) => i.titulo,
       nome: (i) => i.nome,
       brinco: (i) => i.brinco,
+      dataInseminacao: (i) => i.ia,
       ordem: ordem,
       crescente: crescente,
       busca: busca,

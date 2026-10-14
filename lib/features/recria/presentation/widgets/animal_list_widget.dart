@@ -73,6 +73,7 @@ class AnimalListWidget extends StatelessWidget {
           titulo: (a) => a.tituloExibido,
           nome: (a) => a.nomeAnimal,
           brinco: (a) => a.brincoAnimal,
+          dataInseminacao: (a) => _dataDdMmAaaa(a.dtUltimaInseminacao),
           ordem: ordem,
           crescente: crescente,
           busca: busca,
@@ -142,5 +143,16 @@ class AnimalListWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// `dd/MM/yyyy` do struct; vazio, `0` ou malformado contam como sem data.
+  static DateTime? _dataDdMmAaaa(String? texto) {
+    final partes = (texto ?? '').trim().split('/');
+    if (partes.length != 3) return null;
+    final dia = int.tryParse(partes[0]);
+    final mes = int.tryParse(partes[1]);
+    final ano = int.tryParse(partes[2]);
+    if (dia == null || mes == null || ano == null) return null;
+    return DateTime(ano, mes, dia);
   }
 }

@@ -54,15 +54,22 @@ class _RecriacaoPageState extends State<RecriacaoPage>
   /// Abas da Recria: "Todos" primeiro (o padrão e o "limpar filtro"), depois
   /// os grupos na mesma ordem das abas da tela de Animais.
   static const _abas = ['Todos', 'Bezerras', 'Bezerros', 'Novilhas', 'Touros'];
-  late final TabController _tabBarController =
-      TabController(length: _abas.length, vsync: this)
-        ..addListener(() {
-          if (!_tabBarController.indexIsChanging) safeSetState(() {});
-        });
+  late final TabController _tabBarController = TabController(
+      length: _abas.length, vsync: this)
+    ..addListener(() {
+      if (_tabBarController.indexIsChanging) return;
+      safeSetState(() {
+        // "Inseminação" só existe em Novilhas: fora dela volta a Nome.
+        if (_categoria != 'Novilhas' && _ordem == OrdemAnimais.inseminacao) {
+          _ordem = OrdemAnimais.nome;
+          _crescente = true;
+        }
+      });
+    });
   String get _categoria => _abas[_tabBarController.index];
 
   // Busca e ordenação: os mesmos controles e a mesma regra da tela de
-  // Animais (antes era um FAB "A-Z/Z-A", e Novilhas ordenavam por data).
+  // Animais, mais "Inseminação" na aba Novilhas.
   final TextEditingController _buscaController = TextEditingController();
   final FocusNode _buscaFocusNode = FocusNode();
   OrdemAnimais _ordem = OrdemAnimais.nome;
@@ -204,6 +211,7 @@ class _RecriacaoPageState extends State<RecriacaoPage>
           SeletorOrdemAnimais(
             ordem: _ordem,
             crescente: _crescente,
+            mostrarInseminacao: _categoria == 'Novilhas',
             // Trocar de criterio recomeca crescente: o resultado de um toque
             // nao deve depender da direcao deixada no criterio anterior.
             onSelecionar: (nova) => safeSetState(() {

@@ -3,7 +3,14 @@ import '../../../domain/animais/ordenacao_animal.dart';
 
 /// Como a lista de uma categoria e ordenada. Fica aqui, e nao no widget,
 /// porque e regra pura: da para testar sem montar arvore de UI.
-enum OrdemAnimais { nome, brinco }
+enum OrdemAnimais {
+  nome,
+  brinco,
+
+  /// Data da última inseminação. Só a aba Novilhas da Recria oferece: é a
+  /// ordem do manejo de quem está para emprenhar ou parir.
+  inseminacao,
+}
 
 const _comAcento = 'áàâãäéèêëíìîïóòôõöúùûüçñ';
 const _semAcento = 'aaaaaeeeeiiiiooooouuuucn';
@@ -41,6 +48,7 @@ typedef _Leitor<T> = ({
   String Function(T) titulo,
   String? Function(T) nome,
   int? Function(T) brinco,
+  DateTime? Function(T)? dataInseminacao,
 });
 
 /// Nome A-Z (ou Z-A). Animal sem nome vai para o fim nas DUAS direcoes: ele
@@ -68,6 +76,19 @@ int _porBrinco<T>(T a, T b, bool crescente, _Leitor<T> ler) {
   if (nomeA.isEmpty != nomeB.isEmpty) return nomeA.isEmpty ? 1 : -1;
   final porNome = nomeA.compareTo(nomeB);
   return crescente ? porNome : -porNome;
+}
+
+/// Mais antiga primeiro (ou mais recente). Sem data vai para o fim nas duas
+/// direções; data igual desempata pela regra do brinco.
+int _porInseminacao<T>(T a, T b, bool crescente, _Leitor<T> ler) {
+  final dataA = ler.dataInseminacao?.call(a);
+  final dataB = ler.dataInseminacao?.call(b);
+  if ((dataA == null) != (dataB == null)) return dataA == null ? 1 : -1;
+  if (dataA != null && dataB != null) {
+    final comparacao = dataA.compareTo(dataB);
+    if (comparacao != 0) return crescente ? comparacao : -comparacao;
+  }
+  return _porBrinco(a, b, crescente, ler);
 }
 
 /// Compara os brincos reusando `temBrinco` do dominio — a regra de que `0`
@@ -110,17 +131,24 @@ List<AnimalEntity> aplicarBuscaEOrdem(
     );
 
 /// [aplicarBuscaEOrdem] para qualquer tipo de animal, dado como ler o titulo
-/// exibido no card, o nome e o brinco.
+/// exibido no card, o nome e o brinco. [dataInseminacao] só é necessário para
+/// [OrdemAnimais.inseminacao]; sem ele, todos contam como "sem data".
 List<T> aplicarBuscaEOrdemPor<T>(
   List<T> animais, {
   required String Function(T) titulo,
   required String? Function(T) nome,
   required int? Function(T) brinco,
+  DateTime? Function(T)? dataInseminacao,
   required OrdemAnimais ordem,
   bool crescente = true,
   String busca = '',
 }) {
-  final _Leitor<T> ler = (titulo: titulo, nome: nome, brinco: brinco);
+  final _Leitor<T> ler = (
+    titulo: titulo,
+    nome: nome,
+    brinco: brinco,
+    dataInseminacao: dataInseminacao,
+  );
   final termo = _normalizar(busca);
 
   final filtrados = termo.isEmpty
@@ -132,8 +160,10 @@ List<T> aplicarBuscaEOrdemPor<T>(
               (brinco(animal)?.toString() ?? '').contains(termo))
           .toList();
 
-  filtrados.sort((a, b) => ordem == OrdemAnimais.nome
-      ? _porNome(a, b, crescente, ler)
-      : _porBrinco(a, b, crescente, ler));
+  filtrados.sort((a, b) => switch (ordem) {
+        OrdemAnimais.nome => _porNome(a, b, crescente, ler),
+        OrdemAnimais.brinco => _porBrinco(a, b, crescente, ler),
+        OrdemAnimais.inseminacao => _porInseminacao(a, b, crescente, ler),
+      });
   return filtrados;
 }

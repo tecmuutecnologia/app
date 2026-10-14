@@ -13,6 +13,7 @@ void main() {
     WidgetTester tester, {
     required OrdemAnimais ordem,
     bool crescente = true,
+    bool mostrarInseminacao = false,
   }) async {
     pedidos = [];
     await tester.pumpWidget(MaterialApp(
@@ -20,6 +21,7 @@ void main() {
         body: SeletorOrdemAnimais(
           ordem: ordem,
           crescente: crescente,
+          mostrarInseminacao: mostrarInseminacao,
           onSelecionar: (nova) => pedidos.add('selecionar:${nova.name}'),
           onInverter: () => pedidos.add('inverter'),
         ),
@@ -70,9 +72,50 @@ void main() {
   testWidgets('o criterio ativo se anuncia como selecionado', (tester) async {
     await pump(tester, ordem: OrdemAnimais.brinco);
 
-    expect(tester.getSemantics(find.text('Brinco')).hasFlag(SemanticsFlag.isSelected),
+    expect(
+        tester
+            .getSemantics(find.text('Brinco'))
+            .hasFlag(SemanticsFlag.isSelected),
         isTrue);
-    expect(tester.getSemantics(find.text('Nome')).hasFlag(SemanticsFlag.isSelected),
+    expect(
+        tester
+            .getSemantics(find.text('Nome'))
+            .hasFlag(SemanticsFlag.isSelected),
         isFalse);
+  });
+
+  group('botao Inseminacao (so na aba Novilhas da Recria)', () {
+    testWidgets('nao aparece por padrao', (tester) async {
+      await pump(tester, ordem: OrdemAnimais.nome);
+      expect(find.text('Inseminação'), findsNothing);
+    });
+
+    testWidgets('aparece quando pedido e troca o criterio', (tester) async {
+      await pump(tester, ordem: OrdemAnimais.nome, mostrarInseminacao: true);
+
+      expect(find.text('Inseminação'), findsOneWidget);
+      await tester.tap(find.text('Inseminação'));
+      expect(pedidos, ['selecionar:inseminacao']);
+    });
+
+    testWidgets('ativo, tocar de novo inverte', (tester) async {
+      await pump(tester,
+          ordem: OrdemAnimais.inseminacao, mostrarInseminacao: true);
+
+      await tester.tap(find.text('Inseminação'));
+      expect(pedidos, ['inverter']);
+    });
+
+    testWidgets('os tres cabem numa tela estreita sem estourar',
+        (tester) async {
+      tester.view.physicalSize = const Size(320 * 3, 640 * 3);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+
+      await pump(tester,
+          ordem: OrdemAnimais.inseminacao, mostrarInseminacao: true);
+
+      expect(tester.takeException(), isNull);
+    });
   });
 }

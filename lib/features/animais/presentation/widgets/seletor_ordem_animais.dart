@@ -24,6 +24,7 @@ class SeletorOrdemAnimais extends StatelessWidget {
     required this.crescente,
     required this.onSelecionar,
     required this.onInverter,
+    this.mostrarInseminacao = false,
   });
 
   final OrdemAnimais ordem;
@@ -37,14 +38,19 @@ class SeletorOrdemAnimais extends StatelessWidget {
   /// Pedido de inversao (so dispara no botao ja ativo).
   final VoidCallback onInverter;
 
+  /// Terceiro botao, "Inseminação": so a aba Novilhas da Recria liga.
+  final bool mostrarInseminacao;
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    // Wrap e nao Row: com o terceiro botao, numa tela estreita ele desce
+    // para a linha de baixo em vez de estourar a largura.
+    return Wrap(
+      spacing: 8.0,
+      runSpacing: 8.0,
       children: [
         _botao(context, OrdemAnimais.nome, 'Nome',
             crescente ? 'por nome, de A a Z' : 'por nome, de Z a A'),
-        const SizedBox(width: 8.0),
         _botao(
             context,
             OrdemAnimais.brinco,
@@ -52,6 +58,14 @@ class SeletorOrdemAnimais extends StatelessWidget {
             crescente
                 ? 'por brinco, do menor ao maior'
                 : 'por brinco, do maior ao menor'),
+        if (mostrarInseminacao)
+          _botao(
+              context,
+              OrdemAnimais.inseminacao,
+              'Inseminação',
+              crescente
+                  ? 'por inseminação, das mais antigas às mais recentes'
+                  : 'por inseminação, das mais recentes às mais antigas'),
       ],
     );
   }
@@ -85,9 +99,11 @@ class SeletorOrdemAnimais extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                criterio == OrdemAnimais.nome
-                    ? Icons.sort_by_alpha_rounded
-                    : Icons.tag_rounded,
+                switch (criterio) {
+                  OrdemAnimais.nome => Icons.sort_by_alpha_rounded,
+                  OrdemAnimais.brinco => Icons.tag_rounded,
+                  OrdemAnimais.inseminacao => Icons.event_rounded,
+                },
                 color: ativo ? Colors.white : AppTokens.brand,
                 size: 18.0,
               ),
