@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '/features/recria/application/filtros_recria.dart';
-import '/domain/animais/ordenacao_animal.dart';
+import '/features/animais/application/ordenacao_animais.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 
 import '/data/backend.dart';
@@ -17,7 +17,11 @@ class AnimalListWidget extends StatelessWidget {
   final bool? visitaPresencial;
   final String? diasDg;
   final String? filterCategory;
-  final bool ascending;
+
+  /// Busca e ordem da tela de Animais (mesma regra: [aplicarBuscaEOrdemPor]).
+  final OrdemAnimais ordem;
+  final bool crescente;
+  final String busca;
   final VoidCallback? onAcaoConcluida;
 
   const AnimalListWidget({
@@ -29,7 +33,9 @@ class AnimalListWidget extends StatelessWidget {
     required this.visitaPresencial,
     required this.diasDg,
     this.filterCategory,
-    this.ascending = true,
+    this.ordem = OrdemAnimais.nome,
+    this.crescente = true,
+    this.busca = '',
     this.onAcaoConcluida,
   });
 
@@ -62,17 +68,23 @@ class AnimalListWidget extends StatelessWidget {
 
         // Animais criados offline agora entram no ObjectBox (vêm em
         // existingAnimals via getAll), não há mais lista separada no FFAppState.
-        final allAnimals = existingAnimals;
-        _ordenar(allAnimals);
+        final allAnimals = aplicarBuscaEOrdemPor<AnimalData>(
+          existingAnimals,
+          titulo: (a) => a.tituloExibido,
+          nome: (a) => a.nomeAnimal,
+          brinco: (a) => a.brincoAnimal,
+          ordem: ordem,
+          crescente: crescente,
+          busca: busca,
+        );
 
         if (allAnimals.isEmpty) {
           return _buildEmptyState(context);
         }
 
+        // Unico scrollable da tela, abaixo do cabecalho fixo de busca/abas.
         return ListView.builder(
-          padding: EdgeInsets.zero,
-          primary: false,
-          shrinkWrap: true,
+          padding: const EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 24.0),
           scrollDirection: Axis.vertical,
           itemCount: allAnimals.length,
           itemBuilder: (context, index) {
@@ -91,39 +103,6 @@ class AnimalListWidget extends StatelessWidget {
         );
       },
     );
-  }
-
-  /// Regra única do domínio (brinco -> nome), com a direção do toggle.
-  ///
-  /// Antes ordenava por `nomeBrincoConcat`, que e texto: brinco 390 vinha antes
-  /// de 428 por comparacao de caractere, o mesmo defeito das telas de lista.
-  int _compararAnimais(AnimalData a, AnimalData b) => compararAnimais(
-        brincoA: a.brincoAnimal,
-        nomeA: a.nomeAnimal,
-        brincoB: b.brincoAnimal,
-        nomeB: b.nomeAnimal,
-      );
-
-  /// Mesma regra de ordenação do modo online, aplicada sobre `AnimalData`.
-  void _ordenar(List<AnimalData> animais) {
-    if (filterCategory == 'Novilhas') {
-      animais.sort((a, b) {
-        // Novilhas seguem a ordem clinica: data de inseminacao primeiro, quem
-        // nao tem vai para o fim, e o empate cai na regra geral.
-        final dateA = _parseInseminacaoDate(a.dtUltimaInseminacao);
-        final dateB = _parseInseminacaoDate(b.dtUltimaInseminacao);
-        if (dateA == null && dateB == null) return _compararAnimais(a, b);
-        if (dateA == null) return 1;
-        if (dateB == null) return -1;
-        final c = dateA.compareTo(dateB);
-        return ascending ? c : -c;
-      });
-    } else {
-      animais.sort((a, b) {
-        final c = _compararAnimais(a, b);
-        return ascending ? c : -c;
-      });
-    }
   }
 
   AnimalData _mapExistingToAnimalData(dynamic item, int index) {
@@ -163,25 +142,5 @@ class AnimalListWidget extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  DateTime? _parseInseminacaoDate(String? rawDate) {
-    if (rawDate == null) return null;
-    final normalized = rawDate.trim();
-    if (normalized.isEmpty || normalized == '0') return null;
-
-    final parts = normalized.split('/');
-    if (parts.length != 3) return null;
-
-    final day = int.tryParse(parts[0]);
-    final month = int.tryParse(parts[1]);
-    final year = int.tryParse(parts[2]);
-    if (day == null || month == null || year == null) return null;
-
-    try {
-      return DateTime(year, month, day);
-    } catch (_) {
-      return null;
-    }
   }
 }

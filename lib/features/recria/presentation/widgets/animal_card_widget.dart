@@ -58,6 +58,17 @@ class AnimalData {
   final String? uidAnimalOffline;
   final DocumentReference? uidTecnicoPropriedade;
 
+  /// O nome que o card mostra. A busca e a ordem da lista usam este mesmo
+  /// texto: ordenar por um campo e exibir outro faz a lista parecer fora de
+  /// ordem.
+  String get tituloExibido {
+    if (nomeAnimal.isNotEmpty && brincoAnimal != null && brincoAnimal != -1) {
+      return '$nomeAnimal - $brincoAnimal';
+    }
+    if (nomeAnimal.isNotEmpty) return nomeAnimal;
+    return brincoAnimal?.toString() ?? '';
+  }
+
   const AnimalData({
     required this.grupoAnimal,
     required this.nomeAnimal,
@@ -202,16 +213,7 @@ class AnimalCardWidget extends StatelessWidget {
     final isBezerra =
         ehBezerras(animal.grupoAnimal) || ehBezerros(animal.grupoAnimal);
 
-    String baseName;
-    if (animal.nomeAnimal.isNotEmpty &&
-        animal.brincoAnimal != null &&
-        animal.brincoAnimal != -1) {
-      baseName = '${animal.nomeAnimal} - ${animal.brincoAnimal}';
-    } else if (animal.nomeAnimal.isNotEmpty) {
-      baseName = animal.nomeAnimal;
-    } else {
-      baseName = animal.brincoAnimal?.toString() ?? '';
-    }
+    final baseName = animal.tituloExibido;
 
     return Column(
       mainAxisSize: MainAxisSize.min,

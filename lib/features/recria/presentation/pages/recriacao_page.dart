@@ -2,12 +2,13 @@ import 'dart:async';
 
 import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
-import '/core/ui/flutter_flow_choice_chips.dart';
+import '/core/ui/flutter_flow_button_tabbar.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/app_card.dart';
-import '/core/ui/form_field_controller.dart';
+import '/features/animais/application/ordenacao_animais.dart';
+import '/features/animais/presentation/widgets/seletor_ordem_animais.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,21 +43,30 @@ class RecriacaoPage extends StatefulWidget {
   State<RecriacaoPage> createState() => _RecriacaoPageState();
 }
 
-class _RecriacaoPageState extends State<RecriacaoPage> {
+class _RecriacaoPageState extends State<RecriacaoPage>
+    with TickerProviderStateMixin {
   final scaffoldKey = GlobalKey<ScaffoldState>();
-
-  /// Direção da ordenação da lista (antes em FFAppState.ordenacaoQuery, que era
-  /// global e não-persistido, usado só nesta tela). Local: false = descendente.
-  bool _ordenacaoQuery = false;
 
   // Estado de view (antes no RecriacaoModel/FlutterFlowModel).
   StreamSubscription<bool>? _conectividadeSub;
   bool? _respostaNet = true;
-  FormFieldController<List<String>>? _choiceChipsValueController;
-  String? get _choiceChipsValue =>
-      _choiceChipsValueController?.value?.firstOrNull;
-  set _choiceChipsValue(String? val) =>
-      _choiceChipsValueController?.value = val != null ? [val] : [];
+
+  /// Abas da Recria: "Todos" primeiro (o padrão e o "limpar filtro"), depois
+  /// os grupos na mesma ordem das abas da tela de Animais.
+  static const _abas = ['Todos', 'Bezerras', 'Bezerros', 'Novilhas', 'Touros'];
+  late final TabController _tabBarController =
+      TabController(length: _abas.length, vsync: this)
+        ..addListener(() {
+          if (!_tabBarController.indexIsChanging) safeSetState(() {});
+        });
+  String get _categoria => _abas[_tabBarController.index];
+
+  // Busca e ordenação: os mesmos controles e a mesma regra da tela de
+  // Animais (antes era um FAB "A-Z/Z-A", e Novilhas ordenavam por data).
+  final TextEditingController _buscaController = TextEditingController();
+  final FocusNode _buscaFocusNode = FocusNode();
+  OrdemAnimais _ordem = OrdemAnimais.nome;
+  bool _crescente = true;
 
   // Constantes de cores
   static const Color _appBarColorOnline = Color(0xFFF75E38);
@@ -88,6 +98,9 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
   @override
   void dispose() {
     _conectividadeSub?.cancel();
+    _tabBarController.dispose();
+    _buscaFocusNode.dispose();
+    _buscaController.dispose();
     super.dispose();
   }
 
@@ -105,9 +118,6 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
         backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
         appBar: _buildAppBar(context),
         body: _buildBody(context),
-        // Ordenação como FAB: disponível em TODOS os filtros (antes só aparecia
-        // em Novilhas) e fora do fluxo dos chips, que ela sobrepunha.
-        floatingActionButton: _buildSortButton(context, _ordenacaoQuery),
       ),
     );
   }
@@ -168,147 +178,143 @@ class _RecriacaoPageState extends State<RecriacaoPage> {
     context.safePop();
   }
 
+  /// Mesmo layout da tela de Animais: busca e ordem fixas no topo, abas
+  /// logo abaixo, e só a lista rola.
   Widget _buildBody(BuildContext context) {
-    return SingleChildScrollView(
-      primary: false,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildFilterSection(context),
-          _buildAnimalList(context),
-        ],
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _cabecalhoBuscaEOrdem(context),
+        _abasDeCategoria(context),
+        Expanded(child: _buildAnimalList(context)),
+      ],
     );
   }
 
-  Widget _buildFilterSection(BuildContext context) {
-    // Uma única faixa: chips rolando na horizontal + ordenação fixa à direita.
-    //
-    // Antes eram DUAS faixas empilhadas — um cabeçalho "Filtragem:" (rótulo
-    // redundante: os chips já se explicam) e, abaixo, os chips em `Wrap`, que
-    // quebravam em 2-3 linhas em telas estreitas. Somando cabeçalho, quebras e
-    // paddings de 15px, os filtros comiam ~160px antes da lista começar.
+  /// Igual ao `_cabecalhoBuscaEOrdem` da lista de animais.
+  Widget _cabecalhoBuscaEOrdem(BuildContext context) {
     return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 12.0, 4.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
+      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Padding(
-              padding:
-                  const EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-              child: _buildChoiceChips(context),
-            ),
+          _campoBuscaTexto(context),
+          const SizedBox(height: 10.0),
+          SeletorOrdemAnimais(
+            ordem: _ordem,
+            crescente: _crescente,
+            // Trocar de criterio recomeca crescente: o resultado de um toque
+            // nao deve depender da direcao deixada no criterio anterior.
+            onSelecionar: (nova) => safeSetState(() {
+              _ordem = nova;
+              _crescente = true;
+            }),
+            onInverter: () => safeSetState(() => _crescente = !_crescente),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildChoiceChips(BuildContext context) {
-    return FlutterFlowChoiceChips(
-      // "Todos" primeiro: é o padrão inicial e o "limpar filtro" — quem quer
-      // voltar à lista completa acha sem precisar rolar até o fim.
-      options: const [
-        ChipData('Todos'),
-        ChipData('Bezerros'),
-        ChipData('Bezerras'),
-        ChipData('Touros'),
-        ChipData('Novilhas'),
-      ],
-      onChanged: (val) =>
-          safeSetState(() => _choiceChipsValue = val?.firstOrNull),
-      selectedChipStyle: ChipStyle(
-        backgroundColor: AppTokens.secondary,
-        textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+  Widget _campoBuscaTexto(BuildContext context) {
+    return TextFormField(
+      controller: _buscaController,
+      focusNode: _buscaFocusNode,
+      onChanged: (_) => safeSetState(() {}),
+      decoration: InputDecoration(
+        labelText: 'Pesquisar por nome ou brinco',
+        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
               font: GoogleFonts.readexPro(),
-              color: Colors.white,
               letterSpacing: 0.0,
             ),
-        iconColor: Colors.white,
-        iconSize: 18.0,
-        elevation: 0.0,
-        borderRadius: BorderRadius.circular(20.0),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.transparent, width: 1.0),
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: AppTokens.secondary, width: 1.5),
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        filled: true,
+        fillColor: FlutterFlowTheme.of(context).primaryBackground,
+        prefixIcon: Icon(
+          Icons.search_rounded,
+          color: FlutterFlowTheme.of(context).secondaryText,
+        ),
+        suffixIcon: _buscaController.text.isNotEmpty
+            ? InkWell(
+                onTap: () {
+                  _buscaController.clear();
+                  safeSetState(() {});
+                },
+                child: Icon(
+                  Icons.clear,
+                  color: FlutterFlowTheme.of(context).secondaryText,
+                  size: 18.0,
+                ),
+              )
+            : null,
       ),
-      unselectedChipStyle: ChipStyle(
-        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-              font: GoogleFonts.readexPro(),
-              color: FlutterFlowTheme.of(context).secondaryText,
-              letterSpacing: 0.0,
-            ),
-        iconColor: FlutterFlowTheme.of(context).secondaryText,
-        iconSize: 18.0,
-        elevation: 0.0,
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      chipSpacing: 8.0,
-      rowSpacing: 8.0,
-      multiselect: false,
-      initialized: _choiceChipsValue != null,
-      alignment: WrapAlignment.start,
-      controller: _choiceChipsValueController ??=
-          FormFieldController<List<String>>(['Todos']),
-      // Rolagem horizontal em vez de `Wrap`: mantém os filtros em UMA linha
-      // (~40px) independente de quantas opções existam, em vez de quebrar em
-      // 2-3 linhas nas telas estreitas.
-      wrapped: false,
+      style: FlutterFlowTheme.of(context).bodyMedium.override(
+            font: GoogleFonts.readexPro(),
+            letterSpacing: 0.0,
+          ),
+      maxLines: 1,
     );
   }
 
-  /// Alterna a ordem da lista. Fica como FAB no canto inferior direito, longe
-  /// dos chips. O rótulo reflete o CRITÉRIO em uso: Novilhas ordenam por data
-  /// de inseminação (o que importa no manejo), os demais grupos, por nome.
-  Widget _buildSortButton(BuildContext context, bool isAscending) {
-    final porData = _choiceChipsValue == 'Novilhas';
-    final rotulo = porData
-        ? (isAscending ? 'Mais antigas' : 'Mais recentes')
-        : (isAscending ? 'A-Z' : 'Z-A');
-
-    return FloatingActionButton.extended(
-      onPressed: () {
-        _ordenacaoQuery = !isAscending;
-        safeSetState(() {});
-      },
-      backgroundColor: AppTokens.secondary,
-      foregroundColor: Colors.white,
-      elevation: 4.0,
-      icon: Icon(
-        isAscending ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
-        size: 18.0,
-      ),
-      label: Text(
-        rotulo,
-        style: FlutterFlowTheme.of(context).titleSmall.override(
-              font: GoogleFonts.readexPro(),
-              color: Colors.white,
-              fontSize: 13.0,
+  /// Mesma barra de abas da lista de animais. Aqui a aba só filtra a lista
+  /// (não há uma página por aba), então não há `TabBarView`.
+  Widget _abasDeCategoria(BuildContext context) {
+    return Align(
+      alignment: const Alignment(-1.0, 0),
+      child: FlutterFlowButtonTabBar(
+        useToggleButtonStyle: false,
+        isScrollable: true,
+        labelStyle: FlutterFlowTheme.of(context).titleMedium.override(
+              font: GoogleFonts.readexPro(
+                fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
+                fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
+              ),
               letterSpacing: 0.0,
+              fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
+              fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
             ),
+        unselectedLabelStyle: const TextStyle(),
+        labelColor: Colors.white,
+        unselectedLabelColor: const Color(0xFF525D67),
+        backgroundColor: AppTokens.secondary,
+        unselectedBackgroundColor: const Color(0xFFC5C5C5),
+        borderColor: AppTokens.secondary,
+        borderWidth: 2.0,
+        borderRadius: 12.0,
+        elevation: 0.0,
+        labelPadding:
+            const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+        buttonMargin:
+            const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 16.0, 0.0),
+        padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+        tabs: [for (final aba in _abas) Tab(text: aba)],
+        controller: _tabBarController,
+        onTap: (_) {},
       ),
     );
   }
 
   Widget _buildAnimalList(BuildContext context) {
-    return ListView(
-      // Espaço no fim para o FAB de ordenação não cobrir o último cartão.
-      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 88.0),
-      primary: false,
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
-      children: [
-        AnimalListWidget(
-          uidPropriedade: widget.uidPropriedade,
-          nomePropriedade: widget.nomePropriedade,
-          uidTecnico: widget.uidTecnico,
-          emailPropriedade: widget.emailPropriedade,
-          visitaPresencial: widget.visitaPresencial,
-          diasDg: widget.diasDg,
-          filterCategory: _choiceChipsValue,
-          onAcaoConcluida: () => safeSetState(() {}),
-          ascending: _ordenacaoQuery,
-        ),
-      ],
+    return AnimalListWidget(
+      uidPropriedade: widget.uidPropriedade,
+      nomePropriedade: widget.nomePropriedade,
+      uidTecnico: widget.uidTecnico,
+      emailPropriedade: widget.emailPropriedade,
+      visitaPresencial: widget.visitaPresencial,
+      diasDg: widget.diasDg,
+      filterCategory: _categoria,
+      ordem: _ordem,
+      crescente: _crescente,
+      busca: _buscaController.text,
+      onAcaoConcluida: () => safeSetState(() {}),
     );
   }
 }
