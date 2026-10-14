@@ -403,6 +403,7 @@ Future<void> createReceituario(
                 'acao': e.acao,
                 'uidAnimalAnimaisProdutoresPath':
                     e.uidAnimalAnimaisProdutoresPath,
+                'dtDgMenos': e.dtDgMenos,
               })
           .toList();
 
@@ -457,8 +458,12 @@ Future<void> createReceituario(
           for (final acaoData in acoes) {
             final animalData = getAnimalData(
                 acaoData['uidAnimalAnimaisProdutoresPath'] as String?);
-            final ultimaInseminacao =
-                getUltimaInseminacaoFromAnimal(animalData);
+            // O DG- zera dtUltimaInseminacao do animal (ele volta a ficar
+            // disponível), então para as vazias a data vem da própria ação:
+            // o dia do exame.
+            final ultimaInseminacao = acaoData['acao'] == 'DG-'
+                ? (acaoData['dtDgMenos'] as String? ?? '')
+                : getUltimaInseminacaoFromAnimal(animalData);
 
             if (animalData != null) {
               animaisData.add({
@@ -559,8 +564,9 @@ Future<void> createReceituario(
                         animal['acao'] as String,
                         style: pw.TextStyle(
                           fontWeight: pw.FontWeight.bold,
-                          color: (animal['acao'] as String) == 'DG-'
-                              ? PdfColor.fromHex('#ff0076')
+                          color: const {'DG-', 'Aborto'}
+                                  .contains(animal['acao'] as String)
+                              ? PdfColor.fromHex('#ee0000')
                               : PdfColor.fromHex('#048508'),
                         ),
                       ),
@@ -600,7 +606,8 @@ Future<void> createReceituario(
         diagnosticoWidgets.add(pw.SizedBox(height: 10));
 
         // Cabeçalho da tabela
-        pw.TableRow buildDiagnosticoHeader() {
+        pw.TableRow buildDiagnosticoHeader(
+            {String colunaData = 'Últ. Insem.'}) {
           return pw.TableRow(
             repeat: true,
             children: [
@@ -646,7 +653,7 @@ Future<void> createReceituario(
                   alignment: pw.Alignment.center,
                   color: PdfColor.fromHex('#f2f2f2'),
                   child: pw.Text(
-                    'Últ. Insem.',
+                    colunaData,
                     textAlign: pw.TextAlign.center,
                     style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                   ),
@@ -693,7 +700,7 @@ Future<void> createReceituario(
               'Vazias (DG-)',
               style: pw.TextStyle(
                 fontWeight: pw.FontWeight.bold,
-                color: PdfColor.fromHex('#ff0076'),
+                color: PdfColor.fromHex('#ee0000'),
               ),
             ),
           );
@@ -710,7 +717,10 @@ Future<void> createReceituario(
                 horizontalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
                 verticalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
               ),
-              children: [buildDiagnosticoHeader(), ...rowsDGMenos],
+              children: [
+                buildDiagnosticoHeader(colunaData: 'Data DG-'),
+                ...rowsDGMenos,
+              ],
             ),
           );
           diagnosticoWidgets.add(pw.SizedBox(height: 10));

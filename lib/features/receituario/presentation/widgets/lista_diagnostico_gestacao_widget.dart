@@ -213,7 +213,7 @@ class _ListaDiagnosticoGestacaoWidgetState
                                     .bodyMedium
                                     .fontStyle,
                               ),
-                              color: Color(0xFFFF0076),
+                              color: Color(0xFFEE0000),
                               letterSpacing: 0.0,
                               fontWeight: FontWeight.w600,
                             ),
@@ -320,19 +320,17 @@ class _ListaDiagnosticoGestacaoWidgetState
                           fontStyle:
                               FlutterFlowTheme.of(context).bodyMedium.fontStyle,
                         ),
-                        color: animal.acao == 'DG-'
-                            ? Color(0xFFFF0076)
-                            : animal.acao == 'Aborto'
-                                ? Color(0xFFEE0000)
-                                : Color(0xFF048508),
+                        color: animal.acao == 'DG-' || animal.acao == 'Aborto'
+                            ? Color(0xFFEE0000)
+                            : Color(0xFF048508),
                         letterSpacing: 0.0,
                         fontWeight: FontWeight.w600,
                       ),
                 ),
               ),
-              if (animal.dtUltimaInseminacao.isNotEmpty)
+              if (animal.dataExibida.isNotEmpty)
                 Text(
-                  'IA: ${animal.dtUltimaInseminacao}',
+                  animal.dataExibida,
                   style: FlutterFlowTheme.of(context).bodySmall.override(
                         font: GoogleFonts.readexPro(
                           fontWeight:
@@ -395,6 +393,7 @@ class _ListaDiagnosticoGestacaoWidgetState
                 brincoAnimal: brincoAnimal,
                 grupoAnimal: grupoAnimal,
                 dtUltimaInseminacao: dtUltimaInseminacaoAnimal,
+                dtDgMenos: acao.dtDgMenos,
                 displayName: displayName,
                 acao: acao.acao,
               ));
@@ -415,6 +414,7 @@ class _AnimalComInseminacao {
   final int? brincoAnimal;
   final String grupoAnimal;
   final String dtUltimaInseminacao;
+  final String dtDgMenos;
   final String displayName;
   final String acao;
 
@@ -423,7 +423,16 @@ class _AnimalComInseminacao {
     required this.brincoAnimal,
     required this.grupoAnimal,
     required this.dtUltimaInseminacao,
+    required this.dtDgMenos,
     required this.displayName,
     required this.acao,
   });
+
+  /// O DG- zera dtUltimaInseminacao do animal (ele volta a ficar disponível),
+  /// então as vazias mostram o dia do exame, que fica gravado na ação.
+  String get dataExibida {
+    // Sem prefixo: a etiqueta "DG-" já está logo antes da data.
+    if (acao == 'DG-') return dtDgMenos;
+    return dtUltimaInseminacao.isEmpty ? '' : 'IA: $dtUltimaInseminacao';
+  }
 }
