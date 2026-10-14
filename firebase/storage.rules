@@ -1,12 +1,23 @@
 rules_version = '2';
+
+// O app só grava em users/{uid}/uploads (assinaturas do receituário). As
+// outras pastas do bucket são exports do Firestore, gravados pela conta de
+// serviço, que não passa por estas regras.
+//
+// Até 2026-10-10 vigorava a regra de "modo de teste" (tudo liberado com data
+// de validade). Ela expirou e passou a negar todo envio: as assinaturas
+// pararam de subir em produção.
+//
+// URLs de download já emitidas (com token) continuam válidas: o token
+// dispensa estas regras.
 service firebase.storage {
   match /b/{bucket}/o {
     match /{allPaths=**} {
       allow read, write: if false;
     }
     match /users/{userId}/{allPaths=**} {
-      allow read: if true;
-      allow write: if request.auth.uid == userId;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
     }
   }
 }
