@@ -3,9 +3,8 @@ import 'package:tecmuu/data/objectbox/entities/index.dart';
 import 'package:tecmuu/features/animais/application/ordenacao_animais.dart';
 
 /// `parentPath` nulo de proposito: a regra e pura e nao toca Firestore.
-AnimalEntity animal(String? nome, int brinco, {String? concat}) =>
-    AnimalEntity(
-        nomeAnimal: nome, brincoAnimal: brinco, nomeBrincoConcat: concat);
+AnimalEntity animal(String? nome, int brinco, {String? concat}) => AnimalEntity(
+    nomeAnimal: nome, brincoAnimal: brinco, nomeBrincoConcat: concat);
 
 List<String?> nomes(List<AnimalEntity> lista) =>
     lista.map((a) => a.nomeAnimal).toList();
@@ -16,7 +15,11 @@ List<int> brincos(List<AnimalEntity> lista) =>
 void main() {
   group('ordem por nome', () {
     test('ordena de A-Z ignorando maiuscula', () {
-      final lista = [animal('carmem', 1), animal('Aurora', 2), animal('bonita', 3)];
+      final lista = [
+        animal('carmem', 1),
+        animal('Aurora', 2),
+        animal('bonita', 3)
+      ];
 
       final resultado =
           aplicarBuscaEOrdem(lista, ordem: OrdemAnimais.nome, busca: '');
@@ -25,7 +28,11 @@ void main() {
     });
 
     test('trata acento como a letra base, nao como letra depois do Z', () {
-      final lista = [animal('Zulmira', 1), animal('Ângela', 2), animal('Beatriz', 3)];
+      final lista = [
+        animal('Zulmira', 1),
+        animal('Ângela', 2),
+        animal('Beatriz', 3)
+      ];
 
       final resultado =
           aplicarBuscaEOrdem(lista, ordem: OrdemAnimais.nome, busca: '');
@@ -127,7 +134,11 @@ void main() {
 
   group('ordem invertida', () {
     test('nome decrescente vai de Z a A', () {
-      final lista = [animal('Aurora', 1), animal('Carmem', 2), animal('Bonita', 3)];
+      final lista = [
+        animal('Aurora', 1),
+        animal('Carmem', 2),
+        animal('Bonita', 3)
+      ];
 
       final resultado = aplicarBuscaEOrdem(lista,
           ordem: OrdemAnimais.nome, crescente: false, busca: '');
@@ -176,7 +187,11 @@ void main() {
     });
 
     test('filtra por parte do nome ignorando maiuscula', () {
-      final lista = [animal('Aurora', 1), animal('Bonita', 2), animal('Bonitinha', 3)];
+      final lista = [
+        animal('Aurora', 1),
+        animal('Bonita', 2),
+        animal('Bonitinha', 3)
+      ];
 
       final resultado =
           aplicarBuscaEOrdem(lista, ordem: OrdemAnimais.nome, busca: 'bonit');
@@ -205,8 +220,8 @@ void main() {
     test('ignora espaco em volta do termo digitado', () {
       final lista = [animal('Aurora', 12), animal('Bonita', 47)];
 
-      final resultado =
-          aplicarBuscaEOrdem(lista, ordem: OrdemAnimais.nome, busca: '  aurora  ');
+      final resultado = aplicarBuscaEOrdem(lista,
+          ordem: OrdemAnimais.nome, busca: '  aurora  ');
 
       expect(nomes(resultado), ['Aurora']);
     });
@@ -220,4 +235,57 @@ void main() {
       expect(resultado, isEmpty);
     });
   });
+
+  group('versao generica (Recria)', () {
+    _Item item(String titulo, int? brinco, {String nome = ''}) =>
+        (titulo: titulo, nome: nome, brinco: brinco);
+
+    test('ordena por nome com a mesma regra (acento, sem nome no fim)', () {
+      final r = _aplicar([item('Zulmira', 1), item('', 2), item('Ângela', 3)]);
+      expect(r.map((i) => i.titulo), ['Ângela', 'Zulmira', '']);
+    });
+
+    test('ordena por brinco numerico; sem brinco (0, -1, nulo) vai ao fim', () {
+      final r = _aplicar(
+          [item('a', 428), item('b', 0), item('c', 390), item('d', null)],
+          ordem: OrdemAnimais.brinco);
+      expect(r.map((i) => i.brinco), [390, 428, 0, null]);
+    });
+
+    test('decrescente inverte so quem tem brinco', () {
+      final r = _aplicar([item('a', 1), item('b', null), item('c', 2)],
+          ordem: OrdemAnimais.brinco, crescente: false);
+      expect(r.map((i) => i.brinco), [2, 1, null]);
+    });
+
+    test('busca por titulo, nome ou brinco, sem acento', () {
+      final lista = [
+        item('240824', 240824, nome: 'Ângela'),
+        item('220824', 220824),
+        item('Mimosa', 5),
+      ];
+      expect(_aplicar(lista, busca: 'angela').map((i) => i.brinco), [240824]);
+      expect(_aplicar(lista, busca: '2208').map((i) => i.brinco), [220824]);
+      expect(_aplicar(lista, busca: 'mimo').map((i) => i.brinco), [5]);
+    });
+  });
 }
+
+/// A Recria lista `AnimalData` (do struct), nao `AnimalEntity`. A versao
+/// generica aplica a MESMA regra a qualquer tipo, dado como ler titulo, nome
+/// e brinco — assim as duas telas buscam e ordenam igual.
+typedef _Item = ({String titulo, String nome, int? brinco});
+
+List<_Item> _aplicar(List<_Item> lista,
+        {OrdemAnimais ordem = OrdemAnimais.nome,
+        bool crescente = true,
+        String busca = ''}) =>
+    aplicarBuscaEOrdemPor<_Item>(
+      lista,
+      titulo: (i) => i.titulo,
+      nome: (i) => i.nome,
+      brinco: (i) => i.brinco,
+      ordem: ordem,
+      crescente: crescente,
+      busca: busca,
+    );
