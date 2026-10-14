@@ -223,10 +223,11 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if ((!preenchido(resumoVisitaAtualResumoDaVisitaRecord
-                    .assinaturaProdutor)) &&
-                (!preenchido(resumoVisitaAtualResumoDaVisitaRecord
-                    .dtAssinaturaFormatado)))
+            // Cada assinatura fica disponível enquanto faltar, mesmo com a
+            // visita concluída: dá para concluir com uma só e colher a outra
+            // depois. O "Gerar PDF" monta o arquivo com o que houver na hora.
+            if (!preenchido(
+                resumoVisitaAtualResumoDaVisitaRecord.assinaturaProdutor))
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
                 child: FFButtonWidget(
@@ -291,10 +292,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                   ),
                 ),
               ),
-            if ((!preenchido(
-                    resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico)) &&
-                (!preenchido(resumoVisitaAtualResumoDaVisitaRecord
-                    .dtAssinaturaFormatado)))
+            if (!preenchido(
+                resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico))
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
                 child: FFButtonWidget(
@@ -628,50 +627,15 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
             _shouldSetState = true;
 
             await _assinarOfflineFirst();
-            await showDialog(
-              context: context,
-              builder: (alertDialogContext) {
-                return AlertDialog(
-                  title: Text('Visita concluída!'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(alertDialogContext),
-                      child: Text('Ok'),
-                    ),
-                  ],
-                );
-              },
-            );
-
-            context.goNamed(
-              ReceituariosListaPage.routeName,
-              queryParameters: {
-                'uidPropriedade': serializeParam(
-                  widget.uidPropriedade,
-                  ParamType.DocumentReference,
-                ),
-                'nomePropriedade': serializeParam(
-                  widget.nomePropriedade,
-                  ParamType.String,
-                ),
-                'uidTecnico': serializeParam(
-                  widget.uidTecnico,
-                  ParamType.DocumentReference,
-                ),
-                'emailPropriedade': serializeParam(
-                  widget.emailPropriedade,
-                  ParamType.String,
-                ),
-                'visitaPresencial': serializeParam(
-                  widget.visitaPresencial,
-                  ParamType.bool,
-                ),
-                'diasDg': serializeParam(
-                  '',
-                  ParamType.String,
-                ),
-              }.withoutNulls,
-            );
+            // Fica no resumo: a tela observa o ObjectBox e, com a visita
+            // concluída, troca sozinha este botão pelo "Gerar PDF". Antes ela
+            // voltava para a lista e só depois o PDF abria, por cima dela.
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                    content: Text('Visita concluída. Gerando o PDF…')),
+              );
+            }
 
             await _gerarReceituario(() => actions.createReceituario(
                   widget.uidResumoVisita!,
