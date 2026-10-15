@@ -51,4 +51,17 @@ class RecomendacaoRepository extends BaseSyncRepository<RecomendacaoEntity> {
       .query(RecomendacaoEntity_.parentPath.equals(parentPath))
       .watch(triggerImmediately: true)
       .map((query) => query.find());
+
+  /// Recomendações ativas de uma visita (opcionalmente de um título), com o
+  /// filtro feito no banco em vez de `getAll()` + filtro em Dart.
+  List<RecomendacaoEntity> getDaVisita(String resumoPath, {String? titulo}) {
+    var condicao = RecomendacaoEntity_.uidResumoDaVisitaPath
+        .equals(resumoPath)
+        .and(RecomendacaoEntity_.isDeleted.equals(false));
+    if (titulo != null) {
+      condicao =
+          condicao.and(RecomendacaoEntity_.tituloRecomendacao.equals(titulo));
+    }
+    return box.query(condicao).build().find();
+  }
 }

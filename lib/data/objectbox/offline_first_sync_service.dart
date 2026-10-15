@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../core/sync/alvos_animais_produtor.dart';
+import '../../core/sync/assinatura_local.dart';
 import '../../core/sync/blocos.dart';
 import '../../core/sync/edicao_pendente.dart';
 import '../../core/sync/escuta_remota.dart';
@@ -22,6 +23,7 @@ import '../../core/sync/total_estimado.dart';
 import '../../core/sync/sync_etapa.dart';
 import '../../core/sync/sync_exceptions.dart';
 import '../../core/sync/upsert_referencia.dart';
+import 'assinaturas_locais.dart';
 import 'objectbox_service.dart';
 import 'repositories/base_sync_repository.dart';
 import 'repositories/financeiro_repository.dart';
@@ -1128,14 +1130,14 @@ class OfflineFirstSyncService {
             .get();
         _gravarSincronizaveis<ResumoVisitaEntity>(
           _objectBox.resumoVisitaBox,
-          [
+          _preservarAssinaturasLocais([
             for (final doc in visitasSnapshot.docs)
               ResumoVisitaEntity.fromFirestore(
                 doc.data(),
                 doc.id,
                 parentPath: 'resumo_da_visita',
               ),
-          ],
+          ]),
           ResumoVisitaEntity_.firestoreId,
         );
         totalVisitas += visitasSnapshot.docs.length;
@@ -1579,8 +1581,45 @@ class OfflineFirstSyncService {
   Map<String, dynamic> _payloadVisita(ResumoVisitaEntity v) =>
       ResumoVisitaRepository(firestore: _firestore).payloadParaGravar(v);
 
+  /// Mantém nas visitas baixadas as assinaturas que ainda não subiram ao
+  /// Storage (ver [assinaturaAposDownload]).
+  List<ResumoVisitaEntity> _preservarAssinaturasLocais(
+      List<ResumoVisitaEntity> baixadas) {
+    final ids = [
+      for (final v in baixadas)
+        if (v.firestoreId != null) v.firestoreId!,
+    ];
+    if (ids.isEmpty) return baixadas;
+    final locais = {
+      for (final v in _objectBox.resumoVisitaBox
+          .query(ResumoVisitaEntity_.firestoreId.oneOf(ids).and(
+              ResumoVisitaEntity_.assinaturaTecnico
+                  .startsWith(prefixoAssinaturaLocal)
+                  .or(ResumoVisitaEntity_.assinaturaProdutor
+                      .startsWith(prefixoAssinaturaLocal))))
+          .build()
+          .find())
+        v.firestoreId: v,
+    };
+    if (locais.isEmpty) return baixadas;
+    for (final v in baixadas) {
+      final local = locais[v.firestoreId];
+      if (local == null) continue;
+      v.assinaturaTecnico = assinaturaAposDownload(
+          local: local.assinaturaTecnico, baixada: v.assinaturaTecnico);
+      v.assinaturaProdutor = assinaturaAposDownload(
+          local: local.assinaturaProdutor, baixada: v.assinaturaProdutor);
+    }
+    return baixadas;
+  }
+
   /// Sincroniza visitas modificadas
   Future<void> _syncModifiedVisitas() async {
+    // Sem await: o upload das imagens não segura o resto do sync. A visita
+    // sobe já agora sem a assinatura local (o payload a omite) e ganha a URL
+    // quando o arquivo chegar ao Storage.
+    unawaited(AssinaturasLocais.enviarPendentes());
+
     final modified = _objectBox.resumoVisitaBox
         .query(ResumoVisitaEntity_.needsSync.equals(true))
         .build()
@@ -2034,11 +2073,11 @@ class OfflineFirstSyncService {
       case TipoEscuta.visitas:
         _gravarSincronizaveis<ResumoVisitaEntity>(
           _objectBox.resumoVisitaBox,
-          [
+          _preservarAssinaturasLocais([
             for (final doc in docs)
               ResumoVisitaEntity.fromFirestore(doc.data(), doc.id,
                   parentPath: alvo.parentPath),
-          ],
+          ]),
           ResumoVisitaEntity_.firestoreId,
         );
       case TipoEscuta.tratamentos:

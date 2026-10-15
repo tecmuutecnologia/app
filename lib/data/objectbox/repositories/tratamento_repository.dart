@@ -69,4 +69,18 @@ class TratamentoRepository extends BaseSyncRepository<TratamentoEntity> {
       .query(TratamentoEntity_.parentPath.equals(parentPath))
       .watch(triggerImmediately: true)
       .map((query) => query.find());
+
+  /// Tratamentos ativos de uma visita (opcionalmente de um tipo de ação).
+  ///
+  /// Filtra no banco. O receituário fazia `getAll()` e filtrava em Dart — a
+  /// tabela inteira de tratamentos materializada a cada recomendação.
+  List<TratamentoEntity> getDaVisita(String resumoPath, {String? tipoAcao}) {
+    var condicao = TratamentoEntity_.uidResumoDaVisitaPath
+        .equals(resumoPath)
+        .and(TratamentoEntity_.isDeleted.equals(false));
+    if (tipoAcao != null) {
+      condicao = condicao.and(TratamentoEntity_.tipoAcao.equals(tipoAcao));
+    }
+    return box.query(condicao).build().find();
+  }
 }

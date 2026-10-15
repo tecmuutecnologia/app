@@ -1,6 +1,4 @@
 import '/data/backend.dart';
-import '/data/objectbox/index.dart';
-import '/data/firebase_storage/storage.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
@@ -8,6 +6,8 @@ import '/core/ui/upload_data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:signature/signature.dart';
+
+import '../../application/assinar_resumo.dart';
 
 class AssinaturaProdutorWidget extends StatefulWidget {
   const AssinaturaProdutorWidget({
@@ -24,7 +24,6 @@ class AssinaturaProdutorWidget extends StatefulWidget {
 
 class _AssinaturaProdutorWidgetState extends State<AssinaturaProdutorWidget> {
   SignatureController? _assProdutorController;
-  String _uploadedSignatureUrl = '';
 
   @override
   void initState() {
@@ -72,60 +71,22 @@ class _AssinaturaProdutorWidgetState extends State<AssinaturaProdutorWidget> {
                   );
                   return;
                 }
-                showUploadMessage(
-                  context,
-                  'Seus dados estão sendo enviados...',
-                  showLoading: true,
+                // Offline-first: grava no aparelho e fecha na hora; o upload
+                // ao Storage corre em segundo plano (ver assinarResumo).
+                final salvo = await assinarResumo(
+                  firestoreIdResumo: widget.uidResumoVisita?.id,
+                  png: signatureImage,
+                  assinante: Assinante.produtor,
                 );
-                final downloadUrl = (await uploadData(
-                    getSignatureStoragePath(), signatureImage));
-
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                if (downloadUrl != null) {
-                  safeSetState(() => _uploadedSignatureUrl = downloadUrl);
+                if (!context.mounted) return;
+                if (!salvo) {
                   showUploadMessage(
                     context,
-                    'Sucesso!',
-                  );
-                } else {
-                  showUploadMessage(
-                    context,
-                    'Envio de dados falhou. Por favor, tente novamente.',
+                    'Resumo da visita não encontrado no aparelho.',
                   );
                   return;
                 }
-
-                if (_uploadedSignatureUrl != '') {
-                  // Offline-first: grava a assinatura no ObjectBox e deixa
-                  // o sync subir. Antes era um update direto no Firestore.
-                  final repo = ResumoVisitaRepository();
-                  final resumo = repo
-                      .getAll()
-                      .where((e) => e.firestoreId == widget.uidResumoVisita?.id)
-                      .firstOrNull;
-                  if (resumo != null) {
-                    resumo.assinaturaProdutor = _uploadedSignatureUrl;
-                    await repo.save(resumo);
-                  }
-                  Navigator.pop(context);
-                  return;
-                } else {
-                  await showDialog(
-                    context: context,
-                    builder: (alertDialogContext) {
-                      return AlertDialog(
-                        title: Text('Informe uma assinatura.'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(alertDialogContext),
-                            child: Text('Ok'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                  return;
-                }
+                Navigator.pop(context);
               },
               text: 'Assinar',
               icon: Icon(

@@ -1,12 +1,10 @@
 import '/domain/animais/ordenacao_animal.dart';
 import '/data/backend.dart';
+import '/data/objectbox/index.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/app/theme/flutter_flow_theme.dart';
-import '/core/ui/flutter_flow_util.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 class ListaDiagnosticoGestacaoWidget extends StatefulWidget {
   const ListaDiagnosticoGestacaoWidget({
@@ -29,15 +27,25 @@ class ListaDiagnosticoGestacaoWidget extends StatefulWidget {
 
 class _ListaDiagnosticoGestacaoWidgetState
     extends State<ListaDiagnosticoGestacaoWidget> {
+  static const _diagnosticos = {'PP', 'DG+', 'DG-', 'Aborto'};
+
+  /// Criado uma vez (e refeito só se a data mudar). Criar o stream dentro do
+  /// `build` reabria a consulta a cada rebuild da página.
+  late Stream<List<_AnimalComInseminacao>> _animais;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
+    _animais = _observarAnimais();
   }
 
-  // Função para formatar a data da visita para comparação
-  String _formatDateForComparison(DateTime date) {
-    return DateFormat('dd/MM/yyyy').format(date);
+  @override
+  void didUpdateWidget(covariant ListaDiagnosticoGestacaoWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.dtVisita != widget.dtVisita ||
+        oldWidget.uidPropriedade.path != widget.uidPropriedade.path) {
+      _animais = _observarAnimais();
+    }
   }
 
   // Função para obter o início do dia (00:00:00)
@@ -50,211 +58,158 @@ class _ListaDiagnosticoGestacaoWidgetState
     return DateTime(date.year, date.month, date.day, 23, 59, 59);
   }
 
+  /// Diagnósticos do dia da visita, do ObjectBox (offline-first). Antes era um
+  /// stream do Firestore mais um `get()` de rede por animal, em sequência — e
+  /// refeito a cada rebuild, porque o Future nascia dentro do `build`.
+  Stream<List<_AnimalComInseminacao>> _observarAnimais() => AcaoRepository()
+      .watchComAnimalNoPeriodo(
+        _startOfDay(widget.dtVisita),
+        _endOfDay(widget.dtVisita),
+        tipos: _diagnosticos,
+      )
+      .map(_animaisDaPropriedade);
+
   @override
   Widget build(BuildContext context) {
-    // Formatar a data da visita para comparação (igual ao campo dataVisita nas ações)
-    // ignore: unused_local_variable
-    final _dtVisitaFormatada = _formatDateForComparison(widget.dtVisita);
-
-    // Obter início e fim do dia da visita para filtrar por dataDaAcao
-    final dtInicioDia = _startOfDay(widget.dtVisita);
-    final dtFimDia = _endOfDay(widget.dtVisita);
-
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 10.0),
-      child: StreamBuilder<List<AcoesRecord>>(
-        stream: queryAcoesRecord(
-          parent: widget.uidTecnico,
-          queryBuilder: (acoesRecord) => acoesRecord
-              .where('dataDaAcao', isGreaterThanOrEqualTo: dtInicioDia)
-              .where('dataDaAcao', isLessThanOrEqualTo: dtFimDia),
-        ),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(
-              child: SizedBox(
-                width: 50.0,
-                height: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Color(0xFFF75E38),
-                  ),
-                ),
-              ),
-            );
-          }
-
-          List<AcoesRecord> acoesRecordList = snapshot.data!;
-
-          // Filtrar apenas PP, DG+ e DG- que possuem animais vinculados
-          final acoesFiltradas = acoesRecordList
-              .where((acao) =>
-                  (acao.acao == 'PP' ||
-                      acao.acao == 'DG+' ||
-                      acao.acao == 'DG-' ||
-                      acao.acao == 'Aborto') &&
-                  acao.uidAnimalAnimaisProdutores != null)
-              .toList();
-
-          if (acoesFiltradas.isEmpty) {
+      child: StreamBuilder<List<_AnimalComInseminacao>>(
+        stream: _animais,
+        builder: (context, animaisSnapshot) {
+          if (!animaisSnapshot.hasData) {
             return SizedBox.shrink();
           }
 
-          // Usar FutureBuilder para carregar todos os animais e filtrar por propriedade
-          return FutureBuilder<List<_AnimalComInseminacao>>(
-            future: _carregarAnimaisComInseminacao(acoesFiltradas),
-            builder: (context, animaisSnapshot) {
-              if (!animaisSnapshot.hasData) {
-                return Center(
-                  child: SizedBox(
-                    width: 30.0,
-                    height: 30.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Color(0xFFF75E38),
-                      ),
-                    ),
-                  ),
-                );
-              }
+          final todosAnimais = animaisSnapshot.data!;
 
-              final todosAnimais = animaisSnapshot.data!;
+          // Se não há animais da propriedade, não mostrar nada
+          if (todosAnimais.isEmpty) {
+            return SizedBox.shrink();
+          }
 
-              // Se não há animais da propriedade, não mostrar nada
-              if (todosAnimais.isEmpty) {
-                return SizedBox.shrink();
-              }
+          // Separar em duas listas: PP/DG+ e DG-
+          final animaisPPDGMais = todosAnimais
+              .where((a) => a.acao == 'PP' || a.acao == 'DG+')
+              .toList();
+          final animaisDGMenos =
+              todosAnimais.where((a) => a.acao == 'DG-').toList();
+          final animaisAbortos = todosAnimais
+              .where((a) => a.acao == 'Aborto' && ehVaca(a.grupoAnimal))
+              .toList();
 
-              // Separar em duas listas: PP/DG+ e DG-
-              final animaisPPDGMais = todosAnimais
-                  .where((a) => a.acao == 'PP' || a.acao == 'DG+')
-                  .toList();
-              final animaisDGMenos =
-                  todosAnimais.where((a) => a.acao == 'DG-').toList();
-              final animaisAbortos = todosAnimais
-                  .where((a) => a.acao == 'Aborto' && ehVaca(a.grupoAnimal))
-                  .toList();
+          // Ordenar por brinco numérico e depois por nome
+          animaisPPDGMais.sort(_compararAnimais);
+          animaisDGMenos.sort(_compararAnimais);
+          animaisAbortos.sort(_compararAnimais);
 
-              // Ordenar por brinco numérico e depois por nome
-              animaisPPDGMais.sort(_compararAnimais);
-              animaisDGMenos.sort(_compararAnimais);
-              animaisAbortos.sort(_compararAnimais);
-
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Título da seção
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Título da seção
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            15.0, 10.0, 15.0, 5.0),
-                        child: Text(
-                          'Diagnóstico de Gestação',
-                          style:
-                              FlutterFlowTheme.of(context).bodyMedium.override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                                    fontSize: 16.0,
-                                    letterSpacing: 0.0,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                        ),
-                      ),
-                    ],
+                  Padding(
+                    padding:
+                        EdgeInsetsDirectional.fromSTEB(15.0, 10.0, 15.0, 5.0),
+                    child: Text(
+                      'Diagnóstico de Gestação',
+                      style: FlutterFlowTheme.of(context).bodyMedium.override(
+                            font: GoogleFonts.readexPro(
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                            ),
+                            fontSize: 16.0,
+                            letterSpacing: 0.0,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontStyle,
+                          ),
+                    ),
                   ),
-                  // Lista PP/DG+ (Prenhes)
-                  if (animaisPPDGMais.isNotEmpty) ...[
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(15.0, 5.0, 15.0, 0.0),
-                      child: Text(
-                        'Prenhes (PP/DG+)',
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.readexPro(
-                                fontWeight: FontWeight.w600,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontStyle,
-                              ),
-                              color: Color(0xFF048508),
-                              letterSpacing: 0.0,
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
-                      child: _buildAnimalListFromData(animaisPPDGMais),
-                    ),
-                  ],
-                  // Lista DG- (Vazias)
-                  if (animaisDGMenos.isNotEmpty) ...[
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(15.0, 10.0, 15.0, 0.0),
-                      child: Text(
-                        'Vazias (DG-)',
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.readexPro(
-                                fontWeight: FontWeight.w600,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontStyle,
-                              ),
-                              color: Color(0xFFEE0000),
-                              letterSpacing: 0.0,
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
-                      child: _buildAnimalListFromData(animaisDGMenos),
-                    ),
-                  ],
-                  // Lista de Abortos
-                  if (animaisAbortos.isNotEmpty) ...[
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(15.0, 10.0, 15.0, 0.0),
-                      child: Text(
-                        'Abortos',
-                        style: FlutterFlowTheme.of(context).bodyMedium.override(
-                              font: GoogleFonts.readexPro(
-                                fontWeight: FontWeight.w600,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .fontStyle,
-                              ),
-                              color: Color(0xFFEE0000),
-                              letterSpacing: 0.0,
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
-                      child: _buildAnimalListFromData(animaisAbortos),
-                    ),
-                  ],
-                  SizedBox(height: 10.0),
                 ],
-              );
-            },
+              ),
+              // Lista PP/DG+ (Prenhes)
+              if (animaisPPDGMais.isNotEmpty) ...[
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(15.0, 5.0, 15.0, 0.0),
+                  child: Text(
+                    'Prenhes (PP/DG+)',
+                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                          font: GoogleFonts.readexPro(
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontStyle,
+                          ),
+                          color: Color(0xFF048508),
+                          letterSpacing: 0.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
+                  child: _buildAnimalListFromData(animaisPPDGMais),
+                ),
+              ],
+              // Lista DG- (Vazias)
+              if (animaisDGMenos.isNotEmpty) ...[
+                Padding(
+                  padding:
+                      EdgeInsetsDirectional.fromSTEB(15.0, 10.0, 15.0, 0.0),
+                  child: Text(
+                    'Vazias (DG-)',
+                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                          font: GoogleFonts.readexPro(
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontStyle,
+                          ),
+                          color: Color(0xFFEE0000),
+                          letterSpacing: 0.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
+                  child: _buildAnimalListFromData(animaisDGMenos),
+                ),
+              ],
+              // Lista de Abortos
+              if (animaisAbortos.isNotEmpty) ...[
+                Padding(
+                  padding:
+                      EdgeInsetsDirectional.fromSTEB(15.0, 10.0, 15.0, 0.0),
+                  child: Text(
+                    'Abortos',
+                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                          font: GoogleFonts.readexPro(
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontStyle,
+                          ),
+                          color: Color(0xFFEE0000),
+                          letterSpacing: 0.0,
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
+                  child: _buildAnimalListFromData(animaisAbortos),
+                ),
+              ],
+              SizedBox(height: 10.0),
+            ],
           );
         },
       ),
@@ -349,60 +304,42 @@ class _ListaDiagnosticoGestacaoWidgetState
     );
   }
 
-  Future<List<_AnimalComInseminacao>> _carregarAnimaisComInseminacao(
-      List<AcoesRecord> acoes) async {
-    final List<_AnimalComInseminacao> resultado = [];
+  List<_AnimalComInseminacao> _animaisDaPropriedade(List<AcaoEntity> acoes) {
+    final animais = AnimalRepository();
+    final resultado = <_AnimalComInseminacao>[];
 
     for (final acao in acoes) {
-      if (acao.uidAnimalAnimaisProdutores != null) {
-        try {
-          final animalSnapshot = await acao.uidAnimalAnimaisProdutores!.get();
-          if (animalSnapshot.exists) {
-            final animalData = animalSnapshot.data() as Map<String, dynamic>?;
-            if (animalData != null) {
-              // Verificar se o animal pertence à propriedade atual
-              // O campo no AnimaisProdutores é 'uidTecnicoPropriedade'
-              final uidTecnicoPropriedade =
-                  animalData['uidTecnicoPropriedade'] as DocumentReference?;
-              if (uidTecnicoPropriedade == null ||
-                  uidTecnicoPropriedade.path != widget.uidPropriedade.path) {
-                // Animal não pertence a esta propriedade, pular
-                continue;
-              }
-
-              final nomeAnimal = animalData['nomeAnimal'] as String? ?? '';
-              final brincoAnimal = animalData['brincoAnimal'] as int?;
-              final grupoAnimal = animalData['grupoAnimal'] as String? ?? '';
-
-              // Usar a data de última inseminação do próprio animal
-              final dtUltimaInseminacaoAnimal =
-                  animalData['dtUltimaInseminacao'] as String? ?? '';
-
-              // Mesmo predicado da ordenacao: 0 e -1 nao sao brinco.
-              final String displayName;
-              if (temBrinco(brincoAnimal)) {
-                displayName = nomeAnimal.isNotEmpty
-                    ? '$brincoAnimal - $nomeAnimal'
-                    : brincoAnimal.toString();
-              } else {
-                displayName = nomeAnimal;
-              }
-
-              resultado.add(_AnimalComInseminacao(
-                nomeAnimal: nomeAnimal,
-                brincoAnimal: brincoAnimal,
-                grupoAnimal: grupoAnimal,
-                dtUltimaInseminacao: dtUltimaInseminacaoAnimal,
-                dtDgMenos: acao.dtDgMenos,
-                displayName: displayName,
-                acao: acao.acao,
-              ));
-            }
-          }
-        } catch (e) {
-          print('Erro ao carregar animal: $e');
-        }
+      final animal = animais.getByFirestoreId(
+          acao.uidAnimalAnimaisProdutoresPath!.split('/').last);
+      // Só animais desta propriedade (campo uidTecnicoPropriedade).
+      if (animal == null ||
+          animal.uidTecnicoPropriedadePath != widget.uidPropriedade.path) {
+        continue;
       }
+
+      final nomeAnimal = animal.nomeAnimal ?? '';
+      final brincoAnimal = animal.brincoAnimal;
+
+      // Mesmo predicado da ordenacao: 0 e -1 nao sao brinco.
+      final String displayName;
+      if (temBrinco(brincoAnimal)) {
+        displayName = nomeAnimal.isNotEmpty
+            ? '$brincoAnimal - $nomeAnimal'
+            : brincoAnimal.toString();
+      } else {
+        displayName = nomeAnimal;
+      }
+
+      resultado.add(_AnimalComInseminacao(
+        nomeAnimal: nomeAnimal,
+        brincoAnimal: brincoAnimal,
+        grupoAnimal: animal.grupoAnimal ?? '',
+        // Usar a data de última inseminação do próprio animal
+        dtUltimaInseminacao: animal.dtUltimaInseminacao ?? '',
+        dtDgMenos: acao.dtDgMenos ?? '',
+        displayName: displayName,
+        acao: acao.acao ?? '',
+      ));
     }
 
     return resultado;

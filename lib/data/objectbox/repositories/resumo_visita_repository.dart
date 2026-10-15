@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../core/sync/assinatura_local.dart';
 import '../objectbox_service.dart';
 import '../entities/index.dart';
 import '../../../objectbox.g.dart';
@@ -48,6 +49,16 @@ class ResumoVisitaRepository extends BaseSyncRepository<ResumoVisitaEntity> {
     }
     if (entity.dtAssinatura != null) {
       data['dtAssinatura'] = Timestamp.fromDate(entity.dtAssinatura!);
+    }
+    // Assinatura ainda no aparelho não sobe: `local:...` não é URL e quebraria
+    // a imagem no outro aparelho e no app do produtor. Sem a chave, o merge
+    // preserva o que o servidor tem; a URL sobe quando o arquivo chegar ao
+    // Storage (AssinaturasLocais.enviarPendentes).
+    if (ehAssinaturaLocal(entity.assinaturaTecnico)) {
+      data.remove('assinaturaTecnico');
+    }
+    if (ehAssinaturaLocal(entity.assinaturaProdutor)) {
+      data.remove('assinaturaProdutor');
     }
     return data;
   }

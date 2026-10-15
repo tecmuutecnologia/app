@@ -2,6 +2,7 @@
 import '/domain/animais/ordenacao_animal.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
+import '/data/objectbox/assinaturas_locais.dart';
 import '/core/ui/flutter_flow_util.dart';
 // Imports other custom actions
 // Imports custom functions
@@ -19,7 +20,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
 import '../util/data_flexivel.dart';
-import 'package:http/http.dart' as http;
 
 Future<void> createReceituario(
   DocumentReference uidResumoVisita,
@@ -31,6 +31,7 @@ Future<void> createReceituario(
   String? emailTecnico,
   String? nomeEmpresaTecnico, // Campo opcional
 ) async {
+  final cronometro = Stopwatch()..start();
   try {
     // Logo empacotado como asset. Antes vinha por HTTP e, se a busca
     // falhasse (offline), lançava exceção e abortava o receituário inteiro.
@@ -60,7 +61,6 @@ Future<void> createReceituario(
           : FirebaseFirestore.instance.doc(resumoEntity.uidTecnicoPath!),
     };
     final resumoPath = 'resumo_da_visita/${uidResumoVisita.id}';
-    print('Resumo da visita encontrado: $resumoVisitaData');
 
     bool hasValidBrinco(dynamic brinco) {
       if (brinco == null) return false;
@@ -85,8 +85,7 @@ Future<void> createReceituario(
     // Recomendações do ObjectBox, ligadas pelo CAMPO uidResumoDaVisita
     // (elas passaram a ser subcoleção da propriedade, não do resumo).
     final sortedRecomendacoes = RecomendacaoRepository()
-        .getAll()
-        .where((e) => !e.isDeleted && e.uidResumoDaVisitaPath == resumoPath)
+        .getDaVisita(resumoPath)
         .map((e) => <String, dynamic>{
               'tituloRecomendacao': e.tituloRecomendacao,
               'descricaoRecomendacao': e.descricaoRecomendacao,
@@ -109,18 +108,18 @@ Future<void> createReceituario(
     final List<pw.Widget> diagnosticoWidgets = [];
 
     for (final recomendacaoData in sortedRecomendacoes) {
-      print('Recomendação: ${recomendacaoData['tituloRecomendacao']}');
-
       // Busca tratamentos relacionados à recomendação atual dentro de resumo_da_visita
       final tratamentosDoTipo = TratamentoRepository()
-          .getAll()
-          .where((e) =>
-              !e.isDeleted &&
-              e.uidResumoDaVisitaPath == resumoPath &&
-              e.tipoAcao == recomendacaoData['tituloRecomendacao'])
+          .getDaVisita(resumoPath,
+              tipoAcao: recomendacaoData['tituloRecomendacao'] as String?)
           .map((e) => <String, dynamic>{
                 'nomeAnimal': e.nomeAnimal,
                 'brincoAnimal': e.brincoAnimal,
+                // O sort abaixo lê esta chave, que antes não era preenchida:
+                // todo brinco virava null, a ordem caía só no nome e, como os
+                // animais costumam não ter nome, a lista saía embaralhada.
+                'brincoAnimalOrder':
+                    numeroParaOrdenar(e.brincoAnimal, e.nomeAnimal),
                 'grupoAnimal': e.grupoAnimal,
                 'observacaoAcao': e.observacaoAcao,
               })
@@ -231,8 +230,6 @@ Future<void> createReceituario(
       );
 
       for (final tratamentoData in sortedTratamentos) {
-        print('Tratamento: ${tratamentoData['observacaoAcao']}');
-
         String brincoNomeAnimal;
         if (hasValidBrinco(tratamentoData['brincoAnimal']) &&
             tratamentoData['nomeAnimal'] != null &&
@@ -320,33 +317,23 @@ Future<void> createReceituario(
       // dela. Uma tabela mais alta que a página vira um filho indivisível, a
       // paginação nunca avança e o dart_pdf lança TooManyPagesException. Como
       // filha direta do MultiPage, a tabela pagina (e repete o cabeçalho).
-      recomendacoesWidgets.add(
-        pw.Container(
-          alignment: pw.Alignment.centerLeft,
-          child: pw.Text(
-            '${recomendacaoData['tituloRecomendacao']}',
-            style: pw.TextStyle(
-              fontWeight: pw.FontWeight.bold,
-              fontSize: 16,
-              color: PdfColor.fromHex('#f75e38'),
+      recomendacoesWidgets.addAll(tabelaComTitulo(
+        [
+          pw.Container(
+            alignment: pw.Alignment.centerLeft,
+            child: pw.Text(
+              '${recomendacaoData['tituloRecomendacao']}',
+              style: pw.TextStyle(
+                fontWeight: pw.FontWeight.bold,
+                fontSize: 16,
+                color: PdfColor.fromHex('#f75e38'),
+              ),
             ),
           ),
-        ),
-      );
-      recomendacoesWidgets.add(pw.SizedBox(height: 10));
-      recomendacoesWidgets.add(
-        pw.Table(
-          border: const pw.TableBorder(
-            top: pw.BorderSide(style: pw.BorderStyle.dashed),
-            bottom: pw.BorderSide(style: pw.BorderStyle.dashed),
-            left: pw.BorderSide(style: pw.BorderStyle.dashed),
-            right: pw.BorderSide(style: pw.BorderStyle.dashed),
-            horizontalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
-            verticalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
-          ),
-          children: tratamentosRows,
-        ),
-      );
+          pw.SizedBox(height: 10),
+        ],
+        tratamentosRows,
+      ));
       if (recomendacaoData['descricaoRecomendacao'] != null &&
           recomendacaoData['descricaoRecomendacao'].isNotEmpty) {
         recomendacoesWidgets.add(
@@ -391,14 +378,7 @@ Future<void> createReceituario(
       // animal vinculado.
       const diagnosticos = {'PP', 'DG+', 'DG-', 'Aborto'};
       final acoesDiagnosticoTemp = AcaoRepository()
-          .getAll()
-          .where((e) =>
-              !e.isDeleted &&
-              e.dataDaAcao != null &&
-              !e.dataDaAcao!.isBefore(dtInicioDia) &&
-              !e.dataDaAcao!.isAfter(dtFimDia) &&
-              diagnosticos.contains(e.acao ?? '') &&
-              e.uidAnimalAnimaisProdutoresPath != null)
+          .findComAnimalNoPeriodo(dtInicioDia, dtFimDia, tipos: diagnosticos)
           .map((e) => <String, dynamic>{
                 'acao': e.acao,
                 'uidAnimalAnimaisProdutoresPath':
@@ -481,12 +461,8 @@ Future<void> createReceituario(
             final brincoA = a['brincoAnimal'];
             final brincoB = b['brincoAnimal'];
 
-            int? numA = hasValidBrinco(brincoA)
-                ? int.tryParse(brincoA.toString())
-                : null;
-            int? numB = hasValidBrinco(brincoB)
-                ? int.tryParse(brincoB.toString())
-                : null;
+            final numA = numeroParaOrdenar(brincoA, a['nomeAnimal']);
+            final numB = numeroParaOrdenar(brincoB, b['nomeAnimal']);
 
             if (numA != null && numB != null) {
               return numA.compareTo(numB);
@@ -589,8 +565,9 @@ Future<void> createReceituario(
 
         // Construir widget de diagnóstico de gestação
 
-        // Cabeçalho da seção
-        diagnosticoWidgets.add(
+        // Título da seção: não entra sozinho, vai junto da primeira
+        // subseção para não ficar órfão no pé da página.
+        final tituloDiagnostico = <pw.Widget>[
           pw.Container(
             alignment: pw.Alignment.centerLeft,
             child: pw.Text(
@@ -602,8 +579,13 @@ Future<void> createReceituario(
               ),
             ),
           ),
-        );
-        diagnosticoWidgets.add(pw.SizedBox(height: 10));
+          pw.SizedBox(height: 10),
+        ];
+        List<pw.Widget> comTituloDaSecao(List<pw.Widget> subtitulo) {
+          final titulos = [...tituloDiagnostico, ...subtitulo];
+          tituloDiagnostico.clear();
+          return titulos;
+        }
 
         // Cabeçalho da tabela
         pw.TableRow buildDiagnosticoHeader(
@@ -665,64 +647,42 @@ Future<void> createReceituario(
 
         // Seção de Prenhes (PP/DG+)
         if (acoesPPDGMais.isNotEmpty) {
-          diagnosticoWidgets.add(
-            pw.Text(
-              'Prenhes (PP/DG+)',
-              style: pw.TextStyle(
-                fontWeight: pw.FontWeight.bold,
-                color: PdfColor.fromHex('#048508'),
-              ),
-            ),
-          );
-          diagnosticoWidgets.add(pw.SizedBox(height: 5));
-
           final rowsPPDGMais = await buildDiagnosticoRows(acoesPPDGMais);
-          diagnosticoWidgets.add(
-            pw.Table(
-              border: const pw.TableBorder(
-                top: pw.BorderSide(style: pw.BorderStyle.dashed),
-                bottom: pw.BorderSide(style: pw.BorderStyle.dashed),
-                left: pw.BorderSide(style: pw.BorderStyle.dashed),
-                right: pw.BorderSide(style: pw.BorderStyle.dashed),
-                horizontalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
-                verticalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
+          diagnosticoWidgets.addAll(tabelaComTitulo(
+            comTituloDaSecao([
+              pw.Text(
+                'Prenhes (PP/DG+)',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColor.fromHex('#048508'),
+                ),
               ),
-              children: [buildDiagnosticoHeader(), ...rowsPPDGMais],
-            ),
-          );
+              pw.SizedBox(height: 5),
+            ]),
+            [buildDiagnosticoHeader(), ...rowsPPDGMais],
+          ));
           diagnosticoWidgets.add(pw.SizedBox(height: 10));
         }
 
         // Seção de Vazias (DG-)
         if (acoesDGMenos.isNotEmpty) {
-          diagnosticoWidgets.add(
-            pw.Text(
-              'Vazias (DG-)',
-              style: pw.TextStyle(
-                fontWeight: pw.FontWeight.bold,
-                color: PdfColor.fromHex('#ee0000'),
-              ),
-            ),
-          );
-          diagnosticoWidgets.add(pw.SizedBox(height: 5));
-
           final rowsDGMenos = await buildDiagnosticoRows(acoesDGMenos);
-          diagnosticoWidgets.add(
-            pw.Table(
-              border: const pw.TableBorder(
-                top: pw.BorderSide(style: pw.BorderStyle.dashed),
-                bottom: pw.BorderSide(style: pw.BorderStyle.dashed),
-                left: pw.BorderSide(style: pw.BorderStyle.dashed),
-                right: pw.BorderSide(style: pw.BorderStyle.dashed),
-                horizontalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
-                verticalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
+          diagnosticoWidgets.addAll(tabelaComTitulo(
+            comTituloDaSecao([
+              pw.Text(
+                'Vazias (DG-)',
+                style: pw.TextStyle(
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColor.fromHex('#ee0000'),
+                ),
               ),
-              children: [
-                buildDiagnosticoHeader(colunaData: 'Data DG-'),
-                ...rowsDGMenos,
-              ],
-            ),
-          );
+              pw.SizedBox(height: 5),
+            ]),
+            [
+              buildDiagnosticoHeader(colunaData: 'Data DG-'),
+              ...rowsDGMenos,
+            ],
+          ));
           diagnosticoWidgets.add(pw.SizedBox(height: 10));
         }
 
@@ -740,31 +700,20 @@ Future<void> createReceituario(
           }
 
           if (acoesAbortosVacas.isNotEmpty) {
-            diagnosticoWidgets.add(
-              pw.Text(
-                'Abortos',
-                style: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold,
-                  color: PdfColor.fromHex('#ee0000'),
-                ),
-              ),
-            );
-            diagnosticoWidgets.add(pw.SizedBox(height: 5));
-
             final rowsAbortos = await buildDiagnosticoRows(acoesAbortosVacas);
-            diagnosticoWidgets.add(
-              pw.Table(
-                border: const pw.TableBorder(
-                  top: pw.BorderSide(style: pw.BorderStyle.dashed),
-                  bottom: pw.BorderSide(style: pw.BorderStyle.dashed),
-                  left: pw.BorderSide(style: pw.BorderStyle.dashed),
-                  right: pw.BorderSide(style: pw.BorderStyle.dashed),
-                  horizontalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
-                  verticalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
+            diagnosticoWidgets.addAll(tabelaComTitulo(
+              comTituloDaSecao([
+                pw.Text(
+                  'Abortos',
+                  style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    color: PdfColor.fromHex('#ee0000'),
+                  ),
                 ),
-                children: [buildDiagnosticoHeader(), ...rowsAbortos],
-              ),
-            );
+                pw.SizedBox(height: 5),
+              ]),
+              [buildDiagnosticoHeader(), ...rowsAbortos],
+            ));
           }
         }
 
@@ -772,30 +721,18 @@ Future<void> createReceituario(
       }
     }
 
-    // Função para baixar a imagem da assinatura do técnico
-    Future<Uint8List?> downloadSignature(String url) async {
-      final http.Response response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        return response.bodyBytes;
-      }
-      return null;
-    }
+    // Assinaturas: do arquivo local se ainda não subiram ao Storage, senão da
+    // URL. Sem rede, a imagem só falta no PDF em vez de abortar a geração.
+    final msConsultas = cronometro.elapsedMilliseconds;
+    final assinaturas = await Future.wait([
+      AssinaturasLocais.bytes(
+          resumoVisitaData['assinaturaProdutor'] as String?),
+      AssinaturasLocais.bytes(resumoVisitaData['assinaturaTecnico'] as String?),
+    ]);
+    final assinaturaProdutor = assinaturas[0];
+    final assinaturaTecnico = assinaturas[1];
 
-    // Baixar a assinatura do produtor, se disponível
-    Uint8List? assinaturaProdutor;
-    if (resumoVisitaData.containsKey('assinaturaProdutor') &&
-        resumoVisitaData['assinaturaProdutor'] != null) {
-      assinaturaProdutor =
-          await downloadSignature(resumoVisitaData['assinaturaProdutor']);
-    }
-
-    // Baixar a assinatura do técnico, se disponível
-    Uint8List? assinaturaTecnico;
-    if (resumoVisitaData.containsKey('assinaturaTecnico') &&
-        resumoVisitaData['assinaturaTecnico'] != null) {
-      assinaturaTecnico =
-          await downloadSignature(resumoVisitaData['assinaturaTecnico']);
-    }
+    final msDados = cronometro.elapsedMilliseconds;
 
     // Adiciona uma página ao documento PDF com a lista de recomendações e tratamentos
     pdf.addPage(
@@ -949,10 +886,15 @@ Future<void> createReceituario(
     final output = await getTemporaryDirectory();
     final file = File('${output.path}/$fileName');
     await file.writeAsBytes(await pdf.save());
+    final msPdf = cronometro.elapsedMilliseconds;
 
     // Abre o documento PDF usando o visualizador de PDF padrão
+    // Antes de abrir: no iOS o OpenFile só retorna quando o visualizador fecha.
+    debugPrint(
+        '🧾 Receituário pronto em ${msPdf}ms (consultas ${msConsultas}ms, '
+        'assinaturas ${msDados - msConsultas}ms, montar PDF ${msPdf - msDados}ms)');
     final result = await OpenFile.open(file.path);
-    print('OpenFile result: $result');
+    debugPrint('🧾 Visualizador: ${result.message}');
   } catch (e, st) {
     // Propaga em vez de engolir. Enquanto este catch só imprimia, o clique em
     // "Gerar PDF" não fazia nada e a tela não dizia por quê — um cast quebrado
@@ -961,4 +903,62 @@ Future<void> createReceituario(
     debugPrint('$st');
     rethrow;
   }
+}
+
+/// Número pelo qual o animal entra na ordem do receituário.
+///
+/// É o brinco quando ele é válido. Sem brinco, vale o nome se ele for só um
+/// número: há vacas cadastradas com o número no nome e brinco zerado (a 182,
+/// por exemplo), e o PDF mostra esse número na coluna "Animal" como se fosse
+/// brinco. Ordenar só pelo brinco jogava esses animais para o fim da lista.
+@visibleForTesting
+int? numeroParaOrdenar(dynamic brinco, dynamic nome) {
+  bool valido(int? n) => n != null && n > 0 && n != 99999 && n != 999999;
+  final doBrinco = int.tryParse(brinco?.toString().trim() ?? '');
+  if (valido(doBrinco)) return doBrinco;
+  final doNome = int.tryParse(nome?.toString().trim() ?? '');
+  return valido(doNome) ? doNome : null;
+}
+
+const _bordaTabela = pw.TableBorder(
+  top: pw.BorderSide(style: pw.BorderStyle.dashed),
+  bottom: pw.BorderSide(style: pw.BorderStyle.dashed),
+  left: pw.BorderSide(style: pw.BorderStyle.dashed),
+  right: pw.BorderSide(style: pw.BorderStyle.dashed),
+  horizontalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
+  verticalInside: pw.BorderSide(style: pw.BorderStyle.dashed),
+);
+
+/// Linhas que viajam junto com o título da seção.
+const _linhasPresasAoTitulo = 3;
+
+/// Título + tabela, sem deixar o título órfão no pé da página.
+///
+/// O MultiPage quebra a tabela entre linhas, mas não sabe que o título
+/// pertence a ela: quando só o título cabia, ele ficava sozinho no fim da
+/// página e a tabela começava na seguinte, deixando um vão em branco. Agora
+/// título, cabeçalho e as primeiras linhas formam um bloco indivisível.
+///
+/// O resto da tabela continua como filho direto do MultiPage — dentro de uma
+/// pw.Column ela não paginaria (TooManyPagesException). Ela não repete o
+/// cabeçalho: com `repeat` ele sairia duplicado logo abaixo do bloco.
+/// [linhas] começa pelo cabeçalho.
+List<pw.Widget> tabelaComTitulo(
+    List<pw.Widget> titulos, List<pw.TableRow> linhas) {
+  final corte = (1 + _linhasPresasAoTitulo).clamp(0, linhas.length);
+  return [
+    // Sem o Inseparable a pw.Column é "spanning" e o MultiPage a quebraria
+    // justamente entre o título e a tabela.
+    pw.Inseparable(
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+        children: [
+          ...titulos,
+          pw.Table(border: _bordaTabela, children: linhas.sublist(0, corte)),
+        ],
+      ),
+    ),
+    if (linhas.length > corte)
+      pw.Table(border: _bordaTabela, children: linhas.sublist(corte)),
+  ];
 }

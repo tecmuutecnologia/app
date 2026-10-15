@@ -89,13 +89,10 @@ class _ListaAnimaisTratamentosWidgetState
   /// Tratamentos desta visita e deste tipo de ação, ordenados como a query
   /// original: data de inseminação, depois brinco, depois nome.
   List<TratamentoEntity> _tratamentosDaVisita() {
+    final resumoPath = _resumoPath;
+    if (resumoPath == null) return [];
     final lista = TratamentoRepository()
-        .getAll()
-        .where((e) =>
-            !e.isDeleted &&
-            e.uidResumoDaVisitaPath == _resumoPath &&
-            e.tipoAcao == widget.parameter1)
-        .toList();
+        .getDaVisita(resumoPath, tipoAcao: widget.parameter1);
     lista.sort((a, b) {
       // A data de inseminacao tem precedencia aqui (e a ordem clinica da
       // visita); so no empate cai na regra geral brinco -> nome.
@@ -491,13 +488,13 @@ class _ListaAnimaisTratamentosWidgetState
                         // Antes era uma query + update no Firestore, com `!`
                         // sobre um resultado que podia ser null.
                         final repo = RecomendacaoRepository();
-                        final rec = repo
-                            .getAll()
-                            .where((e) =>
-                                !e.isDeleted &&
-                                e.uidResumoDaVisitaPath == _resumoPath &&
-                                e.tituloRecomendacao == widget.parameter1)
-                            .firstOrNull;
+                        final resumoPath = _resumoPath;
+                        final rec = resumoPath == null
+                            ? null
+                            : repo
+                                .getDaVisita(resumoPath,
+                                    titulo: widget.parameter1)
+                                .firstOrNull;
                         if (rec != null) {
                           rec.descricaoRecomendacao =
                               _tratamentoRecomendacaoTextController.text;

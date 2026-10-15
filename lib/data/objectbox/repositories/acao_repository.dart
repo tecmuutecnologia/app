@@ -142,4 +142,32 @@ class AcaoRepository extends BaseSyncRepository<AcaoEntity> {
       .query(AcaoEntity_.parentPath.equals(parentPath))
       .watch(triggerImmediately: true)
       .map((query) => query.find());
+
+  /// Ações dos [tipos] entre [inicio] e [fim] (inclusive) que têm animal
+  /// vinculado. Alimenta o diagnóstico de gestação do resumo da visita e do
+  /// receituário, que antes abriam um stream do Firestore / faziam `getAll()`
+  /// da tabela inteira de ações.
+  Stream<List<AcaoEntity>> watchComAnimalNoPeriodo(
+    DateTime inicio,
+    DateTime fim, {
+    required Set<String> tipos,
+  }) =>
+      _comAnimalNoPeriodo(inicio, fim, tipos)
+          .watch(triggerImmediately: true)
+          .map((q) => q.find());
+
+  List<AcaoEntity> findComAnimalNoPeriodo(
+    DateTime inicio,
+    DateTime fim, {
+    required Set<String> tipos,
+  }) =>
+      _comAnimalNoPeriodo(inicio, fim, tipos).build().find();
+
+  QueryBuilder<AcaoEntity> _comAnimalNoPeriodo(
+          DateTime inicio, DateTime fim, Set<String> tipos) =>
+      box.query(AcaoEntity_.dataDaAcao
+          .between(inicio.millisecondsSinceEpoch, fim.millisecondsSinceEpoch)
+          .and(AcaoEntity_.acao.oneOf(tipos.toList()))
+          .and(AcaoEntity_.uidAnimalAnimaisProdutoresPath.notNull())
+          .and(AcaoEntity_.isDeleted.equals(false)));
 }

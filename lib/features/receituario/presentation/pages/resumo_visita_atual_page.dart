@@ -6,10 +6,12 @@ import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/util/preenchido.dart';
+import '../../application/cabecalho_receituario.dart';
 import '../../application/tem_assinatura.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '../widgets/assinatura_produtor_widget.dart';
+import '../widgets/assinatura_imagem.dart';
 import '../widgets/assinatura_tecnico_widget.dart';
 import '../widgets/lista_animais_tratamentos_widget.dart';
 import '../widgets/lista_diagnostico_gestacao_widget.dart';
@@ -52,12 +54,6 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
   TextEditingController? _obsGeralTextController;
   final String? Function(BuildContext, String?)?
       _obsGeralTextControllerValidator = null;
-  PropriedadesRecord? _outUidPropriedade2;
-  TecnicoRecord? _outUidTecnico2;
-  PersonRecord? _outUidPersonTecnico2;
-  PropriedadesRecord? _outUidPropriedade;
-  TecnicoRecord? _outUidTecnico;
-  PersonRecord? _outUidPersonTecnico;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -79,6 +75,50 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     super.dispose();
   }
 
+  /// Volta para a lista de receituários.
+  ///
+  /// A lista abre o resumo com `pushNamed`, então voltar é `pop`. Antes era
+  /// `goNamed`, que troca a pilha inteira: a lista virava a única tela, o
+  /// início da propriedade sumia de baixo dela e o voltar da lista caía no
+  /// dashboard do técnico — e era preciso iniciar a visita e achar a
+  /// propriedade de novo. O `goNamed` fica só para quando não há para onde
+  /// voltar (resumo aberto direto por link).
+  void _voltarParaReceituarios() {
+    if (context.canPop()) {
+      context.pop();
+      return;
+    }
+    context.goNamed(
+      ReceituariosListaPage.routeName,
+      queryParameters: {
+        'uidPropriedade': serializeParam(
+          widget.uidPropriedade,
+          ParamType.DocumentReference,
+        ),
+        'nomePropriedade': serializeParam(
+          widget.nomePropriedade,
+          ParamType.String,
+        ),
+        'uidTecnico': serializeParam(
+          widget.uidTecnico,
+          ParamType.DocumentReference,
+        ),
+        'emailPropriedade': serializeParam(
+          widget.emailPropriedade,
+          ParamType.String,
+        ),
+        'visitaPresencial': serializeParam(
+          widget.visitaPresencial,
+          ParamType.bool,
+        ),
+        'diasDg': serializeParam(
+          widget.diasDg,
+          ParamType.String,
+        ),
+      }.withoutNulls,
+    );
+  }
+
   Widget _cabecalho(BuildContext context,
       ResumoVisitaEntity resumoVisitaAtualResumoDaVisitaRecord) {
     return Row(
@@ -96,37 +136,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
               color: Colors.white,
               size: 30.0,
             ),
-            onPressed: () async {
-              context.goNamed(
-                ReceituariosListaPage.routeName,
-                queryParameters: {
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    false,
-                    ParamType.bool,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                }.withoutNulls,
-              );
-            },
+            onPressed: () async => _voltarParaReceituarios(),
           ),
         ),
         Text(
@@ -162,12 +172,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
         child: Builder(
           builder: (context) {
             final listViewRecomendacoesRecordList = RecomendacaoRepository()
-                .getAll()
-                .where((e) =>
-                    !e.isDeleted &&
-                    e.uidResumoDaVisitaPath ==
-                        'resumo_da_visita/${widget.uidResumoVisita?.id}')
-                .toList();
+                .getDaVisita('resumo_da_visita/${widget.uidResumoVisita?.id}');
 
             return ListView.builder(
               padding: EdgeInsets.zero,
@@ -518,35 +523,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
               },
             );
 
-            context.goNamed(
-              ReceituariosListaPage.routeName,
-              queryParameters: {
-                'uidPropriedade': serializeParam(
-                  widget.uidPropriedade,
-                  ParamType.DocumentReference,
-                ),
-                'nomePropriedade': serializeParam(
-                  widget.nomePropriedade,
-                  ParamType.String,
-                ),
-                'uidTecnico': serializeParam(
-                  widget.uidTecnico,
-                  ParamType.DocumentReference,
-                ),
-                'emailPropriedade': serializeParam(
-                  widget.emailPropriedade,
-                  ParamType.String,
-                ),
-                'visitaPresencial': serializeParam(
-                  widget.visitaPresencial,
-                  ParamType.bool,
-                ),
-                'diasDg': serializeParam(
-                  '',
-                  ParamType.String,
-                ),
-              }.withoutNulls,
-            );
+            _voltarParaReceituarios();
 
             return;
           } else {
@@ -611,19 +588,6 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                   resumoVisitaAtualResumoDaVisitaRecord.assinaturaProdutor)) ||
               (preenchido(
                   resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico))) {
-            _outUidPropriedade2 = await PropriedadesRecord.getDocumentOnce(
-                widget.uidPropriedade!);
-            _shouldSetState = true;
-            _outUidTecnico2 =
-                await TecnicoRecord.getDocumentOnce(widget.uidTecnico!);
-            _shouldSetState = true;
-            _outUidPersonTecnico2 = await queryPersonRecordOnce(
-              queryBuilder: (personRecord) => personRecord.where(
-                'uid',
-                isEqualTo: _outUidTecnico2?.uidPerson,
-              ),
-              singleRecord: true,
-            ).then((s) => s.firstOrNull);
             _shouldSetState = true;
 
             await _assinarOfflineFirst();
@@ -637,16 +601,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
               );
             }
 
-            await _gerarReceituario(() => actions.createReceituario(
-                  widget.uidResumoVisita!,
-                  _outUidPropriedade2?.displayName,
-                  _outUidPropriedade2?.endereco,
-                  _outUidPersonTecnico2?.displayName,
-                  _outUidPersonTecnico2?.phoneNumber,
-                  resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado ?? '',
-                  _outUidPersonTecnico2?.email,
-                  _outUidPersonTecnico2?.empresa,
-                ));
+            await _gerarReceituario(() => _gerarPdf(
+                resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado ?? ''));
             if (_shouldSetState) safeSetState(() {});
             return;
           } else {
@@ -727,6 +683,27 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     }
   }
 
+  /// Gera o receituário com o cabeçalho lido do aparelho
+  /// (ver [carregarCabecalhoReceituario]).
+  Future<void> _gerarPdf(String dtVisitaFormatado) async {
+    final cronometro = Stopwatch()..start();
+    final cab = await carregarCabecalhoReceituario(
+      uidPropriedade: widget.uidPropriedade!,
+      uidTecnico: widget.uidTecnico!,
+    );
+    debugPrint('🧾 Cabeçalho em ${cronometro.elapsedMilliseconds}ms');
+    await actions.createReceituario(
+      widget.uidResumoVisita!,
+      cab.nomeProdutor,
+      cab.enderecoProdutor,
+      cab.nomeTecnico,
+      cab.telefoneTecnico,
+      dtVisitaFormatado,
+      cab.emailTecnico,
+      cab.empresaTecnico,
+    );
+  }
+
   Widget _botaoGerarPdf(BuildContext context,
       ResumoVisitaEntity resumoVisitaAtualResumoDaVisitaRecord) {
     return Expanded(
@@ -741,29 +718,9 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
               padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 16.0),
               child: FFButtonWidget(
                 onPressed: () async {
-                  _outUidPropriedade = await PropriedadesRecord.getDocumentOnce(
-                      widget.uidPropriedade!);
-                  _outUidTecnico =
-                      await TecnicoRecord.getDocumentOnce(widget.uidTecnico!);
-                  _outUidPersonTecnico = await queryPersonRecordOnce(
-                    queryBuilder: (personRecord) => personRecord.where(
-                      'uid',
-                      isEqualTo: _outUidTecnico?.uidPerson,
-                    ),
-                    singleRecord: true,
-                  ).then((s) => s.firstOrNull);
-                  await _gerarReceituario(() => actions.createReceituario(
-                        widget.uidResumoVisita!,
-                        _outUidPropriedade?.displayName,
-                        _outUidPropriedade?.endereco,
-                        _outUidPersonTecnico?.displayName,
-                        _outUidPersonTecnico?.phoneNumber,
-                        resumoVisitaAtualResumoDaVisitaRecord
-                                .dtVisitaFormatado ??
-                            '',
-                        _outUidPersonTecnico?.email,
-                        _outUidPersonTecnico?.empresa,
-                      ));
+                  await _gerarReceituario(() => _gerarPdf(
+                      resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado ??
+                          ''));
 
                   safeSetState(() {});
                 },
@@ -1009,17 +966,12 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                                     0.0, 0.0, 0.0, 10.0),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8.0),
-                                  child: Image.network(
+                                  child: AssinaturaImagem(
                                     resumoVisitaAtualResumoDaVisitaRecord
                                             .assinaturaTecnico ??
                                         '',
                                     width: 250.0,
                                     height: 80.0,
-                                    fit: BoxFit.contain,
-                                    // URL quebrada (assinatura removida do
-                                    // Storage) não pode derrubar a tela.
-                                    errorBuilder: (_, __, ___) =>
-                                        const SizedBox.shrink(),
                                   ),
                                 ),
                               ),
@@ -1059,17 +1011,12 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                                     0.0, 0.0, 0.0, 10.0),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8.0),
-                                  child: Image.network(
+                                  child: AssinaturaImagem(
                                     resumoVisitaAtualResumoDaVisitaRecord
                                             .assinaturaProdutor ??
                                         '',
                                     width: 250.0,
                                     height: 80.0,
-                                    fit: BoxFit.contain,
-                                    // URL quebrada (assinatura removida do
-                                    // Storage) não pode derrubar a tela.
-                                    errorBuilder: (_, __, ___) =>
-                                        const SizedBox.shrink(),
                                   ),
                                 ),
                               ),
