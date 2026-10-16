@@ -51,15 +51,41 @@ typedef _Leitor<T> = ({
   DateTime? Function(T)? dataInseminacao,
 });
 
-/// Nome A-Z (ou Z-A). Animal sem nome vai para o fim nas DUAS direcoes: ele
-/// nao e "o ultimo do alfabeto", esta fora da ordem, e inverter a lista nao
-/// deve promove-lo ao topo.
+final _digito = RegExp(r'^[0-9]');
+final _trecho = RegExp(r'[0-9]+|[^0-9]+');
+
+/// Ordem "natural": trechos de digitos comparam pelo valor, nao como texto.
+/// Sem isso "1000" vinha antes de "189", e "Novilha - 10" antes de
+/// "Novilha - 2" — a lista parecia nao ter ordem nenhuma.
+int _compararNatural(String a, String b) {
+  final ta = _trecho.allMatches(a).map((m) => m[0]!).toList();
+  final tb = _trecho.allMatches(b).map((m) => m[0]!).toList();
+  for (var i = 0; i < ta.length && i < tb.length; i++) {
+    final na = int.tryParse(ta[i]);
+    final nb = int.tryParse(tb[i]);
+    final c = (na != null && nb != null)
+        ? na.compareTo(nb)
+        : ta[i].compareTo(tb[i]);
+    if (c != 0) return c;
+  }
+  final c = ta.length.compareTo(tb.length);
+  return c != 0 ? c : a.compareTo(b);
+}
+
+/// Nome A-Z (ou Z-A). Titulo que comeca com numero (animal identificado so
+/// pelo brinco) vem DEPOIS dos nomes nas duas direcoes, em ordem numerica.
+/// Animal sem nome vai para o fim nas DUAS direcoes: ele nao e "o ultimo do
+/// alfabeto", esta fora da ordem, e inverter a lista nao deve promove-lo ao
+/// topo.
 int _porNome<T>(T a, T b, bool crescente, _Leitor<T> ler) {
   final nomeA = _normalizar(ler.titulo(a));
   final nomeB = _normalizar(ler.titulo(b));
   if (nomeA.isEmpty != nomeB.isEmpty) return nomeA.isEmpty ? 1 : -1;
 
-  final comparacao = nomeA.compareTo(nomeB);
+  final numeralA = _digito.hasMatch(nomeA);
+  if (numeralA != _digito.hasMatch(nomeB)) return numeralA ? 1 : -1;
+
+  final comparacao = _compararNatural(nomeA, nomeB);
   if (comparacao != 0) return crescente ? comparacao : -comparacao;
 
   return _compararBrincos(ler.brinco(a), ler.brinco(b), crescente);
@@ -74,7 +100,7 @@ int _porBrinco<T>(T a, T b, bool crescente, _Leitor<T> ler) {
   final nomeA = _normalizar(ler.titulo(a));
   final nomeB = _normalizar(ler.titulo(b));
   if (nomeA.isEmpty != nomeB.isEmpty) return nomeA.isEmpty ? 1 : -1;
-  final porNome = nomeA.compareTo(nomeB);
+  final porNome = _compararNatural(nomeA, nomeB);
   return crescente ? porNome : -porNome;
 }
 

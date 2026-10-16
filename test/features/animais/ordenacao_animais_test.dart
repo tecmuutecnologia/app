@@ -132,6 +132,51 @@ void main() {
     });
   });
 
+  group('nomes e numerais', () {
+    test('nomes A-Z primeiro, depois os numerais do menor para o maior', () {
+      final lista = [
+        animal('1000', 1000, concat: '1000'),
+        animal('Mimosa', 5),
+        animal('189', 189, concat: '189'),
+        animal('23', 23, concat: '23'),
+        animal('Aurora', 7),
+      ];
+
+      final resultado =
+          aplicarBuscaEOrdem(lista, ordem: OrdemAnimais.nome, busca: '');
+
+      expect(nomes(resultado), ['Aurora', 'Mimosa', '23', '189', '1000']);
+    });
+
+    test('numero dentro do nome segue a ordem numerica', () {
+      final lista = [
+        animal('Novilha', 10, concat: 'Novilha - 10'),
+        animal('Novilha', 2, concat: 'Novilha - 2'),
+        animal('Novilha', 1, concat: 'Novilha - 1'),
+      ];
+
+      final resultado =
+          aplicarBuscaEOrdem(lista, ordem: OrdemAnimais.nome, busca: '');
+
+      expect(resultado.map((a) => a.nomeBrincoConcat),
+          ['Novilha - 1', 'Novilha - 2', 'Novilha - 10']);
+    });
+
+    test('invertido: Z-A e numerais do maior para o menor, nomes antes', () {
+      final lista = [
+        animal('23', 23, concat: '23'),
+        animal('Aurora', 7),
+        animal('189', 189, concat: '189'),
+        animal('Mimosa', 5),
+      ];
+
+      final resultado = aplicarBuscaEOrdem(lista,
+          ordem: OrdemAnimais.nome, crescente: false, busca: '');
+
+      expect(nomes(resultado), ['Mimosa', 'Aurora', '189', '23']);
+    });
+  });
+
   group('ordem invertida', () {
     test('nome decrescente vai de Z a A', () {
       final lista = [
