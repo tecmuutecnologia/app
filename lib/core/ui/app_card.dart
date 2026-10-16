@@ -27,6 +27,13 @@ class AppTokens {
   /// que o splash.
   static const Color brandTintSoft = Color(0x0DF75E38);
 
+  /// Status positivo de um dado (prenhe, concluído). Um verde só: havia
+  /// quatro tons espalhados pelas telas.
+  static const Color positivo = Color(0xFF1E9E5A);
+
+  /// Status negativo de um dado (vazia, aborto).
+  static const Color negativo = Color(0xFFE5484D);
+
   /// Raio padrão dos cards/superfícies.
   static const double radius = 16.0;
 

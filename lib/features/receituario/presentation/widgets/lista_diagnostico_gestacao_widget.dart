@@ -4,6 +4,7 @@ import '/data/objectbox/index.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/domain/animais/diagnostico_gestacao.dart';
 import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/app_card.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -71,7 +72,7 @@ class _ListaDiagnosticoGestacaoWidgetState
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 10.0),
+      padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 12.0),
       child: StreamBuilder<List<_AnimalComInseminacao>>(
         stream: _animais,
         builder: (context, animaisSnapshot) {
@@ -101,115 +102,122 @@ class _ListaDiagnosticoGestacaoWidgetState
           animaisDGMenos.sort(_compararAnimais);
           animaisAbortos.sort(_compararAnimais);
 
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Título da seção
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
+          return AppCard(
+              padding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 4.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(15.0, 10.0, 15.0, 5.0),
-                    child: Text(
-                      'Diagnóstico de Gestação',
-                      style: FlutterFlowTheme.of(context).bodyMedium.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .fontStyle,
+                  // Título da seção
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(
+                            15.0, 10.0, 15.0, 5.0),
+                        child: Text(
+                          'Diagnóstico de Gestação',
+                          style:
+                              FlutterFlowTheme.of(context).bodyMedium.override(
+                                    font: GoogleFonts.readexPro(
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .fontStyle,
+                                    ),
+                                    fontSize: 16.0,
+                                    letterSpacing: 0.0,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .fontStyle,
+                                  ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  // Lista PP/DG+ (Prenhes)
+                  if (animaisPPDGMais.isNotEmpty) ...[
+                    Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(15.0, 5.0, 15.0, 0.0),
+                      child: Text(
+                        'Prenhes (PP/DG+)',
+                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontStyle,
+                              ),
+                              color: AppTokens.positivo,
+                              letterSpacing: 0.0,
+                              fontWeight: FontWeight.w600,
                             ),
-                            fontSize: 16.0,
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
+                      ),
                     ),
-                  ),
+                    Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
+                      child: _buildAnimalListFromData(animaisPPDGMais),
+                    ),
+                  ],
+                  // Lista DG- (Vazias)
+                  if (animaisDGMenos.isNotEmpty) ...[
+                    Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(15.0, 10.0, 15.0, 0.0),
+                      child: Text(
+                        'Vazias (DG-)',
+                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontStyle,
+                              ),
+                              color: AppTokens.negativo,
+                              letterSpacing: 0.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
+                      child: _buildAnimalListFromData(animaisDGMenos),
+                    ),
+                  ],
+                  // Lista de Abortos
+                  if (animaisAbortos.isNotEmpty) ...[
+                    Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(15.0, 10.0, 15.0, 0.0),
+                      child: Text(
+                        'Abortos',
+                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontStyle,
+                              ),
+                              color: AppTokens.negativo,
+                              letterSpacing: 0.0,
+                              fontWeight: FontWeight.w600,
+                            ),
+                      ),
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
+                      child: _buildAnimalListFromData(animaisAbortos),
+                    ),
+                  ],
+                  SizedBox(height: 10.0),
                 ],
-              ),
-              // Lista PP/DG+ (Prenhes)
-              if (animaisPPDGMais.isNotEmpty) ...[
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(15.0, 5.0, 15.0, 0.0),
-                  child: Text(
-                    'Prenhes (PP/DG+)',
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                          color: Color(0xFF048508),
-                          letterSpacing: 0.0,
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
-                  child: _buildAnimalListFromData(animaisPPDGMais),
-                ),
-              ],
-              // Lista DG- (Vazias)
-              if (animaisDGMenos.isNotEmpty) ...[
-                Padding(
-                  padding:
-                      EdgeInsetsDirectional.fromSTEB(15.0, 10.0, 15.0, 0.0),
-                  child: Text(
-                    'Vazias (DG-)',
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                          color: Color(0xFFEE0000),
-                          letterSpacing: 0.0,
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
-                  child: _buildAnimalListFromData(animaisDGMenos),
-                ),
-              ],
-              // Lista de Abortos
-              if (animaisAbortos.isNotEmpty) ...[
-                Padding(
-                  padding:
-                      EdgeInsetsDirectional.fromSTEB(15.0, 10.0, 15.0, 0.0),
-                  child: Text(
-                    'Abortos',
-                    style: FlutterFlowTheme.of(context).bodyMedium.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .fontStyle,
-                          ),
-                          color: Color(0xFFEE0000),
-                          letterSpacing: 0.0,
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
-                  child: _buildAnimalListFromData(animaisAbortos),
-                ),
-              ],
-              SizedBox(height: 10.0),
-            ],
-          );
+              ));
         },
       ),
     );
@@ -242,7 +250,7 @@ class _ListaDiagnosticoGestacaoWidgetState
                 child: Icon(
                   Icons.circle_sharp,
                   color: ehVaca(animal.grupoAnimal)
-                      ? Color(0xFF048508)
+                      ? AppTokens.positivo
                       : ehNovilha(animal.grupoAnimal)
                           ? Color(0xFFFF0076)
                           : FlutterFlowTheme.of(context).tertiary,
@@ -275,8 +283,8 @@ class _ListaDiagnosticoGestacaoWidgetState
                               FlutterFlowTheme.of(context).bodyMedium.fontStyle,
                         ),
                         color: animal.acao == 'DG-' || animal.acao == 'Aborto'
-                            ? Color(0xFFEE0000)
-                            : Color(0xFF048508),
+                            ? AppTokens.negativo
+                            : AppTokens.positivo,
                         letterSpacing: 0.0,
                         fontWeight: FontWeight.w600,
                       ),

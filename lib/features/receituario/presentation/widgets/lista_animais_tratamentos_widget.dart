@@ -6,6 +6,7 @@ import '/data/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_util.dart';
 import 'package:collection/collection.dart';
 import 'package:easy_debounce/easy_debounce.dart';
@@ -47,14 +48,8 @@ class _ListaAnimaisTratamentosWidgetState
       () async {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              'Atualizado com sucesso!',
-              style: TextStyle(
-                color: FlutterFlowTheme.of(context).primaryText,
-              ),
-            ),
+            content: Text('Atualizado com sucesso!'),
             duration: Duration(milliseconds: 4000),
-            backgroundColor: FlutterFlowTheme.of(context).secondary,
           ),
         );
       },
@@ -129,18 +124,12 @@ class _ListaAnimaisTratamentosWidgetState
                 child: Text(
                   widget.parameter1!,
                   style: FlutterFlowTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                        ),
+                        // Mesmo peso do título "Diagnóstico de Gestação".
+                        font:
+                            GoogleFonts.readexPro(fontWeight: FontWeight.bold),
+                        fontSize: 16.0,
                         letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                        fontWeight: FontWeight.bold,
                       ),
                 ),
               ),
@@ -185,7 +174,7 @@ class _ListaAnimaisTratamentosWidgetState
                                   color: () {
                                     if (ehVaca(iconAnimaisProdutoresRecord
                                         .grupoAnimal)) {
-                                      return Color(0xFF048508);
+                                      return AppTokens.positivo;
                                     } else if (ehNovilha(
                                         iconAnimaisProdutoresRecord
                                             .grupoAnimal)) {
@@ -346,7 +335,7 @@ class _ListaAnimaisTratamentosWidgetState
                                   color: () {
                                     if (ehVaca(iconAnimaisProdutoresRecord
                                         .grupoAnimal)) {
-                                      return Color(0xFF048508);
+                                      return AppTokens.positivo;
                                     } else if (ehNovilha(
                                         iconAnimaisProdutoresRecord
                                             .grupoAnimal)) {

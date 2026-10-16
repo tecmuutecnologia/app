@@ -8,8 +8,8 @@ import '/core/ui/flutter_flow_util.dart';
 import '/core/util/preenchido.dart';
 import '../../application/cabecalho_receituario.dart';
 import '../../application/tem_assinatura.dart';
+import '/core/ui/app_button.dart';
 import '/core/ui/app_card.dart';
-import '/core/ui/flutter_flow_widgets.dart';
 import '../widgets/assinatura_produtor_widget.dart';
 import '../widgets/assinatura_imagem.dart';
 import '../widgets/assinatura_tecnico_widget.dart';
@@ -162,39 +162,40 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
   }
 
   Widget _listaRecomendacoes(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).secondaryBackground,
-      ),
-      child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(10.0, 10.0, 10.0, 0.0),
-        // Recomendações do ObjectBox, ligadas pelo CAMPO uidResumoDaVisita.
-        child: Builder(
-          builder: (context) {
-            final listViewRecomendacoesRecordList = RecomendacaoRepository()
-                .getDaVisita('resumo_da_visita/${widget.uidResumoVisita?.id}');
+    return Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
+      // Recomendações do ObjectBox, ligadas pelo CAMPO uidResumoDaVisita.
+      child: Builder(
+        builder: (context) {
+          final listViewRecomendacoesRecordList = RecomendacaoRepository()
+              .getDaVisita('resumo_da_visita/${widget.uidResumoVisita?.id}');
 
-            return ListView.builder(
-              padding: EdgeInsets.zero,
-              primary: false,
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              itemCount: listViewRecomendacoesRecordList.length,
-              itemBuilder: (context, listViewIndex) {
-                final listViewRecomendacoesRecord =
-                    listViewRecomendacoesRecordList[listViewIndex];
-                return ListaAnimaisTratamentosWidget(
-                  key: Key(
-                      'Keydky_${listViewIndex}_of_${listViewRecomendacoesRecordList.length}'),
-                  parameter1: listViewRecomendacoesRecord.tituloRecomendacao,
-                  parameter2: widget.uidResumoVisita!,
-                  obsRecomendacao:
-                      listViewRecomendacoesRecord.descricaoRecomendacao,
-                );
-              },
-            );
-          },
-        ),
+          return ListView.builder(
+            padding: EdgeInsets.zero,
+            primary: false,
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            itemCount: listViewRecomendacoesRecordList.length,
+            itemBuilder: (context, listViewIndex) {
+              final listViewRecomendacoesRecord =
+                  listViewRecomendacoesRecordList[listViewIndex];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12.0),
+                child: AppCard(
+                  padding: const EdgeInsets.fromLTRB(12.0, 14.0, 12.0, 4.0),
+                  child: ListaAnimaisTratamentosWidget(
+                    key: Key(
+                        'Keydky_${listViewIndex}_of_${listViewRecomendacoesRecordList.length}'),
+                    parameter1: listViewRecomendacoesRecord.tituloRecomendacao,
+                    parameter2: widget.uidResumoVisita!,
+                    obsRecomendacao:
+                        listViewRecomendacoesRecord.descricaoRecomendacao,
+                  ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
@@ -202,18 +203,13 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
   Widget _conteudo(BuildContext context,
       ResumoVisitaEntity resumoVisitaAtualResumoDaVisitaRecord) {
     return // Lista de Diagnóstico de Gestação
-        Container(
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).secondaryBackground,
-      ),
-      child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 10.0, 0.0),
-        child: ListaDiagnosticoGestacaoWidget(
-          uidResumoVisita: widget.uidResumoVisita!,
-          uidTecnico: widget.uidTecnico!,
-          uidPropriedade: widget.uidPropriedade!,
-          dtVisita: resumoVisitaAtualResumoDaVisitaRecord.dtVisita!,
-        ),
+        Padding(
+      padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+      child: ListaDiagnosticoGestacaoWidget(
+        uidResumoVisita: widget.uidResumoVisita!,
+        uidTecnico: widget.uidTecnico!,
+        uidPropriedade: widget.uidPropriedade!,
+        dtVisita: resumoVisitaAtualResumoDaVisitaRecord.dtVisita!,
       ),
     );
   }
@@ -222,7 +218,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
       ResumoVisitaEntity resumoVisitaAtualResumoDaVisitaRecord) {
     return Expanded(
       child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
+        padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -235,7 +231,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                 resumoVisitaAtualResumoDaVisitaRecord.assinaturaProdutor))
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
-                child: FFButtonWidget(
+                child: AppButton(
                   onPressed: () async {
                     await showModalBottomSheet(
                       isScrollControlled: true,
@@ -258,50 +254,16 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                       },
                     ).then((value) => safeSetState(() {}));
                   },
-                  text: 'Assinatura Produtor Pendente',
-                  icon: Icon(
-                    Icons.assignment,
-                    size: 22.0,
-                  ),
-                  options: FFButtonOptions(
-                    width: MediaQuery.sizeOf(context).width * 1.0,
-                    height: 40.0,
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: FlutterFlowTheme.of(context).tertiary,
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          color: Colors.white,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                    elevation: 3.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  text: 'Assinatura do produtor',
+                  icon: Icons.draw_rounded,
+                  tipo: AppButtonTipo.secundario,
                 ),
               ),
             if (!preenchido(
                 resumoVisitaAtualResumoDaVisitaRecord.assinaturaTecnico))
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
-                child: FFButtonWidget(
+                child: AppButton(
                   onPressed: () async {
                     await showModalBottomSheet(
                       isScrollControlled: true,
@@ -324,45 +286,12 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                       },
                     ).then((value) => safeSetState(() {}));
                   },
-                  text: 'Assinatura Técnico Pendente',
-                  icon: Icon(
-                    Icons.assignment,
-                    size: 22.0,
-                  ),
-                  options: FFButtonOptions(
-                    width: MediaQuery.sizeOf(context).width * 1.0,
-                    height: 40.0,
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                    iconPadding:
-                        EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                    color: Color(0xFFBE6740),
-                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                          font: GoogleFonts.readexPro(
-                            fontWeight: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontWeight,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .fontStyle,
-                          ),
-                          color: Colors.white,
-                          letterSpacing: 0.0,
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                    elevation: 3.0,
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  text: 'Assinatura do técnico',
+                  icon: Icons.draw_rounded,
+                  tipo: AppButtonTipo.secundario,
                 ),
               ),
+            const SizedBox(height: 16.0),
           ],
         ),
       ),
@@ -373,7 +302,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
       ResumoVisitaEntity resumoVisitaAtualResumoDaVisitaRecord) {
     return Expanded(
       child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(12.0, 10.0, 12.0, 0.0),
+        padding: EdgeInsetsDirectional.fromSTEB(16.0, 10.0, 16.0, 0.0),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -381,9 +310,10 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
           children: [
             _tituloObservacoes(context),
             _campoObservacoes(context),
-            _botaoConcluirVisita(
-                context, resumoVisitaAtualResumoDaVisitaRecord),
+            // Ação principal primeiro; "Apenas salvar" é a alternativa.
             _botaoConcluirVisita2(
+                context, resumoVisitaAtualResumoDaVisitaRecord),
+            _botaoConcluirVisita(
                 context, resumoVisitaAtualResumoDaVisitaRecord),
           ],
         ),
@@ -474,7 +404,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
           borderRadius: BorderRadius.circular(12.0),
         ),
         filled: true,
-        fillColor: FlutterFlowTheme.of(context).primaryBackground,
+        // Branco: o fundo da página agora é o cinza do app.
+        fillColor: FlutterFlowTheme.of(context).secondaryBackground,
         contentPadding: EdgeInsetsDirectional.fromSTEB(20.0, 24.0, 20.0, 24.0),
       ),
       style: FlutterFlowTheme.of(context).bodyMedium.override(
@@ -500,8 +431,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
   Widget _botaoConcluirVisita(BuildContext context,
       ResumoVisitaEntity resumoVisitaAtualResumoDaVisitaRecord) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
-      child: FFButtonWidget(
+      padding: EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 0.0, 16.0),
+      child: AppButton(
         onPressed: () async {
           if ((preenchido(
                   resumoVisitaAtualResumoDaVisitaRecord.assinaturaProdutor)) ||
@@ -544,35 +475,9 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
             return;
           }
         },
-        text: 'Apenas Salvar',
-        icon: Icon(
-          Icons.check,
-          size: 22.0,
-        ),
-        options: FFButtonOptions(
-          width: MediaQuery.sizeOf(context).width * 1.0,
-          height: 40.0,
-          padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-          iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-          color: Color(0xFF048508),
-          textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                ),
-                color: Colors.white,
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-              ),
-          elevation: 3.0,
-          borderSide: BorderSide(
-            color: Colors.transparent,
-            width: 1.0,
-          ),
-          borderRadius: BorderRadius.circular(12.0),
-        ),
+        text: 'Apenas salvar',
+        icon: Icons.check_rounded,
+        tipo: AppButtonTipo.secundario,
       ),
     );
   }
@@ -580,8 +485,8 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
   Widget _botaoConcluirVisita2(BuildContext context,
       ResumoVisitaEntity resumoVisitaAtualResumoDaVisitaRecord) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 16.0),
-      child: FFButtonWidget(
+      padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+      child: AppButton(
         onPressed: () async {
           var _shouldSetState = false;
           if ((preenchido(
@@ -625,34 +530,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
           }
         },
         text: 'Salvar e gerar PDF',
-        icon: Icon(
-          Icons.playlist_add_check_rounded,
-          size: 22.0,
-        ),
-        options: FFButtonOptions(
-          width: MediaQuery.sizeOf(context).width * 1.0,
-          height: 40.0,
-          padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-          iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-          color: FlutterFlowTheme.of(context).secondary,
-          textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                ),
-                color: Colors.white,
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-              ),
-          elevation: 3.0,
-          borderSide: BorderSide(
-            color: Colors.transparent,
-            width: 1.0,
-          ),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
+        icon: Icons.picture_as_pdf_rounded,
       ),
     );
   }
@@ -708,7 +586,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
       ResumoVisitaEntity resumoVisitaAtualResumoDaVisitaRecord) {
     return Expanded(
       child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
+        padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -716,7 +594,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
           children: [
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 16.0),
-              child: FFButtonWidget(
+              child: AppButton(
                 onPressed: () async {
                   await _gerarReceituario(() => _gerarPdf(
                       resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado ??
@@ -725,39 +603,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                   safeSetState(() {});
                 },
                 text: 'Gerar PDF',
-                icon: Icon(
-                  Icons.playlist_add_check_rounded,
-                  size: 22.0,
-                ),
-                options: FFButtonOptions(
-                  width: MediaQuery.sizeOf(context).width * 1.0,
-                  height: 40.0,
-                  padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                  iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  color: FlutterFlowTheme.of(context).secondary,
-                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .titleSmall
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                        ),
-                        color: Colors.white,
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                      ),
-                  elevation: 3.0,
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 1.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
+                icon: Icons.picture_as_pdf_rounded,
               ),
             ),
           ],
@@ -820,7 +666,7 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
           },
           child: Scaffold(
             key: scaffoldKey,
-            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
             appBar: PreferredSize(
               preferredSize: Size.fromHeight(100.0),
               child: Container(
@@ -867,13 +713,9 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                           .assinaturaProdutor)) ||
                       (preenchido(resumoVisitaAtualResumoDaVisitaRecord
                           .assinaturaTecnico)))
-                    Container(
-                      decoration: BoxDecoration(
-                        color: FlutterFlowTheme.of(context).secondaryBackground,
-                      ),
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(
-                            12.0, 0.0, 12.0, 0.0),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+                      child: AppCard(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1080,17 +922,12 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                           .assinaturaProdutor)) ||
                       (!preenchido(resumoVisitaAtualResumoDaVisitaRecord
                           .assinaturaTecnico)))
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          _botaoAdicionarRecomendacao(
-                              context, resumoVisitaAtualResumoDaVisitaRecord),
-                        ],
-                      ),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        _botaoAdicionarRecomendacao(
+                            context, resumoVisitaAtualResumoDaVisitaRecord),
+                      ],
                     ),
                   if (((preenchido(resumoVisitaAtualResumoDaVisitaRecord
                               .assinaturaProdutor)) ||
@@ -1101,17 +938,12 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                       // "Gerar PDF" de toda visita concluída sem observação.
                       (!preenchido(resumoVisitaAtualResumoDaVisitaRecord
                           .dtAssinaturaFormatado)))
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          _secaoObservacoes(
-                              context, resumoVisitaAtualResumoDaVisitaRecord),
-                        ],
-                      ),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        _secaoObservacoes(
+                            context, resumoVisitaAtualResumoDaVisitaRecord),
+                      ],
                     ),
                   if (((preenchido(resumoVisitaAtualResumoDaVisitaRecord
                               .assinaturaProdutor)) ||
@@ -1119,17 +951,12 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
                               .assinaturaTecnico))) &&
                       (preenchido(resumoVisitaAtualResumoDaVisitaRecord
                           .dtAssinaturaFormatado)))
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          _botaoGerarPdf(
-                              context, resumoVisitaAtualResumoDaVisitaRecord),
-                        ],
-                      ),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        _botaoGerarPdf(
+                            context, resumoVisitaAtualResumoDaVisitaRecord),
+                      ],
                     ),
                 ],
               ),
