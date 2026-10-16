@@ -122,7 +122,7 @@ Future<void> createReceituario(
                 'brincoAnimalOrder':
                     numeroParaOrdenar(e.brincoAnimal, e.nomeAnimal),
                 'grupoAnimal': e.grupoAnimal,
-                'observacaoAcao': e.observacaoAcao,
+                'observacaoAcao': _observacaoDoTratamento(e),
               })
           .toList();
 
@@ -303,7 +303,7 @@ Future<void> createReceituario(
                 flex: 1,
                 child: pw.Container(
                   alignment: pw.Alignment.center,
-                  child: pw.Text(tratamentoData['observacaoAcao']),
+                  child: pw.Text(tratamentoData['observacaoAcao'] as String),
                 ),
               ),
             ],
@@ -971,4 +971,21 @@ List<pw.Widget> tabelaComTitulo(
     if (linhas.length > corte)
       pw.Table(border: _bordaTabela, children: linhas.sublist(corte)),
   ];
+}
+
+/// Texto da coluna "Observação" / "Data secagem" do tratamento. Nunca nulo:
+/// `pw.Text` não aceita null e o PDF inteiro falhava.
+///
+/// A secagem gravou `observacaoAcao` nulo de a1ea501 até out/2026 (antes, e
+/// de novo agora, ali vai a data da secagem). Para esses registros a data vem
+/// do animal, que guarda `dtSecagem`.
+String _observacaoDoTratamento(TratamentoEntity e) {
+  final obs = e.observacaoAcao;
+  if (obs != null && obs.isNotEmpty) return obs;
+  if (e.tipoAcao == 'Secagem' && e.uidAnimalPath != null) {
+    final animal =
+        AnimalRepository().getByFirestoreId(e.uidAnimalPath!.split('/').last);
+    return animal?.dtSecagem ?? '';
+  }
+  return obs ?? '';
 }

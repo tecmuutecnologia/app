@@ -572,7 +572,8 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                   tituloRecomendacao: 'Secagem',
                   descricaoRecomendacao: null,
                   uidAnimal: widget.uidAnimaisProdutores,
-                  observacaoAcao: null,
+                  // Vira a coluna "Data secagem" do receituário (PDF).
+                  observacaoAcao: _dtSecagemTextController.text,
                   nomeAnimal: widget.nomeAnimal,
                   brincoAnimal: widget.brincoAnimal,
                   grupoAnimal: widget.grupoAnimal,
