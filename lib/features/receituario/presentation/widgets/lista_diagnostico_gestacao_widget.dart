@@ -2,6 +2,7 @@ import '/domain/animais/ordenacao_animal.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/domain/animais/classificacao_animal.dart';
+import '/domain/animais/diagnostico_gestacao.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -27,8 +28,6 @@ class ListaDiagnosticoGestacaoWidget extends StatefulWidget {
 
 class _ListaDiagnosticoGestacaoWidgetState
     extends State<ListaDiagnosticoGestacaoWidget> {
-  static const _diagnosticos = {'PP', 'DG+', 'DG-', 'Aborto'};
-
   /// Criado uma vez (e refeito só se a data mudar). Criar o stream dentro do
   /// `build` reabria a consulta a cada rebuild da página.
   late Stream<List<_AnimalComInseminacao>> _animais;
@@ -65,7 +64,7 @@ class _ListaDiagnosticoGestacaoWidgetState
       .watchComAnimalNoPeriodo(
         _startOfDay(widget.dtVisita),
         _endOfDay(widget.dtVisita),
-        tipos: _diagnosticos,
+        tipos: tiposConsultaDiagnostico,
       )
       .map(_animaisDaPropriedade);
 
@@ -307,10 +306,15 @@ class _ListaDiagnosticoGestacaoWidgetState
   List<_AnimalComInseminacao> _animaisDaPropriedade(List<AcaoEntity> acoes) {
     final animais = AnimalRepository();
     final resultado = <_AnimalComInseminacao>[];
+    final inseminacoes = AcaoRepository().datasInseminacaoPorAnimal(acoes
+        .where((a) => a.acao == 'DG-')
+        .map((a) => a.uidAnimalAnimaisProdutoresPath!));
 
     for (final acao in acoes) {
-      final animal = animais.getByFirestoreId(
-          acao.uidAnimalAnimaisProdutoresPath!.split('/').last);
+      final tipo = tipoDiagnostico(acao: acao.acao, dtDgMais: acao.dtDgMais);
+      if (tipo == null) continue;
+      final animalPath = acao.uidAnimalAnimaisProdutoresPath!;
+      final animal = animais.getByFirestoreId(animalPath.split('/').last);
       // Só animais desta propriedade (campo uidTecnicoPropriedade).
       if (animal == null ||
           animal.uidTecnicoPropriedadePath != widget.uidPropriedade.path) {
@@ -334,11 +338,14 @@ class _ListaDiagnosticoGestacaoWidgetState
         nomeAnimal: nomeAnimal,
         brincoAnimal: brincoAnimal,
         grupoAnimal: animal.grupoAnimal ?? '',
-        // Usar a data de última inseminação do próprio animal
-        dtUltimaInseminacao: animal.dtUltimaInseminacao ?? '',
-        dtDgMenos: acao.dtDgMenos ?? '',
+        // O DG- zera dtUltimaInseminacao do animal: para as vazias, a IA
+        // diagnosticada vem do histórico de ações 'Inseminada'.
+        dtUltimaInseminacao: tipo == 'DG-'
+            ? inseminacaoDiagnosticada(inseminacoes[animalPath] ?? const [],
+                ate: acao.dataDaAcao ?? widget.dtVisita)
+            : animal.dtUltimaInseminacao ?? '',
         displayName: displayName,
-        acao: acao.acao ?? '',
+        acao: tipo,
       ));
     }
 
@@ -351,7 +358,6 @@ class _AnimalComInseminacao {
   final int? brincoAnimal;
   final String grupoAnimal;
   final String dtUltimaInseminacao;
-  final String dtDgMenos;
   final String displayName;
   final String acao;
 
@@ -360,16 +366,10 @@ class _AnimalComInseminacao {
     required this.brincoAnimal,
     required this.grupoAnimal,
     required this.dtUltimaInseminacao,
-    required this.dtDgMenos,
     required this.displayName,
     required this.acao,
   });
 
-  /// O DG- zera dtUltimaInseminacao do animal (ele volta a ficar disponível),
-  /// então as vazias mostram o dia do exame, que fica gravado na ação.
-  String get dataExibida {
-    // Sem prefixo: a etiqueta "DG-" já está logo antes da data.
-    if (acao == 'DG-') return dtDgMenos;
-    return dtUltimaInseminacao.isEmpty ? '' : 'IA: $dtUltimaInseminacao';
-  }
+  String get dataExibida =>
+      dtUltimaInseminacao.isEmpty ? '' : 'IA: $dtUltimaInseminacao';
 }

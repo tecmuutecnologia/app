@@ -1,5 +1,6 @@
 // Automatic FlutterFlow imports
 import '/domain/animais/ordenacao_animal.dart';
+import '/domain/animais/diagnostico_gestacao.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/data/objectbox/assinaturas_locais.dart';
@@ -376,15 +377,18 @@ Future<void> createReceituario(
       // Buscar todas as ações do técnico no dia da visita usando dataDaAcao
       // Ações do dia da visita, do ObjectBox. Só PP/DG+/DG-/Aborto com
       // animal vinculado.
-      const diagnosticos = {'PP', 'DG+', 'DG-', 'Aborto'};
+      // 'Secagem' entra por causa do DG+ de novilha gravado no legado; ver
+      // tipoDiagnostico.
       final acoesDiagnosticoTemp = AcaoRepository()
-          .findComAnimalNoPeriodo(dtInicioDia, dtFimDia, tipos: diagnosticos)
+          .findComAnimalNoPeriodo(dtInicioDia, dtFimDia,
+              tipos: tiposConsultaDiagnostico)
           .map((e) => <String, dynamic>{
-                'acao': e.acao,
+                'acao': tipoDiagnostico(acao: e.acao, dtDgMais: e.dtDgMais),
                 'uidAnimalAnimaisProdutoresPath':
                     e.uidAnimalAnimaisProdutoresPath,
-                'dtDgMenos': e.dtDgMenos,
+                'dataDaAcao': e.dataDaAcao,
               })
+          .where((e) => e['acao'] != null)
           .toList();
 
       // Filtrar apenas animais que pertencem à propriedade atual
@@ -430,6 +434,10 @@ Future<void> createReceituario(
           return animalData['dtUltimaInseminacao'] as String? ?? '';
         }
 
+        final inseminacoes = AcaoRepository().datasInseminacaoPorAnimal(
+            acoesDGMenos.map(
+                (a) => a['uidAnimalAnimaisProdutoresPath'] as String));
+
         // Função para construir linhas da tabela de diagnóstico
         Future<List<pw.TableRow>> buildDiagnosticoRows(
             List<Map<String, dynamic>> acoes) async {
@@ -438,11 +446,13 @@ Future<void> createReceituario(
           for (final acaoData in acoes) {
             final animalData = getAnimalData(
                 acaoData['uidAnimalAnimaisProdutoresPath'] as String?);
-            // O DG- zera dtUltimaInseminacao do animal (ele volta a ficar
-            // disponível), então para as vazias a data vem da própria ação:
-            // o dia do exame.
+            // O DG- zera dtUltimaInseminacao do animal: para as vazias, a
+            // IA diagnosticada vem do histórico de ações 'Inseminada'.
             final ultimaInseminacao = acaoData['acao'] == 'DG-'
-                ? (acaoData['dtDgMenos'] as String? ?? '')
+                ? inseminacaoDiagnosticada(
+                    inseminacoes[acaoData['uidAnimalAnimaisProdutoresPath']] ??
+                        const [],
+                    ate: acaoData['dataDaAcao'] as DateTime? ?? dtVisitaDate)
                 : getUltimaInseminacaoFromAnimal(animalData);
 
             if (animalData != null) {
@@ -679,7 +689,7 @@ Future<void> createReceituario(
               pw.SizedBox(height: 5),
             ]),
             [
-              buildDiagnosticoHeader(colunaData: 'Data DG-'),
+              buildDiagnosticoHeader(),
               ...rowsDGMenos,
             ],
           ));

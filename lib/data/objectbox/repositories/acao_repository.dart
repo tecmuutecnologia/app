@@ -163,6 +163,28 @@ class AcaoRepository extends BaseSyncRepository<AcaoEntity> {
   }) =>
       _comAnimalNoPeriodo(inicio, fim, tipos).build().find();
 
+  /// Datas (`dataVisita` = dia da IA) das ações 'Inseminada' de cada animal,
+  /// por path do animal. Uma consulta só para o lote todo.
+  Map<String, List<String?>> datasInseminacaoPorAnimal(
+      Iterable<String> animalPaths) {
+    final paths = animalPaths.toSet().toList();
+    final resultado = <String, List<String?>>{};
+    if (paths.isEmpty) return resultado;
+    final acoes = box
+        .query(AcaoEntity_.uidAnimalAnimaisProdutoresPath
+            .oneOf(paths)
+            .and(AcaoEntity_.acao.equals('Inseminada'))
+            .and(AcaoEntity_.isDeleted.equals(false)))
+        .build()
+        .find();
+    for (final a in acoes) {
+      resultado
+          .putIfAbsent(a.uidAnimalAnimaisProdutoresPath!, () => [])
+          .add(a.dataVisita);
+    }
+    return resultado;
+  }
+
   QueryBuilder<AcaoEntity> _comAnimalNoPeriodo(
           DateTime inicio, DateTime fim, Set<String> tipos) =>
       box.query(AcaoEntity_.dataDaAcao

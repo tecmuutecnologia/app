@@ -124,10 +124,12 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
     super.dispose();
   }
 
-  /// Registra o DG+ offline-first: cria a ação ([acaoNome] = 'DG+' p/ Vacas,
-  /// 'Secagem' p/ os demais) via AcaoRepository e atualiza o animal (Prenha)
-  /// via AnimalRepository, sem bloquear a UI.
-  Future<void> _dgMaisOfflineFirst(String acaoNome) async {
+  /// Registra o DG+ offline-first: cria a ação 'DG+' via AcaoRepository e
+  /// atualiza o animal (Prenha) via AnimalRepository, sem bloquear a UI.
+  ///
+  /// Até out/2026 o DG+ de quem não era "Vacas" saía como 'Secagem' e sumia
+  /// do receituário; esses registros antigos são lidos por tipoDiagnostico.
+  Future<void> _dgMaisOfflineFirst() async {
     final acao = AcaoEntity(
       parentPath: widget.uidTecnico!.path,
       uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
@@ -137,7 +139,7 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
       uidAnimalOffline:
           widget.uidAnimaisProdutores == null ? widget.uidAnimalOffline : null,
       nomeAnimal: widget.nomeAnimal,
-      acao: acaoNome,
+      acao: 'DG+',
       dataVisita: dateTimeFormat('dd/MM/yyyy', getCurrentTimestamp,
           locale: FFLocalizations.of(context).languageCode),
       dataDaAcao: getCurrentTimestamp,
@@ -519,15 +521,9 @@ class _DgMaisWidgetState extends State<DgMaisWidget>
             child: FFButtonWidget(
               onPressed: () async {
                 if (_dtDgMaisTextController.text != '') {
-                  if (widget.grupoPredominante == 'Vacas') {
-                    await _dgMaisOfflineFirst('DG+');
-                    Navigator.pop(context);
-                    return;
-                  } else {
-                    await _dgMaisOfflineFirst('Secagem');
-                    Navigator.pop(context);
-                    return;
-                  }
+                  await _dgMaisOfflineFirst();
+                  Navigator.pop(context);
+                  return;
                 } else {
                   await showDialog(
                     context: context,
