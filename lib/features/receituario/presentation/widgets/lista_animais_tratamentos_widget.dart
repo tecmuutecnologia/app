@@ -147,7 +147,7 @@ class _ListaAnimaisTratamentosWidgetState
             ],
           ),
           if ((widget.parameter1 == 'Secagem') ||
-              (widget.parameter1 == 'Pré Parto'))
+              (ehPreParto(widget.parameter1)))
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
               // Tratamentos do ObjectBox, ligados pelo CAMPO uidResumoDaVisita
@@ -269,8 +269,7 @@ class _ListaAnimaisTratamentosWidgetState
                                   () {
                                     if (widget.parameter1 == 'Secagem') {
                                       return ' - ${textAnimaisProdutoresRecord.dtSecPrevista}';
-                                    } else if (widget.parameter1 ==
-                                        'Pré Parto') {
+                                    } else if (ehPreParto(widget.parameter1)) {
                                       return ' - ${textAnimaisProdutoresRecord.dtPrePartoPrevista}';
                                     } else {
                                       return ' - ${listViewTratamentosRecord.observacaoAcao}';
@@ -309,7 +308,7 @@ class _ListaAnimaisTratamentosWidgetState
               ),
             ),
           if ((widget.parameter1 != 'Secagem') &&
-              (widget.parameter1 != 'Pré Parto'))
+              (!ehPreParto(widget.parameter1)))
             Padding(
               padding: EdgeInsetsDirectional.fromSTEB(5.0, 0.0, 5.0, 0.0),
               // Tratamentos do ObjectBox, ligados pelo CAMPO uidResumoDaVisita
@@ -431,8 +430,7 @@ class _ListaAnimaisTratamentosWidgetState
                                   () {
                                     if (widget.parameter1 == 'Secagem') {
                                       return ' - ${textAnimaisProdutoresRecord.dtSecPrevista}';
-                                    } else if (widget.parameter1 ==
-                                        'Pré Parto') {
+                                    } else if (ehPreParto(widget.parameter1)) {
                                       return ' - ${textAnimaisProdutoresRecord.dtPrePartoPrevista}';
                                     } else {
                                       return ' - ${listViewTratamentosRecord.observacaoAcao}';

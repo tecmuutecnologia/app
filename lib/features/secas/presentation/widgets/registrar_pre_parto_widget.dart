@@ -521,7 +521,8 @@ class _RegistrarPrePartoWidgetState extends State<RegistrarPrePartoWidget>
                       functions.gerarDescricaoProtocolo('Pré-parto'),
                   uidAnimal: widget.uidAnimaisProdutores,
                   uidAcaoLancada: null,
-                  observacaoAcao: '',
+                  // Vira a coluna "Pré parto prev." do receituário (PDF).
+                  observacaoAcao: _dtPrePartoTextController.text,
                   nomeAnimal: widget.nomeAnimal,
                   brincoAnimal: widget.brincoAnimal,
                   grupoAnimal: widget.grupoAnimal,

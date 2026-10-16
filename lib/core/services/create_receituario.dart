@@ -1,5 +1,6 @@
 // Automatic FlutterFlow imports
 import '/domain/animais/ordenacao_animal.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/domain/animais/diagnostico_gestacao.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
@@ -95,10 +96,10 @@ Future<void> createReceituario(
     sortedRecomendacoes.sort((a, b) {
       String tituloA = a['tituloRecomendacao'] ?? '';
       String tituloB = b['tituloRecomendacao'] ?? '';
-      if (tituloA == 'Secagem' || tituloA == 'Pré Parto') {
+      if (tituloA == 'Secagem' || ehPreParto(tituloA)) {
         return 1;
       }
-      if (tituloB == 'Secagem' || tituloB == 'Pré Parto') {
+      if (tituloB == 'Secagem' || ehPreParto(tituloB)) {
         return -1;
       }
       return tituloA.compareTo(tituloB);
@@ -131,7 +132,7 @@ Future<void> createReceituario(
 
       String tipoAcaoAtual = recomendacaoData['tituloRecomendacao'] ?? '';
 
-      if (tipoAcaoAtual == 'Secagem' || tipoAcaoAtual == 'Pré Parto') {
+      if (tipoAcaoAtual == 'Secagem' || ehPreParto(tipoAcaoAtual)) {
         // Ordena por data (observacaoAcao contém a data no formato dd/MM/yyyy), se não conseguir, ordena por nomeAnimal
         sortedTratamentos.sort((a, b) {
           String dataA = a['observacaoAcao'] ?? '';
@@ -180,7 +181,7 @@ Future<void> createReceituario(
 
       // Adiciona o cabeçalho da tabela de tratamentos
       String observacaoTitulo = 'Observação';
-      if (recomendacaoData['tituloRecomendacao'] == 'Pré Parto') {
+      if (ehPreParto(recomendacaoData['tituloRecomendacao'] as String?)) {
         observacaoTitulo = 'Pré parto prev.';
       } else if (recomendacaoData['tituloRecomendacao'] == 'Secagem') {
         observacaoTitulo = 'Data secagem';
@@ -976,16 +977,17 @@ List<pw.Widget> tabelaComTitulo(
 /// Texto da coluna "Observação" / "Data secagem" do tratamento. Nunca nulo:
 /// `pw.Text` não aceita null e o PDF inteiro falhava.
 ///
-/// A secagem gravou `observacaoAcao` nulo de a1ea501 até out/2026 (antes, e
-/// de novo agora, ali vai a data da secagem). Para esses registros a data vem
-/// do animal, que guarda `dtSecagem`.
+/// Secagem e pré-parto gravaram a observação vazia de jul/2026 (a1ea501 e
+/// 4333916) até out/2026 — antes, e de novo agora, ali vai a data do manejo.
+/// Para esses registros a data vem do animal (`dtSecagem` / `dtPreParto`).
 String _observacaoDoTratamento(TratamentoEntity e) {
   final obs = e.observacaoAcao;
   if (obs != null && obs.isNotEmpty) return obs;
-  if (e.tipoAcao == 'Secagem' && e.uidAnimalPath != null) {
+  final secagem = e.tipoAcao == 'Secagem';
+  if ((secagem || ehPreParto(e.tipoAcao)) && e.uidAnimalPath != null) {
     final animal =
         AnimalRepository().getByFirestoreId(e.uidAnimalPath!.split('/').last);
-    return animal?.dtSecagem ?? '';
+    return (secagem ? animal?.dtSecagem : animal?.dtPreParto) ?? '';
   }
   return obs ?? '';
 }
