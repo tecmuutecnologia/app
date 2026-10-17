@@ -1,5 +1,8 @@
 ## 🔄 Comandos Rápidos
-
+```bash
+#All In
+flutter clean && flutter pub get && cd ios && pod install && cd .. && flutter build ipa --release && fastlane ios upload_testflight_external groups:"Testadores Externos"
+```
 ```bash
 # Limpar projeto
 flutter clean && flutter pub get
