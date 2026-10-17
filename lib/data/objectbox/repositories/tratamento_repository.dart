@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../domain/receituario/tratamentos_unicos.dart';
 import '../objectbox_service.dart';
 import '../entities/index.dart';
 import '../../../objectbox.g.dart';
@@ -47,10 +48,16 @@ class TratamentoRepository extends BaseSyncRepository<TratamentoEntity> {
     return data;
   }
 
-  /// O CREATE/UPDATE dos tratamentos já é feito por `_syncModifiedTratamentos`
-  /// (que reconcilia o `firestoreId`). Não enfileirar evita a dupla-sincronização.
+  /// O CREATE/UPDATE dos tratamentos já é feito por `_syncModifiedTratamentos`.
+  /// Não enfileirar evita a dupla-sincronização.
   @override
   bool get syncedByModifiedLoop => true;
+
+  /// Id definitivo desde a criação. Sem ele, o envio da tela e o laço de sync
+  /// faziam cada um o seu `add` enquanto o primeiro não voltava, e o animal
+  /// aparecia duas vezes no receituário.
+  @override
+  bool get preGeneratesFirestoreId => true;
 
   TratamentoEntity? getByFirestoreId(String firestoreId) => box
       .query(TratamentoEntity_.firestoreId.equals(firestoreId))
@@ -74,6 +81,9 @@ class TratamentoRepository extends BaseSyncRepository<TratamentoEntity> {
   ///
   /// Filtra no banco. O receituário fazia `getAll()` e filtrava em Dart — a
   /// tabela inteira de tratamentos materializada a cada recomendação.
+  ///
+  /// Sem as cópias deixadas por envios duplicados ([tratamentosUnicos]): tela e
+  /// PDF do receituário leem daqui.
   List<TratamentoEntity> getDaVisita(String resumoPath, {String? tipoAcao}) {
     var condicao = TratamentoEntity_.uidResumoDaVisitaPath
         .equals(resumoPath)
@@ -81,6 +91,8 @@ class TratamentoRepository extends BaseSyncRepository<TratamentoEntity> {
     if (tipoAcao != null) {
       condicao = condicao.and(TratamentoEntity_.tipoAcao.equals(tipoAcao));
     }
-    return box.query(condicao).build().find();
+    // Ordem estável por id local para "manter o primeiro" ser determinístico.
+    final query = box.query(condicao).order(TratamentoEntity_.id).build();
+    return tratamentosUnicos(query.find());
   }
 }

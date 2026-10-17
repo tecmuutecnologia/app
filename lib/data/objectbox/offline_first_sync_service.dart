@@ -13,6 +13,8 @@ import '../../core/sync/edicao_pendente.dart';
 import '../../core/sync/escuta_remota.dart';
 import '../../core/sync/chaves_uid_person.dart';
 import '../../core/sync/fonte_download.dart';
+import '../../core/sync/gravar_no_id_definitivo.dart';
+import '../../core/sync/trava_de_envio.dart';
 import '../../core/sync/janela_pull.dart';
 import '../../core/sync/queue_payload_codec.dart';
 import '../../core/sync/reconciliacao_animais.dart';
@@ -49,6 +51,11 @@ class OfflineFirstSyncService {
 
   StreamSubscription<bool>? _connectivitySubscription;
   Timer? _periodicSyncTimer;
+
+  /// Todo envio ao Firestore passa por aqui: timer, reconexão, fila e logout
+  /// disparam o push sem se coordenar, e duas rodadas juntas duplicavam
+  /// registros.
+  final _travaDeEnvio = TravaDeEnvio();
 
   final _statusController = StreamController<SyncStatus>.broadcast();
   Stream<SyncStatus> get statusStream => _statusController.stream;
@@ -1237,11 +1244,20 @@ class OfflineFirstSyncService {
   // ==========================================================================
 
   /// Sincroniza todas as alterações pendentes para o Firestore
+  ///
+  /// Uma rodada por vez: pedidos que chegam enquanto outra envia se juntam na
+  /// próxima (ver [TravaDeEnvio.agendar]).
   Future<void> syncPendingChangesToFirestore() async {
     if (!_isOnline) {
       debugPrint('📴 Offline - sincronização adiada');
       return;
     }
+
+    await _travaDeEnvio.agendar(_enviarPendencias);
+  }
+
+  Future<void> _enviarPendencias() async {
+    if (!_isOnline) return;
 
     _updateStatus(SyncStatus.syncing);
 
@@ -1488,28 +1504,35 @@ class OfflineFirstSyncService {
     var enviados = 0;
     for (final tratamento in modified) {
       try {
-        if (tratamento.firestoreId != null && tratamento.parentPath != null) {
+        if (tratamento.parentPath == null) continue;
+        if (tratamento.lastSynced != null && tratamento.firestoreId != null) {
+          // Já está no servidor: `update` falha em vez de ressuscitar um
+          // documento apagado lá (limpeza de duplicatas).
           final docRef = _firestore.doc(
             '${tratamento.parentPath}/tratamentos/${tratamento.firestoreId}',
           );
           await docRef.update(_payloadTratamento(tratamento));
-          tratamento.needsSync = false;
-          tratamento.lastSynced = DateTime.now();
-          _objectBox.tratamentoBox.put(tratamento);
-          enviados++;
-        } else if (tratamento.firestoreId == null &&
-            tratamento.parentPath != null &&
-            !tratamento.isDeleted) {
-          final collectionRef =
-              _firestore.collection('${tratamento.parentPath}/tratamentos');
-          final docRef =
-              await collectionRef.add(_payloadTratamento(tratamento));
-          tratamento.firestoreId = docRef.id;
-          tratamento.needsSync = false;
-          tratamento.lastSynced = DateTime.now();
-          _objectBox.tratamentoBox.put(tratamento);
-          enviados++;
+        } else if (!tratamento.isDeleted) {
+          // Nunca subiu. Antes era `collection.add()`: cada tentativa — rodada
+          // repetida, envio da tela ainda em voo — criava outro documento, e o
+          // receituário mostrava o animal duas vezes.
+          await gravarNoIdDefinitivo(
+            firestore: _firestore,
+            colecaoPath: '${tratamento.parentPath}/tratamentos',
+            firestoreId: tratamento.firestoreId,
+            payload: _payloadTratamento(tratamento),
+            fixarIdLocal: (id) {
+              tratamento.firestoreId = id;
+              _objectBox.tratamentoBox.put(tratamento);
+            },
+          );
+        } else {
+          continue;
         }
+        tratamento.needsSync = false;
+        tratamento.lastSynced = DateTime.now();
+        _objectBox.tratamentoBox.put(tratamento);
+        enviados++;
       } catch (e) {
         debugPrint(
             '❌ Erro ao sincronizar tratamento ${tratamento.firestoreId}: $e');
@@ -1537,26 +1560,31 @@ class OfflineFirstSyncService {
         Map<String, dynamic> payload(FinanceiroEntity e) =>
             FinanceiroRepository(firestore: _firestore).payloadParaGravar(e);
 
-        if (fin.firestoreId != null && fin.parentPath != null) {
+        if (fin.parentPath == null) continue;
+        if (fin.lastSynced != null && fin.firestoreId != null) {
           final docRef = _firestore.doc(
             '${fin.parentPath}/financeiro/${fin.firestoreId}',
           );
           await docRef.update(payload(fin));
-          fin.needsSync = false;
-          fin.lastSynced = DateTime.now();
-          _objectBox.financeiroBox.put(fin);
-        } else if (fin.firestoreId == null &&
-            fin.parentPath != null &&
-            !fin.isDeleted) {
-          // Novo registro (criado offline) - criar no Firestore e reconciliar.
-          final collectionRef =
-              _firestore.collection('${fin.parentPath}/financeiro');
-          final docRef = await collectionRef.add(payload(fin));
-          fin.firestoreId = docRef.id;
-          fin.needsSync = false;
-          fin.lastSynced = DateTime.now();
-          _objectBox.financeiroBox.put(fin);
+        } else if (!fin.isDeleted) {
+          // Novo registro: id definitivo + set(merge), como nos tratamentos.
+          // O `add` criava um documento por tentativa.
+          await gravarNoIdDefinitivo(
+            firestore: _firestore,
+            colecaoPath: '${fin.parentPath}/financeiro',
+            firestoreId: fin.firestoreId,
+            payload: payload(fin),
+            fixarIdLocal: (id) {
+              fin.firestoreId = id;
+              _objectBox.financeiroBox.put(fin);
+            },
+          );
+        } else {
+          continue;
         }
+        fin.needsSync = false;
+        fin.lastSynced = DateTime.now();
+        _objectBox.financeiroBox.put(fin);
       } catch (e) {
         debugPrint('❌ Erro ao sincronizar financeiro ${fin.firestoreId}: $e');
       }
@@ -1891,8 +1919,12 @@ class OfflineFirstSyncService {
       debugPrint('🛠️ ${tratamentos.length} tratamento(s) e '
           '${recomendacoes.length} recomendação(ões) para reenvio');
 
-      await _syncModifiedVisitas();
-      await _syncModifiedTratamentos();
+      // Pela trava: estes laços são os mesmos do push e não podem rodar junto
+      // com uma rodada dele.
+      await _travaDeEnvio.executar(() async {
+        await _syncModifiedVisitas();
+        await _syncModifiedTratamentos();
+      });
       // Recomendação não tem laço próprio: sobe pelo repositório.
       final repoRecomendacao = RecomendacaoRepository(firestore: _firestore);
       for (final r in recomendacoes) {

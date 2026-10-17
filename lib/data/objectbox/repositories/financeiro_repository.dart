@@ -36,10 +36,15 @@ class FinanceiroRepository extends BaseSyncRepository<FinanceiroEntity> {
     return data;
   }
 
-  /// O CREATE/UPDATE é feito por `_syncModifiedFinanceiro` (que reconcilia o
-  /// `firestoreId`). Não enfileirar evita dupla-sync e o furo de reconcile.
+  /// O CREATE/UPDATE é feito por `_syncModifiedFinanceiro`. Não enfileirar
+  /// evita dupla-sync.
   @override
   bool get syncedByModifiedLoop => true;
+
+  /// Id definitivo desde a criação, pelo mesmo motivo dos tratamentos: dois
+  /// envios do mesmo registro sem id criavam dois documentos.
+  @override
+  bool get preGeneratesFirestoreId => true;
 
   FinanceiroEntity? getByFirestoreId(String firestoreId) => box
       .query(FinanceiroEntity_.firestoreId.equals(firestoreId))
