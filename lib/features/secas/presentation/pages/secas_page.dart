@@ -6,6 +6,7 @@ import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/features/secas/application/filtros_secas.dart';
+import '/features/secas/application/selecao_animais.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/core/ui/flutter_flow_button_tabbar.dart';
@@ -14,6 +15,7 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/features/shared/widgets/botao_ordenacao.dart';
 import '/core/ui/app_card.dart';
+import '/core/ui/confirmar_acao.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/features/prenhas/presentation/widgets/registro_aborto_widget.dart';
 import '../widgets/registrar_parto_widget.dart';
@@ -59,6 +61,9 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
   final String? Function(BuildContext, String?)?
       _searchListTextControllerValidator = null;
   TabController? _tabBarController;
+
+  /// Marcação de vários animais na aba "Descarte".
+  final _selecao = SelecaoAnimais();
 
   /// Lista de animais existentes (fonte ObjectBox). Antes em
   /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
@@ -109,7 +114,12 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
       vsync: this,
       length: 4,
       initialIndex: 0,
-    )..addListener(() => safeSetState(() {}));
+    )..addListener(() => safeSetState(() {
+          // A seleção é da aba "Descarte": sair dela desmarca tudo.
+          if (_tabBarController!.index != AbaSecas.descarte.index) {
+            _selecao.sair();
+          }
+        }));
 
     _searchListTextController ??= TextEditingController();
     _searchListFocusNode ??= FocusNode();
@@ -140,7 +150,12 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
     AbaSecas aba,
     Widget Function(BuildContext, AnimaisProdutoresStruct) card,
   ) {
-    final itens = animaisDaAba(
+    return _listaCards(_itensDaAba(aba), card);
+  }
+
+  /// Animais de uma aba, já com a busca e a ordem escolhida.
+  List<AnimaisProdutoresStruct> _itensDaAba(AbaSecas aba) {
+    return animaisDaAba(
       _animaisExistentes,
       aba: aba,
       busca: _searchListTextController?.text ?? '',
@@ -148,7 +163,12 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
         .sortedList(
             keyOf: (e) => e.compararDtUltimaInseminacao, desc: !_ordemCrescente)
         .toList();
+  }
 
+  Widget _listaCards(
+    List<AnimaisProdutoresStruct> itens,
+    Widget Function(BuildContext, AnimaisProdutoresStruct) card,
+  ) {
     return ListView.builder(
       padding: EdgeInsets.zero,
       primary: false,
@@ -176,8 +196,16 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
         // `getAll()` devolve ordem de insercao do ObjectBox, que espelha a
         // ordem de documentId do Firestore — nem numerica, nem alfabetica.
         ..sort(_compararStructs);
+      _selecao.manterApenas(
+          animaisDaAba(_animaisExistentes, aba: AbaSecas.descarte)
+              .map(_chaveAnimal));
     }
   }
+
+  /// Identidade do animal na seleção: o documento no Firestore ou, para quem
+  /// foi criado offline e ainda não subiu, a identidade local.
+  String _chaveAnimal(AnimaisProdutoresStruct item) =>
+      item.uidAnimal?.path ?? 'offline:${item.uidAnimalOffline}';
 
   // ---------------------------------------------------------------------------
   // Blocos visuais compartilhados pelos 4 cards (mesmo padrão das telas de
@@ -186,8 +214,12 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
 
   /// Envelopa o cartão: sombra suave, cantos arredondados e o InkWell que abre
   /// o prontuário do animal.
+  ///
+  /// [aoTocar] substitui a abertura do prontuário (no modo de seleção o toque
+  /// marca o animal) e [marcado] contorna o card na cor da marca.
   Widget _linhaCard(
-      BuildContext context, AnimaisProdutoresStruct item, Widget conteudo) {
+      BuildContext context, AnimaisProdutoresStruct item, Widget conteudo,
+      {VoidCallback? aoTocar, VoidCallback? aoSegurar, bool marcado = false}) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(12.0, 6.0, 12.0, 6.0),
       child: Container(
@@ -196,6 +228,10 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
           color: FlutterFlowTheme.of(context).secondaryBackground,
           boxShadow: AppTokens.softShadow(context),
           borderRadius: BorderRadius.circular(AppTokens.radius),
+          border: Border.all(
+            color: marcado ? AppTokens.brand : Colors.transparent,
+            width: 2.0,
+          ),
         ),
         child: Padding(
           padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
@@ -204,46 +240,47 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
             focusColor: Colors.transparent,
             hoverColor: Colors.transparent,
             highlightColor: Colors.transparent,
-            onTap: () async {
-              context.pushNamed(
-                ProntuarioAnimalPage.routeName,
-                queryParameters: {
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'uidAnimaisProdutores': serializeParam(
-                    item.uidAnimal,
-                    ParamType.DocumentReference,
-                  ),
-                  'grupoPredominante': serializeParam(
-                    item.grupoAnimal,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    widget.visitaPresencial,
-                    ParamType.bool,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                }.withoutNulls,
-              );
-            },
-            onLongPress: () async {},
+            onTap: aoTocar ??
+                () async {
+                  context.pushNamed(
+                    ProntuarioAnimalPage.routeName,
+                    queryParameters: {
+                      'uidPropriedade': serializeParam(
+                        widget.uidPropriedade,
+                        ParamType.DocumentReference,
+                      ),
+                      'nomePropriedade': serializeParam(
+                        widget.nomePropriedade,
+                        ParamType.String,
+                      ),
+                      'uidTecnico': serializeParam(
+                        widget.uidTecnico,
+                        ParamType.DocumentReference,
+                      ),
+                      'emailPropriedade': serializeParam(
+                        widget.emailPropriedade,
+                        ParamType.String,
+                      ),
+                      'uidAnimaisProdutores': serializeParam(
+                        item.uidAnimal,
+                        ParamType.DocumentReference,
+                      ),
+                      'grupoPredominante': serializeParam(
+                        item.grupoAnimal,
+                        ParamType.String,
+                      ),
+                      'visitaPresencial': serializeParam(
+                        widget.visitaPresencial,
+                        ParamType.bool,
+                      ),
+                      'diasDg': serializeParam(
+                        widget.diasDg,
+                        ParamType.String,
+                      ),
+                    }.withoutNulls,
+                  );
+                },
+            onLongPress: aoSegurar,
             child: conteudo,
           ),
         ),
@@ -251,9 +288,10 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
     );
   }
 
-  /// Conteúdo do cartão: avatar + nome + ações no topo e, abaixo, a faixa de
-  /// informações ocupando a largura TOTAL do card (mesmo desenho da tela de
+  /// Conteúdo do cartão: avatar + nome no topo e, abaixo, as ações e a faixa
+  /// de informações ocupando a largura TOTAL do card (mesmo desenho da tela de
   /// prenhas, onde as datas cabem inteiras — com ano — por terem a largura toda).
+  /// As ações dividem a largura em partes iguais: botões do mesmo tamanho.
   Widget _conteudoCard(BuildContext context, AnimaisProdutoresStruct item,
       {required Widget botoes, required List<Widget> info}) {
     return Column(
@@ -262,7 +300,7 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
       children: [
         Row(
           mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             _avatarGrupo(context, item),
             Expanded(
@@ -300,14 +338,14 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
                                 .fontStyle,
                           ),
                     ),
-                    const SizedBox(height: 12.0),
-                    botoes,
                   ],
                 ),
               ),
             ),
           ],
         ),
+        const SizedBox(height: 12.0),
+        botoes,
         if (info.isNotEmpty) ...[
           const SizedBox(height: 12.0),
           _faixaInfo(context, info),
@@ -579,22 +617,251 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
     );
   }
 
-  /// Card da aba "Descarte".
+  /// Card da aba "Descarte". Segurar o card liga o modo de seleção; nele o
+  /// toque marca o animal e os botões dão lugar à caixinha.
   Widget _buildCard4(BuildContext context, AnimaisProdutoresStruct item) {
+    final chave = _chaveAnimal(item);
+    final selecionando = _selecao.ativa;
+    final marcado = _selecao.contem(chave);
+    void alternar() => safeSetState(() => _selecao.alternar(chave));
+
     return _linhaCard(
       context,
       item,
       _conteudoCard(
         context,
         item,
-        botoes: _part2(context, item),
+        botoes: selecionando
+            ? _marcador(context, marcado, alternar)
+            : _part2(context, item),
         info: [
           _tileInfo(context, 'Data do descarte', item.dtDescarteAnimal),
           _tileInfo(context, 'Motivo', item.motivoDescarteAnimal,
               ehData: false),
         ],
       ),
+      aoTocar: selecionando ? alternar : null,
+      aoSegurar: selecionando
+          ? alternar
+          : () => safeSetState(() => _selecao.entrar(comChave: chave)),
+      marcado: marcado,
     );
+  }
+
+  /// Caixinha do card no modo de seleção, na altura dos botões que ela
+  /// substitui para o card não pular.
+  Widget _marcador(BuildContext context, bool marcado, VoidCallback alternar) {
+    return SizedBox(
+      height: 40.0,
+      child: Row(
+        children: [
+          Checkbox(
+            value: marcado,
+            onChanged: (_) => alternar(),
+            activeColor: AppTokens.brand,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.compact,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4.0)),
+          ),
+          const SizedBox(width: 4.0),
+          Text(
+            marcado ? 'Selecionado' : 'Toque para selecionar',
+            style: GoogleFonts.readexPro(
+              color: marcado
+                  ? AppTokens.brand
+                  : FlutterFlowTheme.of(context).secondaryText,
+              fontSize: 13.0,
+              fontWeight: marcado ? FontWeight.w600 : FontWeight.normal,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Aba "Descarte": barra de seleção no topo, lista e, com algum animal
+  /// marcado, o rodapé com as ações em lote.
+  Widget _abaDescarte(BuildContext context) {
+    final itens = _itensDaAba(AbaSecas.descarte);
+    return Column(
+      children: [
+        if (itens.isNotEmpty)
+          _barraSelecao(context, itens.map(_chaveAnimal).toList()),
+        Expanded(child: _listaCards(itens, _buildCard4)),
+        if (_selecao.quantidade > 0) _rodapeSelecao(context),
+      ],
+    );
+  }
+
+  Widget _barraSelecao(BuildContext context, List<String> visiveis) {
+    final tema = FlutterFlowTheme.of(context);
+    final estiloTexto =
+        GoogleFonts.readexPro(color: tema.secondaryText, fontSize: 13.0);
+    final estiloAcao = GoogleFonts.readexPro(fontWeight: FontWeight.w600);
+
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 8.0, 8.0, 0.0),
+      child: SizedBox(
+        height: 40.0,
+        child: _selecao.ativa
+            ? Row(
+                children: [
+                  Checkbox(
+                    value: _selecao.todosMarcados(visiveis),
+                    onChanged: (_) =>
+                        safeSetState(() => _selecao.alternarTodos(visiveis)),
+                    activeColor: AppTokens.brand,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4.0)),
+                  ),
+                  const SizedBox(width: 4.0),
+                  Expanded(
+                    child: Text(
+                      _selecao.quantidade == 0
+                          ? 'Selecionar todos'
+                          : '${rotuloAnimais(_selecao.quantidade)} '
+                              '${_selecao.quantidade == 1 ? 'selecionado' : 'selecionados'}',
+                      style: estiloTexto.copyWith(
+                          color: tema.primaryText, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => safeSetState(_selecao.sair),
+                    style: TextButton.styleFrom(
+                        foregroundColor: tema.secondaryText,
+                        textStyle: estiloAcao),
+                    child: const Text('Cancelar'),
+                  ),
+                ],
+              )
+            : Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '${rotuloAnimais(visiveis.length)} no descarte',
+                      style: estiloTexto,
+                    ),
+                  ),
+                  TextButton.icon(
+                    onPressed: () => safeSetState(() => _selecao.entrar()),
+                    icon: const Icon(Icons.checklist_rounded, size: 18.0),
+                    label: const Text('Selecionar'),
+                    style: TextButton.styleFrom(
+                        foregroundColor: AppTokens.brand,
+                        textStyle: estiloAcao),
+                  ),
+                ],
+              ),
+      ),
+    );
+  }
+
+  /// Ações em lote. Fica fixo embaixo para o técnico rolar e marcar sem perder
+  /// o botão de vista.
+  Widget _rodapeSelecao(BuildContext context) {
+    final n = _selecao.quantidade;
+    return Container(
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x14000000),
+            blurRadius: 16.0,
+            offset: Offset(0.0, -6.0),
+          ),
+        ],
+      ),
+      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
+      child: SafeArea(
+        top: false,
+        child: Row(
+          children: [
+            Expanded(
+              child: FFButtonWidget(
+                onPressed: _restaurarSelecionados,
+                text: 'Restaurar',
+                icon: Icon(Icons.restore, size: 15.0),
+                options: _opcoesBotao(context, AppTokens.brand),
+              ),
+            ),
+            const SizedBox(width: 8.0),
+            Expanded(
+              child: FFButtonWidget(
+                onPressed: _eliminarSelecionados,
+                text: 'Eliminar $n',
+                icon: Icon(Icons.delete_outline_rounded, size: 15.0),
+                options: _opcoesBotao(context, AppTokens.negativo),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Os marcados que ainda estão no descarte, inclusive os escondidos pela
+  /// busca: a contagem do rodapé é a seleção inteira.
+  List<AnimaisProdutoresStruct> _selecionados() =>
+      animaisDaAba(_animaisExistentes, aba: AbaSecas.descarte)
+          .where((a) => _selecao.contem(_chaveAnimal(a)))
+          .toList();
+
+  Future<void> _eliminarSelecionados() async {
+    final alvos = _selecionados();
+    if (alvos.isEmpty) return;
+    final n = alvos.length;
+    final confirmou = await confirmarAcao(
+      context,
+      titulo: n == 1 ? 'Eliminar o animal?' : 'Eliminar $n animais?',
+      mensagem: '${rotuloAnimais(n)} '
+          '${n == 1 ? 'será eliminado' : 'serão eliminados'}. '
+          'Essa ação é irreversível.',
+      textoConfirmar: 'Eliminar',
+      perigosa: true,
+    );
+    if (!confirmou) return;
+    final repo = AnimalRepository();
+    for (final item in alvos) {
+      final entidade = _entidade(repo, item);
+      if (entidade != null) await repo.softDelete(entidade);
+    }
+    _concluirLote('${rotuloAnimais(n)} '
+        '${n == 1 ? 'eliminado' : 'eliminados'}');
+  }
+
+  Future<void> _restaurarSelecionados() async {
+    final alvos = _selecionados();
+    if (alvos.isEmpty) return;
+    final n = alvos.length;
+    final confirmou = await confirmarAcao(
+      context,
+      titulo: n == 1 ? 'Restaurar o animal?' : 'Restaurar $n animais?',
+      mensagem: n == 1
+          ? 'Ele voltará para a lista do rebanho com o status vazia.'
+          : 'Eles voltarão para a lista do rebanho com o status vazia.',
+      textoConfirmar: 'Restaurar',
+    );
+    if (!confirmou) return;
+    final repo = AnimalRepository();
+    for (final item in alvos) {
+      final entidade = _entidade(repo, item);
+      if (entidade != null) {
+        await repo.update(entidade, {'status': 'Vazia', 'idStatusAnimal': 2});
+      }
+    }
+    _concluirLote('${rotuloAnimais(n)} '
+        '${n == 1 ? 'restaurado' : 'restaurados'}');
+  }
+
+  void _concluirLote(String aviso) {
+    _selecao.sair();
+    _recarregarAnimais();
+    safeSetState(() {});
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(aviso)));
   }
 
   /// Card da aba "Indução Lactação".
@@ -671,7 +938,7 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
               Icons.add_alert,
               size: 15.0,
             ),
-            options: _opcoesBotao(context, AppTokens.secondary),
+            options: _opcoesBotao(context, AppTokens.brand),
           ),
         ),
       ],
@@ -717,444 +984,328 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
     ];
   }
 
+  /// Ações da aba "Descarte". Confirmar ou cancelar fecha só o diálogo: a
+  /// tela fica aberta para o técnico seguir com o próximo animal. Antes um
+  /// `Navigator.pop(context)` a mais fechava a tela e ele voltava ao menu a
+  /// cada vaca.
   Widget _part2(BuildContext context, AnimaisProdutoresStruct item) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 15.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                  child: FFButtonWidget(
-                    onPressed: () async {
-                      var confirmDialogResponse = await showDialog<bool>(
-                            context: context,
-                            builder: (alertDialogContext) {
-                              return AlertDialog(
-                                title: Text(
-                                    'Deseja realmente restaurar  o animal?'),
-                                content: Text(
-                                    'Ele voltará para a lista do rebanho com o status vazia.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(
-                                        alertDialogContext, false),
-                                    child: Text('Cancelar'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(alertDialogContext, true),
-                                    child: Text('Confirmar'),
-                                  ),
-                                ],
-                              );
-                            },
-                          ) ??
-                          false;
-                      if (confirmDialogResponse) {
-                        item.status = 'Vazia';
-                        safeSetState(() {});
-                        // Restaurar offline-first: aplica status 'Vazia' no animal via
-                        // AnimalRepository (persiste no ObjectBox e sincroniza).
-                        final repoRest = AnimalRepository();
-                        final entRest = item.uidAnimal != null
-                            ? repoRest.getByFirestoreId(item.uidAnimal!.id)
-                            : (item.uidAnimalOffline.isNotEmpty
-                                ? repoRest.getByUidAnimalOffline(
-                                    item.uidAnimalOffline)
-                                : null);
-                        if (entRest != null) {
-                          await repoRest.update(entRest,
-                              {'status': 'Vazia', 'idStatusAnimal': 2});
-                        }
-                        _recarregarAnimais();
-                        safeSetState(() {});
-                        Navigator.pop(context);
-                        return;
-                      } else {
-                        Navigator.pop(context);
-                      }
-                    },
-                    text: 'Restaurar',
-                    icon: Icon(
-                      Icons.restore,
-                      size: 15.0,
-                    ),
-                    options: _opcoesBotao(context, AppTokens.secondary),
-                  ),
-                ),
-              ],
+    return Row(
+      children: [
+        Expanded(
+          child: FFButtonWidget(
+            onPressed: () => _restaurar(item),
+            text: 'Restaurar',
+            icon: Icon(
+              Icons.restore,
+              size: 15.0,
             ),
+            options: _opcoesBotao(context, AppTokens.brand),
           ),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [],
+        ),
+        const SizedBox(width: 8.0),
+        Expanded(
+          child: FFButtonWidget(
+            onPressed: () => _eliminar(item),
+            text: 'Eliminar',
+            icon: Icon(
+              Icons.delete_outline_rounded,
+              size: 15.0,
             ),
+            options: _opcoesBotao(context, AppTokens.negativo),
           ),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                child: FFButtonWidget(
-                  onPressed: () async {
-                    var confirmDialogResponse = await showDialog<bool>(
-                          context: context,
-                          builder: (alertDialogContext) {
-                            return AlertDialog(
-                              title: Text('Deseja realmente apagar o animal?'),
-                              content: Text('Essa ação é irreversível.'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(alertDialogContext, false),
-                                  child: Text('Cancelar'),
-                                ),
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(alertDialogContext, true),
-                                  child: Text('Confirmar'),
-                                ),
-                              ],
-                            );
-                          },
-                        ) ??
-                        false;
-                    if (confirmDialogResponse) {
-                      // Exclusão offline-first: soft delete no ObjectBox; o
-                      // sync (online imediato ou fila ao reconectar) propaga.
-                      final repoApagar = AnimalRepository();
-                      final entApagar = item.uidAnimal != null
-                          ? repoApagar.getByFirestoreId(item.uidAnimal!.id)
-                          : (item.uidAnimalOffline.isNotEmpty
-                              ? repoApagar
-                                  .getByUidAnimalOffline(item.uidAnimalOffline)
-                              : null);
-                      if (entApagar != null) {
-                        await repoApagar.softDelete(entApagar);
-                      }
-                      // Recarrega do ObjectBox (o soft delete já o exclui da
-                      // lista) em vez de mexer no índice da lista em memória.
-                      _recarregarAnimais();
-                      safeSetState(() {});
-                      Navigator.pop(context);
-                      return;
-                    } else {
-                      Navigator.pop(context);
-                    }
-                  },
-                  text: 'Eliminar',
-                  icon: Icon(
-                    Icons.clear,
-                    size: 15.0,
-                  ),
-                  options:
-                      _opcoesBotao(context, FlutterFlowTheme.of(context).error),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
+  /// O animal no ObjectBox: pelo id do Firestore ou, se foi criado offline,
+  /// pela identidade local.
+  AnimalEntity? _entidade(AnimalRepository repo, AnimaisProdutoresStruct item) {
+    if (item.uidAnimal != null)
+      return repo.getByFirestoreId(item.uidAnimal!.id);
+    if (item.uidAnimalOffline.isNotEmpty) {
+      return repo.getByUidAnimalOffline(item.uidAnimalOffline);
+    }
+    return null;
+  }
+
+  /// Devolve o animal ao rebanho com status 'Vazia' (offline-first: grava no
+  /// ObjectBox e o repositório sincroniza).
+  Future<void> _restaurar(AnimaisProdutoresStruct item) async {
+    final confirmou = await confirmarAcao(
+      context,
+      titulo: 'Restaurar o animal?',
+      mensagem: 'Ele voltará para a lista do rebanho com o status vazia.',
+      textoConfirmar: 'Restaurar',
+    );
+    if (!confirmou) return;
+    final repo = AnimalRepository();
+    final entidade = _entidade(repo, item);
+    if (entidade != null) {
+      await repo.update(entidade, {'status': 'Vazia', 'idStatusAnimal': 2});
+    }
+    _recarregarAnimais();
+    safeSetState(() {});
+  }
+
+  /// Exclusão offline-first: soft delete no ObjectBox; o sync (online
+  /// imediato ou fila ao reconectar) propaga.
+  Future<void> _eliminar(AnimaisProdutoresStruct item) async {
+    final confirmou = await confirmarAcao(
+      context,
+      titulo: 'Eliminar o animal?',
+      mensagem: 'Essa ação é irreversível.',
+      textoConfirmar: 'Eliminar',
+      perigosa: true,
+    );
+    if (!confirmou) return;
+    final repo = AnimalRepository();
+    final entidade = _entidade(repo, item);
+    if (entidade != null) await repo.softDelete(entidade);
+    // Recarrega do ObjectBox (o soft delete já o exclui da lista) em vez de
+    // mexer no índice da lista em memória.
+    _recarregarAnimais();
+    safeSetState(() {});
+  }
+
   Widget _part4(BuildContext context, AnimaisProdutoresStruct item) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 5.0, 0.0, 15.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                  child: FFButtonWidget(
-                    onPressed: () async {
-                      await showModalBottomSheet(
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        enableDrag: false,
-                        context: context,
-                        builder: (context) {
-                          return GestureDetector(
-                            onTap: () {
-                              FocusScope.of(context).unfocus();
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            },
-                            child: Padding(
-                              padding: MediaQuery.viewInsetsOf(context),
-                              child: RegistroAbortoWidget(
-                                uidPropriedade: widget.uidPropriedade!,
-                                nomePropriedade: widget.nomePropriedade!,
-                                uidTecnico: widget.uidTecnico!,
-                                emailPropriedade: widget.emailPropriedade!,
-                                visitaPresencial: widget.visitaPresencial!,
-                                diasDg: widget.diasDg!,
-                                uidAnimaisProdutores: item.uidAnimal,
-                                uidAnimalOffline: item.uidAnimalOffline,
-                                nomeAnimal: item.nomeAnimal,
-                              ),
-                            ),
-                          );
-                        },
-                      ).then((value) {
-                        _recarregarAnimais();
-                        safeSetState(() {});
-                      });
+    return Row(
+      children: [
+        Expanded(
+          child: FFButtonWidget(
+            onPressed: () async {
+              await showModalBottomSheet(
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                enableDrag: false,
+                context: context,
+                builder: (context) {
+                  return GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).unfocus();
+                      FocusManager.instance.primaryFocus?.unfocus();
                     },
-                    text: 'Aborto',
-                    icon: Icon(
-                      Icons.cancel_sharp,
-                      size: 15.0,
+                    child: Padding(
+                      padding: MediaQuery.viewInsetsOf(context),
+                      child: RegistroAbortoWidget(
+                        uidPropriedade: widget.uidPropriedade!,
+                        nomePropriedade: widget.nomePropriedade!,
+                        uidTecnico: widget.uidTecnico!,
+                        emailPropriedade: widget.emailPropriedade!,
+                        visitaPresencial: widget.visitaPresencial!,
+                        diasDg: widget.diasDg!,
+                        uidAnimaisProdutores: item.uidAnimal,
+                        uidAnimalOffline: item.uidAnimalOffline,
+                        nomeAnimal: item.nomeAnimal,
+                      ),
                     ),
-                    options: _opcoesBotao(
-                        context, FlutterFlowTheme.of(context).error),
-                  ),
-                ),
-              ],
+                  );
+                },
+              ).then((value) {
+                _recarregarAnimais();
+                safeSetState(() {});
+              });
+            },
+            text: 'Aborto',
+            icon: Icon(
+              Icons.cancel_sharp,
+              size: 15.0,
             ),
+            options: _opcoesBotao(context, AppTokens.negativo),
           ),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [],
+        ),
+        const SizedBox(width: 8.0),
+        Expanded(
+          child: FFButtonWidget(
+            onPressed: () async {
+              await showModalBottomSheet(
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                enableDrag: false,
+                context: context,
+                builder: (context) {
+                  return GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).unfocus();
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    },
+                    child: Padding(
+                      padding: MediaQuery.viewInsetsOf(context),
+                      child: RegistrarPartoWidget(
+                        uidPropriedade: widget.uidPropriedade!,
+                        nomePropriedade: widget.nomePropriedade!,
+                        uidTecnico: widget.uidTecnico!,
+                        emailPropriedade: widget.emailPropriedade!,
+                        visitaPresencial: widget.visitaPresencial!,
+                        diasDg: widget.diasDg!,
+                        uidAnimaisProdutores: item.uidAnimal,
+                        uidAnimalOffline: item.uidAnimalOffline,
+                        nomeVacaAtual: item.nomeAnimal,
+                        nomeTourtoUltimaInseminacao:
+                            item.nomeTouroUltimaInseminacao,
+                        brincoVacaAtual: item.brincoAnimal.toString(),
+                      ),
+                    ),
+                  );
+                },
+              ).then((value) {
+                _recarregarAnimais();
+                safeSetState(() {});
+              });
+            },
+            text: 'Parto',
+            icon: Icon(
+              Icons.add_alert,
+              size: 15.0,
             ),
+            options: _opcoesBotao(context, AppTokens.positivo),
           ),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                child: FFButtonWidget(
-                  onPressed: () async {
-                    await showModalBottomSheet(
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      enableDrag: false,
-                      context: context,
-                      builder: (context) {
-                        return GestureDetector(
-                          onTap: () {
-                            FocusScope.of(context).unfocus();
-                            FocusManager.instance.primaryFocus?.unfocus();
-                          },
-                          child: Padding(
-                            padding: MediaQuery.viewInsetsOf(context),
-                            child: RegistrarPartoWidget(
-                              uidPropriedade: widget.uidPropriedade!,
-                              nomePropriedade: widget.nomePropriedade!,
-                              uidTecnico: widget.uidTecnico!,
-                              emailPropriedade: widget.emailPropriedade!,
-                              visitaPresencial: widget.visitaPresencial!,
-                              diasDg: widget.diasDg!,
-                              uidAnimaisProdutores: item.uidAnimal,
-                              uidAnimalOffline: item.uidAnimalOffline,
-                              nomeVacaAtual: item.nomeAnimal,
-                              nomeTourtoUltimaInseminacao:
-                                  item.nomeTouroUltimaInseminacao,
-                              brincoVacaAtual: item.brincoAnimal.toString(),
-                            ),
-                          ),
-                        );
-                      },
-                    ).then((value) {
-                      _recarregarAnimais();
-                      safeSetState(() {});
-                    });
-                  },
-                  text: 'Parto',
-                  icon: Icon(
-                    Icons.add_alert,
-                    size: 15.0,
-                  ),
-                  options: _opcoesBotao(context, Color(0xFF048508)),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _part6(BuildContext context, AnimaisProdutoresStruct item) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 15.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                  child: FFButtonWidget(
-                    onPressed: () async {
-                      await showModalBottomSheet(
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        enableDrag: false,
-                        context: context,
-                        builder: (context) {
-                          return GestureDetector(
-                            onTap: () {
-                              FocusScope.of(context).unfocus();
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            },
-                            child: Padding(
-                              padding: MediaQuery.viewInsetsOf(context),
-                              child: RegistroAbortoWidget(
-                                uidPropriedade: widget.uidPropriedade!,
-                                nomePropriedade: widget.nomePropriedade!,
-                                uidTecnico: widget.uidTecnico!,
-                                emailPropriedade: widget.emailPropriedade!,
-                                visitaPresencial: widget.visitaPresencial!,
-                                diasDg: widget.diasDg!,
-                                uidAnimaisProdutores: item.uidAnimal,
-                                uidAnimalOffline: item.uidAnimalOffline,
-                                nomeAnimal: item.nomeAnimal,
-                              ),
-                            ),
-                          );
-                        },
-                      ).then((value) {
-                        _recarregarAnimais();
-                        safeSetState(() {});
-                      });
+    return Row(
+      children: [
+        Expanded(
+          child: FFButtonWidget(
+            onPressed: () async {
+              await showModalBottomSheet(
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                enableDrag: false,
+                context: context,
+                builder: (context) {
+                  return GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).unfocus();
+                      FocusManager.instance.primaryFocus?.unfocus();
                     },
-                    text: 'Aborto',
-                    icon: Icon(
-                      Icons.cancel_sharp,
-                      size: 15.0,
+                    child: Padding(
+                      padding: MediaQuery.viewInsetsOf(context),
+                      child: RegistroAbortoWidget(
+                        uidPropriedade: widget.uidPropriedade!,
+                        nomePropriedade: widget.nomePropriedade!,
+                        uidTecnico: widget.uidTecnico!,
+                        emailPropriedade: widget.emailPropriedade!,
+                        visitaPresencial: widget.visitaPresencial!,
+                        diasDg: widget.diasDg!,
+                        uidAnimaisProdutores: item.uidAnimal,
+                        uidAnimalOffline: item.uidAnimalOffline,
+                        nomeAnimal: item.nomeAnimal,
+                      ),
                     ),
-                    options: _opcoesBotao(
-                        context, FlutterFlowTheme.of(context).error),
-                  ),
-                ),
-              ],
+                  );
+                },
+              ).then((value) {
+                _recarregarAnimais();
+                safeSetState(() {});
+              });
+            },
+            text: 'Aborto',
+            icon: Icon(
+              Icons.cancel_sharp,
+              size: 15.0,
             ),
+            options: _opcoesBotao(context, AppTokens.negativo),
           ),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                  child: FFButtonWidget(
-                    onPressed: () async {
-                      await showModalBottomSheet(
-                        isScrollControlled: true,
-                        backgroundColor: Colors.transparent,
-                        enableDrag: false,
-                        context: context,
-                        builder: (context) {
-                          return GestureDetector(
-                            onTap: () {
-                              FocusScope.of(context).unfocus();
-                              FocusManager.instance.primaryFocus?.unfocus();
-                            },
-                            child: Padding(
-                              padding: MediaQuery.viewInsetsOf(context),
-                              child: RegistrarPartoWidget(
-                                uidPropriedade: widget.uidPropriedade!,
-                                nomePropriedade: widget.nomePropriedade!,
-                                uidTecnico: widget.uidTecnico!,
-                                emailPropriedade: widget.emailPropriedade!,
-                                visitaPresencial: widget.visitaPresencial!,
-                                diasDg: widget.diasDg!,
-                                uidAnimaisProdutores: item.uidAnimal,
-                                uidAnimalOffline: item.uidAnimalOffline,
-                                nomeVacaAtual: item.nomeAnimal,
-                                nomeTourtoUltimaInseminacao:
-                                    item.nomeTouroUltimaInseminacao,
-                                brincoVacaAtual: item.brincoAnimal.toString(),
-                              ),
-                            ),
-                          );
-                        },
-                      ).then((value) {
-                        _recarregarAnimais();
-                        safeSetState(() {});
-                      });
+        ),
+        const SizedBox(width: 8.0),
+        Expanded(
+          child: FFButtonWidget(
+            onPressed: () async {
+              await showModalBottomSheet(
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                enableDrag: false,
+                context: context,
+                builder: (context) {
+                  return GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).unfocus();
+                      FocusManager.instance.primaryFocus?.unfocus();
                     },
-                    text: 'Parto',
-                    icon: Icon(
-                      Icons.add_alert,
-                      size: 15.0,
+                    child: Padding(
+                      padding: MediaQuery.viewInsetsOf(context),
+                      child: RegistrarPartoWidget(
+                        uidPropriedade: widget.uidPropriedade!,
+                        nomePropriedade: widget.nomePropriedade!,
+                        uidTecnico: widget.uidTecnico!,
+                        emailPropriedade: widget.emailPropriedade!,
+                        visitaPresencial: widget.visitaPresencial!,
+                        diasDg: widget.diasDg!,
+                        uidAnimaisProdutores: item.uidAnimal,
+                        uidAnimalOffline: item.uidAnimalOffline,
+                        nomeVacaAtual: item.nomeAnimal,
+                        nomeTourtoUltimaInseminacao:
+                            item.nomeTouroUltimaInseminacao,
+                        brincoVacaAtual: item.brincoAnimal.toString(),
+                      ),
                     ),
-                    options: _opcoesBotao(context, Color(0xFF048508)),
-                  ),
-                ),
-              ],
+                  );
+                },
+              ).then((value) {
+                _recarregarAnimais();
+                safeSetState(() {});
+              });
+            },
+            text: 'Parto',
+            icon: Icon(
+              Icons.add_alert,
+              size: 15.0,
             ),
+            options: _opcoesBotao(context, AppTokens.positivo),
           ),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(0.0, 4.0, 0.0, 0.0),
-                child: FFButtonWidget(
-                  onPressed: () async {
-                    await showModalBottomSheet(
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      enableDrag: false,
-                      context: context,
-                      builder: (context) {
-                        return GestureDetector(
-                          onTap: () {
-                            FocusScope.of(context).unfocus();
-                            FocusManager.instance.primaryFocus?.unfocus();
-                          },
-                          child: Padding(
-                            padding: MediaQuery.viewInsetsOf(context),
-                            child: RegistrarPrePartoWidget(
-                              uidPropriedade: widget.uidPropriedade!,
-                              nomePropriedade: widget.nomePropriedade!,
-                              uidTecnico: widget.uidTecnico!,
-                              emailPropriedade: widget.emailPropriedade!,
-                              visitaPresencial: widget.visitaPresencial!,
-                              diasDg: widget.diasDg!,
-                              uidAnimaisProdutores: item.uidAnimal!,
-                              nomeAnimal: item.nomeAnimal,
-                              brincoAnimal: item.brincoAnimal.toString(),
-                              grupoAnimal: item.grupoAnimal,
-                              dtPrePartoPrevista:
-                                  functions.converteDataStringDate(
-                                      item.dtPrePartoPrevista),
-                            ),
-                          ),
-                        );
-                      },
-                    ).then((value) {
-                      _recarregarAnimais();
-                      safeSetState(() {});
-                    });
-                  },
-                  text: 'Pré-parto',
-                  icon: Icon(
-                    Icons.check,
-                    size: 15.0,
-                  ),
-                  options: _opcoesBotao(context, AppTokens.secondary),
-                ),
-              ),
-            ],
+        ),
+        const SizedBox(width: 8.0),
+        Expanded(
+          child: FFButtonWidget(
+            onPressed: () async {
+              await showModalBottomSheet(
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                enableDrag: false,
+                context: context,
+                builder: (context) {
+                  return GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).unfocus();
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    },
+                    child: Padding(
+                      padding: MediaQuery.viewInsetsOf(context),
+                      child: RegistrarPrePartoWidget(
+                        uidPropriedade: widget.uidPropriedade!,
+                        nomePropriedade: widget.nomePropriedade!,
+                        uidTecnico: widget.uidTecnico!,
+                        emailPropriedade: widget.emailPropriedade!,
+                        visitaPresencial: widget.visitaPresencial!,
+                        diasDg: widget.diasDg!,
+                        uidAnimaisProdutores: item.uidAnimal!,
+                        nomeAnimal: item.nomeAnimal,
+                        brincoAnimal: item.brincoAnimal.toString(),
+                        grupoAnimal: item.grupoAnimal,
+                        dtPrePartoPrevista: functions
+                            .converteDataStringDate(item.dtPrePartoPrevista),
+                      ),
+                    ),
+                  );
+                },
+              ).then((value) {
+                _recarregarAnimais();
+                safeSetState(() {});
+              });
+            },
+            text: 'Pré-parto',
+            icon: Icon(
+              Icons.check,
+              size: 15.0,
+            ),
+            options: _opcoesBotao(context, AppTokens.brand),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -1200,6 +1351,11 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
                             size: 30.0,
                           ),
                           onPressed: () async {
+                            // No modo de seleção, voltar só cancela a seleção.
+                            if (_selecao.ativa) {
+                              safeSetState(_selecao.sair);
+                              return;
+                            }
                             context.safePop();
                           },
                         ),
@@ -1316,7 +1472,7 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
                         _abaLista(AbaSecas.vacasSecas, _buildCard1),
                         _abaLista(AbaSecas.preParto, _buildCard2),
                         _abaLista(AbaSecas.inducaoLactacao, _buildCard3),
-                        _abaLista(AbaSecas.descarte, _buildCard4),
+                        _abaDescarte(context),
                       ],
                     ),
                   ),
