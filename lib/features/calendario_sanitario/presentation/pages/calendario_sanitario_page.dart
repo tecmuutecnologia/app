@@ -1,10 +1,12 @@
 // ignore_for_file: unnecessary_null_comparison, unused_local_variable
 
+import '/core/ui/cabecalho_tela.dart';
+import '/core/ui/card_animal_lista.dart';
+import '/core/ui/painel_lista.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/ui/flutter_flow_calendar.dart';
-import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/app_card.dart';
@@ -56,156 +58,196 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
-  Widget _cabecalho(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-          child: FlutterFlowIconButton(
-            borderColor: Colors.transparent,
-            borderRadius: 30.0,
-            borderWidth: 1.0,
-            buttonSize: 50.0,
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            onPressed: () async {
-              context.safePop();
-            },
-          ),
-        ),
-        Text(
-          'Calendário sanitário',
-          style: FlutterFlowTheme.of(context).headlineMedium.override(
-                font: GoogleFonts.outfit(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle:
-                      FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-                ),
-                color: Colors.white,
-                fontSize: 22.0,
-                letterSpacing: 0.0,
-                fontWeight:
-                    FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                fontStyle:
-                    FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-              ),
-        ),
-      ],
-    );
-  }
+  /// Ações da propriedade, sem as excluídas — fonte única ObjectBox
+  /// (offline-first). Antes eram dois StreamBuilders do Firestore, que sem rede
+  /// prendiam a tela no CircularProgressIndicator.
+  Stream<List<AcaoSanitarioEntity>> get _acoes => AcaoSanitarioRepository()
+      .watchByParentPath(widget.uidPropriedade!.path)
+      .map((l) => l.where((e) => !e.isDeleted).toList());
 
-  Widget _proximasAcoes(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 20.0),
-      // Fonte única ObjectBox (offline-first). Antes era um StreamBuilder do
-      // Firestore, que sem rede prendia a tela no CircularProgressIndicator.
-      child: StreamBuilder<List<AcaoSanitarioEntity>>(
-        stream: AcaoSanitarioRepository()
-            .watchByParentPath(widget.uidPropriedade!.path),
-        builder: (context, snapshot) {
-          final calendarAcoesSanitarioRecordList =
-              (snapshot.data ?? <AcaoSanitarioEntity>[])
-                  .where((e) => !e.isDeleted)
-                  .toList();
+  String _formatar(DateTime? dia) => dateTimeFormat("dd/MM/yyyy", dia,
+      locale: FFLocalizations.of(context).languageCode);
 
-          return FlutterFlowCalendar(
-            color: FlutterFlowTheme.of(context).tertiary,
-            iconColor: FlutterFlowTheme.of(context).secondaryText,
-            weekFormat: false,
-            weekStartsMonday: true,
-            twoRowHeader: true,
-            initialDate: getCurrentTimestamp,
-            rowHeight: 45.0,
-            onChange: (DateTimeRange? newSelectedDate) {
-              safeSetState(() => _calendarSelectedDay = newSelectedDate);
-            },
-            titleStyle: FlutterFlowTheme.of(context).headlineSmall.override(
-                  font: GoogleFonts.outfit(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).headlineSmall.fontWeight,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).headlineSmall.fontStyle,
-                  ),
-                  letterSpacing: 0.0,
-                  fontWeight:
-                      FlutterFlowTheme.of(context).headlineSmall.fontWeight,
-                  fontStyle:
-                      FlutterFlowTheme.of(context).headlineSmall.fontStyle,
-                ),
-            dayOfWeekStyle: FlutterFlowTheme.of(context).labelLarge.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).labelLarge.fontStyle,
-                  ),
-                  letterSpacing: 0.0,
-                  fontWeight:
-                      FlutterFlowTheme.of(context).labelLarge.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).labelLarge.fontStyle,
-                ),
-            dateStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                  ),
-                  letterSpacing: 0.0,
-                  fontWeight:
-                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                ),
-            selectedDateStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                  ),
-                  letterSpacing: 0.0,
-                  fontWeight:
-                      FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                ),
-            inactiveDateStyle: FlutterFlowTheme.of(context)
-                .labelMedium
-                .override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                  ),
-                  letterSpacing: 0.0,
-                  fontWeight:
-                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                ),
-            locale: FFLocalizations.of(context).languageCode,
-          );
-        },
+  /// Calendário num card, com uma bolinha nos dias que têm ação — antes era
+  /// preciso tocar dia por dia para descobrir onde havia registro.
+  Widget _calendario(BuildContext context, List<AcaoSanitarioEntity> acoes) {
+    final tema = FlutterFlowTheme.of(context);
+    final porDia = <String, int>{};
+    for (final a in acoes) {
+      final dia = a.dtAcaoFormatada ?? '';
+      if (dia.isNotEmpty) porDia[dia] = (porDia[dia] ?? 0) + 1;
+    }
+    return Container(
+      margin: const EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 6.0),
+      padding: const EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 8.0),
+      decoration: BoxDecoration(
+        color: tema.secondaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radius),
+        boxShadow: AppTokens.softShadow(context),
+      ),
+      child: FlutterFlowCalendar(
+        color: AppTokens.brand,
+        iconColor: tema.secondaryText,
+        weekFormat: false,
+        weekStartsMonday: true,
+        // Mês e setas na mesma linha (eram duas, a de baixo só com ícones).
+        twoRowHeader: false,
+        initialDate: getCurrentTimestamp,
+        rowHeight: 44.0,
+        eventLoader: (dia) =>
+            List.filled(porDia[_formatar(dia)] ?? 0, true, growable: false),
+        onChange: (DateTimeRange? novo) =>
+            safeSetState(() => _calendarSelectedDay = novo),
+        titleStyle: GoogleFonts.outfit(
+            fontSize: 20.0,
+            fontWeight: FontWeight.w600,
+            color: tema.primaryText),
+        dayOfWeekStyle:
+            GoogleFonts.readexPro(fontSize: 12.0, color: tema.secondaryText),
+        dateStyle:
+            GoogleFonts.readexPro(fontSize: 14.0, color: tema.primaryText),
+        selectedDateStyle: GoogleFonts.readexPro(
+            fontSize: 14.0, fontWeight: FontWeight.w600, color: Colors.white),
+        inactiveDateStyle: GoogleFonts.readexPro(
+            fontSize: 14.0, color: tema.secondaryText.withValues(alpha: 0.5)),
+        locale: FFLocalizations.of(context).languageCode,
       ),
     );
   }
 
-  Widget _botaoNovaAcao(BuildContext context) {
+  /// Título da lista do dia, com quantas ações há nele.
+  Widget _tituloDoDia(BuildContext context, int quantidade) {
+    final tema = FlutterFlowTheme.of(context);
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(20.0, 0.0, 20.0, 0.0),
-      child: FFButtonWidget(
-        onPressed: () async {
-          await showModalBottomSheet(
-            isScrollControlled: true,
-            backgroundColor: Colors.transparent,
-            enableDrag: false,
-            context: context,
-            builder: (context) {
-              return GestureDetector(
+      padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 4.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              'Ações em ${_formatar(_calendarSelectedDay?.start)}',
+              style: GoogleFonts.readexPro(
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.w600,
+                  color: tema.primaryText),
+            ),
+          ),
+          if (quantidade > 0)
+            Text('$quantidade',
+                style: GoogleFonts.readexPro(
+                    fontSize: 13.0,
+                    fontWeight: FontWeight.w600,
+                    color: AppTokens.brand)),
+        ],
+      ),
+    );
+  }
+
+  Widget _vazio(BuildContext context) {
+    final tema = FlutterFlowTheme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 24.0),
+      child: Column(
+        children: [
+          Icon(Icons.event_available_outlined,
+              size: 36.0, color: tema.secondaryText.withValues(alpha: 0.6)),
+          const SizedBox(height: 8.0),
+          Text(
+            'Nenhuma ação registrada neste dia.',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.readexPro(
+                fontSize: 13.0, color: tema.secondaryText),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Card de uma ação: animal em destaque, tipo/ação e a observação (só
+  /// quando existe — antes aparecia "Obs.: null").
+  Widget _cardAcao(BuildContext context, AcaoSanitarioEntity acao) {
+    final tema = FlutterFlowTheme.of(context);
+    final animal = _animalDaAcao(acao);
+    final titulo = animal == null
+        ? (acao.nomeAnimal?.isNotEmpty ?? false)
+            ? acao.nomeAnimal!
+            : 'Animal'
+        : tituloNomeBrinco(animal.nomeAnimal, animal.brincoAnimal);
+    final tipo = [acao.tipoAcao, acao.acao]
+        .where((t) => t != null && t.isNotEmpty)
+        .join(' · ');
+    final obs = acao.obsVisita?.trim() ?? '';
+    return Container(
+      margin: const EdgeInsets.fromLTRB(12.0, 6.0, 12.0, 6.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 12.0),
+      decoration: BoxDecoration(
+        color: tema.secondaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radius),
+        boxShadow: AppTokens.softShadow(context),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 40.0,
+            height: 40.0,
+            decoration: const BoxDecoration(
+                color: AppTokens.brandTint, shape: BoxShape.circle),
+            child: const Icon(Icons.vaccines_outlined,
+                color: AppTokens.brand, size: 20.0),
+          ),
+          const SizedBox(width: 12.0),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(titulo,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.readexPro(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w600,
+                        color: tema.primaryText)),
+                if (tipo.isNotEmpty)
+                  Text(tipo,
+                      style: GoogleFonts.readexPro(
+                          fontSize: 13.0, color: tema.primaryText)),
+                if (obs.isNotEmpty && obs != 'null') ...[
+                  const SizedBox(height: 4.0),
+                  Text(obs,
+                      style: GoogleFonts.readexPro(
+                          fontSize: 12.0, color: tema.secondaryText)),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Rodapé fixo com a ação principal da tela, sempre visível.
+  Widget _rodapeNovaAcao(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        boxShadow: const [
+          BoxShadow(
+              color: Color(0x14000000),
+              blurRadius: 16.0,
+              offset: Offset(0, -4)),
+        ],
+      ),
+      padding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+      child: SafeArea(
+        top: false,
+        child: FFButtonWidget(
+          onPressed: () async {
+            await showModalBottomSheet(
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              enableDrag: false,
+              context: context,
+              builder: (context) => GestureDetector(
                 onTap: () {
                   FocusScope.of(context).unfocus();
                   FocusManager.instance.primaryFocus?.unfocus();
@@ -220,265 +262,27 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
                     visitaPresencial: widget.visitaPresencial!,
                   ),
                 ),
-              );
-            },
-          ).then((value) => safeSetState(() {}));
-        },
-        text: 'Registrar nova ação',
-        options: FFButtonOptions(
-          width: MediaQuery.sizeOf(context).width * 0.8,
-          height: 40.0,
-          padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-          iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-          color: FlutterFlowTheme.of(context).secondary,
-          textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                ),
-                color: Colors.white,
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
               ),
-          elevation: 3.0,
-          borderSide: BorderSide(
-            color: Colors.transparent,
-            width: 1.0,
-          ),
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-      ),
-    );
-  }
-
-  Widget _acoesRealizadas(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 10.0),
-      // Mesma fonte local; o filtro por dia deixa de ser um `where` do
-      // Firestore e vira um filtro em memória sobre a lista do ObjectBox.
-      child: StreamBuilder<List<AcaoSanitarioEntity>>(
-        stream: AcaoSanitarioRepository()
-            .watchByParentPath(widget.uidPropriedade!.path),
-        builder: (context, snapshot) {
-          final diaSelecionado = dateTimeFormat(
-            "dd/MM/yyyy",
-            _calendarSelectedDay?.start,
-            locale: FFLocalizations.of(context).languageCode,
-          );
-          final listaAcoesAcoesSanitarioRecordList = (snapshot.data ??
-                  <AcaoSanitarioEntity>[])
-              .where((e) => !e.isDeleted && e.dtAcaoFormatada == diaSelecionado)
-              .toList();
-          if (listaAcoesAcoesSanitarioRecordList.isEmpty) {
-            return Image.asset(
-              'assets/images/lista-vazia.png',
-              width: 100.0,
             );
-          }
-
-          return ListView.builder(
+            safeSetState(() {});
+          },
+          text: 'Registrar nova ação',
+          icon: const Icon(Icons.add_rounded, size: 20.0),
+          options: FFButtonOptions(
+            width: double.infinity,
+            height: 48.0,
             padding: EdgeInsets.zero,
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            itemCount: listaAcoesAcoesSanitarioRecordList.length,
-            itemBuilder: (context, listaAcoesIndex) {
-              final listaAcoesAcoesSanitarioRecord =
-                  listaAcoesAcoesSanitarioRecordList[listaAcoesIndex];
-              return Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 0.0),
-                child: Container(
-                  width: 100.0,
-                  height: 100.0,
-                  decoration: BoxDecoration(
-                    color: Color(0xFFEDEDED),
-                    boxShadow: AppTokens.softShadow(context),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(10.0),
-                      bottomRight: Radius.circular(10.0),
-                      topLeft: Radius.circular(10.0),
-                      topRight: Radius.circular(10.0),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding:
-                            EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 10.0, 0.0),
-                        // Animal resolvido do ObjectBox pelo caminho guardado
-                        // na ação. Antes era um StreamBuilder do Firestore
-                        // aninhado POR ITEM da lista — uma leitura de rede por
-                        // linha, que offline nunca resolvia.
-                        child: Builder(
-                          builder: (context) {
-                            final columnAnimaisProdutoresRecord =
-                                _animalDaAcao(listaAcoesAcoesSanitarioRecord);
-                            if (columnAnimaisProdutoresRecord == null) {
-                              return const SizedBox.shrink();
-                            }
-
-                            return Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Animal:',
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        font: GoogleFonts.readexPro(
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                        letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                ),
-                                Text(
-                                  () {
-                                    if ((columnAnimaisProdutoresRecord
-                                                .nomeAnimal !=
-                                            '') &&
-                                        (columnAnimaisProdutoresRecord
-                                                .brincoAnimal !=
-                                            null) &&
-                                        (columnAnimaisProdutoresRecord
-                                                .brincoAnimal !=
-                                            -1)) {
-                                      return '${columnAnimaisProdutoresRecord.nomeAnimal} - ${columnAnimaisProdutoresRecord.brincoAnimal.toString()}';
-                                    } else if (columnAnimaisProdutoresRecord
-                                            .nomeAnimal !=
-                                        '') {
-                                      return columnAnimaisProdutoresRecord
-                                          .nomeAnimal;
-                                    } else {
-                                      return columnAnimaisProdutoresRecord
-                                          .brincoAnimal
-                                          .toString();
-                                    }
-                                  }(),
-                                  textAlign: TextAlign.center,
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        font: GoogleFonts.readexPro(
-                                          fontWeight: FontWeight.w800,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .bodyMedium
-                                                  .fontStyle,
-                                        ),
-                                        letterSpacing: 0.0,
-                                        fontWeight: FontWeight.w800,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .fontStyle,
-                                      ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            listaAcoesAcoesSanitarioRecord.tipoAcao ?? '',
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
-                          ),
-                          Text(
-                            listaAcoesAcoesSanitarioRecord.acao ?? '',
-                            style: FlutterFlowTheme.of(context)
-                                .bodyMedium
-                                .override(
-                                  font: GoogleFonts.readexPro(
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                                  letterSpacing: 0.0,
-                                  fontWeight: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontWeight,
-                                  fontStyle: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .fontStyle,
-                                ),
-                          ),
-                          Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                0.0, 10.0, 0.0, 0.0),
-                            child: Text(
-                              'Obs.: ${listaAcoesAcoesSanitarioRecord.obsVisita}',
-                              style: FlutterFlowTheme.of(context)
-                                  .bodyMedium
-                                  .override(
-                                    font: GoogleFonts.readexPro(
-                                      fontWeight: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontWeight,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .fontStyle,
-                                    ),
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryText,
-                                    letterSpacing: 0.0,
-                                    fontWeight: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontWeight,
-                                    fontStyle: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .fontStyle,
-                                  ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
-        },
+            iconPadding: EdgeInsets.zero,
+            color: AppTokens.brand,
+            textStyle: GoogleFonts.readexPro(
+                color: Colors.white,
+                fontSize: 15.0,
+                fontWeight: FontWeight.w600),
+            elevation: 0.0,
+            borderSide: const BorderSide(color: Colors.transparent),
+            borderRadius: BorderRadius.circular(LayoutLista.raio),
+          ),
+        ),
       ),
     );
   }
@@ -503,49 +307,27 @@ class _CalendarioSanitarioPageState extends State<CalendarioSanitarioPage> {
       },
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100.0),
-          child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFFF75E38), Color(0xFFEC3B5B)],
-                  begin: AlignmentDirectional(-1.0, -1.0),
-                  end: AlignmentDirectional(1.0, 1.0),
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(24.0),
-                  bottomRight: Radius.circular(24.0),
-                ),
-              ),
-              child: AppBar(
-                backgroundColor: Colors.transparent,
-                automaticallyImplyLeading: false,
-                actions: [],
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _cabecalho(context),
-                    ],
-                  ),
-                  centerTitle: true,
-                  expandedTitleScale: 1.0,
-                ),
-                elevation: 0.0,
-              )),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              _proximasAcoes(context),
-              _botaoNovaAcao(context),
-              _acoesRealizadas(context),
-            ],
-          ),
+        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        appBar: const CabecalhoTela(titulo: 'Calendário sanitário'),
+        bottomNavigationBar: _rodapeNovaAcao(context),
+        body: StreamBuilder<List<AcaoSanitarioEntity>>(
+          stream: _acoes,
+          builder: (context, snapshot) {
+            final acoes = snapshot.data ?? const <AcaoSanitarioEntity>[];
+            final diaSelecionado = _formatar(_calendarSelectedDay?.start);
+            final doDia = acoes
+                .where((e) => e.dtAcaoFormatada == diaSelecionado)
+                .toList();
+            return ListView(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              children: [
+                _calendario(context, acoes),
+                _tituloDoDia(context, doDia.length),
+                if (doDia.isEmpty) _vazio(context),
+                for (final acao in doDia) _cardAcao(context, acao),
+              ],
+            );
+          },
         ),
       ),
     );

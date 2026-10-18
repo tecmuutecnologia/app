@@ -1,7 +1,7 @@
+import '/core/ui/cabecalho_tela.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/core/ui/app_card.dart';
-import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import 'resumo_visita_atual_page.dart';
@@ -41,49 +41,6 @@ class _ReceituariosListaPageState extends State<ReceituariosListaPage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
-  }
-
-  Widget _cabecalho(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-          child: FlutterFlowIconButton(
-            borderColor: Colors.transparent,
-            borderRadius: 30.0,
-            borderWidth: 1.0,
-            buttonSize: 50.0,
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            onPressed: () async {
-              context.safePop();
-            },
-          ),
-        ),
-        Text(
-          'Receituários',
-          style: FlutterFlowTheme.of(context).headlineMedium.override(
-                font: GoogleFonts.outfit(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle:
-                      FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-                ),
-                color: Colors.white,
-                fontSize: 22.0,
-                letterSpacing: 0.0,
-                fontWeight:
-                    FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                fontStyle:
-                    FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-              ),
-        ),
-      ],
-    );
   }
 
   /// `resumo_da_visita` é coleção TOP-LEVEL, então a referência é reconstruída
@@ -356,39 +313,7 @@ class _ReceituariosListaPageState extends State<ReceituariosListaPage> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100.0),
-          child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFFF75E38), Color(0xFFEC3B5B)],
-                  begin: AlignmentDirectional(-1.0, -1.0),
-                  end: AlignmentDirectional(1.0, 1.0),
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(24.0),
-                  bottomRight: Radius.circular(24.0),
-                ),
-              ),
-              child: AppBar(
-                backgroundColor: Colors.transparent,
-                automaticallyImplyLeading: false,
-                actions: [],
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _cabecalho(context),
-                    ],
-                  ),
-                  centerTitle: true,
-                  expandedTitleScale: 1.0,
-                ),
-                elevation: 0.0,
-              )),
-        ),
+        appBar: const CabecalhoTela(titulo: 'Receituários'),
         // Fonte única ObjectBox (offline-first): permite consultar receituários
         // já emitidos sem rede. A EMISSÃO continua online, pois nasce do
         // bookkeeping de visita (ResumoDaVisita + Tratamentos + Recomendações).

@@ -29,6 +29,7 @@ class FlutterFlowCalendar extends StatefulWidget {
     this.titleStyle,
     this.rowHeight,
     this.locale,
+    this.eventLoader,
   });
 
   final bool weekFormat;
@@ -45,6 +46,9 @@ class FlutterFlowCalendar extends StatefulWidget {
   final TextStyle? titleStyle;
   final double? rowHeight;
   final String? locale;
+
+  /// Eventos do dia: cada item vira um marcador (bolinha) sob a data.
+  final List<Object> Function(DateTime dia)? eventLoader;
 
   @override
   State<StatefulWidget> createState() => _FlutterFlowCalendarState();
@@ -133,6 +137,10 @@ class _FlutterFlowCalendarState extends State<FlutterFlowCalendar> {
             headerVisible: false,
             locale: widget.locale,
             rowHeight: widget.rowHeight ?? MediaQuery.sizeOf(context).width / 7,
+            eventLoader: widget.eventLoader,
+            // O padrão (16) corta a perna do "g" e do "q": "seg." aparecia
+            // como "sea." e "qua." como "aua.".
+            daysOfWeekHeight: 24.0,
             calendarStyle: CalendarStyle(
               defaultTextStyle:
                   widget.dateStyle ?? const TextStyle(color: Color(0xFF5A5A5A)),

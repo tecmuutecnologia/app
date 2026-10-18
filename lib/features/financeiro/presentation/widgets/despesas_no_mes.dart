@@ -90,11 +90,17 @@ class _PriceFieldState extends State<DespesasNoMes> {
           hintStyle: const TextStyle(
             color: Color.fromARGB(255, 35, 35, 35),
           ),
+          // Cinza preenchido, sem contorno, como os demais campos do
+          // formulário (antes era o único com borda escura).
+          filled: true,
+          fillColor: const Color(0xFFF1F4F8),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(
-              color: Color.fromARGB(255, 35, 35, 35),
-            ),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.transparent),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),

@@ -1,5 +1,7 @@
 // ignore_for_file: dead_code, unnecessary_null_comparison, dead_null_aware_expression, unused_import
 
+import '/core/ui/cabecalho_tela.dart';
+import '/core/ui/painel_lista.dart';
 import 'dart:async';
 
 import '/core/connectivity/connectivity_service.dart';
@@ -64,18 +66,28 @@ class _ResumoRebanhoPageState extends ConsumerState<ResumoRebanhoPage> {
   FormFieldController<List<String>>? _categoriaAnimalValueController;
   List<String>? _statusAnimalValue;
   FormFieldController<List<String>>? _statusAnimalValueController;
-  bool? _checkUltimopartoValue;
-  bool? _checkUltimaiaValue;
-  bool? _checkDelValue;
-  bool? _checkTouroValue;
-  bool? _checkSecagemValue;
-  bool? _checkPrepartoValue;
-  bool? _checkDiasAbertoValue;
-  bool? _checkIntervaloEntrePartosValue;
-  bool? _checkParicaoValue;
-  bool? _checkUltimaAcaoValue;
-  String? _formatoExportacaoValue;
-  FormFieldController<String>? _formatoExportacaoValueController;
+
+  /// Colunas do relatório, na ordem em que aparecem. O valor inicial é o
+  /// mesmo dos antigos checkboxes (todas marcadas, menos "Última ação").
+  final Map<String, bool> _colunas = {
+    'Último parto': true,
+    'Última inseminação': true,
+    'DEL': true,
+    'Touro': true,
+    'Secagem': true,
+    'Pré-parto': true,
+    'Dias em aberto': true,
+    'Intervalo entre partos': true,
+    'Previsão de parto': true,
+    'Última ação': false,
+  };
+  bool _coluna(String nome) => _colunas[nome] ?? false;
+
+  String _formatoExportacao = 'PDF';
+
+  /// Enquanto o relatório é gerado o botão fica ocupado: evita gerar dois
+  /// arquivos com um toque duplo e mostra que algo está acontecendo.
+  bool _gerando = false;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -91,87 +103,9 @@ class _ResumoRebanhoPageState extends ConsumerState<ResumoRebanhoPage> {
     super.dispose();
   }
 
-  Widget _cabecalho(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-          child: FlutterFlowIconButton(
-            borderColor: Colors.transparent,
-            borderRadius: 30.0,
-            borderWidth: 1.0,
-            buttonSize: 50.0,
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            onPressed: () async {
-              context.safePop();
-            },
-          ),
-        ),
-        Text(
-          'Resumo do rebanho',
-          style: FlutterFlowTheme.of(context).headlineMedium.override(
-                font: GoogleFonts.outfit(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle:
-                      FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-                ),
-                color: Colors.white,
-                fontSize: 22.0,
-                letterSpacing: 0.0,
-                fontWeight:
-                    FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                fontStyle:
-                    FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-              ),
-        ),
-      ],
-    );
-  }
-
-  Widget _tituloFiltro(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 0.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.tune_rounded,
-              color: AppTokens.secondary, size: 20.0),
-          const SizedBox(width: 8.0),
-          Flexible(
-            child: Text(
-              'Filtro do relatório:',
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: FlutterFlowTheme.of(context).bodyMedium.override(
-                    font: GoogleFonts.readexPro(
-                      fontWeight: FontWeight.w800,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-                    fontSize: 16.0,
-                    letterSpacing: 0.0,
-                    fontWeight: FontWeight.w800,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                  ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _campoGrupo(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 10.0),
+      padding: EdgeInsets.zero,
       // Grupos vêm das tabelas de referência do ObjectBox (com fallback para
       // as constantes). Antes era um StreamBuilder do Firestore, que offline
       // prendia a tela no CircularProgressIndicator.
@@ -191,7 +125,7 @@ class _ResumoRebanhoPageState extends ConsumerState<ResumoRebanhoPage> {
             // divergir da tabela real.
             options: categoriaAnimalGrupoRecordList,
             width: double.infinity,
-            height: 50.0,
+            height: LayoutLista.alturaControle,
             searchHintTextStyle: FlutterFlowTheme.of(context)
                 .labelMedium
                 .override(
@@ -239,10 +173,10 @@ class _ResumoRebanhoPageState extends ConsumerState<ResumoRebanhoPage> {
             ),
             fillColor: FlutterFlowTheme.of(context).primaryBackground,
             elevation: 2.0,
-            borderColor: FlutterFlowTheme.of(context).alternate,
-            borderWidth: 2.0,
-            borderRadius: 8.0,
-            margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+            borderColor: Colors.transparent,
+            borderWidth: 1.0,
+            borderRadius: LayoutLista.raio,
+            margin: EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
             hidesUnderline: true,
             isSearchable: true,
             isMultiSelect: true,
@@ -281,7 +215,7 @@ class _ResumoRebanhoPageState extends ConsumerState<ResumoRebanhoPage> {
                   .toList(),
               kStatusExtrasFixos.toList())!,
           width: double.infinity,
-          height: 50.0,
+          height: LayoutLista.alturaControle,
           searchHintTextStyle: FlutterFlowTheme.of(context)
               .labelMedium
               .override(
@@ -323,10 +257,10 @@ class _ResumoRebanhoPageState extends ConsumerState<ResumoRebanhoPage> {
           ),
           fillColor: FlutterFlowTheme.of(context).primaryBackground,
           elevation: 2.0,
-          borderColor: FlutterFlowTheme.of(context).alternate,
-          borderWidth: 2.0,
-          borderRadius: 8.0,
-          margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+          borderColor: Colors.transparent,
+          borderWidth: 1.0,
+          borderRadius: LayoutLista.raio,
+          margin: EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
           hidesUnderline: true,
           isSearchable: true,
           isMultiSelect: true,
@@ -337,747 +271,351 @@ class _ResumoRebanhoPageState extends ConsumerState<ResumoRebanhoPage> {
     );
   }
 
-  Widget _tituloColunas(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 25.0, 0.0, 0.0),
-      child: Text(
-        'Colunas exibição relatório:',
-        textAlign: TextAlign.center,
-        style: FlutterFlowTheme.of(context).bodyMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FontWeight.w800,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-              ),
-              fontSize: 16.0,
-              letterSpacing: 0.0,
-              fontWeight: FontWeight.w800,
-              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-            ),
+  /// Seção da tela: card branco com título (e ação opcional à direita).
+  Widget _secao(BuildContext context,
+      {required IconData icone,
+      required String titulo,
+      Widget? acao,
+      String? ajuda,
+      required List<Widget> filhos}) {
+    final tema = FlutterFlowTheme.of(context);
+    return Container(
+      margin: const EdgeInsets.fromLTRB(12.0, 6.0, 12.0, 6.0),
+      padding: const EdgeInsets.fromLTRB(16.0, 14.0, 16.0, 16.0),
+      decoration: BoxDecoration(
+        color: tema.secondaryBackground,
+        borderRadius: BorderRadius.circular(AppTokens.radius),
+        boxShadow: AppTokens.softShadow(context),
       ),
-    );
-  }
-
-  Widget _colunaUltimoParto(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            'Último Parto',
-            style: FlutterFlowTheme.of(context).bodyLarge.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                  ),
-                  fontSize: 18.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                ),
-          ),
-          Theme(
-            data: ThemeData(
-              checkboxTheme: CheckboxThemeData(
-                visualDensity: VisualDensity.compact,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-              ),
-              unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
-            ),
-            child: Checkbox(
-              value: _checkUltimopartoValue ??= true,
-              onChanged: (newValue) async {
-                safeSetState(() => _checkUltimopartoValue = newValue!);
-              },
-              side: (FlutterFlowTheme.of(context).secondaryText != null)
-                  ? BorderSide(
-                      width: 2,
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                    )
-                  : null,
-              activeColor: FlutterFlowTheme.of(context).tertiary,
-              checkColor: FlutterFlowTheme.of(context).info,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _colunaUltimaInseminacao(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            'Última Inseminação',
-            style: FlutterFlowTheme.of(context).bodyLarge.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                  ),
-                  fontSize: 18.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                ),
-          ),
-          Theme(
-            data: ThemeData(
-              checkboxTheme: CheckboxThemeData(
-                visualDensity: VisualDensity.compact,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-              ),
-              unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
-            ),
-            child: Checkbox(
-              value: _checkUltimaiaValue ??= true,
-              onChanged: (newValue) async {
-                safeSetState(() => _checkUltimaiaValue = newValue!);
-              },
-              side: (FlutterFlowTheme.of(context).secondaryText != null)
-                  ? BorderSide(
-                      width: 2,
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                    )
-                  : null,
-              activeColor: FlutterFlowTheme.of(context).tertiary,
-              checkColor: FlutterFlowTheme.of(context).info,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _colunaDel(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            'DEL',
-            style: FlutterFlowTheme.of(context).bodyLarge.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                  ),
-                  fontSize: 18.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                ),
-          ),
-          Theme(
-            data: ThemeData(
-              checkboxTheme: CheckboxThemeData(
-                visualDensity: VisualDensity.compact,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-              ),
-              unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
-            ),
-            child: Checkbox(
-              value: _checkDelValue ??= true,
-              onChanged: (newValue) async {
-                safeSetState(() => _checkDelValue = newValue!);
-              },
-              side: (FlutterFlowTheme.of(context).secondaryText != null)
-                  ? BorderSide(
-                      width: 2,
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                    )
-                  : null,
-              activeColor: FlutterFlowTheme.of(context).tertiary,
-              checkColor: FlutterFlowTheme.of(context).info,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _colunaTouro(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            'Touro',
-            style: FlutterFlowTheme.of(context).bodyLarge.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                  ),
-                  fontSize: 18.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                ),
-          ),
-          Theme(
-            data: ThemeData(
-              checkboxTheme: CheckboxThemeData(
-                visualDensity: VisualDensity.compact,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-              ),
-              unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
-            ),
-            child: Checkbox(
-              value: _checkTouroValue ??= true,
-              onChanged: (newValue) async {
-                safeSetState(() => _checkTouroValue = newValue!);
-              },
-              side: (FlutterFlowTheme.of(context).secondaryText != null)
-                  ? BorderSide(
-                      width: 2,
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                    )
-                  : null,
-              activeColor: FlutterFlowTheme.of(context).tertiary,
-              checkColor: FlutterFlowTheme.of(context).info,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _colunaSecagem(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            'Secagem',
-            style: FlutterFlowTheme.of(context).bodyLarge.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                  ),
-                  fontSize: 18.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                ),
-          ),
-          Theme(
-            data: ThemeData(
-              checkboxTheme: CheckboxThemeData(
-                visualDensity: VisualDensity.compact,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-              ),
-              unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
-            ),
-            child: Checkbox(
-              value: _checkSecagemValue ??= true,
-              onChanged: (newValue) async {
-                safeSetState(() => _checkSecagemValue = newValue!);
-              },
-              side: (FlutterFlowTheme.of(context).secondaryText != null)
-                  ? BorderSide(
-                      width: 2,
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                    )
-                  : null,
-              activeColor: FlutterFlowTheme.of(context).tertiary,
-              checkColor: FlutterFlowTheme.of(context).info,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _colunaPreParto(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            'Pré Parto',
-            style: FlutterFlowTheme.of(context).bodyLarge.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                  ),
-                  fontSize: 18.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                ),
-          ),
-          Theme(
-            data: ThemeData(
-              checkboxTheme: CheckboxThemeData(
-                visualDensity: VisualDensity.compact,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-              ),
-              unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
-            ),
-            child: Checkbox(
-              value: _checkPrepartoValue ??= true,
-              onChanged: (newValue) async {
-                safeSetState(() => _checkPrepartoValue = newValue!);
-              },
-              side: (FlutterFlowTheme.of(context).secondaryText != null)
-                  ? BorderSide(
-                      width: 2,
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                    )
-                  : null,
-              activeColor: FlutterFlowTheme.of(context).tertiary,
-              checkColor: FlutterFlowTheme.of(context).info,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _colunaDiasEmAberto(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            'Dias Em Aberto',
-            style: FlutterFlowTheme.of(context).bodyLarge.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                  ),
-                  fontSize: 18.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                ),
-          ),
-          Theme(
-            data: ThemeData(
-              checkboxTheme: CheckboxThemeData(
-                visualDensity: VisualDensity.compact,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-              ),
-              unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
-            ),
-            child: Checkbox(
-              value: _checkDiasAbertoValue ??= true,
-              onChanged: (newValue) async {
-                safeSetState(() => _checkDiasAbertoValue = newValue!);
-              },
-              side: (FlutterFlowTheme.of(context).secondaryText != null)
-                  ? BorderSide(
-                      width: 2,
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                    )
-                  : null,
-              activeColor: FlutterFlowTheme.of(context).tertiary,
-              checkColor: FlutterFlowTheme.of(context).info,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _colunaIntervaloPartos(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            'Intervalo Entre Partos',
-            style: FlutterFlowTheme.of(context).bodyLarge.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                  ),
-                  fontSize: 18.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                ),
-          ),
-          Theme(
-            data: ThemeData(
-              checkboxTheme: CheckboxThemeData(
-                visualDensity: VisualDensity.compact,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-              ),
-              unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
-            ),
-            child: Checkbox(
-              value: _checkIntervaloEntrePartosValue ??= true,
-              onChanged: (newValue) async {
-                safeSetState(() => _checkIntervaloEntrePartosValue = newValue!);
-              },
-              side: (FlutterFlowTheme.of(context).secondaryText != null)
-                  ? BorderSide(
-                      width: 2,
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                    )
-                  : null,
-              activeColor: FlutterFlowTheme.of(context).tertiary,
-              checkColor: FlutterFlowTheme.of(context).info,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _colunaPrevisaoParto(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            'Previsão Parto',
-            style: FlutterFlowTheme.of(context).bodyLarge.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                  ),
-                  fontSize: 18.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                ),
-          ),
-          Theme(
-            data: ThemeData(
-              checkboxTheme: CheckboxThemeData(
-                visualDensity: VisualDensity.compact,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-              ),
-              unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
-            ),
-            child: Checkbox(
-              value: _checkParicaoValue ??= true,
-              onChanged: (newValue) async {
-                safeSetState(() => _checkParicaoValue = newValue!);
-              },
-              side: (FlutterFlowTheme.of(context).secondaryText != null)
-                  ? BorderSide(
-                      width: 2,
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                    )
-                  : null,
-              activeColor: FlutterFlowTheme.of(context).tertiary,
-              checkColor: FlutterFlowTheme.of(context).info,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _colunaUltimaAcao(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            'Última Ação',
-            style: FlutterFlowTheme.of(context).bodyLarge.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                  ),
-                  fontSize: 18.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
-                ),
-          ),
-          Theme(
-            data: ThemeData(
-              checkboxTheme: CheckboxThemeData(
-                visualDensity: VisualDensity.compact,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4.0),
-                ),
-              ),
-              unselectedWidgetColor: FlutterFlowTheme.of(context).secondaryText,
-            ),
-            child: Checkbox(
-              value: _checkUltimaAcaoValue ??= false,
-              onChanged: (newValue) async {
-                safeSetState(() => _checkUltimaAcaoValue = newValue!);
-              },
-              side: (FlutterFlowTheme.of(context).secondaryText != null)
-                  ? BorderSide(
-                      width: 2,
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                    )
-                  : null,
-              activeColor: FlutterFlowTheme.of(context).tertiary,
-              checkColor: FlutterFlowTheme.of(context).info,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _campoFormatoExportacao(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
       child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            'Formato de Exportação',
-            style: FlutterFlowTheme.of(context).bodyLarge.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                    fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
+          Row(
+            children: [
+              Icon(icone, color: AppTokens.brand, size: 20.0),
+              const SizedBox(width: 8.0),
+              Expanded(
+                child: Text(
+                  titulo,
+                  style: GoogleFonts.readexPro(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.w600,
+                    color: tema.primaryText,
                   ),
-                  fontSize: 18.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FlutterFlowTheme.of(context).bodyLarge.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyLarge.fontStyle,
                 ),
+              ),
+              if (acao != null) acao,
+            ],
           ),
-          SizedBox(height: 10.0),
-          FlutterFlowDropDown<String>(
-            controller: _formatoExportacaoValueController ??=
-                FormFieldController<String>(
-              _formatoExportacaoValue ??= 'PDF',
-            ),
-            options: ['PDF', 'Excel'],
-            onChanged: (val) {
-              safeSetState(() {
-                _formatoExportacaoValue = val;
-              });
-            },
-            width: MediaQuery.sizeOf(context).width * 0.8,
-            height: 50.0,
-            textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                  ),
-                  letterSpacing: 0.0,
-                  fontWeight:
-                      FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                ),
-            hintText: 'Selecione o formato',
-            icon: Icon(
-              Icons.keyboard_arrow_down_rounded,
-              color: FlutterFlowTheme.of(context).secondaryText,
-              size: 24.0,
-            ),
-            fillColor: FlutterFlowTheme.of(context).primaryBackground,
-            elevation: 2.0,
-            borderColor: FlutterFlowTheme.of(context).alternate,
-            borderWidth: 2.0,
-            borderRadius: 8.0,
-            margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-            hidesUnderline: true,
-            isSearchable: false,
-            isMultiSelect: false,
-          ),
+          if (ajuda != null) ...[
+            const SizedBox(height: 2.0),
+            Text(ajuda,
+                style: GoogleFonts.readexPro(
+                    fontSize: 12.0, color: tema.secondaryText)),
+          ],
+          const SizedBox(height: 12.0),
+          ...filhos,
         ],
       ),
     );
   }
 
-  Widget _botaoExportar(
-      BuildContext context, List<AnimalEntity> animaisDoRelatorio) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 30.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          FFButtonWidget(
-            onPressed: () async {
-              var _shouldSetState = false;
-              {
-                // Cabeçalho do relatório (propriedade e técnico) lido do
-                // ObjectBox. Antes eram três idas ao Firestore, que offline
-                // não retornavam e abortavam a exportação.
-                final propriedade = PropriedadeRepository()
-                    .getByFirestoreId(widget.uidPropriedade!.id);
-                final tecnico =
-                    TecnicoRepository().getByFirestoreId(widget.uidTecnico!.id);
-                final personTecnico = tecnico?.uidPerson == null
-                    ? null
-                    : PersonRepository().getByUid(tecnico!.uidPerson!);
-                _shouldSetState = true;
+  Widget _rotuloCampo(BuildContext context, String texto) => Padding(
+        padding: const EdgeInsets.only(bottom: 4.0, left: 2.0),
+        child: Text(texto,
+            style: GoogleFonts.readexPro(
+                fontSize: 12.0,
+                fontWeight: FontWeight.w500,
+                color: FlutterFlowTheme.of(context).secondaryText)),
+      );
 
-                // Nenhuma categoria marcada significa TODAS: antes o clique
-                // morria num `if (length >= 1)` sem aviso nenhum.
-                final categorias = categoriasDoRelatorio(
-                  _categoriaAnimalValue,
-                  _gruposDisponiveis,
-                );
-
-                // Verificar qual formato foi selecionado
-                if (_formatoExportacaoValue == 'Excel') {
-                  // Gerar Excel
-                  await actions.createResumoRebanhoExcel(
-                    animaisDoRelatorio,
-                    _checkUltimopartoValue == true,
-                    _checkUltimaiaValue == true,
-                    _checkDelValue == true,
-                    _checkTouroValue == true,
-                    _checkSecagemValue == true,
-                    _checkPrepartoValue == true,
-                    _checkParicaoValue == true,
-                    _checkDiasAbertoValue!,
-                    _checkIntervaloEntrePartosValue!,
-                    categorias,
-                    _statusAnimalValue?.toList(),
-                    propriedade?.displayName ?? '',
-                    '${propriedade?.endereco ?? ''} - ${propriedade?.cidade ?? ''}',
-                    personTecnico?.displayName ?? '',
-                    personTecnico?.phoneNumber ?? '',
-                    personTecnico?.email ?? '',
-                    personTecnico?.empresa ?? '',
-                    _checkUltimaAcaoValue ?? false,
-                    widget.uidTecnico!,
-                  );
-                } else {
-                  // Gerar PDF (padrão)
-                  await actions.createResumoRebanho(
-                    animaisDoRelatorio,
-                    _checkUltimopartoValue == true,
-                    _checkUltimaiaValue == true,
-                    _checkDelValue == true,
-                    _checkTouroValue == true,
-                    _checkSecagemValue == true,
-                    _checkPrepartoValue == true,
-                    _checkParicaoValue == true,
-                    _checkDiasAbertoValue!,
-                    _checkIntervaloEntrePartosValue!,
-                    categorias,
-                    _statusAnimalValue?.toList(),
-                    propriedade?.displayName ?? '',
-                    '${propriedade?.endereco ?? ''} - ${propriedade?.cidade ?? ''}',
-                    personTecnico?.displayName ?? '',
-                    personTecnico?.phoneNumber ?? '',
-                    personTecnico?.email ?? '',
-                    personTecnico?.empresa ?? '',
-                    _checkUltimaAcaoValue ?? false,
-                    widget.uidTecnico!,
-                  );
-                }
-                if (_shouldSetState) safeSetState(() {});
-                return;
-              }
-
-              if (_shouldSetState) safeSetState(() {});
-            },
-            text: 'Gerar relatório',
-            icon: Icon(
-              _formatoExportacaoValue == 'Excel'
-                  ? Icons.table_chart
-                  : Icons.picture_as_pdf,
-              size: 15.0,
-            ),
-            options: FFButtonOptions(
-              width: MediaQuery.sizeOf(context).width * 0.8,
-              height: 40.0,
-              padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-              iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-              color: Color(0xFFFF8E04),
-              textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                    font: GoogleFonts.readexPro(
-                      fontWeight:
-                          FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                    ),
-                    color: Colors.white,
-                    letterSpacing: 0.0,
-                    fontWeight:
-                        FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                  ),
-              elevation: 3.0,
-              borderSide: BorderSide(
-                color: Colors.transparent,
-                width: 1.0,
+  /// Colunas como chips: um toque marca/desmarca, e todas cabem sem rolar
+  /// (eram 10 linhas altas com checkbox).
+  Widget _secaoColunas(BuildContext context) {
+    final marcadas = _colunas.values.where((v) => v).length;
+    final todas = marcadas == _colunas.length;
+    return _secao(
+      context,
+      icone: Icons.view_column_rounded,
+      titulo: 'Colunas  ·  $marcadas de ${_colunas.length}',
+      acao: TextButton(
+        onPressed: () => safeSetState(() {
+          for (final k in _colunas.keys) {
+            _colunas[k] = !todas;
+          }
+        }),
+        style: TextButton.styleFrom(
+          foregroundColor: AppTokens.brand,
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          minimumSize: const Size(0, 36.0),
+        ),
+        child: Text(todas ? 'Limpar' : 'Marcar todas',
+            style: GoogleFonts.readexPro(
+                fontSize: 13.0, fontWeight: FontWeight.w600)),
+      ),
+      filhos: [
+        Wrap(
+          spacing: 8.0,
+          runSpacing: 8.0,
+          children: [
+            for (final nome in _colunas.keys)
+              _chipOpcao(
+                context,
+                rotulo: nome,
+                marcado: _coluna(nome),
+                aoTocar: () =>
+                    safeSetState(() => _colunas[nome] = !_coluna(nome)),
               ),
-              borderRadius: BorderRadius.circular(8.0),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// Chip laranja monocromático: marcado = fundo laranja claro, texto e
+  /// check laranja; desmarcado = cinza.
+  Widget _chipOpcao(BuildContext context,
+      {required String rotulo,
+      required bool marcado,
+      required VoidCallback aoTocar}) {
+    final tema = FlutterFlowTheme.of(context);
+    return Semantics(
+      button: true,
+      selected: marcado,
+      child: InkWell(
+        onTap: aoTocar,
+        borderRadius: BorderRadius.circular(LayoutLista.raio),
+        child: Container(
+          height: LayoutLista.alturaChip,
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          decoration: BoxDecoration(
+            color: marcado ? AppTokens.brandTint : tema.primaryBackground,
+            borderRadius: BorderRadius.circular(LayoutLista.raio),
+            border: Border.all(
+              // ignore: deprecated_member_use
+              color: marcado
+                  ? AppTokens.brand.withOpacity(0.5)
+                  : Colors.transparent,
             ),
           ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                marcado ? Icons.check_rounded : Icons.add_rounded,
+                size: 16.0,
+                color: marcado ? AppTokens.brand : tema.secondaryText,
+              ),
+              const SizedBox(width: 6.0),
+              Text(
+                rotulo,
+                style: GoogleFonts.readexPro(
+                  fontSize: 13.0,
+                  fontWeight: marcado ? FontWeight.w600 : FontWeight.w400,
+                  color: marcado ? AppTokens.brand : tema.secondaryText,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// PDF ou Excel com um toque (era um dropdown de duas opções).
+  Widget _secaoFormato(BuildContext context) {
+    final tema = FlutterFlowTheme.of(context);
+    Widget opcao(String formato, IconData icone) {
+      final ativo = _formatoExportacao == formato;
+      return Expanded(
+        child: Semantics(
+          button: true,
+          selected: ativo,
+          child: InkWell(
+            onTap: () => safeSetState(() => _formatoExportacao = formato),
+            borderRadius: BorderRadius.circular(LayoutLista.raio),
+            child: Container(
+              height: LayoutLista.alturaControle,
+              decoration: BoxDecoration(
+                color: ativo ? AppTokens.brandTint : tema.primaryBackground,
+                borderRadius: BorderRadius.circular(LayoutLista.raio),
+                border: Border.all(
+                  color: ativo ? AppTokens.brand : Colors.transparent,
+                  width: 1.5,
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icone,
+                      size: 18.0,
+                      color: ativo ? AppTokens.brand : tema.secondaryText),
+                  const SizedBox(width: 8.0),
+                  Text(
+                    formato,
+                    style: GoogleFonts.readexPro(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.w600,
+                      color: ativo ? AppTokens.brand : tema.secondaryText,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    return _secao(
+      context,
+      icone: Icons.file_download_outlined,
+      titulo: 'Formato',
+      filhos: [
+        Row(
+          children: [
+            opcao('PDF', Icons.picture_as_pdf_rounded),
+            const SizedBox(width: 8.0),
+            opcao('Excel', Icons.table_chart_rounded),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// Gera o relatório com os filtros, colunas e formato escolhidos.
+  Future<void> _gerarRelatorio(List<AnimalEntity> animaisDoRelatorio) async {
+    if (_gerando) return;
+    safeSetState(() => _gerando = true);
+    try {
+      // Cabeçalho do relatório (propriedade e técnico) lido do
+      // ObjectBox. Antes eram três idas ao Firestore, que offline
+      // não retornavam e abortavam a exportação.
+      final propriedade =
+          PropriedadeRepository().getByFirestoreId(widget.uidPropriedade!.id);
+      final tecnico =
+          TecnicoRepository().getByFirestoreId(widget.uidTecnico!.id);
+      final personTecnico = tecnico?.uidPerson == null
+          ? null
+          : PersonRepository().getByUid(tecnico!.uidPerson!);
+
+      // Nenhuma categoria marcada significa TODAS: antes o clique
+      // morria num `if (length >= 1)` sem aviso nenhum.
+      final categorias = categoriasDoRelatorio(
+        _categoriaAnimalValue,
+        _gruposDisponiveis,
+      );
+
+      // Verificar qual formato foi selecionado
+      if (_formatoExportacao == 'Excel') {
+        // Gerar Excel
+        await actions.createResumoRebanhoExcel(
+          animaisDoRelatorio,
+          _coluna('Último parto'),
+          _coluna('Última inseminação'),
+          _coluna('DEL'),
+          _coluna('Touro'),
+          _coluna('Secagem'),
+          _coluna('Pré-parto'),
+          _coluna('Previsão de parto'),
+          _coluna('Dias em aberto'),
+          _coluna('Intervalo entre partos'),
+          categorias,
+          _statusAnimalValue?.toList(),
+          propriedade?.displayName ?? '',
+          '${propriedade?.endereco ?? ''} - ${propriedade?.cidade ?? ''}',
+          personTecnico?.displayName ?? '',
+          personTecnico?.phoneNumber ?? '',
+          personTecnico?.email ?? '',
+          personTecnico?.empresa ?? '',
+          _coluna('Última ação'),
+          widget.uidTecnico!,
+        );
+      } else {
+        // Gerar PDF (padrão)
+        await actions.createResumoRebanho(
+          animaisDoRelatorio,
+          _coluna('Último parto'),
+          _coluna('Última inseminação'),
+          _coluna('DEL'),
+          _coluna('Touro'),
+          _coluna('Secagem'),
+          _coluna('Pré-parto'),
+          _coluna('Previsão de parto'),
+          _coluna('Dias em aberto'),
+          _coluna('Intervalo entre partos'),
+          categorias,
+          _statusAnimalValue?.toList(),
+          propriedade?.displayName ?? '',
+          '${propriedade?.endereco ?? ''} - ${propriedade?.cidade ?? ''}',
+          personTecnico?.displayName ?? '',
+          personTecnico?.phoneNumber ?? '',
+          personTecnico?.email ?? '',
+          personTecnico?.empresa ?? '',
+          _coluna('Última ação'),
+          widget.uidTecnico!,
+        );
+      }
+    } finally {
+      safeSetState(() => _gerando = false);
+    }
+  }
+
+  /// Rodapé fixo com o botão: sempre visível, sem precisar rolar até o fim.
+  Widget _rodapeGerar(
+      BuildContext context, List<AnimalEntity> animaisDoRelatorio) {
+    return Container(
+      decoration: BoxDecoration(
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        boxShadow: const [
+          BoxShadow(
+              color: Color(0x14000000),
+              blurRadius: 16.0,
+              offset: Offset(0, -4)),
         ],
+      ),
+      padding: const EdgeInsets.fromLTRB(12.0, 10.0, 12.0, 10.0),
+      child: SafeArea(
+        top: false,
+        child: FFButtonWidget(
+          onPressed:
+              _gerando ? null : () => _gerarRelatorio(animaisDoRelatorio),
+          text: _gerando
+              ? 'Gerando relatório...'
+              : 'Gerar relatório em $_formatoExportacao',
+          icon: _gerando
+              ? const SizedBox(
+                  width: 16.0,
+                  height: 16.0,
+                  child: CircularProgressIndicator(
+                      strokeWidth: 2.0, color: Colors.white),
+                )
+              : Icon(
+                  _formatoExportacao == 'Excel'
+                      ? Icons.table_chart_rounded
+                      : Icons.picture_as_pdf_rounded,
+                  size: 18.0,
+                ),
+          options: FFButtonOptions(
+            width: double.infinity,
+            height: 48.0,
+            padding: EdgeInsets.zero,
+            iconPadding: EdgeInsets.zero,
+            color: AppTokens.brand,
+            textStyle: GoogleFonts.readexPro(
+              color: Colors.white,
+              fontSize: 15.0,
+              fontWeight: FontWeight.w600,
+            ),
+            elevation: 0.0,
+            borderSide: const BorderSide(color: Colors.transparent),
+            borderRadius: BorderRadius.circular(LayoutLista.raio),
+            // Gerando: continua laranja (mais claro), não vira "desabilitado".
+            // ignore: deprecated_member_use
+            disabledColor: AppTokens.brand.withOpacity(0.7),
+            disabledTextColor: Colors.white,
+          ),
+        ),
       ),
     );
   }
@@ -1115,65 +653,31 @@ class _ResumoRebanhoPageState extends ConsumerState<ResumoRebanhoPage> {
           },
           child: Scaffold(
             key: scaffoldKey,
-            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-            appBar: PreferredSize(
-              preferredSize: Size.fromHeight(100.0),
-              child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFFF75E38), Color(0xFFEC3B5B)],
-                      begin: AlignmentDirectional(-1.0, -1.0),
-                      end: AlignmentDirectional(1.0, 1.0),
-                    ),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(24.0),
-                      bottomRight: Radius.circular(24.0),
-                    ),
-                  ),
-                  child: AppBar(
-                    backgroundColor: Colors.transparent,
-                    automaticallyImplyLeading: false,
-                    actions: [],
-                    flexibleSpace: FlexibleSpaceBar(
-                      title: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _cabecalho(context),
-                        ],
-                      ),
-                      centerTitle: true,
-                      expandedTitleScale: 1.0,
-                    ),
-                    elevation: 0.0,
-                  )),
-            ),
-            body: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-              child: ListView(
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                children: [
-                  _tituloFiltro(context),
-                  _campoGrupo(context),
-                  _campoStatus(context),
-                  _tituloColunas(context),
-                  _colunaUltimoParto(context),
-                  _colunaUltimaInseminacao(context),
-                  _colunaDel(context),
-                  _colunaTouro(context),
-                  _colunaSecagem(context),
-                  _colunaPreParto(context),
-                  _colunaDiasEmAberto(context),
-                  _colunaIntervaloPartos(context),
-                  _colunaPrevisaoParto(context),
-                  _colunaUltimaAcao(context),
-                  _campoFormatoExportacao(context),
-                  _botaoExportar(context, animaisDoRelatorio),
-                ],
-              ),
+            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+            appBar: const CabecalhoTela(titulo: 'Resumo do rebanho'),
+            bottomNavigationBar: _rodapeGerar(context, animaisDoRelatorio),
+            body: ListView(
+              padding: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 16.0),
+              children: [
+                _secao(
+                  context,
+                  icone: Icons.tune_rounded,
+                  titulo: 'Animais do relatório',
+                  ajuda: 'Deixe vazio para incluir todos.',
+                  filhos: [
+                    // Rótulo próprio: com tudo selecionado o dropdown mostra a
+                    // lista de valores e o hint some — não dava para saber
+                    // qual campo era qual.
+                    _rotuloCampo(context, 'Categorias'),
+                    _campoGrupo(context),
+                    const SizedBox(height: 10.0),
+                    _rotuloCampo(context, 'Status'),
+                    _campoStatus(context),
+                  ],
+                ),
+                _secaoColunas(context),
+                _secaoFormato(context),
+              ],
             ),
           ),
         );

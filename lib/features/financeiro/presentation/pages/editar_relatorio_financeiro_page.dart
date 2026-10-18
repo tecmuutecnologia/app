@@ -1,9 +1,11 @@
 // ignore_for_file: unnecessary_null_comparison, unused_local_variable
 
+import '/core/ui/cabecalho_tela.dart';
+import '/core/ui/painel_lista.dart';
+import '/core/ui/secao_formulario.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/core/ui/app_card.dart';
-import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
@@ -183,58 +185,15 @@ class _EditarRelatorioFinanceiroPageState
     super.dispose();
   }
 
-  Widget _cabecalho(
-      BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-          child: FlutterFlowIconButton(
-            borderColor: Colors.transparent,
-            borderRadius: 30.0,
-            borderWidth: 1.0,
-            buttonSize: 50.0,
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            onPressed: () async {
-              context.safePop();
-            },
-          ),
-        ),
-        Text(
-          'Editar relatório - ${editarRelatorioFinanceiroFinanceiroRecord.dtRelatorio ?? ''}',
-          style: FlutterFlowTheme.of(context).headlineMedium.override(
-                font: GoogleFonts.outfit(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle:
-                      FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-                ),
-                color: Colors.white,
-                fontSize: 22.0,
-                letterSpacing: 0.0,
-                fontWeight:
-                    FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                fontStyle:
-                    FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-              ),
-        ),
-      ],
-    );
-  }
-
+  /// Produção do mês.
   Widget _camposEntrada(
       BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
+    return Column(
+      children: [
+        SecaoFormulario(
+          icone: Icons.water_drop_outlined,
+          titulo: 'Produção',
+          filhos: [
             _campoData(context, editarRelatorioFinanceiroFinanceiroRecord),
             _campoVacasLactacao(
                 context, editarRelatorioFinanceiroFinanceiroRecord),
@@ -242,24 +201,54 @@ class _EditarRelatorioFinanceiroPageState
                 context, editarRelatorioFinanceiroFinanceiroRecord),
             _campoLitrosLeiteMes(
                 context, editarRelatorioFinanceiroFinanceiroRecord),
+          ],
+        ),
+        SecaoFormulario(
+          icone: Icons.payments_outlined,
+          titulo: 'Valores',
+          espaco: 6.0,
+          filhos: [
             _labelPrecoLitro(context),
             _campoPrecoLitro(
                 context, editarRelatorioFinanceiroFinanceiroRecord),
             _labelDespesasMes(context),
             _campoDespesasMes(
                 context, editarRelatorioFinanceiroFinanceiroRecord),
-            _botaoCalcular(context),
-          ].divide(SizedBox(height: 12.0)),
+          ],
         ),
-      ),
+      ],
     );
   }
 
+  /// Os quatro resultados vêm do botão "Calcular resultado" (antes um
+  /// "Autocalcular" pequeno com um "?" que abria um aviso).
   Widget _camposCalculados(
       BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      children: [
+    return SecaoFormulario(
+      icone: Icons.calculate_outlined,
+      titulo: 'Resultado',
+      ajuda: 'Preencha produção e valores e toque em calcular.',
+      filhos: [
+        FFButtonWidget(
+          onPressed: _calcular,
+          text: 'Calcular resultado',
+          icon: const Icon(Icons.calculate_outlined, size: 18.0),
+          options: FFButtonOptions(
+            width: double.infinity,
+            height: LayoutLista.alturaControle,
+            padding: EdgeInsets.zero,
+            iconPadding: EdgeInsets.zero,
+            color: AppTokens.brandTint,
+            iconColor: AppTokens.brand,
+            textStyle: GoogleFonts.readexPro(
+                color: AppTokens.brand,
+                fontSize: 14.0,
+                fontWeight: FontWeight.w600),
+            elevation: 0.0,
+            borderSide: const BorderSide(color: Colors.transparent),
+            borderRadius: BorderRadius.circular(LayoutLista.raio),
+          ),
+        ),
         _campoTotalRecebido(context, editarRelatorioFinanceiroFinanceiroRecord),
         _campoFaturamentoLiquido(
             context, editarRelatorioFinanceiroFinanceiroRecord),
@@ -267,99 +256,111 @@ class _EditarRelatorioFinanceiroPageState
             context, editarRelatorioFinanceiroFinanceiroRecord),
         _campoCustoLitroLeite(
             context, editarRelatorioFinanceiroFinanceiroRecord),
-        if ((_totalRecebidoTextController.text != '') &&
-            (_faturamentoLiquidoTextController.text != '') &&
-            (_mediaProducaoVacaTextController.text != '') &&
-            (_custoLitroLeiteTextController.text != ''))
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0.0, 10.0, 0.0, 10.0),
-            child: FFButtonWidget(
-              onPressed: () async {
-                if (_formKey.currentState == null ||
-                    !_formKey.currentState!.validate()) {
-                  return;
-                }
-
-                await _salvarOfflineFirst(
-                  vacasLactacao:
-                      int.tryParse(_vacasLactacaoTextController.text),
-                  litrosLeiteMes:
-                      int.tryParse(_litrosLeiteMesTextController.text),
-                  litrosLeitePorDia:
-                      int.tryParse(_litrosLeiteDiaTextController.text),
-                  precoRecebidoPorLitro: _precoRecebidoLitro.toString(),
-                  despesasNoMes: _despesasNoMes.toString(),
-                  faturamentoLiquido: _faturamentoLiquidoTextController.text,
-                  mediaProducaoVaca: _mediaProducaoVacaTextController.text,
-                  custoLitroLeite: _custoLitroLeiteTextController.text,
-                  totalRecebidoMes: _totalRecebidoTextController.text,
-                );
-
-                context.goNamed(
-                  RelatorioFinanceiroPage.routeName,
-                  queryParameters: {
-                    'uidPropriedade': serializeParam(
-                      widget.uidPropriedade,
-                      ParamType.DocumentReference,
-                    ),
-                    'nomePropriedade': serializeParam(
-                      widget.nomePropriedade,
-                      ParamType.String,
-                    ),
-                    'uidTecnico': serializeParam(
-                      widget.uidTecnico,
-                      ParamType.DocumentReference,
-                    ),
-                    'emailPropriedade': serializeParam(
-                      widget.emailPropriedade,
-                      ParamType.String,
-                    ),
-                    'visitaPresencial': serializeParam(
-                      widget.visitaPresencial,
-                      ParamType.bool,
-                    ),
-                    'diasDg': serializeParam(
-                      widget.diasDg,
-                      ParamType.String,
-                    ),
-                  }.withoutNulls,
-                );
-              },
-              text: 'Editar relatório',
-              icon: Icon(
-                Icons.save,
-                size: 15.0,
-              ),
-              options: FFButtonOptions(
-                width: double.infinity,
-                height: 48.0,
-                padding: EdgeInsets.all(0.0),
-                iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                color: Color(0xFF048508),
-                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                      ),
-                      color: Colors.white,
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                    ),
-                elevation: 4.0,
-                borderSide: BorderSide(
-                  color: Colors.transparent,
-                  width: 1.0,
-                ),
-                borderRadius: BorderRadius.circular(60.0),
-              ),
-            ),
-          ),
       ],
+    );
+  }
+
+  bool get _calculado =>
+      _totalRecebidoTextController.text != '' &&
+      _faturamentoLiquidoTextController.text != '' &&
+      _mediaProducaoVacaTextController.text != '' &&
+      _custoLitroLeiteTextController.text != '';
+
+  Future<void> _calcular() async {
+    if ((_dtRelatorioTextController.text != '') &&
+        (_vacasLactacaoTextController.text != '') &&
+        (_litrosLeiteDiaTextController.text != '') &&
+        (_litrosLeiteMesTextController.text != '') &&
+        (_despesasNoMes != null) &&
+        (_precoRecebidoLitro != null)) {
+      safeSetState(() {
+        _totalRecebidoTextController?.text = functions.calcularTotalRecebido(
+            _precoRecebidoLitro.toString(), _litrosLeiteMesTextController.text);
+      });
+      safeSetState(() {
+        _faturamentoLiquidoTextController?.text =
+            functions.subtracaoFaturamentoLiquido(
+                _totalRecebidoTextController.text, _despesasNoMes.toString());
+      });
+      safeSetState(() {
+        _mediaProducaoVacaTextController?.text = formatNumber(
+          functions.calcularMediaProducaoPorVaca(
+              _litrosLeiteDiaTextController.text,
+              _vacasLactacaoTextController.text),
+          formatType: FormatType.decimal,
+          decimalType: DecimalType.commaDecimal,
+        );
+      });
+      safeSetState(() {
+        _custoLitroLeiteTextController?.text = functions.calcularCustoPorLitro(
+            _litrosLeiteMesTextController.text, _despesasNoMes.toString());
+      });
+      return;
+    } else {
+      await showDialog(
+        context: context,
+        builder: (alertDialogContext) {
+          return AlertDialog(
+            title: Text('Preencha todos os campos.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(alertDialogContext),
+                child: Text('Ok'),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+  }
+
+  Future<void> _salvar(
+      dynamic editarRelatorioFinanceiroFinanceiroRecord) async {
+    if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
+      return;
+    }
+
+    await _salvarOfflineFirst(
+      vacasLactacao: int.tryParse(_vacasLactacaoTextController.text),
+      litrosLeiteMes: int.tryParse(_litrosLeiteMesTextController.text),
+      litrosLeitePorDia: int.tryParse(_litrosLeiteDiaTextController.text),
+      precoRecebidoPorLitro: _precoRecebidoLitro.toString(),
+      despesasNoMes: _despesasNoMes.toString(),
+      faturamentoLiquido: _faturamentoLiquidoTextController.text,
+      mediaProducaoVaca: _mediaProducaoVacaTextController.text,
+      custoLitroLeite: _custoLitroLeiteTextController.text,
+      totalRecebidoMes: _totalRecebidoTextController.text,
+    );
+
+    context.goNamed(
+      RelatorioFinanceiroPage.routeName,
+      queryParameters: {
+        'uidPropriedade': serializeParam(
+          widget.uidPropriedade,
+          ParamType.DocumentReference,
+        ),
+        'nomePropriedade': serializeParam(
+          widget.nomePropriedade,
+          ParamType.String,
+        ),
+        'uidTecnico': serializeParam(
+          widget.uidTecnico,
+          ParamType.DocumentReference,
+        ),
+        'emailPropriedade': serializeParam(
+          widget.emailPropriedade,
+          ParamType.String,
+        ),
+        'visitaPresencial': serializeParam(
+          widget.visitaPresencial,
+          ParamType.bool,
+        ),
+        'diasDg': serializeParam(
+          widget.diasDg,
+          ParamType.String,
+        ),
+      }.withoutNulls,
     );
   }
 
@@ -820,7 +821,7 @@ class _EditarRelatorioFinanceiroPageState
       child: custom_widgets.PrecoRecebidoLitro(
         width: MediaQuery.sizeOf(context).width * 1.0,
         height: 45.0,
-        bordercolor: FlutterFlowTheme.of(context).primary,
+        bordercolor: AppTokens.secondary,
         borderRadius: 10.0,
         initialValue:
             editarRelatorioFinanceiroFinanceiroRecord.precoRecebidoPorLitro ??
@@ -857,138 +858,12 @@ class _EditarRelatorioFinanceiroPageState
       child: custom_widgets.DespesasNoMes(
         width: MediaQuery.sizeOf(context).width * 1.0,
         height: 45.0,
-        bordercolor: FlutterFlowTheme.of(context).primary,
+        bordercolor: AppTokens.secondary,
         borderRadius: 10.0,
         initialValue:
             editarRelatorioFinanceiroFinanceiroRecord.despesasNoMes ?? '',
         onChanged: (v) => _despesasNoMes = v,
       ),
-    );
-  }
-
-  Widget _botaoCalcular(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        FFButtonWidget(
-          onPressed: () async {
-            if ((_dtRelatorioTextController.text != '') &&
-                (_vacasLactacaoTextController.text != '') &&
-                (_litrosLeiteDiaTextController.text != '') &&
-                (_litrosLeiteMesTextController.text != '') &&
-                (_despesasNoMes != null) &&
-                (_precoRecebidoLitro != null)) {
-              safeSetState(() {
-                _totalRecebidoTextController?.text =
-                    functions.calcularTotalRecebido(
-                        _precoRecebidoLitro.toString(),
-                        _litrosLeiteMesTextController.text);
-              });
-              safeSetState(() {
-                _faturamentoLiquidoTextController?.text =
-                    functions.subtracaoFaturamentoLiquido(
-                        _totalRecebidoTextController.text,
-                        _despesasNoMes.toString());
-              });
-              safeSetState(() {
-                _mediaProducaoVacaTextController?.text = formatNumber(
-                  functions.calcularMediaProducaoPorVaca(
-                      _litrosLeiteDiaTextController.text,
-                      _vacasLactacaoTextController.text),
-                  formatType: FormatType.decimal,
-                  decimalType: DecimalType.commaDecimal,
-                );
-              });
-              safeSetState(() {
-                _custoLitroLeiteTextController?.text =
-                    functions.calcularCustoPorLitro(
-                        _litrosLeiteMesTextController.text,
-                        _despesasNoMes.toString());
-              });
-              return;
-            } else {
-              await showDialog(
-                context: context,
-                builder: (alertDialogContext) {
-                  return AlertDialog(
-                    title: Text('Preencha todos os campos.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(alertDialogContext),
-                        child: Text('Ok'),
-                      ),
-                    ],
-                  );
-                },
-              );
-              return;
-            }
-          },
-          text: 'Autocalcular',
-          icon: Icon(
-            Icons.calculate_outlined,
-            size: 15.0,
-          ),
-          options: FFButtonOptions(
-            height: 40.0,
-            padding: EdgeInsetsDirectional.fromSTEB(15.0, 0.0, 15.0, 0.0),
-            iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-            color: FlutterFlowTheme.of(context).primary,
-            textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight:
-                        FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                  ),
-                  color: Colors.white,
-                  fontSize: 13.0,
-                  letterSpacing: 0.0,
-                  fontWeight:
-                      FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                ),
-            elevation: 3.0,
-            borderSide: BorderSide(
-              color: Colors.transparent,
-              width: 1.0,
-            ),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 0.0, 0.0),
-          child: InkWell(
-            splashColor: Colors.transparent,
-            focusColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            onTap: () async {
-              await showDialog(
-                context: context,
-                builder: (alertDialogContext) {
-                  return AlertDialog(
-                    title: Text('Preencha todos os campos acima.'),
-                    content: Text('Os campos abaixo serão autocalculados.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(alertDialogContext),
-                        child: Text('Ok'),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-            child: Icon(
-              Icons.question_mark_sharp,
-              color: FlutterFlowTheme.of(context).secondaryText,
-              size: 15.0,
-            ),
-          ),
-        ),
-      ],
     );
   }
 
@@ -1026,6 +901,9 @@ class _EditarRelatorioFinanceiroPageState
           readOnly: true,
           obscureText: false,
           decoration: InputDecoration(
+            // Resultado calculado: cinza preenchido como os demais campos.
+            filled: true,
+            fillColor: FlutterFlowTheme.of(context).primaryBackground,
             labelText: 'Total recebido*',
             labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
                   font: GoogleFonts.readexPro(
@@ -1051,33 +929,33 @@ class _EditarRelatorioFinanceiroPageState
                       FlutterFlowTheme.of(context).labelMedium.fontWeight,
                   fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
                 ),
-            enabledBorder: UnderlineInputBorder(
+            enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).alternate,
+                color: Colors.transparent,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            focusedBorder: UnderlineInputBorder(
+            focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).primary,
+                color: Colors.transparent,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            errorBorder: UnderlineInputBorder(
+            errorBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: FlutterFlowTheme.of(context).error,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            focusedErrorBorder: UnderlineInputBorder(
+            focusedErrorBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: FlutterFlowTheme.of(context).error,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(10.0),
             ),
             contentPadding:
                 EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
@@ -1143,6 +1021,9 @@ class _EditarRelatorioFinanceiroPageState
         readOnly: true,
         obscureText: false,
         decoration: InputDecoration(
+          // Resultado calculado: cinza preenchido como os demais campos.
+          filled: true,
+          fillColor: FlutterFlowTheme.of(context).primaryBackground,
           labelText: 'Faturamento líquido*',
           labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
                 font: GoogleFonts.readexPro(
@@ -1164,33 +1045,33 @@ class _EditarRelatorioFinanceiroPageState
                 fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
                 fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
               ),
-          enabledBorder: UnderlineInputBorder(
+          enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).alternate,
+              color: Colors.transparent,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(12.0),
+            borderRadius: BorderRadius.circular(10.0),
           ),
-          focusedBorder: UnderlineInputBorder(
+          focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).primary,
+              color: Colors.transparent,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(12.0),
+            borderRadius: BorderRadius.circular(10.0),
           ),
-          errorBorder: UnderlineInputBorder(
+          errorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).error,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(12.0),
+            borderRadius: BorderRadius.circular(10.0),
           ),
-          focusedErrorBorder: UnderlineInputBorder(
+          focusedErrorBorder: OutlineInputBorder(
             borderSide: BorderSide(
               color: FlutterFlowTheme.of(context).error,
               width: 2.0,
             ),
-            borderRadius: BorderRadius.circular(12.0),
+            borderRadius: BorderRadius.circular(10.0),
           ),
           contentPadding:
               EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
@@ -1238,6 +1119,9 @@ class _EditarRelatorioFinanceiroPageState
           readOnly: true,
           obscureText: false,
           decoration: InputDecoration(
+            // Resultado calculado: cinza preenchido como os demais campos.
+            filled: true,
+            fillColor: FlutterFlowTheme.of(context).primaryBackground,
             labelText: 'Média produção vaca*',
             labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
                   font: GoogleFonts.readexPro(
@@ -1263,33 +1147,33 @@ class _EditarRelatorioFinanceiroPageState
                       FlutterFlowTheme.of(context).labelMedium.fontWeight,
                   fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
                 ),
-            enabledBorder: UnderlineInputBorder(
+            enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).alternate,
+                color: Colors.transparent,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            focusedBorder: UnderlineInputBorder(
+            focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).primary,
+                color: Colors.transparent,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            errorBorder: UnderlineInputBorder(
+            errorBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: FlutterFlowTheme.of(context).error,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            focusedErrorBorder: UnderlineInputBorder(
+            focusedErrorBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: FlutterFlowTheme.of(context).error,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(10.0),
             ),
             contentPadding:
                 EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
@@ -1349,6 +1233,9 @@ class _EditarRelatorioFinanceiroPageState
           readOnly: true,
           obscureText: false,
           decoration: InputDecoration(
+            // Resultado calculado: cinza preenchido como os demais campos.
+            filled: true,
+            fillColor: FlutterFlowTheme.of(context).primaryBackground,
             labelText: 'Custo litro de leite*',
             labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
                   font: GoogleFonts.readexPro(
@@ -1374,33 +1261,33 @@ class _EditarRelatorioFinanceiroPageState
                       FlutterFlowTheme.of(context).labelMedium.fontWeight,
                   fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
                 ),
-            enabledBorder: UnderlineInputBorder(
+            enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).alternate,
+                color: Colors.transparent,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            focusedBorder: UnderlineInputBorder(
+            focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
-                color: FlutterFlowTheme.of(context).primary,
+                color: Colors.transparent,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            errorBorder: UnderlineInputBorder(
+            errorBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: FlutterFlowTheme.of(context).error,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            focusedErrorBorder: UnderlineInputBorder(
+            focusedErrorBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: FlutterFlowTheme.of(context).error,
                 width: 2.0,
               ),
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(10.0),
             ),
             contentPadding:
                 EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
@@ -1496,40 +1383,17 @@ class _EditarRelatorioFinanceiroPageState
           },
           child: Scaffold(
             key: scaffoldKey,
-            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-            appBar: PreferredSize(
-              preferredSize: Size.fromHeight(100.0),
-              child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFFF75E38), Color(0xFFEC3B5B)],
-                      begin: AlignmentDirectional(-1.0, -1.0),
-                      end: AlignmentDirectional(1.0, 1.0),
-                    ),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(24.0),
-                      bottomRight: Radius.circular(24.0),
-                    ),
-                  ),
-                  child: AppBar(
-                    backgroundColor: Colors.transparent,
-                    automaticallyImplyLeading: false,
-                    actions: [],
-                    flexibleSpace: FlexibleSpaceBar(
-                      title: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _cabecalho(context,
-                              editarRelatorioFinanceiroFinanceiroRecord),
-                        ],
-                      ),
-                      centerTitle: true,
-                      expandedTitleScale: 1.0,
-                    ),
-                    elevation: 0.0,
-                  )),
+            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+            appBar: CabecalhoTela(
+                titulo:
+                    'Relatório de ${editarRelatorioFinanceiroFinanceiroRecord.dtRelatorio ?? ''}'),
+            bottomNavigationBar: RodapeAcao(
+              texto: 'Salvar alterações',
+              icone: Icons.check_rounded,
+              aviso: 'Calcule o resultado para salvar.',
+              aoTocar: _calculado
+                  ? () => _salvar(editarRelatorioFinanceiroFinanceiroRecord)
+                  : null,
             ),
             body: SafeArea(
               top: true,
@@ -1538,21 +1402,14 @@ class _EditarRelatorioFinanceiroPageState
                 child: Form(
                   key: _formKey,
                   autovalidateMode: AutovalidateMode.disabled,
-                  child: Padding(
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _camposEntrada(context,
-                              editarRelatorioFinanceiroFinanceiroRecord),
-                          _camposCalculados(context,
-                              editarRelatorioFinanceiroFinanceiroRecord),
-                        ],
-                      ),
-                    ),
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(vertical: 6.0),
+                    children: [
+                      _camposEntrada(
+                          context, editarRelatorioFinanceiroFinanceiroRecord),
+                      _camposCalculados(
+                          context, editarRelatorioFinanceiroFinanceiroRecord),
+                    ],
                   ),
                 ),
               ),

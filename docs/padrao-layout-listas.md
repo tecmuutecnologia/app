@@ -38,6 +38,7 @@ Toda tela que mostra uma lista de itens (animais, visitas, receituários…) seg
 | Abas | `AbasPilula` (`lib/core/ui/abas_pilula.dart`) no lugar do `FlutterFlowButtonTabBar`: 36pt, raio 10, ativa roxa (`AppTokens.secondary`) com brilho, inativas cinza; **contador** por aba quando a contagem é barata; rola sozinha até a aba ativa |
 | Lista | começa 8pt abaixo do painel; cards com margem lateral 12 |
 | Card | topo: avatar + título; depois a faixa de **informações/datas**; **botões por último**, dividindo a largura em partes iguais |
+| Telas de formulário/ação (não lista) | `SecaoFormulario` + `RodapeAcao` (`lib/core/ui/secao_formulario.dart`): seções em cards brancos sobre o fundo cinza, campos todos no estilo cinza preenchido sem contorno; a ação principal fica **fixa no rodapé** (`bottomNavigationBar`), laranja `AppTokens.brand`, 48pt, com estado "gerando..." que bloqueia toque duplo |
 | Raios | controles do painel 10; cards seguem `AppTokens.radius` (16) |
 | Componentes do card | `lib/core/ui/card_animal_lista.dart`: `CartaoLista` (moldura + toque), `ConteudoCardAnimal` (avatar, título, `selo`, `info`, `acoes`), `InfoAnimal`, `FaixaInfoAnimal`, `LinhaAcoes`, `SeloStatus`, `opcoesBotaoCard`, `tituloNomeBrinco` |
 | Ordem das ações | fluxo positivo primeiro, ação **negativa/destrutiva por último, na ponta direita** (DG-, Aborto) — longe do botão mais usado |
@@ -67,7 +68,12 @@ Toda tela que mostra uma lista de itens (animais, visitas, receituários…) seg
 | Prenhas | ✅ |
 | Exame ginecológico | ✅ |
 | Recria | ✅ |
-| Lista completa | 🔄 aplicado, aguardando validação |
+| Lista completa | ✅ |
+| Receituários (lista) | ✅ só o cabeçalho — os cards já eram o desenho desejado |
+| Resumo do rebanho | 🔄 formulário em seções, colunas em chips, botão fixo no rodapé |
+| Calendário sanitário | 🔄 calendário em card com marcador nos dias com ação, botão fixo no rodapé |
+| Índices zootécnicos | ✅ só o cabeçalho |
+| Relatório financeiro (lista, novo, editar) | 🔄 lista com cards no estilo dos Receituários; formulários em seções (Produção / Valores / Resultado), salvar fixo no rodapé |
 | Calendário sanitário (seleção de animal) | ⏳ |
 | Demais telas com lista | ⏳ levantar ao entrar em cada uma |
 

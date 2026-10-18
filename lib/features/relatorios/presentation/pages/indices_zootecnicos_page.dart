@@ -1,10 +1,10 @@
+import '/core/ui/cabecalho_tela.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/domain/animais/media_del.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/ui/app_card.dart';
-import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/custom_functions.dart' as functions;
@@ -529,55 +529,6 @@ class _IndicesZootecnicosPageState extends State<IndicesZootecnicosPage> {
     );
   }
 
-  PreferredSizeWidget _appBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: const Size.fromHeight(100.0),
-      child: AppBar(
-        backgroundColor: const Color(0xFFF75E38),
-        automaticallyImplyLeading: false,
-        actions: const [],
-        flexibleSpace: FlexibleSpaceBar(
-          title: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-                child: FlutterFlowIconButton(
-                  borderColor: Colors.transparent,
-                  borderRadius: 30.0,
-                  borderWidth: 1.0,
-                  buttonSize: 50.0,
-                  icon: const Icon(
-                    Icons.arrow_back_rounded,
-                    color: Colors.white,
-                    size: 30.0,
-                  ),
-                  onPressed: () async {
-                    context.safePop();
-                  },
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  'Índices zootécnicos',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: FlutterFlowTheme.of(context).headlineMedium.override(
-                        font: GoogleFonts.outfit(),
-                        color: Colors.white,
-                        fontSize: 22.0,
-                        letterSpacing: 0.0,
-                      ),
-                ),
-              ),
-            ],
-          ),
-          centerTitle: true,
-          expandedTitleScale: 1.0,
-        ),
-        elevation: 0.0,
-      ),
-    );
-  }
+  PreferredSizeWidget _appBar(BuildContext context) =>
+      const CabecalhoTela(titulo: 'Índices zootécnicos');
 }
