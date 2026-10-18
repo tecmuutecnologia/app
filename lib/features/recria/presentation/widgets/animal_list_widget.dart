@@ -56,8 +56,13 @@ class AnimalListWidget extends StatelessWidget {
             .where((entry) {
               final item = entry.value;
               if (item.uidTecnicoPropriedade != uidPropriedade) return false;
-              // Semen nao se recria: e insumo de inseminacao.
-              if (!ehDaRecria(item.grupoAnimal)) return false;
+              // Mesma regra do card e dos contadores das abas.
+              if (!apareceNaRecria(
+                  grupo: item.grupoAnimal,
+                  status: item.status,
+                  temInducaoLactacao: item.dtInducaoLactacao != null)) {
+                return false;
+              }
               if (filterCategory != null &&
                   filterCategory != 'Todos' &&
                   item.grupoAnimal != filterCategory) return false;
@@ -106,13 +111,13 @@ class AnimalListWidget extends StatelessWidget {
     );
   }
 
-  AnimalData _mapExistingToAnimalData(dynamic item, int index) {
+  AnimalData _mapExistingToAnimalData(AnimaisProdutoresStruct item, int index) {
     return AnimalData(
-      grupoAnimal: item.grupoAnimal ?? '',
-      nomeAnimal: item.nomeAnimal ?? '',
+      grupoAnimal: item.grupoAnimal,
+      nomeAnimal: item.nomeAnimal,
       brincoAnimal: item.brincoAnimal,
-      nomeBrincoConcat: item.nomeBrincoConcat ?? '',
-      status: item.status ?? '',
+      nomeBrincoConcat: item.nomeBrincoConcat,
+      status: item.status,
       dtNascimento: item.dtNascimento,
       dtUltimaInseminacao: item.dtUltimaInseminacao,
       dtUltimoPartoContingencia: item.dtUltimoPartoContingencia,
@@ -123,7 +128,7 @@ class AnimalListWidget extends StatelessWidget {
       dtInducaoLactacao: item.dtInducaoLactacao,
       nomeTouroUltimaInseminacao: item.nomeTouroUltimaInseminacao,
       brincoAnimalOrder: item.brincoAnimalOrder,
-      liberaInseminacao: item.liberaInseminacao ?? false,
+      liberaInseminacao: item.liberaInseminacao,
       // Sem isto `reference` ficava sempre null: o prontuário não abria e o
       // desmame roteava todo animal como "criado offline".
       reference: item.uidAnimal,

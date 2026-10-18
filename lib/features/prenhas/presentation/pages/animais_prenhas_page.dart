@@ -1,5 +1,6 @@
 // ignore_for_file: unnecessary_null_comparison, unused_import
 
+import '/core/ui/cabecalho_tela.dart';
 import 'dart:async';
 
 import '/core/connectivity/connectivity_service.dart';
@@ -13,7 +14,10 @@ import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
-import '/features/shared/widgets/botao_ordenacao.dart';
+import '/core/ui/card_animal_lista.dart';
+import '/core/ui/painel_lista.dart';
+import '/features/animais/application/ordenacao_animais.dart';
+import '/features/animais/presentation/widgets/seletor_ordem_animais.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/features/animais/presentation/widgets/descarte_animal_widget.dart';
 import '../widgets/registrar_secagem_widget.dart';
@@ -57,30 +61,16 @@ class _AnimaisPrenhasPageState extends State<AnimaisPrenhasPage> {
   bool? _respostaNet = true;
   FocusNode? _searchListFocusNode;
   TextEditingController? _searchListTextController;
-  final String? Function(BuildContext, String?)?
-      _searchListTextControllerValidator = null;
 
   /// Lista de animais existentes (fonte ObjectBox). Antes em
   /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
   List<AnimaisProdutoresStruct> _animaisExistentes = [];
 
-  /// Direção da ordenação da lista. Crescente por padrão: brinco 390 antes de
-  /// 430, e nome A antes de Z.
-  bool _ordemCrescente = true;
-
-  /// Regra única do domínio, com a direção escolhida no botão.
-  int _compararStructs(AnimaisProdutoresStruct a, AnimaisProdutoresStruct b) {
-    final c = compararStructs(a, b);
-    return _ordemCrescente ? c : -c;
-  }
-
-  /// Inverte a direção. Aqui basta virar a flag: esta tela ordena pela data de
-  /// inseminação no momento de montar a lista, e é lá que a direção é aplicada.
-  /// A ordem por brinco do carregamento fica como desempate estável entre
-  /// animais de mesma data.
-  void _alternarOrdem() => safeSetState(() {
-        _ordemCrescente = !_ordemCrescente;
-      });
+  /// Critério e direção da ordem, nos chips do padrão de listas. Começa por
+  /// inseminação, mais antigas primeiro: as prenhas mais adiantadas, que
+  /// parem antes, aparecem no topo.
+  OrdemAnimais _ordem = OrdemAnimais.inseminacao;
+  bool _crescente = true;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -134,7 +124,7 @@ class _AnimaisPrenhasPageState extends State<AnimaisPrenhasPage> {
           .toList()
         // A consulta do ObjectBox devolve ordem de insercao, que espelha a
         // ordem de documentId do Firestore — nem numerica, nem alfabetica.
-        ..sort(_compararStructs);
+        ..sort(compararStructs);
     }
   }
 
@@ -144,280 +134,60 @@ class _AnimaisPrenhasPageState extends State<AnimaisPrenhasPage> {
     return _linhaCard(context, item);
   }
 
-  /// Envelopa o cartão com padding + InkWell (abre o prontuário do animal).
+  /// Card no padrão de listas: avatar + nome, as três datas do ciclo da
+  /// prenhez (a previsão de parto em destaque) e as ações por último. Tocar
+  /// abre o prontuário.
   Widget _linhaCard(BuildContext context, AnimaisProdutoresStruct item) {
-    return Align(
-      alignment: AlignmentDirectional(0.0, 0.0),
-      child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 10.0),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: FlutterFlowTheme.of(context).secondaryBackground,
-            borderRadius: BorderRadius.circular(16.0),
-            boxShadow: AppTokens.softShadow(context),
-          ),
-          child: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-            child: InkWell(
-              splashColor: Colors.transparent,
-              focusColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              onTap: () async {
-                context.pushNamed(
-                  ProntuarioAnimalPage.routeName,
-                  queryParameters: {
-                    'uidPropriedade': serializeParam(
-                      widget.uidPropriedade,
-                      ParamType.DocumentReference,
-                    ),
-                    'nomePropriedade': serializeParam(
-                      widget.nomePropriedade,
-                      ParamType.String,
-                    ),
-                    'uidTecnico': serializeParam(
-                      widget.uidTecnico,
-                      ParamType.DocumentReference,
-                    ),
-                    'emailPropriedade': serializeParam(
-                      widget.emailPropriedade,
-                      ParamType.String,
-                    ),
-                    'uidAnimaisProdutores': serializeParam(
-                      item.uidAnimal,
-                      ParamType.DocumentReference,
-                    ),
-                    'grupoPredominante': serializeParam(
-                      item.grupoAnimal,
-                      ParamType.String,
-                    ),
-                    'visitaPresencial': serializeParam(
-                      widget.visitaPresencial,
-                      ParamType.bool,
-                    ),
-                    'diasDg': serializeParam(
-                      widget.diasDg,
-                      ParamType.String,
-                    ),
-                  }.withoutNulls,
-                );
-              },
-              onLongPress: () async {},
-              child: _conteudoCard(context, item),
+    return CartaoLista(
+      aoTocar: () async {
+        context.pushNamed(
+          ProntuarioAnimalPage.routeName,
+          queryParameters: {
+            'uidPropriedade': serializeParam(
+              widget.uidPropriedade,
+              ParamType.DocumentReference,
             ),
-          ),
-        ),
+            'nomePropriedade': serializeParam(
+              widget.nomePropriedade,
+              ParamType.String,
+            ),
+            'uidTecnico': serializeParam(
+              widget.uidTecnico,
+              ParamType.DocumentReference,
+            ),
+            'emailPropriedade': serializeParam(
+              widget.emailPropriedade,
+              ParamType.String,
+            ),
+            'uidAnimaisProdutores': serializeParam(
+              item.uidAnimal,
+              ParamType.DocumentReference,
+            ),
+            'grupoPredominante': serializeParam(
+              item.grupoAnimal,
+              ParamType.String,
+            ),
+            'visitaPresencial': serializeParam(
+              widget.visitaPresencial,
+              ParamType.bool,
+            ),
+            'diasDg': serializeParam(
+              widget.diasDg,
+              ParamType.String,
+            ),
+          }.withoutNulls,
+        );
+      },
+      child: ConteudoCardAnimal(
+        grupo: item.grupoAnimal,
+        titulo: tituloNomeBrinco(item.nomeAnimal, item.brincoAnimal),
+        info: [
+          InfoAnimal('Inseminada', item.dtUltimaInseminacao),
+          InfoAnimal('Prev. parto', item.dtPartoPrevisto, destaque: true),
+          InfoAnimal('Sec. prevista', item.dtSecPrevista),
+        ],
+        acoes: _botoesAcao(context, item),
       ),
-    );
-  }
-
-  /// Conteúdo do cartão: avatar + nome + ações no topo e, abaixo, a faixa de
-  /// datas ocupando a largura TOTAL do card.
-  ///
-  /// Antes era um GridView 3x2 (childAspectRatio 2.0) que espremia avatar,
-  /// nome, três datas e dois botões em células de tamanho fixo. Depois a faixa
-  /// de datas ficou ao lado do avatar, mas ali sobravam só ~83px por data — o
-  /// suficiente para "20/12" e não para o ano. Movendo a faixa para baixo, ela
-  /// recupera a largura do avatar (~56px) e cada data ganha ~100px, cabendo o
-  /// ano inteiro.
-  Widget _conteudoCard(BuildContext context, AnimaisProdutoresStruct item) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _avatarGrupo(context, item),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      () {
-                        if ((item.nomeAnimal != '') &&
-                            (item.brincoAnimal != null) &&
-                            (item.brincoAnimal != -1)) {
-                          return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
-                        } else if (item.nomeAnimal != '') {
-                          return item.nomeAnimal;
-                        } else {
-                          return item.brincoAnimal.toString();
-                        }
-                      }(),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: FlutterFlowTheme.of(context).bodyLarge.override(
-                            font: GoogleFonts.readexPro(
-                              fontWeight: FontWeight.w600,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .bodyLarge
-                                  .fontStyle,
-                            ),
-                            letterSpacing: 0.0,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FlutterFlowTheme.of(context)
-                                .bodyLarge
-                                .fontStyle,
-                          ),
-                    ),
-                    const SizedBox(height: 12.0),
-                    _botoesAcao(context, item),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12.0),
-        _blocoDatas(context, item),
-      ],
-    );
-  }
-
-  /// Avatar circular do grupo (VAC/NOV), no mesmo padrão das telas de
-  /// inseminações e diagnóstico de gestação.
-  Widget _avatarGrupo(BuildContext context, AnimaisProdutoresStruct item) {
-    return Container(
-      width: 44.0,
-      height: 44.0,
-      decoration: BoxDecoration(
-        color: () {
-          if (ehVaca(item.grupoAnimal)) {
-            return AppTokens.brand;
-          } else if (ehNovilha(item.grupoAnimal)) {
-            return AppTokens.secondary;
-          } else {
-            return FlutterFlowTheme.of(context).secondaryText;
-          }
-        }(),
-        shape: BoxShape.circle,
-      ),
-      alignment: AlignmentDirectional(0.0, 0.0),
-      child: Text(
-        () {
-          if (ehVaca(item.grupoAnimal)) {
-            return 'VAC';
-          } else if (ehNovilha(item.grupoAnimal)) {
-            return 'NOV';
-          } else {
-            return 'N/C';
-          }
-        }(),
-        style: FlutterFlowTheme.of(context).titleMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
-              ),
-              color: Colors.white,
-              fontSize: 13.0,
-              letterSpacing: 0.0,
-              fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
-            ),
-      ),
-    );
-  }
-
-  /// As três datas do ciclo da prenhez agrupadas num painel legível, em vez de
-  /// rótulos soltos de 10px espalhados pelo grid. A previsão de parto recebe
-  /// destaque por ser a informação-chave de um animal prenhe.
-  Widget _blocoDatas(BuildContext context, AnimaisProdutoresStruct item) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
-      padding: const EdgeInsetsDirectional.fromSTEB(12.0, 10.0, 12.0, 10.0),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: _tileData(
-                  context, 'Inseminada', item.dtUltimaInseminacao, false),
-            ),
-            _divisor(context),
-            Expanded(
-              child:
-                  _tileData(context, 'Prev. parto', item.dtPartoPrevisto, true),
-            ),
-            _divisor(context),
-            Expanded(
-              child: _tileData(
-                  context, 'Sec. prevista', item.dtSecPrevista, false),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _divisor(BuildContext context) {
-    return VerticalDivider(
-      width: 17.0,
-      thickness: 1.0,
-      color: FlutterFlowTheme.of(context).alternate,
-    );
-  }
-
-  /// Rótulo pequeno + valor destacado. Data vazia vira '—' em vez de sumir,
-  /// para o usuário perceber que o dado não existe.
-  Widget _tileData(
-      BuildContext context, String rotulo, String valor, bool destaque) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          rotulo,
-          maxLines: 1,
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.ellipsis,
-          style: FlutterFlowTheme.of(context).labelSmall.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).labelSmall.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).labelSmall.fontStyle,
-                ),
-                color: FlutterFlowTheme.of(context).secondaryText,
-                fontSize: 11.0,
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).labelSmall.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelSmall.fontStyle,
-              ),
-        ),
-        const SizedBox(height: 3.0),
-        // FittedBox em vez de ellipsis: numa tela estreita a data ENCOLHE em
-        // vez de perder o ano ("20/12/2026" nunca vira "20/12...").
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            valor.isEmpty ? '—' : valor,
-            maxLines: 1,
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight: FontWeight.w600,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                  ),
-                  color: destaque
-                      ? AppTokens.brand
-                      : FlutterFlowTheme.of(context).primaryText,
-                  fontSize: 14.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FontWeight.w600,
-                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                ),
-          ),
-        ),
-      ],
     );
   }
 
@@ -428,15 +198,12 @@ class _AnimaisPrenhasPageState extends State<AnimaisPrenhasPage> {
   Widget _botoesAcao(BuildContext context, AnimaisProdutoresStruct item) {
     final podeSecar =
         ehVaca(item.grupoAnimal) || (item.dtInducaoLactacao != null);
-    return Row(
-      children: [
-        Expanded(child: _botaoAborto(context, item)),
-        if (podeSecar) ...[
-          const SizedBox(width: 8.0),
-          Expanded(child: _botaoSecagem(context, item)),
-        ],
-      ],
-    );
+    // Aborto (negativo) por último, na ponta direita — como o DG- no
+    // diagnóstico de gestação.
+    return LinhaAcoes(children: [
+      if (podeSecar) _botaoSecagem(context, item),
+      _botaoAborto(context, item),
+    ]);
   }
 
   Widget _botaoAborto(BuildContext context, AnimaisProdutoresStruct item) {
@@ -527,164 +294,20 @@ class _AnimaisPrenhasPageState extends State<AnimaisPrenhasPage> {
         Icons.water_drop_outlined,
         size: 15.0,
       ),
-      options: _opcoesBotao(context, AppTokens.secondary),
+      // Verde do app: o azul destoava da paleta laranja/verde/vermelho.
+      options: _opcoesBotao(context, AppTokens.positivo),
     );
   }
 
   /// Estilo compartilhado dos botões de ação (mesma métrica das telas de
   /// inseminações e diagnóstico de gestação).
-  FFButtonOptions _opcoesBotao(BuildContext context, Color cor) {
-    return FFButtonOptions(
-      height: 40.0,
-      padding: EdgeInsetsDirectional.fromSTEB(6.0, 0.0, 6.0, 0.0),
-      iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-      color: cor,
-      textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-            font: GoogleFonts.readexPro(
-              fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-            ),
-            color: Colors.white,
-            fontSize: 12.0,
-            letterSpacing: 0.0,
-            fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-            fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-          ),
-      elevation: 0.0,
-      borderSide: BorderSide(
-        color: Colors.transparent,
-        width: 1.0,
-      ),
-      borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      // Preventivo: nenhum botao desta tela e desabilitado hoje. Sem este par,
-      // o `color` acima pinta tambem o estado desabilitado — foi assim que o
-      // "DG +" da lista completa ficou verde e com cara de clicavel sem
-      // responder ao toque. Mesmo par usado na tela de diagnostico de gestacao.
-      disabledColor: FlutterFlowTheme.of(context).primaryBackground,
-      disabledTextColor: FlutterFlowTheme.of(context).secondaryText,
-    );
-  }
+  FFButtonOptions _opcoesBotao(BuildContext context, Color cor) =>
+      opcoesBotaoCard(context, cor);
 
-  /// Lista ordenada pela data de inseminação. Crescente por padrão — as
-  /// prenhas mais adiantadas, que parem antes, aparecem no topo —, e o botão
-  /// da linha da busca inverte.
-  List<AnimaisProdutoresStruct> _animaisOrdenados() {
-    return _animaisExistentes
-        .map((e) => e)
-        .toList()
-        .sortedList(
-            keyOf: (e) => e.compararDtUltimaInseminacao, desc: !_ordemCrescente)
-        .toList();
-  }
-
-  /// Campo de busca no mesmo padrão das telas de inseminações e diagnóstico
-  /// de gestação.
-  Widget _campoBusca(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(child: _campoBuscaTexto(context)),
-          const SizedBox(width: 8.0),
-          BotaoOrdenacao(
-            crescente: _ordemCrescente,
-            onAlternar: _alternarOrdem,
-            rotulos: const RotulosOrdenacao.dataInseminacao(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// O campo em si, sem o padding externo — a linha acima cuida do arranjo.
-  Widget _campoBuscaTexto(BuildContext context) {
-    return TextFormField(
-      controller: _searchListTextController,
-      focusNode: _searchListFocusNode,
-      onChanged: (_) => safeSetState(() {}),
-      obscureText: false,
-      decoration: InputDecoration(
-        labelText: 'Pesquisar animal',
-        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-              ),
-              letterSpacing: 0.0,
-              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-            ),
-        hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-              ),
-              letterSpacing: 0.0,
-              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-            ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.transparent,
-            width: 1.0,
-          ),
-          borderRadius: BorderRadius.circular(14.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: AppTokens.secondary,
-            width: 1.5,
-          ),
-          borderRadius: BorderRadius.circular(14.0),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).error,
-            width: 1.0,
-          ),
-          borderRadius: BorderRadius.circular(14.0),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: FlutterFlowTheme.of(context).error,
-            width: 1.0,
-          ),
-          borderRadius: BorderRadius.circular(14.0),
-        ),
-        filled: true,
-        fillColor: FlutterFlowTheme.of(context).primaryBackground,
-        prefixIcon: Icon(
-          Icons.search_rounded,
-          color: FlutterFlowTheme.of(context).secondaryText,
-        ),
-        suffixIcon: _searchListTextController.text.isNotEmpty
-            ? InkWell(
-                onTap: () {
-                  _searchListTextController?.clear();
-                  safeSetState(() {});
-                },
-                child: Icon(
-                  Icons.clear,
-                  color: FlutterFlowTheme.of(context).secondaryText,
-                  size: 18.0,
-                ),
-              )
-            : null,
-      ),
-      style: FlutterFlowTheme.of(context).bodyMedium.override(
-            font: GoogleFonts.readexPro(
-              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-            ),
-            letterSpacing: 0.0,
-            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-          ),
-      validator: _searchListTextControllerValidator.asValidator(context),
-      maxLines: 1,
-    );
-  }
+  /// Lista na ordem escolhida nos chips (padrão: inseminação, mais antigas
+  /// primeiro).
+  List<AnimaisProdutoresStruct> _animaisOrdenados() =>
+      ordenarStructs(_animaisExistentes, ordem: _ordem, crescente: _crescente);
 
   @override
   Widget build(BuildContext context) {
@@ -697,118 +320,59 @@ class _AnimaisPrenhasPageState extends State<AnimaisPrenhasPage> {
       },
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100.0),
-          child: AppBar(
-            backgroundColor:
-                (_respostaNet ?? true) ? Color(0xFFF75E38) : Color(0xFFF2886E),
-            automaticallyImplyLeading: false,
-            actions: [],
-            flexibleSpace: FlexibleSpaceBar(
-              title: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Padding(
-                        padding:
-                            EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-                        child: FlutterFlowIconButton(
-                          borderColor: Colors.transparent,
-                          borderRadius: 30.0,
-                          borderWidth: 1.0,
-                          buttonSize: 50.0,
-                          icon: Icon(
-                            Icons.arrow_back_rounded,
-                            color: Colors.white,
-                            size: 30.0,
-                          ),
-                          onPressed: () async {
-                            context.safePop();
-                          },
-                        ),
-                      ),
-                      Text(
-                        'Prenhas',
-                        style: FlutterFlowTheme.of(context)
-                            .headlineMedium
-                            .override(
-                              font: GoogleFonts.outfit(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .headlineMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .headlineMedium
-                                    .fontStyle,
-                              ),
-                              color: Colors.white,
-                              fontSize: 22.0,
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .headlineMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .headlineMedium
-                                  .fontStyle,
-                            ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              centerTitle: true,
-              expandedTitleScale: 1.0,
-            ),
-            elevation: 0.0,
-          ),
+        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        appBar: CabecalhoTela(
+          titulo: 'Prenhas',
+          online: _respostaNet ?? true,
         ),
-        body: Container(
-          width: MediaQuery.sizeOf(context).width * 1.0,
-          height: MediaQuery.sizeOf(context).height * 1.0,
-          decoration: BoxDecoration(
-            color: FlutterFlowTheme.of(context).secondaryBackground,
-          ),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            primary: false,
-            scrollDirection: Axis.vertical,
-            children: [
-              _campoBusca(context),
-              // UMA lista, nao duas: a diferenca entre elas era so o filtro
-              // de busca, que agora mora em `prenhasVisiveis`.
-              Container(
-                width: MediaQuery.sizeOf(context).width * 1.0,
-                height: MediaQuery.sizeOf(context).height * 1.0,
-                decoration: BoxDecoration(
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
-                ),
-                child: Builder(
-                  builder: (context) {
-                    final visiveis = prenhasVisiveis(
-                      _animaisOrdenados(),
-                      busca: _searchListTextController.text,
-                    );
-
-                    // Sem `shrinkWrap`: o Container ja da altura limitada, e
-                    // sem ele a lista volta a montar so as linhas visiveis.
-                    return ListView.builder(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 120.0),
-                      primary: false,
-                      scrollDirection: Axis.vertical,
-                      itemCount: visiveis.length,
-                      itemBuilder: (context, i) =>
-                          _itemPrenha(context, visiveis[i]),
-                    );
-                  },
-                ),
+        body: Column(
+          children: [
+            PainelLista(
+              busca: CampoBuscaLista(
+                controller: _searchListTextController!,
+                focusNode: _searchListFocusNode,
+                onChanged: (_) => safeSetState(() {}),
               ),
-            ],
-          ),
+              linhas: [
+                SeletorOrdemAnimais(
+                  ordem: _ordem,
+                  crescente: _crescente,
+                  mostrarInseminacao: true,
+                  alturaMinima: LayoutLista.alturaChip,
+                  raio: LayoutLista.raio,
+                  // Trocar de criterio recomeca crescente, como na lista de
+                  // animais.
+                  onSelecionar: (nova) => safeSetState(() {
+                    _ordem = nova;
+                    _crescente = true;
+                  }),
+                  onInverter: () =>
+                      safeSetState(() => _crescente = !_crescente),
+                ),
+              ],
+            ),
+            // O painel fica fixo; só a lista rola. UMA lista, nao duas: a
+            // diferenca era so o filtro de busca, que mora em
+            // `prenhasVisiveis`.
+            Expanded(
+              child: Builder(
+                builder: (context) {
+                  final visiveis = prenhasVisiveis(
+                    _animaisOrdenados(),
+                    busca: _searchListTextController.text,
+                  );
+                  return ListView.builder(
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        0.0, 8.0, 0.0, 120.0),
+                    primary: false,
+                    itemCount: visiveis.length,
+                    itemBuilder: (context, i) =>
+                        _itemPrenha(context, visiveis[i]),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

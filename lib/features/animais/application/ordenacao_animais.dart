@@ -1,4 +1,5 @@
 import '../../../data/objectbox/entities/index.dart';
+import '../../../data/schema/structs/animais_produtores_struct.dart';
 import '../../../domain/animais/ordenacao_animal.dart';
 
 /// Como a lista de uma categoria e ordenada. Fica aqui, e nao no widget,
@@ -63,9 +64,8 @@ int _compararNatural(String a, String b) {
   for (var i = 0; i < ta.length && i < tb.length; i++) {
     final na = int.tryParse(ta[i]);
     final nb = int.tryParse(tb[i]);
-    final c = (na != null && nb != null)
-        ? na.compareTo(nb)
-        : ta[i].compareTo(tb[i]);
+    final c =
+        (na != null && nb != null) ? na.compareTo(nb) : ta[i].compareTo(tb[i]);
     if (c != 0) return c;
   }
   final c = ta.length.compareTo(tb.length);
@@ -193,3 +193,33 @@ List<T> aplicarBuscaEOrdemPor<T>(
       });
   return filtrados;
 }
+
+/// Ordena a lista das telas que leem `AnimaisProdutoresStruct` (inseminações,
+/// diagnóstico de gestação…) pelos MESMOS critérios da lista de animais —
+/// assim o chip "Nome A-Z" ou "Brinco" dá a mesma ordem em todas as telas.
+///
+/// O título segue o card ("nome - brinco", só o nome ou só o brinco), porque
+/// ordenar por um texto e exibir outro faz a lista parecer fora de ordem.
+List<AnimaisProdutoresStruct> ordenarStructs(
+  List<AnimaisProdutoresStruct> animais, {
+  required OrdemAnimais ordem,
+  bool crescente = true,
+  String busca = '',
+}) =>
+    aplicarBuscaEOrdemPor<AnimaisProdutoresStruct>(
+      animais,
+      titulo: (a) {
+        final temBrinco = a.brincoAnimal != -1;
+        if (a.nomeAnimal.isNotEmpty && temBrinco) {
+          return '${a.nomeAnimal} - ${a.brincoAnimal}';
+        }
+        if (a.nomeAnimal.isNotEmpty) return a.nomeAnimal;
+        return a.brincoAnimal.toString();
+      },
+      nome: (a) => a.nomeAnimal,
+      brinco: (a) => a.brincoAnimal,
+      dataInseminacao: (a) => a.compararDtUltimaInseminacao,
+      ordem: ordem,
+      crescente: crescente,
+      busca: busca,
+    );

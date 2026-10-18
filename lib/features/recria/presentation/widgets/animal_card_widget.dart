@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import '/features/shared/widgets/selo_hoje.dart';
 import '/domain/animais/classificacao_animal.dart';
+import '/features/recria/application/filtros_recria.dart';
 import '/domain/animais/dias_desde.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/app_card.dart';
+import '/core/ui/card_animal_lista.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/custom_functions.dart' as functions;
@@ -24,15 +26,18 @@ import '/features/secas/presentation/widgets/registrar_pre_parto_widget.dart';
 // Imports para bottom sheets offline (novos)
 
 /// Cores constantes para botões de ação
+/// Cores das ações, as mesmas das telas do padrão de listas
+/// (`docs/padrao-layout-listas.md`): verde para registro/confirmação, laranja
+/// para a ação característica, vermelho para o negativo.
 class ActionButtonColors {
-  static const Color inseminar = Color(0xFF7E39EF);
-  static const Color dgMais = Color(0xFF048508);
-  static const Color dgMenos = Color(0xFFAE0303);
-  static const Color acao = Color(0xFF1A03E9);
-  static const Color parto = Color(0xFF048508);
-  static const Color preParto = Color(0xFF1A03E9);
-  static const Color aborto = Color(0xFFAE0303);
-  static const Color desmamar = Color(0xFF048508);
+  static const Color inseminar = AppTokens.brand;
+  static const Color dgMais = AppTokens.positivo;
+  static const Color dgMenos = AppTokens.negativo;
+  static const Color acao = AppTokens.positivo;
+  static const Color parto = AppTokens.positivo;
+  static const Color preParto = AppTokens.brand;
+  static const Color aborto = AppTokens.negativo;
+  static const Color desmamar = AppTokens.brand;
 }
 
 /// Modelo de dados unificado para animal (online ou offline)
@@ -49,7 +54,7 @@ class AnimalData {
   final String? dtPrePartoPrevista;
   final String? dtPartoPrevisto;
   final String? dtUltimaAcao;
-  final String? dtInducaoLactacao;
+  final DateTime? dtInducaoLactacao;
   final String? nomeTouroUltimaInseminacao;
   final int? brincoAnimalOrder;
   final bool liberaInseminacao;
@@ -131,20 +136,11 @@ class AnimalCardWidget extends StatelessWidget {
     return _cartao(context);
   }
 
-  bool _shouldShowAnimal() {
-    // Touros entram independentemente de `liberaInseminacao` (antes o liberado
-    // era escondido, o que na prática sumia com todos) e sêmens passam a ser
-    // listados, com filtro próprio.
-    final isValidGroup = ehTouros(animal.grupoAnimal) ||
-        ehSemens(animal.grupoAnimal) ||
-        (ehNovilha(animal.grupoAnimal) && animal.dtInducaoLactacao == null) ||
-        ehBezerras(animal.grupoAnimal) ||
-        ehBezerros(animal.grupoAnimal);
-
-    final isValidStatus =
-        !ehDescarte(animal.status) && animal.status != 'Pré Parto';
-    return isValidGroup && isValidStatus;
-  }
+  bool _shouldShowAnimal() => apareceNaRecria(
+        grupo: animal.grupoAnimal,
+        status: animal.status,
+        temInducaoLactacao: animal.dtInducaoLactacao != null,
+      );
 
   /// Cartão único, no mesmo padrão das telas de Inseminações, Diagnóstico de
   /// Gestação, Prenhas, Secas e Exame Ginecológico.
@@ -157,52 +153,27 @@ class AnimalCardWidget extends StatelessWidget {
   Widget _cartao(BuildContext context) {
     final info = _infoTiles(context);
 
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(12.0, 6.0, 12.0, 6.0),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: FlutterFlowTheme.of(context).secondaryBackground,
-          boxShadow: AppTokens.softShadow(context),
-          borderRadius: BorderRadius.circular(AppTokens.radius),
-        ),
-        child: Padding(
-          padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-          child: InkWell(
-            splashColor: Colors.transparent,
-            focusColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            // Toque no cartão abre o prontuário — mesmo gesto das demais telas.
-            onTap: () => _navigateToProntuario(context),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _avatarGrupo(context),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
-                            12.0, 0.0, 0.0, 0.0),
-                        child: _cabecalho(context),
-                      ),
-                    ),
-                  ],
-                ),
-                if (info.isNotEmpty) ...[
-                  const SizedBox(height: 12.0),
-                  _faixaInfo(context, info),
-                ],
-                const SizedBox(height: 12.0),
-                _buildActionButtons(context),
-              ],
-            ),
+    return CartaoLista(
+      // Toque no cartão abre o prontuário — mesmo gesto das demais telas.
+      aoTocar: () => _navigateToProntuario(context),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              _avatarGrupo(context),
+              const SizedBox(width: 12.0),
+              Expanded(child: _cabecalho(context)),
+            ],
           ),
-        ),
+          if (info.isNotEmpty) ...[
+            const SizedBox(height: 12.0),
+            FaixaInfoAnimal(tiles: info),
+          ],
+          const SizedBox(height: 12.0),
+          _buildActionButtons(context),
+        ],
       ),
     );
   }
@@ -343,8 +314,7 @@ class AnimalCardWidget extends StatelessWidget {
   List<Widget> _infoTiles(BuildContext context) {
     if (ehBezerros(animal.grupoAnimal) || ehBezerras(animal.grupoAnimal)) {
       return [
-        _tileInfo(context, 'Nascimento', animal.dtNascimento ?? '',
-            alinhaInicio: true),
+        _tileInfo(context, 'Nascimento', animal.dtNascimento ?? ''),
       ];
     }
     if (ehNovilha(animal.grupoAnimal)) {
@@ -359,8 +329,7 @@ class AnimalCardWidget extends StatelessWidget {
         case 'Inseminada':
         case 'Inseminada PP':
           return [
-            _tileInfo(context, 'Inseminada', animal.dtUltimaInseminacao ?? '',
-                alinhaInicio: true),
+            _tileInfo(context, 'Inseminada', animal.dtUltimaInseminacao ?? ''),
           ];
         case 'Prenha':
         case 'Seca':
@@ -376,80 +345,9 @@ class AnimalCardWidget extends StatelessWidget {
     return const [];
   }
 
-  /// Faixa agrupando os tiles de informação, separados por divisores.
-  Widget _faixaInfo(BuildContext context, List<Widget> tiles) {
-    final filhos = <Widget>[];
-    for (var i = 0; i < tiles.length; i++) {
-      if (i > 0) {
-        filhos.add(VerticalDivider(
-          width: 17.0,
-          thickness: 1.0,
-          color: FlutterFlowTheme.of(context).alternate,
-        ));
-      }
-      filhos.add(Expanded(child: tiles[i]));
-    }
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
-      padding: const EdgeInsetsDirectional.fromSTEB(12.0, 10.0, 12.0, 10.0),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: filhos,
-        ),
-      ),
-    );
-  }
-
-  /// Rótulo pequeno + valor destacado; vazio vira '—'. `FittedBox` faz a data
-  /// encolher em vez de perder o ano.
-  /// [alinhaInicio] alinha à esquerda — usado quando o cartão tem um único
-  /// tile, em que centralizar na largura toda fica solto. NÃO derive isso de
-  /// `_infoTiles`: é `_infoTiles` que constrói os tiles, então consultá-la aqui
-  /// cria recursão infinita (stack overflow ao renderizar o cartão).
   Widget _tileInfo(BuildContext context, String rotulo, String valor,
-      {bool destaque = false, bool alinhaInicio = false}) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment:
-          alinhaInicio ? CrossAxisAlignment.start : CrossAxisAlignment.center,
-      children: [
-        Text(
-          rotulo,
-          maxLines: 1,
-          textAlign: alinhaInicio ? TextAlign.start : TextAlign.center,
-          overflow: TextOverflow.ellipsis,
-          style: FlutterFlowTheme.of(context).labelSmall.override(
-                font: GoogleFonts.readexPro(),
-                color: FlutterFlowTheme.of(context).secondaryText,
-                fontSize: 11.0,
-                letterSpacing: 0.0,
-              ),
-        ),
-        const SizedBox(height: 3.0),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            valor.isEmpty ? '—' : valor,
-            maxLines: 1,
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
-                  font: GoogleFonts.readexPro(fontWeight: FontWeight.w600),
-                  color: destaque
-                      ? AppTokens.brand
-                      : FlutterFlowTheme.of(context).primaryText,
-                  fontSize: 14.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FontWeight.w600,
-                ),
-          ),
-        ),
-      ],
-    );
-  }
+          {bool destaque = false}) =>
+      InfoAnimal(rotulo, valor, destaque: destaque);
 
   void _navigateToProntuario(BuildContext context) {
     // Depende de o animal TER referência no Firestore, não de haver conexão:
@@ -501,22 +399,24 @@ class AnimalCardWidget extends StatelessWidget {
           ]);
         case 'Inseminada':
         case 'Inseminada PP':
+          // Negativo (DG-) por último, na ponta direita.
           return _linhaBotoes([
             _buildButton(context, 'DG +', Icons.check_circle,
                 ActionButtonColors.dgMais, () => _showDgMais(context)),
-            _buildButton(context, 'DG -', Icons.cancel_rounded,
-                ActionButtonColors.dgMenos, () => _showDgMenos(context)),
             _buildButton(context, 'Ação', Icons.add_alert,
                 ActionButtonColors.acao, () => _showExameGinecologico(context)),
+            _buildButton(context, 'DG -', Icons.cancel_rounded,
+                ActionButtonColors.dgMenos, () => _showDgMenos(context)),
           ]);
         case 'Prenha':
+          // Mesma ordem das Secas: Aborto (negativo) por último.
           return _linhaBotoes([
-            _buildButton(context, 'Aborto', Icons.cancel_sharp,
-                ActionButtonColors.aborto, () => _showAborto(context)),
             _buildButton(context, 'Parto', Icons.add_alert,
                 ActionButtonColors.parto, () => _showParto(context)),
             _buildButton(context, 'Pré-parto', Icons.check,
                 ActionButtonColors.preParto, () => _showPreParto(context)),
+            _buildButton(context, 'Aborto', Icons.cancel_sharp,
+                ActionButtonColors.aborto, () => _showAborto(context)),
           ]);
         case 'Seca':
           return _linhaBotoes([
@@ -535,38 +435,15 @@ class AnimalCardWidget extends StatelessWidget {
     ]);
   }
 
-  /// Botões dividindo a largura igualmente, com 8px de respiro.
-  Widget _linhaBotoes(List<Widget> botoes) {
-    final filhos = <Widget>[];
-    for (var i = 0; i < botoes.length; i++) {
-      if (i > 0) filhos.add(const SizedBox(width: 8.0));
-      filhos.add(Expanded(child: botoes[i]));
-    }
-    return Row(children: filhos);
-  }
+  Widget _linhaBotoes(List<Widget> botoes) => LinhaAcoes(children: botoes);
 
-  /// Estilo padrão dos botões (altura 40, texto branco 12, cantos
-  /// `radiusSmall`) — antes tinham 25px de altura e largura fixa de 100px.
   Widget _buildButton(BuildContext context, String text, IconData icon,
       Color color, VoidCallback onPressed) {
     return FFButtonWidget(
       onPressed: onPressed,
       text: text,
       icon: Icon(icon, size: 15.0),
-      options: FFButtonOptions(
-        height: 40.0,
-        padding: const EdgeInsetsDirectional.fromSTEB(6.0, 0.0, 6.0, 0.0),
-        iconPadding: EdgeInsets.zero,
-        color: color,
-        textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-            font: GoogleFonts.readexPro(),
-            color: Colors.white,
-            fontSize: 12.0,
-            letterSpacing: 0.0),
-        elevation: 0.0,
-        borderSide: const BorderSide(color: Colors.transparent, width: 1.0),
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
+      options: opcoesBotaoCard(context, color),
     );
   }
 

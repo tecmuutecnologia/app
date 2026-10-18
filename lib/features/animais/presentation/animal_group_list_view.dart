@@ -100,6 +100,8 @@ class AnimalGroupListView extends ConsumerWidget {
         }
 
         return ListView.builder(
+          // Folga abaixo do painel de busca/abas (padrao de listas).
+          padding: const EdgeInsets.only(top: 8.0, bottom: 80.0),
           itemCount: visiveis.length,
           itemBuilder: (context, index) {
             final animal = visiveis[index];

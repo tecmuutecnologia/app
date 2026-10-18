@@ -1,24 +1,25 @@
 // ignore_for_file: unnecessary_null_comparison
+import '/core/ui/cabecalho_tela.dart';
 import 'dart:async';
 
 import '/features/shared/widgets/selo_hoje.dart';
 import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/core/ui/app_card.dart';
-import '/domain/animais/classificacao_animal.dart';
 import '/data/objectbox/index.dart';
 import '/features/exame_ginecologico/application/filtros_exame.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
-import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
-import '/features/shared/widgets/botao_ordenacao.dart';
+import '/core/ui/card_animal_lista.dart';
+import '/core/ui/painel_lista.dart';
+import '/features/animais/application/ordenacao_animais.dart';
+import '/features/animais/presentation/widgets/seletor_ordem_animais.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '../widgets/nova_acao_exame_ginecologico_widget.dart';
 import '/features/prontuario/presentation/pages/prontuario_animal_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class ExameGinecologicoPage extends StatefulWidget {
@@ -51,32 +52,15 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
   bool? _respostaNet = true;
   FocusNode? _searchListFocusNode;
   TextEditingController? _searchListTextController;
-  final String? Function(BuildContext, String?)?
-      _searchListTextControllerValidator = null;
 
   /// Lista de animais existentes (fonte ObjectBox). Antes em
   /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
   List<AnimaisProdutoresStruct> _animaisExistentes = [];
 
-  /// Direção da ordenação da lista. Crescente por padrão: brinco 390 antes de
-  /// 430, e nome A antes de Z.
-  bool _ordemCrescente = true;
-
-  /// Comparador da tela: a regra é a única do domínio; aqui só se aplica a
-  /// direção que o usuário escolheu no botão da barra.
-  int _compararStructs(AnimaisProdutoresStruct a, AnimaisProdutoresStruct b) {
-    final c = compararStructs(a, b);
-    return _ordemCrescente ? c : -c;
-  }
-
-  /// Inverte a ordem e reordena a lista já carregada — sem tocar no ObjectBox,
-  /// já que só a direção mudou.
-  void _alternarOrdem() {
-    safeSetState(() {
-      _ordemCrescente = !_ordemCrescente;
-      _animaisExistentes = _animaisExistentes.toList()..sort(_compararStructs);
-    });
-  }
+  /// Critério e direção da ordem, nos chips do padrão de listas (Nome A-Z /
+  /// Brinco). Tocar no chip ativo inverte a direção.
+  OrdemAnimais _ordem = OrdemAnimais.nome;
+  bool _crescente = true;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -131,7 +115,7 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
           .toList()
         // A consulta do ObjectBox devolve ordem de insercao, que espelha a
         // ordem de documentId do Firestore — nem numerica, nem alfabetica.
-        ..sort(_compararStructs);
+        ..sort(compararStructs);
     }
   }
 
@@ -143,145 +127,60 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
     return _linhaCard(context, item);
   }
 
+  /// Card no padrão de listas: avatar + nome com o selo "Hoje", a última ação
+  /// e o status na faixa de informações e o botão "Ação" por último. Tocar
+  /// abre o prontuário.
   Widget _linhaCard(BuildContext context, AnimaisProdutoresStruct item) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(12.0, 6.0, 12.0, 6.0),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: FlutterFlowTheme.of(context).secondaryBackground,
-          boxShadow: AppTokens.softShadow(context),
-          borderRadius: BorderRadius.circular(AppTokens.radius),
-        ),
-        child: Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-          child: InkWell(
-            splashColor: Colors.transparent,
-            focusColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            onTap: () async {
-              context.pushNamed(
-                ProntuarioAnimalPage.routeName,
-                queryParameters: {
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'uidAnimaisProdutores': serializeParam(
-                    item.uidAnimal,
-                    ParamType.DocumentReference,
-                  ),
-                  'grupoPredominante': serializeParam(
-                    item.grupoAnimal,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    widget.visitaPresencial,
-                    ParamType.bool,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                }.withoutNulls,
-              );
-            },
-            onLongPress: () async {},
-            child: _conteudoCard(context, item),
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// Conteúdo do cartão: avatar + nome + ação no topo e, abaixo, a faixa de
-  /// informação na largura TOTAL do card (mesmo desenho da tela de prenhas).
-  Widget _conteudoCard(BuildContext context, AnimaisProdutoresStruct item) {
-    // Ação já registrada hoje: vira um selo ao lado do nome, em vez de um
-    // ícone solto ao lado do botão (que competia com ele por espaço).
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _avatarGrupo(context, item),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            () {
-                              if ((item.nomeAnimal != '') &&
-                                  (item.brincoAnimal != null) &&
-                                  (item.brincoAnimal != -1)) {
-                                return '${item.nomeAnimal} - ${item.brincoAnimal.toString()}';
-                              } else if (item.nomeAnimal != '') {
-                                return item.nomeAnimal;
-                              } else {
-                                return item.brincoAnimal.toString();
-                              }
-                            }(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style:
-                                FlutterFlowTheme.of(context).bodyLarge.override(
-                                      font: GoogleFonts.readexPro(
-                                        fontWeight: FontWeight.w600,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .bodyLarge
-                                            .fontStyle,
-                                      ),
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.w600,
-                                      fontStyle: FlutterFlowTheme.of(context)
-                                          .bodyLarge
-                                          .fontStyle,
-                                    ),
-                          ),
-                        ),
-                        SeloHoje(dtUltimaAcao: item.dtUltimaAcao),
-                      ],
-                    ),
-                    const SizedBox(height: 12.0),
-                    Row(
-                      children: [
-                        Expanded(child: _botaoAcao(context, item)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+    return CartaoLista(
+      aoTocar: () async {
+        context.pushNamed(
+          ProntuarioAnimalPage.routeName,
+          queryParameters: {
+            'uidPropriedade': serializeParam(
+              widget.uidPropriedade,
+              ParamType.DocumentReference,
             ),
-          ],
-        ),
-        const SizedBox(height: 12.0),
-        _faixaInfo(context, [
-          _tileInfo(context, 'Última ação', item.dtUltimaAcao,
-              alinhaInicio: true),
-        ]),
-      ],
+            'nomePropriedade': serializeParam(
+              widget.nomePropriedade,
+              ParamType.String,
+            ),
+            'uidTecnico': serializeParam(
+              widget.uidTecnico,
+              ParamType.DocumentReference,
+            ),
+            'emailPropriedade': serializeParam(
+              widget.emailPropriedade,
+              ParamType.String,
+            ),
+            'uidAnimaisProdutores': serializeParam(
+              item.uidAnimal,
+              ParamType.DocumentReference,
+            ),
+            'grupoPredominante': serializeParam(
+              item.grupoAnimal,
+              ParamType.String,
+            ),
+            'visitaPresencial': serializeParam(
+              widget.visitaPresencial,
+              ParamType.bool,
+            ),
+            'diasDg': serializeParam(
+              widget.diasDg,
+              ParamType.String,
+            ),
+          }.withoutNulls,
+        );
+      },
+      child: ConteudoCardAnimal(
+        grupo: item.grupoAnimal,
+        titulo: tituloNomeBrinco(item.nomeAnimal, item.brincoAnimal),
+        selo: SeloHoje(dtUltimaAcao: item.dtUltimaAcao),
+        info: [
+          InfoAnimal('Última ação', item.dtUltimaAcao),
+          InfoAnimal('Status', item.status, ehData: false),
+        ],
+        acoes: LinhaAcoes(children: [_botaoAcao(context, item)]),
+      ),
     );
   }
 
@@ -327,263 +226,14 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
         Icons.add_alert,
         size: 15.0,
       ),
-      options: _opcoesBotao(context, AppTokens.secondary),
-    );
-  }
-
-  /// Avatar circular do grupo (VAC/NOV).
-  Widget _avatarGrupo(BuildContext context, AnimaisProdutoresStruct item) {
-    return Container(
-      width: 44.0,
-      height: 44.0,
-      decoration: BoxDecoration(
-        color: () {
-          if (ehVaca(item.grupoAnimal)) {
-            return AppTokens.brand;
-          } else if (ehNovilha(item.grupoAnimal)) {
-            return AppTokens.secondary;
-          } else {
-            return FlutterFlowTheme.of(context).secondaryText;
-          }
-        }(),
-        shape: BoxShape.circle,
-      ),
-      alignment: AlignmentDirectional(0.0, 0.0),
-      child: Text(
-        () {
-          if (ehVaca(item.grupoAnimal)) {
-            return 'VAC';
-          } else if (ehNovilha(item.grupoAnimal)) {
-            return 'NOV';
-          } else {
-            return 'N/C';
-          }
-        }(),
-        style: FlutterFlowTheme.of(context).titleMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
-              ),
-              color: Colors.white,
-              fontSize: 13.0,
-              letterSpacing: 0.0,
-              fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
-            ),
-      ),
-    );
-  }
-
-  /// Faixa agrupando os tiles de informação, separados por divisores.
-  Widget _faixaInfo(BuildContext context, List<Widget> tiles) {
-    final filhos = <Widget>[];
-    for (var i = 0; i < tiles.length; i++) {
-      if (i > 0) {
-        filhos.add(_divisor(context));
-      }
-      filhos.add(Expanded(child: tiles[i]));
-    }
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).primaryBackground,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
-      padding: const EdgeInsetsDirectional.fromSTEB(12.0, 10.0, 12.0, 10.0),
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: filhos,
-        ),
-      ),
-    );
-  }
-
-  Widget _divisor(BuildContext context) {
-    return VerticalDivider(
-      width: 17.0,
-      thickness: 1.0,
-      color: FlutterFlowTheme.of(context).alternate,
-    );
-  }
-
-  /// Rótulo pequeno + valor destacado. Valor vazio vira '—'. Datas usam
-  /// `FittedBox` (encolhem em vez de perder o ano). [alinhaInicio] alinha à
-  /// esquerda — usado quando há um único tile, em que centralizar fica solto.
-  Widget _tileInfo(BuildContext context, String rotulo, String valor,
-      {bool destaque = false, bool alinhaInicio = false}) {
-    final alinha =
-        alinhaInicio ? CrossAxisAlignment.start : CrossAxisAlignment.center;
-    final alinhaTexto = alinhaInicio ? TextAlign.start : TextAlign.center;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: alinha,
-      children: [
-        Text(
-          rotulo,
-          maxLines: 1,
-          textAlign: alinhaTexto,
-          overflow: TextOverflow.ellipsis,
-          style: FlutterFlowTheme.of(context).labelSmall.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).labelSmall.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).labelSmall.fontStyle,
-                ),
-                color: FlutterFlowTheme.of(context).secondaryText,
-                fontSize: 11.0,
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).labelSmall.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelSmall.fontStyle,
-              ),
-        ),
-        const SizedBox(height: 3.0),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            valor.isEmpty ? '—' : valor,
-            maxLines: 1,
-            style: FlutterFlowTheme.of(context).bodyMedium.override(
-                  font: GoogleFonts.readexPro(
-                    fontWeight: FontWeight.w600,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                  ),
-                  color: destaque
-                      ? AppTokens.brand
-                      : FlutterFlowTheme.of(context).primaryText,
-                  fontSize: 14.0,
-                  letterSpacing: 0.0,
-                  fontWeight: FontWeight.w600,
-                  fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                ),
-          ),
-        ),
-      ],
+      // Verde, como as demais ações de registro do padrão de listas.
+      options: _opcoesBotao(context, AppTokens.positivo),
     );
   }
 
   /// Estilo compartilhado dos botões de ação — mesma métrica das demais telas.
-  FFButtonOptions _opcoesBotao(BuildContext context, Color cor) {
-    return FFButtonOptions(
-      height: 40.0,
-      padding: EdgeInsetsDirectional.fromSTEB(6.0, 0.0, 6.0, 0.0),
-      iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-      color: cor,
-      textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-            font: GoogleFonts.readexPro(
-              fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-            ),
-            color: Colors.white,
-            fontSize: 12.0,
-            letterSpacing: 0.0,
-            fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-            fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-          ),
-      elevation: 0.0,
-      borderSide: BorderSide(
-        color: Colors.transparent,
-        width: 1.0,
-      ),
-      borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      // Preventivo: nenhum botao desta tela e desabilitado hoje. Sem este par,
-      // o `color` acima pinta tambem o estado desabilitado — foi assim que o
-      // "DG +" da lista completa ficou verde e com cara de clicavel sem
-      // responder ao toque. Mesmo par usado na tela de diagnostico de gestacao.
-      disabledColor: FlutterFlowTheme.of(context).primaryBackground,
-      disabledTextColor: FlutterFlowTheme.of(context).secondaryText,
-    );
-  }
-
-  /// Campo de busca no mesmo padrão das telas anteriores.
-  Widget _campoBusca(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(child: _campoBuscaTexto(context)),
-          const SizedBox(width: 8.0),
-          BotaoOrdenacao(
-            crescente: _ordemCrescente,
-            onAlternar: _alternarOrdem,
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// O campo em si, sem o padding externo — a linha acima cuida do arranjo.
-  Widget _campoBuscaTexto(BuildContext context) {
-    return TextFormField(
-      controller: _searchListTextController,
-      focusNode: _searchListFocusNode,
-      onChanged: (_) => safeSetState(() {}),
-      obscureText: false,
-      decoration: InputDecoration(
-        labelText: 'Pesquisar animal',
-        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-              ),
-              letterSpacing: 0.0,
-              fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-            ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.transparent, width: 1.0),
-          borderRadius: BorderRadius.circular(14.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: AppTokens.secondary, width: 1.5),
-          borderRadius: BorderRadius.circular(14.0),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide:
-              BorderSide(color: FlutterFlowTheme.of(context).error, width: 1.0),
-          borderRadius: BorderRadius.circular(14.0),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide:
-              BorderSide(color: FlutterFlowTheme.of(context).error, width: 1.0),
-          borderRadius: BorderRadius.circular(14.0),
-        ),
-        filled: true,
-        fillColor: FlutterFlowTheme.of(context).primaryBackground,
-        prefixIcon: Icon(
-          Icons.search_rounded,
-          color: FlutterFlowTheme.of(context).secondaryText,
-        ),
-        suffixIcon: _searchListTextController.text.isNotEmpty
-            ? InkWell(
-                onTap: () {
-                  _searchListTextController?.clear();
-                  safeSetState(() {});
-                },
-                child: Icon(
-                  Icons.clear,
-                  color: FlutterFlowTheme.of(context).secondaryText,
-                  size: 18.0,
-                ),
-              )
-            : null,
-      ),
-      style: FlutterFlowTheme.of(context).bodyMedium.override(
-            font: GoogleFonts.readexPro(
-              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-            ),
-            letterSpacing: 0.0,
-            fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-            fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-          ),
-      validator: _searchListTextControllerValidator.asValidator(context),
-      maxLines: 1,
-    );
-  }
+  FFButtonOptions _opcoesBotao(BuildContext context, Color cor) =>
+      opcoesBotaoCard(context, cor);
 
   @override
   Widget build(BuildContext context) {
@@ -596,118 +246,61 @@ class _ExameGinecologicoPageState extends State<ExameGinecologicoPage> {
       },
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100.0),
-          child: AppBar(
-            backgroundColor:
-                _respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
-            automaticallyImplyLeading: false,
-            actions: [],
-            flexibleSpace: FlexibleSpaceBar(
-              title: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Padding(
-                        padding:
-                            EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-                        child: FlutterFlowIconButton(
-                          borderColor: Colors.transparent,
-                          borderRadius: 30.0,
-                          borderWidth: 1.0,
-                          buttonSize: 50.0,
-                          icon: Icon(
-                            Icons.arrow_back_rounded,
-                            color: Colors.white,
-                            size: 30.0,
-                          ),
-                          onPressed: () async {
-                            context.safePop();
-                          },
-                        ),
-                      ),
-                      Text(
-                        'Exame ginecológico',
-                        style: FlutterFlowTheme.of(context)
-                            .headlineMedium
-                            .override(
-                              font: GoogleFonts.outfit(
-                                fontWeight: FlutterFlowTheme.of(context)
-                                    .headlineMedium
-                                    .fontWeight,
-                                fontStyle: FlutterFlowTheme.of(context)
-                                    .headlineMedium
-                                    .fontStyle,
-                              ),
-                              color: Colors.white,
-                              fontSize: 22.0,
-                              letterSpacing: 0.0,
-                              fontWeight: FlutterFlowTheme.of(context)
-                                  .headlineMedium
-                                  .fontWeight,
-                              fontStyle: FlutterFlowTheme.of(context)
-                                  .headlineMedium
-                                  .fontStyle,
-                            ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              centerTitle: true,
-              expandedTitleScale: 1.0,
-            ),
-            elevation: 0.0,
-          ),
+        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        appBar: CabecalhoTela(
+          titulo: 'Exame ginecológico',
+          online: _respostaNet ?? true,
         ),
-        body: Container(
-          width: MediaQuery.sizeOf(context).width * 1.0,
-          height: MediaQuery.sizeOf(context).height * 1.0,
-          decoration: BoxDecoration(
-            color: FlutterFlowTheme.of(context).secondaryBackground,
-          ),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            primary: false,
-            scrollDirection: Axis.vertical,
-            children: [
-              _campoBusca(context),
-              // UMA lista, nao duas: a diferenca era so o filtro de busca,
-              // que agora mora em `elegiveisExame`.
-              Container(
-                width: MediaQuery.sizeOf(context).width * 1.0,
-                height: MediaQuery.sizeOf(context).height * 1.0,
-                decoration: BoxDecoration(
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
+        body: Column(
+          children: [
+            PainelLista(
+              busca: CampoBuscaLista(
+                controller: _searchListTextController!,
+                focusNode: _searchListFocusNode,
+                onChanged: (_) => safeSetState(() {}),
+              ),
+              linhas: [
+                SeletorOrdemAnimais(
+                  ordem: _ordem,
+                  crescente: _crescente,
+                  alturaMinima: LayoutLista.alturaChip,
+                  raio: LayoutLista.raio,
+                  // Trocar de criterio recomeca crescente, como na lista de
+                  // animais.
+                  onSelecionar: (nova) => safeSetState(() {
+                    _ordem = nova;
+                    _crescente = true;
+                  }),
+                  onInverter: () =>
+                      safeSetState(() => _crescente = !_crescente),
                 ),
-                child: Builder(
-                  builder: (context) {
-                    final visiveis = elegiveisExame(
+              ],
+            ),
+            // O painel fica fixo; só a lista rola. UMA lista, nao duas: a
+            // diferenca era so o filtro de busca, que mora em `elegiveisExame`.
+            Expanded(
+              child: Builder(
+                builder: (context) {
+                  final visiveis = ordenarStructs(
+                    elegiveisExame(
                       _animaisExistentes,
                       busca: _searchListTextController.text,
-                    );
-
-                    // Sem `shrinkWrap`: o Container ja limita a altura, e sem
-                    // ele a lista volta a montar so as linhas visiveis.
-                    return ListView.builder(
-                      padding:
-                          EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 120.0),
-                      primary: false,
-                      scrollDirection: Axis.vertical,
-                      itemCount: visiveis.length,
-                      itemBuilder: (context, i) =>
-                          _itemExame(context, visiveis[i]),
-                    );
-                  },
-                ),
+                    ),
+                    ordem: _ordem,
+                    crescente: _crescente,
+                  );
+                  return ListView.builder(
+                    padding: const EdgeInsetsDirectional.fromSTEB(
+                        0.0, 8.0, 0.0, 120.0),
+                    primary: false,
+                    itemCount: visiveis.length,
+                    itemBuilder: (context, i) =>
+                        _itemExame(context, visiveis[i]),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

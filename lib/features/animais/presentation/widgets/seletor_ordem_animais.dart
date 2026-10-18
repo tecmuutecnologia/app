@@ -25,6 +25,8 @@ class SeletorOrdemAnimais extends StatelessWidget {
     required this.onSelecionar,
     required this.onInverter,
     this.mostrarInseminacao = false,
+    this.alturaMinima = 48.0,
+    this.raio = AppTokens.radiusSmall,
   });
 
   final OrdemAnimais ordem;
@@ -40,6 +42,13 @@ class SeletorOrdemAnimais extends StatelessWidget {
 
   /// Terceiro botao, "Inseminação": so a aba Novilhas da Recria liga.
   final bool mostrarInseminacao;
+
+  /// Altura dos botoes. O padrao (48) e o alvo de toque confortavel; o painel
+  /// do padrao de listas passa `LayoutLista.alturaChip`.
+  final double alturaMinima;
+
+  /// Raio dos botoes (o painel do padrao de listas usa `LayoutLista.raio`).
+  final double raio;
 
   @override
   Widget build(BuildContext context) {
@@ -85,15 +94,15 @@ class SeletorOrdemAnimais extends StatelessWidget {
           ? 'Ordenado $descricao. Tocar para inverter.'
           : 'Ordenar $descricao',
       child: InkWell(
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
+        borderRadius: BorderRadius.circular(raio),
         onTap: ativo ? onInverter : () => onSelecionar(criterio),
         child: Container(
           // Alvo de toque confortavel para uso com uma mao no curral.
-          constraints: const BoxConstraints(minHeight: 48.0),
-          padding: const EdgeInsetsDirectional.fromSTEB(12.0, 8.0, 12.0, 8.0),
+          constraints: BoxConstraints(minHeight: alturaMinima),
+          padding: const EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
           decoration: BoxDecoration(
             color: ativo ? AppTokens.brand : AppTokens.brandTint,
-            borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
+            borderRadius: BorderRadius.circular(raio),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,

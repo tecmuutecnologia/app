@@ -56,6 +56,7 @@ class BotaoOrdenacao extends StatelessWidget {
     required this.crescente,
     required this.onAlternar,
     this.rotulos = const RotulosOrdenacao.brinco(),
+    this.alturaMinima = 48.0,
   });
 
   /// `true` = primeiro critério (menor brinco / mais antigas).
@@ -64,6 +65,10 @@ class BotaoOrdenacao extends StatelessWidget {
   final VoidCallback onAlternar;
 
   final RotulosOrdenacao rotulos;
+
+  /// Altura mínima do botão. O padrão (48) é o alvo de toque confortável;
+  /// telas com busca mais baixa passam a altura do campo para alinharem.
+  final double alturaMinima;
 
   @override
   Widget build(BuildContext context) {
@@ -79,8 +84,8 @@ class BotaoOrdenacao extends StatelessWidget {
         onTap: onAlternar,
         child: Container(
           // Alvo de toque confortável para uso com uma mão no curral.
-          constraints: const BoxConstraints(minHeight: 48.0),
-          padding: const EdgeInsetsDirectional.fromSTEB(10.0, 8.0, 12.0, 8.0),
+          constraints: BoxConstraints(minHeight: alturaMinima),
+          padding: const EdgeInsetsDirectional.fromSTEB(10.0, 0.0, 12.0, 0.0),
           decoration: BoxDecoration(
             color: AppTokens.brandTint,
             borderRadius: BorderRadius.circular(AppTokens.radiusSmall),

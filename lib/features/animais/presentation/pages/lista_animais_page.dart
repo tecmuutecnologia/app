@@ -1,25 +1,27 @@
 // ignore_for_file: unnecessary_null_comparison
 
+import '/core/ui/cabecalho_tela.dart';
 import 'dart:async';
 
 import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
-import '/core/ui/flutter_flow_button_tabbar.dart';
-import '/core/ui/flutter_flow_icon_button.dart';
+import '/core/ui/abas_pilula.dart';
+import '/core/ui/painel_lista.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
-import '/core/ui/app_card.dart';
 import '/features/animais/presentation/pages/cadastrar_novo_animal_page.dart';
 import '/features/animais/presentation/pages/editar_animal_page.dart';
 import '/features/animais/presentation/animal_group_list_view.dart';
 import '/features/animais/application/ordenacao_animais.dart';
+import '/features/animais/application/animais_providers.dart';
 import '/features/animais/presentation/widgets/seletor_ordem_animais.dart';
 import '/features/animais/presentation/widgets/descarte_animal_widget.dart';
 import '/data/objectbox/repositories/animal_repository.dart';
+import '/data/objectbox/entities/index.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as rp show Consumer;
 
 class ListaAnimaisPage extends StatefulWidget {
   const ListaAnimaisPage({
@@ -124,49 +126,6 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
     super.dispose();
   }
 
-  Widget topoPagina(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-          child: FlutterFlowIconButton(
-            borderColor: Colors.transparent,
-            borderRadius: 30.0,
-            borderWidth: 1.0,
-            buttonSize: 50.0,
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            onPressed: () async {
-              context.safePop();
-            },
-          ),
-        ),
-        Text(
-          'Animais',
-          style: FlutterFlowTheme.of(context).headlineMedium.override(
-                font: GoogleFonts.outfit(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle:
-                      FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-                ),
-                color: Colors.white,
-                fontSize: 22.0,
-                letterSpacing: 0.0,
-                fontWeight:
-                    FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                fontStyle:
-                    FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-              ),
-        ),
-      ],
-    );
-  }
-
   /// Abre o formulario de descarte (motivo + data) do animal arrastado.
   ///
   /// O arrasto so PEDE o descarte; nada e gravado aqui. Quem grava e o
@@ -190,8 +149,8 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
           uidTecnico: widget.uidTecnico!,
           emailPropriedade: widget.emailPropriedade!,
           // Animais vivem sob o tecnico — mesma reconstrucao usada no editar.
-          uidAnimaisProdutores: FirebaseFirestore.instance.doc(
-              '${widget.uidTecnico!.path}/animaisProdutores/$firestoreId'),
+          uidAnimaisProdutores: FirebaseFirestore.instance
+              .doc('${widget.uidTecnico!.path}/animaisProdutores/$firestoreId'),
           grupoPredominante: grupo,
           nomeAnimal: animal.nomeAnimal ?? '',
           visitaPresencial: widget.visitaPresencial ?? false,
@@ -201,159 +160,85 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
     );
   }
 
-  /// Busca e ordenacao da tela, acima das abas.
+  static const _grupos = [
+    'Bezerras',
+    'Bezerros',
+    'Novilhas',
+    'Sêmens',
+    'Touros',
+    'Vacas',
+  ];
+
+  /// Painel do padrao de listas (`docs/padrao-layout-listas.md`): busca,
+  /// ordenacao e as abas por grupo, com quantos animais ha em cada uma.
   ///
   /// Fica fora da `TabBarView` de proposito: o criterio de ordem e o termo
   /// digitado valem para a categoria que estiver aberta, e repetir o controle
   /// dentro de cada aba faria o tecnico reconfigurar tudo a cada troca.
   ///
-  /// Busca em cima e botoes embaixo, e nao os tres na mesma linha: com dois
+  /// A ordenacao fica numa linha propria, e nao ao lado da busca: com dois
   /// botoes ao lado do campo sobraria pouca largura justamente para quem
   /// recebe texto longo, que e o campo de busca.
-  Widget _cabecalhoBuscaEOrdem(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _campoBuscaTexto(context),
-          const SizedBox(height: 10.0),
-          SeletorOrdemAnimais(
-            ordem: _ordem,
-            crescente: _crescente,
-            // Trocar de criterio recomeca crescente: o resultado de um toque
-            // nao deve depender da direcao deixada no criterio anterior.
-            onSelecionar: (nova) => safeSetState(() {
-              _ordem = nova;
-              _crescente = true;
-            }),
-            onInverter: () => safeSetState(() => _crescente = !_crescente),
-          ),
-        ],
+  Widget _painelBuscaEAbas(BuildContext context) {
+    return PainelLista(
+      busca: CampoBuscaLista(
+        controller: _buscaController,
+        focusNode: _buscaFocusNode,
+        dica: 'Pesquisar por nome ou brinco',
+        onChanged: (_) => safeSetState(() {}),
+      ),
+      linhas: [
+        SeletorOrdemAnimais(
+          ordem: _ordem,
+          crescente: _crescente,
+          alturaMinima: LayoutLista.alturaChip,
+          raio: LayoutLista.raio,
+          // Trocar de criterio recomeca crescente: o resultado de um toque
+          // nao deve depender da direcao deixada no criterio anterior.
+          onSelecionar: (nova) => safeSetState(() {
+            _ordem = nova;
+            _crescente = true;
+          }),
+          onInverter: () => safeSetState(() => _crescente = !_crescente),
+        ),
+      ],
+      // Contagem pelo MESMO provider e filtro de busca da lista de cada aba,
+      // para o numero nunca divergir do que aparece embaixo.
+      abas: rp.Consumer(
+        builder: (context, ref, _) => AbasPilula(
+          controller: _tabBarController!,
+          abas: [
+            for (final grupo in _grupos)
+              AbaPilula(
+                grupo,
+                contagem: _contarVisiveis(ref
+                    .watch(animaisByGrupoProvider((
+                      propriedadePath: widget.uidPropriedade!.path,
+                      grupo: grupo,
+                    )))
+                    .value),
+              ),
+          ],
+        ),
       ),
     );
   }
 
-  /// O campo em si, no mesmo desenho das telas de secas, prenhas e lista
-  /// completa.
-  Widget _campoBuscaTexto(BuildContext context) {
-    return TextFormField(
-      controller: _buscaController,
-      focusNode: _buscaFocusNode,
-      onChanged: (_) => safeSetState(() {}),
-      decoration: InputDecoration(
-        labelText: 'Pesquisar por nome ou brinco',
-        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
-              font: GoogleFonts.readexPro(),
-              letterSpacing: 0.0,
-            ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.transparent, width: 1.0),
-          borderRadius: BorderRadius.circular(14.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: AppTokens.secondary, width: 1.5),
-          borderRadius: BorderRadius.circular(14.0),
-        ),
-        filled: true,
-        fillColor: FlutterFlowTheme.of(context).primaryBackground,
-        prefixIcon: Icon(
-          Icons.search_rounded,
-          color: FlutterFlowTheme.of(context).secondaryText,
-        ),
-        suffixIcon: _buscaController.text.isNotEmpty
-            ? InkWell(
-                onTap: () {
-                  _buscaController.clear();
-                  safeSetState(() {});
-                },
-                child: Icon(
-                  Icons.clear,
-                  color: FlutterFlowTheme.of(context).secondaryText,
-                  size: 18.0,
-                ),
-              )
-            : null,
-      ),
-      style: FlutterFlowTheme.of(context).bodyMedium.override(
-            font: GoogleFonts.readexPro(),
-            letterSpacing: 0.0,
-          ),
-      maxLines: 1,
-    );
-  }
+  /// Quantos animais da aba aparecem com a busca atual; `null` (sem
+  /// contador) enquanto a aba ainda carrega.
+  int? _contarVisiveis(List<AnimalEntity>? animais) => animais == null
+      ? null
+      : aplicarBuscaEOrdem(animais,
+              ordem: _ordem,
+              crescente: _crescente,
+              busca: _buscaController.text)
+          .length;
 
-  /// Conteúdo principal da tela: a barra de abas por grupo (Bezerras, Bezerros,
-  /// Novilhas, Sêmens, Touros, Vacas) e a lista de animais de cada aba.
+  /// Conteúdo principal da tela: a lista de animais de cada aba (grupo).
   Widget _abasDeAnimais(BuildContext context) {
     return Expanded(
       child: Column(
         children: [
-          Align(
-            alignment: Alignment(-1.0, 0),
-            child: FlutterFlowButtonTabBar(
-              useToggleButtonStyle: false,
-              isScrollable: true,
-              labelStyle: FlutterFlowTheme.of(context).titleMedium.override(
-                    font: GoogleFonts.readexPro(
-                      fontWeight:
-                          FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).titleMedium.fontStyle,
-                    ),
-                    letterSpacing: 0.0,
-                    fontWeight:
-                        FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                    fontStyle:
-                        FlutterFlowTheme.of(context).titleMedium.fontStyle,
-                  ),
-              unselectedLabelStyle: TextStyle(),
-              labelColor: Colors.white,
-              unselectedLabelColor: Color(0xFF525D67),
-              backgroundColor: AppTokens.secondary,
-              unselectedBackgroundColor: Color(0xFFC5C5C5),
-              borderColor: AppTokens.secondary,
-              borderWidth: 2.0,
-              borderRadius: 12.0,
-              elevation: 0.0,
-              labelPadding:
-                  EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-              buttonMargin:
-                  EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 16.0, 0.0),
-              padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-              tabs: [
-                Tab(
-                  text: 'Bezerras',
-                ),
-                Tab(
-                  text: 'Bezerros',
-                ),
-                Tab(
-                  text: 'Novilhas',
-                ),
-                Tab(
-                  text: 'Sêmens',
-                ),
-                Tab(
-                  text: 'Touros',
-                ),
-                Tab(
-                  text: 'Vacas',
-                ),
-              ],
-              controller: _tabBarController,
-              onTap: (i) async {
-                [
-                  () async {},
-                  () async {},
-                  () async {},
-                  () async {},
-                  () async {},
-                  () async {}
-                ][i]();
-              },
-            ),
-          ),
           Expanded(
             child: TabBarView(
               controller: _tabBarController,
@@ -671,35 +556,17 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
       },
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         floatingActionButton: btnNovoAnimal(context),
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100.0),
-          child: AppBar(
-            backgroundColor:
-                _respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
-            automaticallyImplyLeading: false,
-            actions: [],
-            flexibleSpace: FlexibleSpaceBar(
-              title: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  topoPagina(context),
-                ],
-              ),
-              centerTitle: true,
-              expandedTitleScale: 1.0,
-            ),
-            elevation: 0.0,
-          ),
+        appBar: CabecalhoTela(
+          titulo: 'Animais',
+          online: _respostaNet ?? true,
         ),
         body: Column(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _cabecalhoBuscaEOrdem(context),
+            _painelBuscaEAbas(context),
             _abasDeAnimais(context),
           ],
         ),

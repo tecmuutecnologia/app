@@ -2,16 +2,17 @@ import 'dart:async';
 
 import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
-import '/core/ui/flutter_flow_button_tabbar.dart';
-import '/core/ui/flutter_flow_icon_button.dart';
+import '/core/ui/abas_pilula.dart';
+import '/core/ui/cabecalho_tela.dart';
+import '/core/ui/painel_lista.dart';
+import '/features/animais/application/animal_struct_adapter.dart';
+import '/features/recria/application/filtros_recria.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
-import '/core/ui/app_card.dart';
 import '/features/animais/application/ordenacao_animais.dart';
 import '/features/animais/presentation/widgets/seletor_ordem_animais.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../widgets/animal_list_widget.dart';
 
@@ -75,10 +76,6 @@ class _RecriacaoPageState extends State<RecriacaoPage>
   OrdemAnimais _ordem = OrdemAnimais.nome;
   bool _crescente = true;
 
-  // Constantes de cores
-  static const Color _appBarColorOnline = Color(0xFFF75E38);
-  static const Color _appBarColorOffline = Color(0xFFF2886E);
-
   @override
   void initState() {
     super.initState();
@@ -122,190 +119,84 @@ class _RecriacaoPageState extends State<RecriacaoPage>
       },
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
         appBar: _buildAppBar(context),
         body: _buildBody(context),
       ),
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    final isOnline = _respostaNet ?? true;
-
-    return PreferredSize(
-      preferredSize: const Size.fromHeight(100.0),
-      child: AppBar(
-        backgroundColor: isOnline ? _appBarColorOnline : _appBarColorOffline,
-        automaticallyImplyLeading: false,
-        actions: const [],
-        flexibleSpace: FlexibleSpaceBar(
-          title: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Padding(
-                    padding: const EdgeInsetsDirectional.fromSTEB(
-                        12.0, 0.0, 0.0, 0.0),
-                    child: FlutterFlowIconButton(
-                      borderColor: Colors.transparent,
-                      borderRadius: 30.0,
-                      borderWidth: 1.0,
-                      buttonSize: 50.0,
-                      icon: const Icon(Icons.arrow_back_rounded,
-                          color: Colors.white, size: 30.0),
-                      onPressed: _navigateBack,
-                    ),
-                  ),
-                  Text(
-                    'Recria',
-                    style: FlutterFlowTheme.of(context).headlineMedium.override(
-                          font: GoogleFonts.outfit(),
-                          color: Colors.white,
-                          fontSize: 22.0,
-                          letterSpacing: 0.0,
-                        ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          centerTitle: true,
-          expandedTitleScale: 1.0,
-        ),
-        elevation: 0.0,
-      ),
-    );
-  }
+  PreferredSizeWidget _buildAppBar(BuildContext context) => CabecalhoTela(
+        titulo: 'Recria',
+        online: _respostaNet ?? true,
+        aoVoltar: _navigateBack,
+      );
 
   void _navigateBack() {
     context.safePop();
   }
 
-  /// Mesmo layout da tela de Animais: busca e ordem fixas no topo, abas
-  /// logo abaixo, e só a lista rola.
+  /// Padrão de listas (`docs/padrao-layout-listas.md`): painel fixo com
+  /// busca, ordem e abas; só a lista rola.
   Widget _buildBody(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _cabecalhoBuscaEOrdem(context),
-        _abasDeCategoria(context),
+        _painelBuscaEAbas(context),
         Expanded(child: _buildAnimalList(context)),
       ],
     );
   }
 
-  /// Igual ao `_cabecalhoBuscaEOrdem` da lista de animais.
-  Widget _cabecalhoBuscaEOrdem(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _campoBuscaTexto(context),
-          const SizedBox(height: 10.0),
-          SeletorOrdemAnimais(
-            ordem: _ordem,
-            crescente: _crescente,
-            mostrarInseminacao: _categoria == 'Novilhas',
-            // Trocar de criterio recomeca crescente: o resultado de um toque
-            // nao deve depender da direcao deixada no criterio anterior.
-            onSelecionar: (nova) => safeSetState(() {
-              _ordem = nova;
-              _crescente = true;
-            }),
-            onInverter: () => safeSetState(() => _crescente = !_crescente),
-          ),
-        ],
-      ),
-    );
-  }
+  /// Busca, ordem (com "Inseminação" na aba Novilhas) e as abas com quantos
+  /// animais há em cada uma — pela MESMA regra da lista (`apareceNaRecria`) e
+  /// com a busca aplicada.
+  Widget _painelBuscaEAbas(BuildContext context) {
+    final daPropriedade = animaisProdutoresExistentesObjectBox()
+        .where((a) =>
+            a.uidTecnicoPropriedade == widget.uidPropriedade &&
+            apareceNaRecria(
+                grupo: a.grupoAnimal,
+                status: a.status,
+                temInducaoLactacao: a.dtInducaoLactacao != null))
+        .toList();
+    int contar(String aba) => ordenarStructs(
+          aba == 'Todos'
+              ? daPropriedade
+              : daPropriedade.where((a) => a.grupoAnimal == aba).toList(),
+          ordem: _ordem,
+          busca: _buscaController.text,
+        ).length;
 
-  Widget _campoBuscaTexto(BuildContext context) {
-    return TextFormField(
-      controller: _buscaController,
-      focusNode: _buscaFocusNode,
-      onChanged: (_) => safeSetState(() {}),
-      decoration: InputDecoration(
-        labelText: 'Pesquisar por nome ou brinco',
-        labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
-              font: GoogleFonts.readexPro(),
-              letterSpacing: 0.0,
-            ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.transparent, width: 1.0),
-          borderRadius: BorderRadius.circular(14.0),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(color: AppTokens.secondary, width: 1.5),
-          borderRadius: BorderRadius.circular(14.0),
-        ),
-        filled: true,
-        fillColor: FlutterFlowTheme.of(context).primaryBackground,
-        prefixIcon: Icon(
-          Icons.search_rounded,
-          color: FlutterFlowTheme.of(context).secondaryText,
-        ),
-        suffixIcon: _buscaController.text.isNotEmpty
-            ? InkWell(
-                onTap: () {
-                  _buscaController.clear();
-                  safeSetState(() {});
-                },
-                child: Icon(
-                  Icons.clear,
-                  color: FlutterFlowTheme.of(context).secondaryText,
-                  size: 18.0,
-                ),
-              )
-            : null,
+    return PainelLista(
+      busca: CampoBuscaLista(
+        controller: _buscaController,
+        focusNode: _buscaFocusNode,
+        dica: 'Pesquisar por nome ou brinco',
+        onChanged: (_) => safeSetState(() {}),
       ),
-      style: FlutterFlowTheme.of(context).bodyMedium.override(
-            font: GoogleFonts.readexPro(),
-            letterSpacing: 0.0,
-          ),
-      maxLines: 1,
-    );
-  }
-
-  /// Mesma barra de abas da lista de animais. Aqui a aba só filtra a lista
-  /// (não há uma página por aba), então não há `TabBarView`.
-  Widget _abasDeCategoria(BuildContext context) {
-    return Align(
-      alignment: const Alignment(-1.0, 0),
-      child: FlutterFlowButtonTabBar(
-        useToggleButtonStyle: false,
-        isScrollable: true,
-        labelStyle: FlutterFlowTheme.of(context).titleMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
-              ),
-              letterSpacing: 0.0,
-              fontWeight: FlutterFlowTheme.of(context).titleMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).titleMedium.fontStyle,
-            ),
-        unselectedLabelStyle: const TextStyle(),
-        labelColor: Colors.white,
-        unselectedLabelColor: const Color(0xFF525D67),
-        backgroundColor: AppTokens.secondary,
-        unselectedBackgroundColor: const Color(0xFFC5C5C5),
-        borderColor: AppTokens.secondary,
-        borderWidth: 2.0,
-        borderRadius: 12.0,
-        elevation: 0.0,
-        labelPadding:
-            const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-        buttonMargin:
-            const EdgeInsetsDirectional.fromSTEB(0.0, 12.0, 16.0, 0.0),
-        padding: const EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
-        tabs: [for (final aba in _abas) Tab(text: aba)],
+      linhas: [
+        SeletorOrdemAnimais(
+          ordem: _ordem,
+          crescente: _crescente,
+          mostrarInseminacao: _categoria == 'Novilhas',
+          alturaMinima: LayoutLista.alturaChip,
+          raio: LayoutLista.raio,
+          // Trocar de criterio recomeca crescente: o resultado de um toque
+          // nao deve depender da direcao deixada no criterio anterior.
+          onSelecionar: (nova) => safeSetState(() {
+            _ordem = nova;
+            _crescente = true;
+          }),
+          onInverter: () => safeSetState(() => _crescente = !_crescente),
+        ),
+      ],
+      // A aba só filtra a lista (não há uma página por aba), então não há
+      // `TabBarView`.
+      abas: AbasPilula(
         controller: _tabBarController,
-        onTap: (_) {},
+        abas: [for (final aba in _abas) AbaPilula(aba, contagem: contar(aba))],
       ),
     );
   }
