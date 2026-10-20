@@ -3,7 +3,7 @@
 
 Execute no terminal:
 ```bash
-flutter clean && flutter pub get
+flutter clean && flutter pub get && flutter build appbundle --release
 ```
 
 ---
