@@ -601,8 +601,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       icone: Icons.monitor_heart_outlined,
       rotulo: 'Prenhas',
       contador: inicioPropriedadeAnimaisProdutoresRecordList
-          .where(
-              (e) => ehVacaPrenha(e.grupoAnimal, e.status))
+          .where((e) => ehVacaPrenha(e.grupoAnimal, e.status))
           .toList()
           .length,
       onTap: () async {

@@ -333,35 +333,42 @@ class _EditarRelatorioFinanceiroPageState
       totalRecebidoMes: _totalRecebidoTextController.text,
     );
 
-    context.goNamed(
-      RelatorioFinanceiroPage.routeName,
-      queryParameters: {
-        'uidPropriedade': serializeParam(
-          widget.uidPropriedade,
-          ParamType.DocumentReference,
-        ),
-        'nomePropriedade': serializeParam(
-          widget.nomePropriedade,
-          ParamType.String,
-        ),
-        'uidTecnico': serializeParam(
-          widget.uidTecnico,
-          ParamType.DocumentReference,
-        ),
-        'emailPropriedade': serializeParam(
-          widget.emailPropriedade,
-          ParamType.String,
-        ),
-        'visitaPresencial': serializeParam(
-          widget.visitaPresencial,
-          ParamType.bool,
-        ),
-        'diasDg': serializeParam(
-          widget.diasDg,
-          ParamType.String,
-        ),
-      }.withoutNulls,
-    );
+    // Volta para a tela de onde veio. Só `goNamed` (que troca a pilha
+    // inteira) quando não há para onde voltar: antes era sempre `goNamed`,
+    // e o voltar da lista nova caía no dashboard, perdendo a propriedade.
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.goNamed(
+        RelatorioFinanceiroPage.routeName,
+        queryParameters: {
+          'uidPropriedade': serializeParam(
+            widget.uidPropriedade,
+            ParamType.DocumentReference,
+          ),
+          'nomePropriedade': serializeParam(
+            widget.nomePropriedade,
+            ParamType.String,
+          ),
+          'uidTecnico': serializeParam(
+            widget.uidTecnico,
+            ParamType.DocumentReference,
+          ),
+          'emailPropriedade': serializeParam(
+            widget.emailPropriedade,
+            ParamType.String,
+          ),
+          'visitaPresencial': serializeParam(
+            widget.visitaPresencial,
+            ParamType.bool,
+          ),
+          'diasDg': serializeParam(
+            widget.diasDg,
+            ParamType.String,
+          ),
+        }.withoutNulls,
+      );
+    }
   }
 
   Widget _campoData(

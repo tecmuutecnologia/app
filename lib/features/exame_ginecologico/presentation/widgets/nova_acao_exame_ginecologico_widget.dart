@@ -81,7 +81,6 @@ class _NovaAcaoExameGinecologicoWidgetState
       _obsInfoTextControllerValidator = null;
 
   // Outputs de query/criação (antes no FlutterFlowModel).
-  AcoesRecord? _uidAcaoLancada;
 
   @override
   void initState() {
@@ -146,7 +145,11 @@ class _NovaAcaoExameGinecologicoWidgetState
   /// selecionada e atualiza a data da última ação do animal direto no ObjectBox
   /// (fonte única), delegando o sync com o Firestore aos repositórios. Funciona
   /// sem conexão.
-  Future<void> _novaAcaoExameOfflineFirst() async {
+  /// Grava a ação e devolve a referência dela, que o tratamento do receituário
+  /// guarda (`uidAcaoLancadaPath`). É por esse vínculo que apagar a ação no
+  /// prontuário apaga também a linha do receituário — antes ele nunca era
+  /// preenchido, e a ação apagada continuava no receituário.
+  Future<DocumentReference?> _novaAcaoExameOfflineFirst() async {
     final acao = AcaoEntity(
       parentPath: widget.uidTecnico!.path,
       uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
@@ -159,7 +162,7 @@ class _NovaAcaoExameGinecologicoWidgetState
       dataVisita: _dtAcaoTextController.text,
       dataDaAcao: getCurrentTimestamp,
     );
-    unawaited(AcaoRepository().add(acao));
+    await AcaoRepository().add(acao);
 
     final dados = {
       'dtUltimaAcao': dateTimeFormat(
@@ -183,6 +186,7 @@ class _NovaAcaoExameGinecologicoWidgetState
         dtUltimaAcao: dados['dtUltimaAcao'],
       )));
     }
+    return referenciaDaAcao(acao);
   }
 
   Widget _conteudo(BuildContext context) {
@@ -411,7 +415,7 @@ class _NovaAcaoExameGinecologicoWidgetState
 
                 // Offline-first: ação + dtUltimaAcao no ObjectBox;
                 // sync enfileirado pelos repositórios.
-                await _novaAcaoExameOfflineFirst();
+                final acaoLancada = await _novaAcaoExameOfflineFirst();
                 _shouldSetState = true;
 
                 // Bookkeeping de visita/tratamento/recomendação roda
@@ -432,7 +436,7 @@ class _NovaAcaoExameGinecologicoWidgetState
                   descricaoRecomendacao:
                       functions.gerarDescricaoProtocolo(_acoesDispoValue),
                   uidAnimal: widget.uidAnimaisProdutores,
-                  uidAcaoLancada: _uidAcaoLancada?.reference,
+                  uidAcaoLancada: acaoLancada,
                   observacaoAcao: _obsInfoTextController.text,
                   nomeAnimal: widget.nomeAnimal,
                   brincoAnimal: widget.brincoAnimal,

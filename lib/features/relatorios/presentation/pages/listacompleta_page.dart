@@ -110,15 +110,9 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
   /// grandes — independente de conexao.
   List<AnimaisProdutoresStruct> _animaisVisiveis(
       List<AnimaisProdutoresStruct> animais) {
-    final busca = _searchListTextController.text.toLowerCase();
     return animais.where((item) {
       if (item.uidTecnicoPropriedade != widget.uidPropriedade) return false;
-      if (!(ehNovilha(item.grupoAnimal) || ehVaca(item.grupoAnimal))) {
-        return false;
-      }
-      if (busca.isEmpty) return true;
-      return item.nomeAnimal.toLowerCase().contains(busca) ||
-          item.brincoAnimal.toString().contains(busca);
+      return ehNovilha(item.grupoAnimal) || ehVaca(item.grupoAnimal);
     }).toList();
   }
 
@@ -181,7 +175,7 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
       child: ConteudoCardAnimal(
         grupo: item.grupoAnimal,
         titulo: tituloNomeBrinco(item.nomeAnimal, item.brincoAnimal),
-        subtitulo: item.status,
+        subtitulo: _subtitulo(item),
         selo: ehDescarte(item.status)
             ? const SeloStatus('Descartado', cor: AppTokens.negativo)
             : SeloHoje(dtUltimaAcao: item.dtUltimaAcao),
@@ -191,6 +185,20 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
             : null,
       ),
     );
+  }
+
+  /// Status e, com inseminação em andamento, o touro/sêmen usado — antes o
+  /// touro era gravado mas não aparecia em lugar nenhum da lista.
+  String _subtitulo(AnimaisProdutoresStruct item) {
+    final touro = item.nomeTouroUltimaInseminacao.trim();
+    final comInseminacao = ehInseminada(item.status) ||
+        ehInseminadaPP(item.status) ||
+        ehPrenha(item.status) ||
+        ehSeca(item.status) ||
+        item.status == 'Pré Parto';
+    return (comInseminacao && touro.isNotEmpty)
+        ? '${item.status} · touro $touro'
+        : item.status;
   }
 
   /// Informações e ações conforme grupo/status (antes `_back3`).
@@ -674,8 +682,13 @@ class _ListacompletaPageState extends State<ListacompletaPage> {
                 child: AnimaisOrdenadosView(
                   comparador: compararStructs,
                   builder: (context, animais) {
+                    // Busca padrão das listas: ignora acento, maiúscula e
+                    // espaço no fim (o teclado do iPhone põe um ao terminar a
+                    // palavra, e a comparação crua deixava de achar o animal).
                     final lista = ordenarStructs(_animaisVisiveis(animais),
-                        ordem: _ordem, crescente: _crescente);
+                        ordem: _ordem,
+                        crescente: _crescente,
+                        busca: _searchListTextController.text);
                     return ListView.builder(
                       padding: const EdgeInsetsDirectional.fromSTEB(
                           0.0, 8.0, 0.0, 120.0),

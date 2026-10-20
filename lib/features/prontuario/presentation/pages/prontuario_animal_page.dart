@@ -1,8 +1,9 @@
 // ignore_for_file: unnecessary_null_comparison, dead_code
 
+import '/core/ui/cabecalho_tela.dart';
+import '/features/receituario/application/tratamento_orfao.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
-import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/features/prontuario/presentation/widgets/ficha_clinica.dart';
@@ -157,7 +158,16 @@ class _ProntuarioAnimalPageState extends ConsumerState<ProntuarioAnimalPage> {
         // `!` sobre um resultado sempre null fazia a exclusão lançar exceção.
         final tratamentoRepo = TratamentoRepository();
         for (final t in tratamentoRepo.getAll().where((e) =>
-            !e.isDeleted && e.uidAcaoLancadaPath == item.reference.path)) {
+            (!e.isDeleted && e.uidAcaoLancadaPath == item.reference.path) ||
+            // Registros antigos nasceram sem o vínculo: acha o tratamento
+            // pelo animal, ação e dia, senão ele ficava no receituário.
+            ehTratamentoOrfaoDaAcao(
+              e,
+              animalPath: item.uidAnimalAnimaisProdutores?.path,
+              acao: item.acao,
+              dataVisita: item.dataVisita,
+              dataLancamento: item.dataDaAcao,
+            ))) {
           await tratamentoRepo.softDelete(t);
         }
         final acaoRepo = AcaoRepository();
@@ -178,49 +188,6 @@ class _ProntuarioAnimalPageState extends ConsumerState<ProntuarioAnimalPage> {
       detalhe: item.dataPartoPrevisto.isEmpty
           ? null
           : 'Parto previsto: ${item.dataPartoPrevisto}',
-    );
-  }
-
-  Widget _cabecalho(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-          child: FlutterFlowIconButton(
-            borderColor: Colors.transparent,
-            borderRadius: 30.0,
-            borderWidth: 1.0,
-            buttonSize: 50.0,
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            onPressed: () async {
-              context.safePop();
-            },
-          ),
-        ),
-        Text(
-          'Prontuário do animal',
-          style: FlutterFlowTheme.of(context).headlineMedium.override(
-                font: GoogleFonts.outfit(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle:
-                      FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-                ),
-                color: Colors.white,
-                fontSize: 22.0,
-                letterSpacing: 0.0,
-                fontWeight:
-                    FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                fontStyle:
-                    FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-              ),
-        ),
-      ],
     );
   }
 
@@ -1655,7 +1622,7 @@ class _ProntuarioAnimalPageState extends ConsumerState<ProntuarioAnimalPage> {
   }
 
   Widget _linhaDel(BuildContext context, AnimalEntity animal) {
-    return Padding(
+    final linha = Padding(
       padding: EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
@@ -1697,6 +1664,12 @@ class _ProntuarioAnimalPageState extends ConsumerState<ProntuarioAnimalPage> {
               ),
             ],
           ),
+          // Touro/sêmen da última inseminação, ao lado do DEL. Se a linha já
+          // tem a data de desmame, ele desce para uma linha própria (abaixo),
+          // em vez de espremer três colunas.
+          if (_temTouro(animal) && animal.dtDesmame == null)
+            // Largura de "Última inseminação:" para alinhar com a coluna acima.
+            SizedBox(width: 135.0, child: _colunaTouro(context, animal)),
           if (animal.dtDesmame != null)
             Column(
               mainAxisSize: MainAxisSize.max,
@@ -1742,7 +1715,46 @@ class _ProntuarioAnimalPageState extends ConsumerState<ProntuarioAnimalPage> {
         ],
       ),
     );
+    if (!_temTouro(animal) || animal.dtDesmame == null) return linha;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        linha,
+        Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(20.0, 5.0, 20.0, 5.0),
+          child: Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: _colunaTouro(context, animal),
+          ),
+        ),
+      ],
+    );
   }
+
+  bool _temTouro(AnimalEntity animal) =>
+      (animal.nomeTouroUltimaInseminacao ?? '').isNotEmpty;
+
+  Widget _colunaTouro(BuildContext context, AnimalEntity animal) => Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Touro/sêmen:',
+            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                  font: GoogleFonts.readexPro(),
+                  letterSpacing: 0.0,
+                ),
+          ),
+          Text(
+            animal.nomeTouroUltimaInseminacao!,
+            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                  font: GoogleFonts.readexPro(fontWeight: FontWeight.bold),
+                  letterSpacing: 0.0,
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+        ],
+      );
 
   List<AcaoSanitarioEntity> _sanitariasDoAnimal(
       List<AcaoSanitarioEntity>? todas, String tipoAcao) {
@@ -1775,10 +1787,7 @@ class _ProntuarioAnimalPageState extends ConsumerState<ProntuarioAnimalPage> {
   /// Firestore, este caso girava o spinner para sempre.
   Widget _semAnimal(BuildContext context, String mensagem) => Scaffold(
         backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-        appBar: AppBar(
-          backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-          leading: BackButton(color: FlutterFlowTheme.of(context).primaryText),
-        ),
+        appBar: const CabecalhoTela(titulo: 'Prontuário do animal'),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24.0),
@@ -1818,42 +1827,7 @@ class _ProntuarioAnimalPageState extends ConsumerState<ProntuarioAnimalPage> {
           child: Scaffold(
             key: scaffoldKey,
             backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-            appBar: PreferredSize(
-              // 80 em vez de 100: o titulo ocupava so a faixa de cima e
-              // sobravam ~20 de gradiente vazio antes da curva.
-              preferredSize: Size.fromHeight(80.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFFF75E38), Color(0xFFEC3B5B)],
-                    begin: AlignmentDirectional(-1.0, -1.0),
-                    end: AlignmentDirectional(1.0, 1.0),
-                  ),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(24.0),
-                    bottomRight: Radius.circular(24.0),
-                  ),
-                ),
-                child: AppBar(
-                  backgroundColor: Colors.transparent,
-                  automaticallyImplyLeading: false,
-                  actions: [],
-                  flexibleSpace: FlexibleSpaceBar(
-                    title: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _cabecalho(context),
-                      ],
-                    ),
-                    centerTitle: true,
-                    expandedTitleScale: 1.0,
-                  ),
-                  elevation: 0.0,
-                ),
-              ),
-            ),
+            appBar: const CabecalhoTela(titulo: 'Prontuário do animal'),
             body: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,

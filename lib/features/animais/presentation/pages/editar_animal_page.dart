@@ -1,13 +1,16 @@
 // ignore_for_file: dead_null_aware_expression
 
+import '/features/animais/application/touro_inseminacao.dart';
+import '/domain/animais/classificacao_animal.dart';
+import '/core/ui/cabecalho_tela.dart';
+import '/core/ui/painel_lista.dart';
+import '/core/ui/secao_formulario.dart';
 import '/data/backend.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/success_overlay.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
-import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
-import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
 import 'dart:ui';
 import '/data/objectbox/index.dart';
@@ -147,7 +150,19 @@ class _EditarAnimalPageState extends ConsumerState<EditarAnimalPage> {
   /// dispara o push ao Firestore em segundo plano (online envia agora; offline
   /// enfileira para o sync automático). A UI NÃO bloqueia esperando a rede —
   /// corrige o botão "Editar animal" que ficava girando sem conexão.
+  /// Touro/sêmen da última inseminação. Só é gravado se o usuário mexer no
+  /// campo, para não sobrescrever o valor com algo que ele não escolheu.
+  String? _touroInseminacao;
+  bool _touroInseminacaoAlterado = false;
+  FormFieldController<String>? _touroInseminacaoController;
+
   Future<void> _saveAnimalOfflineFirst(Map<String, dynamic> recordData) async {
+    if (_touroInseminacaoAlterado) {
+      recordData = {
+        ...recordData,
+        'nomeTouroUltimaInseminacao': _touroInseminacao,
+      };
+    }
     final repo = AnimalRepository();
     final entity = repo.getByFirestoreId(widget.uidAnimal!.id);
     if (entity == null) {
@@ -160,93 +175,25 @@ class _EditarAnimalPageState extends ConsumerState<EditarAnimalPage> {
     unawaited(repo.update(entity, recordData));
   }
 
-  Widget _cabecalho(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-          child: FlutterFlowIconButton(
-            borderColor: Colors.transparent,
-            borderRadius: 30.0,
-            borderWidth: 1.0,
-            buttonSize: 50.0,
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            onPressed: () async {
-              context.goNamed(
-                ListaAnimaisPage.routeName,
-                queryParameters: {
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    widget.visitaPresencial,
-                    ParamType.bool,
-                  ),
-                  'initialTabSelect': serializeParam(
-                    widget.initialTabSelect,
-                    ParamType.int,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                }.withoutNulls,
-              );
-            },
-          ),
-        ),
-        Text(
-          'Editar animal',
-          style: FlutterFlowTheme.of(context).headlineMedium.override(
-                font: GoogleFonts.outfit(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle:
-                      FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-                ),
-                color: Colors.white,
-                fontSize: 22.0,
-                letterSpacing: 0.0,
-                fontWeight:
-                    FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                fontStyle:
-                    FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-              ),
-        ),
-      ],
-    );
-  }
-
+  /// Formulário no padrão de telas de formulário: seções em cards.
   Widget _formularioEdicao(BuildContext context, AnimalEntity animal) {
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.disabled,
-      child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
+      child: Column(
+        children: [
+          SecaoFormulario(
+            icone: Icons.badge_outlined,
+            titulo: 'Identificação',
+            filhos: [
               _campoNome(context, animal),
               _campoBrinco(context, animal),
+            ],
+          ),
+          SecaoFormulario(
+            icone: Icons.category_outlined,
+            titulo: 'Classificação',
+            filhos: [
               _campoRaca(context, animal),
               _campoGrupo(context, animal),
               if (((widget.grupoPredominante == 'Sêmens') ||
@@ -290,6 +237,12 @@ class _EditarAnimalPageState extends ConsumerState<EditarAnimalPage> {
                     ),
                   ],
                 ),
+            ],
+          ),
+          SecaoFormulario(
+            icone: Icons.monitor_weight_outlined,
+            titulo: 'Dados',
+            filhos: [
               if (_grupoValue != 'Sêmens')
                 TextFormField(
                   controller: _pesoTextController ??= TextEditingController(
@@ -388,94 +341,302 @@ class _EditarAnimalPageState extends ConsumerState<EditarAnimalPage> {
                   validator: _pesoTextControllerValidator.asValidator(context),
                 ),
               _campoDataNascimento(context, animal),
+            ],
+          ),
+          SecaoFormulario(
+            icone: Icons.account_tree_outlined,
+            titulo: 'Genealogia',
+            filhos: [
               _campoTouro(context, animal),
               _campoVaca(context, animal),
-            ].divide(SizedBox(height: 12.0)),
+            ],
           ),
-        ),
+          // Touro/sêmen da última inseminação: não existia no editar, então o
+          // vínculo não podia ser escolhido nem corrigido depois do cadastro.
+          if ((ehVaca(animal.grupoAnimal) || ehNovilha(animal.grupoAnimal)) &&
+              (animal.dtUltimaInseminacao ?? '').isNotEmpty)
+            SecaoFormulario(
+              icone: Icons.favorite_border_rounded,
+              titulo: 'Reprodução',
+              ajuda: 'Inseminada em ${animal.dtUltimaInseminacao}',
+              filhos: [_campoTouroInseminacao(context, animal)],
+            ),
+        ],
       ),
     );
   }
 
-  Widget _secaoSalvar(BuildContext context, AnimalEntity animal) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 12.0),
-      child: FFButtonWidget(
-        onPressed: () async {
-          if ((_nomeTextController.text != '') ||
-              (_brincoTextController.text != '')) {
-            if (_formKey.currentState == null ||
-                !_formKey.currentState!.validate()) {
-              return;
-            }
-            if (_racaValue == null) {
-              return;
-            }
-            if (_grupoValue == null) {
-              return;
-            }
-            // Checagem de duplicidade pelo PAR (nome + brinco), só entre animais
-            // ativos (não descartados), excluindo o próprio animal em edição.
-            // Brinco vazio é normalizado para -1, igual à persistência.
-            final propPath = animal.uidTecnicoPropriedadePath;
-            final brincoNovo = _brincoTextController.text != ''
-                ? (int.tryParse(_brincoTextController.text) ?? -1)
-                : -1;
-            if (propPath != null &&
-                AnimalRepository().existeAnimalAtivoComNomeBrinco(
-                  propriedadePath: propPath,
-                  nome: _nomeTextController.text,
-                  brinco: brincoNovo,
-                  excluirFirestoreId: widget.uidAnimal?.id,
-                )) {
-              await showDialog(
-                context: context,
-                builder: (alertDialogContext) {
-                  return AlertDialog(
-                    title: Text('Animal já cadastrado.'),
-                    content: Text(
-                        'Já existe um animal ativo com este nome e brinco.'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(alertDialogContext),
-                        child: Text('Ok'),
-                      ),
-                    ],
-                  );
-                },
-              );
-              return;
-            }
-            if ((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) {
-              await _saveAnimalOfflineFirst(createAnimaisProdutoresRecordData(
-                uidTecnicoPropriedade: _refPropriedade(animal),
-                nomeAnimal: _nomeTextController.text,
-                brincoAnimal: int.tryParse(_brincoTextController.text),
-                racaAnimal: _racaValue,
-                pesoAnimal: _pesoTextController.text,
-                dtNascimento: _dataNascimentoTextController.text,
-                touro: _touroTextController.text,
-                vaca: _vacaTextController.text,
-                grupoAnimal: animal.grupoAnimal,
-                nomeBrincoConcat: () {
-                  if ((_nomeTextController.text != '') &&
-                      (_brincoTextController.text != '') &&
-                      (_brincoTextController.text != '-1')) {
-                    return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                  } else if (_nomeTextController.text != '') {
-                    return _nomeTextController.text;
-                  } else {
-                    return _brincoTextController.text;
-                  }
-                }(),
-                brincoAnimalOrder: (_brincoTextController.text != '') &&
-                        (_brincoTextController.text != '-1')
-                    ? int.tryParse(_brincoTextController.text)
-                    : 999999,
-              ));
-              mostrarSucessoOverlay(context,
-                  mensagem: 'Animal atualizado com sucesso!');
+  /// Volta para a tela de onde veio (ver `_salvar`).
+  Future<void> _voltar() async {
+    // Volta para a tela de onde veio. Só `goNamed` (que troca a pilha
+    // inteira) quando não há para onde voltar: antes era sempre `goNamed`,
+    // e o voltar da lista nova caía no dashboard, perdendo a propriedade.
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.goNamed(
+        ListaAnimaisPage.routeName,
+        queryParameters: {
+          'uidPropriedade': serializeParam(
+            widget.uidPropriedade,
+            ParamType.DocumentReference,
+          ),
+          'nomePropriedade': serializeParam(
+            widget.nomePropriedade,
+            ParamType.String,
+          ),
+          'uidTecnico': serializeParam(
+            widget.uidTecnico,
+            ParamType.DocumentReference,
+          ),
+          'emailPropriedade': serializeParam(
+            widget.emailPropriedade,
+            ParamType.String,
+          ),
+          'visitaPresencial': serializeParam(
+            widget.visitaPresencial,
+            ParamType.bool,
+          ),
+          'initialTabSelect': serializeParam(
+            widget.initialTabSelect,
+            ParamType.int,
+          ),
+          'diasDg': serializeParam(
+            widget.diasDg,
+            ParamType.String,
+          ),
+        }.withoutNulls,
+      );
+    }
+  }
 
+  Future<void> _salvar(AnimalEntity animal) async {
+    if ((_nomeTextController.text != '') ||
+        (_brincoTextController.text != '')) {
+      if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
+        return;
+      }
+      if (_racaValue == null) {
+        return;
+      }
+      if (_grupoValue == null) {
+        return;
+      }
+      // Checagem de duplicidade pelo PAR (nome + brinco), só entre animais
+      // ativos (não descartados), excluindo o próprio animal em edição.
+      // Brinco vazio é normalizado para -1, igual à persistência.
+      final propPath = animal.uidTecnicoPropriedadePath;
+      final brincoNovo = _brincoTextController.text != ''
+          ? (int.tryParse(_brincoTextController.text) ?? -1)
+          : -1;
+      if (propPath != null &&
+          AnimalRepository().existeAnimalAtivoComNomeBrinco(
+            propriedadePath: propPath,
+            nome: _nomeTextController.text,
+            brinco: brincoNovo,
+            excluirFirestoreId: widget.uidAnimal?.id,
+          )) {
+        await showDialog(
+          context: context,
+          builder: (alertDialogContext) {
+            return AlertDialog(
+              title: Text('Animal já cadastrado.'),
+              content:
+                  Text('Já existe um animal ativo com este nome e brinco.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(alertDialogContext),
+                  child: Text('Ok'),
+                ),
+              ],
+            );
+          },
+        );
+        return;
+      }
+      if ((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) {
+        await _saveAnimalOfflineFirst(createAnimaisProdutoresRecordData(
+          uidTecnicoPropriedade: _refPropriedade(animal),
+          nomeAnimal: _nomeTextController.text,
+          brincoAnimal: int.tryParse(_brincoTextController.text),
+          racaAnimal: _racaValue,
+          pesoAnimal: _pesoTextController.text,
+          dtNascimento: _dataNascimentoTextController.text,
+          touro: _touroTextController.text,
+          vaca: _vacaTextController.text,
+          grupoAnimal: animal.grupoAnimal,
+          nomeBrincoConcat: () {
+            if ((_nomeTextController.text != '') &&
+                (_brincoTextController.text != '') &&
+                (_brincoTextController.text != '-1')) {
+              return '${_nomeTextController.text} - ${_brincoTextController.text}';
+            } else if (_nomeTextController.text != '') {
+              return _nomeTextController.text;
+            } else {
+              return _brincoTextController.text;
+            }
+          }(),
+          brincoAnimalOrder: (_brincoTextController.text != '') &&
+                  (_brincoTextController.text != '-1')
+              ? int.tryParse(_brincoTextController.text)
+              : 999999,
+        ));
+        mostrarSucessoOverlay(context,
+            mensagem: 'Animal atualizado com sucesso!');
+
+        // Volta para a tela de onde veio. Só `goNamed` (que troca a pilha
+        // inteira) quando não há para onde voltar: antes era sempre `goNamed`,
+        // e o voltar da lista nova caía no dashboard, perdendo a propriedade.
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          context.goNamed(
+            ListaAnimaisPage.routeName,
+            queryParameters: {
+              'uidPropriedade': serializeParam(
+                widget.uidPropriedade,
+                ParamType.DocumentReference,
+              ),
+              'nomePropriedade': serializeParam(
+                widget.nomePropriedade,
+                ParamType.String,
+              ),
+              'uidTecnico': serializeParam(
+                widget.uidTecnico,
+                ParamType.DocumentReference,
+              ),
+              'emailPropriedade': serializeParam(
+                widget.emailPropriedade,
+                ParamType.String,
+              ),
+              'visitaPresencial': serializeParam(
+                widget.visitaPresencial,
+                ParamType.bool,
+              ),
+              'initialTabSelect': serializeParam(
+                widget.initialTabSelect,
+                ParamType.int,
+              ),
+              'diasDg': serializeParam(
+                widget.diasDg,
+                ParamType.String,
+              ),
+            }.withoutNulls,
+          );
+        }
+
+        return;
+      } else {
+        if (_grupoValue == 'Touros') {
+          await _saveAnimalOfflineFirst(createAnimaisProdutoresRecordData(
+            uidTecnicoPropriedade: _refPropriedade(animal),
+            nomeAnimal: _nomeTextController.text,
+            brincoAnimal: int.tryParse(_brincoTextController.text),
+            racaAnimal: _racaValue,
+            pesoAnimal: _pesoTextController.text,
+            dtNascimento: _dataNascimentoTextController.text,
+            touro: _touroTextController.text,
+            vaca: _vacaTextController.text,
+            grupoAnimal: animal.grupoAnimal,
+            nomeBrincoConcat: () {
+              if ((_nomeTextController.text != '') &&
+                  (_brincoTextController.text != '') &&
+                  (_brincoTextController.text != '-1')) {
+                return '${_nomeTextController.text} - ${_brincoTextController.text}';
+              } else if (_nomeTextController.text != '') {
+                return _nomeTextController.text;
+              } else {
+                return _brincoTextController.text;
+              }
+            }(),
+            brincoAnimalOrder: (_brincoTextController.text != '') &&
+                    (_brincoTextController.text != '-1')
+                ? int.tryParse(_brincoTextController.text)
+                : 999999,
+            liberaInseminacao: _switchValue,
+          ));
+          mostrarSucessoOverlay(context,
+              mensagem: 'Animal atualizado com sucesso!');
+
+          // Volta para a tela de onde veio. Só `goNamed` (que troca a pilha
+          // inteira) quando não há para onde voltar: antes era sempre `goNamed`,
+          // e o voltar da lista nova caía no dashboard, perdendo a propriedade.
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.goNamed(
+              ListaAnimaisPage.routeName,
+              queryParameters: {
+                'uidPropriedade': serializeParam(
+                  widget.uidPropriedade,
+                  ParamType.DocumentReference,
+                ),
+                'nomePropriedade': serializeParam(
+                  widget.nomePropriedade,
+                  ParamType.String,
+                ),
+                'uidTecnico': serializeParam(
+                  widget.uidTecnico,
+                  ParamType.DocumentReference,
+                ),
+                'emailPropriedade': serializeParam(
+                  widget.emailPropriedade,
+                  ParamType.String,
+                ),
+                'visitaPresencial': serializeParam(
+                  widget.visitaPresencial,
+                  ParamType.bool,
+                ),
+                'initialTabSelect': serializeParam(
+                  widget.initialTabSelect,
+                  ParamType.int,
+                ),
+                'diasDg': serializeParam(
+                  widget.diasDg,
+                  ParamType.String,
+                ),
+              }.withoutNulls,
+            );
+          }
+
+          return;
+        } else {
+          if (_grupoValue == 'Sêmens') {
+            await _saveAnimalOfflineFirst(createAnimaisProdutoresRecordData(
+              uidTecnicoPropriedade: _refPropriedade(animal),
+              nomeAnimal: _nomeTextController.text,
+              brincoAnimal: int.tryParse(_brincoTextController.text),
+              racaAnimal: _racaValue,
+              dtNascimento: _dataNascimentoTextController.text,
+              touro: _touroTextController.text,
+              vaca: _vacaTextController.text,
+              grupoAnimal: animal.grupoAnimal,
+              nomeBrincoConcat: () {
+                if ((_nomeTextController.text != '') &&
+                    (_brincoTextController.text != '') &&
+                    (animal.brincoAnimal != -1)) {
+                  return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                } else if (_nomeTextController.text != '') {
+                  return _nomeTextController.text;
+                } else {
+                  return _brincoTextController.text;
+                }
+              }(),
+              brincoAnimalOrder: (_brincoTextController.text != '') &&
+                      (_brincoTextController.text != '-1')
+                  ? int.tryParse(_brincoTextController.text)
+                  : 999999,
+              liberaInseminacao: _switchValue,
+            ));
+            mostrarSucessoOverlay(context,
+                mensagem: 'Animal atualizado com sucesso!');
+
+            // Volta para a tela de onde veio. Só `goNamed` (que troca a pilha
+            // inteira) quando não há para onde voltar: antes era sempre `goNamed`,
+            // e o voltar da lista nova caía no dashboard, perdendo a propriedade.
+            if (context.canPop()) {
+              context.pop();
+            } else {
               context.goNamed(
                 ListaAnimaisPage.routeName,
                 queryParameters: {
@@ -509,262 +670,102 @@ class _EditarAnimalPageState extends ConsumerState<EditarAnimalPage> {
                   ),
                 }.withoutNulls,
               );
-
-              return;
-            } else {
-              if (_grupoValue == 'Touros') {
-                await _saveAnimalOfflineFirst(createAnimaisProdutoresRecordData(
-                  uidTecnicoPropriedade: _refPropriedade(animal),
-                  nomeAnimal: _nomeTextController.text,
-                  brincoAnimal: int.tryParse(_brincoTextController.text),
-                  racaAnimal: _racaValue,
-                  pesoAnimal: _pesoTextController.text,
-                  dtNascimento: _dataNascimentoTextController.text,
-                  touro: _touroTextController.text,
-                  vaca: _vacaTextController.text,
-                  grupoAnimal: animal.grupoAnimal,
-                  nomeBrincoConcat: () {
-                    if ((_nomeTextController.text != '') &&
-                        (_brincoTextController.text != '') &&
-                        (_brincoTextController.text != '-1')) {
-                      return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                    } else if (_nomeTextController.text != '') {
-                      return _nomeTextController.text;
-                    } else {
-                      return _brincoTextController.text;
-                    }
-                  }(),
-                  brincoAnimalOrder: (_brincoTextController.text != '') &&
-                          (_brincoTextController.text != '-1')
-                      ? int.tryParse(_brincoTextController.text)
-                      : 999999,
-                  liberaInseminacao: _switchValue,
-                ));
-                mostrarSucessoOverlay(context,
-                    mensagem: 'Animal atualizado com sucesso!');
-
-                context.goNamed(
-                  ListaAnimaisPage.routeName,
-                  queryParameters: {
-                    'uidPropriedade': serializeParam(
-                      widget.uidPropriedade,
-                      ParamType.DocumentReference,
-                    ),
-                    'nomePropriedade': serializeParam(
-                      widget.nomePropriedade,
-                      ParamType.String,
-                    ),
-                    'uidTecnico': serializeParam(
-                      widget.uidTecnico,
-                      ParamType.DocumentReference,
-                    ),
-                    'emailPropriedade': serializeParam(
-                      widget.emailPropriedade,
-                      ParamType.String,
-                    ),
-                    'visitaPresencial': serializeParam(
-                      widget.visitaPresencial,
-                      ParamType.bool,
-                    ),
-                    'initialTabSelect': serializeParam(
-                      widget.initialTabSelect,
-                      ParamType.int,
-                    ),
-                    'diasDg': serializeParam(
-                      widget.diasDg,
-                      ParamType.String,
-                    ),
-                  }.withoutNulls,
-                );
-
-                return;
-              } else {
-                if (_grupoValue == 'Sêmens') {
-                  await _saveAnimalOfflineFirst(
-                      createAnimaisProdutoresRecordData(
-                    uidTecnicoPropriedade: _refPropriedade(animal),
-                    nomeAnimal: _nomeTextController.text,
-                    brincoAnimal: int.tryParse(_brincoTextController.text),
-                    racaAnimal: _racaValue,
-                    dtNascimento: _dataNascimentoTextController.text,
-                    touro: _touroTextController.text,
-                    vaca: _vacaTextController.text,
-                    grupoAnimal: animal.grupoAnimal,
-                    nomeBrincoConcat: () {
-                      if ((_nomeTextController.text != '') &&
-                          (_brincoTextController.text != '') &&
-                          (animal.brincoAnimal != -1)) {
-                        return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                      } else if (_nomeTextController.text != '') {
-                        return _nomeTextController.text;
-                      } else {
-                        return _brincoTextController.text;
-                      }
-                    }(),
-                    brincoAnimalOrder: (_brincoTextController.text != '') &&
-                            (_brincoTextController.text != '-1')
-                        ? int.tryParse(_brincoTextController.text)
-                        : 999999,
-                    liberaInseminacao: _switchValue,
-                  ));
-                  mostrarSucessoOverlay(context,
-                      mensagem: 'Animal atualizado com sucesso!');
-
-                  context.goNamed(
-                    ListaAnimaisPage.routeName,
-                    queryParameters: {
-                      'uidPropriedade': serializeParam(
-                        widget.uidPropriedade,
-                        ParamType.DocumentReference,
-                      ),
-                      'nomePropriedade': serializeParam(
-                        widget.nomePropriedade,
-                        ParamType.String,
-                      ),
-                      'uidTecnico': serializeParam(
-                        widget.uidTecnico,
-                        ParamType.DocumentReference,
-                      ),
-                      'emailPropriedade': serializeParam(
-                        widget.emailPropriedade,
-                        ParamType.String,
-                      ),
-                      'visitaPresencial': serializeParam(
-                        widget.visitaPresencial,
-                        ParamType.bool,
-                      ),
-                      'initialTabSelect': serializeParam(
-                        widget.initialTabSelect,
-                        ParamType.int,
-                      ),
-                      'diasDg': serializeParam(
-                        widget.diasDg,
-                        ParamType.String,
-                      ),
-                    }.withoutNulls,
-                  );
-
-                  return;
-                } else {
-                  await _saveAnimalOfflineFirst(
-                      createAnimaisProdutoresRecordData(
-                    uidTecnicoPropriedade: _refPropriedade(animal),
-                    nomeAnimal: _nomeTextController.text,
-                    brincoAnimal: int.tryParse(_brincoTextController.text),
-                    racaAnimal: _racaValue,
-                    pesoAnimal: _pesoTextController.text,
-                    dtNascimento: _dataNascimentoTextController.text,
-                    touro: _touroTextController.text,
-                    vaca: _vacaTextController.text,
-                    grupoAnimal: animal.grupoAnimal,
-                    nomeBrincoConcat: () {
-                      if ((_nomeTextController.text != '') &&
-                          (_brincoTextController.text != '') &&
-                          (animal.brincoAnimal != -1)) {
-                        return '${_nomeTextController.text} - ${_brincoTextController.text}';
-                      } else if (_nomeTextController.text != '') {
-                        return _nomeTextController.text;
-                      } else {
-                        return _brincoTextController.text;
-                      }
-                    }(),
-                    brincoAnimalOrder: (_brincoTextController.text != '') &&
-                            (_brincoTextController.text != '-1')
-                        ? int.tryParse(_brincoTextController.text)
-                        : 999999,
-                  ));
-                  mostrarSucessoOverlay(context,
-                      mensagem: 'Animal atualizado com sucesso!');
-
-                  context.goNamed(
-                    ListaAnimaisPage.routeName,
-                    queryParameters: {
-                      'uidPropriedade': serializeParam(
-                        widget.uidPropriedade,
-                        ParamType.DocumentReference,
-                      ),
-                      'nomePropriedade': serializeParam(
-                        widget.nomePropriedade,
-                        ParamType.String,
-                      ),
-                      'uidTecnico': serializeParam(
-                        widget.uidTecnico,
-                        ParamType.DocumentReference,
-                      ),
-                      'emailPropriedade': serializeParam(
-                        widget.emailPropriedade,
-                        ParamType.String,
-                      ),
-                      'visitaPresencial': serializeParam(
-                        widget.visitaPresencial,
-                        ParamType.bool,
-                      ),
-                      'initialTabSelect': serializeParam(
-                        widget.initialTabSelect,
-                        ParamType.int,
-                      ),
-                      'diasDg': serializeParam(
-                        widget.diasDg,
-                        ParamType.String,
-                      ),
-                    }.withoutNulls,
-                  );
-
-                  return;
-                }
-              }
             }
+
+            return;
           } else {
-            await showDialog(
-              context: context,
-              builder: (alertDialogContext) {
-                return AlertDialog(
-                  title: Text('O campo nome ou brinco é obrigatório.'),
-                  content:
-                      Text('Informe um nome ou brinco ao animal para avançar.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(alertDialogContext),
-                      child: Text('Ok'),
-                    ),
-                  ],
-                );
-              },
-            );
+            await _saveAnimalOfflineFirst(createAnimaisProdutoresRecordData(
+              uidTecnicoPropriedade: _refPropriedade(animal),
+              nomeAnimal: _nomeTextController.text,
+              brincoAnimal: int.tryParse(_brincoTextController.text),
+              racaAnimal: _racaValue,
+              pesoAnimal: _pesoTextController.text,
+              dtNascimento: _dataNascimentoTextController.text,
+              touro: _touroTextController.text,
+              vaca: _vacaTextController.text,
+              grupoAnimal: animal.grupoAnimal,
+              nomeBrincoConcat: () {
+                if ((_nomeTextController.text != '') &&
+                    (_brincoTextController.text != '') &&
+                    (animal.brincoAnimal != -1)) {
+                  return '${_nomeTextController.text} - ${_brincoTextController.text}';
+                } else if (_nomeTextController.text != '') {
+                  return _nomeTextController.text;
+                } else {
+                  return _brincoTextController.text;
+                }
+              }(),
+              brincoAnimalOrder: (_brincoTextController.text != '') &&
+                      (_brincoTextController.text != '-1')
+                  ? int.tryParse(_brincoTextController.text)
+                  : 999999,
+            ));
+            mostrarSucessoOverlay(context,
+                mensagem: 'Animal atualizado com sucesso!');
+
+            // Volta para a tela de onde veio. Só `goNamed` (que troca a pilha
+            // inteira) quando não há para onde voltar: antes era sempre `goNamed`,
+            // e o voltar da lista nova caía no dashboard, perdendo a propriedade.
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.goNamed(
+                ListaAnimaisPage.routeName,
+                queryParameters: {
+                  'uidPropriedade': serializeParam(
+                    widget.uidPropriedade,
+                    ParamType.DocumentReference,
+                  ),
+                  'nomePropriedade': serializeParam(
+                    widget.nomePropriedade,
+                    ParamType.String,
+                  ),
+                  'uidTecnico': serializeParam(
+                    widget.uidTecnico,
+                    ParamType.DocumentReference,
+                  ),
+                  'emailPropriedade': serializeParam(
+                    widget.emailPropriedade,
+                    ParamType.String,
+                  ),
+                  'visitaPresencial': serializeParam(
+                    widget.visitaPresencial,
+                    ParamType.bool,
+                  ),
+                  'initialTabSelect': serializeParam(
+                    widget.initialTabSelect,
+                    ParamType.int,
+                  ),
+                  'diasDg': serializeParam(
+                    widget.diasDg,
+                    ParamType.String,
+                  ),
+                }.withoutNulls,
+              );
+            }
+
             return;
           }
-        },
-        text: 'Editar animal',
-        icon: Icon(
-          Icons.save,
-          size: 15.0,
-        ),
-        options: FFButtonOptions(
-          width: double.infinity,
-          height: 48.0,
-          padding: EdgeInsets.all(0.0),
-          iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-          color: Color(0xFFEC3B5B),
-          textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                ),
-                color: Colors.white,
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
+        }
+      }
+    } else {
+      await showDialog(
+        context: context,
+        builder: (alertDialogContext) {
+          return AlertDialog(
+            title: Text('O campo nome ou brinco é obrigatório.'),
+            content: Text('Informe um nome ou brinco ao animal para avançar.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(alertDialogContext),
+                child: Text('Ok'),
               ),
-          elevation: 4.0,
-          borderSide: BorderSide(
-            color: Colors.transparent,
-            width: 1.0,
-          ),
-          borderRadius: BorderRadius.circular(60.0),
-        ),
-      ),
-    );
+            ],
+          );
+        },
+      );
+      return;
+    }
   }
 
   Widget _campoNome(BuildContext context, AnimalEntity animal) {
@@ -920,6 +921,45 @@ class _EditarAnimalPageState extends ConsumerState<EditarAnimalPage> {
     );
   }
 
+  Widget _campoTouroInseminacao(BuildContext context, AnimalEntity animal) {
+    final tema = FlutterFlowTheme.of(context);
+    final atual = animal.nomeTouroUltimaInseminacao;
+    return FlutterFlowDropDown<String>(
+      controller: _touroInseminacaoController ??=
+          FormFieldController<String>(_touroInseminacao ??= atual),
+      options: opcoesTouroInseminacao(
+        AnimalRepository()
+            .getAnimaisByPropriedade(animal.uidTecnicoPropriedadePath ?? ''),
+        atual: atual,
+      ),
+      onChanged: (val) => safeSetState(() {
+        _touroInseminacao = val;
+        _touroInseminacaoAlterado = true;
+      }),
+      width: double.infinity,
+      height: 50.0,
+      textStyle: GoogleFonts.readexPro(fontSize: 14.0, color: tema.primaryText),
+      searchTextStyle:
+          GoogleFonts.readexPro(fontSize: 14.0, color: tema.primaryText),
+      searchHintTextStyle:
+          GoogleFonts.readexPro(fontSize: 14.0, color: tema.secondaryText),
+      hintText: 'Touro/sêmen da inseminação',
+      searchHintText: 'Pesquise um touro ou sêmen...',
+      icon: Icon(Icons.keyboard_arrow_down_rounded,
+          color: tema.secondaryText, size: 24.0),
+      fillColor: tema.primaryBackground,
+      elevation: 2.0,
+      borderColor: Colors.transparent,
+      borderWidth: 1.0,
+      borderRadius: LayoutLista.raio,
+      margin: const EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
+      hidesUnderline: true,
+      isOverButton: true,
+      isSearchable: true,
+      isMultiSelect: false,
+    );
+  }
+
   Widget _campoRaca(BuildContext context, AnimalEntity animal) {
     // Raças do ObjectBox (offline-first) — sem StreamBuilder de rede.
     return FlutterFlowDropDown<String>(
@@ -966,10 +1006,10 @@ class _EditarAnimalPageState extends ConsumerState<EditarAnimalPage> {
       ),
       fillColor: FlutterFlowTheme.of(context).primaryBackground,
       elevation: 2.0,
-      borderColor: FlutterFlowTheme.of(context).alternate,
-      borderWidth: 2.0,
-      borderRadius: 8.0,
-      margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+      borderColor: Colors.transparent,
+      borderWidth: 1.0,
+      borderRadius: LayoutLista.raio,
+      margin: EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
       hidesUnderline: true,
       isOverButton: true,
       isSearchable: true,
@@ -1004,10 +1044,10 @@ class _EditarAnimalPageState extends ConsumerState<EditarAnimalPage> {
       ),
       fillColor: FlutterFlowTheme.of(context).primaryBackground,
       elevation: 2.0,
-      borderColor: FlutterFlowTheme.of(context).alternate,
-      borderWidth: 2.0,
-      borderRadius: 8.0,
-      margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+      borderColor: Colors.transparent,
+      borderWidth: 1.0,
+      borderRadius: LayoutLista.raio,
+      margin: EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
       hidesUnderline: true,
       isSearchable: false,
       isMultiSelect: false,
@@ -1433,55 +1473,16 @@ class _EditarAnimalPageState extends ConsumerState<EditarAnimalPage> {
           },
           child: Scaffold(
             key: scaffoldKey,
-            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-            appBar: PreferredSize(
-              preferredSize: Size.fromHeight(100.0),
-              child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFFF75E38), Color(0xFFEC3B5B)],
-                      begin: AlignmentDirectional(-1.0, -1.0),
-                      end: AlignmentDirectional(1.0, 1.0),
-                    ),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(24.0),
-                      bottomRight: Radius.circular(24.0),
-                    ),
-                  ),
-                  child: AppBar(
-                    backgroundColor: Colors.transparent,
-                    automaticallyImplyLeading: false,
-                    actions: [],
-                    flexibleSpace: FlexibleSpaceBar(
-                      title: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _cabecalho(context),
-                        ],
-                      ),
-                      centerTitle: true,
-                      expandedTitleScale: 1.0,
-                    ),
-                    elevation: 0.0,
-                  )),
+            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+            appBar: CabecalhoTela(titulo: 'Editar animal', aoVoltar: _voltar),
+            bottomNavigationBar: RodapeAcao(
+              texto: 'Salvar alterações',
+              icone: Icons.check_rounded,
+              aoTocar: () => _salvar(animal),
             ),
-            body: SafeArea(
-              top: true,
-              child: Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _formularioEdicao(context, animal),
-                      _secaoSalvar(context, animal),
-                    ],
-                  ),
-                ),
-              ),
+            body: ListView(
+              padding: const EdgeInsets.symmetric(vertical: 6.0),
+              children: [_formularioEdicao(context, animal)],
             ),
           ),
         );

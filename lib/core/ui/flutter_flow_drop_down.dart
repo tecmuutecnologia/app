@@ -140,6 +140,32 @@ class _FlutterFlowDropDownState<T> extends State<FlutterFlowDropDown<T>> {
     }
   }
 
+  /// O Flutter reaproveita este estado quando outro dropdown passa a ocupar a
+  /// mesma posição na árvore (ex.: um campo condicional que aparece acima de
+  /// outro). Sem trocar o listener, o estado seguia escutando o controlador
+  /// ANTIGO: a tela mostrava a opção escolhida, mas `onChanged` nunca disparava
+  /// e o valor não era salvo (touro da inseminação no cadastro de animal).
+  @override
+  void didUpdateWidget(covariant FlutterFlowDropDown<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final antigo = oldWidget.isMultiSelect
+        ? oldWidget.multiSelectController
+        : oldWidget.controller;
+    final novo = isMultiSelect ? widget.multiSelectController : widget.controller;
+    if (!identical(antigo, novo) ||
+        oldWidget.isMultiSelect != widget.isMultiSelect) {
+      antigo?.removeListener(_listener);
+      if (isMultiSelect) {
+        _listener =
+            () => widget.onMultiSelectChanged!(multiSelectController.value);
+        multiSelectController.addListener(_listener);
+      } else {
+        _listener = () => widget.onChanged!(controller.value);
+        controller.addListener(_listener);
+      }
+    }
+  }
+
   @override
   void dispose() {
     if (isMultiSelect) {

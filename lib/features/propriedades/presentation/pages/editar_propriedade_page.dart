@@ -741,15 +741,22 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
               },
             );
 
-            context.goNamed(
-              ListaPropriedadePage.routeName,
-              queryParameters: {
-                'visitaPresencial': serializeParam(
-                  widget.visitaPresencial,
-                  ParamType.bool,
-                ),
-              }.withoutNulls,
-            );
+            // Volta para a tela de onde veio. Só `goNamed` (que troca a pilha
+            // inteira) quando não há para onde voltar: antes era sempre `goNamed`,
+            // e o voltar da lista nova caía no dashboard, perdendo a propriedade.
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.goNamed(
+                ListaPropriedadePage.routeName,
+                queryParameters: {
+                  'visitaPresencial': serializeParam(
+                    widget.visitaPresencial,
+                    ParamType.bool,
+                  ),
+                }.withoutNulls,
+              );
+            }
           },
           text: 'Excluir Propriedade',
           icon: Icon(
@@ -888,15 +895,22 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
               },
             );
 
-            context.goNamed(
-              ListaPropriedadePage.routeName,
-              queryParameters: {
-                'visitaPresencial': serializeParam(
-                  widget.visitaPresencial,
-                  ParamType.bool,
-                ),
-              }.withoutNulls,
-            );
+            // Volta para a tela de onde veio. Só `goNamed` (que troca a pilha
+            // inteira) quando não há para onde voltar: antes era sempre `goNamed`,
+            // e o voltar da lista nova caía no dashboard, perdendo a propriedade.
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.goNamed(
+                ListaPropriedadePage.routeName,
+                queryParameters: {
+                  'visitaPresencial': serializeParam(
+                    widget.visitaPresencial,
+                    ParamType.bool,
+                  ),
+                }.withoutNulls,
+              );
+            }
           },
           text: 'Salvar e editar',
           icon: Icon(
@@ -1233,15 +1247,22 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
                                 );
 
                                 if (!mounted) return;
-                                context.goNamed(
-                                  ListaPropriedadePage.routeName,
-                                  queryParameters: {
-                                    'visitaPresencial': serializeParam(
-                                      widget.visitaPresencial,
-                                      ParamType.bool,
-                                    ),
-                                  }.withoutNulls,
-                                );
+                                // Volta para a tela de onde veio. Só `goNamed` (que troca a pilha
+                                // inteira) quando não há para onde voltar: antes era sempre `goNamed`,
+                                // e o voltar da lista nova caía no dashboard, perdendo a propriedade.
+                                if (context.canPop()) {
+                                  context.pop();
+                                } else {
+                                  context.goNamed(
+                                    ListaPropriedadePage.routeName,
+                                    queryParameters: {
+                                      'visitaPresencial': serializeParam(
+                                        widget.visitaPresencial,
+                                        ParamType.bool,
+                                      ),
+                                    }.withoutNulls,
+                                  );
+                                }
                               } catch (e) {
                                 if (!mounted) return;
                                 Navigator.of(context).pop(); // fecha o loading

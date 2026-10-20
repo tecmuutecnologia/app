@@ -882,7 +882,7 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                 brincoAnimal: animalSel?.brincoAnimal.toString(),
               ));
 
-              await AcaoRepository().add(AcaoEntity(
+              final acao = AcaoEntity(
                 parentPath: widget.uidTecnico!.path,
                 uidPropriedadePath: widget.uidPropriedade?.path,
                 uidAnimalAnimaisProdutoresPath: animalRef?.path,
@@ -891,7 +891,8 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                 acao: _valoracaoValue,
                 dataVisita: _dtAcaoTextController.text,
                 dataDaAcao: getCurrentTimestamp,
-              ));
+              );
+              await AcaoRepository().add(acao);
               // Carimba a data da acao NO ANIMAL. Este formulario registrava
               // a acao e o bookkeeping da visita, mas nunca tocava no animal
               // — e e `dtUltimaAcao` que acende o selo "Hoje" nos cards.
@@ -914,6 +915,8 @@ class _NovaAcaoCalendarioSanitarioWidgetState
                 tituloRecomendacao: _valoracaoValue,
                 descricaoRecomendacao: null,
                 uidAnimal: animalRef,
+                // Vínculo para apagar junto ao apagar a ação no prontuário.
+                uidAcaoLancada: referenciaDaAcao(acao),
                 observacaoAcao: _obsTextController.text,
                 nomeAnimal: animalSel?.nomeAnimal,
                 brincoAnimal: animalSel?.brincoAnimal.toString(),

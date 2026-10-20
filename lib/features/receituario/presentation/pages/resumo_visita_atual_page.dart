@@ -1,8 +1,8 @@
 // ignore_for_file: dead_code
 
+import '/core/ui/cabecalho_tela.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
-import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/util/preenchido.dart';
@@ -116,48 +116,6 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
           ParamType.String,
         ),
       }.withoutNulls,
-    );
-  }
-
-  Widget _cabecalho(BuildContext context,
-      ResumoVisitaEntity resumoVisitaAtualResumoDaVisitaRecord) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-          child: FlutterFlowIconButton(
-            borderColor: Colors.transparent,
-            borderRadius: 30.0,
-            borderWidth: 1.0,
-            buttonSize: 50.0,
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            onPressed: () async => _voltarParaReceituarios(),
-          ),
-        ),
-        Text(
-          'Visita ${resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado}',
-          style: FlutterFlowTheme.of(context).headlineMedium.override(
-                font: GoogleFonts.outfit(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle:
-                      FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-                ),
-                color: Colors.white,
-                fontSize: 22.0,
-                letterSpacing: 0.0,
-                fontWeight:
-                    FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                fontStyle:
-                    FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-              ),
-        ),
-      ],
     );
   }
 
@@ -667,40 +625,10 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
           child: Scaffold(
             key: scaffoldKey,
             backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
-            appBar: PreferredSize(
-              preferredSize: Size.fromHeight(100.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFFF75E38), Color(0xFFEC3B5B)],
-                    begin: AlignmentDirectional(-1.0, -1.0),
-                    end: AlignmentDirectional(1.0, 1.0),
-                  ),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(24.0),
-                    bottomRight: Radius.circular(24.0),
-                  ),
-                ),
-                child: AppBar(
-                  backgroundColor: Colors.transparent,
-                  automaticallyImplyLeading: false,
-                  actions: [],
-                  flexibleSpace: FlexibleSpaceBar(
-                    title: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _cabecalho(
-                            context, resumoVisitaAtualResumoDaVisitaRecord),
-                      ],
-                    ),
-                    centerTitle: true,
-                    expandedTitleScale: 1.0,
-                  ),
-                  elevation: 0.0,
-                ),
-              ),
+            appBar: CabecalhoTela(
+              titulo:
+                  'Visita ${resumoVisitaAtualResumoDaVisitaRecord.dtVisitaFormatado}',
+              aoVoltar: _voltarParaReceituarios,
             ),
             body: SingleChildScrollView(
               child: Column(

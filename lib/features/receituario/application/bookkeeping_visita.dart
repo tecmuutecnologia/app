@@ -16,6 +16,18 @@ import '/data/objectbox/index.dart';
 /// Aqui é um caminho só, gravando no ObjectBox. O `ResumoVisitaRepository`
 /// pré-gera o `firestoreId`, então os filhos já nascem apontando para o id
 /// definitivo, mesmo sem rede.
+/// Referência da ação lançada no prontuário (`<pai>/acoes/<id>`), para o
+/// tratamento do receituário guardar em `uidAcaoLancadaPath`. É por esse vínculo
+/// que apagar a ação no prontuário apaga também a linha do receituário; sem ele
+/// a ação apagada continuava no receituário. Chamar DEPOIS do
+/// `AcaoRepository().add`, que é quem gera o `firestoreId`.
+DocumentReference? referenciaDaAcao(AcaoEntity acao) {
+  final id = acao.firestoreId;
+  final pai = acao.parentPath;
+  if (id == null || id.isEmpty || pai == null || pai.isEmpty) return null;
+  return FirebaseFirestore.instance.doc('$pai/acoes/$id');
+}
+
 Future<void> registrarBookkeepingVisita({
   required DocumentReference? uidPropriedade,
   required DocumentReference? uidTecnico,

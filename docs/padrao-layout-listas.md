@@ -73,9 +73,23 @@ Toda tela que mostra uma lista de itens (animais, visitas, receituários…) seg
 | Resumo do rebanho | 🔄 formulário em seções, colunas em chips, botão fixo no rodapé |
 | Calendário sanitário | 🔄 calendário em card com marcador nos dias com ação, botão fixo no rodapé |
 | Índices zootécnicos | ✅ só o cabeçalho |
+| Animais: editar e cadastrar | 🔄 seções Identificação / Classificação / Dados / Genealogia (/ Reprodução), salvar fixo no rodapé |
 | Relatório financeiro (lista, novo, editar) | 🔄 lista com cards no estilo dos Receituários; formulários em seções (Produção / Valores / Resultado), salvar fixo no rodapé |
 | Calendário sanitário (seleção de animal) | ⏳ |
 | Demais telas com lista | ⏳ levantar ao entrar em cada uma |
+
+## Navegação ao salvar/voltar
+
+Formulário aberto por `pushNamed` volta com **`pop`**. Nunca `goNamed` para a
+lista nem `pop` + `pushNamed` da lista:
+
+- `goNamed` troca a pilha inteira → o voltar da lista nova cai no dashboard e
+  o técnico perde a propriedade (bug do editar animal, 2026-10-19);
+- `pop` + `pushNamed` empilha uma segunda lista → o voltar cai na lista de
+  novo (bug do cadastrar animal).
+
+Padrão: `if (context.canPop()) { context.pop(); } else { context.goNamed(...); }`
+— o `goNamed` só para quando a tela foi aberta sem nada embaixo.
 
 ## Armadilha conhecida
 

@@ -1,5 +1,9 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
+import '/features/animais/application/touro_inseminacao.dart';
+import '/core/ui/cabecalho_tela.dart';
+import '/core/ui/painel_lista.dart';
+import '/core/ui/secao_formulario.dart';
 import 'dart:async';
 
 import '/core/connectivity/connectivity_service.dart';
@@ -10,10 +14,8 @@ import '/features/animais/application/animal_struct_adapter.dart';
 import '/features/animais/application/status_animal_opcoes.dart';
 import '/data/objectbox/entities/reference_entities.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
-import '/core/ui/flutter_flow_icon_button.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
-import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
 import '/data/objectbox/repositories/index.dart';
 import 'dart:ui';
@@ -339,46 +341,50 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
             ));
             safeSetState(() {});
             mostrarSucessoOverlay(context);
-            if (Navigator.of(context).canPop()) {
+            // Volta para a lista que abriu o cadastro. Antes fazia `pop` E depois
+            // `pushNamed` da lista: ficavam duas listas empilhadas e o voltar
+            // caía na lista de novo, em vez do menu da propriedade.
+            if (context.canPop()) {
               context.pop();
+            } else {
+              context.goNamed(
+                ListaAnimaisPage.routeName,
+                queryParameters: {
+                  'uidPropriedade': serializeParam(
+                    widget.uidPropriedade,
+                    ParamType.DocumentReference,
+                  ),
+                  'nomePropriedade': serializeParam(
+                    widget.nomePropriedade,
+                    ParamType.String,
+                  ),
+                  'uidTecnico': serializeParam(
+                    widget.uidTecnico,
+                    ParamType.DocumentReference,
+                  ),
+                  'emailPropriedade': serializeParam(
+                    widget.emailPropriedade,
+                    ParamType.String,
+                  ),
+                  'visitaPresencial': serializeParam(
+                    widget.visitaPresencial,
+                    ParamType.bool,
+                  ),
+                  'initialTabSelect': serializeParam(
+                    widget.initialTabSelect,
+                    ParamType.int,
+                  ),
+                  'diasDg': serializeParam(
+                    widget.diasDg,
+                    ParamType.String,
+                  ),
+                  'tabBarOpenSelected': serializeParam(
+                    0,
+                    ParamType.int,
+                  ),
+                }.withoutNulls,
+              );
             }
-            context.pushNamed(
-              ListaAnimaisPage.routeName,
-              queryParameters: {
-                'uidPropriedade': serializeParam(
-                  widget.uidPropriedade,
-                  ParamType.DocumentReference,
-                ),
-                'nomePropriedade': serializeParam(
-                  widget.nomePropriedade,
-                  ParamType.String,
-                ),
-                'uidTecnico': serializeParam(
-                  widget.uidTecnico,
-                  ParamType.DocumentReference,
-                ),
-                'emailPropriedade': serializeParam(
-                  widget.emailPropriedade,
-                  ParamType.String,
-                ),
-                'visitaPresencial': serializeParam(
-                  widget.visitaPresencial,
-                  ParamType.bool,
-                ),
-                'initialTabSelect': serializeParam(
-                  widget.initialTabSelect,
-                  ParamType.int,
-                ),
-                'diasDg': serializeParam(
-                  widget.diasDg,
-                  ParamType.String,
-                ),
-                'tabBarOpenSelected': serializeParam(
-                  0,
-                  ParamType.int,
-                ),
-              }.withoutNulls,
-            );
 
             if (_shouldSetState) safeSetState(() {});
             return;
@@ -432,46 +438,50 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
               ));
               safeSetState(() {});
               mostrarSucessoOverlay(context);
-              if (Navigator.of(context).canPop()) {
+              // Volta para a lista que abriu o cadastro. Antes fazia `pop` E depois
+              // `pushNamed` da lista: ficavam duas listas empilhadas e o voltar
+              // caía na lista de novo, em vez do menu da propriedade.
+              if (context.canPop()) {
                 context.pop();
+              } else {
+                context.goNamed(
+                  ListaAnimaisPage.routeName,
+                  queryParameters: {
+                    'uidPropriedade': serializeParam(
+                      widget.uidPropriedade,
+                      ParamType.DocumentReference,
+                    ),
+                    'nomePropriedade': serializeParam(
+                      widget.nomePropriedade,
+                      ParamType.String,
+                    ),
+                    'uidTecnico': serializeParam(
+                      widget.uidTecnico,
+                      ParamType.DocumentReference,
+                    ),
+                    'emailPropriedade': serializeParam(
+                      widget.emailPropriedade,
+                      ParamType.String,
+                    ),
+                    'visitaPresencial': serializeParam(
+                      widget.visitaPresencial,
+                      ParamType.bool,
+                    ),
+                    'initialTabSelect': serializeParam(
+                      widget.initialTabSelect,
+                      ParamType.int,
+                    ),
+                    'diasDg': serializeParam(
+                      widget.diasDg,
+                      ParamType.String,
+                    ),
+                    'tabBarOpenSelected': serializeParam(
+                      0,
+                      ParamType.int,
+                    ),
+                  }.withoutNulls,
+                );
               }
-              context.pushNamed(
-                ListaAnimaisPage.routeName,
-                queryParameters: {
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    widget.visitaPresencial,
-                    ParamType.bool,
-                  ),
-                  'initialTabSelect': serializeParam(
-                    widget.initialTabSelect,
-                    ParamType.int,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                  'tabBarOpenSelected': serializeParam(
-                    0,
-                    ParamType.int,
-                  ),
-                }.withoutNulls,
-              );
 
               if (_shouldSetState) safeSetState(() {});
               return;
@@ -526,46 +536,50 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
               ));
               safeSetState(() {});
               mostrarSucessoOverlay(context);
-              if (Navigator.of(context).canPop()) {
+              // Volta para a lista que abriu o cadastro. Antes fazia `pop` E depois
+              // `pushNamed` da lista: ficavam duas listas empilhadas e o voltar
+              // caía na lista de novo, em vez do menu da propriedade.
+              if (context.canPop()) {
                 context.pop();
+              } else {
+                context.goNamed(
+                  ListaAnimaisPage.routeName,
+                  queryParameters: {
+                    'uidPropriedade': serializeParam(
+                      widget.uidPropriedade,
+                      ParamType.DocumentReference,
+                    ),
+                    'nomePropriedade': serializeParam(
+                      widget.nomePropriedade,
+                      ParamType.String,
+                    ),
+                    'uidTecnico': serializeParam(
+                      widget.uidTecnico,
+                      ParamType.DocumentReference,
+                    ),
+                    'emailPropriedade': serializeParam(
+                      widget.emailPropriedade,
+                      ParamType.String,
+                    ),
+                    'visitaPresencial': serializeParam(
+                      widget.visitaPresencial,
+                      ParamType.bool,
+                    ),
+                    'initialTabSelect': serializeParam(
+                      widget.initialTabSelect,
+                      ParamType.int,
+                    ),
+                    'diasDg': serializeParam(
+                      widget.diasDg,
+                      ParamType.String,
+                    ),
+                    'tabBarOpenSelected': serializeParam(
+                      0,
+                      ParamType.int,
+                    ),
+                  }.withoutNulls,
+                );
               }
-              context.pushNamed(
-                ListaAnimaisPage.routeName,
-                queryParameters: {
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    widget.visitaPresencial,
-                    ParamType.bool,
-                  ),
-                  'initialTabSelect': serializeParam(
-                    widget.initialTabSelect,
-                    ParamType.int,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                  'tabBarOpenSelected': serializeParam(
-                    0,
-                    ParamType.int,
-                  ),
-                }.withoutNulls,
-              );
 
               if (_shouldSetState) safeSetState(() {});
               return;
@@ -626,46 +640,50 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
               ));
               safeSetState(() {});
               mostrarSucessoOverlay(context);
-              if (Navigator.of(context).canPop()) {
+              // Volta para a lista que abriu o cadastro. Antes fazia `pop` E depois
+              // `pushNamed` da lista: ficavam duas listas empilhadas e o voltar
+              // caía na lista de novo, em vez do menu da propriedade.
+              if (context.canPop()) {
                 context.pop();
+              } else {
+                context.goNamed(
+                  ListaAnimaisPage.routeName,
+                  queryParameters: {
+                    'uidPropriedade': serializeParam(
+                      widget.uidPropriedade,
+                      ParamType.DocumentReference,
+                    ),
+                    'nomePropriedade': serializeParam(
+                      widget.nomePropriedade,
+                      ParamType.String,
+                    ),
+                    'uidTecnico': serializeParam(
+                      widget.uidTecnico,
+                      ParamType.DocumentReference,
+                    ),
+                    'emailPropriedade': serializeParam(
+                      widget.emailPropriedade,
+                      ParamType.String,
+                    ),
+                    'visitaPresencial': serializeParam(
+                      widget.visitaPresencial,
+                      ParamType.bool,
+                    ),
+                    'initialTabSelect': serializeParam(
+                      widget.initialTabSelect,
+                      ParamType.int,
+                    ),
+                    'diasDg': serializeParam(
+                      widget.diasDg,
+                      ParamType.String,
+                    ),
+                    'tabBarOpenSelected': serializeParam(
+                      0,
+                      ParamType.int,
+                    ),
+                  }.withoutNulls,
+                );
               }
-              context.pushNamed(
-                ListaAnimaisPage.routeName,
-                queryParameters: {
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    widget.visitaPresencial,
-                    ParamType.bool,
-                  ),
-                  'initialTabSelect': serializeParam(
-                    widget.initialTabSelect,
-                    ParamType.int,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                  'tabBarOpenSelected': serializeParam(
-                    0,
-                    ParamType.int,
-                  ),
-                }.withoutNulls,
-              );
 
               if (_shouldSetState) safeSetState(() {});
               return;
@@ -725,46 +743,50 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                   ));
                   safeSetState(() {});
                   mostrarSucessoOverlay(context);
-                  if (Navigator.of(context).canPop()) {
+                  // Volta para a lista que abriu o cadastro. Antes fazia `pop` E depois
+                  // `pushNamed` da lista: ficavam duas listas empilhadas e o voltar
+                  // caía na lista de novo, em vez do menu da propriedade.
+                  if (context.canPop()) {
                     context.pop();
+                  } else {
+                    context.goNamed(
+                      ListaAnimaisPage.routeName,
+                      queryParameters: {
+                        'uidPropriedade': serializeParam(
+                          widget.uidPropriedade,
+                          ParamType.DocumentReference,
+                        ),
+                        'nomePropriedade': serializeParam(
+                          widget.nomePropriedade,
+                          ParamType.String,
+                        ),
+                        'uidTecnico': serializeParam(
+                          widget.uidTecnico,
+                          ParamType.DocumentReference,
+                        ),
+                        'emailPropriedade': serializeParam(
+                          widget.emailPropriedade,
+                          ParamType.String,
+                        ),
+                        'visitaPresencial': serializeParam(
+                          widget.visitaPresencial,
+                          ParamType.bool,
+                        ),
+                        'initialTabSelect': serializeParam(
+                          widget.initialTabSelect,
+                          ParamType.int,
+                        ),
+                        'diasDg': serializeParam(
+                          widget.diasDg,
+                          ParamType.String,
+                        ),
+                        'tabBarOpenSelected': serializeParam(
+                          0,
+                          ParamType.int,
+                        ),
+                      }.withoutNulls,
+                    );
                   }
-                  context.pushNamed(
-                    ListaAnimaisPage.routeName,
-                    queryParameters: {
-                      'uidPropriedade': serializeParam(
-                        widget.uidPropriedade,
-                        ParamType.DocumentReference,
-                      ),
-                      'nomePropriedade': serializeParam(
-                        widget.nomePropriedade,
-                        ParamType.String,
-                      ),
-                      'uidTecnico': serializeParam(
-                        widget.uidTecnico,
-                        ParamType.DocumentReference,
-                      ),
-                      'emailPropriedade': serializeParam(
-                        widget.emailPropriedade,
-                        ParamType.String,
-                      ),
-                      'visitaPresencial': serializeParam(
-                        widget.visitaPresencial,
-                        ParamType.bool,
-                      ),
-                      'initialTabSelect': serializeParam(
-                        widget.initialTabSelect,
-                        ParamType.int,
-                      ),
-                      'diasDg': serializeParam(
-                        widget.diasDg,
-                        ParamType.String,
-                      ),
-                      'tabBarOpenSelected': serializeParam(
-                        0,
-                        ParamType.int,
-                      ),
-                    }.withoutNulls,
-                  );
 
                   if (_shouldSetState) safeSetState(() {});
                   return;
@@ -849,46 +871,50 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                     ));
                     safeSetState(() {});
                     mostrarSucessoOverlay(context);
-                    if (Navigator.of(context).canPop()) {
+                    // Volta para a lista que abriu o cadastro. Antes fazia `pop` E depois
+                    // `pushNamed` da lista: ficavam duas listas empilhadas e o voltar
+                    // caía na lista de novo, em vez do menu da propriedade.
+                    if (context.canPop()) {
                       context.pop();
+                    } else {
+                      context.goNamed(
+                        ListaAnimaisPage.routeName,
+                        queryParameters: {
+                          'uidPropriedade': serializeParam(
+                            widget.uidPropriedade,
+                            ParamType.DocumentReference,
+                          ),
+                          'nomePropriedade': serializeParam(
+                            widget.nomePropriedade,
+                            ParamType.String,
+                          ),
+                          'uidTecnico': serializeParam(
+                            widget.uidTecnico,
+                            ParamType.DocumentReference,
+                          ),
+                          'emailPropriedade': serializeParam(
+                            widget.emailPropriedade,
+                            ParamType.String,
+                          ),
+                          'visitaPresencial': serializeParam(
+                            widget.visitaPresencial,
+                            ParamType.bool,
+                          ),
+                          'initialTabSelect': serializeParam(
+                            widget.initialTabSelect,
+                            ParamType.int,
+                          ),
+                          'diasDg': serializeParam(
+                            widget.diasDg,
+                            ParamType.String,
+                          ),
+                          'tabBarOpenSelected': serializeParam(
+                            0,
+                            ParamType.int,
+                          ),
+                        }.withoutNulls,
+                      );
                     }
-                    context.pushNamed(
-                      ListaAnimaisPage.routeName,
-                      queryParameters: {
-                        'uidPropriedade': serializeParam(
-                          widget.uidPropriedade,
-                          ParamType.DocumentReference,
-                        ),
-                        'nomePropriedade': serializeParam(
-                          widget.nomePropriedade,
-                          ParamType.String,
-                        ),
-                        'uidTecnico': serializeParam(
-                          widget.uidTecnico,
-                          ParamType.DocumentReference,
-                        ),
-                        'emailPropriedade': serializeParam(
-                          widget.emailPropriedade,
-                          ParamType.String,
-                        ),
-                        'visitaPresencial': serializeParam(
-                          widget.visitaPresencial,
-                          ParamType.bool,
-                        ),
-                        'initialTabSelect': serializeParam(
-                          widget.initialTabSelect,
-                          ParamType.int,
-                        ),
-                        'diasDg': serializeParam(
-                          widget.diasDg,
-                          ParamType.String,
-                        ),
-                        'tabBarOpenSelected': serializeParam(
-                          0,
-                          ParamType.int,
-                        ),
-                      }.withoutNulls,
-                    );
 
                     if (_shouldSetState) safeSetState(() {});
                     return;
@@ -974,46 +1000,50 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                       ));
                       safeSetState(() {});
                       mostrarSucessoOverlay(context);
-                      if (Navigator.of(context).canPop()) {
+                      // Volta para a lista que abriu o cadastro. Antes fazia `pop` E depois
+                      // `pushNamed` da lista: ficavam duas listas empilhadas e o voltar
+                      // caía na lista de novo, em vez do menu da propriedade.
+                      if (context.canPop()) {
                         context.pop();
+                      } else {
+                        context.goNamed(
+                          ListaAnimaisPage.routeName,
+                          queryParameters: {
+                            'uidPropriedade': serializeParam(
+                              widget.uidPropriedade,
+                              ParamType.DocumentReference,
+                            ),
+                            'nomePropriedade': serializeParam(
+                              widget.nomePropriedade,
+                              ParamType.String,
+                            ),
+                            'uidTecnico': serializeParam(
+                              widget.uidTecnico,
+                              ParamType.DocumentReference,
+                            ),
+                            'emailPropriedade': serializeParam(
+                              widget.emailPropriedade,
+                              ParamType.String,
+                            ),
+                            'visitaPresencial': serializeParam(
+                              widget.visitaPresencial,
+                              ParamType.bool,
+                            ),
+                            'initialTabSelect': serializeParam(
+                              widget.initialTabSelect,
+                              ParamType.int,
+                            ),
+                            'diasDg': serializeParam(
+                              widget.diasDg,
+                              ParamType.String,
+                            ),
+                            'tabBarOpenSelected': serializeParam(
+                              0,
+                              ParamType.int,
+                            ),
+                          }.withoutNulls,
+                        );
                       }
-                      context.pushNamed(
-                        ListaAnimaisPage.routeName,
-                        queryParameters: {
-                          'uidPropriedade': serializeParam(
-                            widget.uidPropriedade,
-                            ParamType.DocumentReference,
-                          ),
-                          'nomePropriedade': serializeParam(
-                            widget.nomePropriedade,
-                            ParamType.String,
-                          ),
-                          'uidTecnico': serializeParam(
-                            widget.uidTecnico,
-                            ParamType.DocumentReference,
-                          ),
-                          'emailPropriedade': serializeParam(
-                            widget.emailPropriedade,
-                            ParamType.String,
-                          ),
-                          'visitaPresencial': serializeParam(
-                            widget.visitaPresencial,
-                            ParamType.bool,
-                          ),
-                          'initialTabSelect': serializeParam(
-                            widget.initialTabSelect,
-                            ParamType.int,
-                          ),
-                          'diasDg': serializeParam(
-                            widget.diasDg,
-                            ParamType.String,
-                          ),
-                          'tabBarOpenSelected': serializeParam(
-                            0,
-                            ParamType.int,
-                          ),
-                        }.withoutNulls,
-                      );
 
                       if (_shouldSetState) safeSetState(() {});
                       return;
@@ -1108,42 +1138,46 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
           ));
           safeSetState(() {});
           mostrarSucessoOverlay(context);
-          if (Navigator.of(context).canPop()) {
+          // Volta para a lista que abriu o cadastro. Antes fazia `pop` E depois
+          // `pushNamed` da lista: ficavam duas listas empilhadas e o voltar
+          // caía na lista de novo, em vez do menu da propriedade.
+          if (context.canPop()) {
             context.pop();
+          } else {
+            context.goNamed(
+              ListaAnimaisPage.routeName,
+              queryParameters: {
+                'uidPropriedade': serializeParam(
+                  widget.uidPropriedade,
+                  ParamType.DocumentReference,
+                ),
+                'nomePropriedade': serializeParam(
+                  widget.nomePropriedade,
+                  ParamType.String,
+                ),
+                'uidTecnico': serializeParam(
+                  widget.uidTecnico,
+                  ParamType.DocumentReference,
+                ),
+                'emailPropriedade': serializeParam(
+                  widget.emailPropriedade,
+                  ParamType.String,
+                ),
+                'visitaPresencial': serializeParam(
+                  widget.visitaPresencial,
+                  ParamType.bool,
+                ),
+                'initialTabSelect': serializeParam(
+                  widget.initialTabSelect,
+                  ParamType.int,
+                ),
+                'diasDg': serializeParam(
+                  widget.diasDg,
+                  ParamType.String,
+                ),
+              }.withoutNulls,
+            );
           }
-          context.pushNamed(
-            ListaAnimaisPage.routeName,
-            queryParameters: {
-              'uidPropriedade': serializeParam(
-                widget.uidPropriedade,
-                ParamType.DocumentReference,
-              ),
-              'nomePropriedade': serializeParam(
-                widget.nomePropriedade,
-                ParamType.String,
-              ),
-              'uidTecnico': serializeParam(
-                widget.uidTecnico,
-                ParamType.DocumentReference,
-              ),
-              'emailPropriedade': serializeParam(
-                widget.emailPropriedade,
-                ParamType.String,
-              ),
-              'visitaPresencial': serializeParam(
-                widget.visitaPresencial,
-                ParamType.bool,
-              ),
-              'initialTabSelect': serializeParam(
-                widget.initialTabSelect,
-                ParamType.int,
-              ),
-              'diasDg': serializeParam(
-                widget.diasDg,
-                ParamType.String,
-              ),
-            }.withoutNulls,
-          );
 
           if (_shouldSetState) safeSetState(() {});
           return;
@@ -1187,42 +1221,46 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
             ));
             safeSetState(() {});
             mostrarSucessoOverlay(context);
-            if (Navigator.of(context).canPop()) {
+            // Volta para a lista que abriu o cadastro. Antes fazia `pop` E depois
+            // `pushNamed` da lista: ficavam duas listas empilhadas e o voltar
+            // caía na lista de novo, em vez do menu da propriedade.
+            if (context.canPop()) {
               context.pop();
+            } else {
+              context.goNamed(
+                ListaAnimaisPage.routeName,
+                queryParameters: {
+                  'uidPropriedade': serializeParam(
+                    widget.uidPropriedade,
+                    ParamType.DocumentReference,
+                  ),
+                  'nomePropriedade': serializeParam(
+                    widget.nomePropriedade,
+                    ParamType.String,
+                  ),
+                  'uidTecnico': serializeParam(
+                    widget.uidTecnico,
+                    ParamType.DocumentReference,
+                  ),
+                  'emailPropriedade': serializeParam(
+                    widget.emailPropriedade,
+                    ParamType.String,
+                  ),
+                  'visitaPresencial': serializeParam(
+                    widget.visitaPresencial,
+                    ParamType.bool,
+                  ),
+                  'initialTabSelect': serializeParam(
+                    widget.initialTabSelect,
+                    ParamType.int,
+                  ),
+                  'diasDg': serializeParam(
+                    widget.diasDg,
+                    ParamType.String,
+                  ),
+                }.withoutNulls,
+              );
             }
-            context.pushNamed(
-              ListaAnimaisPage.routeName,
-              queryParameters: {
-                'uidPropriedade': serializeParam(
-                  widget.uidPropriedade,
-                  ParamType.DocumentReference,
-                ),
-                'nomePropriedade': serializeParam(
-                  widget.nomePropriedade,
-                  ParamType.String,
-                ),
-                'uidTecnico': serializeParam(
-                  widget.uidTecnico,
-                  ParamType.DocumentReference,
-                ),
-                'emailPropriedade': serializeParam(
-                  widget.emailPropriedade,
-                  ParamType.String,
-                ),
-                'visitaPresencial': serializeParam(
-                  widget.visitaPresencial,
-                  ParamType.bool,
-                ),
-                'initialTabSelect': serializeParam(
-                  widget.initialTabSelect,
-                  ParamType.int,
-                ),
-                'diasDg': serializeParam(
-                  widget.diasDg,
-                  ParamType.String,
-                ),
-              }.withoutNulls,
-            );
 
             if (_shouldSetState) safeSetState(() {});
             return;
@@ -1262,42 +1300,46 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
         ));
         safeSetState(() {});
         mostrarSucessoOverlay(context);
-        if (Navigator.of(context).canPop()) {
+        // Volta para a lista que abriu o cadastro. Antes fazia `pop` E depois
+        // `pushNamed` da lista: ficavam duas listas empilhadas e o voltar
+        // caía na lista de novo, em vez do menu da propriedade.
+        if (context.canPop()) {
           context.pop();
+        } else {
+          context.goNamed(
+            ListaAnimaisPage.routeName,
+            queryParameters: {
+              'uidPropriedade': serializeParam(
+                widget.uidPropriedade,
+                ParamType.DocumentReference,
+              ),
+              'nomePropriedade': serializeParam(
+                widget.nomePropriedade,
+                ParamType.String,
+              ),
+              'uidTecnico': serializeParam(
+                widget.uidTecnico,
+                ParamType.DocumentReference,
+              ),
+              'emailPropriedade': serializeParam(
+                widget.emailPropriedade,
+                ParamType.String,
+              ),
+              'visitaPresencial': serializeParam(
+                widget.visitaPresencial,
+                ParamType.bool,
+              ),
+              'initialTabSelect': serializeParam(
+                widget.initialTabSelect,
+                ParamType.int,
+              ),
+              'diasDg': serializeParam(
+                widget.diasDg,
+                ParamType.String,
+              ),
+            }.withoutNulls,
+          );
         }
-        context.pushNamed(
-          ListaAnimaisPage.routeName,
-          queryParameters: {
-            'uidPropriedade': serializeParam(
-              widget.uidPropriedade,
-              ParamType.DocumentReference,
-            ),
-            'nomePropriedade': serializeParam(
-              widget.nomePropriedade,
-              ParamType.String,
-            ),
-            'uidTecnico': serializeParam(
-              widget.uidTecnico,
-              ParamType.DocumentReference,
-            ),
-            'emailPropriedade': serializeParam(
-              widget.emailPropriedade,
-              ParamType.String,
-            ),
-            'visitaPresencial': serializeParam(
-              widget.visitaPresencial,
-              ParamType.bool,
-            ),
-            'initialTabSelect': serializeParam(
-              widget.initialTabSelect,
-              ParamType.int,
-            ),
-            'diasDg': serializeParam(
-              widget.diasDg,
-              ParamType.String,
-            ),
-          }.withoutNulls,
-        );
 
         if (_shouldSetState) safeSetState(() {});
         return;
@@ -1307,94 +1349,31 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     if (_shouldSetState) safeSetState(() {});
   }
 
-  Widget _cabecalho(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        Padding(
-          padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 0.0),
-          child: FlutterFlowIconButton(
-            borderColor: Colors.transparent,
-            borderRadius: 30.0,
-            borderWidth: 1.0,
-            buttonSize: 50.0,
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.white,
-              size: 30.0,
-            ),
-            onPressed: () async {
-              context.goNamed(
-                ListaAnimaisPage.routeName,
-                queryParameters: {
-                  'uidPropriedade': serializeParam(
-                    widget.uidPropriedade,
-                    ParamType.DocumentReference,
-                  ),
-                  'nomePropriedade': serializeParam(
-                    widget.nomePropriedade,
-                    ParamType.String,
-                  ),
-                  'uidTecnico': serializeParam(
-                    widget.uidTecnico,
-                    ParamType.DocumentReference,
-                  ),
-                  'emailPropriedade': serializeParam(
-                    widget.emailPropriedade,
-                    ParamType.String,
-                  ),
-                  'visitaPresencial': serializeParam(
-                    widget.visitaPresencial,
-                    ParamType.bool,
-                  ),
-                  'initialTabSelect': serializeParam(
-                    widget.initialTabSelect,
-                    ParamType.int,
-                  ),
-                  'diasDg': serializeParam(
-                    widget.diasDg,
-                    ParamType.String,
-                  ),
-                }.withoutNulls,
-              );
-            },
-          ),
-        ),
-        Text(
-          'Adicionar animal',
-          style: FlutterFlowTheme.of(context).headlineMedium.override(
-                font: GoogleFonts.outfit(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                  fontStyle:
-                      FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-                ),
-                color: Colors.white,
-                fontSize: 22.0,
-                letterSpacing: 0.0,
-                fontWeight:
-                    FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                fontStyle:
-                    FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-              ),
-        ),
-      ],
-    );
-  }
-
+  /// Formulário no padrão de telas de formulário: seções em cards. A seção
+  /// Reprodução só existe para vacas e novilhas.
   Widget _formularioCadastro(BuildContext context,
       List<StatusAnimalEntity> cadastrarNovoAnimalStatusAnimaisRecordList) {
+    final reprodutiva =
+        ((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) ||
+            ((widget.grupoPredominante == 'Novilhas') ||
+                (widget.grupoPredominante == 'Vacas'));
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.always,
-      child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
+      child: Column(
+        children: [
+          SecaoFormulario(
+            icone: Icons.badge_outlined,
+            titulo: 'Identificação',
+            filhos: [
               _campoNome(context),
               _campoBrinco(context),
+            ],
+          ),
+          SecaoFormulario(
+            icone: Icons.category_outlined,
+            titulo: 'Classificação',
+            filhos: [
               _campoRaca(context),
               _campoGrupo(context),
               if (((widget.grupoPredominante == 'Sêmens') ||
@@ -1408,6 +1387,12 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                     _switchLiberarInseminacao(context),
                   ],
                 ),
+            ],
+          ),
+          SecaoFormulario(
+            icone: Icons.monitor_weight_outlined,
+            titulo: 'Dados',
+            filhos: [
               if (_grupoValue != 'Sêmens')
                 TextFormField(
                   controller: _pesoTextController,
@@ -1522,168 +1507,228 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
                   ],
                 ),
               _campoDataNascimento(context),
+            ],
+          ),
+          SecaoFormulario(
+            icone: Icons.account_tree_outlined,
+            titulo: 'Genealogia',
+            filhos: [
               _campoTouroPai(context),
               _campoVacaMae(context),
-              if (((_grupoValue == 'Vacas') ||
-                      (widget.grupoPredominante == 'Vacas')) &&
-                  (_statusAnimalValue != 'Seca'))
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    _campoDataUltimoParto(context),
-                    _seletorDataUltimoParto(context),
-                  ],
-                ),
-              if (((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) ||
-                  ((widget.grupoPredominante == 'Novilhas') ||
-                      (widget.grupoPredominante == 'Vacas')))
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    _campoDataUltimaInseminacao(context),
-                    _seletorDataUltimaInseminacao(context),
-                  ],
-                ),
-              if (((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) &&
-                  (_dataUltimaInseminacaoTextController.text != ''))
-                FlutterFlowDropDown<String>(
-                  controller: _touroInseminacaoValueController ??=
-                      FormFieldController<String>(null),
-                  // Touros/candidatos a pai lidos do ObjectBox (offline-first):
-                  // animais da propriedade liberados para inseminação.
-                  options: (widget.uidPropriedade == null
-                          ? const <String>[]
-                          : AnimalRepository()
-                              .getAnimaisByPropriedade(
-                                  widget.uidPropriedade!.path)
-                              .where((a) => a.liberaInseminacao)
-                              .map((a) => a.nomeBrincoConcat ?? '')
-                              .where((s) => s.isNotEmpty)
-                              .toList())
-                      .cast<String>(),
-                  onChanged: (val) =>
-                      safeSetState(() => _touroInseminacaoValue = val),
-                  width: double.infinity,
-                  height: 50.0,
-                  searchHintTextStyle: FlutterFlowTheme.of(context)
-                      .labelMedium
-                      .override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .labelMedium
-                              .fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context)
-                              .labelMedium
-                              .fontStyle,
-                        ),
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                      ),
-                  searchTextStyle: FlutterFlowTheme.of(context)
-                      .bodyMedium
-                      .override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                  textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                  hintText: 'Touro/sêmen inseminação',
-                  searchHintText: 'Digite para pesquisar...',
-                  icon: Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    color: FlutterFlowTheme.of(context).secondaryText,
-                    size: 24.0,
-                  ),
-                  fillColor: FlutterFlowTheme.of(context).secondaryBackground,
-                  elevation: 2.0,
-                  borderColor: FlutterFlowTheme.of(context).alternate,
-                  borderWidth: 2.0,
-                  borderRadius: 8.0,
-                  margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-                  hidesUnderline: true,
-                  isSearchable: true,
-                  isMultiSelect: false,
-                ),
-              if (((widget.grupoPredominante == 'Novilhas') ||
-                      (widget.grupoPredominante == 'Vacas')) ||
-                  ((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')))
-                FlutterFlowDropDown<String>(
-                  controller: _statusAnimalValueController ??=
-                      FormFieldController<String>(
-                    _statusAnimalValue ??= 'Vazia',
-                  ),
-                  options: opcoesStatusAnimal(
-                    statusDisponiveis:
-                        cadastrarNovoAnimalStatusAnimaisRecordList,
-                    ultimoParto: _datePicked2,
-                    ultimaInseminacao: _datePicked3,
-                    grupo: _grupoValue,
-                  ),
-                  onChanged: (val) =>
-                      safeSetState(() => _statusAnimalValue = val),
-                  width: double.infinity,
-                  height: 50.0,
-                  textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                  hintText: 'Status animal',
-                  icon: Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    color: FlutterFlowTheme.of(context).secondaryText,
-                    size: 24.0,
-                  ),
-                  fillColor: FlutterFlowTheme.of(context).primaryBackground,
-                  elevation: 2.0,
-                  borderColor: FlutterFlowTheme.of(context).alternate,
-                  borderWidth: 2.0,
-                  borderRadius: 8.0,
-                  margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-                  hidesUnderline: true,
-                  isSearchable: false,
-                  isMultiSelect: false,
-                ),
-              _botaoCadastrar(context),
-            ].divide(SizedBox(height: 12.0)),
+            ],
           ),
-        ),
+          if (reprodutiva)
+            SecaoFormulario(
+              icone: Icons.favorite_border_rounded,
+              titulo: 'Reprodução',
+              filhos: [
+                if (((_grupoValue == 'Vacas') ||
+                        (widget.grupoPredominante == 'Vacas')) &&
+                    (_statusAnimalValue != 'Seca'))
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      _campoDataUltimoParto(context),
+                      _seletorDataUltimoParto(context),
+                    ],
+                  ),
+                if (((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) ||
+                    ((widget.grupoPredominante == 'Novilhas') ||
+                        (widget.grupoPredominante == 'Vacas')))
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      _campoDataUltimaInseminacao(context),
+                      _seletorDataUltimaInseminacao(context),
+                    ],
+                  ),
+                if (((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')) &&
+                    (_dataUltimaInseminacaoTextController.text != ''))
+                  FlutterFlowDropDown<String>(
+                    controller: _touroInseminacaoValueController ??=
+                        FormFieldController<String>(null),
+                    // Touros/candidatos a pai lidos do ObjectBox (offline-first):
+                    // animais da propriedade liberados para inseminação.
+                    options: widget.uidPropriedade == null
+                        ? const <String>[]
+                        : opcoesTouroInseminacao(AnimalRepository()
+                            .getAnimaisByPropriedade(
+                                widget.uidPropriedade!.path)),
+                    onChanged: (val) =>
+                        safeSetState(() => _touroInseminacaoValue = val),
+                    width: double.infinity,
+                    height: 50.0,
+                    searchHintTextStyle:
+                        FlutterFlowTheme.of(context).labelMedium.override(
+                              font: GoogleFonts.readexPro(
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .labelMedium
+                                    .fontStyle,
+                              ),
+                              letterSpacing: 0.0,
+                              fontWeight: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .fontStyle,
+                            ),
+                    searchTextStyle: FlutterFlowTheme.of(context)
+                        .bodyMedium
+                        .override(
+                          font: GoogleFonts.readexPro(
+                            fontWeight: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontWeight,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontStyle,
+                          ),
+                          letterSpacing: 0.0,
+                          fontWeight: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                        ),
+                    textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                          font: GoogleFonts.readexPro(
+                            fontWeight: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontWeight,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontStyle,
+                          ),
+                          letterSpacing: 0.0,
+                          fontWeight: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                        ),
+                    hintText: 'Touro/sêmen inseminação',
+                    searchHintText: 'Digite para pesquisar...',
+                    icon: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: FlutterFlowTheme.of(context).secondaryText,
+                      size: 24.0,
+                    ),
+                    fillColor: FlutterFlowTheme.of(context).primaryBackground,
+                    elevation: 2.0,
+                    borderColor: Colors.transparent,
+                    borderWidth: 1.0,
+                    borderRadius: LayoutLista.raio,
+                    margin:
+                        EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
+                    hidesUnderline: true,
+                    isSearchable: true,
+                    isMultiSelect: false,
+                  ),
+                if (((widget.grupoPredominante == 'Novilhas') ||
+                        (widget.grupoPredominante == 'Vacas')) ||
+                    ((_grupoValue == 'Vacas') || (_grupoValue == 'Novilhas')))
+                  FlutterFlowDropDown<String>(
+                    controller: _statusAnimalValueController ??=
+                        FormFieldController<String>(
+                      _statusAnimalValue ??= 'Vazia',
+                    ),
+                    options: opcoesStatusAnimal(
+                      statusDisponiveis:
+                          cadastrarNovoAnimalStatusAnimaisRecordList,
+                      ultimoParto: _datePicked2,
+                      ultimaInseminacao: _datePicked3,
+                      grupo: _grupoValue,
+                    ),
+                    onChanged: (val) =>
+                        safeSetState(() => _statusAnimalValue = val),
+                    width: double.infinity,
+                    height: 50.0,
+                    textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
+                          font: GoogleFonts.readexPro(
+                            fontWeight: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontWeight,
+                            fontStyle: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .fontStyle,
+                          ),
+                          letterSpacing: 0.0,
+                          fontWeight: FlutterFlowTheme.of(context)
+                              .bodyMedium
+                              .fontWeight,
+                          fontStyle:
+                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                        ),
+                    hintText: 'Status animal',
+                    icon: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: FlutterFlowTheme.of(context).secondaryText,
+                      size: 24.0,
+                    ),
+                    fillColor: FlutterFlowTheme.of(context).primaryBackground,
+                    elevation: 2.0,
+                    borderColor: Colors.transparent,
+                    borderWidth: 1.0,
+                    borderRadius: LayoutLista.raio,
+                    margin:
+                        EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
+                    hidesUnderline: true,
+                    isSearchable: false,
+                    isMultiSelect: false,
+                  ),
+              ],
+            ),
+        ],
       ),
     );
+  }
+
+  /// Volta para a tela de onde veio.
+  Future<void> _voltar() async {
+    // Volta para a tela de onde veio. Só `goNamed` (que troca a pilha
+    // inteira) quando não há para onde voltar: antes era sempre `goNamed`,
+    // e o voltar da lista nova caía no dashboard, perdendo a propriedade.
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.goNamed(
+        ListaAnimaisPage.routeName,
+        queryParameters: {
+          'uidPropriedade': serializeParam(
+            widget.uidPropriedade,
+            ParamType.DocumentReference,
+          ),
+          'nomePropriedade': serializeParam(
+            widget.nomePropriedade,
+            ParamType.String,
+          ),
+          'uidTecnico': serializeParam(
+            widget.uidTecnico,
+            ParamType.DocumentReference,
+          ),
+          'emailPropriedade': serializeParam(
+            widget.emailPropriedade,
+            ParamType.String,
+          ),
+          'visitaPresencial': serializeParam(
+            widget.visitaPresencial,
+            ParamType.bool,
+          ),
+          'initialTabSelect': serializeParam(
+            widget.initialTabSelect,
+            ParamType.int,
+          ),
+          'diasDg': serializeParam(
+            widget.diasDg,
+            ParamType.String,
+          ),
+        }.withoutNulls,
+      );
+    }
   }
 
   Widget _campoNome(BuildContext context) {
@@ -1877,10 +1922,10 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
       ),
       fillColor: FlutterFlowTheme.of(context).primaryBackground,
       elevation: 2.0,
-      borderColor: FlutterFlowTheme.of(context).alternate,
-      borderWidth: 2.0,
-      borderRadius: 8.0,
-      margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+      borderColor: Colors.transparent,
+      borderWidth: 1.0,
+      borderRadius: LayoutLista.raio,
+      margin: EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
       hidesUnderline: true,
       isOverButton: true,
       isSearchable: true,
@@ -1916,10 +1961,10 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
       ),
       fillColor: FlutterFlowTheme.of(context).primaryBackground,
       elevation: 2.0,
-      borderColor: FlutterFlowTheme.of(context).alternate,
-      borderWidth: 2.0,
-      borderRadius: 8.0,
-      margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
+      borderColor: Colors.transparent,
+      borderWidth: 1.0,
+      borderRadius: LayoutLista.raio,
+      margin: EdgeInsetsDirectional.fromSTEB(12.0, 4.0, 12.0, 4.0),
       hidesUnderline: true,
       isSearchable: false,
       isMultiSelect: false,
@@ -2272,46 +2317,6 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
     );
   }
 
-  Widget _botaoCadastrar(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(0.0, 24.0, 0.0, 12.0),
-      child: FFButtonWidget(
-        onPressed: () async {
-          await _cadastrarAnimal(context);
-        },
-        text: 'Salvar Animal',
-        icon: Icon(
-          Icons.save,
-          size: 15.0,
-        ),
-        options: FFButtonOptions(
-          width: double.infinity,
-          height: 48.0,
-          padding: EdgeInsets.all(0.0),
-          iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-          color: FlutterFlowTheme.of(context).salvar,
-          textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                ),
-                color: Colors.white,
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).titleSmall.fontStyle,
-              ),
-          elevation: 4.0,
-          borderSide: BorderSide(
-            color: Colors.transparent,
-            width: 1.0,
-          ),
-          borderRadius: BorderRadius.circular(60.0),
-        ),
-      ),
-    );
-  }
-
   Widget _rotuloLiberarInseminacao(BuildContext context) {
     return Text(
       'Liberar para inseminações:',
@@ -2452,6 +2457,10 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
       highlightColor: Colors.transparent,
       onTap: () async {
         // calendarUltimoParto
+        // A roda nasce mostrando hoje, mas só avisava ao ser girada: aceitar
+        // a data exibida deixava o campo vazio (e, na inseminação, escondia
+        // o campo do touro). Começa com a data que o usuário está vendo.
+        _datePicked2 ??= getCurrentTimestamp;
         await showModalBottomSheet<bool>(
             context: context,
             builder: (context) {
@@ -2664,6 +2673,10 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
       highlightColor: Colors.transparent,
       onTap: () async {
         // calendarUltimoParto
+        // A roda nasce mostrando hoje, mas só avisava ao ser girada: aceitar
+        // a data exibida deixava o campo vazio (e, na inseminação, escondia
+        // o campo do touro). Começa com a data que o usuário está vendo.
+        _datePicked3 ??= getCurrentTimestamp;
         await showModalBottomSheet<bool>(
             context: context,
             builder: (context) {
@@ -2771,44 +2784,23 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
       },
       child: Scaffold(
         key: scaffoldKey,
-        backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100.0),
-          child: AppBar(
-            backgroundColor:
-                _respostaNet! ? Color(0xFFF75E38) : Color(0xFFF2886E),
-            automaticallyImplyLeading: false,
-            actions: [],
-            flexibleSpace: FlexibleSpaceBar(
-              title: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _cabecalho(context),
-                ],
-              ),
-              centerTitle: true,
-              expandedTitleScale: 1.0,
-            ),
-            elevation: 0.0,
-          ),
+        backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+        appBar: CabecalhoTela(
+          titulo: 'Novo animal',
+          online: _respostaNet ?? true,
+          aoVoltar: _voltar,
         ),
-        body: SafeArea(
-          top: true,
-          child: Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 0.0),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _formularioCadastro(
-                      context, cadastrarNovoAnimalStatusAnimaisRecordList),
-                ],
-              ),
-            ),
-          ),
+        bottomNavigationBar: RodapeAcao(
+          texto: 'Salvar animal',
+          icone: Icons.check_rounded,
+          aoTocar: () => _cadastrarAnimal(context),
+        ),
+        body: ListView(
+          padding: const EdgeInsets.symmetric(vertical: 6.0),
+          children: [
+            _formularioCadastro(
+                context, cadastrarNovoAnimalStatusAnimaisRecordList),
+          ],
         ),
       ),
     );

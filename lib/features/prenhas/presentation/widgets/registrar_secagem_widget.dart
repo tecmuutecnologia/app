@@ -137,7 +137,10 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
   /// Registra a secagem de forma offline-first: grava a ação 'Secagem' e
   /// atualiza o status do animal ('Seca') no ObjectBox (fonte única), delegando
   /// a sincronização com o Firestore aos repositórios. Funciona sem conexão.
-  Future<void> _registrarSecagemOfflineFirst() async {
+  ///
+  /// Devolve a referência da ação, que o tratamento do receituário guarda para
+  /// ser apagado junto quando a ação for apagada no prontuário.
+  Future<DocumentReference?> _registrarSecagemOfflineFirst() async {
     final acao = AcaoEntity(
       parentPath: widget.uidTecnico!.path,
       uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
@@ -151,7 +154,7 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
       dataVisita: _dtSecagemTextController.text,
       dataDaAcao: getCurrentTimestamp,
     );
-    unawaited(AcaoRepository().add(acao));
+    await AcaoRepository().add(acao);
 
     final dados = {
       'status': 'Seca',
@@ -178,6 +181,7 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
         idStatusAnimal: 4,
       )));
     }
+    return referenciaDaAcao(acao);
   }
 
   Widget _conteudo(BuildContext context) {
@@ -554,7 +558,7 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                 // Offline-first: grava a ação 'Secagem' e atualiza o
                 // status do animal ('Seca') no ObjectBox; o sync com o
                 // Firestore é enfileirado pelos repositórios.
-                await _registrarSecagemOfflineFirst();
+                final acaoLancada = await _registrarSecagemOfflineFirst();
                 _shouldSetState = true;
 
                 // Bookkeeping de visita/tratamento/recomendação roda
@@ -572,6 +576,7 @@ class _RegistrarSecagemWidgetState extends State<RegistrarSecagemWidget>
                   tituloRecomendacao: 'Secagem',
                   descricaoRecomendacao: null,
                   uidAnimal: widget.uidAnimaisProdutores,
+                  uidAcaoLancada: acaoLancada,
                   // Vira a coluna "Data secagem" do receituário (PDF).
                   observacaoAcao: _dtSecagemTextController.text,
                   nomeAnimal: widget.nomeAnimal,
