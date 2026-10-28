@@ -7,7 +7,8 @@ import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/features/secas/application/filtros_secas.dart';
-import '/features/secas/application/selecao_animais.dart';
+import '/features/shared/application/selecao_animais.dart';
+import '/features/shared/widgets/selecao_widgets.dart';
 import '/core/ui/abas_pilula.dart';
 import '/core/ui/painel_lista.dart';
 import '/core/ui/card_animal_lista.dart';
@@ -28,7 +29,6 @@ import '/features/prontuario/presentation/pages/prontuario_animal_page.dart';
 import '/core/ui/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class SecasPage extends StatefulWidget {
@@ -332,7 +332,7 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
         context,
         item,
         botoes: selecionando
-            ? _marcador(context, marcado, alternar)
+            ? MarcadorSelecao(marcado: marcado, aoAlternar: alternar)
             : _part2(context, item),
         info: [
           _tileInfo(context, 'Data do descarte', item.dtDescarteAnimal),
@@ -348,38 +348,6 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
     );
   }
 
-  /// Caixinha do card no modo de seleção, na altura dos botões que ela
-  /// substitui para o card não pular.
-  Widget _marcador(BuildContext context, bool marcado, VoidCallback alternar) {
-    return SizedBox(
-      height: 40.0,
-      child: Row(
-        children: [
-          Checkbox(
-            value: marcado,
-            onChanged: (_) => alternar(),
-            activeColor: AppTokens.brand,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            visualDensity: VisualDensity.compact,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4.0)),
-          ),
-          const SizedBox(width: 4.0),
-          Text(
-            marcado ? 'Selecionado' : 'Toque para selecionar',
-            style: GoogleFonts.readexPro(
-              color: marcado
-                  ? AppTokens.brand
-                  : FlutterFlowTheme.of(context).secondaryText,
-              fontSize: 13.0,
-              fontWeight: marcado ? FontWeight.w600 : FontWeight.normal,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   /// Aba "Descarte": barra de seleção no topo, lista e, com algum animal
   /// marcado, o rodapé com as ações em lote.
   Widget _abaDescarte(BuildContext context) {
@@ -387,75 +355,15 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
     return Column(
       children: [
         if (itens.isNotEmpty)
-          _barraSelecao(context, itens.map(_chaveAnimal).toList()),
+          BarraSelecao(
+            selecao: _selecao,
+            visiveis: itens.map(_chaveAnimal).toList(),
+            resumo: '${rotuloAnimais(itens.length)} no descarte',
+            aoMudar: safeSetState,
+          ),
         Expanded(child: _listaCards(itens, _buildCard4)),
         if (_selecao.quantidade > 0) _rodapeSelecao(context),
       ],
-    );
-  }
-
-  Widget _barraSelecao(BuildContext context, List<String> visiveis) {
-    final tema = FlutterFlowTheme.of(context);
-    final estiloTexto =
-        GoogleFonts.readexPro(color: tema.secondaryText, fontSize: 13.0);
-    final estiloAcao = GoogleFonts.readexPro(fontWeight: FontWeight.w600);
-
-    return Padding(
-      padding: const EdgeInsetsDirectional.fromSTEB(16.0, 8.0, 8.0, 0.0),
-      child: SizedBox(
-        height: 40.0,
-        child: _selecao.ativa
-            ? Row(
-                children: [
-                  Checkbox(
-                    value: _selecao.todosMarcados(visiveis),
-                    onChanged: (_) =>
-                        safeSetState(() => _selecao.alternarTodos(visiveis)),
-                    activeColor: AppTokens.brand,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    visualDensity: VisualDensity.compact,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4.0)),
-                  ),
-                  const SizedBox(width: 4.0),
-                  Expanded(
-                    child: Text(
-                      _selecao.quantidade == 0
-                          ? 'Selecionar todos'
-                          : '${rotuloAnimais(_selecao.quantidade)} '
-                              '${_selecao.quantidade == 1 ? 'selecionado' : 'selecionados'}',
-                      style: estiloTexto.copyWith(
-                          color: tema.primaryText, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => safeSetState(_selecao.sair),
-                    style: TextButton.styleFrom(
-                        foregroundColor: tema.secondaryText,
-                        textStyle: estiloAcao),
-                    child: const Text('Cancelar'),
-                  ),
-                ],
-              )
-            : Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      '${rotuloAnimais(visiveis.length)} no descarte',
-                      style: estiloTexto,
-                    ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () => safeSetState(() => _selecao.entrar()),
-                    icon: const Icon(Icons.checklist_rounded, size: 18.0),
-                    label: const Text('Selecionar'),
-                    style: TextButton.styleFrom(
-                        foregroundColor: AppTokens.brand,
-                        textStyle: estiloAcao),
-                  ),
-                ],
-              ),
-      ),
     );
   }
 

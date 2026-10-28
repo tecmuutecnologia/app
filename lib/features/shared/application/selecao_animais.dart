@@ -1,4 +1,5 @@
-/// Marcação de vários animais na aba "Descarte" de "Animais em secagem".
+/// Marcação de vários animais numa lista (Descarte em "Animais em secagem" e
+/// Inseminações).
 ///
 /// Com muitas vacas para eliminar, o técnico repetia botão e confirmação card
 /// por card. No modo de seleção ele marca as que quer e confirma uma vez só.

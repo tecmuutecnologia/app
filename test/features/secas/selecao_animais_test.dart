@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tecmuu/features/secas/application/selecao_animais.dart';
+import 'package:tecmuu/features/shared/application/selecao_animais.dart';
 
 /// Seleção da aba "Descarte": o técnico marca vários animais e elimina ou
 /// restaura todos de uma vez, em vez de repetir a ação card por card.
