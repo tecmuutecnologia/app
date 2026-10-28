@@ -5,6 +5,7 @@ import 'dart:async';
 import '/core/connectivity/connectivity_service.dart';
 import '/core/auth/firebase_auth/auth_util.dart';
 import '/domain/animais/classificacao_animal.dart';
+import '/domain/animais/inducao_lactacao.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/features/animais/application/animais_providers.dart';
 import '/data/objectbox/entities/index.dart';
@@ -623,7 +624,12 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
               ((ehVaca(e.grupoAnimal)) && (ehSeca(e.status))) ||
               (e.status == 'Pré Parto') ||
               (ehDescarte(e.status)) ||
-              ((ehVazia(e.status)) && (e.dtInducaoLactacao != null)))
+              ((ehVazia(e.status)) &&
+                  inducaoLactacaoAtiva(
+                      dtInducao: e.dtInducaoLactacao,
+                      dtUltimaInseminacao: e.dtUltimaInseminacao,
+                      dtDgMais: e.dtDgMais,
+                      dtUltimoParto: e.dtUltimoParto)))
           .toList()
           .length,
       onTap: () async {
@@ -644,7 +650,11 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
           .where((e) =>
               (ehVazia(e.status)) &&
               ((ehNovilha(e.grupoAnimal)) || (ehVaca(e.grupoAnimal))) &&
-              (e.dtInducaoLactacao == null))
+              !inducaoLactacaoAtiva(
+                  dtInducao: e.dtInducaoLactacao,
+                  dtUltimaInseminacao: e.dtUltimaInseminacao,
+                  dtDgMais: e.dtDgMais,
+                  dtUltimoParto: e.dtUltimoParto))
           .toList()
           .length,
       onTap: () async {

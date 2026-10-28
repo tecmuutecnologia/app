@@ -8,6 +8,8 @@ AnimaisProdutoresStruct animal({
   String? status,
   String? grupo,
   DateTime? inducao,
+  String inseminacao = '',
+  String parto = '',
 }) =>
     AnimaisProdutoresStruct(
       nomeAnimal: nome,
@@ -15,6 +17,8 @@ AnimaisProdutoresStruct animal({
       status: status,
       grupoAnimal: grupo,
       dtInducaoLactacao: inducao,
+      dtUltimaInseminacao: inseminacao,
+      dtUltimoParto: parto,
     );
 
 List<String> nomes(List<AnimaisProdutoresStruct> l) =>
@@ -55,6 +59,20 @@ void main() {
     ];
 
     expect(elegiveisExame(lista), isEmpty);
+  });
+
+  test('mantem quem foi induzida mas seguiu o ciclo depois (vaca 354)', () {
+    final lista = [
+      animal(
+          nome: '354',
+          grupo: 'Vacas',
+          status: 'Vazia',
+          inducao: DateTime(2025, 8, 22),
+          inseminacao: '13/12/2025',
+          parto: '15/09/2026'),
+    ];
+
+    expect(nomes(elegiveisExame(lista)), ['354']);
   });
 
   group('busca', () {

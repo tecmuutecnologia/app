@@ -545,4 +545,24 @@ void main() {
       expect(bezerro.needsSync, true);
     });
   });
+
+  group('dtInducaoLactacao no sync', () {
+    test('apaga a indução quando o documento remoto não a tem mais', () {
+      final animal = AnimalEntity(
+          nomeAnimal: 'Mimosa', dtInducaoLactacao: DateTime(2025, 8, 22));
+
+      // Parto induzido em outro aparelho: o Firestore apagou o campo.
+      animal.updateFromFirestore({'nomeAnimal': 'Mimosa', 'status': 'Vazia'});
+
+      expect(animal.dtInducaoLactacao, isNull);
+    });
+
+    test('apaga a indução quando o documento remoto a traz nula', () {
+      final animal = AnimalEntity(dtInducaoLactacao: DateTime(2025, 8, 22));
+
+      animal.updateFromFirestore({'dtInducaoLactacao': null});
+
+      expect(animal.dtInducaoLactacao, isNull);
+    });
+  });
 }

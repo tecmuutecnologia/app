@@ -7,8 +7,10 @@ library;
 import '../../../data/schema/structs/animais_produtores_struct.dart';
 import '../../../domain/animais/classificacao_animal.dart';
 import '../../../domain/animais/filtro_lista_animais.dart';
+import '../../../domain/animais/inducao_lactacao.dart';
 
-/// Vacas e novilhas vazias e sem inducao de lactacao, filtradas tambem pelo
+/// Vacas e novilhas vazias e sem inducao de lactacao em curso (ver
+/// [inducaoLactacaoAtiva]), filtradas tambem pelo
 /// termo buscado.
 ///
 /// Nao filtra por propriedade: isso acontece na origem, com a consulta
@@ -21,7 +23,11 @@ List<AnimaisProdutoresStruct> elegiveisExame(
       .where((item) =>
           ehVazia(item.status) &&
           ehVacaOuNovilha(item.grupoAnimal) &&
-          item.dtInducaoLactacao == null &&
+          !inducaoLactacaoAtiva(
+              dtInducao: item.dtInducaoLactacao,
+              dtUltimaInseminacao: item.dtUltimaInseminacao,
+              dtDgMais: item.dtDgMais,
+              dtUltimoParto: item.dtUltimoParto) &&
           casaBuscaAnimal(
               nome: item.nomeAnimal, brinco: item.brincoAnimal, termo: busca))
       .toList();

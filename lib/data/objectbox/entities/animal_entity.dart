@@ -286,9 +286,12 @@ class AnimalEntity implements SyncableEntity {
       compararDtUltimaInseminacao =
           (data['compararDtUltimaInseminacao'] as dynamic).toDate();
     }
-    if (data['dtInducaoLactacao'] != null) {
-      dtInducaoLactacao = (data['dtInducaoLactacao'] as dynamic).toDate();
-    }
+    // O documento chega inteiro: sem o campo (FieldValue.delete do parto
+    // induzido) ou com ele nulo, a inducao acabou. Preservar o valor local
+    // deixava a vaca "em inducao" para sempre neste aparelho.
+    dtInducaoLactacao = data['dtInducaoLactacao'] != null
+        ? (data['dtInducaoLactacao'] as dynamic).toDate()
+        : null;
     if (data['dtDesmame'] != null) {
       dtDesmame = (data['dtDesmame'] as dynamic).toDate();
     }

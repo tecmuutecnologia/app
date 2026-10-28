@@ -33,8 +33,8 @@ void aplicarDadosNoAnimal(AnimalEntity entity, Map<String, dynamic> data) {
       data['dtUltimaInseminacao'] ?? entity.dtUltimaInseminacao;
   entity.nomeTouroUltimaInseminacao =
       data['nomeTouroUltimaInseminacao'] ?? entity.nomeTouroUltimaInseminacao;
-  entity.compararDtUltimaInseminacao = data['compararDtUltimaInseminacao'] ??
-      entity.compararDtUltimaInseminacao;
+  entity.compararDtUltimaInseminacao =
+      data['compararDtUltimaInseminacao'] ?? entity.compararDtUltimaInseminacao;
   entity.dtUltimoParto = data['dtUltimoParto'] ?? entity.dtUltimoParto;
   // Datas de ciclo (definidas/limpas pelos formulários de ação).
   entity.dtPartoPrevisto = data['dtPartoPrevisto'] ?? entity.dtPartoPrevisto;
@@ -48,8 +48,11 @@ void aplicarDadosNoAnimal(AnimalEntity entity, Map<String, dynamic> data) {
   entity.dtDgMenos = data['dtDgMenos'] ?? entity.dtDgMenos;
   entity.dtAborto = data['dtAborto'] ?? entity.dtAborto;
   entity.dtSecagem = data['dtSecagem'] ?? entity.dtSecagem;
-  entity.dtInducaoLactacao =
-      data['dtInducaoLactacao'] ?? entity.dtInducaoLactacao;
+  // `null` explicito apaga (inseminar uma vaca encerra a inducao); so a
+  // ausencia da chave preserva.
+  if (data.containsKey('dtInducaoLactacao')) {
+    entity.dtInducaoLactacao = data['dtInducaoLactacao'];
+  }
   entity.dtUltimaAcao = data['dtUltimaAcao'] ?? entity.dtUltimaAcao;
   entity.dtUltimoPartoContingencia =
       data['dtUltimoPartoContingencia'] ?? entity.dtUltimoPartoContingencia;
@@ -59,18 +62,16 @@ void aplicarDadosNoAnimal(AnimalEntity entity, Map<String, dynamic> data) {
   entity.brincoAnimal = data['brincoAnimal'] ?? entity.brincoAnimal;
   entity.brincoAnimalOrder =
       data['brincoAnimalOrder'] ?? entity.brincoAnimalOrder;
-  entity.nomeBrincoConcat =
-      data['nomeBrincoConcat'] ?? entity.nomeBrincoConcat;
+  entity.nomeBrincoConcat = data['nomeBrincoConcat'] ?? entity.nomeBrincoConcat;
   entity.idGrupoAnimal = data['idGrupoAnimal'] ?? entity.idGrupoAnimal;
   entity.idStatusAnimal = data['idStatusAnimal'] ?? entity.idStatusAnimal;
   entity.totalInseminacoes =
       data['totalInseminacoes'] ?? entity.totalInseminacoes;
   entity.totalPartos = data['totalPartos'] ?? entity.totalPartos;
 
-  entity.dtDescarteAnimal =
-    data['dtDescarteAnimal'] ?? entity.dtDescarteAnimal;
+  entity.dtDescarteAnimal = data['dtDescarteAnimal'] ?? entity.dtDescarteAnimal;
   entity.motivoDescarteAnimal =
-    data['motivoDescarteAnimal'] ?? entity.motivoDescarteAnimal;
+      data['motivoDescarteAnimal'] ?? entity.motivoDescarteAnimal;
 }
 
 class AnimalRepository extends BaseSyncRepository<AnimalEntity> {

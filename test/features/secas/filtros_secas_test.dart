@@ -12,6 +12,7 @@ AnimaisProdutoresStruct animal({
   String? grupo,
   DateTime? comparar,
   DateTime? inducao,
+  String parto = '',
 }) =>
     AnimaisProdutoresStruct(
       nomeAnimal: nome,
@@ -20,6 +21,7 @@ AnimaisProdutoresStruct animal({
       grupoAnimal: grupo,
       compararDtUltimaInseminacao: comparar,
       dtInducaoLactacao: inducao,
+      dtUltimoParto: parto,
     );
 
 final sentinela = DateTime(2050, 12, 31);
@@ -48,7 +50,11 @@ void main() {
   group('aba Vacas secas', () {
     test('mantem vaca seca com data real', () {
       final lista = [
-        animal(nome: 'Seca', grupo: 'Vacas', status: 'Seca', comparar: DateTime(2026, 5, 26)),
+        animal(
+            nome: 'Seca',
+            grupo: 'Vacas',
+            status: 'Seca',
+            comparar: DateTime(2026, 5, 26)),
         animal(nome: 'Prenha', grupo: 'Vacas', status: 'Prenha'),
         animal(nome: 'Novilha', grupo: 'Novilhas', status: 'Seca'),
       ];
@@ -60,7 +66,11 @@ void main() {
 
     test('descarta quem tem a data-sentinela', () {
       final lista = [
-        animal(nome: 'Sentinela', grupo: 'Vacas', status: 'Seca', comparar: sentinela),
+        animal(
+            nome: 'Sentinela',
+            grupo: 'Vacas',
+            status: 'Seca',
+            comparar: sentinela),
       ];
 
       expect(animaisDaAba(lista, aba: AbaSecas.vacasSecas), isEmpty);
@@ -87,6 +97,15 @@ void main() {
 
       expect(nomes(animaisDaAba(lista, aba: AbaSecas.inducaoLactacao)),
           ['Induzida']);
+    });
+
+    test('tira quem teve parto depois da inducao', () {
+      final lista = [
+        animal(
+            nome: 'Pariu', inducao: DateTime(2025, 8, 22), parto: '15/09/2026'),
+      ];
+
+      expect(animaisDaAba(lista, aba: AbaSecas.inducaoLactacao), isEmpty);
     });
   });
 
@@ -128,7 +147,8 @@ void main() {
         animal(nome: 'Aurora', status: 'Descarte'),
       ];
 
-      expect(animaisDaAba(lista, aba: AbaSecas.descarte, busca: ''), hasLength(2));
+      expect(
+          animaisDaAba(lista, aba: AbaSecas.descarte, busca: ''), hasLength(2));
     });
   });
 }

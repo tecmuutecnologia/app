@@ -43,11 +43,31 @@ void main() {
     });
 
     test('preserva o que nao veio', () {
-      final animal = AnimalEntity(nomeAnimal: 'Mimosa', racaAnimal: 'Holandesa');
+      final animal =
+          AnimalEntity(nomeAnimal: 'Mimosa', racaAnimal: 'Holandesa');
 
       aplicarDadosNoAnimal(animal, {'nomeAnimal': 'Estrela'});
 
       expect(animal.racaAnimal, 'Holandesa');
+    });
+  });
+
+  group('dtInducaoLactacao', () {
+    test('null explícito no mapa apaga a indução', () {
+      final animal = AnimalEntity(dtInducaoLactacao: DateTime(2025, 8, 22));
+
+      aplicarDadosNoAnimal(animal, {'dtInducaoLactacao': null});
+
+      expect(animal.dtInducaoLactacao, isNull);
+    });
+
+    test('mapa que não menciona a indução a preserva', () {
+      final inducao = DateTime(2025, 8, 22);
+      final animal = AnimalEntity(dtInducaoLactacao: inducao);
+
+      aplicarDadosNoAnimal(animal, {'status': 'Vazia'});
+
+      expect(animal.dtInducaoLactacao, inducao);
     });
   });
 }

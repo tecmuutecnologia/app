@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '/core/ui/menu_acao_card.dart';
 import '/domain/animais/classificacao_animal.dart';
+import '/domain/animais/inducao_lactacao.dart';
 import '/data/objectbox/entities/animal_entity.dart';
 
 import '/core/ui/flutter_flow_animations.dart';
@@ -189,7 +190,12 @@ class PropriedadeMenuGrid extends StatelessWidget {
             ((ehVaca(e.grupoAnimal)) && (ehSeca(e.status))) ||
             (e.status == 'Pré Parto') ||
             (ehDescarte(e.status)) ||
-            ((ehVazia(e.status)) && (e.dtInducaoLactacao != null)))
+            ((ehVazia(e.status)) &&
+                inducaoLactacaoAtiva(
+                    dtInducao: e.dtInducaoLactacao,
+                    dtUltimaInseminacao: e.dtUltimaInseminacao,
+                    dtDgMais: e.dtDgMais,
+                    dtUltimoParto: e.dtUltimoParto)))
         .toList()
         .length;
 
@@ -212,7 +218,11 @@ class PropriedadeMenuGrid extends StatelessWidget {
           .where((e) =>
               (ehVazia(e.status)) &&
               ((ehNovilha(e.grupoAnimal)) || (ehVaca(e.grupoAnimal))) &&
-              (e.dtInducaoLactacao == null))
+              !inducaoLactacaoAtiva(
+                  dtInducao: e.dtInducaoLactacao,
+                  dtUltimaInseminacao: e.dtUltimaInseminacao,
+                  dtDgMais: e.dtDgMais,
+                  dtUltimoParto: e.dtUltimoParto))
           .toList()
           .length;
 

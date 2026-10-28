@@ -6,6 +6,7 @@ import '/core/ui/flutter_flow_util.dart';
 // Imports other custom actions
 import '/core/ui/custom_functions.dart' as functions;
 import '/domain/animais/dias_desde.dart';
+import '/domain/animais/inducao_lactacao.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
@@ -50,6 +51,11 @@ Future<void> createResumoRebanhoExcel(
     for (final animalEntity in animaisProdutores) {
       if (!animalEntity.isDeleted) {
         final data = animalEntity.toFirestore();
+        final induzida = inducaoLactacaoAtiva(
+            dtInducao: animalEntity.dtInducaoLactacao,
+            dtUltimaInseminacao: animalEntity.dtUltimaInseminacao,
+            dtDgMais: animalEntity.dtDgMais,
+            dtUltimoParto: animalEntity.dtUltimoParto);
 
         // Filtrar por Categoria
         if (!categorias.contains(data['grupoAnimal'])) {
@@ -63,8 +69,7 @@ Future<void> createResumoRebanhoExcel(
 
             for (var status in filtroStatus) {
               if (status == 'Indução de Lactação') {
-                if (data['status'] == 'Vazia' &&
-                    data['dtInducaoLactacao'] != null) {
+                if (data['status'] == 'Vazia' && induzida) {
                   statusMatch = true;
                   break;
                 }
@@ -87,7 +92,7 @@ Future<void> createResumoRebanhoExcel(
         if (data['status'] == 'Vazia' &&
             (data['grupoAnimal'] == 'Novilhas' ||
                 data['grupoAnimal'] == 'Vacas') &&
-            data['dtInducaoLactacao'] is Timestamp) {
+            induzida) {
           statusReprodutivo = 'Indução de Lactação';
         } else if ([
           'Inseminada',

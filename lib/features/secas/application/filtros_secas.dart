@@ -12,6 +12,7 @@ library;
 import '../../../data/schema/structs/animais_produtores_struct.dart';
 import '../../../domain/animais/classificacao_animal.dart';
 import '../../../domain/animais/filtro_lista_animais.dart';
+import '../../../domain/animais/inducao_lactacao.dart';
 
 export '../../../domain/animais/filtro_lista_animais.dart'
     show temDataSentinela;
@@ -45,7 +46,11 @@ List<AnimaisProdutoresStruct> animaisDaAba(
         return item.status == kStatusPrePartoEspaco &&
             !temDataSentinela(item.compararDtUltimaInseminacao);
       case AbaSecas.inducaoLactacao:
-        return item.dtInducaoLactacao != null;
+        return inducaoLactacaoAtiva(
+            dtInducao: item.dtInducaoLactacao,
+            dtUltimaInseminacao: item.dtUltimaInseminacao,
+            dtDgMais: item.dtDgMais,
+            dtUltimoParto: item.dtUltimoParto);
       case AbaSecas.descarte:
         return ehDescarte(item.status);
     }
