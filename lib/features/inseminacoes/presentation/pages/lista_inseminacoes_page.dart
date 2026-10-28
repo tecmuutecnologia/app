@@ -1,5 +1,9 @@
 // ignore_for_file: unnecessary_null_comparison, unused_import
 
+import '/features/inseminacoes/application/inseminacao_lote.dart';
+import '/features/shared/widgets/selecao_widgets.dart';
+import '/features/shared/application/selecao_animais.dart';
+import '/core/ui/secao_formulario.dart';
 import '/core/ui/cabecalho_tela.dart';
 import 'dart:async';
 
@@ -7,6 +11,7 @@ import '/core/connectivity/connectivity_service.dart';
 import '/data/backend.dart';
 import '/features/inseminacoes/application/filtros_inseminacao.dart';
 import '/domain/animais/classificacao_animal.dart';
+import '/domain/animais/dias_desde.dart';
 import '/domain/animais/ordenacao_animal.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/features/animais/presentation/animais_ordenados_view.dart';
@@ -68,6 +73,17 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
   OrdemAnimais _ordem = OrdemAnimais.nome;
   bool _crescente = true;
 
+  /// Marcação de vários animais para inseminar de uma vez (mesma seleção do
+  /// Descarte). Guarda chaves: a lista é reativa e os objetos mudam a cada carga.
+  final _selecao = SelecaoAnimais();
+
+  /// Elegíveis da propriedade SEM a busca: a seleção vale para todos os
+  /// marcados, mesmo os escondidos pela busca no momento.
+  List<AnimaisProdutoresStruct> _elegiveis = const [];
+
+  String _chave(AnimaisProdutoresStruct a) =>
+      a.uidAnimal?.path ?? 'offline:${a.uidAnimalOffline}';
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -107,101 +123,140 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
   /// ações "Fez Cio" / "Inseminar" por último. Tocar abre o prontuário.
   Widget _itemAnimalElegivel(
       BuildContext context, AnimaisProdutoresStruct item) {
+    // Modo de seleção: o toque marca o animal e os botões dão lugar à
+    // caixinha; segurar o card liga a seleção já com ele marcado.
+    final chave = _chave(item);
+    final selecionando = _selecao.ativa;
+    final marcado = _selecao.contem(chave);
+    void alternar() => safeSetState(() => _selecao.alternar(chave));
+    final inseminada =
+        ehInseminada(item.status) || ehInseminadaPP(item.status);
     return CartaoLista(
-      aoTocar: () => context.pushNamed(
-        ProntuarioAnimalPage.routeName,
-        queryParameters: {
-          'uidPropriedade': serializeParam(
-            widget.uidPropriedade,
-            ParamType.DocumentReference,
-          ),
-          'nomePropriedade': serializeParam(
-            widget.nomePropriedade,
-            ParamType.String,
-          ),
-          'uidTecnico': serializeParam(
-            widget.uidTecnico,
-            ParamType.DocumentReference,
-          ),
-          'emailPropriedade': serializeParam(
-            widget.emailPropriedade,
-            ParamType.String,
-          ),
-          'uidAnimaisProdutores': serializeParam(
-            item.uidAnimal,
-            ParamType.DocumentReference,
-          ),
-          'grupoPredominante': serializeParam(
-            item.grupoAnimal,
-            ParamType.String,
-          ),
-          'visitaPresencial': serializeParam(
-            widget.visitaPresencial,
-            ParamType.bool,
-          ),
-          'diasDg': serializeParam(
-            widget.diasDg,
-            ParamType.String,
-          ),
-        }.withoutNulls,
-      ),
+      marcado: marcado,
+      aoSegurar: selecionando
+          ? alternar
+          : () => safeSetState(() => _selecao.entrar(comChave: chave)),
+      aoTocar: selecionando
+          ? alternar
+          : () => context.pushNamed(
+                ProntuarioAnimalPage.routeName,
+                queryParameters: {
+                  'uidPropriedade': serializeParam(
+                    widget.uidPropriedade,
+                    ParamType.DocumentReference,
+                  ),
+                  'nomePropriedade': serializeParam(
+                    widget.nomePropriedade,
+                    ParamType.String,
+                  ),
+                  'uidTecnico': serializeParam(
+                    widget.uidTecnico,
+                    ParamType.DocumentReference,
+                  ),
+                  'emailPropriedade': serializeParam(
+                    widget.emailPropriedade,
+                    ParamType.String,
+                  ),
+                  'uidAnimaisProdutores': serializeParam(
+                    item.uidAnimal,
+                    ParamType.DocumentReference,
+                  ),
+                  'grupoPredominante': serializeParam(
+                    item.grupoAnimal,
+                    ParamType.String,
+                  ),
+                  'visitaPresencial': serializeParam(
+                    widget.visitaPresencial,
+                    ParamType.bool,
+                  ),
+                  'diasDg': serializeParam(
+                    widget.diasDg,
+                    ParamType.String,
+                  ),
+                }.withoutNulls,
+              ),
       child: ConteudoCardAnimal(
         grupo: item.grupoAnimal,
         titulo: tituloNomeBrinco(item.nomeAnimal, item.brincoAnimal),
-        selo: (ehInseminada(item.status) || ehInseminadaPP(item.status))
-            ? const SeloStatus('Inseminada')
-            : null,
-        info: [InfoAnimal('Última inseminação', item.dtUltimaInseminacao)],
-        acoes: LinhaAcoes(children: [
-          FFButtonWidget(
-            onPressed: () => _abrirFolha(
-              RegistrarCioWidget(
-                uidPropriedade: widget.uidPropriedade!,
-                nomePropriedade: widget.nomePropriedade!,
-                uidTecnico: widget.uidTecnico!,
-                emailPropriedade: widget.emailPropriedade!,
-                uidAnimaisProdutores: item.uidAnimal,
-                uidAnimalOffline: item.uidAnimalOffline,
-                grupoPredominante: item.grupoAnimal,
-                nomeAnimal: item.nomeAnimal,
-                visitaPresencial: widget.visitaPresencial!,
-                brincoAnimal: item.brincoAnimal.toString(),
-                diasDg: widget.diasDg!,
-              ),
-            ),
-            text: 'Fez Cio',
-            icon: const Icon(Icons.repeat, size: 15.0),
-            options: opcoesBotaoCard(context, AppTokens.positivo),
-          ),
-          FFButtonWidget(
-            onPressed: () => _abrirFolha(
-              NovaInseminacaoWidget(
-                uidPropriedade: widget.uidPropriedade!,
-                nomePropriedade: widget.nomePropriedade!,
-                uidTecnico: widget.uidTecnico!,
-                emailPropriedade: widget.emailPropriedade!,
-                grupoPredominante: item.grupoAnimal,
-                nomeAnimal: item.nomeAnimal,
-                visitaPresencial: widget.visitaPresencial!,
-                dtUltimaInseminacao: item.dtUltimaInseminacao,
-                brincoAnimal: item.brincoAnimal.toString(),
-                diasDg: widget.diasDg!,
-                uidAnimaisProdutores: item.uidAnimal,
-                uidAnimalOffline: item.uidAnimalOffline,
-              ),
-            ),
-            text: 'Inseminar',
-            icon: const Icon(Icons.playlist_add, size: 15.0),
-            options: opcoesBotaoCard(context, AppTokens.brand),
-          ),
-        ]),
+        selo: inseminada ? const SeloStatus('Inseminada') : null,
+        // Inseminada mostra, ao lado da data, há quantos dias foi inseminada.
+        info: [
+          InfoAnimal('Última inseminação', item.dtUltimaInseminacao),
+          if (inseminada)
+            InfoAnimal('Dias IA', diasDesde(item.dtUltimaInseminacao)),
+        ],
+        acoes: selecionando
+            ? MarcadorSelecao(marcado: marcado, aoAlternar: alternar)
+            : LinhaAcoes(children: [
+                FFButtonWidget(
+                  onPressed: () => _abrirFolha(
+                    RegistrarCioWidget(
+                      uidPropriedade: widget.uidPropriedade!,
+                      nomePropriedade: widget.nomePropriedade!,
+                      uidTecnico: widget.uidTecnico!,
+                      emailPropriedade: widget.emailPropriedade!,
+                      uidAnimaisProdutores: item.uidAnimal,
+                      uidAnimalOffline: item.uidAnimalOffline,
+                      grupoPredominante: item.grupoAnimal,
+                      nomeAnimal: item.nomeAnimal,
+                      visitaPresencial: widget.visitaPresencial!,
+                      brincoAnimal: item.brincoAnimal.toString(),
+                      diasDg: widget.diasDg!,
+                    ),
+                  ),
+                  text: 'Fez Cio',
+                  icon: const Icon(Icons.repeat, size: 15.0),
+                  options: opcoesBotaoCard(context, AppTokens.positivo),
+                ),
+                FFButtonWidget(
+                  onPressed: () => _abrirFolha(
+                    NovaInseminacaoWidget(
+                      uidPropriedade: widget.uidPropriedade!,
+                      nomePropriedade: widget.nomePropriedade!,
+                      uidTecnico: widget.uidTecnico!,
+                      emailPropriedade: widget.emailPropriedade!,
+                      grupoPredominante: item.grupoAnimal,
+                      nomeAnimal: item.nomeAnimal,
+                      visitaPresencial: widget.visitaPresencial!,
+                      dtUltimaInseminacao: item.dtUltimaInseminacao,
+                      brincoAnimal: item.brincoAnimal.toString(),
+                      diasDg: widget.diasDg!,
+                      uidAnimaisProdutores: item.uidAnimal,
+                      uidAnimalOffline: item.uidAnimalOffline,
+                    ),
+                  ),
+                  text: 'Inseminar',
+                  icon: const Icon(Icons.playlist_add, size: 15.0),
+                  options: opcoesBotaoCard(context, AppTokens.brand),
+                ),
+              ]),
       ),
     );
   }
 
+  /// Abre o modal de inseminação para todos os marcados (inclusive os
+  /// escondidos pela busca). Registrado, a seleção é desfeita.
+  Future<void> _inseminarSelecionados() async {
+    final alvos = _elegiveis
+        .where((a) => _selecao.contem(_chave(a)))
+        .map(AlvoInseminacao.doStruct)
+        .toList();
+    if (alvos.isEmpty) return;
+    final registrou = await _abrirFolha(NovaInseminacaoWidget.lote(
+      uidPropriedade: widget.uidPropriedade,
+      nomePropriedade: widget.nomePropriedade,
+      uidTecnico: widget.uidTecnico,
+      emailPropriedade: widget.emailPropriedade,
+      visitaPresencial: widget.visitaPresencial,
+      diasDg: widget.diasDg,
+      alvos: alvos,
+    ));
+    if (registrou == true) safeSetState(_selecao.sair);
+  }
+
   /// Abre um formulário na folha inferior e redesenha a lista ao fechar.
-  Future<void> _abrirFolha(Widget formulario) async {
-    await showModalBottomSheet(
+  Future<bool?> _abrirFolha(Widget formulario) async {
+    final resultado = await showModalBottomSheet<bool>(
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       enableDrag: false,
@@ -218,6 +273,7 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
       ),
     );
     safeSetState(() {});
+    return resultado;
   }
 
   @override
@@ -235,7 +291,17 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
         appBar: CabecalhoTela(
           titulo: 'Inseminações',
           online: _respostaNet ?? true,
+          // No modo de seleção, voltar só cancela a seleção.
+          aoVoltar: () =>
+              _selecao.ativa ? safeSetState(_selecao.sair) : context.safePop(),
         ),
+        bottomNavigationBar: _selecao.quantidade > 0
+            ? RodapeAcao(
+                texto: 'Inseminar ${rotuloAnimais(_selecao.quantidade)}',
+                icone: Icons.playlist_add_rounded,
+                aoTocar: _inseminarSelecionados,
+              )
+            : null,
         body: Column(
           children: [
             PainelLista(
@@ -270,22 +336,39 @@ class _ListaInseminacoesPageState extends State<ListaInseminacoesPage> {
                 builder: (context, animais) {
                   // O provider entrega o rebanho do APARELHO; a propriedade
                   // e recortada aqui, em Dart, sem montar widget nenhum.
+                  final daPropriedade = animais.where(
+                      (a) => a.uidTecnicoPropriedade == widget.uidPropriedade);
+                  _elegiveis =
+                      elegiveisInseminacao(daPropriedade, busca: '').toList();
                   final visiveis = ordenarStructs(
                     elegiveisInseminacao(
-                      animais.where((a) =>
-                          a.uidTecnicoPropriedade == widget.uidPropriedade),
+                      daPropriedade,
                       busca: _searchListTextController.text,
                     ),
                     ordem: _ordem,
                     crescente: _crescente,
                   );
-                  return ListView.builder(
-                    padding: const EdgeInsetsDirectional.fromSTEB(
-                        0.0, 8.0, 0.0, 120.0),
-                    primary: false,
-                    itemCount: visiveis.length,
-                    itemBuilder: (context, i) =>
-                        _itemAnimalElegivel(context, visiveis[i]),
+                  return Column(
+                    children: [
+                      if (visiveis.isNotEmpty)
+                        BarraSelecao(
+                          selecao: _selecao,
+                          visiveis: visiveis.map(_chave).toList(),
+                          resumo:
+                              '${rotuloAnimais(visiveis.length)} para inseminar',
+                          aoMudar: safeSetState,
+                        ),
+                      Expanded(
+                        child: ListView.builder(
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0, 8.0, 0.0, 120.0),
+                          primary: false,
+                          itemCount: visiveis.length,
+                          itemBuilder: (context, i) =>
+                              _itemAnimalElegivel(context, visiveis[i]),
+                        ),
+                      ),
+                    ],
                   );
                 },
               ),

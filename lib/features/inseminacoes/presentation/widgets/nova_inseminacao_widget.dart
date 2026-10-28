@@ -1,174 +1,181 @@
-// ignore_for_file: dead_code, dead_null_aware_expression
-
-import '/domain/animais/data_ultima_acao.dart';
-import '/data/backend.dart';
-import '/core/ui/app_card.dart';
-import '/data/objectbox/index.dart';
-import '/domain/animais/classificacao_animal.dart';
 import 'dart:async';
-import '/core/ui/flutter_flow_animations.dart';
-import '/core/ui/flutter_flow_drop_down.dart';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import '/app/theme/flutter_flow_theme.dart';
+import '/core/ui/app_card.dart';
+import '/core/ui/card_animal_lista.dart';
+import '/core/ui/confirmar_acao.dart';
+import '/core/ui/custom_functions.dart' as functions;
+import '/core/ui/flutter_flow_drop_down.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/core/ui/form_field_controller.dart';
-import 'dart:ui';
-import '/core/ui/custom_functions.dart' as functions;
-import 'package:easy_debounce/easy_debounce.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:provider/provider.dart';
+import '/core/ui/painel_lista.dart';
+import '/data/backend.dart';
+import '/data/objectbox/index.dart';
+import '/domain/animais/classificacao_animal.dart';
+import '/domain/animais/data_ultima_acao.dart';
+import '/features/animais/application/touro_inseminacao.dart';
+import '/features/inseminacoes/application/inseminacao_lote.dart';
 
+/// Modal de inseminação, para um animal ou para vários de uma vez (seleção na
+/// tela de Inseminações). Cada animal recebe exatamente a mesma gravação.
+///
+/// Com um animal só aparece também o campo Observações; no lote não, porque a
+/// observação é de um animal específico.
 class NovaInseminacaoWidget extends StatefulWidget {
-  const NovaInseminacaoWidget({
+  /// Um animal (botão "Inseminar" do card).
+  NovaInseminacaoWidget({
     super.key,
     required this.uidPropriedade,
     required this.nomePropriedade,
     required this.uidTecnico,
     required this.emailPropriedade,
-    required this.uidAnimaisProdutores,
-    required this.grupoPredominante,
-    required this.nomeAnimal,
+    required DocumentReference? uidAnimaisProdutores,
+    required String? grupoPredominante,
+    required String? nomeAnimal,
     required this.visitaPresencial,
-    required this.dtUltimaInseminacao,
-    required this.brincoAnimal,
+    required String? dtUltimaInseminacao,
+    required String? brincoAnimal,
     required this.diasDg,
-    this.uidAnimalOffline,
+    String? uidAnimalOffline,
+  }) : alvos = [
+          AlvoInseminacao(
+            nome: tituloNomeBrinco(
+                nomeAnimal ?? '', int.tryParse(brincoAnimal ?? '')),
+            referencia: uidAnimaisProdutores,
+            uidAnimalOffline: uidAnimalOffline,
+            dtUltimaInseminacao: dtUltimaInseminacao ?? '',
+          ),
+        ];
+
+  /// Vários animais (seleção em lote).
+  const NovaInseminacaoWidget.lote({
+    super.key,
+    required this.uidPropriedade,
+    required this.nomePropriedade,
+    required this.uidTecnico,
+    required this.emailPropriedade,
+    required this.visitaPresencial,
+    required this.diasDg,
+    required this.alvos,
   });
 
   final DocumentReference? uidPropriedade;
   final String? nomePropriedade;
   final DocumentReference? uidTecnico;
   final String? emailPropriedade;
-  final DocumentReference? uidAnimaisProdutores;
-
-  /// Identidade local do animal criado OFFLINE (ainda sem `firestoreId`/ref no
-  /// Firestore). Para esses, `uidAnimaisProdutores` é null; a ação guarda este
-  /// id e o vínculo é resolvido pela cascata quando o animal sincroniza.
-  final String? uidAnimalOffline;
-  final String? grupoPredominante;
-  final String? nomeAnimal;
   final bool? visitaPresencial;
-  final String? dtUltimaInseminacao;
-  final String? brincoAnimal;
   final String? diasDg;
+  final List<AlvoInseminacao> alvos;
 
   @override
   State<NovaInseminacaoWidget> createState() => _NovaInseminacaoWidgetState();
 }
 
-class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
-    with TickerProviderStateMixin {
-  final animationsMap = <String, AnimationInfo>{};
+class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget> {
+  String? _touro;
+  final _touroController = FormFieldController<String>(null);
+  final _obsController = TextEditingController();
+  DateTime _data = DateTime.now();
+  bool _gravando = false;
 
-  AnimaisProdutoresRecord? _outUidAnimaisAnimal;
-  String? _touroValue;
-  FormFieldController<String>? _touroValueController;
-  FocusNode? _dtInseminacaoFocusNode;
-  TextEditingController? _dtInseminacaoTextController;
-  late MaskTextInputFormatter _dtInseminacaoMask;
-  final String? Function(BuildContext, String?)?
-      _dtInseminacaoTextControllerValidator = null;
-  DateTime? _datePicked;
-  FocusNode? _obsFocusNode;
-  TextEditingController? _obsTextController;
-  final String? Function(BuildContext, String?)? _obsTextControllerValidator =
-      null;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // On component load action.
-    SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _outUidAnimaisAnimal = await AnimaisProdutoresRecord.getDocumentOnce(
-          widget.uidAnimaisProdutores!);
-    });
-
-    _dtInseminacaoTextController ??= TextEditingController();
-    _dtInseminacaoFocusNode ??= FocusNode();
-
-    _dtInseminacaoMask = MaskTextInputFormatter(mask: '##/##/####');
-    _obsTextController ??= TextEditingController();
-    _obsFocusNode ??= FocusNode();
-
-    animationsMap.addAll({
-      'containerOnPageLoadAnimation': AnimationInfo(
-        trigger: AnimationTrigger.onPageLoad,
-        effectsBuilder: () => [
-          VisibilityEffect(duration: 300.ms),
-          MoveEffect(
-            curve: Curves.bounceOut,
-            delay: 300.0.ms,
-            duration: 400.0.ms,
-            begin: Offset(0.0, 100.0),
-            end: Offset(0.0, 0.0),
-          ),
-          FadeEffect(
-            curve: Curves.easeInOut,
-            delay: 300.0.ms,
-            duration: 400.0.ms,
-            begin: 0.0,
-            end: 1.0,
-          ),
-        ],
-      ),
-    });
-    setupAnimations(
-      animationsMap.values.where((anim) =>
-          anim.trigger == AnimationTrigger.onActionTrigger ||
-          !anim.applyInitialState),
-      this,
-    );
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {
-          _dtInseminacaoTextController?.text = dateTimeFormat(
-            "dd/MM/yyyy",
-            getCurrentTimestamp,
-            locale: FFLocalizations.of(context).languageCode,
-          );
-        }));
-  }
+  bool get _umAnimal => widget.alvos.length == 1;
+  String get _dataTexto => dateTimeFormat('dd/MM/yyyy', _data);
 
   @override
   void dispose() {
-    _dtInseminacaoFocusNode?.dispose();
-    _dtInseminacaoTextController?.dispose();
-    _obsFocusNode?.dispose();
-    _obsTextController?.dispose();
-
+    _obsController.dispose();
     super.dispose();
   }
 
-  /// Registra a inseminação de forma offline-first (mesma lógica dos 3 ramos):
-  /// cria a ação 'Inseminada' via AcaoRepository e atualiza o animal via
-  /// AnimalRepository (status 'Inseminada' + incrementa total), sem bloquear a
-  /// UI. Funciona sem internet e sincroniza ao reconectar.
-  Future<void> _inseminarOfflineFirst() async {
-    final dtIns = _dtInseminacaoTextController.text;
+  /// Touros e sêmens da propriedade liberados para inseminação.
+  List<String> _opcoesTouro() => widget.uidPropriedade == null
+      ? const []
+      : opcoesTouroInseminacao(AnimalRepository()
+          .getAnimaisByPropriedade(widget.uidPropriedade!.path)
+          .where((a) => ehTouroOuSemem(a.grupoAnimal)));
 
-    final acao = AcaoEntity(
+  Future<void> _escolherData() async {
+    var escolhida = _data;
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height / 3,
+        color: FlutterFlowTheme.of(context).secondaryBackground,
+        child: CupertinoDatePicker(
+          mode: CupertinoDatePickerMode.date,
+          minimumDate: DateTime(1900),
+          initialDateTime: _data,
+          maximumDate: DateTime.now(),
+          onDateTimeChanged: (d) => escolhida = d,
+        ),
+      ),
+    );
+    safeSetState(() => _data = escolhida);
+  }
+
+  Future<void> _registrar() async {
+    if ((_touro ?? '').isEmpty) {
+      await _aviso(
+          'Selecione um touro', 'Escolha um touro ou sêmen cadastrado.');
+      return;
+    }
+    final mais = comInseminacaoMaisRecente(widget.alvos, _dataTexto);
+    if (mais.isNotEmpty) {
+      final nomes = mais.map((a) => '${a.nome} (${a.dtUltimaInseminacao})');
+      final ok = await confirmarAcao(
+        context,
+        titulo: 'Data mais antiga que a atual',
+        mensagem:
+            '${mais.length == 1 ? 'Este animal já tem' : 'Estes animais já têm'}'
+            ' inseminação depois de $_dataTexto:\n${nomes.join('\n')}\n\n'
+            'Deseja substituir pela data mais antiga?',
+        textoConfirmar: 'Substituir',
+      );
+      if (!ok) return;
+    }
+
+    safeSetState(() => _gravando = true);
+    try {
+      for (final alvo in widget.alvos) {
+        await _inseminar(alvo);
+      }
+    } finally {
+      safeSetState(() => _gravando = false);
+    }
+    if (!mounted) return;
+    await _aviso(
+      'Inseminação registrada!',
+      _umAnimal
+          ? 'Nova ação adicionada ao animal.'
+          : '${widget.alvos.length} animais inseminados.',
+    );
+    if (mounted) Navigator.pop(context, true);
+  }
+
+  /// Gravação offline-first de UM animal: ação 'Inseminada' e o animal com
+  /// status, datas previstas, touro e total de inseminações.
+  Future<void> _inseminar(AlvoInseminacao alvo) async {
+    final dtIns = _dataTexto;
+    await AcaoRepository().add(AcaoEntity(
       parentPath: widget.uidTecnico!.path,
-      uidAnimalAnimaisProdutoresPath: widget.uidAnimaisProdutores?.path,
-      uidAnimalOffline:
-          widget.uidAnimaisProdutores == null ? widget.uidAnimalOffline : null,
+      uidAnimalAnimaisProdutoresPath: alvo.referencia?.path,
+      uidAnimalOffline: alvo.referencia == null ? alvo.uidAnimalOffline : null,
       uidPropriedadePath: widget.uidPropriedade?.path,
-      nomeAnimal: widget.nomeAnimal,
+      nomeAnimal: alvo.nome,
       acao: 'Inseminada',
       dataVisita: dtIns,
-      obsVisita: _obsTextController.text,
-      touroInseminacao: _touroValue,
+      obsVisita: _umAnimal ? _obsController.text : '',
+      touroInseminacao: _touro,
       dataPartoPrevisto: functions.somarDataParto(dtIns),
       dataSecPrevista: functions.somarDataSecagem(dtIns),
       dataPrePartoPrevista: functions.somarDataPreParto(dtIns),
       dataDaAcao: getCurrentTimestamp,
-    );
-    unawaited(AcaoRepository().add(acao));
+    ));
 
     final dadosAnimal = <String, dynamic>{
       'dtUltimaInseminacao': dtIns,
@@ -177,28 +184,32 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
       'dtSecPrevista': functions.somarDataSecagem(dtIns),
       'dtPrePartoPrevista': functions.somarDataPreParto(dtIns),
       'dtPP': '',
-      'nomeTouroUltimaInseminacao': _touroValue,
+      'nomeTouroUltimaInseminacao': _touro,
       'compararDtUltimaInseminacao':
           functions.converterDataUltimaInseminacao(dtIns),
       'idStatusAnimal': 3,
     };
-    final animalRepo = AnimalRepository();
-    final entity = widget.uidAnimaisProdutores != null
-        ? animalRepo.getByFirestoreId(widget.uidAnimaisProdutores!.id)
-        : (widget.uidAnimalOffline != null &&
-                widget.uidAnimalOffline!.isNotEmpty
-            ? animalRepo.getByUidAnimalOffline(widget.uidAnimalOffline!)
+    final repo = AnimalRepository();
+    final entity = alvo.referencia != null
+        ? repo.getByFirestoreId(alvo.referencia!.id)
+        : ((alvo.uidAnimalOffline ?? '').isNotEmpty
+            ? repo.getByUidAnimalOffline(alvo.uidAnimalOffline!)
             : null);
     if (entity != null) {
-      unawaited(animalRepo.update(
+      unawaited(repo.update(
           entity,
           comDataDaAcao({
             ...dadosAnimal,
             'totalInseminacoes': entity.totalInseminacoes + 1,
+            // Vaca inseminada voltou ao ciclo: a inducao de lactacao acabou.
+            // Novilha mantem a marca, que e o que libera a Secagem dela nas
+            // Prenhas (novilha induzida lacta).
+            if (ehVaca(entity.grupoAnimal) && entity.dtInducaoLactacao != null)
+              'dtInducaoLactacao': null,
           }, quando: DateTime.now())));
-    } else if (_outUidAnimaisAnimal != null) {
-      // Fallback: animal não no cache local (grava direto; persistência offline).
-      unawaited(_outUidAnimaisAnimal!.reference.update({
+    } else if (alvo.referencia != null) {
+      // Animal fora do cache local: grava direto (persistência offline).
+      unawaited(alvo.referencia!.update({
         ...createAnimaisProdutoresRecordData(
           dtUltimaInseminacao: dtIns,
           status: 'Inseminada',
@@ -206,7 +217,7 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
           dtSecPrevista: functions.somarDataSecagem(dtIns),
           dtPrePartoPrevista: functions.somarDataPreParto(dtIns),
           dtPP: '',
-          nomeTouroUltimaInseminacao: _touroValue,
+          nomeTouroUltimaInseminacao: _touro,
           compararDtUltimaInseminacao:
               functions.converterDataUltimaInseminacao(dtIns),
           idStatusAnimal: 3,
@@ -216,702 +227,208 @@ class _NovaInseminacaoWidgetState extends State<NovaInseminacaoWidget>
     }
   }
 
-  Widget _conteudo(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 2.0, 16.0, 16.0),
-      child: Container(
-        width: double.infinity,
-        constraints: BoxConstraints(
-          maxWidth: 670.0,
-        ),
-        decoration: BoxDecoration(
-          color: FlutterFlowTheme.of(context).secondaryBackground,
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 12.0,
-              color: Color(0x1E000000),
-              offset: Offset(
-                0.0,
-                5.0,
-              ),
-            )
-          ],
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _cabecalho(context),
-            _formulario(context),
-            _botoesAcao(context),
+  Future<void> _aviso(String titulo, String mensagem) => showDialog<void>(
+        context: context,
+        builder: (c) => AlertDialog(
+          title: Text(titulo),
+          content: Text(mensagem),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(c), child: const Text('Ok')),
           ],
         ),
-      ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation']!),
-    );
-  }
-
-  Widget _cabecalho(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(24.0, 16.0, 0.0, 0.0),
-      child: Text(
-        'Inseminar - ${() {
-          if ((widget.nomeAnimal != null && widget.nomeAnimal != '') &&
-              (widget.brincoAnimal != null && widget.brincoAnimal != '') &&
-              (widget.brincoAnimal != '-1')) {
-            return '${widget.nomeAnimal} - ${widget.brincoAnimal}';
-          } else if (widget.nomeAnimal != null && widget.nomeAnimal != '') {
-            return widget.nomeAnimal;
-          } else {
-            return widget.brincoAnimal;
-          }
-        }()}',
-        style: FlutterFlowTheme.of(context).headlineMedium.override(
-              font: GoogleFonts.outfit(
-                fontWeight:
-                    FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-                fontStyle:
-                    FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-              ),
-              letterSpacing: 0.0,
-              fontWeight:
-                  FlutterFlowTheme.of(context).headlineMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).headlineMedium.fontStyle,
-            ),
-      ),
-    );
-  }
-
-  Widget _formulario(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _campoTouro(context),
-        _campoDataInseminacao(context),
-        _campoObservacao(context),
-      ],
-    );
-  }
-
-  Widget _botoesAcao(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(24.0, 12.0, 24.0, 24.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Align(
-            alignment: AlignmentDirectional(0.0, 0.05),
-            child: FFButtonWidget(
-              onPressed: () async {
-                Navigator.pop(context);
-              },
-              text: 'Cancelar',
-              options: FFButtonOptions(
-                height: 44.0,
-                padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                color: FlutterFlowTheme.of(context).secondaryBackground,
-                textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-                elevation: 0.0,
-                borderSide: BorderSide(
-                  color: FlutterFlowTheme.of(context).alternate,
-                  width: 2.0,
-                ),
-                borderRadius: BorderRadius.circular(12.0),
-                hoverColor: FlutterFlowTheme.of(context).alternate,
-                hoverBorderSide: BorderSide(
-                  color: FlutterFlowTheme.of(context).alternate,
-                  width: 2.0,
-                ),
-                hoverTextColor: FlutterFlowTheme.of(context).primaryText,
-                hoverElevation: 3.0,
-              ),
-            ),
-          ),
-          Align(
-            alignment: AlignmentDirectional(0.0, 0.05),
-            child: FFButtonWidget(
-              onPressed: () async {
-                var _shouldSetState = false;
-                if (_touroValue != null && _touroValue != '') {
-                  if (_dtInseminacaoTextController.text != '') {
-                    if (widget.dtUltimaInseminacao != null &&
-                        widget.dtUltimaInseminacao != '') {
-                      if (functions.verificarDataUltimoPartoMenorMaiorAtual(
-                              widget.dtUltimaInseminacao!,
-                              _dtInseminacaoTextController.text) ==
-                          false) {
-                        var confirmDialogResponse = await showDialog<bool>(
-                              context: context,
-                              builder: (alertDialogContext) {
-                                return AlertDialog(
-                                  title: Text(
-                                      'A data informada é mais antiga que a atual.'),
-                                  content: Text(
-                                      'Deseja realmente salvar uma data mais antiga?'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(
-                                          alertDialogContext, false),
-                                      child: Text('Cancelar'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () => Navigator.pop(
-                                          alertDialogContext, true),
-                                      child: Text('Confirma e substituir'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ) ??
-                            false;
-                        if (confirmDialogResponse) {
-                          await _inseminarOfflineFirst();
-                          await showDialog(
-                            context: context,
-                            builder: (alertDialogContext) {
-                              return AlertDialog(
-                                title: Text('Ação cadastrada com sucesso!'),
-                                content:
-                                    Text('Nova ação adicionada ao animal.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(alertDialogContext),
-                                    child: Text('Ok'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                          Navigator.pop(context);
-                          if (_shouldSetState) safeSetState(() {});
-                          return;
-                        } else {
-                          if (_shouldSetState) safeSetState(() {});
-                          return;
-                        }
-                      } else {
-                        await _inseminarOfflineFirst();
-                        await showDialog(
-                          context: context,
-                          builder: (alertDialogContext) {
-                            return AlertDialog(
-                              title: Text('Ação cadastrada com sucesso!'),
-                              content: Text('Nova ação adicionada ao animal.'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(alertDialogContext),
-                                  child: Text('Ok'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                        Navigator.pop(context);
-                        if (_shouldSetState) safeSetState(() {});
-                        return;
-                      }
-                    } else {
-                      await _inseminarOfflineFirst();
-                      await showDialog(
-                        context: context,
-                        builder: (alertDialogContext) {
-                          return AlertDialog(
-                            title: Text('Ação cadastrada com sucesso!'),
-                            content: Text('Nova ação adicionada ao animal.'),
-                            actions: [
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.pop(alertDialogContext),
-                                child: Text('Ok'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                      Navigator.pop(context);
-                      if (_shouldSetState) safeSetState(() {});
-                      return;
-                    }
-                  } else {
-                    await showDialog(
-                      context: context,
-                      builder: (alertDialogContext) {
-                        return AlertDialog(
-                          title: Text('Data da inseminação vazia'),
-                          content: Text('Selecione uma data'),
-                          actions: [
-                            TextButton(
-                              onPressed: () =>
-                                  Navigator.pop(alertDialogContext),
-                              child: Text('Ok'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                    if (_shouldSetState) safeSetState(() {});
-                    return;
-                  }
-                } else {
-                  await showDialog(
-                    context: context,
-                    builder: (alertDialogContext) {
-                      return AlertDialog(
-                        title: Text('Selecione um touro!'),
-                        content: Text('Escolha um touro ou sêmen cadastrado.'),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(alertDialogContext),
-                            child: Text('Ok'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                  if (_shouldSetState) safeSetState(() {});
-                  return;
-                }
-
-                if (_shouldSetState) safeSetState(() {});
-              },
-              text: 'Registrar',
-              icon: Icon(
-                Icons.check,
-                size: 15.0,
-              ),
-              options: FFButtonOptions(
-                height: 44.0,
-                padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                color: Color(0xFF048508),
-                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).titleSmall.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).titleSmall.fontStyle,
-                    ),
-                elevation: 3.0,
-                borderSide: BorderSide(
-                  color: Colors.transparent,
-                  width: 1.0,
-                ),
-                borderRadius: BorderRadius.circular(12.0),
-                hoverColor: FlutterFlowTheme.of(context).accent1,
-                hoverBorderSide: BorderSide(
-                  color: FlutterFlowTheme.of(context).primary,
-                  width: 1.0,
-                ),
-                hoverTextColor: FlutterFlowTheme.of(context).primaryText,
-                hoverElevation: 0.0,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _campoTouro(BuildContext context) {
-    // Fonte única ObjectBox (offline-first): touros/sêmens da propriedade
-    // liberados para inseminação (liberaInseminacao == true), combinados numa
-    // lista só e ordenados alfabeticamente por `duasListasEmUma`. Antes vinha de
-    // um StreamBuilder do Firestore (queryAnimaisProdutoresRecord +
-    // .where('liberaInseminacao', isEqualTo: true)), que travava offline.
-    final opcoesTouroSemem = (widget.uidPropriedade == null
-            ? const <String>[]
-            : AnimalRepository()
-                .getAnimaisByPropriedade(widget.uidPropriedade!.path)
-                .where((a) =>
-                    !a.isDeleted &&
-                    a.liberaInseminacao &&
-                    ehTouroOuSemem(a.grupoAnimal))
-                .map((a) => a.nomeBrincoConcat ?? '')
-                .where((s) => s.isNotEmpty)
-                .toList())
-        .cast<String>();
-
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
-      child: FlutterFlowDropDown<String>(
-        controller: _touroValueController ??= FormFieldController<String>(null),
-        options: functions.duasListasEmUma(opcoesTouroSemem, <String>[])!,
-        onChanged: (val) => safeSetState(() => _touroValue = val),
-        width: double.infinity,
-        height: 58.0,
-        textStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-              ),
-              letterSpacing: 0.0,
-              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-            ),
-        hintText: 'Selecione um Touro/Sêmen',
-        icon: Icon(
-          Icons.keyboard_arrow_down_rounded,
-          color: FlutterFlowTheme.of(context).secondaryText,
-          size: 24.0,
-        ),
-        fillColor: FlutterFlowTheme.of(context).primaryBackground,
-        elevation: 2.0,
-        borderColor: FlutterFlowTheme.of(context).alternate,
-        borderWidth: 2.0,
-        borderRadius: 12.0,
-        margin: EdgeInsetsDirectional.fromSTEB(16.0, 4.0, 16.0, 4.0),
-        hidesUnderline: true,
-        isSearchable: false,
-        isMultiSelect: false,
-      ),
-    );
-  }
-
-  Widget _campoDataInseminacao(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Expanded(
-            child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 0.0),
-              child: TextFormField(
-                controller: _dtInseminacaoTextController,
-                focusNode: _dtInseminacaoFocusNode,
-                onChanged: (_) => EasyDebounce.debounce(
-                  '_dtInseminacaoTextController',
-                  Duration(milliseconds: 2000),
-                  () => safeSetState(() {}),
-                ),
-                autofocus: false,
-                textCapitalization: TextCapitalization.none,
-                textInputAction: TextInputAction.next,
-                readOnly: true,
-                obscureText: false,
-                decoration: InputDecoration(
-                  labelText: 'Data da inseminação',
-                  labelStyle: FlutterFlowTheme.of(context).bodyMedium.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .bodyMedium
-                              .fontWeight,
-                          fontStyle:
-                              FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                        ),
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                  hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
-                        font: GoogleFonts.readexPro(
-                          fontWeight: FlutterFlowTheme.of(context)
-                              .labelMedium
-                              .fontWeight,
-                          fontStyle: FlutterFlowTheme.of(context)
-                              .labelMedium
-                              .fontStyle,
-                        ),
-                        letterSpacing: 0.0,
-                        fontWeight:
-                            FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                      ),
-                  filled: true,
-                  fillColor: FlutterFlowTheme.of(context).primaryBackground,
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.transparent,
-                      width: 2.0,
-                    ),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: AppTokens.secondary,
-                      width: 2.0,
-                    ),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: FlutterFlowTheme.of(context).error,
-                      width: 2.0,
-                    ),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: FlutterFlowTheme.of(context).error,
-                      width: 2.0,
-                    ),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  contentPadding:
-                      EdgeInsetsDirectional.fromSTEB(16.0, 12.0, 16.0, 12.0),
-                  suffixIcon: _dtInseminacaoTextController!.text.isNotEmpty
-                      ? InkWell(
-                          onTap: () async {
-                            _dtInseminacaoTextController?.clear();
-                            safeSetState(() {});
-                          },
-                          child: Icon(
-                            Icons.clear,
-                            size: 22.0,
-                          ),
-                        )
-                      : null,
-                ),
-                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                      font: GoogleFonts.readexPro(
-                        fontWeight:
-                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                        fontStyle:
-                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                      ),
-                      letterSpacing: 0.0,
-                      fontWeight:
-                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                      fontStyle:
-                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-                    ),
-                maxLength: 10,
-                maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                buildCounter: (context,
-                        {required currentLength,
-                        required isFocused,
-                        maxLength}) =>
-                    null,
-                keyboardType: TextInputType.datetime,
-                validator:
-                    _dtInseminacaoTextControllerValidator.asValidator(context),
-                inputFormatters: [_dtInseminacaoMask],
-              ),
-            ),
-          ),
-          InkWell(
-            splashColor: Colors.transparent,
-            focusColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            onTap: () async {
-              // calendarUltimoParto
-              await showModalBottomSheet<bool>(
-                  context: context,
-                  builder: (context) {
-                    final _datePickedCupertinoTheme =
-                        CupertinoTheme.of(context);
-                    return ScrollConfiguration(
-                      behavior: const MaterialScrollBehavior().copyWith(
-                        dragDevices: {
-                          PointerDeviceKind.mouse,
-                          PointerDeviceKind.touch,
-                          PointerDeviceKind.stylus,
-                          PointerDeviceKind.unknown
-                        },
-                      ),
-                      child: Container(
-                        height: MediaQuery.of(context).size.height / 3,
-                        width: MediaQuery.of(context).size.width,
-                        color: FlutterFlowTheme.of(context).secondaryBackground,
-                        child: CupertinoTheme(
-                          data: _datePickedCupertinoTheme.copyWith(
-                            textTheme:
-                                _datePickedCupertinoTheme.textTheme.copyWith(
-                              dateTimePickerTextStyle:
-                                  FlutterFlowTheme.of(context)
-                                      .headlineMedium
-                                      .override(
-                                        font: GoogleFonts.outfit(
-                                          fontWeight:
-                                              FlutterFlowTheme.of(context)
-                                                  .headlineMedium
-                                                  .fontWeight,
-                                          fontStyle:
-                                              FlutterFlowTheme.of(context)
-                                                  .headlineMedium
-                                                  .fontStyle,
-                                        ),
-                                        color: FlutterFlowTheme.of(context)
-                                            .primaryText,
-                                        letterSpacing: 0.0,
-                                        fontWeight: FlutterFlowTheme.of(context)
-                                            .headlineMedium
-                                            .fontWeight,
-                                        fontStyle: FlutterFlowTheme.of(context)
-                                            .headlineMedium
-                                            .fontStyle,
-                                      ),
-                            ),
-                          ),
-                          child: CupertinoDatePicker(
-                            mode: CupertinoDatePickerMode.date,
-                            minimumDate: DateTime(1900),
-                            initialDateTime: getCurrentTimestamp,
-                            maximumDate:
-                                (getCurrentTimestamp ?? DateTime(2050)),
-                            backgroundColor: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                            use24hFormat: false,
-                            onDateTimeChanged: (newDateTime) =>
-                                safeSetState(() {
-                              _datePicked = newDateTime;
-                            }),
-                          ),
-                        ),
-                      ),
-                    );
-                  });
-              safeSetState(() {
-                _dtInseminacaoTextController?.text = dateTimeFormat(
-                  "dd/MM/yyyy",
-                  _datePicked,
-                  locale: FFLocalizations.of(context).languageCode,
-                );
-                _dtInseminacaoMask.updateMask(
-                  newValue: TextEditingValue(
-                    text: _dtInseminacaoTextController!.text,
-                  ),
-                );
-              });
-            },
-            child: Icon(
-              Icons.calendar_month,
-              color: FlutterFlowTheme.of(context).secondaryText,
-              size: 24.0,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _campoObservacao(BuildContext context) {
-    return Padding(
-      padding: EdgeInsetsDirectional.fromSTEB(16.0, 16.0, 16.0, 0.0),
-      child: TextFormField(
-        controller: _obsTextController,
-        focusNode: _obsFocusNode,
-        autofocus: false,
-        obscureText: false,
-        decoration: InputDecoration(
-          labelText: 'Observações',
-          labelStyle: FlutterFlowTheme.of(context).labelMedium.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                ),
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-              ),
-          hintStyle: FlutterFlowTheme.of(context).labelMedium.override(
-                font: GoogleFonts.readexPro(
-                  fontWeight:
-                      FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                  fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-                ),
-                letterSpacing: 0.0,
-                fontWeight: FlutterFlowTheme.of(context).labelMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).labelMedium.fontStyle,
-              ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.transparent,
-              width: 2.0,
-            ),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: AppTokens.secondary,
-              width: 2.0,
-            ),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).error,
-              width: 2.0,
-            ),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: FlutterFlowTheme.of(context).error,
-              width: 2.0,
-            ),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
-          filled: true,
-          fillColor: FlutterFlowTheme.of(context).primaryBackground,
-          contentPadding:
-              EdgeInsetsDirectional.fromSTEB(20.0, 24.0, 20.0, 24.0),
-        ),
-        style: FlutterFlowTheme.of(context).bodyMedium.override(
-              font: GoogleFonts.readexPro(
-                fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-                fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-              ),
-              letterSpacing: 0.0,
-              fontWeight: FlutterFlowTheme.of(context).bodyMedium.fontWeight,
-              fontStyle: FlutterFlowTheme.of(context).bodyMedium.fontStyle,
-            ),
-        maxLength: 100,
-        maxLengthEnforcement: MaxLengthEnforcement.none,
-        buildCounter: (context,
-                {required currentLength, required isFocused, maxLength}) =>
-            null,
-        cursorColor: FlutterFlowTheme.of(context).primary,
-        validator: _obsTextControllerValidator.asValidator(context),
-      ),
-    );
-  }
+      );
 
   @override
   Widget build(BuildContext context) {
-    context.watch<FFAppState>();
-
+    final tema = FlutterFlowTheme.of(context);
     return Container(
-      width: double.infinity,
-      height: double.infinity,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).accent4,
+        color: tema.secondaryBackground,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20.0)),
       ),
+      padding: EdgeInsets.fromLTRB(
+          20.0, 10.0, 20.0, 16.0 + MediaQuery.paddingOf(context).bottom),
       child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _conteudo(context),
+          Center(
+            child: Container(
+              width: 40.0,
+              height: 4.0,
+              decoration: BoxDecoration(
+                color: tema.alternate,
+                borderRadius: BorderRadius.circular(2.0),
+              ),
+            ),
+          ),
+          const SizedBox(height: 14.0),
+          Row(
+            children: [
+              const Icon(Icons.playlist_add_rounded,
+                  color: AppTokens.brand, size: 24.0),
+              const SizedBox(width: 8.0),
+              Text('Inseminar',
+                  style: GoogleFonts.outfit(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.w600,
+                      color: tema.primaryText)),
+            ],
+          ),
+          const SizedBox(height: 4.0),
+          Text(resumoAlvos(widget.alvos),
+              style: GoogleFonts.readexPro(
+                  fontSize: 13.0, color: tema.secondaryText)),
+          const SizedBox(height: 16.0),
+          _rotulo(context, 'Data da inseminação'),
+          InkWell(
+            onTap: _escolherData,
+            borderRadius: BorderRadius.circular(LayoutLista.raio),
+            child: Container(
+              height: LayoutLista.alturaControle + 4,
+              padding: const EdgeInsets.symmetric(horizontal: 14.0),
+              decoration: BoxDecoration(
+                color: tema.primaryBackground,
+                borderRadius: BorderRadius.circular(LayoutLista.raio),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(_dataTexto,
+                        style: GoogleFonts.readexPro(
+                            fontSize: 15.0, color: tema.primaryText)),
+                  ),
+                  Icon(Icons.calendar_month_rounded,
+                      color: tema.secondaryText, size: 22.0),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12.0),
+          _rotulo(context, 'Touro/sêmen'),
+          FlutterFlowDropDown<String>(
+            controller: _touroController,
+            options: _opcoesTouro(),
+            onChanged: (v) => safeSetState(() => _touro = v),
+            width: double.infinity,
+            height: LayoutLista.alturaControle + 4,
+            textStyle:
+                GoogleFonts.readexPro(fontSize: 15.0, color: tema.primaryText),
+            searchTextStyle:
+                GoogleFonts.readexPro(fontSize: 14.0, color: tema.primaryText),
+            searchHintTextStyle: GoogleFonts.readexPro(
+                fontSize: 14.0, color: tema.secondaryText),
+            hintText: 'Selecione um touro ou sêmen',
+            searchHintText: 'Pesquise um touro ou sêmen...',
+            icon: Icon(Icons.keyboard_arrow_down_rounded,
+                color: tema.secondaryText, size: 24.0),
+            fillColor: tema.primaryBackground,
+            elevation: 2.0,
+            borderColor: Colors.transparent,
+            borderWidth: 1.0,
+            borderRadius: LayoutLista.raio,
+            margin: const EdgeInsetsDirectional.fromSTEB(14.0, 4.0, 12.0, 4.0),
+            hidesUnderline: true,
+            isOverButton: true,
+            isSearchable: true,
+            isMultiSelect: false,
+          ),
+          if (_umAnimal) ...[
+            const SizedBox(height: 12.0),
+            _rotulo(context, 'Observações'),
+            TextField(
+              controller: _obsController,
+              minLines: 2,
+              maxLines: 4,
+              style: GoogleFonts.readexPro(
+                  fontSize: 14.0, color: tema.primaryText),
+              decoration: InputDecoration(
+                hintText: 'Opcional',
+                hintStyle: GoogleFonts.readexPro(
+                    fontSize: 14.0, color: tema.secondaryText),
+                filled: true,
+                fillColor: tema.primaryBackground,
+                contentPadding: const EdgeInsets.all(14.0),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(LayoutLista.raio),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide:
+                      const BorderSide(color: AppTokens.secondary, width: 1.5),
+                  borderRadius: BorderRadius.circular(LayoutLista.raio),
+                ),
+              ),
+            ),
+          ],
+          const SizedBox(height: 20.0),
+          Row(
+            children: [
+              Expanded(
+                child: FFButtonWidget(
+                  onPressed: _gravando ? null : () => Navigator.pop(context),
+                  text: 'Cancelar',
+                  options: FFButtonOptions(
+                    height: 48.0,
+                    color: tema.primaryBackground,
+                    textStyle: GoogleFonts.readexPro(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w600,
+                        color: tema.primaryText),
+                    elevation: 0.0,
+                    borderSide: const BorderSide(color: Colors.transparent),
+                    borderRadius: BorderRadius.circular(LayoutLista.raio),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10.0),
+              Expanded(
+                flex: 2,
+                child: FFButtonWidget(
+                  onPressed: _gravando ? null : _registrar,
+                  text: _gravando
+                      ? 'Registrando...'
+                      : _umAnimal
+                          ? 'Registrar'
+                          : 'Inseminar ${widget.alvos.length}',
+                  icon: _gravando
+                      ? const SizedBox(
+                          width: 16.0,
+                          height: 16.0,
+                          child: CircularProgressIndicator(
+                              strokeWidth: 2.0, color: Colors.white),
+                        )
+                      : const Icon(Icons.check_rounded, size: 18.0),
+                  options: FFButtonOptions(
+                    height: 48.0,
+                    color: AppTokens.brand,
+                    textStyle: GoogleFonts.readexPro(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white),
+                    elevation: 0.0,
+                    borderSide: const BorderSide(color: Colors.transparent),
+                    borderRadius: BorderRadius.circular(LayoutLista.raio),
+                    // ignore: deprecated_member_use
+                    disabledColor: AppTokens.brand.withOpacity(0.7),
+                    disabledTextColor: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
+
+  Widget _rotulo(BuildContext context, String texto) => Padding(
+        padding: const EdgeInsets.only(bottom: 6.0, left: 2.0),
+        child: Text(texto,
+            style: GoogleFonts.readexPro(
+                fontSize: 12.0,
+                fontWeight: FontWeight.w500,
+                color: FlutterFlowTheme.of(context).secondaryText)),
+      );
 }
