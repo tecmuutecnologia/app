@@ -8,6 +8,7 @@ import '/core/ui/app_card.dart';
 import '/core/ui/card_animal_lista.dart';
 import '/core/ui/painel_lista.dart';
 import '/domain/animais/classificacao_animal.dart';
+import '/domain/animais/dias_desde.dart';
 import '/data/objectbox/index.dart';
 import '/features/diagnostico_gestacao/application/filtros_dg.dart';
 import '/features/shared/widgets/selo_hoje.dart';
@@ -180,6 +181,7 @@ class _DiagnosticogestacaoPageState extends State<DiagnosticogestacaoPage> {
         info: [
           InfoAnimal('Touro', item.nomeTouroUltimaInseminacao, ehData: false),
           InfoAnimal('Inseminada em', item.dtUltimaInseminacao),
+          InfoAnimal('Dias IA', diasDesde(item.dtUltimaInseminacao)),
         ],
         // Ordem do fluxo positivo (PP → DG+) e o negativo por último.
         acoes: LinhaAcoes(children: [
