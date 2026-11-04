@@ -1,3 +1,4 @@
+import '/domain/financeiro/data_relatorio.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/core/ui/app_card.dart';
@@ -68,17 +69,7 @@ class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage> {
     'dez',
   ];
 
-  /// `dtRelatorio` é texto `dd/MM/yyyy`. Ordenar o TEXTO punha o dia na
-  /// frente do mês e do ano: 30/01 vinha antes de 15/10.
-  static DateTime? _data(String? texto) {
-    final p = (texto ?? '').split('/');
-    if (p.length != 3) return null;
-    final d = int.tryParse(p[0]),
-        m = int.tryParse(p[1]),
-        a = int.tryParse(p[2]);
-    if (d == null || m == null || a == null) return null;
-    return DateTime(a, m, d);
-  }
+  static DateTime? _data(String? texto) => dataDoRelatorio(texto);
 
   void _abrir(FinanceiroEntity relatorio) {
     context.pushNamed(

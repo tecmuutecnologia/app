@@ -3,6 +3,7 @@ import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/domain/animais/media_del.dart';
+import '/domain/financeiro/data_relatorio.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/core/ui/app_card.dart';
 import '/app/theme/flutter_flow_theme.dart';
@@ -89,12 +90,12 @@ class _IndicesZootecnicosPageState extends State<IndicesZootecnicosPage> {
     if (!ObjectBoxService.isInitialized || widget.uidPropriedade == null) {
       return null;
     }
-    final lista = FinanceiroRepository()
-        .getByParentPath(widget.uidPropriedade!.path)
-        .where((e) => !e.isDeleted)
-        .toList()
-      ..sort((a, b) => (b.dtRelatorio ?? '').compareTo(a.dtRelatorio ?? ''));
-    return lista.isEmpty ? null : lista.first;
+    return relatorioMaisRecente(
+      FinanceiroRepository()
+          .getByParentPath(widget.uidPropriedade!.path)
+          .where((e) => !e.isDeleted),
+      (e) => e.dtRelatorio,
+    );
   }
 
   @override
@@ -126,7 +127,9 @@ class _IndicesZootecnicosPageState extends State<IndicesZootecnicosPage> {
             children: [
               // Números-síntese primeiro: são a leitura de relance da tela.
               _gradeIndicadores(context, [
-                _Indicador('Animais ativos', '${semSemens.length}'),
+                // Descarte já está de saída do rebanho: não conta como ativo.
+                _Indicador('Animais ativos',
+                    '${semSemens.where((a) => !ehDescarte(a.status)).length}'),
                 _Indicador('Vacas em lactação',
                     '${semSemens.where((a) => ehVacaEmLactacao(a.grupoAnimal, a.status)).length}'),
                 _Indicador(
