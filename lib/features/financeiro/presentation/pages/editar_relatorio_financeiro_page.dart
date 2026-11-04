@@ -1,5 +1,7 @@
 // ignore_for_file: unnecessary_null_comparison, unused_local_variable
 
+import '/features/animais/application/animal_struct_adapter.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/core/ui/cabecalho_tela.dart';
 import '/core/ui/painel_lista.dart';
 import '/core/ui/secao_formulario.dart';
@@ -480,19 +482,14 @@ class _EditarRelatorioFinanceiroPageState
 
   Widget _campoVacasLactacao(
       BuildContext context, dynamic editarRelatorioFinanceiroFinanceiroRecord) {
-    return StreamBuilder<List<AnimaisProdutoresRecord>>(
-      stream: queryAnimaisProdutoresRecord(
-        parent: widget.uidTecnico,
-        queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
-            .where(
-              'uidTecnicoPropriedade',
-              isEqualTo: widget.uidPropriedade,
-            )
-            .where(
-              'grupoAnimal',
-              isEqualTo: 'Vacas',
-            ),
-      ),
+    return StreamBuilder<List<AnimaisProdutoresStruct>>(
+      // ObjectBox: o campo preenche offline e conta a vaca criada sem internet.
+      stream: AnimalRepository()
+          .watchAnimaisByPropriedade(widget.uidPropriedade?.path ?? '')
+          .map((animais) => animais
+              .where((a) => !a.isDeleted && ehVaca(a.grupoAnimal))
+              .map(animalEntityToStruct)
+              .toList()),
       builder: (context, snapshot) {
         // Customize what your widget looks like when it's loading.
         if (!snapshot.hasData) {
@@ -508,7 +505,7 @@ class _EditarRelatorioFinanceiroPageState
             ),
           );
         }
-        List<AnimaisProdutoresRecord> vacasLactacaoAnimaisProdutoresRecordList =
+        List<AnimaisProdutoresStruct> vacasLactacaoAnimaisProdutoresRecordList =
             snapshot.data!;
 
         return TextFormField(

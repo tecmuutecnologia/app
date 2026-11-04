@@ -1,5 +1,8 @@
 // ignore_for_file: unnecessary_null_comparison
 
+import '/data/objectbox/index.dart';
+import '/features/animais/application/animal_struct_adapter.dart';
+import '/features/calendario_sanitario/application/animais_calendario.dart';
 import '/data/backend.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_button_tabbar.dart';
@@ -432,22 +435,13 @@ class _SelecaoAnimalCalendarioWidgetState
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          StreamBuilder<List<AnimaisProdutoresRecord>>(
-            stream: queryAnimaisProdutoresRecord(
-              parent: widget.uidTecnico,
-              queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
-                  .where(
-                    'uidTecnicoPropriedade',
-                    isEqualTo: widget.uidPropriedade,
-                  )
-                  .where(
-                    'grupoAnimal',
-                    isNotEqualTo: 'Sêmens',
-                  )
-                  .orderBy('grupoAnimal')
-                  .orderBy('nomeAnimal')
-                  .orderBy('brincoAnimalOrder'),
-            ),
+          StreamBuilder<List<AnimaisProdutoresStruct>>(
+            // ObjectBox: offline também, e inclui o animal criado sem internet.
+            stream: AnimalRepository()
+                .watchAnimaisByPropriedade(widget.uidPropriedade?.path ?? '')
+                .map((animais) => animaisDoCalendario(animais)
+                    .map(animalEntityToStruct)
+                    .toList()),
             builder: (context, snapshot) {
               // Customize what your widget looks like when it's loading.
               if (!snapshot.hasData) {
@@ -463,7 +457,7 @@ class _SelecaoAnimalCalendarioWidgetState
                   ),
                 );
               }
-              List<AnimaisProdutoresRecord>
+              List<AnimaisProdutoresStruct>
                   containerAnimaisProdutoresRecordList = snapshot.data!;
 
               return Container(
@@ -610,26 +604,14 @@ class _SelecaoAnimalCalendarioWidgetState
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          StreamBuilder<List<AnimaisProdutoresRecord>>(
-            stream: queryAnimaisProdutoresRecord(
-              parent: widget.uidTecnico,
-              queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
-                  .where(
-                    'uidTecnicoPropriedade',
-                    isEqualTo: widget.uidPropriedade,
-                  )
-                  .where(
-                    'grupoAnimal',
-                    isEqualTo: 'Bezerros',
-                  )
-                  .where(
-                    'status',
-                    isNotEqualTo: 'Descarte',
-                  )
-                  .orderBy('status')
-                  .orderBy('nomeAnimal')
-                  .orderBy('brincoAnimalOrder'),
-            ),
+          StreamBuilder<List<AnimaisProdutoresStruct>>(
+            // ObjectBox: offline também, e inclui o animal criado sem internet.
+            stream: AnimalRepository()
+                .watchAnimaisByPropriedade(widget.uidPropriedade?.path ?? '')
+                .map((animais) =>
+                    animaisDoCalendario(animais, grupo: 'Bezerros')
+                        .map(animalEntityToStruct)
+                        .toList()),
             builder: (context, snapshot) {
               // Customize what your widget looks like when it's loading.
               if (!snapshot.hasData) {
@@ -645,7 +627,7 @@ class _SelecaoAnimalCalendarioWidgetState
                   ),
                 );
               }
-              List<AnimaisProdutoresRecord>
+              List<AnimaisProdutoresStruct>
                   containerAnimaisProdutoresRecordList = snapshot.data!;
 
               return Container(
@@ -793,26 +775,14 @@ class _SelecaoAnimalCalendarioWidgetState
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          StreamBuilder<List<AnimaisProdutoresRecord>>(
-            stream: queryAnimaisProdutoresRecord(
-              parent: widget.uidTecnico,
-              queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
-                  .where(
-                    'uidTecnicoPropriedade',
-                    isEqualTo: widget.uidPropriedade,
-                  )
-                  .where(
-                    'status',
-                    isNotEqualTo: 'Descarte',
-                  )
-                  .where(
-                    'grupoAnimal',
-                    isEqualTo: 'Novilhas',
-                  )
-                  .orderBy('status')
-                  .orderBy('nomeAnimal')
-                  .orderBy('brincoAnimalOrder'),
-            ),
+          StreamBuilder<List<AnimaisProdutoresStruct>>(
+            // ObjectBox: offline também, e inclui o animal criado sem internet.
+            stream: AnimalRepository()
+                .watchAnimaisByPropriedade(widget.uidPropriedade?.path ?? '')
+                .map((animais) =>
+                    animaisDoCalendario(animais, grupo: 'Novilhas')
+                        .map(animalEntityToStruct)
+                        .toList()),
             builder: (context, snapshot) {
               // Customize what your widget looks like when it's loading.
               if (!snapshot.hasData) {
@@ -828,7 +798,7 @@ class _SelecaoAnimalCalendarioWidgetState
                   ),
                 );
               }
-              List<AnimaisProdutoresRecord>
+              List<AnimaisProdutoresStruct>
                   containerAnimaisProdutoresRecordList = snapshot.data!;
 
               return Container(
@@ -976,26 +946,13 @@ class _SelecaoAnimalCalendarioWidgetState
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          StreamBuilder<List<AnimaisProdutoresRecord>>(
-            stream: queryAnimaisProdutoresRecord(
-              parent: widget.uidTecnico,
-              queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
-                  .where(
-                    'uidTecnicoPropriedade',
-                    isEqualTo: widget.uidPropriedade,
-                  )
-                  .where(
-                    'status',
-                    isNotEqualTo: 'Descarte',
-                  )
-                  .where(
-                    'grupoAnimal',
-                    isEqualTo: 'Touros',
-                  )
-                  .orderBy('status')
-                  .orderBy('nomeAnimal')
-                  .orderBy('brincoAnimalOrder'),
-            ),
+          StreamBuilder<List<AnimaisProdutoresStruct>>(
+            // ObjectBox: offline também, e inclui o animal criado sem internet.
+            stream: AnimalRepository()
+                .watchAnimaisByPropriedade(widget.uidPropriedade?.path ?? '')
+                .map((animais) => animaisDoCalendario(animais, grupo: 'Touros')
+                    .map(animalEntityToStruct)
+                    .toList()),
             builder: (context, snapshot) {
               // Customize what your widget looks like when it's loading.
               if (!snapshot.hasData) {
@@ -1011,7 +968,7 @@ class _SelecaoAnimalCalendarioWidgetState
                   ),
                 );
               }
-              List<AnimaisProdutoresRecord>
+              List<AnimaisProdutoresStruct>
                   containerAnimaisProdutoresRecordList = snapshot.data!;
 
               return Container(
@@ -1159,26 +1116,13 @@ class _SelecaoAnimalCalendarioWidgetState
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          StreamBuilder<List<AnimaisProdutoresRecord>>(
-            stream: queryAnimaisProdutoresRecord(
-              parent: widget.uidTecnico,
-              queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
-                  .where(
-                    'uidTecnicoPropriedade',
-                    isEqualTo: widget.uidPropriedade,
-                  )
-                  .where(
-                    'status',
-                    isNotEqualTo: 'Descarte',
-                  )
-                  .where(
-                    'grupoAnimal',
-                    isEqualTo: 'Vacas',
-                  )
-                  .orderBy('status')
-                  .orderBy('nomeAnimal')
-                  .orderBy('brincoAnimalOrder'),
-            ),
+          StreamBuilder<List<AnimaisProdutoresStruct>>(
+            // ObjectBox: offline também, e inclui o animal criado sem internet.
+            stream: AnimalRepository()
+                .watchAnimaisByPropriedade(widget.uidPropriedade?.path ?? '')
+                .map((animais) => animaisDoCalendario(animais, grupo: 'Vacas')
+                    .map(animalEntityToStruct)
+                    .toList()),
             builder: (context, snapshot) {
               // Customize what your widget looks like when it's loading.
               if (!snapshot.hasData) {
@@ -1194,7 +1138,7 @@ class _SelecaoAnimalCalendarioWidgetState
                   ),
                 );
               }
-              List<AnimaisProdutoresRecord>
+              List<AnimaisProdutoresStruct>
                   containerAnimaisProdutoresRecordList = snapshot.data!;
 
               return Container(
@@ -1341,26 +1285,14 @@ class _SelecaoAnimalCalendarioWidgetState
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
-          StreamBuilder<List<AnimaisProdutoresRecord>>(
-            stream: queryAnimaisProdutoresRecord(
-              parent: widget.uidTecnico,
-              queryBuilder: (animaisProdutoresRecord) => animaisProdutoresRecord
-                  .where(
-                    'uidTecnicoPropriedade',
-                    isEqualTo: widget.uidPropriedade,
-                  )
-                  .where(
-                    'status',
-                    isNotEqualTo: 'Descarte',
-                  )
-                  .where(
-                    'grupoAnimal',
-                    isEqualTo: 'Bezerras',
-                  )
-                  .orderBy('status')
-                  .orderBy('nomeAnimal')
-                  .orderBy('brincoAnimalOrder'),
-            ),
+          StreamBuilder<List<AnimaisProdutoresStruct>>(
+            // ObjectBox: offline também, e inclui o animal criado sem internet.
+            stream: AnimalRepository()
+                .watchAnimaisByPropriedade(widget.uidPropriedade?.path ?? '')
+                .map((animais) =>
+                    animaisDoCalendario(animais, grupo: 'Bezerras')
+                        .map(animalEntityToStruct)
+                        .toList()),
             builder: (context, snapshot) {
               // Customize what your widget looks like when it's loading.
               if (!snapshot.hasData) {
@@ -1376,7 +1308,7 @@ class _SelecaoAnimalCalendarioWidgetState
                   ),
                 );
               }
-              List<AnimaisProdutoresRecord>
+              List<AnimaisProdutoresStruct>
                   containerAnimaisProdutoresRecordList = snapshot.data!;
 
               return Container(
