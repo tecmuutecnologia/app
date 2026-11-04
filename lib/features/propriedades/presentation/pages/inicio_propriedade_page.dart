@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import, unused_local_variable
 
+import '/features/recria/application/filtros_recria.dart';
 import 'dart:async';
 
 import '/core/connectivity/connectivity_service.dart';
@@ -672,13 +673,12 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       icone: Icons.compare_arrows_sharp,
       rotulo: 'Recria',
       contador: inicioPropriedadeAnimaisProdutoresRecordList
-          .where((e) =>
-              (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) ||
-                  ((ehNovilha(e.grupoAnimal)) &&
-                      (e.dtInducaoLactacao == null)) ||
-                  (ehBezerras(e.grupoAnimal)) ||
-                  (ehBezerros(e.grupoAnimal))) &&
-              ((!ehDescarte(e.status)) && (e.status != 'Pré Parto')))
+          // Mesma regra da lista da Recria: o selo nunca diverge da tela.
+          .where((e) => apareceNaRecria(
+                grupo: e.grupoAnimal,
+                status: e.status,
+                temInducaoLactacao: e.dtInducaoLactacao != null,
+              ))
           .toList()
           .length,
       onTap: () async {

@@ -1,3 +1,4 @@
+import '/features/recria/application/filtros_recria.dart';
 import 'package:flutter/material.dart';
 import '/core/ui/menu_acao_card.dart';
 import '/domain/animais/classificacao_animal.dart';
@@ -245,13 +246,12 @@ class PropriedadeMenuGrid extends StatelessWidget {
   Widget _buildRecriaCard(BuildContext context) {
     int getBadgeCount() {
       final onlineCount = animaisRecordList
-          .where((e) =>
-              (((ehTouros(e.grupoAnimal)) && (e.liberaInseminacao == false)) ||
-                  ((ehNovilha(e.grupoAnimal)) &&
-                      (e.dtInducaoLactacao == null)) ||
-                  (ehBezerras(e.grupoAnimal)) ||
-                  (ehBezerros(e.grupoAnimal))) &&
-              ((!ehDescarte(e.status)) && (e.status != 'Pré Parto')))
+          // Mesma regra da lista da Recria: o selo nunca diverge da tela.
+          .where((e) => apareceNaRecria(
+                grupo: e.grupoAnimal,
+                status: e.status,
+                temInducaoLactacao: e.dtInducaoLactacao != null,
+              ))
           .toList()
           .length;
 
