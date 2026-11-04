@@ -1,3 +1,4 @@
+import '/features/auth/presentation/widgets/link_esqueci_senha.dart';
 import '/core/auth/firebase_auth/auth_util.dart';
 import '/data/objectbox/offline_auth_service.dart';
 import '/core/ui/flutter_flow_animations.dart';
@@ -162,6 +163,7 @@ class _LoginProdutorPageState extends State<LoginProdutorPage>
             const LoginHeader(),
             _buildEmailField(),
             _buildPasswordField(),
+            LinkEsqueciSenha(emailController: _emailController),
             _buildLoginButton(),
             _buildBiometricButton(),
           ],

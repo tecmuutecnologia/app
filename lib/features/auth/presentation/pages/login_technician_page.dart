@@ -1,3 +1,4 @@
+import '/features/auth/presentation/widgets/link_esqueci_senha.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -200,6 +201,7 @@ class _LoginTechnicianPageState extends ConsumerState<LoginTechnicianPage>
                 _subtitulo(context),
                 _campoEmail(context),
                 _campoSenha(context),
+                LinkEsqueciSenha(emailController: _emailController),
                 _botaoEntrar(context),
                 _botaoBiometria(context),
                 _linkCadastro(context),

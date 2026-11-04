@@ -985,6 +985,48 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
     );
   }
 
+  /// Troca de senha pelo e-mail de redefinição do Firebase: não exige a
+  /// senha atual nem um login recente, que o `updatePassword` exigiria.
+  Widget _botaoTrocarSenha(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 0.0),
+      child: InkWell(
+        onTap: () async {
+          final confirmar = await showDialog<bool>(
+                context: context,
+                builder: (dialogContext) => AlertDialog(
+                  title: const Text('Trocar senha'),
+                  content: Text(
+                      'Vamos enviar um link para $currentUserEmail. Abra o e-mail e escolha a nova senha.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(dialogContext, false),
+                      child: const Text('Cancelar'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(dialogContext, true),
+                      child: const Text('Enviar'),
+                    ),
+                  ],
+                ),
+              ) ??
+              false;
+          if (!confirmar || !context.mounted) return;
+          await authManager.resetPassword(
+              email: currentUserEmail, context: context);
+        },
+        child: Text(
+          'Trocar minha senha',
+          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                color: const Color(0xFFF75E38),
+                letterSpacing: 0.0,
+                decoration: TextDecoration.underline,
+              ),
+        ),
+      ),
+    );
+  }
+
   Widget _botaoExcluirConta(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 15.0, 0.0, 0.0),
@@ -1184,6 +1226,7 @@ class _ProfileTecnicoPageState extends State<ProfileTecnicoPage> {
                   _campoBairro(context, profileTecnicoPersonRecord),
                   _botaoSalvar(context, profileTecnicoPersonRecord),
                   _botaoMeuPlano(context, profileTecnicoPersonRecord),
+                  _botaoTrocarSenha(context),
                   _botaoExcluirConta(context),
                   _botaoLogout(context),
                 ],
