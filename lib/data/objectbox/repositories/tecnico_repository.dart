@@ -75,4 +75,34 @@ class TecnicoRepository extends TopLevelSyncRepository<TecnicoEntity> {
       ),
     );
   }
+
+  /// Devolve uma vaga de produtor ao técnico, no mesmo formato offline-first de
+  /// [debitarCotaAnimais]: contadores locais na hora + delta na fila.
+  ///
+  /// Chamado quando uma propriedade com conta ativada é excluída de vez. Só a
+  /// ativação ("Ativar conta"/"Liberar acesso") consome a vaga, então só a
+  /// exclusão de uma propriedade ativada a devolve.
+  void devolverVagaProdutor(String tecnicoFirestoreId) {
+    final tecnico = getByFirestoreId(tecnicoFirestoreId);
+    if (tecnico == null) return;
+
+    if (tecnico.quantidadeProdutoresCadastrados > 0) {
+      tecnico.quantidadeProdutoresCadastrados -= 1;
+    }
+    tecnico.restanteLimiteProdutores += 1;
+    box.put(tecnico);
+
+    _objectBox.pendingOperationBox.put(
+      PendingOperationEntity(
+        operationType: 'UPDATE',
+        collectionName: collectionName,
+        firestoreId: tecnicoFirestoreId,
+        documentPath: '$collectionName/$tecnicoFirestoreId',
+        dataJson: QueuePayloadCodec.encode({
+          'quantidadeProdutoresCadastrados': QueueIncrement(-1),
+          'restanteLimiteProdutores': QueueIncrement(1),
+        }),
+      ),
+    );
+  }
 }

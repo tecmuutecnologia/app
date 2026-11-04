@@ -488,7 +488,16 @@ class _PropriedadesExcluiasPageState
 
     // Apaga o documento no Firestore e remove o registro local (enfileira o
     // DELETE se estiver offline).
+    // Lido antes: a exclusão remove o registro local.
+    final consumiaVaga = entity.contaCriada;
+    final tecnicoId = entity.parentPath?.split('/').last;
     await ref.read(propriedadeRepositoryProvider).excluirPermanente(entity);
+    // A ativação da conta consumiu uma vaga do plano; a exclusão definitiva a
+    // devolve. Na lixeira a vaga continua presa, porque a propriedade pode
+    // ser restaurada.
+    if (consumiaVaga && tecnicoId != null && tecnicoId.isNotEmpty) {
+      ref.read(tecnicoRepositoryProvider).devolverVagaProdutor(tecnicoId);
+    }
 
     if (!context.mounted) return;
     await showDialog(
