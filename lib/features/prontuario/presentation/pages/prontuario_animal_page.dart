@@ -14,6 +14,7 @@ import '/features/prontuario/presentation/pages/pron_acoes_page.dart';
 import '/features/prontuario/presentation/pages/pron_cios_page.dart';
 import '/features/prontuario/presentation/pages/pron_diag_gestacao_page.dart';
 import '/features/prontuario/presentation/pages/pron_inseminacoes_page.dart';
+import '/features/prontuario/presentation/pages/pron_sanitario_page.dart';
 import '/domain/animais/dias_desde.dart';
 import '/domain/animais/ordenacao_animal.dart';
 import '/features/animais/application/animais_providers.dart';
@@ -714,36 +715,17 @@ class _ProntuarioAnimalPageState extends ConsumerState<ProntuarioAnimalPage> {
       identidade: IdentidadeSecao.vacinas,
       onVerMais: () async {
         context.pushNamed(
-          PronCiosPage.routeName,
+          PronSanitarioPage.routeName,
           queryParameters: {
             'uidPropriedade': serializeParam(
               widget.uidPropriedade,
               ParamType.DocumentReference,
             ),
-            'nomePropriedade': serializeParam(
-              widget.nomePropriedade,
-              ParamType.String,
-            ),
-            'uidTecnico': serializeParam(
-              widget.uidTecnico,
-              ParamType.DocumentReference,
-            ),
-            'emailPropriedade': serializeParam(
-              widget.emailPropriedade,
-              ParamType.String,
-            ),
             'uidAnimaisProdutores': serializeParam(
               widget.uidAnimaisProdutores,
               ParamType.DocumentReference,
             ),
-            'grupoPredominante': serializeParam(
-              widget.grupoPredominante,
-              ParamType.String,
-            ),
-            'visitaPresencial': serializeParam(
-              widget.visitaPresencial,
-              ParamType.bool,
-            ),
+            'tipoAcao': serializeParam('Vacina', ParamType.String),
           }.withoutNulls,
         );
       },
@@ -799,36 +781,17 @@ class _ProntuarioAnimalPageState extends ConsumerState<ProntuarioAnimalPage> {
       identidade: IdentidadeSecao.exames,
       onVerMais: () async {
         context.pushNamed(
-          PronCiosPage.routeName,
+          PronSanitarioPage.routeName,
           queryParameters: {
             'uidPropriedade': serializeParam(
               widget.uidPropriedade,
               ParamType.DocumentReference,
             ),
-            'nomePropriedade': serializeParam(
-              widget.nomePropriedade,
-              ParamType.String,
-            ),
-            'uidTecnico': serializeParam(
-              widget.uidTecnico,
-              ParamType.DocumentReference,
-            ),
-            'emailPropriedade': serializeParam(
-              widget.emailPropriedade,
-              ParamType.String,
-            ),
             'uidAnimaisProdutores': serializeParam(
               widget.uidAnimaisProdutores,
               ParamType.DocumentReference,
             ),
-            'grupoPredominante': serializeParam(
-              widget.grupoPredominante,
-              ParamType.String,
-            ),
-            'visitaPresencial': serializeParam(
-              widget.visitaPresencial,
-              ParamType.bool,
-            ),
+            'tipoAcao': serializeParam('Exame', ParamType.String),
           }.withoutNulls,
         );
       },
@@ -884,36 +847,17 @@ class _ProntuarioAnimalPageState extends ConsumerState<ProntuarioAnimalPage> {
       identidade: IdentidadeSecao.doencas,
       onVerMais: () async {
         context.pushNamed(
-          PronCiosPage.routeName,
+          PronSanitarioPage.routeName,
           queryParameters: {
             'uidPropriedade': serializeParam(
               widget.uidPropriedade,
               ParamType.DocumentReference,
             ),
-            'nomePropriedade': serializeParam(
-              widget.nomePropriedade,
-              ParamType.String,
-            ),
-            'uidTecnico': serializeParam(
-              widget.uidTecnico,
-              ParamType.DocumentReference,
-            ),
-            'emailPropriedade': serializeParam(
-              widget.emailPropriedade,
-              ParamType.String,
-            ),
             'uidAnimaisProdutores': serializeParam(
               widget.uidAnimaisProdutores,
               ParamType.DocumentReference,
             ),
-            'grupoPredominante': serializeParam(
-              widget.grupoPredominante,
-              ParamType.String,
-            ),
-            'visitaPresencial': serializeParam(
-              widget.visitaPresencial,
-              ParamType.bool,
-            ),
+            'tipoAcao': serializeParam('Doença', ParamType.String),
           }.withoutNulls,
         );
       },

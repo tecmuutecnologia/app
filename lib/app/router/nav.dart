@@ -39,6 +39,7 @@ import '/features/prontuario/presentation/pages/pron_acoes_page.dart';
 import '/features/prontuario/presentation/pages/pron_cios_page.dart';
 import '/features/prontuario/presentation/pages/pron_diag_gestacao_page.dart';
 import '/features/prontuario/presentation/pages/pron_inseminacoes_page.dart';
+import '/features/prontuario/presentation/pages/pron_sanitario_page.dart';
 import '/features/prontuario/presentation/pages/prontuario_animal_page.dart';
 import '/features/propriedades/presentation/pages/editar_propriedade_page.dart';
 import '/features/propriedades/presentation/pages/inicio_propriedade_page.dart';
@@ -968,6 +969,25 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               'visitaPresencial',
               ParamType.bool,
             ),
+          ),
+        ),
+        FFRoute(
+          name: PronSanitarioPage.routeName,
+          path: PronSanitarioPage.routePath,
+          builder: (context, params) => PronSanitarioPage(
+            uidPropriedade: params.getParam(
+              'uidPropriedade',
+              ParamType.DocumentReference,
+              isList: false,
+              collectionNamePath: ['tecnico', 'propriedades'],
+            ),
+            uidAnimaisProdutores: params.getParam(
+              'uidAnimaisProdutores',
+              ParamType.DocumentReference,
+              isList: false,
+              collectionNamePath: ['tecnico', 'animaisProdutores'],
+            ),
+            tipoAcao: params.getParam('tipoAcao', ParamType.String),
           ),
         ),
         FFRoute(
