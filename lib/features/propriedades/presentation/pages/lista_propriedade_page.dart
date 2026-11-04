@@ -748,8 +748,9 @@ class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
           return AlertDialog(
             title: const Text('Conta ativada com sucesso!'),
             content: const Text(
-                'A propriedade foi sincronizada e o produtor recebeu o e-mail '
-                'de boas-vindas.'),
+                'A conta do produtor foi criada. Envie o e-mail de boas-vindas que '
+                'abrimos no seu aplicativo de e-mail. Para entrar, o produtor usa o '
+                'e-mail dele e o CPF (só números) como senha.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(alertDialogContext),

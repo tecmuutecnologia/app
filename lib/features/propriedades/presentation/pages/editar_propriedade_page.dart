@@ -821,7 +821,7 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
                         return AlertDialog(
                           title: Text('Importante!'),
                           content: Text(
-                              'A nova quantidade de dias para DG, será válido apenas para novas ações.'),
+                              'A nova quantidade de dias para DG vale para todos os animais inseminados, inclusive os que já estão aguardando o diagnóstico.'),
                           actions: [
                             TextButton(
                               onPressed: () =>
@@ -1235,7 +1235,7 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
                                   builder: (alertDialogContext) => AlertDialog(
                                     title: const Text('Acesso liberado!'),
                                     content: const Text(
-                                        'O produtor recebeu o e-mail de boas-vindas com as instruções de acesso.'),
+                                        'A conta do produtor foi criada. Envie o e-mail de boas-vindas que abrimos no seu aplicativo de e-mail. Para entrar, o produtor usa o e-mail dele e o CPF (só números) como senha.'),
                                     actions: [
                                       TextButton(
                                         onPressed: () =>
