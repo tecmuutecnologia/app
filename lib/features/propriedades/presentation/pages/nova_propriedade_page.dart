@@ -1,3 +1,4 @@
+import '/core/sync/exclusao_remota.dart';
 import '/core/ui/app_card.dart';
 import '/data/backend.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
@@ -322,12 +323,13 @@ class _NovaPropriedadePageState extends ConsumerState<NovaPropriedadePage> {
               )),
               singleRecord: true,
             ).then((s) => s.firstOrNull != null);
+            // Propriedade excluída de vez continua no Firestore com a marca
+            // de exclusão e não conta como duplicada.
             propriedadeDupCpfOnline = await queryPropriedadesRecordOnce(
               parent: widget.uidTecnico,
               queryBuilder: (propriedadesRecord) =>
                   propriedadesRecord.where('cpf', isEqualTo: cpf),
-              singleRecord: true,
-            ).then((s) => s.firstOrNull != null);
+            ).then((s) => s.any((r) => !ehExclusaoRemota(r.snapshotData)));
           }
 
           if (!mounted) return;

@@ -1,3 +1,4 @@
+import '../../../core/sync/exclusao_remota.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -64,11 +65,13 @@ class OfflineFirstSyncGateway implements SyncGateway {
     // TecnicoRecord (porque nao havia) e concluia "tecnico sem perfil". O
     // cadastro seguinte criava um TecnicoRecord espurio na conta do produtor, e
     // dali em diante o download buscava o rebanho debaixo desse tecnico vazio.
+    // Propriedade excluída de vez fica no Firestore com a marca de exclusão:
+    // não faz de ninguém produtor.
     final propriedade = await queryPropriedadesRecordOnce(
       queryBuilder: (r) =>
           r.where('uidPersonProdutor', isEqualTo: person.reference),
-      singleRecord: true,
-    ).then((s) => s.firstOrNull);
+    ).then(
+        (s) => s.where((r) => !ehExclusaoRemota(r.snapshotData)).firstOrNull);
 
     // So consultado quando nao ha propriedade: com propriedade a decisao ja
     // esta tomada, e esta e uma ida a rede no caminho critico do login.

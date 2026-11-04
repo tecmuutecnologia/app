@@ -1,5 +1,6 @@
 // ignore_for_file: unused_local_variable
 
+import '/core/sync/exclusao_remota.dart';
 import '/data/backend.dart';
 import '/data/objectbox/repositories/animal_repository.dart';
 import '/core/ui/app_card.dart';
@@ -214,7 +215,8 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
                     'liberaInseminacao',
                     isEqualTo: true,
                   ),
-            ),
+            ).map((lista) =>
+                lista.where((r) => !ehExclusaoRemota(r.snapshotData)).toList()),
             builder: (context, snapshot) {
               // Customize what your widget looks like when it's loading.
               if (!snapshot.hasData) {

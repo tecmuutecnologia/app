@@ -11,6 +11,7 @@ import '../../core/sync/assinatura_local.dart';
 import '../../core/sync/blocos.dart';
 import '../../core/sync/edicao_pendente.dart';
 import '../../core/sync/escuta_remota.dart';
+import '../../core/sync/exclusao_remota.dart';
 import '../../core/sync/chaves_uid_person.dart';
 import '../../core/sync/fonte_download.dart';
 import '../../core/sync/gravar_no_id_definitivo.dart';
@@ -647,6 +648,13 @@ class OfflineFirstSyncService {
     for (final doc in docs) {
       final parentPath = doc.reference.parent.parent!.path;
 
+      // Excluída de vez (esvaziada da lixeira) em outro aparelho.
+      if (ehExclusaoRemota(doc.data())) {
+        _removerLocais(_objectBox.propriedadeBox,
+            PropriedadeEntity_.firestoreId, {doc.id});
+        continue;
+      }
+
       final existing = _objectBox.propriedadeBox
           .query(PropriedadeEntity_.firestoreId.equals(doc.id))
           .build()
@@ -870,14 +878,21 @@ class OfflineFirstSyncService {
   ) {
     if (docs.isEmpty) return 0;
 
-    final ids = docs.map((d) => d.id).toList();
+    final separados =
+        separarExclusoes(docs, idDe: (d) => d.id, dadosDe: (d) => d.data());
+    _removerLocais(
+        _objectBox.animalBox, AnimalEntity_.firestoreId, separados.excluidos);
+    final vivos = separados.vivos;
+    if (vivos.isEmpty) return docs.length;
+
+    final ids = vivos.map((d) => d.id).toList();
     final existentes = _objectBox.animalBox
         .query(AnimalEntity_.firestoreId.oneOf(ids))
         .build()
         .find();
 
     final aGravar = reconciliarAnimais(
-      docs: docs.map((d) => DocAnimal(d.id, d.data())).toList(),
+      docs: vivos.map((d) => DocAnimal(d.id, d.data())).toList(),
       existentesPorFirestoreId: {
         for (final e in existentes) e.firestoreId!: e,
       },
@@ -900,7 +915,16 @@ class OfflineFirstSyncService {
   ) {
     if (docs.isEmpty) return;
 
-    final ids = docs.map((d) => d.id).toList();
+    // Exclusão vinda de outro aparelho vence até edição local pendente: o
+    // documento já está excluído para todo mundo.
+    final separados =
+        separarExclusoes(docs, idDe: (d) => d.id, dadosDe: (d) => d.data());
+    _removerLocais(
+        _objectBox.acaoBox, AcaoEntity_.firestoreId, separados.excluidos);
+    final vivos = separados.vivos;
+    if (vivos.isEmpty) return;
+
+    final ids = vivos.map((d) => d.id).toList();
     final existentes = _objectBox.acaoBox
         .query(AcaoEntity_.firestoreId.oneOf(ids))
         .build()
@@ -908,7 +932,7 @@ class OfflineFirstSyncService {
 
     final aplicaveis = semEdicaoPendente(ids, existentes).toSet();
     final baixados = [
-      for (final doc in docs)
+      for (final doc in vivos)
         if (aplicaveis.contains(doc.id))
           AcaoEntity.fromFirestore(doc.data(), doc.id, parentPath),
     ];
@@ -1003,7 +1027,10 @@ class OfflineFirstSyncService {
                 .get();
             acoesDoAlvo.addAll([
               for (final doc in acoesSnapshot.docs)
-                AcaoEntity.fromFirestore(doc.data(), doc.id, alvo.tecnicoPath),
+                _comExclusao(
+                    doc.data(),
+                    AcaoEntity.fromFirestore(
+                        doc.data(), doc.id, alvo.tecnicoPath)),
             ]);
           }
 
@@ -1059,7 +1086,44 @@ class OfflineFirstSyncService {
       definirId: (e, id) => e.id = id,
     );
 
-    box.putMany(baixados);
+    // Exclusão vinda de outro aparelho: remove o registro local (já com o id
+    // reaproveitado acima) em vez de gravar.
+    final excluidos = [
+      for (final e in baixados)
+        if (e.isDeleted && e.id != 0) e.id,
+    ];
+    if (excluidos.isNotEmpty) box.removeMany(excluidos);
+    box.putMany([
+      for (final e in baixados)
+        if (!e.isDeleted) e,
+    ]);
+  }
+
+  /// Marca como excluída a entidade cujo documento remoto é uma exclusão
+  /// (ver `exclusao_remota.dart`); [_gravarSincronizaveis] então a remove.
+  T _comExclusao<T extends SyncableEntity>(
+    Map<String, dynamic> data,
+    T entidade,
+  ) {
+    if (ehExclusaoRemota(data)) entidade.isDeleted = true;
+    return entidade;
+  }
+
+  /// Remove do ObjectBox os registros cujos documentos remotos foram
+  /// excluídos.
+  void _removerLocais<T>(
+    Box<T> box,
+    QueryStringProperty<T> firestoreIdProp,
+    Set<String> firestoreIds,
+  ) {
+    if (firestoreIds.isEmpty) return;
+    final query =
+        box.query(firestoreIdProp.oneOf(firestoreIds.toList())).build();
+    final removidos = query.remove();
+    query.close();
+    if (removidos > 0) {
+      debugPrint('🗑️ $removidos excluído(s) por outro aparelho');
+    }
   }
 
   /// Baixa dados financeiros e visitas
@@ -1083,11 +1147,13 @@ class OfflineFirstSyncService {
           _objectBox.financeiroBox,
           [
             for (final doc in financeiroSnapshot.docs)
-              FinanceiroEntity.fromFirestore(
-                doc.data(),
-                doc.id,
-                parentPath: propRef.path,
-              ),
+              _comExclusao(
+                  doc.data(),
+                  FinanceiroEntity.fromFirestore(
+                    doc.data(),
+                    doc.id,
+                    parentPath: propRef.path,
+                  )),
           ],
           FinanceiroEntity_.firestoreId,
         );
@@ -1109,11 +1175,13 @@ class OfflineFirstSyncService {
           _objectBox.acaoSanitarioBox,
           [
             for (final doc in sanitarioSnapshot.docs)
-              AcaoSanitarioEntity.fromFirestore(
-                doc.data(),
-                doc.id,
-                parentPath: propRef.path,
-              ),
+              _comExclusao(
+                  doc.data(),
+                  AcaoSanitarioEntity.fromFirestore(
+                    doc.data(),
+                    doc.id,
+                    parentPath: propRef.path,
+                  )),
           ],
           AcaoSanitarioEntity_.firestoreId,
         );
@@ -1139,11 +1207,13 @@ class OfflineFirstSyncService {
           _objectBox.resumoVisitaBox,
           _preservarAssinaturasLocais([
             for (final doc in visitasSnapshot.docs)
-              ResumoVisitaEntity.fromFirestore(
-                doc.data(),
-                doc.id,
-                parentPath: 'resumo_da_visita',
-              ),
+              _comExclusao(
+                  doc.data(),
+                  ResumoVisitaEntity.fromFirestore(
+                    doc.data(),
+                    doc.id,
+                    parentPath: 'resumo_da_visita',
+                  )),
           ]),
           ResumoVisitaEntity_.firestoreId,
         );
@@ -1166,11 +1236,13 @@ class OfflineFirstSyncService {
           _objectBox.tratamentoBox,
           [
             for (final doc in tratamentosSnapshot.docs)
-              TratamentoEntity.fromFirestore(
-                doc.data(),
-                doc.id,
-                parentPath: propRef.path,
-              ),
+              _comExclusao(
+                  doc.data(),
+                  TratamentoEntity.fromFirestore(
+                    doc.data(),
+                    doc.id,
+                    parentPath: propRef.path,
+                  )),
           ],
           TratamentoEntity_.firestoreId,
         );
@@ -1191,11 +1263,13 @@ class OfflineFirstSyncService {
           _objectBox.recomendacaoBox,
           [
             for (final doc in recomendacoesSnapshot.docs)
-              RecomendacaoEntity.fromFirestore(
-                doc.data(),
-                doc.id,
-                parentPath: propRef.path,
-              ),
+              _comExclusao(
+                  doc.data(),
+                  RecomendacaoEntity.fromFirestore(
+                    doc.data(),
+                    doc.id,
+                    parentPath: propRef.path,
+                  )),
           ],
           RecomendacaoEntity_.firestoreId,
         );
@@ -1216,11 +1290,13 @@ class OfflineFirstSyncService {
           _objectBox.acaoDaVisitaBox,
           [
             for (final doc in acoesDaVisitaSnapshot.docs)
-              AcaoDaVisitaEntity.fromFirestore(
-                doc.data(),
-                doc.id,
-                propRef.path,
-              ),
+              _comExclusao(
+                  doc.data(),
+                  AcaoDaVisitaEntity.fromFirestore(
+                    doc.data(),
+                    doc.id,
+                    propRef.path,
+                  )),
           ],
           AcaoDaVisitaEntity_.firestoreId,
         );
@@ -1732,7 +1808,8 @@ class OfflineFirstSyncService {
         }
         break;
       case 'DELETE':
-        await docRef.delete();
+        // Inclui DELETEs enfileirados por versões anteriores do app.
+        await marcarExcluido(docRef);
         break;
     }
   }
@@ -2107,8 +2184,10 @@ class OfflineFirstSyncService {
           _objectBox.resumoVisitaBox,
           _preservarAssinaturasLocais([
             for (final doc in docs)
-              ResumoVisitaEntity.fromFirestore(doc.data(), doc.id,
-                  parentPath: alvo.parentPath),
+              _comExclusao(
+                  doc.data(),
+                  ResumoVisitaEntity.fromFirestore(doc.data(), doc.id,
+                      parentPath: alvo.parentPath)),
           ]),
           ResumoVisitaEntity_.firestoreId,
         );
@@ -2117,8 +2196,10 @@ class OfflineFirstSyncService {
           _objectBox.tratamentoBox,
           [
             for (final doc in docs)
-              TratamentoEntity.fromFirestore(doc.data(), doc.id,
-                  parentPath: alvo.parentPath),
+              _comExclusao(
+                  doc.data(),
+                  TratamentoEntity.fromFirestore(doc.data(), doc.id,
+                      parentPath: alvo.parentPath)),
           ],
           TratamentoEntity_.firestoreId,
         );
@@ -2127,8 +2208,10 @@ class OfflineFirstSyncService {
           _objectBox.recomendacaoBox,
           [
             for (final doc in docs)
-              RecomendacaoEntity.fromFirestore(doc.data(), doc.id,
-                  parentPath: alvo.parentPath),
+              _comExclusao(
+                  doc.data(),
+                  RecomendacaoEntity.fromFirestore(doc.data(), doc.id,
+                      parentPath: alvo.parentPath)),
           ],
           RecomendacaoEntity_.firestoreId,
         );

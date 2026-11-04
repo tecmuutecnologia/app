@@ -1,3 +1,4 @@
+import '../../../core/sync/exclusao_remota.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:objectbox/objectbox.dart';
@@ -312,7 +313,8 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
     return Success(entity);
   }
 
-  /// Exclui (soft delete) a entidade: marca localmente e propaga ao Firestore.
+  /// Exclui a entidade: marca localmente e grava a marca de exclusão no
+  /// Firestore, que os outros aparelhos recebem pela sincronização.
   ///
   /// A entidade é marcada como `isDeleted` e persistida localmente; em caso de
   /// sucesso online é removida do ObjectBox. Offline/erro vai para a fila.
@@ -329,7 +331,9 @@ abstract class BaseSyncRepository<E extends SyncableEntity> {
 
     if (isOnline) {
       try {
-        await _firestore.doc(documentPath).delete();
+        // Marca em vez de apagar: um delete() não chega aos outros aparelhos
+        // (ver exclusao_remota.dart).
+        await marcarExcluido(_firestore.doc(documentPath));
         box.remove(entity.id);
         return const Success(null);
       } catch (e, st) {
