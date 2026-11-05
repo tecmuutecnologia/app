@@ -1,3 +1,4 @@
+import '/features/plano/presentation/aviso_limite_plano.dart';
 import '/core/auth/firebase_auth/auth_util.dart';
 import '/core/auth/confirmar_saida_da_conta.dart';
 import '/core/ui/app_card.dart';
@@ -1138,6 +1139,12 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
                                     ],
                                   ),
                                 );
+                                return;
+                              }
+
+                              // Liberar acesso cria conta de produtor: exige vaga.
+                              if (!await garantirVagaProdutor(context,
+                                  tecnicoFirestoreId: widget.uidTecnico?.id)) {
                                 return;
                               }
 

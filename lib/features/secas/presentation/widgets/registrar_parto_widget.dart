@@ -1,5 +1,6 @@
 // ignore_for_file: dead_null_aware_expression, unused_field
 
+import '/features/plano/presentation/aviso_limite_plano.dart';
 import '/data/backend.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/success_overlay.dart';
@@ -351,6 +352,11 @@ class _RegistrarPartoWidgetState extends State<RegistrarPartoWidget>
                   if ((_nomeTextController.text != '') ||
                       (_brincoTextController.text != '')) {
                     if (_dtPartoTextController.text != '') {
+                      // Bezerro ocupa vaga: sem vaga não grava nada (nem a mãe).
+                      if (!await garantirVagaAnimal(context,
+                          tecnicoFirestoreId: widget.uidTecnico?.id)) {
+                        return;
+                      }
                       // Offline-first: atualiza a mãe (parto)
                       // no ObjectBox; sync enfileirado.
                       await _registrarPartoMaeOfflineFirst(

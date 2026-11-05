@@ -1,5 +1,6 @@
 // ignore_for_file: dead_code, dead_null_aware_expression
 
+import '/features/plano/presentation/aviso_limite_plano.dart';
 import '/features/animais/application/touro_inseminacao.dart';
 import '/core/ui/cabecalho_tela.dart';
 import '/core/ui/painel_lista.dart';
@@ -265,6 +266,11 @@ class _CadastrarNovoAnimalPageState extends State<CadastrarNovoAnimalPage> {
         },
       );
       if (_shouldSetState) safeSetState(() {});
+      return;
+    }
+    // Sem vaga no plano não cadastra (o animal novo ocuparia uma vaga).
+    if (!await garantirVagaAnimal(context,
+        tecnicoFirestoreId: widget.uidTecnico?.id)) {
       return;
     }
     // O touro/sêmen da inseminação é OPCIONAL. Havia aqui um bloqueio que
