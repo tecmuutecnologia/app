@@ -53,6 +53,9 @@ class ObjectBoxAuthHelper {
       // App reaberto com sessão salva não passa pelo `onUserLogin`, que é
       // quem abre as escutas depois do download.
       sync.iniciarEscutaRemota();
+      // O primeiro ciclo periódico só roda 5 minutos depois de abrir o app; o
+      // que outro aparelho lançou com o app fechado chega agora.
+      unawaited(sync.puxarAlteracoes());
       // Mesmo motivo: sem isto o reparo dos vínculos só rodaria para quem
       // fizesse login de novo. É no-op depois da primeira execução.
       unawaited(sync.repararVinculosDeVisitas());

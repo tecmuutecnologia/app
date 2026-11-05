@@ -2083,8 +2083,20 @@ class OfflineFirstSyncService {
   /// versão que introduziu o pull, e o download completo (sem filtro) continua
   /// trazendo a base inteira no primeiro login.
   Future<void> _pullRemoteChanges() async {
-    if (!_isOnline) return;
+    // Timer, reconexão, abertura e retorno do app podem disparar juntos; um
+    // pull por vez basta (o seguinte relê a mesma janela).
+    if (!_isOnline || _puxando) return;
+    _puxando = true;
+    try {
+      await _pullRemoteChangesAgora();
+    } finally {
+      _puxando = false;
+    }
+  }
 
+  bool _puxando = false;
+
+  Future<void> _pullRemoteChangesAgora() async {
     final alvos = _alvosLocais();
     if (alvos.isEmpty) return;
 
@@ -2109,6 +2121,9 @@ class OfflineFirstSyncService {
   Future<void> _pullColecao({
     required SyncEtapa etapa,
     required List<AlvoEscuta> alvos,
+    // Falso quando só uma parte dos alvos da etapa foi lida (o receituário de
+    // uma propriedade): avançar a marca da etapa pularia as visitas.
+    bool avancarMarcaDaEtapa = true,
   }) async {
     final chaveEtapa = SyncCheckpoint.chaveDe(etapa);
 
@@ -2130,7 +2145,9 @@ class OfflineFirstSyncService {
         // vez no fim, depois de todos os alvos dela terem sido lidos.
         if (alvo.apenasPull) _avancarMarca(chave, marca);
       }
-      _avancarMarca(chaveEtapa, _marcaPorChave(chaveEtapa));
+      if (avancarMarcaDaEtapa) {
+        _avancarMarca(chaveEtapa, _marcaPorChave(chaveEtapa));
+      }
     } catch (e) {
       // Pull é oportunista: falhar aqui não pode derrubar o push que vem em
       // seguida nem marcar o app como quebrado.
@@ -2292,6 +2309,39 @@ class OfflineFirstSyncService {
       escuta.cancel();
     }
     _escutas.clear();
+  }
+
+  /// Puxa agora o que mudou no Firestore, sem esperar o ciclo de 5 minutos.
+  ///
+  /// Chamado quando o app abre com sessão salva e quando volta do segundo
+  /// plano: o timer periódico só corre com o app na tela, então o técnico que
+  /// abria o app para ver o que o produtor lançou esperava até 5 minutos pelo
+  /// receituário. Antes do primeiro download completo não faz nada.
+  Future<void> puxarAlteracoes() async {
+    if (needsInitialSync()) return;
+    await _pullRemoteChanges();
+  }
+
+  /// Puxa os tratamentos e recomendações de UMA propriedade, para o técnico
+  /// ver no receituário o que o produtor acabou de lançar (IATF, CG II...).
+  ///
+  /// No técnico essas coleções não têm escuta em tempo real (seriam duas
+  /// conexões por propriedade) e o pull periódico só as cobre a cada 5 minutos
+  /// e só com visita recente — ver [alvosDoReceituario]. No produtor elas já
+  /// são escutadas em tempo real, e aqui não faz nada.
+  Future<void> puxarReceituario(String propriedadePath) async {
+    if (!_isOnline || propriedadePath.isEmpty || needsInitialSync()) return;
+    if (!ehAparelhoDeTecnico(
+      tecnicoPath: _tecnicoRefLocal()?.path,
+      propriedades: _objectBox.propriedadeBox.getAll(),
+    )) {
+      return;
+    }
+    await _pullColecao(
+      etapa: SyncEtapa.financeiro,
+      alvos: alvosDoReceituario(propriedadePath),
+      avancarMarcaDaEtapa: false,
+    );
   }
 
   /// Inicia sincronização periódica em background

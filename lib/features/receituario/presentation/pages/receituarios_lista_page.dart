@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '/core/ui/cabecalho_tela.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
@@ -39,6 +41,11 @@ class _ReceituariosListaPageState extends State<ReceituariosListaPage> {
   @override
   void initState() {
     super.initState();
+
+    // O que o produtor lançou (IATF, CG II...) vira tratamento/recomendação,
+    // que no técnico só desce por pull: busca agora em vez de esperar o ciclo.
+    unawaited(OfflineFirstSyncService.instance
+        .puxarReceituario(widget.uidPropriedade?.path ?? ''));
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }

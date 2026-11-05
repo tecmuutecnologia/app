@@ -64,6 +64,13 @@ class _ResumoVisitaAtualPageState extends State<ResumoVisitaAtualPage> {
     _obsGeralTextController ??= TextEditingController();
     _obsGeralFocusNode ??= FocusNode();
 
+    // Traz o que o produtor acabou de lançar nesta propriedade. As listas de
+    // recomendações/tratamentos leem o ObjectBox sem escutá-lo, então a tela
+    // é redesenhada quando a busca termina.
+    OfflineFirstSyncService.instance
+        .puxarReceituario(widget.uidPropriedade?.path ?? '')
+        .then((_) => safeSetState(() {}));
+
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 

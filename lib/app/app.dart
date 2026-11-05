@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '/core/connectivity/connectivity_service.dart';
+import '/data/objectbox/offline_first_sync_service.dart';
 import '/core/di/providers.dart';
 import '/core/auth/firebase_auth/auth_util.dart';
 import '/core/auth/firebase_auth/firebase_user_provider.dart';
@@ -94,6 +95,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       unawaited(ConnectivityService.instance.recheck());
+      // O pull periódico não corre com o app em segundo plano: quem volta para
+      // ver o que o outro aparelho lançou não espera o próximo ciclo.
+      if (OfflineFirstSyncService.isInitialized) {
+        unawaited(OfflineFirstSyncService.instance.puxarAlteracoes());
+      }
     }
   }
 
