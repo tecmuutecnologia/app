@@ -1,4 +1,5 @@
 import '/data/backend.dart';
+import '/data/plano/vagas_do_plano_service.dart';
 import '/data/stripe/payment_manager.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
@@ -40,14 +41,10 @@ class _SubscriptionPlanTecnicoPageState
   FormFieldController<double>? _dropDownValueController2;
 
   // Outputs de query/ação (antes no FlutterFlowModel).
-  AssinaturaTecnicoRecord? _outUidAssinaturaTecnico;
-  AssinaturaAtivaTecnicoRecord? _outUidAssinaturaAtiva;
   PlanosTecnicosRecord? _outUidPlanoFree;
   AssinaturaTecnicoRecord? _outUidNovoPlano;
   String? _outUidPayment;
   PlanosTecnicosRecord? _outUidPlanoEscolhido;
-  AssinaturaTecnicoRecord? _outUidAssinaturaPlanoStripe;
-  AssinaturaAtivaTecnicoRecord? _outUidAssinaturaAtivaStripe;
   AssinaturaTecnicoRecord? _outUidNovoPlanoPago;
 
   @override
@@ -341,24 +338,9 @@ class _SubscriptionPlanTecnicoPageState
       onPressed: () async {
         var _shouldSetState = false;
         if (_dropDownValue2 == 0.0) {
-          _outUidAssinaturaTecnico = await queryAssinaturaTecnicoRecordOnce(
-            queryBuilder: (assinaturaTecnicoRecord) =>
-                assinaturaTecnicoRecord.where(
-              'idTecnico',
-              isEqualTo: widget.uidTecnico,
-            ),
-            singleRecord: true,
-          ).then((s) => s.firstOrNull);
-          _shouldSetState = true;
-          _outUidAssinaturaAtiva = await queryAssinaturaAtivaTecnicoRecordOnce(
-            queryBuilder: (assinaturaAtivaTecnicoRecord) =>
-                assinaturaAtivaTecnicoRecord.where(
-              'idAssinaturaTecnico',
-              isEqualTo: _outUidAssinaturaTecnico?.reference,
-            ),
-            singleRecord: true,
-          ).then((s) => s.firstOrNull);
-          _shouldSetState = true;
+          // Acha a ativa por qualquer assinatura do técnico (não só a primeira).
+          final ativaRef =
+              await VagasDoPlanoService().buscarAtiva(widget.uidTecnico!.id);
           _outUidPlanoFree = await queryPlanosTecnicosRecordOnce(
             queryBuilder: (planosTecnicosRecord) => planosTecnicosRecord.where(
               'nome',
@@ -389,13 +371,20 @@ class _SubscriptionPlanTecnicoPageState
               assinaturaTecnicoRecordReference1);
           _shouldSetState = true;
 
-          await _outUidAssinaturaAtiva!.reference
-              .update(createAssinaturaAtivaTecnicoRecordData(
+          final dadosAtivaFree = createAssinaturaAtivaTecnicoRecordData(
             dtAssinatura: getCurrentTimestamp,
             dtExpiracao: getCurrentTimestamp,
             tipoPlano: '30',
             idAssinaturaTecnico: _outUidNovoPlano?.reference,
-          ));
+          );
+          if (ativaRef != null) {
+            await ativaRef.update(dadosAtivaFree);
+          } else {
+            await AssinaturaAtivaTecnicoRecord.collection
+                .doc()
+                .set(dadosAtivaFree);
+          }
+          await VagasDoPlanoService().recalcular(widget.uidTecnico!.id);
           await showDialog(
             context: context,
             builder: (alertDialogContext) {
@@ -457,26 +446,8 @@ class _SubscriptionPlanTecnicoPageState
             singleRecord: true,
           ).then((s) => s.firstOrNull);
           _shouldSetState = true;
-          _outUidAssinaturaPlanoStripe = await queryAssinaturaTecnicoRecordOnce(
-            queryBuilder: (assinaturaTecnicoRecord) =>
-                assinaturaTecnicoRecord.where(
-              'idTecnico',
-              isEqualTo: widget.uidTecnico,
-            ),
-            singleRecord: true,
-          ).then((s) => s.firstOrNull);
-          _shouldSetState = true;
-          _outUidAssinaturaAtivaStripe =
-              await queryAssinaturaAtivaTecnicoRecordOnce(
-            queryBuilder: (assinaturaAtivaTecnicoRecord) =>
-                assinaturaAtivaTecnicoRecord.where(
-              'idAssinaturaTecnico',
-              isEqualTo: _outUidAssinaturaPlanoStripe?.reference,
-            ),
-            singleRecord: true,
-          ).then((s) => s.firstOrNull);
-          _shouldSetState = true;
-
+          final ativaRefPaga =
+              await VagasDoPlanoService().buscarAtiva(widget.uidTecnico!.id);
           var assinaturaTecnicoRecordReference2 =
               AssinaturaTecnicoRecord.collection.doc();
           await assinaturaTecnicoRecordReference2
@@ -498,14 +469,21 @@ class _SubscriptionPlanTecnicoPageState
               assinaturaTecnicoRecordReference2);
           _shouldSetState = true;
 
-          await _outUidAssinaturaAtivaStripe!.reference
-              .update(createAssinaturaAtivaTecnicoRecordData(
+          final dadosAtivaPaga = createAssinaturaAtivaTecnicoRecordData(
             tipoPlano: _dropDownValue1?.toString(),
             dtAssinatura: getCurrentTimestamp,
             dtExpiracao: getCurrentTimestamp,
             nomePlano: _outUidPlanoEscolhido?.nome,
             idAssinaturaTecnico: _outUidNovoPlanoPago?.reference,
-          ));
+          );
+          if (ativaRefPaga != null) {
+            await ativaRefPaga.update(dadosAtivaPaga);
+          } else {
+            await AssinaturaAtivaTecnicoRecord.collection
+                .doc()
+                .set(dadosAtivaPaga);
+          }
+          await VagasDoPlanoService().recalcular(widget.uidTecnico!.id);
           await showDialog(
             context: context,
             builder: (alertDialogContext) {
