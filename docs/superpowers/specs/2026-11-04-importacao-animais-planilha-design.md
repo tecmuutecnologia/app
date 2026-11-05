@@ -241,3 +241,28 @@ Decisões do construtor (não discutidas com o usuário, revisar):
   `docs/padrao-layout-listas.md`.
 - Tamanho do lote de gravação e como a barra é atualizada.
 - Mapa de siglas de raça, a partir da lista real de raças.
+
+## 9. Mudanças na implementação
+
+Decisões tomadas durante a execução que mudaram ou refinaram o que está acima.
+Guia atualizado: `docs/importacao-animais-planilha.md`.
+
+- **Liberar Acesso não bloqueia** (muda §6): o botão só aparece com conta já
+  criada, a propriedade já ocupa vaga. O bloqueio de produtor fica só em "Ativar
+  conta" (e no "+" de nova propriedade).
+- **Colunas H, I e J só para Vacas e Novilhas**: nas demais categorias parto,
+  inseminação e status são ignorados (o cadastro manual nem mostra os campos).
+  Raça/categoria vazias viram "raça não informada"/"categoria não informada".
+- **Status desconhecido recusa com motivo**: "status não reconhecido: <v>" na
+  leitura; na regra de cadastro, status fora da lista em Vacas/Novilhas vira
+  `Status inválido.` (antes o formulário saía calado).
+- **Touros e Sêmens** são importados com `liberaInseminacao` verdadeiro, como o
+  padrão do cadastro manual.
+- **Exclusão sempre devolve a vaga** quando a entidade termina excluída, mesmo
+  que o `pushDelete` falhe e fique enfileirado.
+- **Critério de "aparelho do técnico"** no recálculo: existe técnico local com
+  `uidPerson` igual ao usuário logado; técnico com `uidPerson` gravado como id do
+  person fica sem recálculo automático.
+- **Recálculo também é pulado** com a sincronização inicial incompleta.
+- **Assinaturas** de `importarAnimais`: `restante` é nulo quando o técnico não
+  está no aparelho (sem limite conhecido, não bloqueia).
