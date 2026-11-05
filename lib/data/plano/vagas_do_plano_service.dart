@@ -13,12 +13,32 @@ import 'package:tecmuu/objectbox.g.dart' hide Query;
 /// contagem real no ObjectBox. Roda no aparelho do técnico, ao fim do sync.
 class VagasDoPlanoService {
   VagasDoPlanoService(
-      {FirebaseFirestore? firestore, ObjectBoxService? objectBox})
+      {FirebaseFirestore? firestore,
+      ObjectBoxService? objectBox,
+      bool Function()? baseIncompleta})
       : _firestore = firestore ?? FirebaseFirestore.instance,
-        _objectBox = objectBox ?? ObjectBoxService.instance;
+        _objectBox = objectBox ?? ObjectBoxService.instance,
+        _baseIncompletaInjetada = baseIncompleta;
 
   final FirebaseFirestore _firestore;
   final ObjectBoxService _objectBox;
+  final bool Function()? _baseIncompletaInjetada;
+
+  /// Mesma marca de `OfflineFirstSyncService.needsInitialSync`: sem o download
+  /// inicial completo a contagem local sai menor e inflaria o saldo.
+  bool _baseIncompleta() {
+    final injetada = _baseIncompletaInjetada;
+    if (injetada != null) return injetada();
+    final q = _objectBox.syncMetadataBox
+        .query(SyncMetadataEntity_.collectionName.equals('initial_download'))
+        .build();
+    try {
+      final metadata = q.findFirst();
+      return metadata == null || !metadata.initialSyncComplete;
+    } finally {
+      q.close();
+    }
+  }
 
   /// `whereIn` do Firestore aceita no máximo 30 valores por consulta.
   static const _loteWhereIn = 30;
@@ -47,6 +67,8 @@ class VagasDoPlanoService {
   /// só o que mudou. Nunca lança: o sync não pode cair por causa disto.
   Future<void> recalcular(String tecnicoFirestoreId) async {
     try {
+      // Vale também para a tela do plano, que chama direto (fora do sync).
+      if (_baseIncompleta()) return;
       final tecnicoPath = 'tecnico/$tecnicoFirestoreId';
       final repo =
           TecnicoRepository(objectBox: _objectBox, firestore: _firestore);

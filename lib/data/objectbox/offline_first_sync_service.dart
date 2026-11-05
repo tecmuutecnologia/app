@@ -13,6 +13,7 @@ import '../../core/sync/edicao_pendente.dart';
 import '../../core/sync/escuta_remota.dart';
 import '../../core/sync/exclusao_remota.dart';
 import '../../core/sync/chaves_uid_person.dart';
+import '../../core/sync/decisao_recalculo.dart';
 import '../../core/sync/fonte_download.dart';
 import '../../core/sync/gravar_no_id_definitivo.dart';
 import '../../core/sync/trava_de_envio.dart';
@@ -33,6 +34,7 @@ import 'repositories/base_sync_repository.dart';
 import 'repositories/financeiro_repository.dart';
 import 'repositories/recomendacao_repository.dart';
 import 'repositories/resumo_visita_repository.dart';
+import 'repositories/tecnico_repository.dart';
 import 'repositories/tratamento_repository.dart';
 import 'entities/index.dart';
 import '../../objectbox.g.dart' hide Query;
@@ -545,7 +547,17 @@ class OfflineFirstSyncService {
           .findFirst();
 
       if (existing != null) {
+        // Débito/devolução de vaga ainda na fila: o servidor não tem o delta,
+        // então a cota local é a verdadeira até a fila subir.
+        final manter = cotaLocalAPreservar(
+          local: existing,
+          filaPendente: TecnicoRepository().temOperacaoPendente(doc.id),
+        );
         existing.updateFromFirestore(doc.data());
+        if (manter != null) {
+          aplicarAposGravar(
+              fresca: existing, campos: manter, filaPendente: false);
+        }
         _objectBox.tecnicoBox.put(existing);
       } else {
         final entity = TecnicoEntity.fromFirestore(doc.data(), doc.id);

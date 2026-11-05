@@ -58,3 +58,22 @@ TecnicoEntity? aplicarAposGravar({
   });
   return fresca;
 }
+
+/// Antes de aplicar o técnico baixado do servidor: com a fila do técnico
+/// pendente, os 6 campos de cota locais já contêm deltas que o servidor ainda
+/// não recebeu — devolve-os para regravar por cima (via [aplicarAposGravar]).
+/// `null` = sem fila, vale o servidor.
+Map<String, int>? cotaLocalAPreservar({
+  required TecnicoEntity local,
+  required bool filaPendente,
+}) {
+  if (!filaPendente) return null;
+  return {
+    'limiteAnimaisContratado': local.limiteAnimaisContratado,
+    'quantidadeAnimaisCadastrados': local.quantidadeAnimaisCadastrados,
+    'restanteLimiteAnimais': local.restanteLimiteAnimais,
+    'limiteProdutoresContratado': local.limiteProdutoresContratado,
+    'quantidadeProdutoresCadastrados': local.quantidadeProdutoresCadastrados,
+    'restanteLimiteProdutores': local.restanteLimiteProdutores,
+  };
+}

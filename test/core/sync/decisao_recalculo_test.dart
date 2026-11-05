@@ -17,6 +17,7 @@ const _produtoresIguais = SaldoVagas(limite: 5, quantidade: 2, restante: 3);
 
 void main() {
   _aposGravarTests();
+  _downloadTests();
 
   test('pulaComFilaPendente', () {
     final campos = camposParaGravar(
@@ -94,5 +95,34 @@ void _aposGravarTests() {
           filaPendente: false),
       isNull,
     );
+  });
+}
+
+void _downloadTests() {
+  test('downloadSemFilaUsaServidor', () {
+    expect(cotaLocalAPreservar(local: _tecnico(), filaPendente: false), isNull);
+  });
+
+  test('downloadComFilaMantemOs6CamposLocais', () {
+    final local = _tecnico();
+    final manter = cotaLocalAPreservar(local: local, filaPendente: true)!;
+    expect(manter, {
+      'limiteAnimaisContratado': 50,
+      'quantidadeAnimaisCadastrados': 40,
+      'restanteLimiteAnimais': 10,
+      'limiteProdutoresContratado': 5,
+      'quantidadeProdutoresCadastrados': 2,
+      'restanteLimiteProdutores': 3,
+    });
+    // O download sobrescreve com o valor do servidor (sem os deltas locais)...
+    local
+      ..quantidadeAnimaisCadastrados = 30
+      ..restanteLimiteAnimais = 20
+      ..restanteLimiteProdutores = 4;
+    // ...e a cota local volta por cima.
+    aplicarAposGravar(fresca: local, campos: manter, filaPendente: false);
+    expect(local.quantidadeAnimaisCadastrados, 40);
+    expect(local.restanteLimiteAnimais, 10);
+    expect(local.restanteLimiteProdutores, 3);
   });
 }
