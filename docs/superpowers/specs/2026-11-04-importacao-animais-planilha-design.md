@@ -24,6 +24,8 @@ descartado.
 - Reimportar a mesma planilha não duplica (nome + brinco).
 - Vagas do plano: descarte e exclusão devolvem a vaga; cadastro manual,
   nascimento (registro de parto) e importação respeitam o limite.
+- Limite de produtores com o mesmo tratamento (limite do plano, recálculo,
+  bloqueio na ativação da conta).
 
 ### Não-objetivos
 - Importar histórico de ações (inseminações anteriores, partos antigos, vacinas).
@@ -72,8 +74,10 @@ ignorando maiúsculas, acentos, espaços e o asterisco/"(opcional)". Se não bat
 a importação nem começa e a tela diz qual coluna está fora de ordem ou faltando
 (ex.: "A coluna D deveria ser Categoria e está Status").
 
-**Datas:** aceitar célula de data do Excel (número serial, como no modelo) e
-texto `dd/mm/aaaa` (também `dd/mm/aa` e `dd-mm-aaaa`). Data inválida ou no
+**Datas:** aceitar célula de data do Excel e texto `dd/mm/aaaa` (também
+`dd/mm/aa` e `dd-mm-aaaa`). O pacote `excel` 2.1.0 do app entrega a célula de
+data do modelo como texto ISO (`2021-11-20T00:00:00.000`); número serial
+também é aceito, para planilhas salvas por outros programas. Data inválida ou no
 futuro (nascimento, parto, inseminação) recusa a linha.
 
 **Número/brinco:** inteiro. Célula numérica ou texto só com dígitos. Outro
@@ -101,8 +105,8 @@ nova.
 
 Cada linha válida vira exatamente o animal que o cadastro manual criaria com os
 mesmos valores: mesmos campos derivados (`dtPartoPrevisto`, `dtSecPrevista`,
-`dtPrePartoPrevista`, `dtDgMais`, `idStatusAnimal`, `brincoAnimalOrder` = -1
-quando sem número, …) e as mesmas exigências por status (ex.: Inseminada,
+`dtPrePartoPrevista`, `dtDgMais`, `idStatusAnimal`, `brincoAnimal` = -1 e
+`brincoAnimalOrder` = 999999 quando sem número, …) e as mesmas exigências por status (ex.: Inseminada,
 Prenha, Inseminada PP e Pré Parto exigem data de inseminação; Seca só para
 Vacas). Hoje essa regra vive inline numa cadeia de `if`s da página de cadastro;
 ela deve ser extraída para uma função pura de domínio usada pelas duas entradas
@@ -178,8 +182,24 @@ O recálculo grava valores absolutos e por isso só roda quando a fila não tem
 incrementos pendentes do técnico (débitos/devoluções de cota): senão um
 débito ainda na fila seria descontado duas vezes.
 
-Mesmo problema existe no limite de produtores (`restanteLimiteProdutores`,
-`planos-tecnicos.limitePropriedade`); fica fora deste trabalho.
+**Limite de produtores (incluído a pedido do usuário em 2026-11-04):** mesmo
+tratamento. Fonte: `planos-tecnicos.limitePropriedade` do plano ativo →
+`limiteProdutoresContratado`. Recálculo: `restanteLimiteProdutores = limite −
+produtores ativos` e `quantidadeProdutoresCadastrados = produtores ativos`, onde
+produtor ativo = propriedade do técnico com conta ativada (`contaCriada`),
+inclusive as que estão na lixeira (a vaga só volta na exclusão definitiva, como
+já faz `devolverVagaProdutor`). Bloqueio: o botão "+" de nova propriedade já
+bloqueia sem saldo; passa a bloquear também "Ativar conta" e "Liberar acesso",
+que são os pontos que consomem a vaga.
+
+**Cadeia do plano ativo, como está gravada:** cada troca de plano cria um novo
+`assinatura-tecnico` e repõe `assinatura-ativa-tecnico.idAssinaturaTecnico`
+para ele. Por isso o plano ativo é achado assim: todos os `assinatura-tecnico`
+do técnico → o `assinatura-ativa-tecnico` que aponta para um deles (se houver
+mais de um, o de `dtAssinatura` mais recente) → `idPlano`. A tela de planos
+hoje procura a ativa a partir do PRIMEIRO `assinatura-tecnico` que a consulta
+devolve, o que falha a partir da segunda troca (`!` em nulo); a tela passa a
+usar a mesma resolução.
 
 **Bloqueio:** sem vaga (saldo ≤ 0), o app não cria animal novo:
 - cadastro manual: aviso "Limite de animais do plano atingido" e não salva;
@@ -195,6 +215,14 @@ Decisões do construtor (não discutidas com o usuário, revisar):
   offline-first vence; o saldo é corrigido quando o técnico sincronizar.
 - Status só é exigido onde o cadastro manual exige (Vacas e Novilhas); para
   as demais categorias a coluna J pode ficar vazia.
+- O cadastro manual exige data de nascimento; a planilha não (o modelo marca
+  "(opcional)"). A importação segue o modelo.
+- Na planilha, o status precisa ser coerente com as datas, pela mesma regra
+  que monta as opções do formulário (`opcoesStatusAnimal`): ex. "Vazia" com
+  inseminação depois do último parto é recusada.
+- Hoje "Inseminada" com parto e sem data de inseminação não salva e não avisa
+  nada; a regra extraída devolve a mesma mensagem dos outros status
+  ("Data última inseminação vazia…").
 
 ## 7. Restrições
 
