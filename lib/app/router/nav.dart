@@ -12,6 +12,7 @@ import '/core/ui/flutter_flow_util.dart';
 
 import '/features/animais/presentation/pages/cadastrar_novo_animal_page.dart';
 import '/features/animais/presentation/pages/editar_animal_page.dart';
+import '/features/animais/presentation/pages/importar_animais_page.dart';
 import '/features/animais/presentation/pages/lista_animais_page.dart';
 import '/features/auth/presentation/pages/create_account_technician_page.dart';
 import '/features/auth/presentation/pages/login_technician_page.dart';
@@ -968,6 +969,24 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
             visitaPresencial: params.getParam(
               'visitaPresencial',
               ParamType.bool,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: ImportarAnimaisPage.routeName,
+          path: ImportarAnimaisPage.routePath,
+          builder: (context, params) => ImportarAnimaisPage(
+            uidPropriedade: params.getParam(
+              'uidPropriedade',
+              ParamType.DocumentReference,
+              isList: false,
+              collectionNamePath: ['tecnico', 'propriedades'],
+            ),
+            uidTecnico: params.getParam(
+              'uidTecnico',
+              ParamType.DocumentReference,
+              isList: false,
+              collectionNamePath: ['tecnico'],
             ),
           ),
         ),

@@ -105,4 +105,44 @@ class TecnicoRepository extends TopLevelSyncRepository<TecnicoEntity> {
       ),
     );
   }
+
+  /// Devolve vagas de animal ao técnico (descarte ou exclusão de animal ativo).
+  /// Espelho de [debitarCotaAnimais]: contadores locais na hora + delta na fila.
+  void devolverCotaAnimais(String tecnicoFirestoreId, {int quantidade = 1}) {
+    final tecnico = getByFirestoreId(tecnicoFirestoreId);
+    if (tecnico == null) return;
+
+    // Nunca deixa o contador local negativo (dados legados dessincronizados).
+    tecnico.quantidadeAnimaisCadastrados =
+        (tecnico.quantidadeAnimaisCadastrados - quantidade).clamp(0, 1 << 30);
+    tecnico.restanteLimiteAnimais += quantidade;
+    box.put(tecnico);
+
+    _objectBox.pendingOperationBox.put(
+      PendingOperationEntity(
+        operationType: 'UPDATE',
+        collectionName: collectionName,
+        firestoreId: tecnicoFirestoreId,
+        documentPath: '$collectionName/$tecnicoFirestoreId',
+        dataJson: QueuePayloadCodec.encode({
+          'quantidadeAnimaisCadastrados': QueueIncrement(-quantidade),
+          'restanteLimiteAnimais': QueueIncrement(quantidade),
+        }),
+      ),
+    );
+  }
+
+  /// Há alteração do técnico ainda na fila? Quem recalcula o saldo a partir do
+  /// servidor deve esperar a fila esvaziar para não sobrescrever deltas locais.
+  bool temOperacaoPendente(String tecnicoFirestoreId) {
+    final query = _objectBox.pendingOperationBox
+        .query(PendingOperationEntity_.collectionName.equals(collectionName) &
+            PendingOperationEntity_.firestoreId.equals(tecnicoFirestoreId))
+        .build();
+    try {
+      return query.count() > 0;
+    } finally {
+      query.close();
+    }
+  }
 }

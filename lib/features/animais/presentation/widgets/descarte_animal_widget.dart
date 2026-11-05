@@ -3,6 +3,8 @@
 import '/core/sync/exclusao_remota.dart';
 import '/data/backend.dart';
 import '/data/objectbox/repositories/animal_repository.dart';
+import '/data/objectbox/repositories/tecnico_repository.dart';
+import '/domain/plano/vagas.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
@@ -478,11 +480,18 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
                     final entidade =
                         repo.getByFirestoreId(widget.uidAnimaisProdutores!.id);
                     if (entidade != null) {
+                      // Vaga do plano: decide antes do update, pois depois o
+                      // status já é Descarte e o animal não ocuparia mais.
+                      final ocupava = animalOcupaVaga(entidade);
+                      final tecnicoId = tecnicoIdDoPath(entidade.parentPath);
                       await repo.update(entidade, {
                         'status': 'Descarte',
                         'dtDescarteAnimal': _dtDescarteTextController.text,
                         'motivoDescarteAnimal': _motivoDescarteValue,
                       });
+                      if (ocupava && tecnicoId != null) {
+                        TecnicoRepository().devolverCotaAnimais(tecnicoId);
+                      }
                     }
                     Navigator.pop(context);
                     return;

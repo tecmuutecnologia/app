@@ -11,6 +11,8 @@ import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/features/animais/presentation/pages/cadastrar_novo_animal_page.dart';
 import '/features/animais/presentation/pages/editar_animal_page.dart';
+import '/features/animais/presentation/pages/importar_animais_page.dart';
+import '/features/propriedades/application/propriedades_providers.dart';
 import '/features/animais/presentation/animal_group_list_view.dart';
 import '/features/animais/application/ordenacao_animais.dart';
 import '/features/animais/application/animais_providers.dart';
@@ -545,6 +547,36 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
     );
   }
 
+  /// Ícone discreto de importar por planilha: só o técnico logado vê (o
+  /// produtor abre esta mesma tela pelo menu dele).
+  Widget _botaoImportar() => rp.Consumer(
+        builder: (context, ref, _) {
+          final tecnico = ref.watch(tecnicoLogadoProvider).value;
+          if (tecnico == null ||
+              widget.uidPropriedade == null ||
+              widget.uidTecnico == null) {
+            return const SizedBox.shrink();
+          }
+          return IconButton(
+            icon: const Icon(Icons.upload_file_outlined, color: Colors.white),
+            tooltip: 'Importar animais',
+            onPressed: () => context.pushNamed(
+              ImportarAnimaisPage.routeName,
+              queryParameters: {
+                'uidPropriedade': serializeParam(
+                  widget.uidPropriedade,
+                  ParamType.DocumentReference,
+                ),
+                'uidTecnico': serializeParam(
+                  widget.uidTecnico,
+                  ParamType.DocumentReference,
+                ),
+              }.withoutNulls,
+            ),
+          );
+        },
+      );
+
   @override
   Widget build(BuildContext context) {
     context.watch<FFAppState>();
@@ -561,6 +593,7 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
         appBar: CabecalhoTela(
           titulo: 'Animais',
           online: _respostaNet ?? true,
+          acoes: [_botaoImportar()],
         ),
         body: Column(
           mainAxisSize: MainAxisSize.max,

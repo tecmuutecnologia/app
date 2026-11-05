@@ -1141,6 +1141,10 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
                                 return;
                               }
 
+                              // Sem gate de vaga: a propriedade já tem contaCriada, ou
+                              // seja, a vaga foi consumida em "Ativar conta".
+                              // Vincular o produtor não ocupa vaga nova.
+
                               // Loading bloqueante.
                               showDialog(
                                 context: context,
@@ -1201,17 +1205,13 @@ class _EditarPropriedadePageState extends ConsumerState<EditarPropriedadePage> {
                                     .box
                                     .put(record);
 
-                                // Atualiza contadores do técnico.
+                                // Sem mexer nos contadores: a propriedade já
+                                // ocupa vaga de produtor (conta criada) e o
+                                // incremento aqui contaria duas vezes.
                                 await widget.uidTecnico!.update({
                                   ...createTecnicoRecordData(
                                     uidPerson: currentUserUid,
                                   ),
-                                  ...mapToFirestore({
-                                    'quantidadeProdutoresCadastrados':
-                                        FieldValue.increment(1),
-                                    'restanteLimiteProdutores':
-                                        FieldValue.increment(-(1)),
-                                  }),
                                 });
 
                                 // E-mail de boas-vindas (senha = CPF).

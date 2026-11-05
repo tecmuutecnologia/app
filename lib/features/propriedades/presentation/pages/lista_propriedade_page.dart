@@ -1,4 +1,5 @@
 // ignore_for_file: unnecessary_null_comparison, unnecessary_null_in_if_null_operators, unnecessary_non_null_assertion, invalid_null_aware_operator
+import '/features/plano/presentation/aviso_limite_plano.dart';
 import '/core/auth/firebase_auth/auth_util.dart';
 import '/core/ui/app_card.dart';
 import '/data/backend.dart';
@@ -631,6 +632,12 @@ class _ListaPropriedadePageState extends ConsumerState<ListaPropriedadePage> {
       TecnicoEntity tecnico) async {
     final tecnicoRef = tecnico.docRef;
     if (tecnicoRef == null) return;
+
+    // Ativar a conta ocupa uma vaga de produtor do plano.
+    if (!await garantirVagaProdutor(context,
+        tecnicoFirestoreId: tecnico.firestoreId)) {
+      return;
+    }
 
     // Backfill de pendente legada: garante o firestoreId (usado no path do doc).
     ref.read(propriedadeRepositoryProvider).ensureFirestoreId(entity);
