@@ -26,6 +26,7 @@ import '../../core/sync/total_estimado.dart';
 import '../../core/sync/sync_etapa.dart';
 import '../../core/sync/sync_exceptions.dart';
 import '../../core/sync/upsert_referencia.dart';
+import '../plano/vagas_do_plano_service.dart';
 import 'assinaturas_locais.dart';
 import 'objectbox_service.dart';
 import 'repositories/base_sync_repository.dart';
@@ -357,6 +358,8 @@ class OfflineFirstSyncService {
 
       _reportProgress(SyncEtapa.financeiro, 'Concluído', atual: 1, total: 1);
       _updateStatus(SyncStatus.completed);
+      // Sem await: o resultado do download não depende do recálculo.
+      unawaited(_recalcularVagas());
     } on SyncOfflineException {
       rethrow;
     } catch (e) {
@@ -2288,8 +2291,24 @@ class OfflineFirstSyncService {
         // push decidir o que ainda esta pendente.
         await _pullRemoteChanges();
         await syncPendingChangesToFirestore();
+        await _recalcularVagas();
       }
     });
+  }
+
+  /// Limites e saldo de vagas do técnico a partir do plano ativo e da
+  /// contagem real. Só no aparelho do técnico (no do produtor
+  /// [_tecnicoRefLocal] é `null`); a fila pendente é checada no serviço.
+  Future<void> _recalcularVagas() async {
+    try {
+      if (!_isOnline) return;
+      final ref = _tecnicoRefLocal();
+      if (ref == null) return;
+      await VagasDoPlanoService(firestore: _firestore, objectBox: _objectBox)
+          .recalcular(ref.id);
+    } catch (e) {
+      debugPrint('⚠️ Recálculo de vagas ignorado: $e');
+    }
   }
 
   /// Para sincronização periódica
