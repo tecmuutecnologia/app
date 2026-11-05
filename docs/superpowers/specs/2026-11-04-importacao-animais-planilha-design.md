@@ -266,3 +266,22 @@ Guia atualizado: `docs/importacao-animais-planilha.md`.
 - **Recálculo também é pulado** com a sincronização inicial incompleta.
 - **Assinaturas** de `importarAnimais`: `restante` é nulo quando o técnico não
   está no aparelho (sem limite conhecido, não bloqueia).
+- **Vocabulário fixo de status** (Inseminada, Inseminada PP, Prenha, Seca, Pré
+  Parto, Vazia) é aceito mesmo sem a lista de referência do app no aparelho;
+  hífen, ponto e `_` são ignorados na comparação ("Pré-parto").
+- **Restaurar descartado confere vaga e debita** (muda §6, que tratava o
+  descarte como irreversível — não é: a tela Secas restaura). Individual usa o
+  mesmo aviso do cadastro; em lote, ou cabem todos ou nenhum é restaurado.
+- **Importação debita por lote** (a cada 20 gravados e o resto no fim), não uma
+  vez só no fim: o recálculo periódico vê a fila pendente e não sobrescreve.
+- **Download do técnico preserva a cota local com fila pendente**: com operação
+  do técnico na fila, os 6 campos de limite/quantidade/restante ficam com o valor
+  local (`cotaLocalAPreservar` em `lib/core/sync/decisao_recalculo.dart`).
+- **Liberar Acesso não mexe nos contadores**: o incremento de produtores que
+  havia ali contava a mesma propriedade duas vezes.
+- **Número (brinco)** precisa ser inteiro não negativo de até 9 dígitos; ano de 2
+  dígitos usa pivô no ano corrente (<= ano corrente -> 20xx, senão 19xx).
+- **NÃO FEITO — decisão pendente do usuário:** animais de propriedades excluídas
+  definitivamente continuam contando no recálculo (vagas presas).
+- **Limitação conhecida:** vários aparelhos do mesmo técnico podem contar em
+  dobro por pouco tempo, até o próximo refresh + recálculo.

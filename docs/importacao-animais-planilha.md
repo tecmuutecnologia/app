@@ -16,13 +16,13 @@ design em `docs/superpowers/specs/2026-11-04-importacao-animais-planilha-design.
 
 Uma aba, cabeçalho na linha 1, dados da linha 2 em diante. Linhas totalmente
 vazias são ignoradas. O cabeçalho é conferido coluna a coluna (sem diferenciar
-maiúsculas, acentos, espaços, `*` e `(opcional)`); se não bater, nada é lido e a
+maiúsculas, acentos, espaços, `-`, `.`, `_`, `*` e `(opcional)`); se não bater, nada é lido e a
 tela diz, por exemplo, "A coluna D deveria ser Categoria e está Status."
 
 | Col | Campo | Obrigatório | Valores aceitos |
 |---|---|---|---|
 | A | Nome | Nome **ou** Número | texto livre |
-| B | Número | Nome **ou** Número | inteiro (célula numérica ou texto só com dígitos) |
+| B | Número | Nome **ou** Número | inteiro não negativo, até 9 dígitos (célula numérica ou texto só com dígitos; 0 vale) |
 | C | Raça | sim | nome da raça do app, prefixo único ("Ho") ou sigla |
 | D | Categoria | sim | Vacas, Novilhas, Bezerras, Bezerros, Touros, Sêmens |
 | E | Data de Nascimento | não | data |
@@ -32,7 +32,7 @@ tela diz, por exemplo, "A coluna D deveria ser Categoria e está Status."
 | I | Inseminação | não | data; **só lida para Vacas e Novilhas** |
 | J | Status | sim para Vacas/Novilhas | ver abaixo; **ignorada nas demais categorias** |
 
-**Raça** (comparação sem acento/caixa/espaços): nome exato, depois sigla, depois
+**Raça** (comparação sem acento/caixa/espaços/hífen/ponto): nome exato, depois sigla, depois
 prefixo único. Siglas: `ho` Holandesa; `je` Jersey; `gir`/`gi` Gir; `gl`/`gh`
 Girolando; `pa`/`ps` Pardo Suíço; `ne` Nelore. A sigla só vale se a raça existir
 na lista do app.
@@ -46,7 +46,9 @@ mesma regra das opções do formulário (ex.: "Vazia" com inseminação depois d
 último parto é recusada).
 
 **Datas:** célula de data do Excel, número serial, ou texto `dd/mm/aaaa`,
-`dd/mm/aa` e `dd-mm-aaaa`. Data inexistente ou no futuro recusa a linha.
+`dd/mm/aa` e `dd-mm-aaaa`. Data inexistente ou no futuro recusa a linha. Ano
+com 2 dígitos usa como pivô o ano corrente: até ele vira 20xx, acima vira 19xx
+(em 2026, "21" = 2021 e "99" = 1999).
 
 **Touros e Sêmens** entram com "libera inseminação" ligado, como o padrão do
 cadastro manual. Cada linha vira exatamente o animal que o cadastro manual
@@ -58,7 +60,7 @@ O resultado lista "linha - identificação - motivo". Textos como o usuário vê
 
 | Motivo | Quando |
 |---|---|
-| `número inválido: <v>` | Número não é inteiro |
+| `número inválido: <v>` | Número não é inteiro, é negativo ou tem mais de 9 dígitos |
 | `raça não informada` / `raça não reconhecida: <v>` | Coluna C vazia / sem casamento único |
 | `categoria não informada` / `categoria não reconhecida: <v>` | Coluna D vazia / fora da lista |
 | `data inválida na coluna <X>: <v>` | Data ilegível ou inexistente (E, H, I) |
@@ -68,7 +70,7 @@ O resultado lista "linha - identificação - motivo". Textos como o usuário vê
 | `Nome ou brinco obrigatório.` | Linha sem nome e sem número |
 | `Status é obrigatório.` | Vaca/Novilha sem status |
 | `Data última inseminação vazia ou Touro inseminação não selecionado.` | Inseminada, Prenha, Inseminada PP, Pré Parto sem data de inseminação |
-| `O status de "Seca" é permitido somente em vacas.` | Seca em Novilha |
+| `O status de "Seca" é permitido somente em vacas.` | Seca em Novilha **com** parto e inseminação depois do parto (datas coerentes); sem parto ou sem datas o motivo é `status Seca não combina com as datas de parto e inseminação` |
 | `Status inválido.` | Status que a regra não conhece |
 | `já cadastrado` | Já existe animal ativo na propriedade com o mesmo nome + número |
 | `repetido na linha N` | Mesmo nome + número de uma linha anterior da planilha |
@@ -129,10 +131,17 @@ plano para cadastrar novos.") e nada é salvo:
 - cadastro manual de animal;
 - registro de parto **com bezerro** (bloqueia antes de gravar qualquer coisa,
   inclusive a mãe);
-- importação (ver acima).
+- importação (ver acima);
+- **Restaurar** um animal do Descarte (tela Secas): ele volta a ocupar vaga, então
+  só restaura com vaga e debita a cota. Em lote, ou cabem todos os selecionados
+  ou nenhum é restaurado ("Sua conta permite mais X animais. Selecione menos
+  animais ou troque de plano.").
 
 Aviso "Limite de produtores do plano atingido." ("Exclua uma propriedade ou
-troque de plano para ativar novas contas."): **Ativar conta**.
+troque de plano para ativar novas contas."): **Ativar conta**. O **"+" de nova
+propriedade** (lista de propriedades) também bloqueia com
+`restanteLimiteProdutores <= 0` (aviso "Limite propriedades atingida."; já
+existia antes desta mudança).
 
 **Não bloqueia:** **Liberar Acesso** (o botão só aparece com conta já criada, a
 propriedade já ocupa vaga) e aparelho sem o documento do técnico no ObjectBox
