@@ -4,7 +4,9 @@ import '../../../core/result/result.dart';
 import '../objectbox_service.dart';
 import '../entities/index.dart';
 import '../../../objectbox.g.dart';
+import '../../../domain/plano/vagas.dart';
 import 'base_sync_repository.dart';
+import 'tecnico_repository.dart';
 
 /// Repositório de AnimaisProdutores (animais).
 ///
@@ -295,5 +297,15 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
   }
 
   /// Remove um animal (soft delete) localmente e sincroniza (ou enfileira).
-  Future<Result<void>> delete(AnimalEntity entity) => pushDelete(entity);
+  ///
+  /// Se o animal ocupava vaga do plano, a vaga volta ao técnico.
+  Future<Result<void>> delete(AnimalEntity entity) async {
+    final ocupava = animalOcupaVaga(entity);
+    final tecnicoId = tecnicoIdDoPath(entity.parentPath);
+    final result = await pushDelete(entity);
+    if (result.isSuccess && ocupava && tecnicoId != null) {
+      TecnicoRepository().devolverCotaAnimais(tecnicoId);
+    }
+    return result;
+  }
 }
