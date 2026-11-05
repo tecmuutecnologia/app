@@ -14,6 +14,8 @@ import '/core/ui/painel_lista.dart';
 import '/core/ui/card_animal_lista.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/domain/animais/classificacao_animal.dart';
+import '/domain/plano/vagas.dart';
+import '/features/plano/presentation/aviso_limite_plano.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
 import '/features/animais/application/ordenacao_animais.dart';
@@ -444,6 +446,22 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
     final alvos = _selecionados();
     if (alvos.isEmpty) return;
     final n = alvos.length;
+    final repo = AnimalRepository();
+    final entidades = [
+      for (final item in alvos) _entidade(repo, item),
+    ].whereType<AnimalEntity>().toList();
+    // Restaurar devolve o animal ao rebanho: volta a ocupar vaga. Ou cabem
+    // todos, ou nenhum é restaurado.
+    final liberados = entidades.where(_liberaVaga).toList();
+    final tecnicoId = liberados.isEmpty
+        ? null
+        : tecnicoIdDoPath(liberados.first.parentPath);
+    if (liberados.isNotEmpty &&
+        !await garantirVagasAnimais(context,
+            tecnicoFirestoreId: tecnicoId, quantidade: liberados.length)) {
+      return;
+    }
+    if (!mounted) return;
     final confirmou = await confirmarAcao(
       context,
       titulo: n == 1 ? 'Restaurar o animal?' : 'Restaurar $n animais?',
@@ -453,12 +471,12 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
       textoConfirmar: 'Restaurar',
     );
     if (!confirmou) return;
-    final repo = AnimalRepository();
-    for (final item in alvos) {
-      final entidade = _entidade(repo, item);
-      if (entidade != null) {
-        await repo.update(entidade, {'status': 'Vazia', 'idStatusAnimal': 2});
-      }
+    for (final entidade in entidades) {
+      await repo.update(entidade, {'status': 'Vazia', 'idStatusAnimal': 2});
+    }
+    if (tecnicoId != null) {
+      TecnicoRepository()
+          .debitarCotaAnimais(tecnicoId, quantidade: liberados.length);
     }
     _concluirLote('${rotuloAnimais(n)} '
         '${n == 1 ? 'restaurado' : 'restaurados'}');
@@ -637,9 +655,22 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
     return null;
   }
 
+  /// Descartado (e não excluído): hoje não ocupa vaga, restaurado passa a ocupar.
+  bool _liberaVaga(AnimalEntity a) => !a.isDeleted && ehDescarte(a.status);
+
   /// Devolve o animal ao rebanho com status 'Vazia' (offline-first: grava no
   /// ObjectBox e o repositório sincroniza).
   Future<void> _restaurar(AnimaisProdutoresStruct item) async {
+    final repo = AnimalRepository();
+    final entidade = _entidade(repo, item);
+    final liberaVaga = entidade != null && _liberaVaga(entidade);
+    final tecnicoId = liberaVaga ? tecnicoIdDoPath(entidade.parentPath) : null;
+    // Restaurado, o descartado volta a ocupar vaga do plano.
+    if (liberaVaga &&
+        !await garantirVagaAnimal(context, tecnicoFirestoreId: tecnicoId)) {
+      return;
+    }
+    if (!mounted) return;
     final confirmou = await confirmarAcao(
       context,
       titulo: 'Restaurar o animal?',
@@ -647,10 +678,9 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
       textoConfirmar: 'Restaurar',
     );
     if (!confirmou) return;
-    final repo = AnimalRepository();
-    final entidade = _entidade(repo, item);
     if (entidade != null) {
       await repo.update(entidade, {'status': 'Vazia', 'idStatusAnimal': 2});
+      if (tecnicoId != null) TecnicoRepository().debitarCotaAnimais(tecnicoId);
     }
     _recarregarAnimais();
     safeSetState(() {});

@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:tecmuu/data/objectbox/repositories/tecnico_repository.dart';
 import 'package:tecmuu/domain/plano/vagas.dart';
 
-/// Núcleo testável: sem vaga, avisa o usuário e devolve `false`.
-/// [restante] nulo (sem cota conhecida) não bloqueia.
+/// Núcleo testável: se as [quantidade] vagas não cabem todas no saldo, avisa
+/// o usuário e devolve `false`. [restante] nulo (sem cota conhecida) não
+/// bloqueia.
 Future<bool> mostrarAvisoSeSemVaga(
   BuildContext context, {
   required int? restante,
   required String titulo,
   required String mensagem,
+  int quantidade = 1,
 }) async {
-  if (temVaga(restante)) return true;
+  if (quantosCabem(restante: restante, validos: quantidade) >= quantidade) {
+    return true;
+  }
   await showDialog<void>(
     context: context,
     builder: (ctx) => AlertDialog(
@@ -29,17 +33,28 @@ Future<bool> mostrarAvisoSeSemVaga(
 
 /// Id nulo ou técnico ausente (aparelho de produtor) não bloqueia.
 Future<bool> garantirVagaAnimal(BuildContext context,
-    {required String? tecnicoFirestoreId}) {
+        {required String? tecnicoFirestoreId}) =>
+    garantirVagasAnimais(context,
+        tecnicoFirestoreId: tecnicoFirestoreId, quantidade: 1);
+
+/// Como [garantirVagaAnimal], para um lote: bloqueia se não couberem todos.
+Future<bool> garantirVagasAnimais(BuildContext context,
+    {required String? tecnicoFirestoreId, required int quantidade}) {
   final restante = tecnicoFirestoreId == null
       ? null
       : TecnicoRepository()
           .getByFirestoreId(tecnicoFirestoreId)
           ?.restanteLimiteAnimais;
+  final parcial = quantidade > 1 && restante != null && restante > 0;
   return mostrarAvisoSeSemVaga(
     context,
     restante: restante,
+    quantidade: quantidade,
     titulo: 'Limite de animais do plano atingido.',
-    mensagem: 'Descarte animais ou troque de plano para cadastrar novos.',
+    mensagem: parcial
+        ? 'Sua conta permite mais $restante ${restante == 1 ? 'animal' : 'animais'}. '
+            'Selecione menos animais ou troque de plano.'
+        : 'Descarte animais ou troque de plano para cadastrar novos.',
   );
 }
 
