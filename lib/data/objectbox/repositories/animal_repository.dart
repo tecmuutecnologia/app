@@ -298,12 +298,14 @@ class AnimalRepository extends BaseSyncRepository<AnimalEntity> {
 
   /// Remove um animal (soft delete) localmente e sincroniza (ou enfileira).
   ///
-  /// Se o animal ocupava vaga do plano, a vaga volta ao técnico.
+  /// Se o animal ocupava vaga do plano, a vaga volta ao técnico. A devolução
+  /// não depende do [Result]: o `pushDelete` pode falhar online depois de já
+  /// ter marcado `isDeleted` e enfileirado o DELETE, e o animal some mesmo assim.
   Future<Result<void>> delete(AnimalEntity entity) async {
     final ocupava = animalOcupaVaga(entity);
     final tecnicoId = tecnicoIdDoPath(entity.parentPath);
     final result = await pushDelete(entity);
-    if (result.isSuccess && ocupava && tecnicoId != null) {
+    if (ocupava && entity.isDeleted && tecnicoId != null) {
       TecnicoRepository().devolverCotaAnimais(tecnicoId);
     }
     return result;
