@@ -98,4 +98,42 @@ void main() {
   test('prefixo único de raça', () {
     expect(_ler([[null, 1, 'Brahm', 'Touro']]).single.entrada!.raca, 'Brahman');
   });
+
+  test('número: negativo e mais de 9 dígitos são recusados; zero passa', () {
+    recusa([null, -1, 'Ho', 'Touro'], 'número inválido: -1');
+    recusa([null, -5, 'Ho', 'Touro'], 'número inválido: -5');
+    recusa([null, '-3', 'Ho', 'Touro'], 'número inválido: -3');
+    recusa([null, '1234567890', 'Ho', 'Touro'], 'número inválido: 1234567890');
+    recusa([null, 1234567890, 'Ho', 'Touro'], 'número inválido: 1234567890');
+    expect(_ler([[null, 0, 'Ho', 'Touro']]).single.motivo, isNull);
+    expect(_ler([[null, '123456789', 'Ho', 'Touro']]).single.motivo, isNull);
+  });
+
+  test('ano com 2 dígitos usa pivô no ano corrente', () {
+    expect(lerData('20/11/99', hoje: _hoje), '20/11/1999');
+    expect(lerData('20/11/21', hoje: _hoje), '20/11/2021');
+    expect(lerData('20/11/26', hoje: _hoje), '20/11/2026');
+    expect(lerData('20/11/27', hoje: _hoje), '20/11/1927');
+    final r = _ler([[null, 1, 'Ho', 'Touro', '20/11/99']]).single;
+    expect(r.entrada!.dtNascimento, '20/11/1999');
+  });
+
+  test('raça só com pontuação não casa por prefixo', () {
+    final r = lerLinhas([
+      _cab,
+      [null, 1, '*', 'Touro'],
+    ], racas: ['Holandesa'], grupos: _grupos, status: _status, hoje: _hoje)
+        .single;
+    expect(r.motivo, 'raça não reconhecida: *');
+  });
+
+  test('hífen é ignorado na comparação (Pré-parto)', () {
+    expect(normalizar('Pré-parto'), 'preparto');
+    final r = _ler([
+      [null, 1, 'Ho', 'Vaca', null, null, null, '2026-07-03T00:00:00.000',
+        '2026-09-15T00:00:00.000', 'Pré-parto']
+    ]).single;
+    expect(r.entrada?.status, 'Pré Parto');
+    expect(erroDeCabecalho(_cab), isNull);
+  });
 }

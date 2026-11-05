@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 import '/core/ui/custom_functions.dart' as functions;
+import '/data/objectbox/entities/animal_entity.dart';
 import '/data/objectbox/repositories/index.dart';
 import '/domain/animais/importacao/planilha_animais.dart';
 import '/domain/plano/vagas.dart';
@@ -61,7 +63,9 @@ AnaliseImportacao analisarImportacao(
 }
 
 /// Grava até [restante] linhas (todas se `null`), cedendo ao event loop a cada
-/// [lote] para a UI seguir fluida, e debita a cota uma única vez no fim.
+/// [lote] para a UI seguir fluida. A cota é debitada a cada lote (e no fim, o
+/// resto): assim o recálculo periódico encontra o delta na fila e não
+/// sobrescreve o saldo com a contagem do servidor no meio da importação.
 Future<ResultadoImportacao> gravarImportacao(
   AnaliseImportacao a, {
   required int? restante,
@@ -73,35 +77,55 @@ Future<ResultadoImportacao> gravarImportacao(
   final cabem = quantosCabem(restante: restante, validos: a.validas.length);
   final recusadas = [...a.recusadas];
   var importados = 0;
+  var naoDebitados = 0;
+  void debitarPendentes() {
+    if (naoDebitados > 0) debitar(naoDebitados);
+    naoDebitados = 0;
+  }
+
   for (var i = 0; i < cabem; i++) {
     final l = a.validas[i];
     try {
       await criar(l);
       importados++;
-    } catch (_) {
+      naoDebitados++;
+    } catch (e, st) {
+      debugPrint('⚠️ importação linha ${l.numero}: $e\n$st');
       recusadas.add(Recusa(l.numero, l.identificacao, 'erro ao gravar'));
     }
     aoProgredir?.call(i + 1, cabem);
-    if ((i + 1) % lote == 0) await Future.delayed(Duration.zero);
+    if ((i + 1) % lote == 0) {
+      debitarPendentes();
+      await Future.delayed(Duration.zero);
+    }
   }
+  debitarPendentes();
   for (final l in a.validas.skip(cabem)) {
     recusadas.add(Recusa(l.numero, l.identificacao, 'limite do plano atingido'));
   }
-  if (importados > 0) debitar(importados);
   recusadas.sort((x, y) => x.linha.compareTo(y.linha));
   return ResultadoImportacao(importados: importados, recusadas: recusadas);
 }
 
-/// Checagem de duplicidade contra os animais ativos da propriedade (ObjectBox).
-bool Function(String nome, int brinco) jaExisteNaPropriedade(
-    String propriedadePath) {
-  final repo = AnimalRepository();
-  return (nome, brinco) => repo.existeAnimalAtivoComNomeBrinco(
-        propriedadePath: propriedadePath,
-        nome: nome,
-        brinco: brinco,
-      );
+/// Duplicidade contra os animais ativos de [animais] — mesma regra de
+/// `existeAnimalAtivoComNomeBrinco` (status != 'Descarte' e não excluído),
+/// mas indexada num Set. Nome nulo gravado vale como '' (a planilha manda ''
+/// para "sem nome").
+bool Function(String nome, int brinco) jaExisteEm(
+    Iterable<AnimalEntity> animais) {
+  final chaves = {
+    for (final a in animais)
+      if (a.status != 'Descarte' && !a.isDeleted)
+        '${a.nomeAnimal ?? ''}|${a.brincoAnimal}',
+  };
+  return (nome, brinco) => chaves.contains('$nome|$brinco');
 }
+
+/// Checagem de duplicidade contra os animais ativos da propriedade (ObjectBox),
+/// lidos uma vez só: consultar o box por linha seria O(linhas × animais).
+bool Function(String nome, int brinco) jaExisteNaPropriedade(
+        String propriedadePath) =>
+    jaExisteEm(AnimalRepository().getAnimaisByPropriedade(propriedadePath));
 
 /// Ligação real: grava offline-first via [criarAnimalOffline] e debita a cota.
 Future<ResultadoImportacao> importarAnimais(

@@ -144,18 +144,28 @@ class _ImportarAnimaisPageState extends State<ImportarAnimaisPage> {
     }
 
     setState(() => _progresso = (0, cabem));
-    final resultado = await importarAnimais(
-      analise,
-      uidPropriedade: widget.uidPropriedade!,
-      tecnicoFirestoreId: tecnicoId,
-      restante: restante,
-      aoProgredir: (feitos, total) =>
-          safeSetState(() => _progresso = (feitos, total)),
-    );
-    safeSetState(() {
-      _progresso = null;
-      _resultado = resultado;
-    });
+    ResultadoImportacao? resultado;
+    try {
+      resultado = await importarAnimais(
+        analise,
+        uidPropriedade: widget.uidPropriedade!,
+        tecnicoFirestoreId: tecnicoId,
+        restante: restante,
+        aoProgredir: (feitos, total) =>
+            safeSetState(() => _progresso = (feitos, total)),
+      );
+    } catch (e, st) {
+      debugPrint('⚠️ importação falhou: $e\n$st');
+    } finally {
+      // Sem isso uma exceção deixaria a tela travada no progresso (sem voltar).
+      safeSetState(() {
+        _progresso = null;
+        if (resultado != null) _resultado = resultado;
+      });
+    }
+    if (resultado == null && mounted) {
+      await _avisar('Não foi possível concluir a importação.');
+    }
   }
 
   Future<void> _avisar(String mensagem) => showDialog<void>(

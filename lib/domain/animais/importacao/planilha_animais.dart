@@ -50,14 +50,15 @@ const _acentos = {
   'ç': 'c', 'ñ': 'n',
 };
 
-/// Minúsculas, sem acento, sem `*`, sem `(opcional)` e sem espaços.
+/// Minúsculas, sem acento, sem `*`, sem `(opcional)`, sem espaços e sem
+/// `-`, `.` e `_` (assim "Pré-parto" casa com "Pré Parto").
 String normalizar(String s) {
   var t = s.toLowerCase().replaceAll('(opcional)', '').replaceAll('*', '');
   final sb = StringBuffer();
   for (final c in t.split('')) {
     sb.write(_acentos[c] ?? c);
   }
-  return sb.toString().replaceAll(RegExp(r'\s+'), '');
+  return sb.toString().replaceAll(RegExp(r'[\s\-._]+'), '');
 }
 
 String _limpaCabecalho(Object? c) {
@@ -93,8 +94,9 @@ DateTime _dataValida(int a, int m, int d) {
 }
 
 /// Converte a célula em `dd/MM/yyyy`; `null` se vazia; `FormatException` se
-/// inválida.
-String? lerData(Object? celula) {
+/// inválida. Ano com 2 dígitos: até o ano corrente de [hoje] vira 20xx, acima
+/// vira 19xx (nascimento '99' é 1999, não 2099).
+String? lerData(Object? celula, {DateTime? hoje}) {
   if (celula == null) return null;
   DateTime dt;
   if (celula is DateTime) {
@@ -115,7 +117,9 @@ String? lerData(Object? celula) {
             .firstMatch(t)) !=
         null) {
       var ano = int.parse(m!.group(3)!);
-      if (m.group(3)!.length == 2) ano += 2000;
+      if (m.group(3)!.length == 2) {
+        ano += ano > (hoje ?? DateTime.now()).year % 100 ? 1900 : 2000;
+      }
       dt = _dataValida(ano, int.parse(m.group(2)!), int.parse(m.group(1)!));
     } else {
       throw FormatException('data inválida: $t');
@@ -153,6 +157,8 @@ DateTime _parse(String ddMMyyyy) => DateFormat('dd/MM/yyyy').parseStrict(ddMMyyy
 
 String? _resolveRaca(String v, List<String> racas) {
   final n = normalizar(v);
+  // Só pontuação ('*', '-'): sem isso o prefixo vazio casaria com tudo.
+  if (n.isEmpty) return null;
   for (final r in racas) {
     if (normalizar(r) == n) return r;
   }
@@ -221,13 +227,18 @@ List<LinhaPlanilha> lerLinhas(
     if (brincoCru is num) {
       if (brincoCru == brincoCru.truncate()) {
         brinco = brincoCru.truncate().toString();
+        // Negativo (-1 é "sem brinco" no app) ou acima de 9 dígitos não vale.
+        if (brincoCru < 0 || brinco.length > 9) {
+          saida.add(recusa(brinco, 'número inválido: $brinco'));
+          continue;
+        }
       } else {
         saida.add(recusa(_texto(brincoCru), 'número inválido: $brincoCru'));
         continue;
       }
     } else {
       final t = _texto(brincoCru);
-      if (t.isNotEmpty && !RegExp(r'^\d+$').hasMatch(t)) {
+      if (t.isNotEmpty && !RegExp(r'^\d{1,9}$').hasMatch(t)) {
         saida.add(recusa(t, 'número inválido: $t'));
         continue;
       }
@@ -265,7 +276,7 @@ List<LinhaPlanilha> lerLinhas(
       final cel = _cel(l, idx);
       String? d;
       try {
-        d = lerData(cel);
+        d = lerData(cel, hoje: hoje);
       } on FormatException {
         throw FormatException('data inválida na coluna $letra: ${_texto(cel)}');
       }
