@@ -90,8 +90,12 @@ class VagasDoPlanoService {
       // Servidor primeiro: se falhar, o local fica como estava e o próximo
       // sync tenta de novo.
       await _firestore.doc(tecnicoPath).update(campos);
-      _aplicarLocal(atual, campos);
-      _objectBox.tecnicoBox.put(atual);
+      final local = aplicarAposGravar(
+        fresca: repo.getByFirestoreId(tecnicoFirestoreId),
+        campos: campos,
+        filaPendente: repo.temOperacaoPendente(tecnicoFirestoreId),
+      );
+      if (local != null) _objectBox.tecnicoBox.put(local);
       debugPrint('📊 Vagas do plano recalculadas: $campos');
     } catch (e) {
       debugPrint('⚠️ Falha ao recalcular vagas do plano: $e');
@@ -165,25 +169,6 @@ class VagasDoPlanoService {
     if (v is Timestamp) return v.toDate();
     if (v is DateTime) return v;
     return null;
-  }
-
-  static void _aplicarLocal(TecnicoEntity t, Map<String, int> campos) {
-    campos.forEach((chave, valor) {
-      switch (chave) {
-        case 'limiteAnimaisContratado':
-          t.limiteAnimaisContratado = valor;
-        case 'quantidadeAnimaisCadastrados':
-          t.quantidadeAnimaisCadastrados = valor;
-        case 'restanteLimiteAnimais':
-          t.restanteLimiteAnimais = valor;
-        case 'limiteProdutoresContratado':
-          t.limiteProdutoresContratado = valor;
-        case 'quantidadeProdutoresCadastrados':
-          t.quantidadeProdutoresCadastrados = valor;
-        case 'restanteLimiteProdutores':
-          t.restanteLimiteProdutores = valor;
-      }
-    });
   }
 }
 
