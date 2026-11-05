@@ -211,4 +211,30 @@ void main() {
     );
     expect(alvo.parentPath, 'tecnico/T1');
   });
+
+  group('alvosDoReceituario', () {
+    // A ação que o produtor lança (IATF, CG II...) vira tratamento ou
+    // recomendação da propriedade. No técnico essas coleções só descem por
+    // pull; abrir o receituário puxa as da propriedade aberta na hora.
+    test('tratamentos e recomendações da propriedade, só por pull', () {
+      final alvos = alvosDoReceituario('tecnico/T1/propriedades/P1');
+      expect(alvos.map((a) => a.colecaoPath), [
+        'tecnico/T1/propriedades/P1/tratamentos',
+        'tecnico/T1/propriedades/P1/recomendacoes',
+      ]);
+      expect(alvos.map((a) => a.tipo),
+          [TipoEscuta.tratamentos, TipoEscuta.recomendacoes]);
+      expect(alvos.every((a) => a.apenasPull), isTrue);
+    });
+
+    test('são os mesmos alvos que o técnico puxa com visita recente', () {
+      const prop = 'tecnico/T1/propriedades/P1';
+      final doTecnico = alvosDeEscuta(
+        tecnicoPath: 'tecnico/T1',
+        propriedades: [_prop('P1', 'tecnico/T1')],
+        propriedadesComVisita: {prop},
+      ).where((a) => a.apenasPull).toList();
+      expect(doTecnico, alvosDoReceituario(prop));
+    });
+  });
 }

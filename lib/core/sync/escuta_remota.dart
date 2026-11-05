@@ -102,6 +102,26 @@ Set<String> propriedadesComVisitaRecente(
   };
 }
 
+/// Tratamentos e recomendações de UMA propriedade, só por pull: o que o
+/// técnico busca para montar o receituário dela.
+///
+/// Usado em dois lugares: no pull periódico (propriedades com visita recente) e
+/// ao abrir o receituário de uma propriedade. Sem o segundo, a ação lançada
+/// pelo produtor (IATF, CG II...) só aparecia no receituário do técnico no
+/// ciclo seguinte de 5 minutos — e só se o app ficasse aberto até lá.
+List<AlvoEscuta> alvosDoReceituario(String propriedadePath) => [
+      AlvoEscuta(
+        tipo: TipoEscuta.tratamentos,
+        colecaoPath: '$propriedadePath/tratamentos',
+        apenasPull: true,
+      ),
+      AlvoEscuta(
+        tipo: TipoEscuta.recomendacoes,
+        colecaoPath: '$propriedadePath/recomendacoes',
+        apenasPull: true,
+      ),
+    ];
+
 /// `true` quando o aparelho é de um TÉCNICO.
 ///
 /// [tecnicoPath] é o documento de técnico com o `uidPerson` do usuário, se
@@ -151,18 +171,8 @@ List<AlvoEscuta> alvosDeEscuta({
       // deles, e sem estes alvos o receituario do tecnico mostrava as acoes
       // (PP, DG+) e escondia o resto (CG II, pre-parto). Entram so no pull e
       // so para as propriedades com visita recente — ver [apenasPull].
-      for (final propriedadePath in propriedadesComVisita) ...[
-        AlvoEscuta(
-          tipo: TipoEscuta.tratamentos,
-          colecaoPath: '$propriedadePath/tratamentos',
-          apenasPull: true,
-        ),
-        AlvoEscuta(
-          tipo: TipoEscuta.recomendacoes,
-          colecaoPath: '$propriedadePath/recomendacoes',
-          apenasPull: true,
-        ),
-      ],
+      for (final propriedadePath in propriedadesComVisita)
+        ...alvosDoReceituario(propriedadePath),
     ];
   }
 
