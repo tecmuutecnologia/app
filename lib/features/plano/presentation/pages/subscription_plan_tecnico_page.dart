@@ -1,5 +1,5 @@
 import '/data/backend.dart';
-import '/data/plano/vagas_do_plano_service.dart';
+import '/data/plano/assinatura_ativa_service.dart';
 import '/data/stripe/payment_manager.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
 import '/core/ui/flutter_flow_icon_button.dart';
@@ -340,7 +340,7 @@ class _SubscriptionPlanTecnicoPageState
         if (_dropDownValue2 == 0.0) {
           // Acha a ativa por qualquer assinatura do técnico (não só a primeira).
           final ativaRef =
-              await VagasDoPlanoService().buscarAtiva(widget.uidTecnico!.id);
+              await AssinaturaAtivaService().buscarAtiva(widget.uidTecnico!.id);
           _outUidPlanoFree = await queryPlanosTecnicosRecordOnce(
             queryBuilder: (planosTecnicosRecord) => planosTecnicosRecord.where(
               'nome',
@@ -384,7 +384,6 @@ class _SubscriptionPlanTecnicoPageState
                 .doc()
                 .set(dadosAtivaFree);
           }
-          await VagasDoPlanoService().recalcular(widget.uidTecnico!.id);
           await showDialog(
             context: context,
             builder: (alertDialogContext) {
@@ -447,7 +446,7 @@ class _SubscriptionPlanTecnicoPageState
           ).then((s) => s.firstOrNull);
           _shouldSetState = true;
           final ativaRefPaga =
-              await VagasDoPlanoService().buscarAtiva(widget.uidTecnico!.id);
+              await AssinaturaAtivaService().buscarAtiva(widget.uidTecnico!.id);
           var assinaturaTecnicoRecordReference2 =
               AssinaturaTecnicoRecord.collection.doc();
           await assinaturaTecnicoRecordReference2
@@ -483,7 +482,6 @@ class _SubscriptionPlanTecnicoPageState
                 .doc()
                 .set(dadosAtivaPaga);
           }
-          await VagasDoPlanoService().recalcular(widget.uidTecnico!.id);
           await showDialog(
             context: context,
             builder: (alertDialogContext) {
