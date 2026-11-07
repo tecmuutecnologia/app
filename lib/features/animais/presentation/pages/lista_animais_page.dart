@@ -50,9 +50,9 @@ class ListaAnimaisPage extends StatefulWidget {
   final int initialTabSelect;
   final String? diasDg;
 
-  /// Libera o descarte por arrasto. Padrao `false` e so a navegacao do tecnico
-  /// liga: o produtor abre a MESMA tela pelo menu dele, e descarte (com motivo
-  /// e data, alimentando os indicadores do rebanho) e decisao de manejo.
+  /// Libera o descarte por arrasto. As navegacoes do tecnico e do produtor
+  /// ligam; o padrao `false` existe para que uma rota nova que esqueca o
+  /// parametro nao entregue o descarte sem que se tenha decidido isso.
   final bool permiteDescarte;
 
   static String routeName = 'listaAnimais';
@@ -136,7 +136,8 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
   /// secas, de onde ele pode ser eliminado em definitivo.
   Future<void> _abrirDescarte(String firestoreId, String grupo) async {
     final animal = AnimalRepository().getByFirestoreId(firestoreId);
-    if (animal == null || !mounted) return;
+    final tecnico = widget.uidTecnico;
+    if (animal == null || tecnico == null || !mounted) return;
 
     await showModalBottomSheet(
       isScrollControlled: true,
@@ -146,13 +147,15 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
       builder: (context) => Padding(
         padding: MediaQuery.viewInsetsOf(context),
         child: DescarteAnimalWidget(
-          uidPropriedade: widget.uidPropriedade!,
-          nomePropriedade: widget.nomePropriedade!,
-          uidTecnico: widget.uidTecnico!,
-          emailPropriedade: widget.emailPropriedade!,
+          // Sem `!`: o formulario aceita nulos, e o produtor pode chegar aqui
+          // sem nome ou e-mail da propriedade nos parametros da rota.
+          uidPropriedade: widget.uidPropriedade,
+          nomePropriedade: widget.nomePropriedade,
+          uidTecnico: tecnico,
+          emailPropriedade: widget.emailPropriedade,
           // Animais vivem sob o tecnico — mesma reconstrucao usada no editar.
           uidAnimaisProdutores: FirebaseFirestore.instance
-              .doc('${widget.uidTecnico!.path}/animaisProdutores/$firestoreId'),
+              .doc('${tecnico.path}/animaisProdutores/$firestoreId'),
           grupoPredominante: grupo,
           nomeAnimal: animal.nomeAnimal ?? '',
           visitaPresencial: widget.visitaPresencial ?? false,

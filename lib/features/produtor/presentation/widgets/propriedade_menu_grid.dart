@@ -104,7 +104,12 @@ class PropriedadeMenuGrid extends StatelessWidget {
     // reconectar — não há mais fila no FFAppState a forçar sync antes de abrir.
     context.pushNamed(
       ListaAnimaisPage.routeName,
-      queryParameters: navigationParams.toQueryParameters(),
+      queryParameters: {
+        ...navigationParams.toQueryParameters(),
+        // O produtor descarta como o técnico: é ele quem vende ou perde o
+        // animal no dia a dia, e o descarte alimenta os indicadores do rebanho.
+        'permiteDescarte': serializeParam(true, ParamType.bool),
+      }.withoutNulls,
     );
   }
 

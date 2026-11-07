@@ -540,8 +540,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
           ListaAnimaisPage.routeName,
           queryParameters: {
             ..._paramsPropriedade(),
-            // So o tecnico descarta: o produtor abre a MESMA tela pelo menu
-            // dele e nao passa este parametro.
+            // Liga o descarte por arrasto; o menu do produtor passa o mesmo.
             'permiteDescarte': serializeParam(true, ParamType.bool),
           }.withoutNulls,
         );
