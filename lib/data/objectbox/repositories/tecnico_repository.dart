@@ -55,12 +55,15 @@ class TecnicoRepository extends TopLevelSyncRepository<TecnicoEntity> {
   /// animais offline, chegam cinco incrementos de 1, e o resultado é o mesmo de
   /// tê-los cadastrado online, um a um.
   void debitarCotaAnimais(String tecnicoFirestoreId, {int quantidade = 1}) {
+    // Aparelho de PRODUTOR não tem o técnico na box: o delta vai só para a
+    // fila e o contador do servidor continua certo, como no débito direto
+    // que existia antes do offline-first.
     final tecnico = getByFirestoreId(tecnicoFirestoreId);
-    if (tecnico == null) return;
-
-    tecnico.quantidadeAnimaisCadastrados += quantidade;
-    tecnico.restanteLimiteAnimais -= quantidade;
-    box.put(tecnico);
+    if (tecnico != null) {
+      tecnico.quantidadeAnimaisCadastrados += quantidade;
+      tecnico.restanteLimiteAnimais -= quantidade;
+      box.put(tecnico);
+    }
 
     _objectBox.pendingOperationBox.put(
       PendingOperationEntity(
@@ -109,14 +112,15 @@ class TecnicoRepository extends TopLevelSyncRepository<TecnicoEntity> {
   /// Devolve vagas de animal ao técnico (descarte ou exclusão de animal ativo).
   /// Espelho de [debitarCotaAnimais]: contadores locais na hora + delta na fila.
   void devolverCotaAnimais(String tecnicoFirestoreId, {int quantidade = 1}) {
+    // Sem o técnico na box (aparelho de produtor), só o delta vai à fila.
     final tecnico = getByFirestoreId(tecnicoFirestoreId);
-    if (tecnico == null) return;
-
-    // Nunca deixa o contador local negativo (dados legados dessincronizados).
-    tecnico.quantidadeAnimaisCadastrados =
-        (tecnico.quantidadeAnimaisCadastrados - quantidade).clamp(0, 1 << 30);
-    tecnico.restanteLimiteAnimais += quantidade;
-    box.put(tecnico);
+    if (tecnico != null) {
+      // Nunca deixa o contador local negativo (dados legados dessincronizados).
+      tecnico.quantidadeAnimaisCadastrados =
+          (tecnico.quantidadeAnimaisCadastrados - quantidade).clamp(0, 1 << 30);
+      tecnico.restanteLimiteAnimais += quantidade;
+      box.put(tecnico);
+    }
 
     _objectBox.pendingOperationBox.put(
       PendingOperationEntity(
