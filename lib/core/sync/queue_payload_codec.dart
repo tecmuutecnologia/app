@@ -50,6 +50,15 @@ class QueuePayloadCodec {
   static Map<String, dynamic> decode(String json) =>
       Map<String, dynamic>.from(_revive(jsonDecode(json)) as Map);
 
+  /// Só os incrementos do payload ([QueueIncrement]), como inteiros. O
+  /// [decode] os transforma em `FieldValue`, que não pode ser lido de volta.
+  static Map<String, int> incrementos(String json) => {
+        for (final MapEntry(:key, :value)
+            in (jsonDecode(json) as Map<String, dynamic>).entries)
+          if (value is Map && value.length == 1 && value[_incKey] is int)
+            key: value[_incKey] as int,
+      };
+
   static Object? _toEncodable(Object? value) {
     if (value is DateTime) return {_dateKey: value.toIso8601String()};
     if (value is Timestamp) {

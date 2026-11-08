@@ -1,3 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+
+import '../../../core/sync/decisao_recalculo.dart';
 import '../../../core/sync/queue_payload_codec.dart';
 import '../objectbox_service.dart';
 import '../entities/index.dart';
@@ -134,6 +138,54 @@ class TecnicoRepository extends TopLevelSyncRepository<TecnicoEntity> {
         }),
       ),
     );
+  }
+
+  /// Lê os limites e saldos direto do servidor e grava no ObjectBox, mantendo
+  /// descontado o que ainda está na fila. Devolve `false` se não conseguiu
+  /// (sem rede, tempo esgotado): quem chama segue com o saldo local.
+  Future<bool> atualizarCotaDoServidor(
+    String tecnicoFirestoreId, {
+    Duration limite = const Duration(seconds: 10),
+  }) async {
+    try {
+      final doc = await firestore
+          .doc('$collectionName/$tecnicoFirestoreId')
+          .get(const GetOptions(source: Source.server))
+          .timeout(limite);
+      final dados = doc.data();
+      final tecnico = getByFirestoreId(tecnicoFirestoreId);
+      if (dados == null || tecnico == null) return false;
+
+      tecnico.updateFromFirestore(dados);
+      aplicarAposGravar(
+        fresca: tecnico,
+        campos: somarDeltasDaFila(
+          cotaLocalAPreservar(local: tecnico, filaPendente: true)!,
+          _deltasNaFila(tecnicoFirestoreId),
+        ),
+        filaPendente: false,
+      );
+      box.put(tecnico);
+      return true;
+    } catch (e) {
+      debugPrint('⚠️ Falha ao ler o saldo do técnico no servidor: $e');
+      return false;
+    }
+  }
+
+  List<Map<String, int>> _deltasNaFila(String tecnicoFirestoreId) {
+    final query = _objectBox.pendingOperationBox
+        .query(PendingOperationEntity_.collectionName.equals(collectionName) &
+            PendingOperationEntity_.firestoreId.equals(tecnicoFirestoreId))
+        .build();
+    try {
+      return [
+        for (final op in query.find())
+          if (op.dataJson != null) QueuePayloadCodec.incrementos(op.dataJson!),
+      ];
+    } finally {
+      query.close();
+    }
   }
 
   /// Há alteração do técnico ainda na fila? Quem recalcula o saldo a partir do

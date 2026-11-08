@@ -88,6 +88,13 @@ class _ImportarAnimaisPageState extends State<ImportarAnimaisPage> {
       final bytes = escolha?.files.single.bytes;
       if (bytes == null || !mounted) return; // cancelou
 
+      // Online, o saldo do servidor manda: o do aparelho pode estar defasado.
+      if (ConnectivityService.instance.isOnline) {
+        await TecnicoRepository()
+            .atualizarCotaDoServidor(widget.uidTecnico!.id);
+        if (!mounted) return;
+      }
+
       final List<List<Object?>> linhas;
       try {
         linhas = lerXlsx(bytes);

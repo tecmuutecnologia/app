@@ -30,6 +30,22 @@ TecnicoEntity? aplicarAposGravar({
   return fresca;
 }
 
+/// Soma em [base] os [deltas] ainda na fila; campos fora de [base] são
+/// ignorados. O servidor ainda não recebeu esses deltas, e somá-los evita que
+/// uma operação que nunca sobe congele o saldo local num valor antigo.
+Map<String, int> somarDeltasDaFila(
+  Map<String, int> base,
+  Iterable<Map<String, int>> deltas,
+) {
+  final soma = Map<String, int>.of(base);
+  for (final delta in deltas) {
+    delta.forEach((campo, valor) {
+      if (soma.containsKey(campo)) soma[campo] = soma[campo]! + valor;
+    });
+  }
+  return soma;
+}
+
 /// Antes de aplicar o técnico baixado do servidor: com a fila do técnico
 /// pendente, os 6 campos de cota locais já contêm deltas que o servidor ainda
 /// não recebeu — devolve-os para regravar por cima (via [aplicarAposGravar]).
