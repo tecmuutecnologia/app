@@ -4,6 +4,7 @@ import '/domain/animais/ordenacao_animal.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
+import '/features/receituario/application/ordenacao_tratamentos.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/app_card.dart';
@@ -81,13 +82,38 @@ class _ListaAnimaisTratamentosWidgetState
       ? null
       : 'resumo_da_visita/${widget.parameter2!.id}';
 
-  /// Tratamentos desta visita e deste tipo de ação, ordenados como a query
-  /// original: data de inseminação, depois brinco, depois nome.
+  /// Tratamentos desta visita e deste tipo de ação.
+  ///
+  /// Secagem: pela data exibida na linha (secagem prevista do animal), da
+  /// mais nova para a mais velha. O tratamento nunca gravou
+  /// `compararDtUltimaInseminacao`, então a ordem "por data" de antes caía
+  /// sempre no brinco e a lista saía com as datas embaralhadas.
+  ///
+  /// Demais: data de inseminação, depois brinco, depois nome.
   List<TratamentoEntity> _tratamentosDaVisita() {
     final resumoPath = _resumoPath;
     if (resumoPath == null) return [];
     final lista = TratamentoRepository()
         .getDaVisita(resumoPath, tipoAcao: widget.parameter1);
+    int porAnimal(TratamentoEntity a, TratamentoEntity b) => compararAnimais(
+          brincoA: a.brincoAnimalOrder,
+          nomeA: a.nomeAnimal,
+          brincoB: b.brincoAnimalOrder,
+          nomeB: b.nomeAnimal,
+        );
+
+    if (widget.parameter1 == 'Secagem') {
+      // Resolve a data uma vez por tratamento, não a cada comparação.
+      final datas = {
+        for (final t in lista) t: _animalDoTratamento(t)?.dtSecPrevista,
+      };
+      lista.sort((a, b) {
+        final c = compararDataMaisNovaPrimeiro(datas[a], datas[b]);
+        return c != 0 ? c : porAnimal(a, b);
+      });
+      return lista;
+    }
+
     lista.sort((a, b) {
       // A data de inseminacao tem precedencia aqui (e a ordem clinica da
       // visita); so no empate cai na regra geral brinco -> nome.
@@ -97,12 +123,7 @@ class _ListaAnimaisTratamentosWidgetState
         final c = da.compareTo(db);
         if (c != 0) return c;
       }
-      return compararAnimais(
-        brincoA: a.brincoAnimalOrder,
-        nomeA: a.nomeAnimal,
-        brincoB: b.brincoAnimalOrder,
-        nomeB: b.nomeAnimal,
-      );
+      return porAnimal(a, b);
     });
     return lista;
   }
