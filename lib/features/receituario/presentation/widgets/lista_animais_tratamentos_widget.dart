@@ -85,7 +85,7 @@ class _ListaAnimaisTratamentosWidgetState
   /// Tratamentos desta visita e deste tipo de ação.
   ///
   /// Secagem: pela data exibida na linha (secagem prevista do animal), da
-  /// mais nova para a mais velha. O tratamento nunca gravou
+  /// mais velha para a mais nova, como no PDF. O tratamento nunca gravou
   /// `compararDtUltimaInseminacao`, então a ordem "por data" de antes caía
   /// sempre no brinco e a lista saía com as datas embaralhadas.
   ///
@@ -108,7 +108,7 @@ class _ListaAnimaisTratamentosWidgetState
         for (final t in lista) t: _animalDoTratamento(t)?.dtSecPrevista,
       };
       lista.sort((a, b) {
-        final c = compararDataMaisNovaPrimeiro(datas[a], datas[b]);
+        final c = compararDataMaisVelhaPrimeiro(datas[a], datas[b]);
         return c != 0 ? c : porAnimal(a, b);
       });
       return lista;
