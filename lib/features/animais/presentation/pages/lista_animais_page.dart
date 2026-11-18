@@ -17,7 +17,7 @@ import '/features/animais/presentation/animal_group_list_view.dart';
 import '/features/animais/application/ordenacao_animais.dart';
 import '/features/animais/application/animais_providers.dart';
 import '/features/animais/presentation/widgets/seletor_ordem_animais.dart';
-import '/features/animais/presentation/widgets/descarte_animal_widget.dart';
+import '/features/animais/presentation/abrir_baixa.dart';
 import '/data/objectbox/repositories/animal_repository.dart';
 import '/data/objectbox/entities/index.dart';
 import 'package:flutter/material.dart';
@@ -131,38 +131,20 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
   /// Abre o formulario de descarte (motivo + data) do animal arrastado.
   ///
   /// O arrasto so PEDE o descarte; nada e gravado aqui. Quem grava e o
-  /// `DescarteAnimalWidget`, no ObjectBox, e o animal some da lista sozinho
-  /// porque a aba observa o ObjectBox — e reaparece na aba "Descarte" das
-  /// secas, de onde ele pode ser eliminado em definitivo.
-  Future<void> _abrirDescarte(String firestoreId, String grupo) async {
+  /// formulario, no ObjectBox, e o animal some da lista sozinho porque a aba
+  /// observa o ObjectBox — e reaparece na aba "Descarte" das secas.
+  Future<void> _abrirDescarte(String firestoreId) async {
     final animal = AnimalRepository().getByFirestoreId(firestoreId);
-    final tecnico = widget.uidTecnico;
-    if (animal == null || tecnico == null || !mounted) return;
+    if (animal == null || !mounted) return;
+    await abrirDescarte(context, animal);
+  }
 
-    await showModalBottomSheet(
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      enableDrag: false,
-      context: context,
-      builder: (context) => Padding(
-        padding: MediaQuery.viewInsetsOf(context),
-        child: DescarteAnimalWidget(
-          // Sem `!`: o formulario aceita nulos, e o produtor pode chegar aqui
-          // sem nome ou e-mail da propriedade nos parametros da rota.
-          uidPropriedade: widget.uidPropriedade,
-          nomePropriedade: widget.nomePropriedade,
-          uidTecnico: tecnico,
-          emailPropriedade: widget.emailPropriedade,
-          // Animais vivem sob o tecnico — mesma reconstrucao usada no editar.
-          uidAnimaisProdutores: FirebaseFirestore.instance
-              .doc('${tecnico.path}/animaisProdutores/$firestoreId'),
-          grupoPredominante: grupo,
-          nomeAnimal: animal.nomeAnimal ?? '',
-          visitaPresencial: widget.visitaPresencial ?? false,
-          diasDg: widget.diasDg ?? '',
-        ),
-      ),
-    );
+  /// Abre o formulario de venda (data + valor). Mesmo raciocinio do descarte:
+  /// o animal vendido some da lista porque a aba observa o ObjectBox.
+  Future<void> _abrirVenda(String firestoreId) async {
+    final animal = AnimalRepository().getByFirestoreId(firestoreId);
+    if (animal == null || !mounted) return;
+    await abrirVenda(context, animal);
   }
 
   static const _grupos = [
@@ -255,8 +237,8 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
                   busca: _buscaController.text,
                   grupo: 'Bezerras',
                   permiteDescarte: widget.permiteDescarte,
-                  onDescartar: (firestoreId) =>
-                      _abrirDescarte(firestoreId, 'Bezerras'),
+                  onDescartar: _abrirDescarte,
+                  onVender: _abrirVenda,
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
                       EditarAnimalPage.routeName,
@@ -293,8 +275,9 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
                   busca: _buscaController.text,
                   grupo: 'Bezerros',
                   permiteDescarte: widget.permiteDescarte,
-                  onDescartar: (firestoreId) =>
-                      _abrirDescarte(firestoreId, 'Bezerros'),
+                  onDescartar: _abrirDescarte,
+                  onVender: _abrirVenda,
+                  mostrarBotaoVender: true,
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
                       EditarAnimalPage.routeName,
@@ -331,8 +314,8 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
                   busca: _buscaController.text,
                   grupo: 'Novilhas',
                   permiteDescarte: widget.permiteDescarte,
-                  onDescartar: (firestoreId) =>
-                      _abrirDescarte(firestoreId, 'Novilhas'),
+                  onDescartar: _abrirDescarte,
+                  onVender: _abrirVenda,
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
                       EditarAnimalPage.routeName,
@@ -369,8 +352,8 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
                   busca: _buscaController.text,
                   grupo: 'Sêmens',
                   permiteDescarte: widget.permiteDescarte,
-                  onDescartar: (firestoreId) =>
-                      _abrirDescarte(firestoreId, 'Sêmens'),
+                  onDescartar: _abrirDescarte,
+                  onVender: _abrirVenda,
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
                       EditarAnimalPage.routeName,
@@ -407,8 +390,8 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
                   busca: _buscaController.text,
                   grupo: 'Touros',
                   permiteDescarte: widget.permiteDescarte,
-                  onDescartar: (firestoreId) =>
-                      _abrirDescarte(firestoreId, 'Touros'),
+                  onDescartar: _abrirDescarte,
+                  onVender: _abrirVenda,
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
                       EditarAnimalPage.routeName,
@@ -445,8 +428,8 @@ class _ListaAnimaisPageState extends State<ListaAnimaisPage>
                   busca: _buscaController.text,
                   grupo: 'Vacas',
                   permiteDescarte: widget.permiteDescarte,
-                  onDescartar: (firestoreId) =>
-                      _abrirDescarte(firestoreId, 'Vacas'),
+                  onDescartar: _abrirDescarte,
+                  onVender: _abrirVenda,
                   onEditAnimal: (firestoreId) {
                     context.pushNamed(
                       EditarAnimalPage.routeName,

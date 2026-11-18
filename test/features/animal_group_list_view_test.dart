@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tecmuu/data/objectbox/entities/index.dart';
 import 'package:tecmuu/features/animais/application/animais_providers.dart';
@@ -11,7 +12,6 @@ import 'package:tecmuu/features/animais/presentation/animal_group_list_view.dart
 /// partir do provider sobrescrito.
 void main() {
   const path = 'produtor/p1/propriedades/prop1';
-  const args = (propriedadePath: path, grupo: 'Vacas');
 
   Future<void> pump(
     WidgetTester tester,
@@ -23,7 +23,11 @@ void main() {
     String busca = '',
     bool permiteDescarte = false,
     void Function(String)? onDescartar,
+    void Function(String)? onVender,
+    bool mostrarBotaoVender = false,
+    String grupo = 'Vacas',
   }) async {
+    final args = (propriedadePath: path, grupo: grupo);
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -33,7 +37,7 @@ void main() {
           home: Scaffold(
             body: AnimalGroupListView(
               propriedadePath: path,
-              grupo: 'Vacas',
+              grupo: grupo,
               onTapAnimal: onTap,
               onEditAnimal: onEdit,
               ordem: ordem,
@@ -41,6 +45,8 @@ void main() {
               busca: busca,
               permiteDescarte: permiteDescarte,
               onDescartar: onDescartar,
+              onVender: onVender,
+              mostrarBotaoVender: mostrarBotaoVender,
             ),
           ),
         ),
@@ -155,55 +161,111 @@ void main() {
     expect(titulosNaTela(tester), ['Carmem', 'Bonita', 'Aurora']);
   });
 
-  group('descarte por arrasto', () {
-    AnimalEntity vaca({String status = 'Vazia'}) => AnimalEntity(
-        firestoreId: 'a1',
-        nomeAnimal: 'Mimosa',
-        brincoAnimal: 7,
-        status: status,
-        grupoAnimal: 'Vacas');
+  group('arrasto vender | descartar', () {
+    AnimalEntity animal(
+            {String status = 'Vazia',
+            String grupo = 'Vacas',
+            String? tipoBaixa}) =>
+        AnimalEntity(
+            firestoreId: 'a1',
+            nomeAnimal: 'Mimosa',
+            brincoAnimal: 7,
+            status: status,
+            tipoBaixa: tipoBaixa,
+            grupoAnimal: grupo);
+
+    Future<void> arrastar(WidgetTester tester) async {
+      await tester.drag(find.byType(Slidable), const Offset(-300, 0));
+      await tester.pumpAndSettle();
+    }
 
     testWidgets('sem permissao o card nem e arrastavel', (tester) async {
-      await pump(tester, [vaca()], permiteDescarte: false);
+      await pump(tester, [animal()], permiteDescarte: false);
 
-      expect(find.byType(Dismissible), findsNothing);
+      expect(find.byType(Slidable), findsNothing);
     });
 
-    testWidgets('com permissao o card vira arrastavel', (tester) async {
-      await pump(tester, [vaca()],
-          permiteDescarte: true, onDescartar: (_) {});
+    testWidgets('arrastar revela Vender e Descartar e o card fica', (tester) async {
+      await pump(tester, [animal()],
+          permiteDescarte: true, onDescartar: (_) {}, onVender: (_) {});
 
-      expect(find.byType(Dismissible), findsOneWidget);
+      await arrastar(tester);
+
+      expect(find.text('Vender'), findsOneWidget);
+      expect(find.text('Descartar'), findsOneWidget);
+      expect(find.text('Mimosa'), findsOneWidget);
     });
 
-    testWidgets('arrastar para a esquerda pede o descarte com o firestoreId',
-        (tester) async {
+    testWidgets('tocar em Vender pede a venda com o firestoreId', (tester) async {
       String? pedido;
-      await pump(tester, [vaca()],
-          permiteDescarte: true, onDescartar: (id) => pedido = id);
+      await pump(tester, [animal()],
+          permiteDescarte: true,
+          onDescartar: (_) {},
+          onVender: (id) => pedido = id);
 
-      await tester.drag(find.byType(Dismissible), const Offset(-500, 0));
+      await arrastar(tester);
+      await tester.tap(find.text('Vender'));
       await tester.pumpAndSettle();
 
       expect(pedido, 'a1');
     });
 
-    testWidgets('o card NAO some sozinho: quem o tira e a gravacao do status',
+    testWidgets('tocar em Descartar pede o descarte com o firestoreId',
         (tester) async {
-      await pump(tester, [vaca()],
-          permiteDescarte: true, onDescartar: (_) {});
+      String? pedido;
+      await pump(tester, [animal()],
+          permiteDescarte: true,
+          onDescartar: (id) => pedido = id,
+          onVender: (_) {});
 
-      await tester.drag(find.byType(Dismissible), const Offset(-500, 0));
+      await arrastar(tester);
+      await tester.tap(find.text('Descartar'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Mimosa'), findsOneWidget);
+      expect(pedido, 'a1');
     });
 
-    testWidgets('animal ja descartado nao oferece o arrasto', (tester) async {
-      await pump(tester, [vaca(status: 'Descarte')],
-          permiteDescarte: true, onDescartar: (_) {});
+    testWidgets('sêmen só oferece Descartar', (tester) async {
+      await pump(tester, [animal(grupo: 'Sêmens')],
+          grupo: 'Sêmens',
+          permiteDescarte: true,
+          onDescartar: (_) {},
+          onVender: (_) {});
 
-      expect(find.byType(Dismissible), findsNothing);
+      await arrastar(tester);
+
+      expect(find.text('Descartar'), findsOneWidget);
+      expect(find.text('Vender'), findsNothing);
+    });
+
+    testWidgets('animal ja em baixa nao oferece o arrasto', (tester) async {
+      await pump(tester, [animal(status: 'Descarte')],
+          permiteDescarte: true, onDescartar: (_) {}, onVender: (_) {});
+
+      expect(find.byType(Slidable), findsNothing);
+    });
+
+    testWidgets('botão Vender fixo aparece sem arrastar (bezerros)',
+        (tester) async {
+      String? pedido;
+      await pump(tester, [animal(grupo: 'Bezerros')],
+          grupo: 'Bezerros',
+          permiteDescarte: true,
+          onDescartar: (_) {},
+          onVender: (id) => pedido = id,
+          mostrarBotaoVender: true);
+
+      expect(find.text('Vender'), findsOneWidget);
+      await tester.tap(find.text('Vender'));
+      await tester.pumpAndSettle();
+      expect(pedido, 'a1');
+    });
+
+    testWidgets('sem mostrarBotaoVender não há botão fixo', (tester) async {
+      await pump(tester, [animal()],
+          permiteDescarte: true, onDescartar: (_) {}, onVender: (_) {});
+
+      expect(find.text('Vender'), findsNothing);
     });
   });
 }
