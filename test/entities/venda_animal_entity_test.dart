@@ -42,4 +42,32 @@ void main() {
     expect(v.needsSync, isTrue);
     expect(v.lastModified, isNotNull);
   });
+
+  group('envioDaVenda', () {
+    test('nova e viva: criar', () {
+      expect(envioDaVenda(VendaAnimalEntity(needsSync: true)),
+          EnvioVenda.criar);
+    });
+    test('já sincronizada: atualizar', () {
+      expect(
+          envioDaVenda(VendaAnimalEntity(
+              firestoreId: 'v1', lastSynced: DateTime(2026), needsSync: true)),
+          EnvioVenda.atualizar);
+    });
+    test('criada e desfeita sem nunca subir: nada a enviar', () {
+      expect(
+          envioDaVenda(VendaAnimalEntity(
+              firestoreId: 'v1', isDeleted: true, needsSync: true)),
+          EnvioVenda.nadaAEnviar);
+    });
+    test('excluída já sincronizada: a exclusão vai pela fila', () {
+      expect(
+          envioDaVenda(VendaAnimalEntity(
+              firestoreId: 'v1',
+              lastSynced: DateTime(2026),
+              isDeleted: true,
+              needsSync: true)),
+          EnvioVenda.nadaAEnviar);
+    });
+  });
 }

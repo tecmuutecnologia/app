@@ -479,14 +479,20 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
                     // e devolve a vaga do plano se o animal ocupava.
                     final entidade = AnimalRepository()
                         .getByFirestoreId(widget.uidAnimaisProdutores!.id);
-                    if (entidade != null) {
-                      await BaixaAnimalService().descartar(
-                        animal: entidade,
-                        dt: _dtDescarteTextController!.text,
-                        motivo: _motivoDescarteValue,
-                      );
+                    final gravou = entidade != null &&
+                        await BaixaAnimalService().descartar(
+                          animal: entidade,
+                          dt: _dtDescarteTextController!.text,
+                          motivo: _motivoDescarteValue,
+                        );
+                    if (!gravou && context.mounted) {
+                      // Outro aparelho já vendeu ou descartou o animal.
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text(
+                                  'Este animal já saiu do rebanho.')));
                     }
-                    Navigator.pop(context, entidade != null);
+                    if (context.mounted) Navigator.pop(context, gravou);
                     return;
                   } else {
                     return;

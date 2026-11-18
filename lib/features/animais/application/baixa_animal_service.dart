@@ -3,6 +3,7 @@ import '/data/objectbox/repositories/animal_repository.dart';
 import '/data/objectbox/repositories/tecnico_repository.dart';
 import '/data/objectbox/repositories/venda_animal_repository.dart';
 import '/domain/animais/baixa_animal.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/domain/plano/vagas.dart';
 
 /// Baixa do animal (venda e descarte) e os "desfazer", gravando no ObjectBox
@@ -26,6 +27,15 @@ class BaixaAnimalService {
   final VendaAnimalRepository _vendas;
   final TecnicoRepository _tecnicos;
 
+  /// A versão ATUAL do animal no ObjectBox. A tela guarda a cópia de quando
+  /// abriu; nesse meio-tempo a escuta pode ter trazido uma venda ou um
+  /// descarte feito em outro aparelho. Conferir e gravar sobre a cópia
+  /// criaria uma segunda venda e desfaria o que a escuta trouxe.
+  AnimalEntity _atual(AnimalEntity animal) {
+    final id = animal.firestoreId;
+    return (id == null ? null : _animais.getByFirestoreId(id)) ?? animal;
+  }
+
   /// Vende o animal: cria o registro da venda na propriedade e tira o animal
   /// do rebanho. Lança [StateError] se o animal não pode ser vendido (sêmen,
   /// já vendido, excluído) — antes de gravar qualquer coisa.
@@ -35,6 +45,7 @@ class BaixaAnimalService {
     required String dtVenda,
     required double valor,
   }) async {
+    animal = _atual(animal);
     if (!podeVender(
         grupo: animal.grupoAnimal,
         status: animal.status,
@@ -72,29 +83,48 @@ class BaixaAnimalService {
     if (ocupava && tecnicoId != null) _tecnicos.devolverCotaAnimais(tecnicoId);
   }
 
-  Future<void> descartar({
+  /// Descarta o animal. Devolve `false` (sem gravar) se ele já está em baixa
+  /// — descartar por cima de uma venda deixaria a receita órfã no Financeiro.
+  Future<bool> descartar({
     required AnimalEntity animal,
     required String dt,
     required String? motivo,
   }) async {
+    animal = _atual(animal);
+    if (ehDescarte(animal.status)) return false;
     final ocupava = animalOcupaVaga(animal);
     final tecnicoId = tecnicoIdDoPath(animal.parentPath);
     await _animais.update(
         animal, dadosDescarte(animal: animal, dt: dt, motivo: motivo));
     if (ocupava && tecnicoId != null) _tecnicos.devolverCotaAnimais(tecnicoId);
+    return true;
   }
 
   /// Apaga (soft delete) a venda vigente — a receita sai do Financeiro — e
   /// devolve o animal ao rebanho ou aos Descartados, conforme a origem.
   Future<void> desfazerVenda(AnimalEntity animal) async {
+    animal = _atual(animal);
     if (!ehVendido(animal.status, animal.tipoBaixa)) return;
     final voltaAoRebanho = desfazerVendaMexeEmVaga(animal);
     final tecnicoId = tecnicoIdDoPath(animal.parentPath);
 
     final idVenda = animal.idVendaAtual;
     if (idVenda != null) {
-      final venda = _vendas.getByFirestoreId(idVenda);
-      if (venda != null && !venda.isDeleted) await _vendas.softDelete(venda);
+      final local = _vendas.getByFirestoreId(idVenda);
+      final propriedadePath = animal.uidTecnicoPropriedadePath;
+      if (local != null) {
+        if (!local.isDeleted) await _vendas.softDelete(local);
+      } else if (propriedadePath != null) {
+        // Venda feita em OUTRO aparelho e ainda não baixada aqui (o animal
+        // chega pela escuta, a venda só ao abrir a aba Vendas). O caminho é
+        // conhecido: grava a exclusão mesmo assim, senão a receita ficaria no
+        // Financeiro sem ter mais como ser desfeita.
+        await _vendas.softDelete(VendaAnimalEntity(
+          firestoreId: idVenda,
+          parentPath: propriedadePath,
+          uidPropriedadePath: propriedadePath,
+        ));
+      }
     }
     await _animais.update(animal, dadosDesfazerVenda(animal));
     if (voltaAoRebanho && tecnicoId != null) {
@@ -104,6 +134,7 @@ class BaixaAnimalService {
 
   /// Devolve o descartado ao rebanho, no status de antes do descarte.
   Future<void> desfazerDescarte(AnimalEntity animal) async {
+    animal = _atual(animal);
     if (!ehDescartadoSemVenda(animal.status, animal.tipoBaixa)) return;
     final tecnicoId = tecnicoIdDoPath(animal.parentPath);
     await _animais.update(animal, dadosDesfazerDescarte(animal));

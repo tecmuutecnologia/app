@@ -143,17 +143,23 @@ bool desfazerVendaMexeEmVaga(AnimalEntity a) => !vendaVeioDeDescarte(a);
 // Formulário de venda
 // ---------------------------------------------------------------------------
 
-/// Valor digitado em reais ('1.234,56', 'R$ 10,00', '1500'). `null` se vazio,
-/// inválido ou não positivo.
+/// Valor digitado em reais. Aceita o padrão brasileiro ('1.234,56',
+/// 'R$ 10,00', '1500', '1.500') e também o ponto como decimal quando ele é o
+/// único separador e vem seguido de 1 ou 2 dígitos ('1500.50', '10.5') — é o
+/// que o teclado numérico em inglês oferece; ler esse ponto como milhar
+/// multiplicaria o valor por 100. `null` se vazio, malformado ('1.2.3') ou
+/// não positivo.
 double? parseValorReais(String texto) {
-  final limpo = texto
-      .replaceAll('R\$', '')
-      .replaceAll(' ', '')
-      .replaceAll('.', '')
-      .replaceAll(',', '.')
-      .trim();
-  final v = double.tryParse(limpo);
-  if (v == null || v <= 0 || v.isNaN || v.isInfinite) return null;
+  final t = texto.replaceAll('R\$', '').replaceAll(' ', '').trim();
+  String? numero;
+  if (RegExp(r'^\d+\.\d{1,2}$').hasMatch(t)) {
+    numero = t; // ponto decimal
+  } else if (RegExp(r'^\d+(,\d{1,2})?$').hasMatch(t) ||
+      RegExp(r'^\d{1,3}(\.\d{3})+(,\d{1,2})?$').hasMatch(t)) {
+    numero = t.replaceAll('.', '').replaceAll(',', '.');
+  }
+  final v = numero == null ? null : double.tryParse(numero);
+  if (v == null || v <= 0 || v.isInfinite) return null;
   return v;
 }
 

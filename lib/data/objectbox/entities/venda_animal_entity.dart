@@ -121,3 +121,18 @@ class VendaAnimalEntity implements SyncableEntity {
     needsSync = true;
   }
 }
+
+/// O que o laço de envio deve fazer com uma venda pendente.
+enum EnvioVenda { criar, atualizar, nadaAEnviar }
+
+/// Venda excluída nunca é reenviada pelo laço: se já existia no servidor, a
+/// exclusão vai pela fila (`pushDelete`); se nunca subiu (criada e desfeita
+/// offline), não há o que enviar — sem isto ela ficaria pendente para sempre
+/// e o aviso de "dados não enviados" apareceria em todo logout.
+EnvioVenda envioDaVenda(VendaAnimalEntity v) {
+  if (v.isDeleted) return EnvioVenda.nadaAEnviar;
+  if (v.lastSynced != null && v.firestoreId != null) {
+    return EnvioVenda.atualizar;
+  }
+  return EnvioVenda.criar;
+}

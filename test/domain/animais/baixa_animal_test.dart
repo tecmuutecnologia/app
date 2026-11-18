@@ -43,6 +43,19 @@ void main() {
       expect(parseValorReais('R\$ 10,00'), 10.0);
       expect(parseValorReais('1500'), 1500.0);
     });
+    test('ponto como decimal (teclado em inglês) não multiplica por 100', () {
+      expect(parseValorReais('1500.50'), 1500.5);
+      expect(parseValorReais('10.5'), 10.5);
+    });
+    test('ponto como milhar no padrão brasileiro', () {
+      expect(parseValorReais('1.500'), 1500.0);
+      expect(parseValorReais('12.345.678,90'), 12345678.9);
+    });
+    test('agrupamento inválido é rejeitado', () {
+      expect(parseValorReais('1.2.3'), isNull);
+      expect(parseValorReais('1,2,3'), isNull);
+      expect(parseValorReais('15.00.0'), isNull);
+    });
     test('rejeita vazio, zero, negativo e lixo', () {
       expect(parseValorReais(''), isNull);
       expect(parseValorReais('0'), isNull);

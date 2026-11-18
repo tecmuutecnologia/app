@@ -1723,24 +1723,26 @@ class OfflineFirstSyncService {
             VendaAnimalRepository(firestore: _firestore).payloadParaGravar(e);
 
         if (venda.parentPath == null) continue;
-        if (venda.lastSynced != null && venda.firestoreId != null) {
-          final docRef = _firestore.doc(
-            '${venda.parentPath}/vendasAnimais/${venda.firestoreId}',
-          );
-          await docRef.update(payload(venda));
-        } else if (!venda.isDeleted) {
-          await gravarNoIdDefinitivo(
-            firestore: _firestore,
-            colecaoPath: '${venda.parentPath}/vendasAnimais',
-            firestoreId: venda.firestoreId,
-            payload: payload(venda),
-            fixarIdLocal: (id) {
-              venda.firestoreId = id;
-              _objectBox.vendaAnimalBox.put(venda);
-            },
-          );
-        } else {
-          continue;
+        switch (envioDaVenda(venda)) {
+          case EnvioVenda.atualizar:
+            await _firestore
+                .doc('${venda.parentPath}/vendasAnimais/${venda.firestoreId}')
+                .update(payload(venda));
+          case EnvioVenda.criar:
+            await gravarNoIdDefinitivo(
+              firestore: _firestore,
+              colecaoPath: '${venda.parentPath}/vendasAnimais',
+              firestoreId: venda.firestoreId,
+              payload: payload(venda),
+              fixarIdLocal: (id) {
+                venda.firestoreId = id;
+                _objectBox.vendaAnimalBox.put(venda);
+              },
+            );
+          case EnvioVenda.nadaAEnviar:
+            venda.needsSync = false;
+            _objectBox.vendaAnimalBox.put(venda);
+            continue;
         }
         venda.needsSync = false;
         venda.lastSynced = DateTime.now();
