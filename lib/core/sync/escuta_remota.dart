@@ -2,7 +2,7 @@ import '../../data/objectbox/entities/propriedade_entity.dart';
 import '../../data/objectbox/entities/visita_entities.dart';
 import 'alvos_animais_produtor.dart';
 
-enum TipoEscuta { animais, acoes, visitas, tratamentos, recomendacoes }
+enum TipoEscuta { animais, acoes, visitas, tratamentos, recomendacoes, vendas }
 
 /// Uma coleção do Firestore a escutar em tempo real, opcionalmente restrita a
 /// uma propriedade.
@@ -118,6 +118,17 @@ List<AlvoEscuta> alvosDoReceituario(String propriedadePath) => [
       AlvoEscuta(
         tipo: TipoEscuta.recomendacoes,
         colecaoPath: '$propriedadePath/recomendacoes',
+        apenasPull: true,
+      ),
+    ];
+
+/// Vendas de animais de UMA propriedade, só por pull: buscadas ao abrir a aba
+/// Vendas do Financeiro (técnico e produtor). Escutar a subcoleção de todas as
+/// propriedades abriria uma conexão por propriedade, como no receituário.
+List<AlvoEscuta> alvosDeVendas(String propriedadePath) => [
+      AlvoEscuta(
+        tipo: TipoEscuta.vendas,
+        colecaoPath: '$propriedadePath/vendasAnimais',
         apenasPull: true,
       ),
     ];

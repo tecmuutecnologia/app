@@ -31,6 +31,7 @@ import 'assinaturas_locais.dart';
 import 'objectbox_service.dart';
 import 'repositories/base_sync_repository.dart';
 import 'repositories/financeiro_repository.dart';
+import 'repositories/venda_animal_repository.dart';
 import 'repositories/recomendacao_repository.dart';
 import 'repositories/resumo_visita_repository.dart';
 import 'repositories/tecnico_repository.dart';
@@ -1178,6 +1179,28 @@ class OfflineFirstSyncService {
         if (ehErroDeCota(e)) rethrow;
       }
 
+      // Vendas de animais (aba Vendas do financeiro)
+      try {
+        final vendasSnapshot = await propRef.collection('vendasAnimais').get();
+        _gravarSincronizaveis<VendaAnimalEntity>(
+          _objectBox.vendaAnimalBox,
+          [
+            for (final doc in vendasSnapshot.docs)
+              _comExclusao(
+                  doc.data(),
+                  VendaAnimalEntity.fromFirestore(
+                    doc.data(),
+                    doc.id,
+                    parentPath: propRef.path,
+                  )),
+          ],
+          VendaAnimalEntity_.firestoreId,
+        );
+      } catch (e) {
+        debugPrint('⚠️ Erro ao baixar vendas de animais: $e');
+        if (ehErroDeCota(e)) rethrow;
+      }
+
       // Baixa ações sanitárias (subcoleção da PROPRIEDADE; antes o download
       // varria `animal/acoes_sanitario`, coleção que nada escreve).
       try {
@@ -1358,6 +1381,7 @@ class OfflineFirstSyncService {
       await _syncModifiedAcoes();
       await _syncModifiedTratamentos();
       await _syncModifiedFinanceiro();
+      await _syncModifiedVendas();
       await _syncModifiedVisitas();
 
       // Processa operações pendentes na fila
@@ -1681,6 +1705,49 @@ class OfflineFirstSyncService {
     if (modified.isNotEmpty) {
       debugPrint(
           '💰 ${modified.length} registro(s) financeiro(s) sincronizado(s)');
+    }
+  }
+
+  /// Sincroniza vendas de animais modificadas. Mesmo molde do
+  /// [_syncModifiedFinanceiro]: em erro (inclusive permissão negada) o
+  /// registro continua `needsSync` e é reenviado no próximo ciclo.
+  Future<void> _syncModifiedVendas() async {
+    final modified = _objectBox.vendaAnimalBox
+        .query(VendaAnimalEntity_.needsSync.equals(true))
+        .build()
+        .find();
+
+    for (final venda in modified) {
+      try {
+        Map<String, dynamic> payload(VendaAnimalEntity e) =>
+            VendaAnimalRepository(firestore: _firestore).payloadParaGravar(e);
+
+        if (venda.parentPath == null) continue;
+        if (venda.lastSynced != null && venda.firestoreId != null) {
+          final docRef = _firestore.doc(
+            '${venda.parentPath}/vendasAnimais/${venda.firestoreId}',
+          );
+          await docRef.update(payload(venda));
+        } else if (!venda.isDeleted) {
+          await gravarNoIdDefinitivo(
+            firestore: _firestore,
+            colecaoPath: '${venda.parentPath}/vendasAnimais',
+            firestoreId: venda.firestoreId,
+            payload: payload(venda),
+            fixarIdLocal: (id) {
+              venda.firestoreId = id;
+              _objectBox.vendaAnimalBox.put(venda);
+            },
+          );
+        } else {
+          continue;
+        }
+        venda.needsSync = false;
+        venda.lastSynced = DateTime.now();
+        _objectBox.vendaAnimalBox.put(venda);
+      } catch (e) {
+        debugPrint('❌ Erro ao sincronizar venda ${venda.firestoreId}: $e');
+      }
     }
   }
 
@@ -2160,7 +2227,8 @@ class OfflineFirstSyncService {
         TipoEscuta.acoes => SyncEtapa.acoes,
         TipoEscuta.visitas ||
         TipoEscuta.tratamentos ||
-        TipoEscuta.recomendacoes =>
+        TipoEscuta.recomendacoes ||
+        TipoEscuta.vendas =>
           SyncEtapa.financeiro,
       };
 
@@ -2243,6 +2311,18 @@ class OfflineFirstSyncService {
                       parentPath: alvo.parentPath)),
           ],
           RecomendacaoEntity_.firestoreId,
+        );
+      case TipoEscuta.vendas:
+        _gravarSincronizaveis<VendaAnimalEntity>(
+          _objectBox.vendaAnimalBox,
+          [
+            for (final doc in docs)
+              _comExclusao(
+                  doc.data(),
+                  VendaAnimalEntity.fromFirestore(doc.data(), doc.id,
+                      parentPath: alvo.parentPath)),
+          ],
+          VendaAnimalEntity_.firestoreId,
         );
     }
   }
@@ -2337,6 +2417,17 @@ class OfflineFirstSyncService {
     await _pullColecao(
       etapa: SyncEtapa.financeiro,
       alvos: alvosDoReceituario(propriedadePath),
+      avancarMarcaDaEtapa: false,
+    );
+  }
+
+  /// Busca as vendas de animais de uma propriedade (ao abrir a aba Vendas).
+  /// Vale para técnico e produtor: as vendas não têm escuta em tempo real.
+  Future<void> puxarVendas(String propriedadePath) async {
+    if (!_isOnline || propriedadePath.isEmpty || needsInitialSync()) return;
+    await _pullColecao(
+      etapa: SyncEtapa.financeiro,
+      alvos: alvosDeVendas(propriedadePath),
       avancarMarcaDaEtapa: false,
     );
   }

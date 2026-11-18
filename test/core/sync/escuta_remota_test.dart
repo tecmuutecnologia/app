@@ -237,4 +237,18 @@ void main() {
       expect(doTecnico, alvosDoReceituario(prop));
     });
   });
+
+  group('alvosDeVendas', () {
+    test('um alvo só de pull na subcoleção vendasAnimais da propriedade', () {
+      final alvos = alvosDeVendas('tecnico/t/propriedades/p');
+      expect(alvos, hasLength(1));
+      expect(alvos.single.tipo, TipoEscuta.vendas);
+      expect(alvos.single.colecaoPath,
+          'tecnico/t/propriedades/p/vendasAnimais');
+      expect(alvos.single.apenasPull, isTrue);
+      expect(alvos.single.parentPath, 'tecnico/t/propriedades/p');
+      expect(chaveDeMarca(alvos.single, 'etapa'),
+          'pull_tecnico/t/propriedades/p/vendasAnimais');
+    });
+  });
 }

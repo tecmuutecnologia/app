@@ -27,6 +27,7 @@ import 'data/objectbox/entities/sync_metadata_entity.dart';
 import 'data/objectbox/entities/tecnico_entity.dart';
 import 'data/objectbox/entities/tratamento_entity.dart';
 import 'data/objectbox/entities/user_session_entity.dart';
+import 'data/objectbox/entities/venda_animal_entity.dart';
 import 'data/objectbox/entities/visita_entities.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
@@ -2117,6 +2118,107 @@ final _entities = <obx_int.ModelEntity>[
     relations: <obx_int.ModelRelation>[],
     backlinks: <obx_int.ModelBacklink>[],
   ),
+  obx_int.ModelEntity(
+    id: const obx_int.IdUid(23, 521586870187038315),
+    name: 'VendaAnimalEntity',
+    lastPropertyId: const obx_int.IdUid(15, 1135345967543145891),
+    flags: 0,
+    properties: <obx_int.ModelProperty>[
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(1, 9222761924694412292),
+        name: 'id',
+        type: 6,
+        flags: 1,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(2, 4268539670408268352),
+        name: 'firestoreId',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(24, 4457665767034637986),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(3, 1961749196336752697),
+        name: 'parentPath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(4, 4763993652445286877),
+        name: 'uidPropriedadePath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 6642414223367695513),
+        name: 'uidTecnicoPath',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(6, 166212191270629152),
+        name: 'animalId',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(7, 5939687507692847216),
+        name: 'nomeAnimal',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(8, 5996060454695361848),
+        name: 'brincoAnimal',
+        type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(9, 6531693704269514710),
+        name: 'grupoAnimal',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(10, 4070301258185252913),
+        name: 'dtVenda',
+        type: 9,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(11, 7290367202294097011),
+        name: 'valorVenda',
+        type: 8,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(12, 359477387826117665),
+        name: 'lastModified',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(13, 4175908035143828852),
+        name: 'lastSynced',
+        type: 10,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(14, 7459514518666016383),
+        name: 'needsSync',
+        type: 1,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(15, 1135345967543145891),
+        name: 'isDeleted',
+        type: 1,
+        flags: 0,
+      ),
+    ],
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[],
+  ),
 ];
 
 /// Shortcut for [obx.Store.new] that passes [getObjectBoxModel] and for Flutter
@@ -2157,8 +2259,8 @@ Future<obx.Store> openStore({
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
     entities: _entities,
-    lastEntityId: const obx_int.IdUid(22, 5299997838202207882),
-    lastIndexId: const obx_int.IdUid(23, 369470281308574824),
+    lastEntityId: const obx_int.IdUid(23, 521586870187038315),
+    lastIndexId: const obx_int.IdUid(24, 4457665767034637986),
     lastRelationId: const obx_int.IdUid(0, 0),
     lastSequenceId: const obx_int.IdUid(0, 0),
     retiredEntityUids: const [],
@@ -5095,6 +5197,145 @@ obx_int.ModelDefinition getObjectBoxModel() {
         return object;
       },
     ),
+    VendaAnimalEntity: obx_int.EntityDefinition<VendaAnimalEntity>(
+      model: _entities[22],
+      toOneRelations: (VendaAnimalEntity object) => [],
+      toManyRelations: (VendaAnimalEntity object) => {},
+      getId: (VendaAnimalEntity object) => object.id,
+      setId: (VendaAnimalEntity object, int id) {
+        object.id = id;
+      },
+      objectToFB: (VendaAnimalEntity object, fb.Builder fbb) {
+        final firestoreIdOffset = object.firestoreId == null
+            ? null
+            : fbb.writeString(object.firestoreId!);
+        final parentPathOffset = object.parentPath == null
+            ? null
+            : fbb.writeString(object.parentPath!);
+        final uidPropriedadePathOffset = object.uidPropriedadePath == null
+            ? null
+            : fbb.writeString(object.uidPropriedadePath!);
+        final uidTecnicoPathOffset = object.uidTecnicoPath == null
+            ? null
+            : fbb.writeString(object.uidTecnicoPath!);
+        final animalIdOffset = object.animalId == null
+            ? null
+            : fbb.writeString(object.animalId!);
+        final nomeAnimalOffset = object.nomeAnimal == null
+            ? null
+            : fbb.writeString(object.nomeAnimal!);
+        final grupoAnimalOffset = object.grupoAnimal == null
+            ? null
+            : fbb.writeString(object.grupoAnimal!);
+        final dtVendaOffset = object.dtVenda == null
+            ? null
+            : fbb.writeString(object.dtVenda!);
+        fbb.startTable(16);
+        fbb.addInt64(0, object.id);
+        fbb.addOffset(1, firestoreIdOffset);
+        fbb.addOffset(2, parentPathOffset);
+        fbb.addOffset(3, uidPropriedadePathOffset);
+        fbb.addOffset(4, uidTecnicoPathOffset);
+        fbb.addOffset(5, animalIdOffset);
+        fbb.addOffset(6, nomeAnimalOffset);
+        fbb.addInt64(7, object.brincoAnimal);
+        fbb.addOffset(8, grupoAnimalOffset);
+        fbb.addOffset(9, dtVendaOffset);
+        fbb.addFloat64(10, object.valorVenda);
+        fbb.addInt64(11, object.lastModified?.millisecondsSinceEpoch);
+        fbb.addInt64(12, object.lastSynced?.millisecondsSinceEpoch);
+        fbb.addBool(13, object.needsSync);
+        fbb.addBool(14, object.isDeleted);
+        fbb.finish(fbb.endTable());
+        return object.id;
+      },
+      objectFromFB: (obx.Store store, ByteData fbData) {
+        final buffer = fb.BufferContext(fbData);
+        final rootOffset = buffer.derefObject(0);
+        final lastModifiedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          26,
+        );
+        final lastSyncedValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          28,
+        );
+        final firestoreIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 6);
+        final parentPathParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 8);
+        final uidPropriedadePathParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 10);
+        final uidTecnicoPathParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 12);
+        final animalIdParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 14);
+        final nomeAnimalParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 16);
+        final brincoAnimalParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          18,
+          0,
+        );
+        final grupoAnimalParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 20);
+        final dtVendaParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 22);
+        final valorVendaParam = const fb.Float64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          24,
+          0,
+        );
+        final lastModifiedParam = lastModifiedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastModifiedValue);
+        final lastSyncedParam = lastSyncedValue == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(lastSyncedValue);
+        final needsSyncParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          30,
+          false,
+        );
+        final isDeletedParam = const fb.BoolReader().vTableGet(
+          buffer,
+          rootOffset,
+          32,
+          false,
+        );
+        final object = VendaAnimalEntity(
+          firestoreId: firestoreIdParam,
+          parentPath: parentPathParam,
+          uidPropriedadePath: uidPropriedadePathParam,
+          uidTecnicoPath: uidTecnicoPathParam,
+          animalId: animalIdParam,
+          nomeAnimal: nomeAnimalParam,
+          brincoAnimal: brincoAnimalParam,
+          grupoAnimal: grupoAnimalParam,
+          dtVenda: dtVendaParam,
+          valorVenda: valorVendaParam,
+          lastModified: lastModifiedParam,
+          lastSynced: lastSyncedParam,
+          needsSync: needsSyncParam,
+          isDeleted: isDeletedParam,
+        )..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+
+        return object;
+      },
+    ),
   };
 
   return obx_int.ModelDefinition(model, bindings);
@@ -6675,5 +6916,83 @@ class UserSessionEntity_ {
   /// See [UserSessionEntity.isActive].
   static final isActive = obx.QueryBooleanProperty<UserSessionEntity>(
     _entities[21].properties[13],
+  );
+}
+
+/// [VendaAnimalEntity] entity fields to define ObjectBox queries.
+class VendaAnimalEntity_ {
+  /// See [VendaAnimalEntity.id].
+  static final id = obx.QueryIntegerProperty<VendaAnimalEntity>(
+    _entities[22].properties[0],
+  );
+
+  /// See [VendaAnimalEntity.firestoreId].
+  static final firestoreId = obx.QueryStringProperty<VendaAnimalEntity>(
+    _entities[22].properties[1],
+  );
+
+  /// See [VendaAnimalEntity.parentPath].
+  static final parentPath = obx.QueryStringProperty<VendaAnimalEntity>(
+    _entities[22].properties[2],
+  );
+
+  /// See [VendaAnimalEntity.uidPropriedadePath].
+  static final uidPropriedadePath = obx.QueryStringProperty<VendaAnimalEntity>(
+    _entities[22].properties[3],
+  );
+
+  /// See [VendaAnimalEntity.uidTecnicoPath].
+  static final uidTecnicoPath = obx.QueryStringProperty<VendaAnimalEntity>(
+    _entities[22].properties[4],
+  );
+
+  /// See [VendaAnimalEntity.animalId].
+  static final animalId = obx.QueryStringProperty<VendaAnimalEntity>(
+    _entities[22].properties[5],
+  );
+
+  /// See [VendaAnimalEntity.nomeAnimal].
+  static final nomeAnimal = obx.QueryStringProperty<VendaAnimalEntity>(
+    _entities[22].properties[6],
+  );
+
+  /// See [VendaAnimalEntity.brincoAnimal].
+  static final brincoAnimal = obx.QueryIntegerProperty<VendaAnimalEntity>(
+    _entities[22].properties[7],
+  );
+
+  /// See [VendaAnimalEntity.grupoAnimal].
+  static final grupoAnimal = obx.QueryStringProperty<VendaAnimalEntity>(
+    _entities[22].properties[8],
+  );
+
+  /// See [VendaAnimalEntity.dtVenda].
+  static final dtVenda = obx.QueryStringProperty<VendaAnimalEntity>(
+    _entities[22].properties[9],
+  );
+
+  /// See [VendaAnimalEntity.valorVenda].
+  static final valorVenda = obx.QueryDoubleProperty<VendaAnimalEntity>(
+    _entities[22].properties[10],
+  );
+
+  /// See [VendaAnimalEntity.lastModified].
+  static final lastModified = obx.QueryDateProperty<VendaAnimalEntity>(
+    _entities[22].properties[11],
+  );
+
+  /// See [VendaAnimalEntity.lastSynced].
+  static final lastSynced = obx.QueryDateProperty<VendaAnimalEntity>(
+    _entities[22].properties[12],
+  );
+
+  /// See [VendaAnimalEntity.needsSync].
+  static final needsSync = obx.QueryBooleanProperty<VendaAnimalEntity>(
+    _entities[22].properties[13],
+  );
+
+  /// See [VendaAnimalEntity.isDeleted].
+  static final isDeleted = obx.QueryBooleanProperty<VendaAnimalEntity>(
+    _entities[22].properties[14],
   );
 }

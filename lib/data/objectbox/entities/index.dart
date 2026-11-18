@@ -25,6 +25,7 @@ export 'tratamento_entity.dart';
 
 // Financeiro
 export 'financeiro_entity.dart';
+export 'venda_animal_entity.dart';
 
 // Tabelas de referência (grupos, raças, status, etc.)
 export 'reference_entities.dart';
