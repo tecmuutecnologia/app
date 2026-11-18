@@ -67,6 +67,14 @@ AnimaisProdutoresStruct animalEntityToStruct(AnimalEntity e) {
     dtDesmame: e.dtDesmame,
     brincoAnimal: e.brincoAnimal,
     brincoAnimalOrder: e.brincoAnimalOrder,
+    tipoBaixa: e.tipoBaixa,
+    statusAnterior: e.statusAnterior,
+    idStatusAnteriorAnimal: e.idStatusAnteriorAnimal,
+    dtVendaAnimal: e.dtVendaAnimal,
+    valorVendaAnimal: e.valorVendaAnimal,
+    idVendaAtual: e.idVendaAtual,
+    motivoDescarteAnterior: e.motivoDescarteAnterior,
+    dtDescarteAnterior: e.dtDescarteAnterior,
   );
 }
 
@@ -139,6 +147,14 @@ AnimalEntity structToAnimalEntityOffline(
     dtDesmame: s.dtDesmame,
     brincoAnimal: s.brincoAnimal,
     brincoAnimalOrder: s.brincoAnimalOrder,
+    tipoBaixa: s.tipoBaixa,
+    statusAnterior: s.statusAnterior,
+    idStatusAnteriorAnimal: s.idStatusAnteriorAnimal,
+    dtVendaAnimal: s.dtVendaAnimal,
+    valorVendaAnimal: s.valorVendaAnimal,
+    idVendaAtual: s.idVendaAtual,
+    motivoDescarteAnterior: s.motivoDescarteAnterior,
+    dtDescarteAnterior: s.dtDescarteAnterior,
   );
 }
 

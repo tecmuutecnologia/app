@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:8986228835005611182",
-      "lastPropertyId": "45:6074494206480083533",
+      "lastPropertyId": "53:1826315066896341712",
       "name": "AnimalEntity",
       "properties": [
         {
@@ -237,6 +237,46 @@
           "indexId": "22:2324975574822149543",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "46:5013786454428223116",
+          "name": "tipoBaixa",
+          "type": 9
+        },
+        {
+          "id": "47:7248995569790060935",
+          "name": "statusAnterior",
+          "type": 9
+        },
+        {
+          "id": "48:1748098017332695657",
+          "name": "idStatusAnteriorAnimal",
+          "type": 6
+        },
+        {
+          "id": "49:105014518389641445",
+          "name": "dtVendaAnimal",
+          "type": 9
+        },
+        {
+          "id": "50:24840064295551754",
+          "name": "valorVendaAnimal",
+          "type": 8
+        },
+        {
+          "id": "51:2413383587517312806",
+          "name": "idVendaAtual",
+          "type": 9
+        },
+        {
+          "id": "52:667459611800739990",
+          "name": "motivoDescarteAnterior",
+          "type": 9
+        },
+        {
+          "id": "53:1826315066896341712",
+          "name": "dtDescarteAnterior",
+          "type": 9
         }
       ],
       "relations": []

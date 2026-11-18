@@ -70,4 +70,60 @@ void main() {
       expect(animal.dtInducaoLactacao, inducao);
     });
   });
+
+  group('campos de baixa (venda)', () {
+    test('chave presente com null limpa o campo', () {
+      final animal = AnimalEntity(
+        tipoBaixa: 'venda',
+        valorVendaAnimal: 10,
+        idVendaAtual: 'v1',
+        statusAnterior: 'Prenha',
+      );
+
+      aplicarDadosNoAnimal(animal, {
+        'tipoBaixa': null,
+        'valorVendaAnimal': null,
+        'idVendaAtual': null,
+        'statusAnterior': null,
+      });
+
+      expect(animal.tipoBaixa, isNull);
+      expect(animal.valorVendaAnimal, isNull);
+      expect(animal.idVendaAtual, isNull);
+      expect(animal.statusAnterior, isNull);
+    });
+
+    test('update sem as chaves preserva os campos de baixa', () {
+      final animal = AnimalEntity(tipoBaixa: 'venda', valorVendaAnimal: 10);
+
+      aplicarDadosNoAnimal(animal, {'nomeAnimal': 'Mimosa'});
+
+      expect(animal.tipoBaixa, 'venda');
+      expect(animal.valorVendaAnimal, 10);
+    });
+
+    test('grava todos os campos de baixa e aceita valor inteiro', () {
+      final animal = AnimalEntity();
+
+      aplicarDadosNoAnimal(animal, {
+        'tipoBaixa': 'venda',
+        'statusAnterior': 'Descarte',
+        'idStatusAnteriorAnimal': 7,
+        'dtVendaAnimal': '18/11/2026',
+        'valorVendaAnimal': 1500,
+        'idVendaAtual': 'v1',
+        'motivoDescarteAnterior': 'Idade',
+        'dtDescarteAnterior': '01/11/2026',
+      });
+
+      expect(animal.tipoBaixa, 'venda');
+      expect(animal.statusAnterior, 'Descarte');
+      expect(animal.idStatusAnteriorAnimal, 7);
+      expect(animal.dtVendaAnimal, '18/11/2026');
+      expect(animal.valorVendaAnimal, 1500.0);
+      expect(animal.idVendaAtual, 'v1');
+      expect(animal.motivoDescarteAnterior, 'Idade');
+      expect(animal.dtDescarteAnterior, '01/11/2026');
+    });
+  });
 }
