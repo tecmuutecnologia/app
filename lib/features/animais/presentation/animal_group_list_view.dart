@@ -137,78 +137,88 @@ class AnimalGroupListView extends ConsumerWidget {
                       isDeleted: animal.isDeleted);
               final descarta = podeBaixar && onDescartar != null;
               final botaoVender = mostrarBotaoVender && vende;
-              final card = Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                child: AppCard(
-                  padding: EdgeInsets.zero,
-                  child: ListTile(
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                    leading: const CircleAvatar(
-                      backgroundColor: Color(0x1AF75E38),
-                      // Era Icons.pets — produtores e técnicos liam como pata
-                      // de cão ou gato.
-                      child: FaIcon(
-                        FontAwesomeIcons.cow,
-                        size: 18,
-                        color: Color(0xFFF75E38),
-                      ),
+              final cardInterno = AppCard(
+                padding: EdgeInsets.zero,
+                child: ListTile(
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                  leading: const CircleAvatar(
+                    backgroundColor: Color(0x1AF75E38),
+                    // Era Icons.pets — produtores e técnicos liam como pata
+                    // de cão ou gato.
+                    child: FaIcon(
+                      FontAwesomeIcons.cow,
+                      size: 18,
+                      color: Color(0xFFF75E38),
                     ),
-                    title: Text(
-                      tituloExibido,
-                      style: FlutterFlowTheme.of(context)
-                          .bodyLarge
-                          .copyWith(fontWeight: FontWeight.w600),
-                    ),
-                    subtitle: Text(
-                      [
-                        'Brinco ${animal.brincoAnimal}',
-                        if ((animal.status ?? '').isNotEmpty) animal.status!,
-                        if ((animal.racaAnimal ?? '').isNotEmpty)
-                          animal.racaAnimal!,
-                      ].join(' • '),
-                    ),
-                    trailing: _acoesDoCard(firestoreId, botaoVender),
-                    onTap: (firestoreId == null || onTapAnimal == null)
-                        ? null
-                        : () => onTapAnimal!(firestoreId),
                   ),
+                  title: Text(
+                    tituloExibido,
+                    style: FlutterFlowTheme.of(context)
+                        .bodyLarge
+                        .copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: Text(
+                    [
+                      'Brinco ${animal.brincoAnimal}',
+                      if (ehVendido(animal.status, animal.tipoBaixa))
+                        'Vendido'
+                      else if ((animal.status ?? '').isNotEmpty)
+                        animal.status!,
+                      if ((animal.racaAnimal ?? '').isNotEmpty)
+                        animal.racaAnimal!,
+                    ].join(' • '),
+                  ),
+                  trailing: _acoesDoCard(firestoreId, botaoVender),
+                  onTap: (firestoreId == null || onTapAnimal == null)
+                      ? null
+                      : () => onTapAnimal!(firestoreId),
                 ),
               );
+              const margem = EdgeInsets.symmetric(horizontal: 12, vertical: 5);
 
-              if (!vende && !descarta) return card;
+              if (!vende && !descarta) {
+                return Padding(padding: margem, child: cardInterno);
+              }
 
               // Arrasto que TRAVA aberto mostrando as acoes (como numa conversa
               // do WhatsApp). As acoes so PEDEM a venda/descarte: quem tira o
               // animal da lista e a gravacao do status no ObjectBox, que esta
               // view observa — cancelar o formulario deixa o card onde estava.
-              return Slidable(
-                key: ValueKey('baixa-$firestoreId'),
-                groupTag: 'animais',
-                endActionPane: ActionPane(
-                  motion: const ScrollMotion(),
-                  extentRatio: vende && descarta ? 0.5 : 0.25,
-                  children: [
-                    if (vende)
-                      SlidableAction(
-                        onPressed: (_) => onVender!(firestoreId),
-                        backgroundColor: AppTokens.positivo,
-                        foregroundColor: Colors.white,
-                        icon: Icons.sell_outlined,
-                        label: 'Vender',
-                      ),
-                    if (descarta)
-                      SlidableAction(
-                        onPressed: (_) => onDescartar!(firestoreId),
-                        backgroundColor: FlutterFlowTheme.of(context).error,
-                        foregroundColor: Colors.white,
-                        icon: Icons.inventory_2_outlined,
-                        label: 'Descartar',
-                      ),
-                  ],
+              // A margem fica FORA do Slidable e o recorte arredonda as acoes:
+              // assim os botoes tem a altura e os cantos do card.
+              return Padding(
+                padding: margem,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(AppTokens.radius),
+                  child: Slidable(
+                    key: ValueKey('baixa-$firestoreId'),
+                    groupTag: 'animais',
+                    endActionPane: ActionPane(
+                      motion: const ScrollMotion(),
+                      extentRatio: vende && descarta ? 0.5 : 0.25,
+                      children: [
+                        if (vende)
+                          SlidableAction(
+                            onPressed: (_) => onVender!(firestoreId),
+                            backgroundColor: AppTokens.positivo,
+                            foregroundColor: Colors.white,
+                            icon: Icons.sell_outlined,
+                            label: 'Vender',
+                          ),
+                        if (descarta)
+                          SlidableAction(
+                            onPressed: (_) => onDescartar!(firestoreId),
+                            backgroundColor: FlutterFlowTheme.of(context).error,
+                            foregroundColor: Colors.white,
+                            icon: Icons.inventory_2_outlined,
+                            label: 'Descartar',
+                          ),
+                      ],
+                    ),
+                    child: cardInterno,
+                  ),
                 ),
-                child: card,
               );
             },
           ),

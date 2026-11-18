@@ -87,7 +87,10 @@ class _VendasPorMesViewState extends State<VendasPorMesView> {
                   size: 48, color: AppTokens.secondary),
               const SizedBox(height: 12),
               Text('Nenhuma venda registrada',
-                  style: FlutterFlowTheme.of(context).titleSmall),
+                  style: FlutterFlowTheme.of(context)
+                      .titleSmall
+                      .copyWith(
+                          color: FlutterFlowTheme.of(context).primaryText)),
               const SizedBox(height: 4),
               Text(
                 'Venda um animal pela lista de animais para ver a receita aqui.',
@@ -113,7 +116,9 @@ class _VendasPorMesViewState extends State<VendasPorMesView> {
                 Expanded(
                   child: Text(grupo.rotulo,
                       style: tema.titleSmall
-                          .copyWith(fontWeight: FontWeight.w700)),
+                          .copyWith(
+                          color: tema.primaryText,
+                          fontWeight: FontWeight.w700)),
                 ),
                 Text(
                   formatarReais(grupo.total),

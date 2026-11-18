@@ -8,6 +8,7 @@ import '/core/ui/app_button.dart';
 import '/core/ui/app_card.dart';
 import '/data/objectbox/entities/index.dart';
 import '/domain/animais/baixa_animal.dart';
+import '/domain/animais/classificacao_animal.dart';
 import '/features/animais/application/baixa_animal_service.dart';
 
 /// Formulário de venda de um animal: data (hoje por padrão) e valor, os dois
@@ -63,6 +64,14 @@ class _VenderAnimalWidgetState extends State<VenderAnimalWidget> {
       initialDate: parseDataBrOuHoje(_data.text, hoje),
       firstDate: DateTime(hoje.year - 5),
       lastDate: hoje,
+      // Cores da marca: o padrão do Material é azul e destoa do app.
+      builder: (context, child) => Theme(
+        data: Theme.of(context).copyWith(
+          colorScheme:
+              Theme.of(context).colorScheme.copyWith(primary: AppTokens.brand),
+        ),
+        child: child!,
+      ),
     );
     if (escolhida != null) {
       // Atualiza a máscara junto, pelo mesmo motivo do `initialText`.
@@ -110,10 +119,15 @@ class _VenderAnimalWidgetState extends State<VenderAnimalWidget> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Vender $_titulo', style: tema.titleMedium),
+              // titleMedium do tema é branco (feito para cabeçalhos coloridos).
+              Text('Vender $_titulo',
+                  style: tema.titleMedium.copyWith(color: tema.primaryText)),
               const SizedBox(height: 4),
               Text(
-                'O animal sai do rebanho e a receita entra no Financeiro.',
+                // Um descartado já saiu do rebanho: só muda para vendido.
+                ehDescarte(widget.animal.status)
+                    ? 'O animal passa para os vendidos e a receita entra no Financeiro.'
+                    : 'O animal sai do rebanho e a receita entra no Financeiro.',
                 style: tema.bodySmall,
               ),
               const SizedBox(height: 20),
@@ -144,7 +158,7 @@ class _VenderAnimalWidgetState extends State<VenderAnimalWidget> {
                   FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
                 ],
                 decoration: const InputDecoration(
-                  labelText: 'Valor da venda',
+                  labelText: 'Valor da venda (R\$)',
                   prefixText: 'R\$ ',
                   border: OutlineInputBorder(),
                 ),

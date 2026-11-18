@@ -268,4 +268,20 @@ void main() {
       expect(find.text('Vender'), findsNothing);
     });
   });
+
+  testWidgets('animal vendido aparece como "Vendido", não "Descarte"',
+      (tester) async {
+    await pump(tester, [
+      AnimalEntity(
+          firestoreId: 'a1',
+          nomeAnimal: 'Mimosa',
+          brincoAnimal: 7,
+          status: 'Descarte',
+          tipoBaixa: 'venda',
+          grupoAnimal: 'Vacas'),
+    ]);
+
+    expect(find.textContaining('Vendido'), findsOneWidget);
+    expect(find.textContaining('Descarte'), findsNothing);
+  });
 }

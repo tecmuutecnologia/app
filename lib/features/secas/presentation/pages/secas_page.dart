@@ -382,7 +382,7 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
             selecao: _selecao,
             visiveis: itens.map(_chaveAnimal).toList(),
             resumo: '${rotuloAnimais(itens.length)} '
-                '${vendidos ? 'vendidos' : 'no descarte'}',
+                '${vendidos ? (itens.length == 1 ? 'vendido' : 'vendidos') : 'no descarte'}',
             aoMudar: safeSetState,
           ),
         if (itens.isEmpty)
@@ -402,10 +402,20 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
   Widget _seletorSubDescarte(BuildContext context) {
     Widget pilula(SubfiltroDescarte sub, String rotulo) {
       final n = _itensDaAba(AbaSecas.descarte, subfiltro: sub).length;
+      final ativo = _subDescarte == sub;
+      // Mesmo destaque das abas pílula (roxo cheio): o tom claro de antes
+      // parecia o não selecionado.
       return ChoiceChip(
         label: Text('$rotulo ($n)'),
-        selected: _subDescarte == sub,
-        selectedColor: AppTokens.brandTint,
+        selected: ativo,
+        showCheckmark: false,
+        selectedColor: AppTokens.secondary,
+        labelStyle: TextStyle(
+          color: ativo ? Colors.white : AppTokens.secondary,
+          fontWeight: FontWeight.w600,
+        ),
+        backgroundColor: AppTokens.secondaryTint,
+        side: BorderSide.none,
         onSelected: (_) => safeSetState(() {
           if (_subDescarte == sub) return;
           _subDescarte = sub;
