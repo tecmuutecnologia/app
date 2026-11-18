@@ -13,6 +13,7 @@ AnimaisProdutoresStruct animal({
   DateTime? comparar,
   DateTime? inducao,
   String parto = '',
+  String? tipoBaixa,
 }) =>
     AnimaisProdutoresStruct(
       nomeAnimal: nome,
@@ -22,6 +23,7 @@ AnimaisProdutoresStruct animal({
       compararDtUltimaInseminacao: comparar,
       dtInducaoLactacao: inducao,
       dtUltimoParto: parto,
+      tipoBaixa: tipoBaixa,
     );
 
 final sentinela = DateTime(2050, 12, 31);
@@ -149,6 +151,37 @@ void main() {
 
       expect(
           animaisDaAba(lista, aba: AbaSecas.descarte, busca: ''), hasLength(2));
+    });
+  });
+
+  group('aba Descarte: descartados | vendidos', () {
+    final antigo = animal(nome: 'Antigo', status: 'Descarte');
+    final descartado =
+        animal(nome: 'Descartado', status: 'Descarte', tipoBaixa: 'descarte');
+    final vendido =
+        animal(nome: 'Vendido', status: 'Descarte', tipoBaixa: 'venda');
+    final restauradoPorVersaoAntiga =
+        animal(nome: 'Restaurado', status: 'Vazia', tipoBaixa: 'venda');
+    final todos = [antigo, descartado, vendido, restauradoPorVersaoAntiga];
+
+    test('sem subfiltro a aba traz descartados e vendidos', () {
+      expect(nomes(animaisDaAba(todos, aba: AbaSecas.descarte)),
+          ['Antigo', 'Descartado', 'Vendido']);
+    });
+
+    test('Descartados: descarte antigo e novo, sem vendidos', () {
+      expect(
+          nomes(animaisDaAba(todos,
+              aba: AbaSecas.descarte,
+              subfiltro: SubfiltroDescarte.descartados)),
+          ['Antigo', 'Descartado']);
+    });
+
+    test('Vendidos: só status Descarte com tipoBaixa venda', () {
+      expect(
+          nomes(animaisDaAba(todos,
+              aba: AbaSecas.descarte, subfiltro: SubfiltroDescarte.vendidos)),
+          ['Vendido']);
     });
   });
 }

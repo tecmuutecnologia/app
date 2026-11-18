@@ -50,4 +50,8 @@ void main() {
       expect(parseDataBr('5/3/26'), isNull);
     });
   });
+
+  test('formatarReais no padrão brasileiro', () {
+    expect(formatarReais(1234.56), 'R\$\u00a01.234,56');
+  });
 }

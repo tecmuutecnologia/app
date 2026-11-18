@@ -32,6 +32,10 @@ class GrupoVendasMes {
   final List<VendaResumo> vendas;
 }
 
+/// Valor em reais no padrão brasileiro: `R$ 1.234,56`.
+String formatarReais(double valor) =>
+    NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$').format(valor);
+
 /// `dd/MM/yyyy` estrito: rejeita dia/mês inexistente (31/02) em vez de
 /// rolar para o mês seguinte como o `DateTime` faria.
 DateTime? parseDataBr(String? texto) {
