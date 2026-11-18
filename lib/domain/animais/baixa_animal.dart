@@ -1,3 +1,5 @@
+import '../../data/objectbox/entities/animal_entity.dart';
+import '../financeiro/vendas_por_mes.dart' show parseDataBr;
 import 'classificacao_animal.dart';
 
 /// Baixa do animal: ele sai do rebanho por DESCARTE ou por VENDA.
@@ -33,3 +35,134 @@ bool podeVender({
   required bool isDeleted,
 }) =>
     !isDeleted && !ehSemens(grupo) && !ehVendido(status, tipoBaixa);
+
+// ---------------------------------------------------------------------------
+// Mapas de atualização do animal (aplicados por `AnimalRepository.update`).
+// Funções puras para que as regras de venda/descarte/desfazer fiquem testáveis
+// sem banco.
+// ---------------------------------------------------------------------------
+
+/// Campos de baixa. Ao desfazer, todos vão no mapa com `null` para que o
+/// ObjectBox e o Firestore os APAGUEM (o update comum ignora nulos).
+const List<String> kCamposBaixa = [
+  'tipoBaixa',
+  'statusAnterior',
+  'idStatusAnteriorAnimal',
+  'dtVendaAnimal',
+  'valorVendaAnimal',
+  'idVendaAtual',
+  'motivoDescarteAnterior',
+  'dtDescarteAnterior',
+];
+
+Map<String, dynamic> _limpos() => {for (final k in kCamposBaixa) k: null};
+
+/// `true` se a venda deste animal foi feita a partir dos Descartados — então
+/// desfazê-la o devolve aos Descartados, não ao rebanho.
+bool vendaVeioDeDescarte(AnimalEntity a) =>
+    a.motivoDescarteAnterior != null || a.dtDescarteAnterior != null;
+
+/// Venda. Se o animal já estava descartado, guarda o descarte (motivo/data) em
+/// `*DescarteAnterior` — com `''` quando o descarte antigo não tinha o dado,
+/// pois é a presença desses campos que marca a origem — e mantém o
+/// `statusAnterior` de antes do descarte.
+Map<String, dynamic> dadosVenda({
+  required AnimalEntity animal,
+  required String dtVenda,
+  required double valor,
+  required String idVenda,
+}) {
+  final eraDescartado = ehDescarte(animal.status);
+  return {
+    ..._limpos(),
+    'status': kStatusDescarte,
+    'tipoBaixa': kTipoBaixaVenda,
+    'motivoDescarteAnimal': kMotivoVenda,
+    'dtDescarteAnimal': dtVenda,
+    'dtVendaAnimal': dtVenda,
+    'valorVendaAnimal': valor,
+    'idVendaAtual': idVenda,
+    'statusAnterior': eraDescartado ? animal.statusAnterior : animal.status,
+    'idStatusAnteriorAnimal':
+        eraDescartado ? animal.idStatusAnteriorAnimal : animal.idStatusAnimal,
+    if (eraDescartado) ...{
+      'motivoDescarteAnterior': animal.motivoDescarteAnimal ?? '',
+      'dtDescarteAnterior': animal.dtDescarteAnimal ?? '',
+    },
+  };
+}
+
+/// Descarte, guardando o status de antes para o "desfazer".
+Map<String, dynamic> dadosDescarte({
+  required AnimalEntity animal,
+  required String dt,
+  required String? motivo,
+}) =>
+    {
+      ..._limpos(),
+      'status': kStatusDescarte,
+      'tipoBaixa': kTipoBaixaDescarte,
+      'dtDescarteAnimal': dt,
+      'motivoDescarteAnimal': motivo,
+      'statusAnterior': animal.status,
+      'idStatusAnteriorAnimal': animal.idStatusAnimal,
+    };
+
+/// Desfaz a venda: volta aos Descartados (se veio de lá) ou ao status anterior.
+Map<String, dynamic> dadosDesfazerVenda(AnimalEntity animal) {
+  if (vendaVeioDeDescarte(animal)) {
+    return {
+      ..._limpos(),
+      'status': kStatusDescarte,
+      'tipoBaixa': kTipoBaixaDescarte,
+      'motivoDescarteAnimal': animal.motivoDescarteAnterior,
+      'dtDescarteAnimal': animal.dtDescarteAnterior,
+      'statusAnterior': animal.statusAnterior,
+      'idStatusAnteriorAnimal': animal.idStatusAnteriorAnimal,
+    };
+  }
+  return _voltaAoRebanho(animal);
+}
+
+/// Desfaz o descarte. Descartes antigos, sem status anterior, voltam como
+/// 'Vazia' (comportamento de sempre do "Restaurar").
+Map<String, dynamic> dadosDesfazerDescarte(AnimalEntity animal) =>
+    _voltaAoRebanho(animal);
+
+Map<String, dynamic> _voltaAoRebanho(AnimalEntity animal) => {
+      ..._limpos(),
+      'status': animal.statusAnterior ?? 'Vazia',
+      'idStatusAnimal': animal.idStatusAnteriorAnimal ?? 2,
+    };
+
+/// Desfazer a venda devolve o animal ao rebanho (volta a ocupar vaga), a não
+/// ser que ela tenha vindo dos Descartados.
+bool desfazerVendaMexeEmVaga(AnimalEntity a) => !vendaVeioDeDescarte(a);
+
+// ---------------------------------------------------------------------------
+// Formulário de venda
+// ---------------------------------------------------------------------------
+
+/// Valor digitado em reais ('1.234,56', 'R$ 10,00', '1500'). `null` se vazio,
+/// inválido ou não positivo.
+double? parseValorReais(String texto) {
+  final limpo = texto
+      .replaceAll('R\$', '')
+      .replaceAll(' ', '')
+      .replaceAll('.', '')
+      .replaceAll(',', '.')
+      .trim();
+  final v = double.tryParse(limpo);
+  if (v == null || v <= 0 || v.isNaN || v.isInfinite) return null;
+  return v;
+}
+
+/// Mensagem de erro da data da venda, ou `null` se válida.
+String? validarDataVenda(String texto, {required DateTime hoje}) {
+  final data = parseDataBr(texto);
+  if (data == null) return 'Informe uma data válida';
+  if (data.isAfter(DateTime(hoje.year, hoje.month, hoje.day))) {
+    return 'A data da venda não pode ser no futuro';
+  }
+  return null;
+}
