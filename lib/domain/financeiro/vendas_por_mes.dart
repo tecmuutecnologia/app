@@ -39,7 +39,8 @@ String formatarReais(double valor) =>
 /// `dd/MM/yyyy` estrito: rejeita dia/mês inexistente (31/02) em vez de
 /// rolar para o mês seguinte como o `DateTime` faria.
 DateTime? parseDataBr(String? texto) {
-  final m = RegExp(r'^(\d{2})/(\d{2})/(\d{4})$').firstMatch((texto ?? '').trim());
+  final m =
+      RegExp(r'^(\d{2})/(\d{2})/(\d{4})$').firstMatch((texto ?? '').trim());
   if (m == null) return null;
   final d = int.parse(m[1]!), mes = int.parse(m[2]!), a = int.parse(m[3]!);
   final data = DateTime(a, mes, d);
@@ -60,8 +61,8 @@ List<GrupoVendasMes> agruparVendasPorMes(List<VendaResumo> vendas) {
 
   GrupoVendasMes grupo(DateTime? mes) {
     final lista = porMes[mes]!
-      ..sort((a, b) =>
-          (b.data ?? DateTime(0)).compareTo(a.data ?? DateTime(0)));
+      ..sort(
+          (a, b) => (b.data ?? DateTime(0)).compareTo(a.data ?? DateTime(0)));
     return GrupoVendasMes(
       mes: mes,
       rotulo: mes == null ? 'Sem data' : _rotuloMes(mes),
@@ -76,7 +77,9 @@ List<GrupoVendasMes> agruparVendasPorMes(List<VendaResumo> vendas) {
   ];
 }
 
+/// `'pt'` (e não `'pt_BR'`): é o locale que o app carrega (`supportedLocales`)
+/// e o `GlobalMaterialLocalizations` inicializa.
 String _rotuloMes(DateTime mes) {
-  final t = DateFormat('MMMM yyyy', 'pt_BR').format(mes);
+  final t = DateFormat('MMMM yyyy', 'pt').format(mes);
   return t[0].toUpperCase() + t.substring(1);
 }

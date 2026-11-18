@@ -1,6 +1,7 @@
 import '/domain/financeiro/data_relatorio.dart';
 import '/data/backend.dart';
 import '/data/objectbox/index.dart';
+import '/core/ui/abas_pilula.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/cabecalho_tela.dart';
 import '/core/ui/card_animal_lista.dart';
@@ -10,6 +11,7 @@ import '/core/ui/flutter_flow_util.dart';
 import '/core/ui/flutter_flow_widgets.dart';
 import '/features/financeiro/presentation/pages/editar_relatorio_financeiro_page.dart';
 import '/features/financeiro/presentation/pages/novo_relatorio_financeiro_page.dart';
+import '/features/financeiro/presentation/widgets/vendas_por_mes_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -39,8 +41,14 @@ class RelatorioFinanceiroPage extends StatefulWidget {
       _RelatorioFinanceiroPageState();
 }
 
-class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage> {
+class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage>
+    with SingleTickerProviderStateMixin {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  /// Abas "Relatórios" (mensais, preenchidos à mão) e "Vendas" (receita das
+  /// vendas de animais). O botão de novo relatório só vale na primeira.
+  late final TabController _abas = TabController(length: 2, vsync: this)
+    ..addListener(() => safeSetState(() {}));
 
   @override
   void initState() {
@@ -51,6 +59,7 @@ class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage> {
 
   @override
   void dispose() {
+    _abas.dispose();
     super.dispose();
   }
 
@@ -292,27 +301,48 @@ class _RelatorioFinanceiroPageState extends State<RelatorioFinanceiroPage> {
       key: scaffoldKey,
       backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
       appBar: const CabecalhoTela(titulo: 'Relatório financeiro'),
-      bottomNavigationBar: _rodapeNovo(context),
-      // Fonte única ObjectBox (offline-first): a lista vem do banco local e o
-      // Firestore serve só para sincronizar.
-      body: StreamBuilder<List<FinanceiroEntity>>(
-        stream: FinanceiroRepository()
-            .watchByParentPath(widget.uidPropriedade!.path),
-        builder: (context, snapshot) {
-          final relatorios = (snapshot.data ?? <FinanceiroEntity>[])
-              .where((e) => !e.isDeleted)
-              .toList()
-            // Mais recente primeiro, pela data de verdade.
-            ..sort((a, b) => (_data(b.dtRelatorio) ?? DateTime(0))
-                .compareTo(_data(a.dtRelatorio) ?? DateTime(0)));
-          if (relatorios.isEmpty) return _vazio(context);
-          return ListView.builder(
-            padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
-            itemCount: relatorios.length,
-            itemBuilder: (context, i) => _cardRelatorio(context, relatorios[i]),
-          );
-        },
+      bottomNavigationBar: _abas.index == 0 ? _rodapeNovo(context) : null,
+      body: Column(
+        children: [
+          AbasPilula(
+            controller: _abas,
+            abas: const [AbaPilula('Relatórios'), AbaPilula('Vendas')],
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: _abas,
+              children: [
+                _listaRelatorios(context),
+                VendasPorMesView(
+                    propriedadePath: widget.uidPropriedade?.path ?? ''),
+              ],
+            ),
+          ),
+        ],
       ),
+    );
+  }
+
+  /// Fonte única ObjectBox (offline-first): a lista vem do banco local e o
+  /// Firestore serve só para sincronizar.
+  Widget _listaRelatorios(BuildContext context) {
+    return StreamBuilder<List<FinanceiroEntity>>(
+      stream:
+          FinanceiroRepository().watchByParentPath(widget.uidPropriedade!.path),
+      builder: (context, snapshot) {
+        final relatorios = (snapshot.data ?? <FinanceiroEntity>[])
+            .where((e) => !e.isDeleted)
+            .toList()
+          // Mais recente primeiro, pela data de verdade.
+          ..sort((a, b) => (_data(b.dtRelatorio) ?? DateTime(0))
+              .compareTo(_data(a.dtRelatorio) ?? DateTime(0)));
+        if (relatorios.isEmpty) return _vazio(context);
+        return ListView.builder(
+          padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
+          itemCount: relatorios.length,
+          itemBuilder: (context, i) => _cardRelatorio(context, relatorios[i]),
+        );
+      },
     );
   }
 }
