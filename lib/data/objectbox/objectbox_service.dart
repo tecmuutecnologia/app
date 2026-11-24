@@ -31,6 +31,9 @@ class ObjectBoxService {
   // Box para financeiro
   late final Box<FinanceiroEntity> financeiroBox;
 
+  // Box para vendas de animais (receita da aba Vendas do financeiro)
+  late final Box<VendaAnimalEntity> vendaAnimalBox;
+
   // Boxes para tabelas de referência
   late final Box<GrupoEntity> grupoBox;
   late final Box<RacaEntity> racaBox;
@@ -92,6 +95,7 @@ class ObjectBoxService {
 
     // Box para financeiro
     _instance!.financeiroBox = _store!.box<FinanceiroEntity>();
+    _instance!.vendaAnimalBox = _store!.box<VendaAnimalEntity>();
 
     // Boxes para tabelas de referência
     _instance!.grupoBox = _store!.box<GrupoEntity>();
@@ -147,6 +151,7 @@ class ObjectBoxService {
 
     // Financeiro
     financeiroBox.removeAll();
+    vendaAnimalBox.removeAll();
 
     // Tabelas de referência
     grupoBox.removeAll();
@@ -178,6 +183,7 @@ class ObjectBoxService {
           _pendentes(tratamentoBox, TratamentoEntity_.needsSync),
           _pendentes(acaoSanitarioBox, AcaoSanitarioEntity_.needsSync),
           _pendentes(financeiroBox, FinanceiroEntity_.needsSync),
+          _pendentes(vendaAnimalBox, VendaAnimalEntity_.needsSync),
         ],
       );
 

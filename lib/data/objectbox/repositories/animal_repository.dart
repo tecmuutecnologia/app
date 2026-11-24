@@ -74,6 +74,32 @@ void aplicarDadosNoAnimal(AnimalEntity entity, Map<String, dynamic> data) {
   entity.dtDescarteAnimal = data['dtDescarteAnimal'] ?? entity.dtDescarteAnimal;
   entity.motivoDescarteAnimal =
       data['motivoDescarteAnimal'] ?? entity.motivoDescarteAnimal;
+
+  // Campos de baixa: ao contrário dos de cima, chave presente com null LIMPA
+  // — o "desfazer venda/descarte" depende disso.
+  if (data.containsKey('tipoBaixa')) entity.tipoBaixa = data['tipoBaixa'];
+  if (data.containsKey('statusAnterior')) {
+    entity.statusAnterior = data['statusAnterior'];
+  }
+  if (data.containsKey('idStatusAnteriorAnimal')) {
+    entity.idStatusAnteriorAnimal =
+        (data['idStatusAnteriorAnimal'] as num?)?.toInt();
+  }
+  if (data.containsKey('dtVendaAnimal')) {
+    entity.dtVendaAnimal = data['dtVendaAnimal'];
+  }
+  if (data.containsKey('valorVendaAnimal')) {
+    entity.valorVendaAnimal = (data['valorVendaAnimal'] as num?)?.toDouble();
+  }
+  if (data.containsKey('idVendaAtual')) {
+    entity.idVendaAtual = data['idVendaAtual'];
+  }
+  if (data.containsKey('motivoDescarteAnterior')) {
+    entity.motivoDescarteAnterior = data['motivoDescarteAnterior'];
+  }
+  if (data.containsKey('dtDescarteAnterior')) {
+    entity.dtDescarteAnterior = data['dtDescarteAnterior'];
+  }
 }
 
 class AnimalRepository extends BaseSyncRepository<AnimalEntity> {

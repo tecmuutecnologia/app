@@ -67,6 +67,20 @@ class AnimalEntity implements SyncableEntity {
   int brincoAnimal;
   int brincoAnimalOrder;
 
+  /// Baixa do animal (ver `lib/domain/animais/baixa_animal.dart`). A venda
+  /// grava `status = 'Descarte'` + `tipoBaixa = 'venda'`; descartes antigos
+  /// não têm `tipoBaixa`. `statusAnterior`/`idStatusAnteriorAnimal` guardam o
+  /// estado de antes da baixa para o "desfazer"; `motivoDescarteAnterior`/
+  /// `dtDescarteAnterior` guardam o descarte de um descartado que foi vendido.
+  String? tipoBaixa;
+  String? statusAnterior;
+  int? idStatusAnteriorAnimal;
+  String? dtVendaAnimal;
+  double? valorVendaAnimal;
+  String? idVendaAtual;
+  String? motivoDescarteAnterior;
+  String? dtDescarteAnterior;
+
   @Property(type: PropertyType.date)
   DateTime? compararDtUltimaInseminacao;
 
@@ -128,6 +142,14 @@ class AnimalEntity implements SyncableEntity {
     this.idStatusAnimal = 0,
     this.brincoAnimal = 0,
     this.brincoAnimalOrder = 0,
+    this.tipoBaixa,
+    this.statusAnterior,
+    this.idStatusAnteriorAnimal,
+    this.dtVendaAnimal,
+    this.valorVendaAnimal,
+    this.idVendaAtual,
+    this.motivoDescarteAnterior,
+    this.dtDescarteAnterior,
     this.compararDtUltimaInseminacao,
     this.dtInducaoLactacao,
     this.dtDesmame,
@@ -179,6 +201,15 @@ class AnimalEntity implements SyncableEntity {
       idStatusAnimal: (data['idStatusAnimal'] as num?)?.toInt() ?? 0,
       brincoAnimal: (data['brincoAnimal'] as num?)?.toInt() ?? 0,
       brincoAnimalOrder: (data['brincoAnimalOrder'] as num?)?.toInt() ?? 0,
+      tipoBaixa: data['tipoBaixa'] as String?,
+      statusAnterior: data['statusAnterior'] as String?,
+      idStatusAnteriorAnimal:
+          (data['idStatusAnteriorAnimal'] as num?)?.toInt(),
+      dtVendaAnimal: data['dtVendaAnimal'] as String?,
+      valorVendaAnimal: (data['valorVendaAnimal'] as num?)?.toDouble(),
+      idVendaAtual: data['idVendaAtual'] as String?,
+      motivoDescarteAnterior: data['motivoDescarteAnterior'] as String?,
+      dtDescarteAnterior: data['dtDescarteAnterior'] as String?,
       compararDtUltimaInseminacao: data['compararDtUltimaInseminacao'] != null
           ? (data['compararDtUltimaInseminacao'] as dynamic).toDate()
           : null,
@@ -231,6 +262,16 @@ class AnimalEntity implements SyncableEntity {
       'idStatusAnimal': idStatusAnimal,
       'brincoAnimal': brincoAnimal,
       'brincoAnimalOrder': brincoAnimalOrder,
+      // Sempre presentes, mesmo nulos: o "desfazer" precisa APAGAR estes
+      // campos no Firestore (o envio é merge).
+      'tipoBaixa': tipoBaixa,
+      'statusAnterior': statusAnterior,
+      'idStatusAnteriorAnimal': idStatusAnteriorAnimal,
+      'dtVendaAnimal': dtVendaAnimal,
+      'valorVendaAnimal': valorVendaAnimal,
+      'idVendaAtual': idVendaAtual,
+      'motivoDescarteAnterior': motivoDescarteAnterior,
+      'dtDescarteAnterior': dtDescarteAnterior,
       'compararDtUltimaInseminacao': compararDtUltimaInseminacao,
       'dtInducaoLactacao': dtInducaoLactacao,
       'dtDesmame': dtDesmame,
@@ -282,6 +323,31 @@ class AnimalEntity implements SyncableEntity {
     brincoAnimal = (data['brincoAnimal'] as num?)?.toInt() ?? brincoAnimal;
     brincoAnimalOrder =
         (data['brincoAnimalOrder'] as num?)?.toInt() ?? brincoAnimalOrder;
+    // Campos de baixa: chave presente manda, inclusive nula — é assim que um
+    // "desfazer venda" feito em outro aparelho limpa a venda aqui.
+    if (data.containsKey('tipoBaixa')) tipoBaixa = data['tipoBaixa'] as String?;
+    if (data.containsKey('statusAnterior')) {
+      statusAnterior = data['statusAnterior'] as String?;
+    }
+    if (data.containsKey('idStatusAnteriorAnimal')) {
+      idStatusAnteriorAnimal =
+          (data['idStatusAnteriorAnimal'] as num?)?.toInt();
+    }
+    if (data.containsKey('dtVendaAnimal')) {
+      dtVendaAnimal = data['dtVendaAnimal'] as String?;
+    }
+    if (data.containsKey('valorVendaAnimal')) {
+      valorVendaAnimal = (data['valorVendaAnimal'] as num?)?.toDouble();
+    }
+    if (data.containsKey('idVendaAtual')) {
+      idVendaAtual = data['idVendaAtual'] as String?;
+    }
+    if (data.containsKey('motivoDescarteAnterior')) {
+      motivoDescarteAnterior = data['motivoDescarteAnterior'] as String?;
+    }
+    if (data.containsKey('dtDescarteAnterior')) {
+      dtDescarteAnterior = data['dtDescarteAnterior'] as String?;
+    }
     if (data['compararDtUltimaInseminacao'] != null) {
       compararDtUltimaInseminacao =
           (data['compararDtUltimaInseminacao'] as dynamic).toDate();

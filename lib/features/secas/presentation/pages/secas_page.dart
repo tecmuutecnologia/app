@@ -15,6 +15,10 @@ import '/core/ui/card_animal_lista.dart';
 import '/features/animais/application/animal_struct_adapter.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/domain/plano/vagas.dart';
+import '/domain/animais/baixa_animal.dart';
+import '/domain/financeiro/vendas_por_mes.dart' show formatarReais;
+import '/features/animais/application/baixa_animal_service.dart';
+import '/features/animais/presentation/abrir_baixa.dart';
 import '/features/plano/presentation/aviso_limite_plano.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/flutter_flow_util.dart';
@@ -67,6 +71,11 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
 
   /// Marcação de vários animais na aba "Descarte".
   final _selecao = SelecaoAnimais();
+
+  /// Separação interna da aba "Descarte". A seleção em lote vale só para o
+  /// filtro aberto: trocar de filtro desmarca tudo, para um lote nunca
+  /// misturar descartados e vendidos.
+  SubfiltroDescarte _subDescarte = SubfiltroDescarte.descartados;
 
   /// Lista de animais existentes (fonte ObjectBox). Antes em
   /// FFAppState.animaisProdutoresExistentes; agora estado local desta tela.
@@ -145,12 +154,14 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
   }
 
   /// Animais de uma aba, já com a busca e a ordem escolhida.
-  List<AnimaisProdutoresStruct> _itensDaAba(AbaSecas aba) {
+  List<AnimaisProdutoresStruct> _itensDaAba(AbaSecas aba,
+      {SubfiltroDescarte? subfiltro}) {
     return ordenarStructs(
       animaisDaAba(
         _animaisExistentes,
         aba: aba,
         busca: _searchListTextController?.text ?? '',
+        subfiltro: subfiltro,
       ),
       ordem: _ordem,
       crescente: _crescente,
@@ -188,9 +199,9 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
         // `getAll()` devolve ordem de insercao do ObjectBox, que espelha a
         // ordem de documentId do Firestore — nem numerica, nem alfabetica.
         ..sort(compararStructs);
-      _selecao.manterApenas(
-          animaisDaAba(_animaisExistentes, aba: AbaSecas.descarte)
-              .map(_chaveAnimal));
+      _selecao.manterApenas(animaisDaAba(_animaisExistentes,
+              aba: AbaSecas.descarte, subfiltro: _subDescarte)
+          .map(_chaveAnimal));
     }
   }
 
@@ -336,11 +347,19 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
         botoes: selecionando
             ? MarcadorSelecao(marcado: marcado, aoAlternar: alternar)
             : _part2(context, item),
-        info: [
-          _tileInfo(context, 'Data do descarte', item.dtDescarteAnimal),
-          _tileInfo(context, 'Motivo', item.motivoDescarteAnimal,
-              ehData: false),
-        ],
+        info: ehVendido(item.status, item.tipoBaixa)
+            ? [
+                _tileInfo(context, 'Data da venda',
+                    item.dtVendaAnimal ?? item.dtDescarteAnimal),
+                _tileInfo(context, 'Valor',
+                    formatarReais(item.valorVendaAnimal ?? 0),
+                    ehData: false, destaque: true),
+              ]
+            : [
+                _tileInfo(context, 'Data do descarte', item.dtDescarteAnimal),
+                _tileInfo(context, 'Motivo', item.motivoDescarteAnimal,
+                    ehData: false),
+              ],
       ),
       aoTocar: selecionando ? alternar : null,
       aoSegurar: selecionando
@@ -353,19 +372,67 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
   /// Aba "Descarte": barra de seleção no topo, lista e, com algum animal
   /// marcado, o rodapé com as ações em lote.
   Widget _abaDescarte(BuildContext context) {
-    final itens = _itensDaAba(AbaSecas.descarte);
+    final itens = _itensDaAba(AbaSecas.descarte, subfiltro: _subDescarte);
+    final vendidos = _subDescarte == SubfiltroDescarte.vendidos;
     return Column(
       children: [
+        _seletorSubDescarte(context),
         if (itens.isNotEmpty)
           BarraSelecao(
             selecao: _selecao,
             visiveis: itens.map(_chaveAnimal).toList(),
-            resumo: '${rotuloAnimais(itens.length)} no descarte',
+            resumo: '${rotuloAnimais(itens.length)} '
+                '${vendidos ? (itens.length == 1 ? 'vendido' : 'vendidos') : 'no descarte'}',
             aoMudar: safeSetState,
+          ),
+        if (itens.isEmpty)
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Text(vendidos
+                ? 'Nenhum animal vendido.'
+                : 'Nenhum animal descartado.'),
           ),
         Expanded(child: _listaCards(itens, _buildCard4)),
         if (_selecao.quantidade > 0) _rodapeSelecao(context),
       ],
+    );
+  }
+
+  /// Pílulas "Descartados | Vendidos" no topo da aba Descarte.
+  Widget _seletorSubDescarte(BuildContext context) {
+    Widget pilula(SubfiltroDescarte sub, String rotulo) {
+      final n = _itensDaAba(AbaSecas.descarte, subfiltro: sub).length;
+      final ativo = _subDescarte == sub;
+      // Mesmo destaque das abas pílula (roxo cheio): o tom claro de antes
+      // parecia o não selecionado.
+      return ChoiceChip(
+        label: Text('$rotulo ($n)'),
+        selected: ativo,
+        showCheckmark: false,
+        selectedColor: AppTokens.secondary,
+        labelStyle: TextStyle(
+          color: ativo ? Colors.white : AppTokens.secondary,
+          fontWeight: FontWeight.w600,
+        ),
+        backgroundColor: AppTokens.secondaryTint,
+        side: BorderSide.none,
+        onSelected: (_) => safeSetState(() {
+          if (_subDescarte == sub) return;
+          _subDescarte = sub;
+          _selecao.sair();
+        }),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      child: Row(
+        children: [
+          pilula(SubfiltroDescarte.descartados, 'Descartados'),
+          const SizedBox(width: 8),
+          pilula(SubfiltroDescarte.vendidos, 'Vendidos'),
+        ],
+      ),
     );
   }
 
@@ -391,8 +458,12 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
           children: [
             Expanded(
               child: FFButtonWidget(
-                onPressed: _restaurarSelecionados,
-                text: 'Restaurar',
+                onPressed: _subDescarte == SubfiltroDescarte.vendidos
+                    ? _desfazerVendasSelecionadas
+                    : _restaurarSelecionados,
+                text: _subDescarte == SubfiltroDescarte.vendidos
+                    ? 'Desfazer venda'
+                    : 'Desfazer descarte',
                 icon: Icon(Icons.restore, size: 15.0),
                 options: _opcoesBotao(context, AppTokens.brand),
               ),
@@ -414,10 +485,12 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
 
   /// Os marcados que ainda estão no descarte, inclusive os escondidos pela
   /// busca: a contagem do rodapé é a seleção inteira.
-  List<AnimaisProdutoresStruct> _selecionados() =>
-      animaisDaAba(_animaisExistentes, aba: AbaSecas.descarte)
-          .where((a) => _selecao.contem(_chaveAnimal(a)))
-          .toList();
+  List<AnimaisProdutoresStruct> _selecionados() => animaisDaAba(
+          _animaisExistentes,
+          aba: AbaSecas.descarte,
+          subfiltro: _subDescarte)
+      .where((a) => _selecao.contem(_chaveAnimal(a)))
+      .toList();
 
   Future<void> _eliminarSelecionados() async {
     final alvos = _selecionados();
@@ -428,7 +501,8 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
       titulo: n == 1 ? 'Eliminar o animal?' : 'Eliminar $n animais?',
       mensagem: '${rotuloAnimais(n)} '
           '${n == 1 ? 'será eliminado' : 'serão eliminados'}. '
-          'Essa ação é irreversível.',
+          'Essa ação é irreversível.'
+          '${_subDescarte == SubfiltroDescarte.vendidos ? ' As vendas continuam no Financeiro.' : ''}',
       textoConfirmar: 'Eliminar',
       perigosa: true,
     );
@@ -464,22 +538,55 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
     if (!mounted) return;
     final confirmou = await confirmarAcao(
       context,
-      titulo: n == 1 ? 'Restaurar o animal?' : 'Restaurar $n animais?',
+      titulo: n == 1 ? 'Desfazer o descarte?' : 'Desfazer $n descartes?',
       mensagem: n == 1
-          ? 'Ele voltará para a lista do rebanho com o status vazia.'
-          : 'Eles voltarão para a lista do rebanho com o status vazia.',
-      textoConfirmar: 'Restaurar',
+          ? 'Ele voltará para a lista do rebanho com o status que tinha antes.'
+          : 'Eles voltarão para a lista do rebanho com o status que tinham antes.',
+      textoConfirmar: 'Desfazer',
     );
     if (!confirmou) return;
+    // O serviço volta ao status anterior e debita a vaga de cada um.
+    final baixa = BaixaAnimalService();
     for (final entidade in entidades) {
-      await repo.update(entidade, {'status': 'Vazia', 'idStatusAnimal': 2});
-    }
-    if (tecnicoId != null) {
-      TecnicoRepository()
-          .debitarCotaAnimais(tecnicoId, quantidade: liberados.length);
+      await baixa.desfazerDescarte(entidade);
     }
     _concluirLote('${rotuloAnimais(n)} '
-        '${n == 1 ? 'restaurado' : 'restaurados'}');
+        '${n == 1 ? 'devolvido' : 'devolvidos'} ao rebanho');
+  }
+
+  /// Desfaz as vendas marcadas: a receita sai do Financeiro. Quem foi vendido
+  /// a partir do rebanho volta a ocupar vaga — ou cabem todos, ou nenhum.
+  Future<void> _desfazerVendasSelecionadas() async {
+    final alvos = _selecionados();
+    if (alvos.isEmpty) return;
+    final n = alvos.length;
+    final repo = AnimalRepository();
+    final entidades = [
+      for (final item in alvos) _entidade(repo, item),
+    ].whereType<AnimalEntity>().toList();
+    final voltam = entidades.where(desfazerVendaMexeEmVaga).toList();
+    if (voltam.isNotEmpty &&
+        !await garantirVagasAnimais(context,
+            tecnicoFirestoreId: tecnicoIdDoPath(voltam.first.parentPath),
+            quantidade: voltam.length)) {
+      return;
+    }
+    if (!mounted) return;
+    final confirmou = await confirmarAcao(
+      context,
+      titulo: n == 1 ? 'Desfazer a venda?' : 'Desfazer $n vendas?',
+      mensagem: n == 1
+          ? 'A receita desta venda sairá do Financeiro.'
+          : 'A receita destas vendas sairá do Financeiro.',
+      textoConfirmar: 'Desfazer',
+      perigosa: true,
+    );
+    if (!confirmou) return;
+    final baixa = BaixaAnimalService();
+    for (final entidade in entidades) {
+      await baixa.desfazerVenda(entidade);
+    }
+    _concluirLote(n == 1 ? 'Venda desfeita' : '$n vendas desfeitas');
   }
 
   void _concluirLote(String aviso) {
@@ -615,12 +722,16 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
   /// `Navigator.pop(context)` a mais fechava a tela e ele voltava ao menu a
   /// cada vaca.
   Widget _part2(BuildContext context, AnimaisProdutoresStruct item) {
+    final vendido = ehVendido(item.status, item.tipoBaixa);
+    // Vender aparece para descartados; sêmen nunca é vendido.
+    final vende = !vendido && !ehSemens(item.grupoAnimal);
     return Row(
       children: [
         Expanded(
           child: FFButtonWidget(
-            onPressed: () => _restaurar(item),
-            text: 'Restaurar',
+            onPressed: () =>
+                vendido ? _desfazerVenda(item) : _restaurar(item),
+            text: vendido ? 'Desfazer venda' : 'Desfazer',
             icon: Icon(
               Icons.restore,
               size: 15.0,
@@ -628,6 +739,20 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
             options: _opcoesBotao(context, AppTokens.brand),
           ),
         ),
+        if (vende) ...[
+          const SizedBox(width: 8.0),
+          Expanded(
+            child: FFButtonWidget(
+              onPressed: () => _vender(item),
+              text: 'Vender',
+              icon: Icon(
+                Icons.sell_outlined,
+                size: 15.0,
+              ),
+              options: _opcoesBotao(context, AppTokens.positivo),
+            ),
+          ),
+        ],
         const SizedBox(width: 8.0),
         Expanded(
           child: FFButtonWidget(
@@ -658,30 +783,63 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
   /// Descartado (e não excluído): hoje não ocupa vaga, restaurado passa a ocupar.
   bool _liberaVaga(AnimalEntity a) => !a.isDeleted && ehDescarte(a.status);
 
-  /// Devolve o animal ao rebanho com status 'Vazia' (offline-first: grava no
-  /// ObjectBox e o repositório sincroniza).
+  /// Desfaz o descarte: o animal volta ao rebanho com o status de antes do
+  /// descarte ('Vazia' nos descartes antigos). Offline-first via serviço.
   Future<void> _restaurar(AnimaisProdutoresStruct item) async {
     final repo = AnimalRepository();
     final entidade = _entidade(repo, item);
-    final liberaVaga = entidade != null && _liberaVaga(entidade);
-    final tecnicoId = liberaVaga ? tecnicoIdDoPath(entidade.parentPath) : null;
-    // Restaurado, o descartado volta a ocupar vaga do plano.
-    if (liberaVaga &&
+    if (entidade == null) return;
+    final tecnicoId = tecnicoIdDoPath(entidade.parentPath);
+    // Devolvido ao rebanho, o descartado volta a ocupar vaga do plano.
+    if (_liberaVaga(entidade) &&
         !await garantirVagaAnimal(context, tecnicoFirestoreId: tecnicoId)) {
       return;
     }
     if (!mounted) return;
     final confirmou = await confirmarAcao(
       context,
-      titulo: 'Restaurar o animal?',
-      mensagem: 'Ele voltará para a lista do rebanho com o status vazia.',
-      textoConfirmar: 'Restaurar',
+      titulo: 'Desfazer o descarte?',
+      mensagem: 'Ele voltará para a lista do rebanho com o status '
+          '${(entidade.statusAnterior ?? 'Vazia').toLowerCase()}.',
+      textoConfirmar: 'Desfazer',
     );
     if (!confirmou) return;
-    if (entidade != null) {
-      await repo.update(entidade, {'status': 'Vazia', 'idStatusAnimal': 2});
-      if (tecnicoId != null) TecnicoRepository().debitarCotaAnimais(tecnicoId);
+    await BaixaAnimalService().desfazerDescarte(entidade);
+    _recarregarAnimais();
+    safeSetState(() {});
+  }
+
+  /// Desfaz a venda: a receita sai do Financeiro e o animal volta ao rebanho
+  /// (ou aos Descartados, se foi vendido de lá).
+  Future<void> _desfazerVenda(AnimaisProdutoresStruct item) async {
+    final entidade = _entidade(AnimalRepository(), item);
+    if (entidade == null) return;
+    final voltaAoRebanho = desfazerVendaMexeEmVaga(entidade);
+    if (voltaAoRebanho &&
+        !await garantirVagaAnimal(context,
+            tecnicoFirestoreId: tecnicoIdDoPath(entidade.parentPath))) {
+      return;
     }
+    if (!mounted) return;
+    final confirmou = await confirmarAcao(
+      context,
+      titulo: 'Desfazer a venda?',
+      mensagem: 'A receita desta venda sairá do Financeiro. '
+          '${voltaAoRebanho ? 'O animal volta para o rebanho.' : 'O animal volta para os descartados.'}',
+      textoConfirmar: 'Desfazer',
+      perigosa: true,
+    );
+    if (!confirmou) return;
+    await BaixaAnimalService().desfazerVenda(entidade);
+    _recarregarAnimais();
+    safeSetState(() {});
+  }
+
+  /// Vende um descartado: ele passa para os Vendidos sem mexer em vagas.
+  Future<void> _vender(AnimaisProdutoresStruct item) async {
+    final entidade = _entidade(AnimalRepository(), item);
+    if (entidade == null) return;
+    await abrirVenda(context, entidade);
     _recarregarAnimais();
     safeSetState(() {});
   }
@@ -692,7 +850,9 @@ class _SecasPageState extends State<SecasPage> with TickerProviderStateMixin {
     final confirmou = await confirmarAcao(
       context,
       titulo: 'Eliminar o animal?',
-      mensagem: 'Essa ação é irreversível.',
+      mensagem: ehVendido(item.status, item.tipoBaixa)
+          ? 'Essa ação é irreversível. A venda continua no Financeiro.'
+          : 'Essa ação é irreversível.',
       textoConfirmar: 'Eliminar',
       perigosa: true,
     );

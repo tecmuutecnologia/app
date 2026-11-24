@@ -5,6 +5,10 @@ import '/domain/animais/classificacao_animal.dart';
 import '/core/ui/cabecalho_tela.dart';
 import '/core/ui/painel_lista.dart';
 import '/core/ui/secao_formulario.dart';
+import '/core/ui/app_button.dart';
+import '/core/ui/confirmar_acao.dart';
+import '/domain/animais/baixa_animal.dart';
+import '/features/animais/presentation/abrir_baixa.dart';
 import '/data/backend.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/success_overlay.dart';
@@ -361,9 +365,83 @@ class _EditarAnimalPageState extends ConsumerState<EditarAnimalPage> {
               ajuda: 'Inseminada em ${animal.dtUltimaInseminacao}',
               filhos: [_campoTouroInseminacao(context, animal)],
             ),
+          if (!ehDescarte(animal.status)) _secaoSaida(context, animal),
         ],
       ),
     );
+  }
+
+  /// Vender / descartar o animal pela edição. Some para animal já em baixa
+  /// (ele é tratado na aba Descarte das secas); Vender some para sêmen.
+  Widget _secaoSaida(BuildContext context, AnimalEntity animal) {
+    final vende = podeVender(
+        grupo: animal.grupoAnimal,
+        status: animal.status,
+        tipoBaixa: animal.tipoBaixa,
+        isDeleted: animal.isDeleted);
+    return SecaoFormulario(
+      icone: Icons.logout_rounded,
+      titulo: 'Saída do rebanho',
+      filhos: [
+        Row(
+          children: [
+            if (vende) ...[
+              Expanded(
+                child: AppButton(
+                  text: 'Vender',
+                  icon: Icons.sell_outlined,
+                  tipo: AppButtonTipo.secundario,
+                  onPressed: () => _baixa(animal, venda: true),
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
+            Expanded(
+              child: AppButton(
+                text: 'Descartar',
+                icon: Icons.inventory_2_outlined,
+                tipo: AppButtonTipo.secundario,
+                onPressed: () => _baixa(animal, venda: false),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// Algum campo do formulário foi mudado e não salvo?
+  bool _temAlteracoes(AnimalEntity a) {
+    bool mudou(TextEditingController? c, String? original) =>
+        c != null && c.text.trim() != (original ?? '').trim();
+    return mudou(_nomeTextController, a.nomeAnimal) ||
+        mudou(_brincoTextController,
+            temBrinco(a.brincoAnimal) ? a.brincoAnimal.toString() : '') ||
+        mudou(_pesoTextController, a.pesoAnimal) ||
+        mudou(_dataNascimentoTextController, a.dtNascimento) ||
+        mudou(_touroTextController, a.touro) ||
+        mudou(_vacaTextController, a.vaca) ||
+        (_racaValue != null && _racaValue != a.racaAnimal) ||
+        (_grupoValue != null && _grupoValue != a.grupoAnimal);
+  }
+
+  /// Abre a venda ou o descarte. A baixa grava o animal como está no banco:
+  /// edições ainda não salvas se perdem, então pergunta antes. Gravada a
+  /// baixa, sai da edição.
+  Future<void> _baixa(AnimalEntity animal, {required bool venda}) async {
+    if (_temAlteracoes(animal)) {
+      final segue = await confirmarAcao(
+        context,
+        titulo: 'Descartar alterações?',
+        mensagem: 'As alterações não salvas deste animal serão perdidas.',
+        textoConfirmar: 'Continuar',
+      );
+      if (!segue || !mounted) return;
+    }
+    final gravou = venda
+        ? await abrirVenda(context, animal)
+        : await abrirDescarte(context, animal);
+    if (gravou && mounted) await _voltar();
   }
 
   /// Volta para a tela de onde veio (ver `_salvar`).

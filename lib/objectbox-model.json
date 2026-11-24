@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:8986228835005611182",
-      "lastPropertyId": "45:6074494206480083533",
+      "lastPropertyId": "53:1826315066896341712",
       "name": "AnimalEntity",
       "properties": [
         {
@@ -237,6 +237,46 @@
           "indexId": "22:2324975574822149543",
           "type": 9,
           "flags": 2048
+        },
+        {
+          "id": "46:5013786454428223116",
+          "name": "tipoBaixa",
+          "type": 9
+        },
+        {
+          "id": "47:7248995569790060935",
+          "name": "statusAnterior",
+          "type": 9
+        },
+        {
+          "id": "48:1748098017332695657",
+          "name": "idStatusAnteriorAnimal",
+          "type": 6
+        },
+        {
+          "id": "49:105014518389641445",
+          "name": "dtVendaAnimal",
+          "type": 9
+        },
+        {
+          "id": "50:24840064295551754",
+          "name": "valorVendaAnimal",
+          "type": 8
+        },
+        {
+          "id": "51:2413383587517312806",
+          "name": "idVendaAtual",
+          "type": 9
+        },
+        {
+          "id": "52:667459611800739990",
+          "name": "motivoDescarteAnterior",
+          "type": 9
+        },
+        {
+          "id": "53:1826315066896341712",
+          "name": "dtDescarteAnterior",
+          "type": 9
         }
       ],
       "relations": []
@@ -1741,10 +1781,96 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "23:521586870187038315",
+      "lastPropertyId": "15:1135345967543145891",
+      "name": "VendaAnimalEntity",
+      "properties": [
+        {
+          "id": "1:9222761924694412292",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:4268539670408268352",
+          "name": "firestoreId",
+          "indexId": "24:4457665767034637986",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "3:1961749196336752697",
+          "name": "parentPath",
+          "type": 9
+        },
+        {
+          "id": "4:4763993652445286877",
+          "name": "uidPropriedadePath",
+          "type": 9
+        },
+        {
+          "id": "5:6642414223367695513",
+          "name": "uidTecnicoPath",
+          "type": 9
+        },
+        {
+          "id": "6:166212191270629152",
+          "name": "animalId",
+          "type": 9
+        },
+        {
+          "id": "7:5939687507692847216",
+          "name": "nomeAnimal",
+          "type": 9
+        },
+        {
+          "id": "8:5996060454695361848",
+          "name": "brincoAnimal",
+          "type": 6
+        },
+        {
+          "id": "9:6531693704269514710",
+          "name": "grupoAnimal",
+          "type": 9
+        },
+        {
+          "id": "10:4070301258185252913",
+          "name": "dtVenda",
+          "type": 9
+        },
+        {
+          "id": "11:7290367202294097011",
+          "name": "valorVenda",
+          "type": 8
+        },
+        {
+          "id": "12:359477387826117665",
+          "name": "lastModified",
+          "type": 10
+        },
+        {
+          "id": "13:4175908035143828852",
+          "name": "lastSynced",
+          "type": 10
+        },
+        {
+          "id": "14:7459514518666016383",
+          "name": "needsSync",
+          "type": 1
+        },
+        {
+          "id": "15:1135345967543145891",
+          "name": "isDeleted",
+          "type": 1
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "22:5299997838202207882",
-  "lastIndexId": "23:369470281308574824",
+  "lastEntityId": "23:521586870187038315",
+  "lastIndexId": "24:4457665767034637986",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

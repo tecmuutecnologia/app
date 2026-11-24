@@ -45,6 +45,14 @@ class AnimaisProdutoresStruct extends FFFirebaseStruct {
     DateTime? dtDesmame,
     int? brincoAnimal,
     int? brincoAnimalOrder,
+    String? tipoBaixa,
+    String? statusAnterior,
+    int? idStatusAnteriorAnimal,
+    String? dtVendaAnimal,
+    double? valorVendaAnimal,
+    String? idVendaAtual,
+    String? motivoDescarteAnterior,
+    String? dtDescarteAnterior,
     DocumentReference? uidAnimal,
     String? uidAnimalOffline,
     int? itemUidIndexAtual,
@@ -86,6 +94,14 @@ class AnimaisProdutoresStruct extends FFFirebaseStruct {
         _dtDesmame = dtDesmame,
         _brincoAnimal = brincoAnimal,
         _brincoAnimalOrder = brincoAnimalOrder,
+        _tipoBaixa = tipoBaixa,
+        _statusAnterior = statusAnterior,
+        _idStatusAnteriorAnimal = idStatusAnteriorAnimal,
+        _dtVendaAnimal = dtVendaAnimal,
+        _valorVendaAnimal = valorVendaAnimal,
+        _idVendaAtual = idVendaAtual,
+        _motivoDescarteAnterior = motivoDescarteAnterior,
+        _dtDescarteAnterior = dtDescarteAnterior,
         _uidAnimal = uidAnimal,
         _uidAnimalOffline = uidAnimalOffline,
         _itemUidIndexAtual = itemUidIndexAtual,
@@ -373,6 +389,33 @@ class AnimaisProdutoresStruct extends FFFirebaseStruct {
 
   bool hasBrincoAnimalOrder() => _brincoAnimalOrder != null;
 
+  // Campos de baixa (venda/descarte). Getters NULÁVEIS de propósito: o
+  // adapter devolve ao AnimalEntity exatamente o que veio (null = sem baixa).
+  String? _tipoBaixa;
+  String? get tipoBaixa => _tipoBaixa;
+  set tipoBaixa(String? val) => _tipoBaixa = val;
+  String? _statusAnterior;
+  String? get statusAnterior => _statusAnterior;
+  set statusAnterior(String? val) => _statusAnterior = val;
+  int? _idStatusAnteriorAnimal;
+  int? get idStatusAnteriorAnimal => _idStatusAnteriorAnimal;
+  set idStatusAnteriorAnimal(int? val) => _idStatusAnteriorAnimal = val;
+  String? _dtVendaAnimal;
+  String? get dtVendaAnimal => _dtVendaAnimal;
+  set dtVendaAnimal(String? val) => _dtVendaAnimal = val;
+  double? _valorVendaAnimal;
+  double? get valorVendaAnimal => _valorVendaAnimal;
+  set valorVendaAnimal(double? val) => _valorVendaAnimal = val;
+  String? _idVendaAtual;
+  String? get idVendaAtual => _idVendaAtual;
+  set idVendaAtual(String? val) => _idVendaAtual = val;
+  String? _motivoDescarteAnterior;
+  String? get motivoDescarteAnterior => _motivoDescarteAnterior;
+  set motivoDescarteAnterior(String? val) => _motivoDescarteAnterior = val;
+  String? _dtDescarteAnterior;
+  String? get dtDescarteAnterior => _dtDescarteAnterior;
+  set dtDescarteAnterior(String? val) => _dtDescarteAnterior = val;
+
   // "uidAnimal" field.
   DocumentReference? _uidAnimal;
   DocumentReference? get uidAnimal => _uidAnimal;
@@ -439,6 +482,14 @@ class AnimaisProdutoresStruct extends FFFirebaseStruct {
         dtDesmame: data['dtDesmame'] as DateTime?,
         brincoAnimal: castToType<int>(data['brincoAnimal']),
         brincoAnimalOrder: castToType<int>(data['brincoAnimalOrder']),
+        tipoBaixa: data['tipoBaixa'] as String?,
+        statusAnterior: data['statusAnterior'] as String?,
+        idStatusAnteriorAnimal: castToType<int>(data['idStatusAnteriorAnimal']),
+        dtVendaAnimal: data['dtVendaAnimal'] as String?,
+        valorVendaAnimal: castToType<double>(data['valorVendaAnimal']),
+        idVendaAtual: data['idVendaAtual'] as String?,
+        motivoDescarteAnterior: data['motivoDescarteAnterior'] as String?,
+        dtDescarteAnterior: data['dtDescarteAnterior'] as String?,
         uidAnimal: data['uidAnimal'] as DocumentReference?,
         uidAnimalOffline: data['uidAnimalOffline'] as String?,
         itemUidIndexAtual: castToType<int>(data['itemUidIndexAtual']),
@@ -486,6 +537,14 @@ class AnimaisProdutoresStruct extends FFFirebaseStruct {
         'dtDesmame': _dtDesmame,
         'brincoAnimal': _brincoAnimal,
         'brincoAnimalOrder': _brincoAnimalOrder,
+        'tipoBaixa': _tipoBaixa,
+        'statusAnterior': _statusAnterior,
+        'idStatusAnteriorAnimal': _idStatusAnteriorAnimal,
+        'dtVendaAnimal': _dtVendaAnimal,
+        'valorVendaAnimal': _valorVendaAnimal,
+        'idVendaAtual': _idVendaAtual,
+        'motivoDescarteAnterior': _motivoDescarteAnterior,
+        'dtDescarteAnterior': _dtDescarteAnterior,
         'uidAnimal': _uidAnimal,
         'uidAnimalOffline': _uidAnimalOffline,
         'itemUidIndexAtual': _itemUidIndexAtual,
@@ -640,6 +699,38 @@ class AnimaisProdutoresStruct extends FFFirebaseStruct {
         'brincoAnimalOrder': serializeParam(
           _brincoAnimalOrder,
           ParamType.int,
+        ),
+        'tipoBaixa': serializeParam(
+          _tipoBaixa,
+          ParamType.String,
+        ),
+        'statusAnterior': serializeParam(
+          _statusAnterior,
+          ParamType.String,
+        ),
+        'idStatusAnteriorAnimal': serializeParam(
+          _idStatusAnteriorAnimal,
+          ParamType.int,
+        ),
+        'dtVendaAnimal': serializeParam(
+          _dtVendaAnimal,
+          ParamType.String,
+        ),
+        'valorVendaAnimal': serializeParam(
+          _valorVendaAnimal,
+          ParamType.double,
+        ),
+        'idVendaAtual': serializeParam(
+          _idVendaAtual,
+          ParamType.String,
+        ),
+        'motivoDescarteAnterior': serializeParam(
+          _motivoDescarteAnterior,
+          ParamType.String,
+        ),
+        'dtDescarteAnterior': serializeParam(
+          _dtDescarteAnterior,
+          ParamType.String,
         ),
         'uidAnimal': serializeParam(
           _uidAnimal,
@@ -844,6 +935,46 @@ class AnimaisProdutoresStruct extends FFFirebaseStruct {
           ParamType.int,
           false,
         ),
+        tipoBaixa: deserializeParam(
+          data['tipoBaixa'],
+          ParamType.String,
+          false,
+        ),
+        statusAnterior: deserializeParam(
+          data['statusAnterior'],
+          ParamType.String,
+          false,
+        ),
+        idStatusAnteriorAnimal: deserializeParam(
+          data['idStatusAnteriorAnimal'],
+          ParamType.int,
+          false,
+        ),
+        dtVendaAnimal: deserializeParam(
+          data['dtVendaAnimal'],
+          ParamType.String,
+          false,
+        ),
+        valorVendaAnimal: deserializeParam(
+          data['valorVendaAnimal'],
+          ParamType.double,
+          false,
+        ),
+        idVendaAtual: deserializeParam(
+          data['idVendaAtual'],
+          ParamType.String,
+          false,
+        ),
+        motivoDescarteAnterior: deserializeParam(
+          data['motivoDescarteAnterior'],
+          ParamType.String,
+          false,
+        ),
+        dtDescarteAnterior: deserializeParam(
+          data['dtDescarteAnterior'],
+          ParamType.String,
+          false,
+        ),
         uidAnimal: deserializeParam(
           data['uidAnimal'],
           ParamType.DocumentReference,
@@ -905,6 +1036,14 @@ class AnimaisProdutoresStruct extends FFFirebaseStruct {
         dtDesmame == other.dtDesmame &&
         brincoAnimal == other.brincoAnimal &&
         brincoAnimalOrder == other.brincoAnimalOrder &&
+        tipoBaixa == other.tipoBaixa &&
+        statusAnterior == other.statusAnterior &&
+        idStatusAnteriorAnimal == other.idStatusAnteriorAnimal &&
+        dtVendaAnimal == other.dtVendaAnimal &&
+        valorVendaAnimal == other.valorVendaAnimal &&
+        idVendaAtual == other.idVendaAtual &&
+        motivoDescarteAnterior == other.motivoDescarteAnterior &&
+        dtDescarteAnterior == other.dtDescarteAnterior &&
         uidAnimal == other.uidAnimal &&
         uidAnimalOffline == other.uidAnimalOffline &&
         itemUidIndexAtual == other.itemUidIndexAtual;

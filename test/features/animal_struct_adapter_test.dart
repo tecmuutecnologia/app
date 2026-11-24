@@ -145,6 +145,14 @@ void main() {
       dtDesmame: DateTime(2024, 12, 12),
       brincoAnimal: 99,
       brincoAnimalOrder: 99,
+      tipoBaixa: 'venda',
+      statusAnterior: 'Prenha',
+      idStatusAnteriorAnimal: 5,
+      dtVendaAnimal: '18/11/2026',
+      valorVendaAnimal: 1500.5,
+      idVendaAtual: 'venda_1',
+      motivoDescarteAnterior: 'Idade',
+      dtDescarteAnterior: '01/11/2026',
     );
 
     // entity -> struct -> entity (caminho offline reusa o uidAnimalOffline).
@@ -183,6 +191,14 @@ void main() {
     expect(back.compararDtUltimaInseminacao,
         original.compararDtUltimaInseminacao);
     expect(back.nomeBrincoConcat, original.nomeBrincoConcat);
+    expect(back.tipoBaixa, 'venda');
+    expect(back.statusAnterior, 'Prenha');
+    expect(back.idStatusAnteriorAnimal, 5);
+    expect(back.dtVendaAnimal, '18/11/2026');
+    expect(back.valorVendaAnimal, 1500.5);
+    expect(back.idVendaAtual, 'venda_1');
+    expect(back.motivoDescarteAnterior, 'Idade');
+    expect(back.dtDescarteAnterior, '01/11/2026');
     expect(back.idGrupoAnimal, original.idGrupoAnimal);
     expect(back.dtUltimoPartoContingencia,
         original.dtUltimoPartoContingencia);

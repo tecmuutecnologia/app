@@ -66,6 +66,19 @@ service cloud.firestore {
       allow delete: if request.auth != null;
     }
 
+    // Vendas de animais (aba Vendas do financeiro). Mesmas permissões do
+    // financeiro da propriedade.
+    match /tecnico/{tecnico}/propriedades/{propriedade}/vendasAnimais/{document} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+      allow delete: if request.auth != null;
+    }
+
+    match /{path=**}/vendasAnimais/{document} {
+      allow read: if request.auth != null;
+    }
+
 
 
     match /resumo_da_visita/{parent}/acoes_da_visita/{document} {

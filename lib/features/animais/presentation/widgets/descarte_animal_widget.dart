@@ -3,8 +3,7 @@
 import '/core/sync/exclusao_remota.dart';
 import '/data/backend.dart';
 import '/data/objectbox/repositories/animal_repository.dart';
-import '/data/objectbox/repositories/tecnico_repository.dart';
-import '/domain/plano/vagas.dart';
+import '/features/animais/application/baixa_animal_service.dart';
 import '/core/ui/app_card.dart';
 import '/core/ui/flutter_flow_animations.dart';
 import '/core/ui/flutter_flow_drop_down.dart';
@@ -476,24 +475,24 @@ class _DescarteAnimalWidgetState extends State<DescarteAnimalWidget>
                     // estourava no `!` da referencia nula. E como a lista e a
                     // aba "Descarte" leem do ObjectBox, online o animal so
                     // saia da lista quando o sync voltasse.
-                    final repo = AnimalRepository();
-                    final entidade =
-                        repo.getByFirestoreId(widget.uidAnimaisProdutores!.id);
-                    if (entidade != null) {
-                      // Vaga do plano: decide antes do update, pois depois o
-                      // status já é Descarte e o animal não ocuparia mais.
-                      final ocupava = animalOcupaVaga(entidade);
-                      final tecnicoId = tecnicoIdDoPath(entidade.parentPath);
-                      await repo.update(entidade, {
-                        'status': 'Descarte',
-                        'dtDescarteAnimal': _dtDescarteTextController.text,
-                        'motivoDescarteAnimal': _motivoDescarteValue,
-                      });
-                      if (ocupava && tecnicoId != null) {
-                        TecnicoRepository().devolverCotaAnimais(tecnicoId);
-                      }
+                    // O serviço grava o status anterior (para o "desfazer")
+                    // e devolve a vaga do plano se o animal ocupava.
+                    final entidade = AnimalRepository()
+                        .getByFirestoreId(widget.uidAnimaisProdutores!.id);
+                    final gravou = entidade != null &&
+                        await BaixaAnimalService().descartar(
+                          animal: entidade,
+                          dt: _dtDescarteTextController!.text,
+                          motivo: _motivoDescarteValue,
+                        );
+                    if (!gravou && context.mounted) {
+                      // Outro aparelho já vendeu ou descartou o animal.
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text(
+                                  'Este animal já saiu do rebanho.')));
                     }
-                    Navigator.pop(context);
+                    if (context.mounted) Navigator.pop(context, gravou);
                     return;
                   } else {
                     return;

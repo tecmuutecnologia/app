@@ -140,6 +140,7 @@ class ObjectBoxAuthHelper {
         _purgeBox(ob.tratamentoBox) +
         _purgeBox(ob.acaoSanitarioBox) +
         _purgeBox(ob.financeiroBox) +
+        _purgeBox(ob.vendaAnimalBox) +
         _purgeBox(ob.resumoVisitaBox) +
         _purgeBox(ob.recomendacaoBox) +
         _purgeBox(ob.personBox) +

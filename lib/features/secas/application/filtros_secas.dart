@@ -10,6 +10,7 @@
 library;
 
 import '../../../data/schema/structs/animais_produtores_struct.dart';
+import '../../../domain/animais/baixa_animal.dart';
 import '../../../domain/animais/classificacao_animal.dart';
 import '../../../domain/animais/filtro_lista_animais.dart';
 import '../../../domain/animais/inducao_lactacao.dart';
@@ -18,6 +19,9 @@ export '../../../domain/animais/filtro_lista_animais.dart'
     show temDataSentinela;
 
 enum AbaSecas { vacasSecas, preParto, inducaoLactacao, descarte }
+
+/// Separação interna da aba Descarte. `null` = os dois (contagem da aba).
+enum SubfiltroDescarte { descartados, vendidos }
 
 /// Os animais de UMA aba, ja filtrados pela busca.
 ///
@@ -28,6 +32,7 @@ List<AnimaisProdutoresStruct> animaisDaAba(
   List<AnimaisProdutoresStruct> animais, {
   required AbaSecas aba,
   String busca = '',
+  SubfiltroDescarte? subfiltro,
 }) {
   return animais.where((item) {
     if (!casaBuscaAnimal(
@@ -52,7 +57,12 @@ List<AnimaisProdutoresStruct> animaisDaAba(
             dtDgMais: item.dtDgMais,
             dtUltimoParto: item.dtUltimoParto);
       case AbaSecas.descarte:
-        return ehDescarte(item.status);
+        return switch (subfiltro) {
+          null => ehDescarte(item.status),
+          SubfiltroDescarte.descartados =>
+            ehDescartadoSemVenda(item.status, item.tipoBaixa),
+          SubfiltroDescarte.vendidos => ehVendido(item.status, item.tipoBaixa),
+        };
     }
   }).toList();
 }

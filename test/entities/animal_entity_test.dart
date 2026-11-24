@@ -565,4 +565,56 @@ void main() {
       expect(animal.dtInducaoLactacao, isNull);
     });
   });
+
+  group('AnimalEntity - campos de baixa', () {
+    test('updateFromFirestore com chave null limpa a baixa (desfeita em outro aparelho)', () {
+      final animal = AnimalEntity(
+          tipoBaixa: 'venda', valorVendaAnimal: 10, idVendaAtual: 'v1');
+
+      animal.updateFromFirestore({
+        'tipoBaixa': null,
+        'valorVendaAnimal': null,
+        'idVendaAtual': null,
+      });
+
+      expect(animal.tipoBaixa, isNull);
+      expect(animal.valorVendaAnimal, isNull);
+      expect(animal.idVendaAtual, isNull);
+    });
+
+    test('updateFromFirestore sem as chaves preserva a baixa', () {
+      final animal = AnimalEntity(tipoBaixa: 'venda');
+      animal.updateFromFirestore({'nomeAnimal': 'X'});
+      expect(animal.tipoBaixa, 'venda');
+    });
+
+    test('fromFirestore lê os campos de baixa', () {
+      final a = AnimalEntity.fromFirestore({
+        'tipoBaixa': 'venda',
+        'valorVendaAnimal': 1200,
+        'idStatusAnteriorAnimal': 5,
+        'statusAnterior': 'Prenha',
+      }, 'id1', 'tecnico/t');
+      expect(a.tipoBaixa, 'venda');
+      expect(a.valorVendaAnimal, 1200.0);
+      expect(a.idStatusAnteriorAnimal, 5);
+      expect(a.statusAnterior, 'Prenha');
+    });
+
+    test('toFirestore inclui as 8 chaves de baixa mesmo nulas', () {
+      final m = AnimalEntity().toFirestore();
+      for (final k in [
+        'tipoBaixa',
+        'statusAnterior',
+        'idStatusAnteriorAnimal',
+        'dtVendaAnimal',
+        'valorVendaAnimal',
+        'idVendaAtual',
+        'motivoDescarteAnterior',
+        'dtDescarteAnterior',
+      ]) {
+        expect(m.containsKey(k), isTrue, reason: k);
+      }
+    });
+  });
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../application/animais_providers.dart';
 import '../application/ordenacao_animais.dart';
+import '/domain/animais/baixa_animal.dart';
 import '/domain/animais/classificacao_animal.dart';
 import '/app/theme/flutter_flow_theme.dart';
 import '/core/ui/app_card.dart';
@@ -30,6 +32,8 @@ class AnimalGroupListView extends ConsumerWidget {
     this.busca = '',
     this.permiteDescarte = false,
     this.onDescartar,
+    this.onVender,
+    this.mostrarBotaoVender = false,
   });
 
   /// Path do documento da propriedade (parentPath dos animais).
@@ -65,6 +69,14 @@ class AnimalGroupListView extends ConsumerWidget {
   /// formulario de motivo/data; esta view nao decide nada sobre o descarte.
   final void Function(String firestoreId)? onDescartar;
 
+  /// Pedido de venda de um animal (recebe o firestoreId). A tela abre o
+  /// formulario de data/valor. Fica sob a mesma permissao do descarte.
+  final void Function(String firestoreId)? onVender;
+
+  /// Mostra um botao "Vender" fixo no card, sem precisar arrastar (aba
+  /// Bezerros, onde vender e o destino mais comum).
+  final bool mostrarBotaoVender;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final animaisAsync = ref.watch(
@@ -99,20 +111,33 @@ class AnimalGroupListView extends ConsumerWidget {
           );
         }
 
-        return ListView.builder(
-          // Folga abaixo do painel de busca/abas (padrao de listas).
-          padding: const EdgeInsets.only(top: 8.0, bottom: 80.0),
-          itemCount: visiveis.length,
-          itemBuilder: (context, index) {
-            final animal = visiveis[index];
-            // Mesmo titulo que a ordenacao e a busca usam — se divergirem, a
-            // lista volta a parecer desordenada.
-            final titulo = tituloAnimal(animal);
-            final tituloExibido = titulo.isEmpty ? 'Animal sem nome' : titulo;
-            final firestoreId = animal.firestoreId;
-            final card = Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-              child: AppCard(
+        return SlidableAutoCloseBehavior(
+          child: ListView.builder(
+            // Folga abaixo do painel de busca/abas (padrao de listas).
+            padding: const EdgeInsets.only(top: 8.0, bottom: 80.0),
+            itemCount: visiveis.length,
+            itemBuilder: (context, index) {
+              final animal = visiveis[index];
+              // Mesmo titulo que a ordenacao e a busca usam — se divergirem, a
+              // lista volta a parecer desordenada.
+              final titulo = tituloAnimal(animal);
+              final tituloExibido = titulo.isEmpty ? 'Animal sem nome' : titulo;
+              final firestoreId = animal.firestoreId;
+              // Animal em baixa (descartado ou vendido) nao se baixa de novo —
+              // era a mesma guarda do card antigo (`status != 'Descarte'`).
+              final podeBaixar = permiteDescarte &&
+                  firestoreId != null &&
+                  !ehDescarte(animal.status);
+              final vende = podeBaixar &&
+                  onVender != null &&
+                  podeVender(
+                      grupo: animal.grupoAnimal,
+                      status: animal.status,
+                      tipoBaixa: animal.tipoBaixa,
+                      isDeleted: animal.isDeleted);
+              final descarta = podeBaixar && onDescartar != null;
+              final botaoVender = mostrarBotaoVender && vende;
+              final cardInterno = AppCard(
                 padding: EdgeInsets.zero,
                 child: ListTile(
                   contentPadding:
@@ -136,77 +161,96 @@ class AnimalGroupListView extends ConsumerWidget {
                   subtitle: Text(
                     [
                       'Brinco ${animal.brincoAnimal}',
-                      if ((animal.status ?? '').isNotEmpty) animal.status!,
+                      if (ehVendido(animal.status, animal.tipoBaixa))
+                        'Vendido'
+                      else if ((animal.status ?? '').isNotEmpty)
+                        animal.status!,
                       if ((animal.racaAnimal ?? '').isNotEmpty)
                         animal.racaAnimal!,
                     ].join(' • '),
                   ),
-                  trailing: (firestoreId != null && onEditAnimal != null)
-                      ? IconButton(
-                          icon: const Icon(Icons.edit_outlined,
-                              color: AppTokens.secondary),
-                          tooltip: 'Editar animal',
-                          onPressed: () => onEditAnimal!(firestoreId),
-                        )
-                      : null,
+                  trailing: _acoesDoCard(firestoreId, botaoVender),
                   onTap: (firestoreId == null || onTapAnimal == null)
                       ? null
                       : () => onTapAnimal!(firestoreId),
                 ),
-              ),
-            );
+              );
+              const margem = EdgeInsets.symmetric(horizontal: 12, vertical: 5);
 
-            // Animal ja descartado nao se descarta de novo — era a mesma
-            // guarda do card antigo (`status != 'Descarte'`).
-            final podeDescartar = permiteDescarte &&
-                onDescartar != null &&
-                firestoreId != null &&
-                !ehDescarte(animal.status);
+              if (!vende && !descarta) {
+                return Padding(padding: margem, child: cardInterno);
+              }
 
-            if (!podeDescartar) return card;
-
-            return Dismissible(
-              key: ValueKey('descarte-$firestoreId'),
-              direction: DismissDirection.endToStart,
-              background: _faixaDescartar(context),
-              // Devolve `false` SEMPRE: o arrasto apenas PEDE o descarte. Quem
-              // tira o animal da lista e a gravacao do status no ObjectBox, que
-              // esta view observa. Se o card sumisse no arrasto, ele voltaria
-              // piscando quando o tecnico cancelasse o formulario.
-              confirmDismiss: (_) async {
-                onDescartar!(firestoreId);
-                return false;
-              },
-              child: card,
-            );
-          },
+              // Arrasto que TRAVA aberto mostrando as acoes (como numa conversa
+              // do WhatsApp). As acoes so PEDEM a venda/descarte: quem tira o
+              // animal da lista e a gravacao do status no ObjectBox, que esta
+              // view observa — cancelar o formulario deixa o card onde estava.
+              // A margem fica FORA do Slidable e o recorte arredonda as acoes:
+              // assim os botoes tem a altura e os cantos do card.
+              return Padding(
+                padding: margem,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(AppTokens.radius),
+                  child: Slidable(
+                    key: ValueKey('baixa-$firestoreId'),
+                    groupTag: 'animais',
+                    endActionPane: ActionPane(
+                      motion: const ScrollMotion(),
+                      extentRatio: vende && descarta ? 0.5 : 0.25,
+                      children: [
+                        if (vende)
+                          SlidableAction(
+                            onPressed: (_) => onVender!(firestoreId),
+                            backgroundColor: AppTokens.positivo,
+                            foregroundColor: Colors.white,
+                            icon: Icons.sell_outlined,
+                            label: 'Vender',
+                          ),
+                        if (descarta)
+                          SlidableAction(
+                            onPressed: (_) => onDescartar!(firestoreId),
+                            backgroundColor: FlutterFlowTheme.of(context).error,
+                            foregroundColor: Colors.white,
+                            icon: Icons.inventory_2_outlined,
+                            label: 'Descartar',
+                          ),
+                      ],
+                    ),
+                    child: cardInterno,
+                  ),
+                ),
+              );
+            },
+          ),
         );
       },
     );
   }
 
-  /// Faixa revelada pelo arrasto. Diz "Descartar", e nao "Excluir": o animal
-  /// continua na propriedade, muda de status e vai para a aba Descarte.
-  Widget _faixaDescartar(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-      padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 24, 0),
-      alignment: Alignment.centerRight,
-      decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).error,
-        borderRadius: BorderRadius.circular(AppTokens.radiusSmall),
-      ),
-      child: const Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.inventory_2_outlined, color: Colors.white, size: 20),
-          SizedBox(width: 8),
-          Text(
-            'Descartar',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+  /// Botoes a direita do card: "Vender" fixo (quando ligado) e editar.
+  Widget? _acoesDoCard(String? firestoreId, bool botaoVender) {
+    final editar = firestoreId != null && onEditAnimal != null;
+    if (!editar && !botaoVender) return null;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (botaoVender)
+          TextButton.icon(
+            onPressed: () => onVender!(firestoreId!),
+            icon: const Icon(Icons.sell_outlined, size: 18),
+            label: const Text('Vender'),
+            style: TextButton.styleFrom(
+              foregroundColor: AppTokens.positivo,
+              visualDensity: VisualDensity.compact,
+            ),
           ),
-        ],
-      ),
+        if (editar)
+          IconButton(
+            icon: const Icon(Icons.edit_outlined, color: AppTokens.secondary),
+            tooltip: 'Editar animal',
+            onPressed: () => onEditAnimal!(firestoreId),
+          ),
+      ],
     );
   }
 }
