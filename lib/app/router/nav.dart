@@ -11,6 +11,7 @@ import 'destino_inicial.dart';
 import '/core/ui/flutter_flow_util.dart';
 
 import '/features/animais/presentation/pages/cadastrar_novo_animal_page.dart';
+import '/features/roda_reproducao/presentation/pages/roda_reproducao_page.dart';
 import '/features/animais/presentation/pages/editar_animal_page.dart';
 import '/features/animais/presentation/pages/importar_animais_page.dart';
 import '/features/animais/presentation/pages/lista_animais_page.dart';
@@ -1053,6 +1054,40 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: DiagnosticogestacaoPage.routeName,
           path: DiagnosticogestacaoPage.routePath,
           builder: (context, params) => DiagnosticogestacaoPage(
+            uidPropriedade: params.getParam(
+              'uidPropriedade',
+              ParamType.DocumentReference,
+              isList: false,
+              collectionNamePath: ['tecnico', 'propriedades'],
+            ),
+            nomePropriedade: params.getParam(
+              'nomePropriedade',
+              ParamType.String,
+            ),
+            uidTecnico: params.getParam(
+              'uidTecnico',
+              ParamType.DocumentReference,
+              isList: false,
+              collectionNamePath: ['tecnico'],
+            ),
+            emailPropriedade: params.getParam(
+              'emailPropriedade',
+              ParamType.String,
+            ),
+            visitaPresencial: params.getParam(
+              'visitaPresencial',
+              ParamType.bool,
+            ),
+            diasDg: params.getParam(
+              'diasDg',
+              ParamType.String,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: RodaReproducaoPage.routeName,
+          path: RodaReproducaoPage.routePath,
+          builder: (context, params) => RodaReproducaoPage(
             uidPropriedade: params.getParam(
               'uidPropriedade',
               ParamType.DocumentReference,

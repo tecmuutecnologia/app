@@ -45,6 +45,11 @@ class _AbasPilulaState extends State<AbasPilula> {
   late List<GlobalKey> _chaves;
   int _ativa = 0;
 
+  /// Rolagem própria das pílulas: centraliza a aba ativa SÓ na horizontal.
+  /// `Scrollable.ensureVisible` rolava também a página quando as abas ficam
+  /// dentro de uma tela rolável (ex.: abaixo da Roda da Reprodução).
+  final _rolagem = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -68,6 +73,7 @@ class _AbasPilulaState extends State<AbasPilula> {
   @override
   void dispose() {
     widget.controller.animation?.removeListener(_aoAnimar);
+    _rolagem.dispose();
     super.dispose();
   }
 
@@ -77,10 +83,10 @@ class _AbasPilulaState extends State<AbasPilula> {
     final valor = widget.controller.animation!.value.round();
     if (valor == _ativa) return;
     setState(() => _ativa = valor);
-    final ctx = _chaves[valor].currentContext;
-    if (ctx != null) {
-      Scrollable.ensureVisible(
-        ctx,
+    final alvo = _chaves[valor].currentContext?.findRenderObject();
+    if (alvo != null && _rolagem.hasClients) {
+      _rolagem.position.ensureVisible(
+        alvo,
         alignment: 0.5,
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeOutCubic,
@@ -91,6 +97,7 @@ class _AbasPilulaState extends State<AbasPilula> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      controller: _rolagem,
       scrollDirection: Axis.horizontal,
       padding: widget.padding,
       child: Row(
