@@ -87,15 +87,28 @@ class AnimalRoda {
   bool get coberta =>
       inseminada || ehPrenha(status) || ehSeca(status) || ehPreParto(status);
 
-  /// Inseminada sem DG+ deste ciclo (DG+ anterior à IA atual não conta).
+  /// Inseminada com PP — status "Inseminada PP" ou PP registrado a partir
+  /// da IA atual (PP de ciclo anterior não conta). Na roda conta como
+  /// prenhe, pedido do usuário em 27/11/2026.
+  bool get prenhePorPP =>
+      inseminada &&
+      (ehInseminadaPP(status) ||
+          (pp != null && (ia == null || !pp!.isBefore(ia!))));
+
+  /// Prenha de fato ou inseminada com PP.
+  bool get prenhe => ehPrenha(status) || prenhePorPP;
+
+  /// Inseminada sem PP nem DG+ deste ciclo (DG+ anterior à IA atual não
+  /// conta).
   bool get semDiagnostico =>
       inseminada &&
+      !prenhePorPP &&
       (dgMais == null || (ia != null && dgMais!.isBefore(ia!)));
 
   /// Fase pela COR: o estado real do animal.
   FaseRoda get faseEstado {
     if (ehSeca(status) || ehPreParto(status)) return FaseRoda.seca;
-    if (ehPrenha(status)) return FaseRoda.prenhe;
+    if (prenhe) return FaseRoda.prenhe;
     if (inseminada) return FaseRoda.cobertura;
     return FaseRoda.posParto;
   }
@@ -197,7 +210,7 @@ AlertaRoda? _alerta(AnimalRoda a, int diaBruto, int? diasPosIa) {
     return (diasPosIa ?? 0) > kDiasSemDgAlerta ? AlertaRoda.dgAtrasado : null;
   }
   if (diaBruto > kCiclo + kTolerParto) return AlertaRoda.partoAtrasado;
-  if (ehPrenha(a.status) &&
+  if (a.prenhe &&
       a.vaca &&
       diaBruto > kDiaSecar + kTolerSecagem) {
     return AlertaRoda.secagemAtrasada;

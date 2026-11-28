@@ -12,6 +12,7 @@ AnimalRoda animal({
   DateTime? ia,
   DateTime? partoPrevisto,
   DateTime? dgMais,
+  DateTime? pp,
   DateTime? inducao,
 }) =>
     AnimalRoda(
@@ -24,6 +25,7 @@ AnimalRoda animal({
       ia: ia,
       partoPrevisto: partoPrevisto,
       dgMais: dgMais,
+      pp: pp,
       inducao: inducao,
     );
 
@@ -46,11 +48,40 @@ void main() {
       expect(animal(status: 'Vazia').faseEstado, FaseRoda.posParto);
       expect(animal(status: 'Aborto').faseEstado, FaseRoda.posParto);
       expect(animal(status: 'Inseminada').faseEstado, FaseRoda.cobertura);
-      expect(animal(status: 'Inseminada PP').faseEstado, FaseRoda.cobertura);
+      expect(animal(status: 'Inseminada PP').faseEstado, FaseRoda.prenhe);
       expect(animal(status: 'Prenha').faseEstado, FaseRoda.prenhe);
       expect(animal(status: 'Seca').faseEstado, FaseRoda.seca);
       expect(animal(status: 'Pré Parto').faseEstado, FaseRoda.seca);
       expect(animal(status: 'Pré-parto').faseEstado, FaseRoda.seca);
+    });
+  });
+
+  group('inseminada com PP conta como prenhe', () {
+    test('status Inseminada PP: azul, sem alerta de DG atrasado', () {
+      final a = animal(status: 'Inseminada PP', ia: ha(90));
+      expect(a.prenhe, isTrue);
+      expect(a.semDiagnostico, isFalse);
+      final p = calcularPosicao(a, hoje)!;
+      expect(p.alerta, isNull);
+    });
+
+    test('Inseminada com PP registrado depois da IA atual também conta', () {
+      final a = animal(status: 'Inseminada', ia: ha(60), pp: ha(20));
+      expect(a.faseEstado, FaseRoda.prenhe);
+      expect(a.semDiagnostico, isFalse);
+    });
+
+    test('PP de um ciclo anterior (antes da IA atual) não conta', () {
+      final a = animal(status: 'Inseminada', ia: ha(30), pp: ha(200));
+      expect(a.faseEstado, FaseRoda.cobertura);
+      expect(a.semDiagnostico, isTrue);
+    });
+
+    test('vaca Inseminada PP passada do dia de secar → secagem atrasada', () {
+      // IA há 240 dias → dia 325 do ciclo (> 305 + 7).
+      final p = calcularPosicao(
+          animal(status: 'Inseminada PP', ia: ha(240)), hoje)!;
+      expect(p.alerta, AlertaRoda.secagemAtrasada);
     });
   });
 

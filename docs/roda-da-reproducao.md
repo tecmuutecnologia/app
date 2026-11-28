@@ -46,8 +46,12 @@ Branch: `feat/roda-da-produtividade` · desenho aprovado em 24/11/2026
 - O **anel interno dos meses** gira com a data: o mês de hoje fica embaixo e
   os anteriores seguem no sentido horário.
 - **Cor da bolinha = estado real do animal** (status):
-  Vazia/Aborto → vermelho · Inseminada/Inseminada PP → amarelo ·
-  Prenha → azul · Seca/Pré-parto → verde.
+  Vazia/Aborto → vermelho · Inseminada → amarelo ·
+  Prenha **e inseminada com PP** → azul · Seca/Pré-parto → verde.
+  **Inseminada com PP** (status "Inseminada PP" ou PP registrado a partir da
+  IA atual) conta como **prenhe** em tudo na roda: cor, contador, alerta de
+  secagem, aba Secar; não entra em Diagnóstico/Cio nem no alerta de DG
+  atrasado (decisão do usuário, 27/11/2026).
   **Novilhas** cobertas ficam rosa-claro `#F6B3C6`; prenhes ou em pré-parto,
   rosa-forte `#E4589A` (como no app da Embrapa).
 - **Anel escuro + selo "!" vermelho = fora da fase** (ver §3).

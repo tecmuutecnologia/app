@@ -2,7 +2,6 @@
 /// contadores por estado e o filtro por faixa. Regras puras.
 library;
 
-import '../animais/classificacao_animal.dart';
 import 'ciclo_reproducao.dart';
 
 /// Janela da semana, em dias a partir da data exibida.
@@ -29,7 +28,7 @@ Set<AbaSemana> abasDe(PosicaoRoda p, {required int diasDg}) {
     // vaca parindo e precisa registrar daqui.
     if (a.coberta && p.diaBruto >= kCiclo - kJanelaSemana) AbaSemana.parir,
     if (a.vaca &&
-        ehPrenha(a.status) &&
+        a.prenhe &&
         p.diaBruto >= kDiaSecar - kJanelaSemana)
       AbaSemana.secar,
     if (a.semDiagnostico && ia != null && ia >= diasDg) AbaSemana.diagnostico,

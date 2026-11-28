@@ -55,7 +55,7 @@ List<AcaoRoda> acoesPara(PosicaoRoda p, {AbaSemana? aba, int diasDg = 30}) {
   if (a.semDiagnostico) {
     return (p.diasPosIa ?? 0) >= diasDg ? _dg : [AcaoRoda.fezCio];
   }
-  if (ehPrenha(a.status) && a.vaca) return [AcaoRoda.secagem];
+  if (a.prenhe && a.vaca) return [AcaoRoda.secagem];
   return [AcaoRoda.parto];
 }
 
