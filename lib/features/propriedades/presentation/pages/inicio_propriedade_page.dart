@@ -25,6 +25,7 @@ import '/features/animais/presentation/pages/lista_animais_page.dart';
 import '/features/calendario_sanitario/presentation/pages/calendario_sanitario_page.dart';
 import '/features/dashboard/presentation/pages/dashboard_tecnico_page.dart';
 import '/features/diagnostico_gestacao/presentation/pages/diagnosticogestacao_page.dart';
+import '/features/roda_reproducao/presentation/pages/roda_reproducao_page.dart';
 import '/features/exame_ginecologico/presentation/pages/exame_ginecologico_page.dart';
 import '/features/financeiro/presentation/pages/relatorio_financeiro_page.dart';
 import '/features/inseminacoes/presentation/pages/lista_inseminacoes_page.dart';
@@ -480,6 +481,7 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
           _cardListaCompleta(context, animais),
           _cardReceituario(context),
           _cardResumoRebanho(context),
+          _cardRodaReproducao(context),
           _cardCalendarioSanitario(context),
           _cardIndicesZootecnicos(context),
           _cardFinanceiro(context),
@@ -590,6 +592,19 @@ class _InicioPropriedadePageState extends ConsumerState<InicioPropriedadePage>
       onTap: () async {
         context.pushNamed(
           DiagnosticogestacaoPage.routeName,
+          queryParameters: _paramsPropriedade(),
+        );
+      },
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation5']!);
+  }
+
+  Widget _cardRodaReproducao(BuildContext context) {
+    return MenuAcaoCard(
+      icone: Icons.donut_large_rounded,
+      rotulo: 'Roda da Reprodução',
+      onTap: () async {
+        context.pushNamed(
+          RodaReproducaoPage.routeName,
           queryParameters: _paramsPropriedade(),
         );
       },

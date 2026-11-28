@@ -21,6 +21,7 @@ import '/features/relatorios/presentation/pages/indices_zootecnicos_page.dart';
 import '/features/relatorios/presentation/pages/listacompleta_page.dart';
 import '/features/relatorios/presentation/pages/resumo_rebanho_page.dart';
 import '/features/secas/presentation/pages/secas_page.dart';
+import '/features/roda_reproducao/presentation/pages/roda_reproducao_page.dart';
 
 import '../utils/navigation_params.dart';
 
@@ -78,6 +79,9 @@ class PropriedadeMenuGrid extends StatelessWidget {
 
         // 10. Resumo Rebanho
         _buildResumoRebanhoCard(context),
+
+        // Roda da Reprodução (ciclo de 365 dias + o que fazer na semana).
+        _buildRodaReproducaoCard(context),
 
         // 11. Calendário Sanitário
         _buildCalendarioSanitarioCard(context),
@@ -161,6 +165,19 @@ class PropriedadeMenuGrid extends StatelessWidget {
       onTap: () {
         context.pushNamed(
           DiagnosticogestacaoPage.routeName,
+          queryParameters: navigationParams.toQueryParameters(),
+        );
+      },
+    ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation3']!);
+  }
+
+  Widget _buildRodaReproducaoCard(BuildContext context) {
+    return MenuAcaoCard(
+      icone: Icons.donut_large_rounded,
+      rotulo: 'Roda da Reprodução',
+      onTap: () {
+        context.pushNamed(
+          RodaReproducaoPage.routeName,
           queryParameters: navigationParams.toQueryParameters(),
         );
       },
